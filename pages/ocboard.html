@@ -24,12 +24,28 @@
  
   <h1 style="text-align: center">UIUC EV Concept Car: Overcurrent Protection Board</h1>
 
-  <p> 
-  text of project text of project text of project text of project text of project text of project 
-
-
-text of project text of project text of project text of project 
-text of project 
+  <p style="text-align: center"> 
+11/18/2024
+<br>
+This project, completed for the UIUC EV Concept Car RSO, is an overcurrent protection board that trips when the current exceeds 30A.
+<br>
+<br>
+<img src="../docs/ocboard3d.png" alt="3D View of PCB" style="max-height:100%; max-width:100%;">
+<br>
+<br>
+For testing things like the 6-step inverter & motor, we use the main battery directly to source the 20A at 48V the motors require, since a sufficiently capable power supply is hard to come by & expensive. Problem is, the battery can happily source much more current if something goes wrong (e.g. someone shorts the output, a capacitor fails short, etc.) leading to both magic smoke and fire being released. The battery is custom-built and technically has a BMS which should prevent itself from catching fire, but shouldn't be relied on and is also experimental, not to mention if something else is on fire it could spread to the battery. This board acts as a backup going in between the battery and our motor driving circuitry, tripping if the current exceeds 30A, and having some fuses if the current significantly exceeds that. 
+<br>
+<br>
+<img src="../docs/ocboardlayout.png" alt="Layout of PCB" style="max-height:100%; max-width:100%;">
+<br>
+<br>
+The circuit itself isn't complicated, but dealing with 30A is tricky, requiring beefy traces for both minimizing the parasitic resistance and dissipating heat. To account for this, I designed the PCB based on a 2oz copper stack up and super thick traces via stitched traces on both sides. The screw terminals I used are rated for 180A, so no worries there either. The PCB is based around the LTC4364, which requires just a few voltage dividers to set under and over-voltage conditions, shunt resistors that drop 50mV at the desired tripping current, and some miscellaneous components to make the circuit work. For the FETs, I went with some NVBLS001N06C fets which are rated to 422A, very low Rdson of 0.9mΩ, and have great thermal characteristics. The shunt resistor is made up of 3, 5mΩ shunt resistors in parallel to achieve the odd 1.6mΩ value needed and to increase the current rating. For the backup fuses in case the LTC4364 fails, I tacked on 3 footprints for 1206 SMD fuses. Single fuses with a rating of 50A exist in this package, but I fear that the narrow footprint of a single fuse joined by solder would have quite a bit of parasitic resistance and poor ability to dissipate the heat, which could lead to troubles. If this does turn out to be problematic, the additional footprints would allow us to use lower-rated fuses in parallel. However, this is far from ideal, as variations in resistance between the fuses would cause uneven current distribution, making the actual tripping current unpredictable. Although assuming we test everything, I believe this is acceptable as a fallback. I also added some jumper links that could be soldered to bypass the fuses (although they will probably blow up under 30A). Other than that, I added some capacitors to smooth both input and output, and they are naturally bled by the voltage dividers on the board. I also added an indicator LED that lights up if the output voltage is around 48V.
+<br>
+<br>
+<embed src="../docs/ocboardschem.pdf" width="1600" height="900" type="application/pdf" style="max-height:100%; max-width:100%;">
+<br>
+<br>
+The PCBs are currently being ordered. Ill update this page with how testing of this board goes. Email me if you want a copy of the KiCAD Project or Gerbers.
 
   </p>
 
@@ -38,11 +54,9 @@ text of project
 
 
 
-   
+  <hr style="clear: both"> 
   <p style="text-align: center">
-  <br>
-  <br>
-  Email me: dp@dpautov.com
+  Email me if you have questions: dp@dpautov.com
   <br>
   <a href="../docs/resume.pdf" target="_blank">Get a copy of my resume</a>
   </p>  
