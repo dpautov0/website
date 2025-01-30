@@ -42,8 +42,13 @@ For testing things like the 6-step inverter & motor, we use the main battery dir
 The circuit itself isn't complicated, but dealing with 30A is tricky, requiring beefy traces for both minimizing the parasitic resistance and dissipating heat. To account for this, I designed the PCB based on a 2oz copper stack up and super thick traces via stitched traces on both sides. The screw terminals I used are rated for 180A, so no worries there either. The PCB is based around the LTC4364, which requires just a few voltage dividers to set under and over-voltage conditions, shunt resistors that drop 50mV at the desired tripping current, and some miscellaneous components to make the circuit work. For the FETs, I went with some NVBLS001N06C fets which are rated to 422A, very low Rdson of 0.9mΩ, and have great thermal characteristics. The shunt resistor is made up of 3, 5mΩ shunt resistors in parallel to achieve the odd 1.6mΩ value needed and to increase the current rating. For the backup fuses in case the LTC4364 fails, I tacked on 3 footprints for 1206 SMD fuses. Single fuses with a rating of 50A exist in this package, but I fear that the narrow footprint of a single fuse joined by solder would have quite a bit of parasitic resistance and poor ability to dissipate the heat, which could lead to troubles. If this does turn out to be problematic, the additional footprints would allow us to use lower-rated fuses in parallel. However, this is far from ideal, as variations in resistance between the fuses would cause uneven current distribution, making the actual tripping current unpredictable. Although assuming we test everything, I believe this is acceptable as a fallback. I also added some jumper links that could be soldered to bypass the fuses (although they will probably blow up under 30A). Other than that, I added some capacitors to smooth both input and output, and they are naturally bled by the voltage dividers on the board. I also added an indicator LED that lights up if the output voltage is around 48V.
 <br>
 <br>
-<embed src="../docs/ocboardschem.pdf" width="1600" height="900" type="application/pdf" style="max-height:100%; max-width:100%;">
-<br>
+</p>
+<iframe src="../docs/ocboardschem.pdf" width="100%" height="900px" style="border: none;"></iframe>
+
+<p style="text-align: center">
+    If the PDF does not load, <a href="../docs/ocboardschem.pdf" target="_blank">click here to view or download it.</a>
+</p>
+<p style="text-align: center">
 <br>
 The PCBs are currently being ordered. Ill update this page with how testing of this board goes. Email me if you want a copy of the KiCAD Project or Gerbers.
 
