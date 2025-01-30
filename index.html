@@ -13,13 +13,6 @@
             font-family: Arial, sans-serif;
         }
 
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px;
-        }
-
         .about-container {
             display: flex;
             align-items: center;
@@ -52,16 +45,40 @@
             }
         }
     </style>
+
+<style>
+
+    .top-bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        background-color: #080817; 
+        color: white;
+        display: flex;
+        align-items: center;
+        padding: 15px 25px;
+        font-family: cmu_serifroman, Arial, Helvetica, sans-serif;
+        font-size: 30px;
+        font-weight: bold;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        border-bottom: 1px solid white; 
+    }
+
+    body {
+        padding-top: 70px; 
+    }
+</style>
 </head>
 
 <body>
 
-    <div class="header">
-        <h1>Dmitriy Pautov</h1>
-        <h1><a href="./index.html">Home</a></h1>
-    </div>
+    <div class="top-bar">
+    Dmitriy Pautov
+</div>
 
-    <hr>
+    
 
     <div class="about-container">
         <img src="./docs/picofme.jpg" alt="Picture of Me">

@@ -9,18 +9,59 @@
         <link rel="icon" href="../favicon.ico" type="image/x-icon" />
         <link rel="shortcut icon" href="../favicon.ico" type="image/x-icon" />
   	<title>Dmitriy Pautov</title>
+
+<style>
+    
+
+    .top-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #080817;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 25px;
+    font-family: cmu_serifroman, Arial, Helvetica, sans-serif;
+    font-size: 30px;
+    font-weight: bold;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    border-bottom: 1px solid white;
+    box-sizing: border-box; \
+}
+
+.top-bar a {
+    color: white;
+    text-decoration: none;
+    font-size: 22px;
+    padding: 8px 15px;
+    border: 2px dashed white;
+    transition: 0.3s;
+}
+
+.top-bar a:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+html, body {
+    overflow-x: hidden;
+    margin: 0;
+    padding-top: 70px; 
+}
+</style>
   </head>
 
   <body>
-	<div style="float:left">
-        <h1>Dmitriy Pautov</h1>
-	</div>
 
-        <div style="float:right">
-        <h1><a href="../index.html">Home</a>
-        </div>
+<div class="top-bar">
+    <span>Dmitriy Pautov</span>
+    <a href="../index.html">Back to Home</a>
+</div>
+
 	
-	<hr style="clear: both">
  
   <h1 style="text-align: center">UIUC EV Concept Car: Overcurrent Protection Board</h1>
 
