@@ -1,96 +1,103 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 
-<!-- -->
-<!-- -->
-<!-- who be looking at me code -->
-<!-- -->
-<!-- -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Dmitriy Pautov</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
 
-  <head>
-  	<meta charset="UTF-8">
-  	<link rel="stylesheet" href="style.css">
-  	<meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="icon" href="favicon.ico" type="image/x-icon" />
-        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
-  	<title>Dmitriy Pautov</title>
-  </head>
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+        }
 
-  <body>
-	<div style="float:left">
+        .about-container {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 20px;
+            flex-wrap: wrap;
+        }
+
+        .about-container img {
+            width: 40%;
+            min-width: 150px;
+            max-width: 300px;
+            border-radius: 5px;
+        }
+
+        .about-text {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        @media (max-width: 768px) {
+            .about-container {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .about-container img {
+                width: 60%;
+                max-width: 250px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header">
         <h1>Dmitriy Pautov</h1>
-	</div>
+        <h1><a href="./index.html">Home</a></h1>
+    </div>
 
-        <div style="float:right">
-        <h1><a href="./index.html">Home</a>
+    <hr>
+
+    <div class="about-container">
+        <img src="./docs/picofme.jpg" alt="Picture of Me">
+        <div class="about-text">
+            <h1>About Me</h1>
+            <p>Hello, my name is Dmitriy Pautov, and this is my personal portfolio and blog. I am a student at the University of Illinois Urbana-Champaign studying physics and electrical engineering. In physics, my main interests are beyond standard model (BSM) physics and solid-state physics. In electrical engineering, I am particularly interested in RF systems and meteorology, including instrumentation, how it is built, and the standards that govern it.</p>
+            <p>
+                Personal Email: <a href="mailto:dp@dpautov.com">dp@dpautov.com</a><br>
+                Work Email: <a href="mailto:dpautov2@illinois.edu">dpautov2@illinois.edu</a><br>
+                Discord: @survest
+            </p>
+            <p>
+                <a href="./docs/resume.pdf" target="_blank">Resume</a> | 
+                <a href="https://www.linkedin.com/in/dmitriypautov/" target="_blank">LinkedIn</a>
+            </p>
         </div>
-	
-	<hr style="clear: both">
+    </div>
 
-<h3 style="text-align: center; display: flex; align-items: center; gap: 10px;">
+    <hr>
 
-  <img src="./docs/picofme.jpg" alt="Picture of Me" 
-       style="width: 20%; margin-left: 5%; float: left;">
+    <h1 style="text-align: center">Some of my work:</h1>
 
-  <span style="flex: 1;">
+    <p style="text-align: center">
+        <a href="./pages/ocboard.html">UIUC EV Concept Car: Overcurrent Protection Board</a>
+        <br><br>
+        <a href="./pages/sd6053.html">Systron Donner 6053 Frequency Counter: Repair, Teardown, & Theory</a>
+    </p>
 
-<h1>
-About Me
-</h1>
-<br>
-<br>
+    <hr>
 
-    Hello, my name is Dmitriy Pautov, and this is my personal portfolio and blog. I am a student at the University of Illinois Urbana-Champaign studying physics and electrical engineering. In physics, my main interests are beyond standard model (BSM) physics and solid-state physics. In electrical engineering, I am particularly interested in RF systems and meteorology, including instrumentation, how it is built, and the standards that govern it.
-    <br><br>
-    Personal Email: <a href="mailto:dp@dpautov.com">dp@dpautov.com</a>
-    <br>
-    Work Email: <a href="mailto:dpautov2@illinois.edu">dpautov2@illinois.edu</a>
-    <br>
-    Discord: @survest
-    <br>
-    <br>
-    
-    <a href="./docs/resume.pdf" target="_blank">Resume</a> | <a href="https://www.linkedin.com/in/dmitriypautov/" target="_blank">LinkedIn</a>
+    <p style="text-align: center">
+        Visitor Count:
+        <br>
+        <script type="text/javascript" src="https://counter.websiteout.com/js/3/0/9542/0"></script>
+    </p>
 
-
-  </span>
-
-</h3>
-
-<hr style="clear: both">
-
-
-  <h1 style="text-align: center">Some of my work:</h1>
-
-  <h3 style="text-align: center">
-  
-  <a href="./pages/ocboard.html">UIUC EV Concept Car: Overcurrent Protection Board</a>
-  <br>
-<br>
-  <a href="./pages/sd6053.html">Systron Donner 6053 Frequency Counter: Repair, Teardown, & Theory</a>
-
-<br>
-<br>
-
-
-
-  <!--     <a href="./pages/templ.html">Project Name</a>    -->
-  
-  </h3>
-
-
-  <hr style="clear: both">
-
-  <p style="text-align: center">
-Visitor Count:
-<br>
-  <script type="text/javascript" src="https://counter.websiteout.com/js/3/0/9542/0"></script>
-  </p>  
-  
-
-  </body>
-
+</body>
 
 </html>
