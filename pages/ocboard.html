@@ -93,7 +93,57 @@ The circuit itself isn't complicated, but dealing with 30A is tricky, requiring 
 <br>
 The PCBs are currently being ordered. Ill update this page with how testing of this board goes. Email me if you want a copy of the KiCAD Project or Gerbers.
 
-  </p>
+<br>
+<br>
+Update 5/1/2025:
+
+Welp, there are a few issues after putting together some boards. Look up and see if you can spot them :)
+<br>
+<img src="../docs/3boards.jpg" alt="3 Assembled OC boards" style="max-height:100%; max-width:49%;">
+
+<br>
+Welp, first of all, they do not work, only with a few botches. 
+<br>
+<br>
+Here is my test setup. I used a Power Analyzer (because I had one) to measure the series current through the OC board. I also attached an oscilloscope to measure other parameters—initially the voltage drop across the shunt, and later things like the timer capacitor. Since 30A @ 48V = 1.4kW, there was no suitable bench power supply, so I used one of our old batteries (not pictured). This battery has no BMS or safety features, and will happily dump over 1000A if you short it—strong enough to destroy its problems before it destroys itself.
+<br>
+<br>
+Because of that, I couldn’t directly short the OC board without blowing fuses or killing the power analyzer, so I had to build a load that could take the power for a few seconds. My solution was to solder together all the high-power resistors I could find in parallel. It’s really only rated for something like 400W, but it survives the 1.4kW bursts for a few seconds. Shorting the 48V gives 34A, so the total resistance is around 1.4Ω.
+<br>
+<img src="../docs/bigItest.jpg" alt="Test setup w/ Power Analyzer and scope" style="max-height:100%; max-width:49%;">
+<img src="../docs/2kwresistor.jpg" alt="Test setup w/ Power Analyzer and scope" style="max-height:100%; max-width:49%;">
+<br>
+Here are the known problems:
+<br>
+<br>
+1. Messed-Up Terminal Footprint
+Only 1 of the 16 pads was actually connected to the copper planes. That’s nowhere near enough to handle 30A, and it kept blowing up. As a temporary fix, I scratched off the solder mask on the bottom and soldered on some copper wick to act as high-current bus bars. Here's 2 images:
+<br>
+<br>
+<img src="../docs/scratch.jpg" alt="Scratched off solder mask" style="max-height:100%; max-width:49%;">
+<img src="../docs/scratchybotch.jpg" alt="Solder wick botch" style="max-height:100%; max-width:49%;">
+<br>
+<br>
+2. Big MOSFET Loops
+This isn’t a showstopper, but it’s not great either. I forgot to place vias on the actual pads of the MOSFETs, which means the current has to loop awkwardly underneath and between them. That increases inductance and makes things messy. Routing your power stage solo at 3AM is apparently not ideal. Will definitely fix this in the next revision.
+<br>
+<br>
+3. No Flyback Diodes (Oof)
+This is the worst one. During testing, I found that when connecting a ~1Ω load at 48V and drawing 34A, the board couldn’t shut off the current. The IC seemed to be doing its job—pulling the gate low, timing out properly—but the MOSFET would still die every time while trying to switch off the 34A load.
+Turns out, there’s about 10µH of stray inductance in my test wiring. In a real-world setup (e.g., with a motor), you'd see similar inductance.
+So when you try to switch 34A → 0A in ~50ns:
+dI/dt = 680e6 A/s
+V = L * dI/dt = 10e-6 * 680e6 = about 6800V
+<br>
+<br>
+These MOSFETs are rated for 60V in reverse before avalanche. So yeah, they go boom. Adding flyback diodes would’ve saved them. I’ve added a temporary botch that makes the boards usable for now.
+<br>
+<br>
+4. Timer Cap Trace Keeps Peeling Off
+This one’s on me for mistreating the board a bit, but the trace is tiny and extra sensitive. I’ll widen it and reinforce it in the next version.
+<br>
+<br>
+</p>
 
 
 
