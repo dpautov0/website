@@ -136,7 +136,7 @@ dI/dt = 680e6 A/s
 V = L * dI/dt = 10e-6 * 680e6 = about 6800V
 <br>
 <br>
-These MOSFETs are rated for 60V in reverse before avalanche. So yeah, they go boom. Adding flyback diodes would’ve saved them. I’ve added a temporary botch that makes the boards usable for now.
+These MOSFETs are rated for 60V in reverse before avalanche. So yeah, they go boom. Adding flyback diodes would’ve saved them. I’ve added a temporary botch that makes the boards usable for now. You can actually see the moment where these MOSFETS die on the scope & power analyzer graphs above. The IC tries to shut off the MOSFETs, which works for a bit as the MOSFET is driven into its linear regime, before finally failing shorted. 
 <br>
 <br>
 4. Timer Cap Trace Keeps Peeling Off
