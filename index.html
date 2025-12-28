@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dmitriy Pautov</title>
+
+<style>
+/* Import BBH Sans Bartle font */
+@font-face {
+  font-family: 'BBH Sans Bartle';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('https://cdn.jsdelivr.net/fontsource/fonts/bbh-sans-bartle@latest/latin-400-normal.woff2') format('woff2'),
+       url('https://cdn.jsdelivr.net/fontsource/fonts/bbh-sans-bartle@latest/latin-400-normal.woff') format('woff');
+}
+
+html, body {
+  margin: 0;
+  height: 100%;
+  background: #1b1d1f;
+  overflow: hidden;
+  font-family: 'BBH Sans Bartle', sans-serif;
+}
+
+canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+}
+
+header {
+  position: fixed;
+  top: 5vh;
+  left: 5vw;
+  z-index: 1;
+  color: #fff6c8;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 7vw;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+}
+
+nav {
+  margin-top: 3vh;
+  display: flex;
+  flex-direction: column;
+  gap: 2vh;
+}
+
+nav a {
+  text-decoration: none;
+  color: #fff6c8;
+  font-size: 4vw;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  transition: color 0.3s;
+}
+
+nav a:hover {
+  color: #9fa8a3;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>DMITRIY PAUTOV</h1>
+  <nav>
+    <a href="#about">About</a>
+    <a href="#portfolio">Portfolio</a>
+    <a href="#contact">Contact</a>
+  </nav>
+</header>
+
+<canvas id="c"></canvas>
+
+<script>
+const c = document.getElementById("c");
+const ctx = c.getContext("2d");
+
+let W, H, R;
+let amps = [];
+
+function resize(){
+  W = innerWidth;
+  H = innerHeight;
+  c.width = W;
+  c.height = H;
+
+  R = Math.min(W, H) * 0.035;
+
+  // spacing based on opamp size
+  const spacing = R * 2;
+
+  const cols = Math.floor(W / spacing);
+  const rows = Math.floor(H / spacing);
+
+  const cellW = W / cols;
+  const cellH = H / rows;
+
+  amps = [];
+
+  for (let y = 0; y < rows; y++) {
+    for (let x = 0; x < cols; x++) {
+
+      const jitterX = (Math.random() - 0.5) * cellW * 0.25;
+      const jitterY = (Math.random() - 0.5) * cellH * 0.25;
+
+      amps.push({
+        x: (x + 0.5) * cellW + jitterX,
+        y: (y + 0.5) * cellH + jitterY,
+        vx: 0,
+        vy: 0,
+        a: Math.random() * Math.PI * 2,
+        av: (Math.random() - 0.5) * 0.0005
+      });
+    }
+  }
+}
+
+
+addEventListener("resize", resize);
+resize();
+
+const LIN_DAMP = 0.99;
+const ANG_DAMP = 0.995;
+const MAX_SPEED = 2;
+
+let mouse = null;
+
+addEventListener("mousemove", e => {
+  mouse = { x: e.clientX, y: e.clientY };
+});
+
+const COLORS = { body:"#3b4147", pins:"#9fa8a3" };
+
+function drawOpAmp(o){
+  ctx.save();
+  ctx.translate(o.x,o.y);
+  ctx.rotate(o.a);
+
+  ctx.fillStyle = COLORS.body;
+  ctx.beginPath();
+  ctx.moveTo(-R,-R);
+  ctx.lineTo(R,0);
+  ctx.lineTo(-R,R);
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.strokeStyle = COLORS.pins;
+  ctx.lineWidth = Math.max(1, R*0.05);
+
+  const pSize = R*0.1;
+  const pinOffset = R*0.35;
+  const pinLength = R*0.3;
+
+  ctx.beginPath();
+  ctx.moveTo(-R-pinLength, -pinOffset);
+  ctx.lineTo(-R, -pinOffset);
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.moveTo(-R*0.7-pSize, -pinOffset);
+  ctx.lineTo(-R*0.7+pSize, -pinOffset);
+  ctx.moveTo(-R*0.7, -pinOffset-pSize);
+  ctx.lineTo(-R*0.7, -pinOffset+pSize);
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.moveTo(-R-pinLength, pinOffset);
+  ctx.lineTo(-R, pinOffset);
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.moveTo(-R*0.7-pSize, pinOffset);
+  ctx.lineTo(-R*0.7+pSize, pinOffset);
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.moveTo(R*0.9, 0);
+  ctx.lineTo(R*1.3, 0);
+  ctx.stroke();
+
+  ctx.restore();
+}
+
+function step(){
+  ctx.clearRect(0,0,W,H);
+
+  const REP_RADIUS = Math.min(W, H) * 0.18;
+  const REP_FORCE = 0.08;
+
+  for(let i=0;i<amps.length;i++){
+    const a = amps[i];
+
+    if(mouse){
+      const dx = a.x - mouse.x;
+      const dy = a.y - mouse.y;
+      const dist = Math.hypot(dx,dy);
+
+      if(dist < REP_RADIUS){
+        const force = (1 - dist/REP_RADIUS) * 0.25;
+        a.vx += (dx/dist) * force;
+        a.vy += (dy/dist) * force;
+      }
+    }
+
+    for(let j=0;j<amps.length;j++){
+      if(i===j) continue;
+      const b = amps[j];
+      const dx2 = a.x - b.x;
+      const dy2 = a.y - b.y;
+      const d2 = dx2*dx2 + dy2*dy2;
+      if(d2 < R*R*4){
+        const d = Math.sqrt(d2) || 0.01;
+        const f = (1 - d/(R*2)) * 0.08;
+        a.vx += (dx2/d) * f;
+        a.vy += (dy2/d) * f;
+      }
+    }
+
+    a.x += a.vx;
+    a.y += a.vy;
+    a.a += a.av;
+
+    a.vx *= LIN_DAMP;
+    a.vy *= LIN_DAMP;
+    a.av *= ANG_DAMP;
+
+    if(a.x < R){ a.x = R; a.vx*=-0.3; }
+    if(a.x > W-R){ a.x = W-R; a.vx*=-0.3; }
+    if(a.y < R){ a.y = R; a.vy*=-0.3; }
+    if(a.y > H-R){ a.y = H-R; a.vy*=-0.3; }
+  }
+
+  for(const a of amps) drawOpAmp(a);
+  requestAnimationFrame(step);
+}
+
+step();
+</script>
+
+</body>
+</html>
