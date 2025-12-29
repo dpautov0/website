@@ -19,24 +19,10 @@ body {
   padding: 5vh 1rem;
 }
 .container {max-width: 720px; width: 100%;}
-.name {
-  font-size: clamp(2rem, 8vw, 4rem);
-  font-weight: 900;
-  letter-spacing: 0.15em;
-  margin-bottom: 0;
-  text-transform: uppercase;
-  color: #f3eed6;
-  white-space: nowrap;
-}
+.name {font-size: clamp(2rem, 8vw, 4rem); font-weight: 900; letter-spacing: 0.15em; margin-bottom: 0; text-transform: uppercase; color: #f3eed6; white-space: nowrap;}
 .hero {font-size: 1.1rem; font-weight: 500; margin-bottom: 3rem; color: #f3eed6; line-height: 1.4;}
 .section {margin-bottom: 3rem;}
-.section-header {
-  font-size: 1.4rem;
-  font-weight: 700;
-  margin-bottom: 0.8rem;
-  color: #f3eed6;
-  text-transform: uppercase;
-}
+.section-header {font-size: 1.4rem; font-weight: 700; margin-bottom: 0.8rem; color: #f3eed6; text-transform: uppercase;}
 .section p,.section a,.section li {font-size: 0.95rem; line-height: 1.5; color: #f3eed6; text-decoration: none; font-weight: 400;}
 .section a {transition: color 0.2s, text-shadow 0.2s;}
 .section a:hover {color: #fff; text-shadow: 0 0 6px #f3eed6;}
@@ -47,26 +33,10 @@ body {
 .dropdown-text {display: inline-block; transition: color 0.2s, text-shadow 0.2s;}
 .dropdown-text:hover {color: #fff; text-shadow: 0 0 6px #f3eed6;}
 .dropdown-content {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.3s ease;
-  padding-left: 1.5rem;
-  margin-top: 0.3rem;
-  background-color: transparent;
-  border-radius: 4px;
-  padding: 0;
+  max-height: 0; overflow: hidden; transition: max-height 0.3s ease; padding-left: 1.5rem; margin-top: 0.3rem; background-color: transparent; border-radius: 4px; padding: 0;
 }
-.dropdown-content.expanded {
-  background-color: rgba(255, 255, 255, 0.03);
-  padding: 0.3rem 0.5rem;
-}
-.dropdown-content li {
-  font-weight: 400;
-  text-shadow: none;
-  font-size: 0.9rem;
-  line-height: 1.7;
-  margin-bottom: 0.8rem;
-}
+.dropdown-content.expanded {background-color: rgba(255, 255, 255, 0.03); padding: 0.3rem 0.5rem;}
+.dropdown-content li {font-weight: 400; text-shadow: none; font-size: 0.9rem; line-height: 1.7; margin-bottom: 0.8rem;}
 .dropdown-content li::before {content: "▹"; color: #dcd7b6; left: -1.2rem;}
 </style>
 </head>
@@ -100,16 +70,15 @@ body {
           <li>Experimental BSM Physics, Gabrielse Group @ Northwestern</li>
         </ul>
       </li>
-<li class="dropdown">
-  <span class="dropdown-text">Resume</span>
-  <ul class="dropdown-content">
-    <li><a href="resume.pdf" target="_blank">Open Resume PDF</a></li>
-    <li>
-      <iframe src="resume.pdf#toolbar=0" width="100%" height="500px" style="border:none;"></iframe>
-    </li>
-  </ul>
-</li>
-
+      <li class="dropdown">
+        <span class="dropdown-text">Resume</span>
+        <ul class="dropdown-content">
+          <li><a href="resume.pdf" target="_blank">Open Resume PDF</a></li>
+          <li><iframe src="resume.pdf#toolbar=0" width="100%" height="500px" style="border:none;"></iframe></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
 
   <div class="section">
     <div class="section-header">Work</div>
@@ -150,4 +119,3 @@ document.querySelectorAll('.dropdown').forEach(item=>{
 
 </body>
 </html>
-
