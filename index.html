@@ -35,13 +35,15 @@ body {
 
 /* Name header */
 .name {
-  font-size: 3.5rem;
+  font-size: clamp(2rem, 8vw, 4rem); /* min 2rem, scales with viewport, max 4rem */
   font-weight: 900;
   letter-spacing: 0.15em;
   margin-bottom: 0rem;
   text-transform: uppercase;
   color: #f3eed6;
+  white-space: nowrap; /* prevents wrapping */
 }
+
 
 /* Section headers */
 .section-header {
@@ -110,7 +112,7 @@ body {
   <div class="section">
     <div class="section-header">About</div>
     <ul>
-      <li>Studying Physics and Electrical Engineering at UIUC</li>
+      <li>Studying Physics + EE @ UIUC</li>
       <li>Formerly at SpaceX and Shield AI</li>
       <li>Former Research at Northwestern</li>
     </ul>
