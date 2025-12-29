@@ -5,21 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Dmitriy Pautov</title>
 <link rel="icon" href="favicon.ico">
-
 <style>
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;700;900&display=swap');
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-html {
-  scroll-behavior: smooth;
-  overflow-y: scroll; /* always show scrollbar */
-}
-
+* {box-sizing: border-box; margin: 0; padding: 0;}
+html {scroll-behavior: smooth; overflow-y: scroll;}
 body {
   font-family: 'IBM Plex Mono', monospace;
   background-color: #1b1d1f;
@@ -28,34 +18,18 @@ body {
   justify-content: center;
   padding: 5vh 1rem;
 }
-
-.container {
-  max-width: 720px;
-  width: 100%;
-}
-
+.container {max-width: 720px; width: 100%;}
 .name {
   font-size: clamp(2rem, 8vw, 4rem);
   font-weight: 900;
   letter-spacing: 0.15em;
-  margin-bottom: 0rem;
+  margin-bottom: 0;
   text-transform: uppercase;
   color: #f3eed6;
   white-space: nowrap;
 }
-
-.hero {
-  font-size: 1.1rem;
-  font-weight: 500;
-  margin-bottom: 3rem;
-  color: #f3eed6;
-  line-height: 1.4;
-}
-
-.section {
-  margin-bottom: 3rem; /* consistent spacing between sections */
-}
-
+.hero {font-size: 1.1rem; font-weight: 500; margin-bottom: 3rem; color: #f3eed6; line-height: 1.4;}
+.section {margin-bottom: 3rem;}
 .section-header {
   font-size: 1.4rem;
   font-weight: 700;
@@ -63,101 +37,45 @@ body {
   color: #f3eed6;
   text-transform: uppercase;
 }
-
-.section p,
-.section a,
-.section li {
-  font-size: 0.95rem;
-  line-height: 1.5;
-  color: #f3eed6;
-  text-decoration: none;
-  font-weight: 400; /* normal weight for all text now */
-}
-
-.section a {
-  transition: color 0.2s, text-shadow 0.2s;
-}
-
-.section a:hover {
-  color: #fff;
-  text-shadow: 0 0 6px #f3eed6; /* glow for links */
-}
-
-.section ul {
-  list-style: none;
-  padding-left: 1.2rem;
-  margin-bottom: 0.5rem;
-}
-
-.section li {
-  position: relative;
-  margin-bottom: 0.6rem; /* consistent spacing between main bullets */
-}
-
-.section li::before {
-  content: "▹";
-  position: absolute;
-  left: -1.2rem;
-  color: #f3eed6;
-}
-
-/* Dropdown main items (clickable bullets) */
-.dropdown {
-  cursor: pointer;
-}
-
-/* Hover glow on main bullet text */
-.dropdown-text {
-  display: inline-block;
-  transition: color 0.2s, text-shadow 0.2s;
-}
-
-.dropdown-text:hover {
-  color: #fff;
-  text-shadow: 0 0 6px #f3eed6;
-}
-
-/* Default: no background */
+.section p,.section a,.section li {font-size: 0.95rem; line-height: 1.5; color: #f3eed6; text-decoration: none; font-weight: 400;}
+.section a {transition: color 0.2s, text-shadow 0.2s;}
+.section a:hover {color: #fff; text-shadow: 0 0 6px #f3eed6;}
+.section ul {list-style: none; padding-left: 1.2rem; margin-bottom: 0.5rem;}
+.section li {position: relative; margin-bottom: 0.6rem;}
+.section li::before {content: "▹"; position: absolute; left: -1.2rem; color: #f3eed6;}
+.dropdown {cursor: pointer;}
+.dropdown-text {display: inline-block; transition: color 0.2s, text-shadow 0.2s;}
+.dropdown-text:hover {color: #fff; text-shadow: 0 0 6px #f3eed6;}
 .dropdown-content {
   max-height: 0;
   overflow: hidden;
   transition: max-height 0.3s ease;
   padding-left: 1.5rem;
   margin-top: 0.3rem;
-  background-color: transparent; /* default transparent */
+  background-color: transparent;
   border-radius: 4px;
-  padding: 0; /* remove padding when collapsed */
+  padding: 0;
 }
-
-/* When expanded */
 .dropdown-content.expanded {
-  background-color: rgba(255, 255, 255, 0.07);
+  background-color: rgba(255, 255, 255, 0.03);
   padding: 0.3rem 0.5rem;
 }
-
-
 .dropdown-content li {
-  font-weight: 400; /* sub-items normal weight */
+  font-weight: 400;
   text-shadow: none;
   font-size: 0.9rem;
-  margin-bottom: 0.8rem; /* extra spacing when expanded */
+  line-height: 1.7;
+  margin-bottom: 0.8rem;
 }
-
-.dropdown-content li::before {
-  content: "▹";
-  color: #dcd7b6; /* lighter bullets for sub-items */
-  left: -1.2rem;
-}
+.dropdown-content li::before {content: "▹"; color: #dcd7b6; left: -1.2rem;}
 </style>
 </head>
 <body>
 
 <div class="container">
-
   <div class="name">DMITRIY PAUTOV</div>
   <div class="hero">Exploring physics beyond the known + Designing advanced hardware</div>
 
-  <!-- About Section -->
   <div class="section">
     <div class="section-header">About</div>
     <ul>
@@ -169,7 +87,6 @@ body {
           <li>Electrical Lead at EV Concept</li>
         </ul>
       </li>
-
       <li class="dropdown">
         <span class="dropdown-text">Worked at SpaceX & Shield AI</span>
         <ul class="dropdown-content">
@@ -177,20 +94,25 @@ body {
           <li>Shield AI: VBAT Hardware Design</li>
         </ul>
       </li>
-
       <li class="dropdown">
-        <span class="dropdown-text">Research at Northwestern</span>
+        <span class="dropdown-text">Former Research at Northwestern</span>
         <ul class="dropdown-content">
-          <li>Northwestern: Experimental BSM Physics, Gabrielse Group @ Northwestern</li>
+          <li>Experimental BSM Physics, Gabrielse Group @ Northwestern</li>
+        </ul>
+      </li>
+      <li class="dropdown">
+        <span class="dropdown-text">Resume</span>
+        <ul class="dropdown-content">
+          <li><a href="resume.pdf" target="_blank">Open Resume PDF</a></li>
+          <li><iframe src="resume.pdf" width="100%" height="500px" style="border:none;"></iframe></li>
         </ul>
       </li>
     </ul>
-    <a href="resume.pdf" target="_blank">Resume (PDF)</a>
   </div>
 
-  <!-- Work Section -->
   <div class="section">
     <div class="section-header">Work</div>
+    <p>blasblas</p>
     <ul>
       <li>Ha</li>
       <li>Masdfsdfcs</li>
@@ -199,7 +121,6 @@ body {
     </ul>
   </div>
 
-  <!-- Contact Section -->
   <div class="section">
     <div class="section-header">Contact</div>
     <p>
@@ -208,24 +129,22 @@ body {
       <a href="https://github.com/dpautov0" target="_blank">GitHub</a>
     </p>
   </div>
-
 </div>
 
 <script>
-document.querySelectorAll('.dropdown').forEach(item => {
-  const text = item.querySelector('.dropdown-text');
-  const content = item.querySelector('.dropdown-content');
-  text.addEventListener('click', () => {
-    if(content.style.maxHeight && content.style.maxHeight !== "0px") {
-      content.style.maxHeight = 0;
-      content.classList.remove('expanded'); // remove background when collapsed
-    } else {
-      content.style.maxHeight = content.scrollHeight + "px";
-      content.classList.add('expanded'); // add background when expanded
+document.querySelectorAll('.dropdown').forEach(item=>{
+  const text=item.querySelector('.dropdown-text');
+  const content=item.querySelector('.dropdown-content');
+  text.addEventListener('click',()=>{
+    if(content.style.maxHeight && content.style.maxHeight!=="0px"){
+      content.style.maxHeight=0;
+      content.classList.remove('expanded');
+    }else{
+      content.style.maxHeight=content.scrollHeight+"px";
+      content.classList.add('expanded');
     }
   });
 });
-
 </script>
 
 </body>
