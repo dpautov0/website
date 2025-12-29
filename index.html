@@ -23,21 +23,26 @@ body {
 .hero {font-size: 1.1rem; font-weight: 500; margin-bottom: 3rem; color: #f3eed6; line-height: 1.4;}
 .section {margin-bottom: 3rem;}
 .section-header {font-size: 1.4rem; font-weight: 700; margin-bottom: 0.8rem; color: #f3eed6; text-transform: uppercase;}
-.section p,.section a,.section li {font-size: 0.95rem; line-height: 1.5; color: #f3eed6; text-decoration: none; font-weight: 400;}
+.section p,.section a {font-size: 0.95rem; line-height: 1.5; color: #f3eed6; text-decoration: none; font-weight: 400;}
 .section a {transition: color 0.2s, text-shadow 0.2s;}
 .section a:hover {color: #fff; text-shadow: 0 0 6px #f3eed6;}
 .section ul {list-style: none; padding-left: 1.2rem; margin-bottom: 0.5rem;}
 .section li {position: relative; margin-bottom: 0.6rem;}
 .section li::before {content: "▹"; position: absolute; left: -1.2rem; color: #f3eed6;}
-.dropdown {cursor: pointer;}
+.dropdown {cursor: pointer; margin-bottom: 0.3rem; position: relative; display: block;}
 .dropdown-text {display: inline-block; transition: color 0.2s, text-shadow 0.2s;}
 .dropdown-text:hover {color: #fff; text-shadow: 0 0 6px #f3eed6;}
 .dropdown-content {
-  max-height: 0; overflow: hidden; transition: max-height 0.3s ease; padding-left: 1.5rem; margin-top: 0.3rem; background-color: transparent; border-radius: 4px; padding: 0;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease, padding 0.3s ease;
+  background-color: rgba(255, 255, 255, 0.03);
+  border-radius: 4px;
+  padding: 0 0.5rem;
+  margin: 0.3rem 0 0.6rem 0;
 }
-.dropdown-content.expanded {background-color: rgba(255, 255, 255, 0.03); padding: 0.3rem 0.5rem;}
-.dropdown-content li {font-weight: 400; text-shadow: none; font-size: 0.9rem; line-height: 1.7; margin-bottom: 0.8rem;}
-.dropdown-content li::before {content: "▹"; color: #dcd7b6; left: -1.2rem;}
+.dropdown-content div {margin-bottom: 0.5rem;}
+.dropdown-content iframe {width: 100%; height: 600px; border: none; display: block; margin-top: 0.3rem;}
 </style>
 </head>
 <body>
@@ -51,38 +56,40 @@ body {
     <ul>
       <li class="dropdown">
         <span class="dropdown-text">Studying Physics + EE at UIUC</span>
-        <ul class="dropdown-content">
-          <li>GPA: 4.0/4.0</li>
-          <li>Graduating May 2027</li>
-          <li>Electrical Lead at EV Concept</li>
-        </ul>
       </li>
+      <div class="dropdown-content">
+        <div>GPA: 4.0/4.0</div>
+        <div>Graduating May 2027</div>
+        <div>Electrical Lead at EV Concept</div>
+      </div>
+
       <li class="dropdown">
         <span class="dropdown-text">Worked at SpaceX & Shield AI</span>
-        <ul class="dropdown-content">
-          <li>SpaceX: Starlink Gateway Hardware Design</li>
-          <li>Shield AI: VBAT Hardware Design</li>
-        </ul>
       </li>
+      <div class="dropdown-content">
+        <div>SpaceX: Starlink Gateway Hardware Design</div>
+        <div>Shield AI: VBAT Hardware Design</div>
+      </div>
+
       <li class="dropdown">
         <span class="dropdown-text">Former Research at Northwestern</span>
-        <ul class="dropdown-content">
-          <li>Experimental BSM Physics, Gabrielse Group @ Northwestern</li>
-        </ul>
       </li>
+      <div class="dropdown-content">
+        <div>Experimental BSM Physics, Gabrielse Group @ Northwestern</div>
+      </div>
+
       <li class="dropdown">
         <span class="dropdown-text">Resume</span>
-        <ul class="dropdown-content">
-          <a href="resume.pdf" target="_blank">Open Resume PDF</a><br>
-          <iframe src="resume.pdf#toolbar=0" width="100%" height="500px" style="border:none;"></iframe>
-        </ul>
       </li>
+      <div class="dropdown-content">
+        <div><a href="resume.pdf" target="_blank">Open Resume PDF</a></div>
+        <iframe src="resume.pdf#toolbar=0"></iframe>
+      </div>
     </ul>
   </div>
 
   <div class="section">
     <div class="section-header">Work</div>
-    <p>blasblas</p>
     <ul>
       <li>Ha</li>
       <li>Masdfsdfcs</li>
@@ -102,16 +109,17 @@ body {
 </div>
 
 <script>
-document.querySelectorAll('.dropdown').forEach(item=>{
-  const text=item.querySelector('.dropdown-text');
-  const content=item.querySelector('.dropdown-content');
-  text.addEventListener('click',()=>{
-    if(content.style.maxHeight && content.style.maxHeight!=="0px"){
-      content.style.maxHeight=0;
-      content.classList.remove('expanded');
-    }else{
-      content.style.maxHeight=content.scrollHeight+"px";
-      content.classList.add('expanded');
+document.querySelectorAll('.dropdown').forEach(drop => {
+  const content = drop.nextElementSibling;
+  drop.addEventListener('click', () => {
+    if (content.style.maxHeight && content.style.maxHeight !== "0px") {
+      // Collapse smoothly
+      content.style.maxHeight = content.scrollHeight + "px"; // set explicit first to trigger transition
+      requestAnimationFrame(() => {
+        content.style.maxHeight = "0px";
+      });
+    } else {
+      content.style.maxHeight = content.scrollHeight + "px";
     }
   });
 });
@@ -119,5 +127,3 @@ document.querySelectorAll('.dropdown').forEach(item=>{
 
 </body>
 </html>
-
-
