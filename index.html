@@ -17,6 +17,7 @@
 
 html {
   scroll-behavior: smooth;
+  overflow-y: scroll; /* always show scrollbar */
 }
 
 body {
@@ -34,57 +35,13 @@ body {
 }
 
 .name {
-  font-size: clamp(2rem, 8vw, 4rem); 
+  font-size: clamp(2rem, 8vw, 4rem);
   font-weight: 900;
   letter-spacing: 0.15em;
   margin-bottom: 0rem;
   text-transform: uppercase;
   color: #f3eed6;
-  white-space: nowrap; 
-}
-
-.section-header {
-  font-size: 1.4rem;
-  font-weight: 700;
-  margin-bottom: 0.5rem;
-  color: #f3eed6;
-  text-transform: uppercase;
-}
-
-.section {
-  margin-bottom: 2rem; 
-}
-
-.section p,
-.section a,
-.section li {
-  font-size: 0.95rem;
-  line-height: 1.5;
-  color: #f3eed6;
-  text-decoration: none;
-}
-
-.section a:hover {
-  text-decoration: underline;
-  color: #fffbf0;
-}
-
-.section ul {
-  list-style: none;
-  padding-left: 1.2rem;
-  margin-bottom: 0.5rem;
-}
-
-.section li {
-  position: relative;
-  margin-bottom: 0.4rem;
-}
-
-.section li::before {
-  content: "▹";
-  position: absolute;
-  left: -1.2rem;
-  color: #f3eed6;
+  white-space: nowrap;
 }
 
 .hero {
@@ -95,6 +52,102 @@ body {
   line-height: 1.4;
 }
 
+.section {
+  margin-bottom: 3rem; /* consistent spacing between sections */
+}
+
+.section-header {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-bottom: 0.8rem;
+  color: #f3eed6;
+  text-transform: uppercase;
+}
+
+.section p,
+.section a,
+.section li {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: #f3eed6;
+  text-decoration: none;
+  font-weight: 400; /* normal weight for all text now */
+}
+
+.section a {
+  transition: color 0.2s, text-shadow 0.2s;
+}
+
+.section a:hover {
+  color: #fff;
+  text-shadow: 0 0 6px #f3eed6; /* glow for links */
+}
+
+.section ul {
+  list-style: none;
+  padding-left: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.section li {
+  position: relative;
+  margin-bottom: 0.6rem; /* consistent spacing between main bullets */
+}
+
+.section li::before {
+  content: "▹";
+  position: absolute;
+  left: -1.2rem;
+  color: #f3eed6;
+}
+
+/* Dropdown main items (clickable bullets) */
+.dropdown {
+  cursor: pointer;
+}
+
+/* Hover glow on main bullet text */
+.dropdown-text {
+  display: inline-block;
+  transition: color 0.2s, text-shadow 0.2s;
+}
+
+.dropdown-text:hover {
+  color: #fff;
+  text-shadow: 0 0 6px #f3eed6;
+}
+
+/* Default: no background */
+.dropdown-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+  padding-left: 1.5rem;
+  margin-top: 0.3rem;
+  background-color: transparent; /* default transparent */
+  border-radius: 4px;
+  padding: 0; /* remove padding when collapsed */
+}
+
+/* When expanded */
+.dropdown-content.expanded {
+  background-color: rgba(255, 255, 255, 0.07);
+  padding: 0.3rem 0.5rem;
+}
+
+
+.dropdown-content li {
+  font-weight: 400; /* sub-items normal weight */
+  text-shadow: none;
+  font-size: 0.9rem;
+  margin-bottom: 0.8rem; /* extra spacing when expanded */
+}
+
+.dropdown-content li::before {
+  content: "▹";
+  color: #dcd7b6; /* lighter bullets for sub-items */
+  left: -1.2rem;
+}
 </style>
 </head>
 <body>
@@ -104,20 +157,40 @@ body {
   <div class="name">DMITRIY PAUTOV</div>
   <div class="hero">Exploring physics beyond the known + Designing advanced hardware</div>
 
-
+  <!-- About Section -->
   <div class="section">
     <div class="section-header">About</div>
     <ul>
-      <li>Studying Physics + EE at UIUC</li>
-      <li>Worked at SpaceX & Shield AI</li>
-      <li>Former Research at Northwestern</li>
+      <li class="dropdown">
+        <span class="dropdown-text">Studying Physics + EE at UIUC</span>
+        <ul class="dropdown-content">
+          <li>GPA: 4.0/4.0</li>
+          <li>Graduating May 2027</li>
+          <li>Electrical Lead at EV Concept</li>
+        </ul>
+      </li>
+
+      <li class="dropdown">
+        <span class="dropdown-text">Worked at SpaceX & Shield AI</span>
+        <ul class="dropdown-content">
+          <li>SpaceX: Starlink Gateway Hardware Design</li>
+          <li>Shield AI: VBAT Hardware Design</li>
+        </ul>
+      </li>
+
+      <li class="dropdown">
+        <span class="dropdown-text">Research at Northwestern</span>
+        <ul class="dropdown-content">
+          <li>Northwestern: Experimental BSM Physics, Gabrielse Group @ Northwestern</li>
+        </ul>
+      </li>
     </ul>
     <a href="resume.pdf" target="_blank">Resume (PDF)</a>
   </div>
 
+  <!-- Work Section -->
   <div class="section">
     <div class="section-header">Work</div>
-    <p>blasblas</p>
     <ul>
       <li>Ha</li>
       <li>Masdfsdfcs</li>
@@ -126,6 +199,7 @@ body {
     </ul>
   </div>
 
+  <!-- Contact Section -->
   <div class="section">
     <div class="section-header">Contact</div>
     <p>
@@ -137,10 +211,22 @@ body {
 
 </div>
 
+<script>
+document.querySelectorAll('.dropdown').forEach(item => {
+  const text = item.querySelector('.dropdown-text');
+  const content = item.querySelector('.dropdown-content');
+  text.addEventListener('click', () => {
+    if(content.style.maxHeight && content.style.maxHeight !== "0px") {
+      content.style.maxHeight = 0;
+      content.classList.remove('expanded'); // remove background when collapsed
+    } else {
+      content.style.maxHeight = content.scrollHeight + "px";
+      content.classList.add('expanded'); // add background when expanded
+    }
+  });
+});
+
+</script>
+
 </body>
 </html>
-
-
-
-
-
