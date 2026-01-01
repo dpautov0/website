@@ -10,6 +10,7 @@
 
 * {box-sizing: border-box; margin: 0; padding: 0;}
 html {scroll-behavior: smooth; overflow-y: scroll;}
+
 body {
   font-family: 'IBM Plex Mono', monospace;
   background-color: #1b1d1f;
@@ -17,7 +18,9 @@ body {
   display: flex;
   justify-content: center;
   padding: 5vh 1rem;
+  user-select: none;
 }
+
 .container {max-width: 720px; width: 100%;}
 .name {font-size: clamp(2rem, 8vw, 4rem); font-weight: 900; letter-spacing: 0.15em; margin-bottom: 0; text-transform: uppercase; color: #f3eed6; white-space: nowrap;}
 .hero {font-size: 1.1rem; font-weight: 500; margin-bottom: 3rem; color: #f3eed6; line-height: 1.4;}
@@ -26,12 +29,26 @@ body {
 .section p,.section a {font-size: 0.95rem; line-height: 1.5; color: #f3eed6; text-decoration: none; font-weight: 400;}
 .section a {transition: color 0.2s, text-shadow 0.2s;}
 .section a:hover {color: #fff; text-shadow: 0 0 6px #f3eed6;}
+
 .section ul {list-style: none; padding-left: 1.2rem; margin-bottom: 0.5rem;}
 .section li {position: relative; margin-bottom: 0.6rem;}
-.section li::before {content: "▹"; position: absolute; left: -1.2rem; color: #f3eed6;}
+
+.section li::before {
+  content: "▸";
+  position: absolute;
+  left: -1.2rem;
+  color: #f3eed6;
+  transition: transform 0.25s ease;
+}
+
+.section li.open::before {
+  transform: rotate(90deg);
+}
+
 .dropdown {cursor: pointer; margin-bottom: 0.3rem; position: relative; display: block;}
 .dropdown-text {display: inline-block; transition: color 0.2s, text-shadow 0.2s;}
 .dropdown-text:hover {color: #fff; text-shadow: 0 0 6px #f3eed6;}
+
 .dropdown-content {
   max-height: 0;
   overflow: hidden;
@@ -41,38 +58,56 @@ body {
   padding: 0 0.5rem;
   margin: 0.3rem 0 0.6rem 0;
 }
+
 .dropdown-content div {margin-bottom: 0.5rem;}
 .dropdown-content iframe {width: 100%; height: 600px; border: none; display: block; margin-top: 0.3rem;}
+
+.selectable { user-select: text; }
 </style>
 </head>
+
 <body>
 
 <div class="container">
   <div class="name">DMITRIY PAUTOV</div>
-  <div class="hero">Exploring physics beyond the known + Designing advanced hardware</div>
+  <div class="hero">Physicist + Electrical Engineer</div>
 
+  <!-- WORK -->
+  <div class="section">
+    <div class="section-header">Work</div>
+    <ul>
+      <li>Ha</li>
+      <li>Masdfsdfcs</li>
+      <li>Expdfffics tests</li>
+      <li>Sosdfsdfs</li>
+    </ul>
+  </div>
+
+  <!-- ABOUT -->
   <div class="section">
     <div class="section-header">About</div>
     <ul>
+
       <li class="dropdown">
-        <span class="dropdown-text">Studying Physics + EE at UIUC</span>
+        <span class="dropdown-text">Education</span>
       </li>
       <div class="dropdown-content">
+        <div>Studying Physics + EE at UIUC</div>
         <div>GPA: 4.0/4.0</div>
         <div>Graduating May 2027</div>
-        <div>Electrical Lead at EV Concept</div>
+	<div>Electrical Lead at EV Concept</div>
       </div>
 
       <li class="dropdown">
-        <span class="dropdown-text">Worked at SpaceX & Shield AI</span>
+        <span class="dropdown-text">Experience</span>
       </li>
       <div class="dropdown-content">
-        <div>SpaceX: Starlink Gateway Hardware Design</div>
         <div>Shield AI: VBAT Hardware Design</div>
+        <div>SpaceX: Starlink Gateway Hardware Design</div>
       </div>
 
       <li class="dropdown">
-        <span class="dropdown-text">Former Research at Northwestern</span>
+        <span class="dropdown-text">Research</span>
       </li>
       <div class="dropdown-content">
         <div>Experimental BSM Physics, Gabrielse Group @ Northwestern</div>
@@ -85,41 +120,34 @@ body {
         <div><a href="resume.pdf" target="_blank">Open Resume PDF</a></div>
         <iframe src="resume.pdf#toolbar=0"></iframe>
       </div>
-    </ul>
-  </div>
 
-  <div class="section">
-    <div class="section-header">Work</div>
-    <ul>
-      <li>Ha</li>
-      <li>Masdfsdfcs</li>
-      <li>Expdfffics tests</li>
-      <li>Sosdfsdfs</li>
     </ul>
   </div>
 
   <div class="section">
     <div class="section-header">Contact</div>
-    <p>
-      <p>dpautov2@illinois.edu</p>
-      <a href="https://www.linkedin.com/in/dmitriypautov/" target="_blank">LinkedIn</a><br>
-      <a href="https://github.com/dpautov0" target="_blank">GitHub</a>
-    </p>
+    <p class="selectable">dpautov2@illinois.edu</p>
+    <a href="https://github.com/dpautov0" target="_blank">github.com/dpautov0</a><br>
+    <a href="https://www.linkedin.com/in/dmitriypautov/" target="_blank">linkedin.com/in/dmitriypautov</a>
   </div>
 </div>
 
 <script>
 document.querySelectorAll('.dropdown').forEach(drop => {
   const content = drop.nextElementSibling;
+
   drop.addEventListener('click', () => {
-    if (content.style.maxHeight && content.style.maxHeight !== "0px") {
-      // Collapse smoothly
-      content.style.maxHeight = content.scrollHeight + "px"; // set explicit first to trigger transition
+    const isOpen = drop.classList.contains('open');
+
+    if (isOpen) {
+      content.style.maxHeight = content.scrollHeight + "px";
       requestAnimationFrame(() => {
         content.style.maxHeight = "0px";
       });
+      drop.classList.remove('open');
     } else {
       content.style.maxHeight = content.scrollHeight + "px";
+      drop.classList.add('open');
     }
   });
 });
@@ -127,4 +155,3 @@ document.querySelectorAll('.dropdown').forEach(drop => {
 
 </body>
 </html>
-
