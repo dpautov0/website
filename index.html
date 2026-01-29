@@ -7,42 +7,110 @@
 	<link rel="icon" href="favicon.ico" />
 	<style>
 		@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;700;900&display=swap');
-		*{margin:0;padding:0;box-sizing:border-box}
-		section{margin-bottom:3rem}
-		body{
-			font-family:'IBM Plex Mono',monospace;
-			background:#1b1d1f;
-			color:#f3eed6;
-			display:flex;
-			justify-content:center;
-			padding:6vh 1rem
-		}
-		main{max-width:720px;width:100%}
 
-		h1{
-			font-size:2.5rem;
-			font-weight:900;
-			letter-spacing:.18em;
-			text-transform:uppercase;
-			margin-bottom:2rem
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
 		}
 
-		section{margin-bottom:1.6rem}
-
-		h2{
-			font-size:.85rem;
-			font-weight:700;
-			letter-spacing:.12em;
-			text-transform:uppercase;
-			margin:0 0 .5rem
+		body {
+			font-family: 'IBM Plex Mono', monospace;
+			background: #1b1d1f;
+			color: #f3eed6;
+			display: flex;
+			justify-content: center;
+			padding: 6vh 1rem;
 		}
 
-		p,li,a{font-size:1rem;line-height:1.7}
-		ul{list-style:none}
-		li{margin:.2rem 0}
-		a,a:visited{color:#f3eed6;text-decoration:none}
-		a:hover{color:#fff}
-		.selectable{user-select:text}
+		main {
+			max-width: 720px;
+			width: 100%;
+		}
+
+		h1 {
+			font-size: 2.5rem;
+			font-weight: 900;
+			letter-spacing: .18em;
+			text-transform: uppercase;
+			margin-bottom: 2rem;
+		}
+
+		section {
+			margin-bottom: 2.5rem;
+		}
+
+		h2 {
+			font-size: 1rem;
+			font-weight: 700;
+			letter-spacing: .12em;
+			text-transform: uppercase;
+			margin: 0 0 .5rem;
+		}
+
+		p, li, a {
+			font-size: 1rem;
+			line-height: 1.7;
+		}
+
+		ul {
+			list-style: none;
+		}
+
+		li {
+			margin: .2rem 0;
+		}
+
+		a, a:visited {
+			color: #f3eed6;
+			text-decoration: none;
+		}
+
+		a:hover {
+			color: #fff;
+		}
+
+		.selectable {
+			user-select: text;
+		}
+
+		/* Mobile improvements */
+		@media (max-width: 600px) {
+			body {
+				padding: 3vh 1rem;
+			}
+
+			main {
+				max-width: 520px;
+			}
+
+			h1 {
+				font-size: 1.6rem;
+				letter-spacing: .08em;
+				margin-bottom: 1.2rem;
+				line-height: 1.15;
+			}
+
+			h2 {
+				font-size: .85rem;
+				margin-bottom: .35rem;
+			}
+
+			p, li, a {
+				font-size: .85rem;
+				line-height: 1.6;
+			}
+
+			section {
+				margin-bottom: 2rem;
+			}
+
+			li {
+				margin: .5rem 0;
+				display: flex;
+				gap: .5rem;
+			}
+		}
 	</style>
 </head>
 
