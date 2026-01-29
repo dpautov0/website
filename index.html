@@ -1,212 +1,91 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Dmitriy Pautov</title>
-<link rel="icon" href="favicon.ico">
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width,initial-scale=1" />
+	<title>Dmitriy Pautov</title>
+	<link rel="icon" href="favicon.ico" />
+	<style>
+		@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;700;900&display=swap');
+		*{margin:0;padding:0;box-sizing:border-box}
+		section{margin-bottom:3rem}
+		body{
+			font-family:'IBM Plex Mono',monospace;
+			background:#1b1d1f;
+			color:#f3eed6;
+			display:flex;
+			justify-content:center;
+			padding:6vh 1rem
+		}
+		main{max-width:720px;width:100%}
 
-<style>
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;700;900&display=swap');
+		h1{
+			font-size:2.5rem;
+			font-weight:900;
+			letter-spacing:.18em;
+			text-transform:uppercase;
+			margin-bottom:2rem
+		}
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
+		section{margin-bottom:1.6rem}
 
-html {
-  scroll-behavior: smooth;
-  overflow-y: auto;
-}
+		h2{
+			font-size:.85rem;
+			font-weight:700;
+			letter-spacing:.12em;
+			text-transform:uppercase;
+			margin:0 0 .5rem
+		}
 
-body {
-  font-family: 'IBM Plex Mono', monospace;
-  background-color: #1b1d1f;
-  color: #f3eed6;
-  display: flex;
-  justify-content: center;
-  padding: 3vh 1rem;
-  user-select: none;
-}
-
-.container {
-  max-width: 720px;
-  width: 100%;
-}
-
-.name {
-  font-size: clamp(2rem, 8vw, 4rem);
-  font-weight: 900;
-  letter-spacing: 0.15em;
-  margin-bottom: 0.5rem;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-
-.hero {
-  font-size: 1.1rem;
-  font-weight: 500;
-  margin-bottom: 3rem;
-}
-
-.section {
-  margin-bottom: 3rem;
-}
-
-.section-header {
-  font-size: 1.4rem;
-  font-weight: 700;
-  margin-bottom: 0.8rem;
-  text-transform: uppercase;
-}
-
-.section p,
-.section a,
-.section li {
-  font-size: 0.95rem;
-  line-height: 1.6;
-  font-weight: 400;
-  text-decoration: none;
-}
-
-/* Fix visited link color */
-.section a,
-.section a:visited {
-  color: #f3eed6;
-}
-
-.section a:hover {
-  color: #fff;
-  text-shadow: 0 0 6px #f3eed6;
-}
-
-ul {
-  list-style: none;
-  padding-left: 1.2rem;
-}
-
-li {
-  margin-bottom: 0.5rem;
-}
-
-.selectable {
-  user-select: text;
-}
-
-/* ---------- Collapsible ---------- */
-
-.collapsible {
-  margin-bottom: 1rem;
-}
-
-.collapsible-header {
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-}
-
-.collapsible-header::before {
-  content: "▸";
-  margin-right: 0.5rem;
-  transition: transform 0.35s ease;
-}
-
-.collapsible.open .collapsible-header::before {
-  transform: rotate(90deg);
-}
-
-.collapsible-content {
-  overflow: hidden;
-  height: 0;
-  opacity: 0;
-  transition:
-    height 0.6s cubic-bezier(0.25, 0.8, 0.25, 1),
-    opacity 0.4s ease;
-}
-
-.collapsible.open .collapsible-content {
-  opacity: 1;
-}
-</style>
+		p,li,a{font-size:1rem;line-height:1.7}
+		ul{list-style:none}
+		li{margin:.2rem 0}
+		a,a:visited{color:#f3eed6;text-decoration:none}
+		a:hover{color:#fff}
+		.selectable{user-select:text}
+	</style>
 </head>
 
 <body>
+	<main>
+		<h1>DMITRIY PAUTOV</h1>
 
-<div class="container">
-  <div class="name">DMITRIY PAUTOV</div><br><br>
+		<section>
+			<h2>About</h2>
+			<p>Physicist + Electrical Engineer.</p>
+			<p>Always looking to push my limits.</p>
+		</section>
 
-  <div class="section">
-    <div class="section-header">About</div>
+		<section>
+			<h2>Experience</h2>
+			<ul>
+				<li>▸ Shield AI - V-BAT Avionics Hardware Intern (Aug 2025 - Dec 2025)</li>
+				<li>▸ SpaceX - Starlink Gateway Hardware Intern (May 2025 - Aug 2025)</li>
+			</ul>
+		</section>
 
-	Physicist + Electrical Engineer<br>
-	Always looking to push my limits.<br><br>
+		<section>
+			<h2>Research</h2>
+			<ul>
+				<li>▸ Liu Research Lab @ UIUC (Jan 2026 - Present)</li>
+				<li>▸ Gabrielse Group @ Northwestern (Jun 2023 - Aug 2023)</li>
+			</ul>
+		</section>
 
-    <div class="collapsible">
-      <div class="collapsible-header">Experience</div>
-      <div class="collapsible-content">
-        <ul style="margin-top: 0.5rem;">
-          <li>▸ Shield AI, V-BAT Avionics Hardware Intern (Aug 2025 - Dec 2025)</li>
-          <li>▸ SpaceX, Starlink Gateway Hardware Intern (May 2025 - Aug 2025)</li>
-        </ul>
-      </div>
-    </div>
+		<section>
+			<h2>Education</h2>
+			<ul>
+				<li>▸ Physics, B.S. (May 2028)</li>
+				<li>▸ Electrical Engineering, B.S. (May 2028)</li>
+			</ul>
+		</section>
 
-    <div class="collapsible">
-      <div class="collapsible-header">Research</div>
-      <div class="collapsible-content">
-        <ul style="margin-top: 0.5rem;">
-		  <li>▸ Experimental Neutrino Physics, Liu Research Lab @ UIUC (Jan 2026 - Present)</li>
-          <li>▸ Experimental BSM Physics, Gabrielse Group @ Northwestern (Jun 2023 - Aug 2023)</li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="collapsible">
-      <div class="collapsible-header">Education</div>
-      <div class="collapsible-content">
-        <ul style="margin-top: 0.5rem;">
-          <li>▸ Studying Physics + Electrical Engineering @ UIUC (Graduating May 2028)</li>
-          <li>▸ UIUC EV Concept Electrical Lead (Aug 2024 - Present)</li>
-        </ul>
-      </div>
-    </div>
-
-  </div>
-
-  <div class="section">
-    <div class="section-header">Contact</div>
-    <p class="selectable">dpautov2@illinois.edu</p>
-    <a href="https://github.com/dpautov0" target="_blank">github.com/dpautov0</a><br>
-    <a href="https://www.linkedin.com/in/dmitriypautov/" target="_blank">linkedin.com/in/dmitriypautov</a>
-  </div>
-</div>
-
-<script>
-document.querySelectorAll('.collapsible').forEach(section => {
-  const header = section.querySelector('.collapsible-header');
-  const content = section.querySelector('.collapsible-content');
-
-  header.addEventListener('click', () => {
-    const isOpen = section.classList.contains('open');
-
-    if (isOpen) {
-      content.style.height = content.scrollHeight + 'px';
-      requestAnimationFrame(() => {
-        content.style.height = '0px';
-      });
-      section.classList.remove('open');
-    } else {
-      section.classList.add('open');
-      content.style.height = content.scrollHeight + 'px';
-      content.addEventListener('transitionend', () => {
-        if (section.classList.contains('open')) {
-          content.style.height = 'auto';
-        }
-      }, { once: true });
-    }
-  });
-});
-</script>
-
+		<section>
+			<h2>Contact</h2>
+			<p class="selectable">dpautov2@illinois.edu</p>
+			<p><a href="https://github.com/dpautov0" target="_blank" rel="noopener noreferrer">github.com/dpautov0</a></p>
+			<p><a href="https://www.linkedin.com/in/dmitriypautov/" target="_blank" rel="noopener noreferrer">linkedin.com/in/dmitriypautov</a></p>
+		</section>
+	</main>
 </body>
 </html>
-
-
-
