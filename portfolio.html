@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Portfolio — Dmitriy Pautov</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #161616;
+    --fg: #f4f4f5;
+    --fg-dim: #8a8a90;
+  }
+
+  html, body { height: 100%; }
+
+  body {
+    font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--fg);
+    font-size: 14px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    letter-spacing: -0.003em;
+  }
+
+  main {
+    max-width: 420px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 16vh 1.5rem 8vh;
+  }
+
+  h1 {
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 0.4rem;
+    color: var(--fg);
+  }
+
+  .lede {
+    color: var(--fg-dim);
+    margin-bottom: 3rem;
+  }
+
+  .project {
+    display: block;
+    padding: 0.9rem 0;
+    color: var(--fg);
+    text-decoration: none;
+    transition: opacity 120ms ease;
+  }
+  .project + .project { border-top: 1px solid #1f1f23; }
+  .project:hover { opacity: 0.55; }
+
+  .project-title { color: var(--fg); }
+  .project-desc { color: var(--fg-dim); margin-top: 0.1rem; }
+
+  .back {
+    display: inline-block;
+    margin-top: 3rem;
+    color: var(--fg-dim);
+    text-decoration: none;
+    transition: color 120ms ease;
+  }
+  .back:hover { color: var(--fg); }
+
+  @media (max-width: 600px) {
+    main { padding: 9vh 1.5rem 4vh; }
+  }
+</style>
+</head>
+<body>
+  <main>
+    <h1>Portfolio</h1>
+    <p class="lede">Selected work.</p>
+
+    <a class="project" href="https://github.com/dpautov0" target="_blank" rel="noopener noreferrer">
+      <div class="project-title">Project name</div>
+      <div class="project-desc">One line about what it does.</div>
+    </a>
+
+    <a class="project" href="https://github.com/dpautov0" target="_blank" rel="noopener noreferrer">
+      <div class="project-title">Project name</div>
+      <div class="project-desc">One line about what it does.</div>
+    </a>
+
+    <a class="project" href="https://github.com/dpautov0" target="_blank" rel="noopener noreferrer">
+      <div class="project-title">Project name</div>
+      <div class="project-desc">One line about what it does.</div>
+    </a>
+
+    <a class="project" href="https://github.com/dpautov0" target="_blank" rel="noopener noreferrer">
+      <div class="project-title">Project name</div>
+      <div class="project-desc">One line about what it does.</div>
+    </a>
+
+    <a class="back" href="index.html">Back</a>
+  </main>
+</body>
+</html>

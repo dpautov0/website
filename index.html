@@ -1,161 +1,129 @@
 <!doctype html>
 <html lang="en">
 <head>
-	<meta charset="utf-8" />
-	<meta name="viewport" content="width=device-width,initial-scale=1" />
-	<title>Dmitriy Pautov</title>
-	<link rel="icon" href="favicon.ico" />
-	<style>
-		@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;700;900&display=swap');
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Dmitriy Pautov</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
 
-		* {
-			margin: 0;
-			padding: 0;
-			box-sizing: border-box;
-		}
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-		body {
-			font-family: 'IBM Plex Mono', monospace;
-			background: #1b1d1f;
-			color: #f3eed6;
-			display: flex;
-			justify-content: center;
-			padding: 6vh 1rem;
-		}
+  :root {
+    --bg: #161616;
+    --fg: #f4f4f5;
+    --fg-dim: #8a8a90;
+  }
 
-		main {
-			max-width: 720px;
-			width: 100%;
-		}
+  html, body { height: 100%; }
 
-		h1 {
-			font-size: 2.5rem;
-			font-weight: 900;
-			letter-spacing: .18em;
-			text-transform: uppercase;
-			margin-bottom: 2rem;
-		}
+  body {
+    font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--fg);
+    font-size: 14px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    letter-spacing: -0.003em;
+  }
 
-		section {
-			margin-bottom: 2.5rem;
-		}
+  main {
+    max-width: 480px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 14vh 1.5rem 8vh;
+  }
 
-		h2 {
-			font-size: 1rem;
-			font-weight: 700;
-			letter-spacing: .12em;
-			text-transform: uppercase;
-			margin: 0 0 .5rem;
-		}
+  h1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.3rem;
+    color: #ffffff;
+  }
 
-		p, li, a {
-			font-size: 1rem;
-			line-height: 1.7;
-		}
+  .tagline {
+    color: var(--fg-dim);
+    margin-bottom: 3rem;
+  }
+  .tagline a, .tagline a:visited {
+    color: var(--fg);
+    text-decoration: none;
+    border-bottom: 1px solid #2a2a2e;
+    transition: color 120ms ease, border-color 120ms ease;
+  }
+  .tagline a:hover { color: #fff; border-bottom-color: #fff; }
 
-		ul {
-			list-style: none;
-		}
+  section {
+    margin-bottom: 2rem;
+  }
 
-		li {
-			margin: .2rem 0;
-		}
+  .label {
+    color: var(--fg-dim);
+    margin-bottom: 0.25rem;
+  }
 
-		a, a:visited {
-			color: #f3eed6;
-			text-decoration: none;
-		}
+  .row {
+    color: var(--fg);
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+  }
 
-		a:hover {
-			color: #fff;
-		}
+  .row .when {
+    color: var(--fg-dim);
+    flex-shrink: 0;
+    font-variant-numeric: tabular-nums;
+  }
 
-		.selectable {
-			user-select: text;
-		}
+  .links {
+    margin-top: 3rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+  }
 
-		/* Mobile improvements */
-		@media (max-width: 600px) {
-			body {
-				padding: 3vh 1rem;
-			}
+  a, a:visited {
+    color: var(--fg-dim);
+    text-decoration: none;
+    transition: color 120ms ease;
+  }
+  a:hover { color: var(--fg); }
 
-			main {
-				max-width: 520px;
-			}
-
-			h1 {
-				font-size: 1.6rem;
-				letter-spacing: .08em;
-				margin-bottom: 1.2rem;
-				line-height: 1.15;
-			}
-
-			h2 {
-				font-size: .85rem;
-				margin-bottom: .35rem;
-			}
-
-			p, li, a {
-				font-size: .85rem;
-				line-height: 1.6;
-			}
-
-			section {
-				margin-bottom: 2rem;
-			}
-
-			li {
-				margin: .5rem 0;
-				display: flex;
-				gap: .5rem;
-			}
-		}
-	</style>
+  @media (max-width: 600px) {
+    main { padding: 9vh 1.5rem 4vh; }
+    h1 { font-size: 1.3rem; }
+  }
+</style>
 </head>
-
 <body>
-	<main>
-		<h1>DMITRIY PAUTOV</h1>
+  <main>
+    <h1>Dmitriy Pautov</h1>
+    <p class="tagline">Physicist and electrical engineer.<br/>See some of my work, <a href="portfolio.html">here</a>.<br/>Always interested in meeting interesting people.</p>
 
-		<section>
-			<h2>About</h2>
-			<p>Physicist + Electrical Engineer.</p>
-			<p>Always looking to push my limits.</p>
-		</section>
+    <section>
+      <p class="label">Experience</p>
+      <p class="row"><span>Shield AI, X-BAT Avionics Intern</span><span class="when">2026</span></p>
+      <p class="row"><span>Shield AI, V-BAT Avionics Co-Op</span><span class="when">2025</span></p>
+      <p class="row"><span>SpaceX, Starlink Gateway Intern</span><span class="when">2025</span></p>
+      <p class="row"><span>AMTEL Research Assistant, UIUC</span><span class="when">2025</span></p>
+      <p class="row"><span>Gabrielse Group, Northwestern University</span><span class="when">2023</span></p>
+    </section>
 
-		<section>
-			<h2>Experience</h2>
-			<ul>
-				<li>▸ Shield AI - V-BAT Avionics Hardware Intern (Aug 2025 - Dec 2025)</li>
-				<li>▸ SpaceX - Starlink Gateway Hardware Intern (May 2025 - Aug 2025)</li>
-			</ul>
-		</section>
+    <section>
+      <p class="label">Education</p>
+      <p class="row"><span>B.S. Physics &amp; Electrical Engineering, UIUC</span><span class="when">2028</span></p>
+    </section>
 
-		<section>
-			<h2>Research</h2>
-			<ul>
-				<li>▸ Liu Research Lab @ UIUC (Aug 2025 - Present)</li>
-				<li>▸ Gabrielse Group @ Northwestern (Jun 2023 - Aug 2023)</li>
-			</ul>
-		</section>
-
-		<section>
-			<h2>Education</h2>
-			<ul>
-				<li>▸ Physics, B.S. (May 2028)</li>
-				<li>▸ Electrical Engineering, B.S. (May 2028)</li>
-			</ul>
-		</section>
-
-		<section>
-			<h2>Contact</h2>
-			<p class="selectable">dpautov2@illinois.edu</p>
-			<p><a href="https://github.com/dpautov0" target="_blank" rel="noopener noreferrer">github.com/dpautov0</a></p>
-			<p><a href="https://www.linkedin.com/in/dmitriypautov/" target="_blank" rel="noopener noreferrer">linkedin.com/in/dmitriypautov</a></p>
-		</section>
-	</main>
-</body>
+    <div class="links">
+      <a href="/cdn-cgi/l/email-protection#f490849581809b82c6b49d98989d9a9b9d87da919081">Email</a>
+      <a href="https://github.com/dpautov0" target="_blank" rel="noopener noreferrer">GitHub</a>
+      <a href="https://www.linkedin.com/in/dmitriypautov/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+    </div>
+  </main>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script></body>
 </html>
-
-
