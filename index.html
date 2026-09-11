@@ -119,21 +119,27 @@ can<!doctype html>
 
   img { display: block; max-width: 80vw; height: auto; }
 
-  #vicky { width: min(80vw, 55vh); }
+  /* let the burst spill past the content box; .slide clips it at the viewport */
+  #s2 .content { overflow: visible; }
+
+  #vickywrap { position: relative; width: min(80vw, 55vh); }
+  #vicky { width: 100%; }
 
   #bridge { max-height: 32vh; }
 
+  /* centred on the photo, not the viewport, so the boom lands on her.
+     contain keeps the whole burst; 185% so it covers the square vertically */
   #explosion {
-    position: fixed;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 185%;
+    height: 185%;
+    transform: translate(-50%, -50%);
+    object-fit: contain;
     pointer-events: none;
     mix-blend-mode: screen;
-    background: #000;
     opacity: 0;
-    z-index: 10;
   }
 </style>
 </head>
@@ -145,7 +151,7 @@ can<!doctype html>
   </section>
 
   <section class="slide" id="s2">
-    <div class="content"><img id="vicky" src="vicky.jpg" alt="" /></div>
+    <div class="content"><div id="vickywrap"><img id="vicky" src="vicky.jpg" alt="" /></div></div>
     <div class="actions"><button class="btn" id="afterBoom" data-advance>next -&gt;</button></div>
   </section>
 
@@ -209,7 +215,7 @@ can<!doctype html>
   video.setAttribute('muted', '');
   video.setAttribute('playsinline', '');
   video.setAttribute('webkit-playsinline', '');
-  document.body.appendChild(video);
+  document.getElementById('vickywrap').appendChild(video);
 
   function play(el) {
     try { el.currentTime = 0; } catch (e) {}
