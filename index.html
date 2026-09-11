@@ -1,9 +1,10 @@
-<!doctype html>
+can<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Dmitriy Pautov</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<meta name="robots" content="noindex" />
+<title>hello vicky</title>
 <link rel="icon" type="image/svg+xml" href="favicon.svg" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -29,101 +30,310 @@
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
     letter-spacing: -0.003em;
+    overflow: hidden;
+    overscroll-behavior: none;
   }
 
-  main {
-    max-width: 480px;
-    width: 100%;
-    margin: 0 auto;
-    padding: 14vh 1.5rem 8vh;
+  .slide {
+    position: fixed;
+    inset: 0;
+    background: var(--bg);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    z-index: 0;
+    transition: opacity 200ms ease, visibility 0s linear 200ms;
+  }
+  .slide.active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    z-index: 1;
+    transition: opacity 200ms ease, visibility 0s linear 0s;
   }
 
-  h1 {
-    font-size: 1.5rem;
+  .content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.25rem;
+    padding: calc(env(safe-area-inset-top) + 1.5rem) 1.25rem 0.5rem;
+    text-align: center;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  /* keep long lines inside the viewport; images keep their own 80vw cap */
+  .big, .lines, .note { max-width: 100%; overflow-wrap: break-word; }
+
+  .actions {
+    display: flex;
+    justify-content: center;
+    gap: 2.5rem;
+    padding: 0.5rem 1.25rem calc(env(safe-area-inset-bottom) + 2rem);
+  }
+
+  .big {
+    font-size: clamp(1.75rem, 9vw, 3rem);
     font-weight: 600;
     letter-spacing: -0.02em;
-    margin-bottom: 0.3rem;
+    line-height: 1.25;
     color: #ffffff;
   }
 
-  .tagline {
+  .lines { display: flex; flex-direction: column; }
+  .line {
+    font-size: clamp(1.25rem, 6.5vw, 2rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.35;
+    color: #ffffff;
+  }
+
+  .note {
+    font-size: clamp(0.8125rem, 3.6vw, 1rem);
     color: var(--fg-dim);
-    margin-bottom: 3rem;
-  }
-  .tagline a, .tagline a:visited {
-    color: var(--fg);
-    text-decoration: none;
-    border-bottom: 1px solid #2a2a2e;
-    transition: color 120ms ease, border-color 120ms ease;
-  }
-  .tagline a:hover { color: #fff; border-bottom-color: #fff; }
-
-  section {
-    margin-bottom: 2rem;
+    line-height: 1.5;
   }
 
-  .label {
-    color: var(--fg-dim);
-    margin-bottom: 0.25rem;
-  }
-
-  .row {
-    color: var(--fg);
-    display: flex;
-    justify-content: space-between;
-    gap: 1rem;
-  }
-
-  .row .when {
-    color: var(--fg-dim);
-    flex-shrink: 0;
-    font-variant-numeric: tabular-nums;
-  }
-
-  .links {
-    margin-top: 3rem;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1.25rem;
-  }
-
-  a, a:visited {
+  .btn {
+    font: inherit;
+    font-size: clamp(1rem, 4.5vw, 1.125rem);
+    letter-spacing: -0.003em;
+    background: none;
+    border: 0;
+    padding: 0.75rem 1rem;
     color: var(--fg-dim);
     text-decoration: none;
-    transition: color 120ms ease;
+    display: inline-block;
+    cursor: pointer;
+    transition: color 120ms ease, opacity 200ms ease;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
   }
-  a:hover { color: var(--fg); }
+  .btn:hover { color: var(--fg); }
+  .btn.is-hidden { opacity: 0; visibility: hidden; pointer-events: none; }
 
-  @media (max-width: 600px) {
-    main { padding: 9vh 1.5rem 4vh; }
-    h1 { font-size: 1.3rem; }
+  img { display: block; max-width: 80vw; height: auto; }
+
+  /* let the photo bleed past the content box as it scales; .slide clips it */
+  #s2 .content { overflow: visible; }
+
+  #vicky {
+    width: min(80vw, 55vh);
+    transform: scale(1);
+    transform-origin: center;
+    transition: transform 120ms ease-out;
+  }
+
+  #bridge { max-height: 32vh; }
+
+  #explosion {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+    mix-blend-mode: screen;
+    background: #000;
+    opacity: 0;
+    z-index: 10;
   }
 </style>
 </head>
 <body>
-  <main>
-    <h1>Dmitriy Pautov</h1>
-    <p class="tagline">Physicist and electrical engineer.<br/>See some of my work, <a href="portfolio.html">here</a>.<br/>Always interested in meeting interesting people.</p>
 
-    <section>
-      <p class="label">Experience</p>
-      <p class="row"><span>Shield AI, X-BAT Avionics Intern</span><span class="when">2026</span></p>
-      <p class="row"><span>Shield AI, V-BAT Avionics Co-Op</span><span class="when">2025</span></p>
-      <p class="row"><span>SpaceX, Starlink Gateway Intern</span><span class="when">2025</span></p>
-      <p class="row"><span>AMTEL Research Assistant, UIUC</span><span class="when">2025</span></p>
-      <p class="row"><span>Gabrielse Group, Northwestern University</span><span class="when">2023</span></p>
-    </section>
+  <section class="slide active" id="s1">
+    <div class="content"><p class="big">hello vicky</p></div>
+    <div class="actions"><button class="btn" id="start" data-advance>next -&gt;</button></div>
+  </section>
 
-    <section>
-      <p class="label">Education</p>
-      <p class="row"><span>B.S. Physics &amp; Electrical Engineering, UIUC</span><span class="when">2028</span></p>
-    </section>
+  <section class="slide" id="s2">
+    <div class="content"><img id="vicky" src="vicky.jpg" alt="" /></div>
+    <div class="actions"><button class="btn is-hidden" id="afterBoom" data-advance>next -&gt;</button></div>
+  </section>
 
-    <div class="links">
-      <a href="/cdn-cgi/l/email-protection#f490849581809b82c6b49d98989d9a9b9d87da919081">Email</a>
-      <a href="https://github.com/dpautov0" target="_blank" rel="noopener noreferrer">GitHub</a>
-      <a href="https://www.linkedin.com/in/dmitriypautov/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+  <section class="slide" id="s3">
+    <div class="content"><p class="big">i have an idea</p></div>
+    <div class="actions"><button class="btn" data-advance>next -&gt;</button></div>
+  </section>
+
+  <section class="slide" id="s4">
+    <div class="content">
+      <div class="lines">
+        <p class="line">sunday</p>
+        <p class="line">10am</p>
+        <p class="line">kickapoo rail trail, 12 miles. i drive</p>
+      </div>
+      <img id="bridge" src="bridge.jpg" alt="" />
+      <p class="note">(you will be extra tired for water polo @ 5)</p>
     </div>
-  </main>
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script></body>
+    <div class="actions">
+      <button class="btn" id="yes">yes</button>
+      <button class="btn" id="no">no</button>
+    </div>
+  </section>
+
+  <section class="slide" id="s5">
+    <div class="content">
+      <p class="big">see you sunday</p>
+      <a class="btn" id="cal" href="https://calendar.google.com/calendar/render?action=TEMPLATE&amp;text=hike%20with%20dmitriy&amp;dates=20260913T150000Z/20260913T193000Z&amp;details=kickapoo%20rail%20trail%2C%2012%20miles.%20he%20drives.&amp;location=Weaver%20Park%2C%202205%20E%20Main%20St%2C%20Urbana%2C%20IL" target="_blank" rel="noopener noreferrer">add to calendar</a>
+      <p class="note">(so you are extra tired for practice @ 5)</p>
+    </div>
+  </section>
+
+<script>
+(function () {
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var idx = 0;
+
+  function show(n) {
+    if (n < 0 || n >= slides.length || n === idx) return;
+    slides[idx].classList.remove('active');
+    slides[n].classList.add('active');
+    idx = n;
+    if (slides[n].id === 's2') eyeOfRah();
+  }
+  function next() { show(idx + 1); }
+
+  /* three booms, kept as separate elements so they can overlap */
+  var booms = [];
+  for (var i = 0; i < 3; i++) {
+    var a = new Audio('boom.mp3');
+    a.preload = 'auto';
+    booms.push(a);
+  }
+
+  var video = document.createElement('video');
+  video.id = 'explosion';
+  video.src = 'explosion.mp4';
+  video.muted = true;
+  video.defaultMuted = true;
+  video.playsInline = true;
+  video.preload = 'auto';
+  video.setAttribute('muted', '');
+  video.setAttribute('playsinline', '');
+  video.setAttribute('webkit-playsinline', '');
+  document.body.appendChild(video);
+
+  /* play + immediately reset, so iOS treats the element as user-started */
+  function unlock(el) {
+    var wasMuted = el.muted;
+    el.muted = true;
+    var p = el.play();
+    if (p && p.then) {
+      p.then(function () {
+        el.pause();
+        try { el.currentTime = 0; } catch (e) {}
+        el.muted = wasMuted;
+      })['catch'](function () { el.muted = wasMuted; });
+    }
+  }
+
+  function play(el) {
+    try { el.currentTime = 0; } catch (e) {}
+    var p = el.play();
+    if (p && p['catch']) p['catch'](function () {});
+  }
+
+  var vicky = document.getElementById('vicky');
+  var afterBoom = document.getElementById('afterBoom');
+  var STEPS = [1.2, 1.4, 1.7];
+  var EXPLOSION_PLAYS = 5;
+  var ran = false;
+
+  function now() { return window.performance ? performance.now() : Date.now(); }
+
+  function shake(el) {
+    var end = now() + 150;
+    (function frame() {
+      if (now() >= end) { el.style.transform = ''; return; }
+      var x = (Math.random() * 12 - 6).toFixed(1);
+      var y = (Math.random() * 12 - 6).toFixed(1);
+      el.style.transform = 'translate(' + x + 'px,' + y + 'px)';
+      requestAnimationFrame(frame);
+    })();
+  }
+
+  function eyeOfRah() {
+    if (ran) return;
+    ran = true;
+    [0, 450, 900].forEach(function (t, i) {
+      setTimeout(function () {
+        if (i > 0) play(booms[i]); /* boom 0 fired in the click handler */
+        vicky.style.transform = 'scale(' + STEPS[i] + ')';
+        shake(document.getElementById('s2'));
+        if (i === 2) explode();
+      }, t);
+    });
+  }
+
+  function explode() {
+    var done = false;
+
+    function finish() {
+      if (done) return;
+      done = true;
+      video.removeEventListener('error', finish);
+      if (video.parentNode) video.parentNode.removeChild(video);
+      afterBoom.classList.remove('is-hidden');
+    }
+
+    /* loop + one timer rather than counting 'ended': that event is unreliable
+       (it never fires on a stalled decode) and stranded the button for 8s */
+    var one = (video.duration && isFinite(video.duration)) ? video.duration : 0.57;
+    video.loop = true;
+    video.addEventListener('error', finish);
+    video.style.opacity = '1';
+    play(video);
+    setTimeout(finish, EXPLOSION_PLAYS * one * 1000 + 200);
+  }
+
+  /* slide 1: audio has to start inside the click handler for iOS */
+  document.getElementById('start').addEventListener('click', function () {
+    play(booms[0]);
+    unlock(booms[1]);
+    unlock(booms[2]);
+    unlock(video);
+    next();
+  });
+
+  Array.prototype.forEach.call(
+    document.querySelectorAll('#s2 [data-advance], #s3 [data-advance]'),
+    function (b) { b.addEventListener('click', next); }
+  );
+
+  var yes = document.getElementById('yes');
+  var no = document.getElementById('no');
+  var noIsYes = false;
+  var converting = false;
+
+  yes.addEventListener('click', function () { show(4); });
+  no.addEventListener('click', function () {
+    if (noIsYes) { show(4); return; }
+    if (converting) return;
+    converting = true;
+    no.textContent = 'wrong choice';
+    setTimeout(function () {
+      no.textContent = 'yes';
+      noIsYes = true;
+      converting = false;
+    }, 800);
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Enter' && e.key !== 'ArrowRight') return;
+    /* let a focused button handle its own Enter */
+    if (e.key === 'Enter' && e.target && e.target.closest && e.target.closest('button, a')) return;
+    var btn = slides[idx].querySelector('[data-advance]:not(.is-hidden)');
+    if (btn) { e.preventDefault(); btn.click(); }
+  });
+})();
+</script>
+</body>
 </html>
