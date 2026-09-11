@@ -36,7 +36,14 @@ can<!doctype html>
 
   .slide {
     position: fixed;
-    inset: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    /* inset:0 sizes to the LARGE viewport on iOS, so the box ran behind
+       Safari's toolbars and centred the content too high. dvh is the
+       currently visible height. */
+    height: 100vh;
+    height: 100dvh;
     background: var(--bg);
     display: flex;
     flex-direction: column;
@@ -62,7 +69,8 @@ can<!doctype html>
     align-items: center;
     justify-content: center;
     gap: 1.25rem;
-    padding: calc(env(safe-area-inset-top) + 1.5rem) 1.25rem 0.5rem;
+    /* symmetric, or justify-content: center sits off-centre by the difference */
+    padding: calc(env(safe-area-inset-top) + 1.5rem) 1.25rem 1.5rem;
     text-align: center;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
