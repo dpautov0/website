@@ -116,19 +116,10 @@ can<!doctype html>
     touch-action: manipulation;
   }
   .btn:hover { color: var(--fg); }
-  .btn.is-hidden { opacity: 0; visibility: hidden; pointer-events: none; }
 
   img { display: block; max-width: 80vw; height: auto; }
 
-  /* let the photo bleed past the content box as it scales; .slide clips it */
-  #s2 .content { overflow: visible; }
-
-  #vicky {
-    width: min(80vw, 55vh);
-    transform: scale(1);
-    transform-origin: center;
-    transition: transform 120ms ease-out;
-  }
+  #vicky { width: min(80vw, 55vh); }
 
   #bridge { max-height: 32vh; }
 
@@ -155,7 +146,7 @@ can<!doctype html>
 
   <section class="slide" id="s2">
     <div class="content"><img id="vicky" src="vicky.jpg" alt="" /></div>
-    <div class="actions"><button class="btn is-hidden" id="afterBoom" data-advance>next -&gt;</button></div>
+    <div class="actions"><button class="btn" id="afterBoom" data-advance>next -&gt;</button></div>
   </section>
 
   <section class="slide" id="s3">
@@ -194,20 +185,18 @@ can<!doctype html>
 
   function show(n) {
     if (n < 0 || n >= slides.length || n === idx) return;
+    if (slides[idx].id === 's2') stopBooms();
     slides[idx].classList.remove('active');
     slides[n].classList.add('active');
     idx = n;
-    if (slides[n].id === 's2') eyeOfRah();
+    if (slides[n].id === 's2') startBooms();
   }
   function next() { show(idx + 1); }
 
-  /* three booms, kept as separate elements so they can overlap */
-  var booms = [];
-  for (var i = 0; i < 3; i++) {
-    var a = new Audio('boom.mp3');
-    a.preload = 'auto';
-    booms.push(a);
-  }
+  /* one looping boom track; stays silent if boom.mp3 isn't there */
+  var boom = new Audio('boom.mp3');
+  boom.preload = 'auto';
+  boom.loop = true;
 
   var video = document.createElement('video');
   video.id = 'explosion';
@@ -215,25 +204,12 @@ can<!doctype html>
   video.muted = true;
   video.defaultMuted = true;
   video.playsInline = true;
+  video.loop = true;
   video.preload = 'auto';
   video.setAttribute('muted', '');
   video.setAttribute('playsinline', '');
   video.setAttribute('webkit-playsinline', '');
   document.body.appendChild(video);
-
-  /* play + immediately reset, so iOS treats the element as user-started */
-  function unlock(el) {
-    var wasMuted = el.muted;
-    el.muted = true;
-    var p = el.play();
-    if (p && p.then) {
-      p.then(function () {
-        el.pause();
-        try { el.currentTime = 0; } catch (e) {}
-        el.muted = wasMuted;
-      })['catch'](function () { el.muted = wasMuted; });
-    }
-  }
 
   function play(el) {
     try { el.currentTime = 0; } catch (e) {}
@@ -241,70 +217,22 @@ can<!doctype html>
     if (p && p['catch']) p['catch'](function () {});
   }
 
-  var vicky = document.getElementById('vicky');
-  var afterBoom = document.getElementById('afterBoom');
-  var STEPS = [1.2, 1.4, 1.7];
-  var EXPLOSION_PLAYS = 5;
-  var ran = false;
-
-  function now() { return window.performance ? performance.now() : Date.now(); }
-
-  function shake(el) {
-    var end = now() + 150;
-    (function frame() {
-      if (now() >= end) { el.style.transform = ''; return; }
-      var x = (Math.random() * 12 - 6).toFixed(1);
-      var y = (Math.random() * 12 - 6).toFixed(1);
-      el.style.transform = 'translate(' + x + 'px,' + y + 'px)';
-      requestAnimationFrame(frame);
-    })();
-  }
-
-  function eyeOfRah() {
-    if (ran) return;
-    ran = true;
-    [0, 450, 900].forEach(function (t, i) {
-      setTimeout(function () {
-        if (i > 0) play(booms[i]); /* boom 0 fired in the click handler */
-        vicky.style.transform = 'scale(' + STEPS[i] + ')';
-        shake(document.getElementById('s2'));
-        if (i === 2) explode();
-      }, t);
-    });
-  }
-
-  function explode() {
-    var done = false;
-
-    function finish() {
-      if (done) return;
-      done = true;
-      video.removeEventListener('error', finish);
-      if (video.parentNode) video.parentNode.removeChild(video);
-      afterBoom.classList.remove('is-hidden');
-    }
-
-    /* loop + one timer rather than counting 'ended': that event is unreliable
-       (it never fires on a stalled decode) and stranded the button for 8s */
-    var one = (video.duration && isFinite(video.duration)) ? video.duration : 0.57;
-    video.loop = true;
-    video.addEventListener('error', finish);
+  /* booms run for as long as slide 2 is up. startBooms() is reached
+     synchronously from the slide 1 click, which is what lets iOS start media. */
+  function startBooms() {
     video.style.opacity = '1';
     play(video);
-    setTimeout(finish, EXPLOSION_PLAYS * one * 1000 + 200);
+    play(boom);
   }
 
-  /* slide 1: audio has to start inside the click handler for iOS */
-  document.getElementById('start').addEventListener('click', function () {
-    play(booms[0]);
-    unlock(booms[1]);
-    unlock(booms[2]);
-    unlock(video);
-    next();
-  });
+  function stopBooms() {
+    video.style.opacity = '0';
+    try { video.pause(); } catch (e) {}
+    try { boom.pause(); boom.currentTime = 0; } catch (e) {}
+  }
 
   Array.prototype.forEach.call(
-    document.querySelectorAll('#s2 [data-advance], #s3 [data-advance]'),
+    document.querySelectorAll('#s1 [data-advance], #s2 [data-advance], #s3 [data-advance]'),
     function (b) { b.addEventListener('click', next); }
   );
 
@@ -330,7 +258,7 @@ can<!doctype html>
     if (e.key !== 'Enter' && e.key !== 'ArrowRight') return;
     /* let a focused button handle its own Enter */
     if (e.key === 'Enter' && e.target && e.target.closest && e.target.closest('button, a')) return;
-    var btn = slides[idx].querySelector('[data-advance]:not(.is-hidden)');
+    var btn = slides[idx].querySelector('[data-advance]');
     if (btn) { e.preventDefault(); btn.click(); }
   });
 })();
