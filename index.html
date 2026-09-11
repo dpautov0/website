@@ -124,27 +124,28 @@ can<!doctype html>
     touch-action: manipulation;
   }
   .btn:hover { color: var(--fg); }
+  /* the only action on the last slide, so it reads as tappable not as caption */
+  #cal { color: var(--fg); }
 
   img { display: block; max-width: 80vw; height: auto; }
 
-  /* let the burst spill past the content box; .slide clips it at the viewport */
-  #s2 .content { overflow: visible; }
-
-  #vickywrap { position: relative; width: min(80vw, 55vh); }
+  /* clips the burst to the photo so it never spills onto the page */
+  #vickywrap {
+    position: relative;
+    width: min(80vw, 55vh);
+    overflow: hidden;
+  }
   #vicky { width: 100%; }
 
   #bridge { max-height: 32vh; }
 
-  /* centred on the photo, not the viewport, so the boom lands on her.
-     contain keeps the whole burst; 185% so it covers the square vertically */
+  /* fills the photo exactly; cover crops the 16:9 source to the square */
   #explosion {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 185%;
-    height: 185%;
-    transform: translate(-50%, -50%);
-    object-fit: contain;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
     pointer-events: none;
     mix-blend-mode: screen;
     opacity: 0;
@@ -188,7 +189,6 @@ can<!doctype html>
     <div class="content">
       <p class="big">see you sunday</p>
       <a class="btn" id="cal" href="https://calendar.google.com/calendar/render?action=TEMPLATE&amp;text=hike%20with%20dmitriy&amp;dates=20260913T150000Z/20260913T193000Z&amp;details=kickapoo%20rail%20trail%2C%2012%20miles.%20he%20drives.&amp;location=Weaver%20Park%2C%202205%20E%20Main%20St%2C%20Urbana%2C%20IL" target="_blank" rel="noopener noreferrer">add to calendar</a>
-      <p class="note">(so you are extra tired for practice @ 5)</p>
     </div>
   </section>
 
