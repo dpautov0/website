@@ -571,6 +571,7 @@
     const vdrive = Math.random() < 0.5;
     const R = vdrive ? 1 / y22 : 1 / (y22 - y12 * y21 / y11);
     return {
+      fig: FIGS.yport(vdrive),
       q: `A linear two-port has $y_{11}=${y11}$, $y_{12}=${y12}$, $y_{21}=${y21}$, $y_{22}=${y22}$ (all in mS). Port 1 is ${vdrive ? 'driven by an **ideal voltage source**' : 'driven by an **ideal current source**'}. Find $\\RTH$ looking into port 2.`,
       parts: [{ lbl: '\\RTH', unit: 'kΩ', ans: R }],
       hints: ['$I_1 = y_{11}V_1 + y_{12}V_2$ and $I_2 = y_{21}V_1 + y_{22}V_2$. Deactivate the port-1 source, apply $V_2$ and find $I_2$.', vdrive ? 'A deactivated voltage source is a **short**, so $V_1 = 0$.' : 'A deactivated current source is an **open**, so $I_1 = 0$, which ties $V_1$ to $V_2$.'],
@@ -586,6 +587,7 @@
     const Rin = pk([5, 10, 20]);
     const A = withLoad ? (-g1 * U.par(R1, Rin)) * (-g2 * R2) : g1 * g2 * R1 * R2;
     return {
+      fig: FIGS.cascade2(withLoad),
       q: withLoad
         ? `Two common-source stages in cascade: $g_{m1}=${f(g1 * 1e3)}\\,\\text{mS}$, $R_1 = ${k(R1)}\\kO$, $g_{m2}=${f(g2 * 1e3)}\\,\\text{mS}$, $R_2=${k(R2)}\\kO$. This time the second stage has a finite input resistance $R_{in2}=${k(Rin)}\\kO$ (from its input node to ground). Find $v_{out}/v_{in}$.`
         : `Two common-source stages (each $v_{out} = -g_mRv_x$, infinite input resistance) in cascade: $g_{m1}=${f(g1 * 1e3)}\\,\\text{mS}$, $R_1 = ${k(R1)}\\kO$, $g_{m2}=${f(g2 * 1e3)}\\,\\text{mS}$, $R_2=${k(R2)}\\kO$. Find $v_{out}/v_{in}$.`,
@@ -633,6 +635,8 @@
     const vs = 20e-3;
     const vo = vs * rd / (rd + c.R);
     return {
+      fig: FIGS.vrx(c.Vs, c.R),
+      figHtml: FIGS.pwlPlot(c),
       q: `A nonlinear device has
 $$I(V)=\\begin{cases}0, & V<${c.Va}\\,\\text{V}\\\\ \\dfrac{V-${c.Va}}{${k(c.r1)}\\,\\text{k}\\Omega}, & ${c.Va}\\le V<${c.Vb}\\,\\text{V}\\\\ ${f(c.Ib * 1e3)}\\,\\text{mA}+\\dfrac{V-${c.Vb}}{${k(c.r2)}\\,\\text{k}\\Omega}, & V\\ge ${c.Vb}\\,\\text{V}\\end{cases}$$
 It is driven by $V_S = ${c.Vs}\\,\\text{V}$ in series with $R = ${k(c.R)}\\kO$, plus a small signal $v_s = 20\\,\\text{mV}\\sin\\omega t$. Find the operating point, the incremental resistance, and the small-signal amplitude across the device.`,
@@ -648,6 +652,7 @@ It is driven by $V_S = ${c.Vs}\\,\\text{V}$ in series with $R = ${k(c.R)}\\kO$, 
       const a = pick([500, 1000, 2000]), b = pick([2000, 5000, 10000]), I0 = pick([1, 2, 3, 5]) * 1e-3;
       const r = a + 2 * b * I0;
       return {
+      fig: FIGS.elemVI(),
         q: `A device obeys $V = g(I) = ${a}\\,I + ${b}\\,I^2$ (volts, amps). It is biased at $I_0 = ${f(I0 * 1e3)}\\,\\text{mA}$. Find its incremental resistance.`,
         parts: [{ lbl: 'r', unit: 'Ω', ans: r }],
         hints: ['$r = \\left.dV/dI\\right|_{I_0}$. Differentiate, then plug in the bias current.'],
@@ -658,6 +663,7 @@ It is driven by $V_S = ${c.Vs}\\,\\text{V}$ in series with $R = ${k(c.R)}\\kO$, 
       const K = pick([0.5, 1, 2, 4]) * 1e-3, Vt = pick([0.5, 1]), V0 = Vt + pick([0.2, 0.4, 0.5, 1]);
       const gd = 2 * K * (V0 - Vt);
       return {
+      fig: FIGS.elemVI(),
         q: `A device obeys $I = ${f(K * 1e3)}\\,\\text{mA/V}^2\\,(V - ${Vt})^2$ for $V > ${Vt}\\,\\text{V}$. At $V_0 = ${f(V0)}\\,\\text{V}$, find the incremental resistance.`,
         parts: [{ lbl: 'r', unit: 'Ω', ans: 1 / gd }],
         hints: ['This time $I$ is given as a function of $V$, so find $dI/dV$ and invert it.'],
@@ -666,6 +672,7 @@ It is driven by $V_S = ${c.Vs}\\,\\text{V}$ in series with $R = ${k(c.R)}\\kO$, 
     }
     const I0 = pick([0.25, 0.5, 1, 2, 5]) * 1e-3;
     return {
+      fig: FIGS.elemVI(),
       q: `An exponential device $I = I_Se^{V/V_T}$ ($V_T = 25\\,\\text{mV}$) carries $I_0 = ${f(I0 * 1e3)}\\,\\text{mA}$. Find its incremental resistance.`,
       parts: [{ lbl: 'r', unit: 'Ω', ans: 0.025 / I0 }],
       hints: ['$dI/dV = I_Se^{V/V_T}/V_T = I/V_T$. The $I_S$ drops out.'],
@@ -678,6 +685,7 @@ It is driven by $V_S = ${c.Vs}\\,\\text{V}$ in series with $R = ${k(c.R)}\\kO$, 
     const y1 = y0 + slope * dx, dq = pick([-0.05, -0.1, 0.05, 0.15]);
     const ans = y0 + slope * dq;
     return {
+      fig: FIGS.blackbox({ nonlinear: true, load: false, inName: 'v_{IN}', outName: 'v_{OUT}' }),
       q: `A nonlinear block gives $v_{OUT} = ${f(y0)}\\,\\text{V}$ at $v_{IN} = ${f(x0)}\\,\\text{V}$, and $v_{OUT} = ${f(y1)}\\,\\text{V}$ at $v_{IN} = ${f(x0 + dx)}\\,\\text{V}$. Using a first-order Taylor approximation about the first point, predict $v_{OUT}$ at $v_{IN} = ${f(x0 + dq)}\\,\\text{V}$.`,
       parts: [{ lbl: 'v_{OUT}', unit: 'V', ans }],
       hints: ['The two measurements give the slope (the small-signal gain) at the operating point.', `Then $v_{OUT} \\approx ${f(y0)} + \\text{slope}\\cdot(v_{IN} - ${f(x0)})$.`],
@@ -691,6 +699,7 @@ It is driven by $V_S = ${c.Vs}\\,\\text{V}$ in series with $R = ${k(c.R)}\\kO$, 
       const GM = pick([1, 2, 4]) * 1e-3, VA = pick([1, 2]), vx0 = pick([0.5, 1, 1.5, 2]);
       const K = 2 * GM * vx0 / VA;
       return {
+      fig: FIGS.depsrc(t),
         q: `A dependent current source obeys $I = G_M\\dfrac{v_X^2}{V_A}$ with $G_M = ${f(GM * 1e3)}\\,\\text{mA/V}$ and $V_A = ${VA}\\,\\text{V}$. At the operating point $V_{X0} = ${f(vx0)}\\,\\text{V}$, what is its incremental transconductance $K$ (so that $i = Kv_x$)?`,
         parts: [{ lbl: 'K', unit: 'mA/V', ans: K * 1e3 }],
         hints: ['$K = dI/dv_X$ evaluated at $V_{X0}$. $G_M$ itself is **not** the answer.'],
@@ -701,6 +710,7 @@ It is driven by $V_S = ${c.Vs}\\,\\text{V}$ in series with $R = ${k(c.R)}\\kO$, 
       const GM = pick([1, 2]) * 1e-3, VA = pick([1, 2]), vx0 = pick([0.5, 1, 2]);
       const K = 3 * GM * vx0 * vx0 / (VA * VA);
       return {
+      fig: FIGS.depsrc(t),
         q: `A dependent current source obeys $I = G_M\\dfrac{v_X^3}{V_A^2}$ with $G_M = ${f(GM * 1e3)}\\,\\text{mA/V}$, $V_A = ${VA}\\,\\text{V}$. At $V_{X0} = ${f(vx0)}\\,\\text{V}$, find $K$.`,
         parts: [{ lbl: 'K', unit: 'mA/V', ans: K * 1e3 }],
         hints: ['Differentiate: $\\dfrac{d}{dv}\\,v^3 = 3v^2$.'],
@@ -709,6 +719,7 @@ It is driven by $V_S = ${c.Vs}\\,\\text{V}$ in series with $R = ${k(c.R)}\\kO$, 
     }
     const A = pick([2, 5, 10]), vx0 = pick([0.5, 1, 1.4, 2]);
     return {
+      fig: FIGS.depsrc(t),
       q: `A dependent **voltage** source produces $V = A\\,v_X^3$ with $A = ${A}\\,\\text{V}^{-2}$. At $V_{X0} = ${f(vx0)}\\,\\text{V}$, what is its small-signal voltage gain $dV/dv_X$?`,
       parts: [{ lbl: 'dV/dv_X', unit: 'V/V', ans: 3 * A * vx0 * vx0 }],
       hints: ['Same idea as a current source: differentiate the law at the operating point.'],

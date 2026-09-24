@@ -21,7 +21,7 @@
   U.fmt = (x, sig = 4) => {
     if (x === undefined || x === null || Number.isNaN(x)) return '?';
     if (!isFinite(x)) return x > 0 ? '\\infty' : '-\\infty';
-    if (Math.abs(x) < 1e-12) return '0';
+    if (Math.abs(x) < 1e-24) return '0';
     const ax = Math.abs(x);
     if (ax >= 1e-4 && ax < 1e7) {
       let s = (+x.toPrecision(sig)).toString();

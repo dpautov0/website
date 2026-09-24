@@ -85,7 +85,8 @@
     }
     if (first.startsWith('#')) {
       const lvl = first.match(/^#+/)[0].length;
-      return `<h${lvl + 2}>${inline(first.replace(/^#+\s*/, ''))}</h${lvl + 2}>`;
+      const h = `<h${lvl + 2}>${inline(first.replace(/^#+\s*/, ''))}</h${lvl + 2}>`;
+      return lines.length > 1 ? h + renderBlock(lines.slice(1)) : h;
     }
     if (first.trim().startsWith('$$')) {
       // Display math ends at the line that closes it; anything after is ordinary text.
@@ -116,6 +117,18 @@
     const rows = lines.filter((l) => !/^\|\s*:?-+/.test(l)).map((l) => l.replace(/^\||\|$/g, '').split(' | ').map((c) => c.trim()));
     const [h, ...b] = rows;
     return `<div class="tablewrap"><table><thead><tr>${h.map((c) => `<th>${inline(c)}</th>`).join('')}</tr></thead><tbody>${b.map((r) => `<tr>${r.map((c) => `<td>${inline(c)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+  }
+
+  // Text with drawings: a line "[[fig:key]]" is replaced by figs[key] = {fig | svg, cap}.
+  function figureHtml(F) {
+    if (!F) return '';
+    const body = F.svg || (typeof F.fig === 'string' ? F.fig : Schem.render(F.fig, F.opts || {}));
+    return `<figure class="fig">${body}${F.cap ? `<figcaption>${inline(F.cap)}</figcaption>` : ''}</figure>`;
+  }
+  function rich(src, figs) {
+    if (!src) return '';
+    if (!figs) return mdToHtml(src);
+    return src.split(/^[ 	]*\[\[fig:([\w-]+)\]\][ 	]*$/m).map((seg, i) => (i % 2 ? figureHtml(figs[seg]) : mdToHtml(seg))).join('');
   }
 
   function renderMath(el) {
@@ -268,7 +281,7 @@
         const d = document.createElement('section');
         d.className = 'read';
         const figHtml = s.fig ? `<figure class="fig">${typeof s.fig === 'string' ? s.fig : Schem.render(s.fig)}</figure>` : '';
-        d.innerHTML = mdToHtml(s.md) + figHtml + (s.after ? mdToHtml(s.after) : '');
+        d.innerHTML = rich(s.md, s.figs) + figHtml + (s.after ? rich(s.after, s.figs) : '');
         wrap.appendChild(d);
       } else if (s.t === 'prob') {
         pnum++;
@@ -349,7 +362,7 @@
     host.className = 'prob' + (ctx.solved ? ' solved' : '') + (p.big ? ' big' : '');
     host.innerHTML = `
       <header class="p-head"><span class="p-num">${ctx.n}</span>${srcHtml}${p.title ? `<span class="p-title">${p.title}</span>` : ''}${genMeter}<span class="p-status" aria-live="polite"></span></header>
-      <div class="p-q">${mdToHtml(p.q)}</div>
+      <div class="p-q">${rich(p.q, p.figs)}</div>
       ${p.fig ? `<figure class="fig">${Schem.render(p.fig, p.figOpts || {})}</figure>` : ''}
       ${p.figHtml ? `<figure class="fig">${p.figHtml}</figure>` : ''}
       ${p.q2 ? `<div class="p-q">${mdToHtml(p.q2)}</div>` : ''}
@@ -362,7 +375,7 @@
       </div>
       <div class="p-fb" aria-live="polite"></div>
       <div class="p-hints"></div>
-      <div class="p-sol" hidden>${p.sol ? `<div class="sol-h">Worked solution</div>${mdToHtml(p.sol)}` : ''}</div>`;
+      <div class="p-sol" hidden>${p.sol ? `<div class="sol-h">Worked solution</div>${rich(p.sol, p.figs)}` : ''}</div>`;
     if (ctx.solved) host.querySelector('.p-status').innerHTML = '<span class="ok-badge">Solved</span>';
 
     let hintIx = 0, viewedSol = false, attempts = 0;
@@ -437,7 +450,7 @@
       if (hintIx >= p.hints.length) return;
       const d = document.createElement('div');
       d.className = 'hint-item';
-      d.innerHTML = `<span class="hint-n">Hint ${hintIx + 1}/${p.hints.length}</span>${mdToHtml(p.hints[hintIx])}`;
+      d.innerHTML = `<span class="hint-n">Hint ${hintIx + 1}/${p.hints.length}</span>${rich(p.hints[hintIx], p.figs)}`;
       host.querySelector('.p-hints').appendChild(d);
       renderMath(d);
       hintIx++;
@@ -522,5 +535,5 @@
     route();
   });
 
-  window.Engine = { mdToHtml, renderMath, Store, LESSONS, BYID };
+  window.Engine = { mdToHtml, rich, renderMath, Store, LESSONS, BYID };
 })();

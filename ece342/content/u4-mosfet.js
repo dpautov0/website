@@ -376,7 +376,8 @@ Note $M_5$ has $V_{DS} = 0.2 = V_{ov}$: **exactly at the edge of saturation**. E
 
             !!key The shortcut that saves the most time on the exam
             Subtract $V_S$ from both sides of $V_{DS} \ge V_{GS} - V_T$. The source cancels:
-            $$\textbf{NMOS saturated} \iff V_D \ge V_G - V_T\qquad\qquad \textbf{PMOS saturated} \iff V_D \le V_G + |V_T|$$
+            $$\textbf{NMOS saturated} \iff V_D \ge V_G - V_T$$
+            $$\textbf{PMOS saturated} \iff V_D \le V_G + |V_T|$$
             Only the gate and drain node voltages matter. Every "find $R_{D,max}$" becomes two lines.
           `),
           G('mos_region', { need: 5 }),

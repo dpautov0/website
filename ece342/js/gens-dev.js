@@ -56,6 +56,7 @@
     const ID = pick([0.25, 0.5, 1, 2, 2.5, 5]) * 1e-3, n = pick([1, 1, 2, 3]);
     const r = n * VT / ID;
     return {
+      fig: FIGS.dstring(n, 'I_{D0} = ' + mA(ID)),
       q: `${n > 1 ? `${n} identical diodes in series carry` : 'A diode carries'} a DC current $I_{D0} = ${mA(ID)}$ ($V_T = 25\\,\\text{mV}$, $n=1$). What incremental resistance does ${n > 1 ? 'the string' : 'it'} present to small signals?`,
       parts: [{ lbl: n > 1 ? 'r_{\\text{string}}' : 'r_d', unit: 'Ω', ans: r }],
       hints: ['$r_d = V_T/I_{D0}$ per diode.', n > 1 ? 'Series resistances add: the string is $n\\,r_d$.' : 'Only the DC current matters, not the signal.'],
@@ -69,6 +70,7 @@
       const ratio = pick([2, 4, 10, 100, 1000]);
       const dv = VT * Math.log(ratio) * 1e3;
       return {
+      fig: FIGS.diode1('V_D', 'I_D'),
         q: `By how much must a diode's forward voltage increase to multiply its current by ${ratio}? Use the exponential model with $V_T = 25\\,\\text{mV}$.`,
         parts: [{ lbl: '\\Delta V_D', unit: 'mV', ans: dv, accept: [60 * Math.log10(ratio)] }],
         hints: ['$I_{D2}/I_{D1} = e^{\\Delta V/V_T}$, so $\\Delta V = V_T\\ln(I_{D2}/I_{D1})$.'],
@@ -78,6 +80,7 @@
     const dv = pick([18, 25, 50, 60, 120]) * 1e-3;
     const ratio = Math.exp(dv / VT);
     return {
+      fig: FIGS.diode1('V_D', 'I_D'),
       q: `A diode's forward voltage rises by $${f(dv * 1e3)}\\,\\text{mV}$. By what factor does its current increase? ($V_T = 25\\,\\text{mV}$)`,
       parts: [{ lbl: 'I_{D2}/I_{D1}', unit: '', ans: ratio }],
       hints: ['$I_{D2}/I_{D1} = e^{\\Delta V/V_T}$.'],
@@ -92,6 +95,7 @@
       const ID = IS * Math.exp(VD / VT);
       const c = cur(ID);
       return {
+      fig: FIGS.diode1('V_D', 'I_D'),
         q: `A diode with $I_S = ${f(IS)}\\,\\text{A}$ has $V_D = ${f(VD)}\\,\\text{V}$ across it. Find $I_D$ ($V_T = 25\\,\\text{mV}$, $n=1$).`,
         parts: [{ lbl: 'I_D', unit: c.unit, ans: c.ans }],
         hints: ['$I_D = I_Se^{V_D/V_T}$ in forward bias (the $-1$ is negligible).'],
@@ -101,6 +105,7 @@
     const ID = pick([0.1, 0.5, 1, 2, 5, 10]) * 1e-3;
     const VD = VT * Math.log(ID / IS);
     return {
+      fig: FIGS.diode1('V_D', 'I_D'),
       q: `A diode with $I_S = ${f(IS)}\\,\\text{A}$ carries $I_D = ${mA(ID)}$. Find $V_D$ ($V_T = 25\\,\\text{mV}$).`,
       parts: [{ lbl: 'V_D', unit: 'V', ans: VD, tol: { rel: 0.005 } }],
       hints: ['$V_D = V_T\\ln(I_D/I_S)$.'],
@@ -168,6 +173,7 @@
     for (let i = 0; i < 200; i++) { const m = (lo + hi) / 2; ((Vs - m) / R - IS * Math.exp(m / VT) > 0) ? (lo = m) : (hi = m); }
     const VD = (lo + hi) / 2, ID = (Vs - VD) / R;
     return {
+      fig: FIGS.vrd(Vv(Vs), kO(R)),
       q: `$V_S = ${Vs}\\,\\text{V}$ drives a diode ($I_S = ${f(IS)}\\,\\text{A}$) through $R = ${k(R)}\\kO$. Run the iterative method starting from $V_D = 0.7\\,\\text{V}$: give the diode voltage after the first update, and the converged current.`,
       parts: [{ lbl: 'V_D^{(1)}', unit: 'V', ans: V1, tol: { rel: 0.005 } }, { lbl: 'I_D', unit: 'mA', ans: ID * 1e3, tol: { rel: 0.005 } }],
       hints: ['Step 1: $I_D = (V_S - 0.7)/R$. Step 2: $V_D = V_T\\ln(I_D/I_S)$. Repeat until $V_D$ stops changing (2–3 rounds).'],
@@ -244,6 +250,7 @@
       ? `$V_{SG} = ${f(VS)} - ${f(VG)} = ${f(vgs)}\\,\\text{V}$ ${vgs < 1 ? '$<|V_T|$ so it is **off**.' : `$\\Rightarrow V_{ov} = ${f(vgs - 1)}\\,\\text{V}$. Saturation needs $V_D \\le V_G + |V_T| = ${f(VG + 1)}\\,\\text{V}$; here $V_D = ${f(VD)}\\,\\text{V}$, so **${reg === 'sat' ? 'saturation' : 'triode'}**.`}`
       : `$V_{GS} = ${f(VG)} - ${f(VS)} = ${f(vgs)}\\,\\text{V}$ ${vgs < 1 ? '$<V_T$ so it is **off**.' : `$\\Rightarrow V_{ov} = ${f(vgs - 1)}\\,\\text{V}$. Saturation needs $V_D \\ge V_G - V_T = ${f(VG - 1)}\\,\\text{V}$; here $V_D = ${f(VD)}\\,\\text{V}$, so **${reg === 'sat' ? 'saturation' : 'triode'}**.`}`;
     return {
+      fig: FIGS.mosNodes(pm, f(VG), f(VS), f(VD)),
       q: `An ${pm ? '**PMOS**' : '**NMOS**'} transistor ($|V_T| = 1\\,\\text{V}$) has $V_G = ${f(VG)}\\,\\text{V}$, $V_S = ${f(VS)}\\,\\text{V}$, $V_D = ${f(VD)}\\,\\text{V}$. Which region is it in?`,
       parts: [{ mc: opts, a }],
       hints: [pm ? 'First check $V_{SG}$ against $|V_T|$. Then use the shortcut: saturation iff $V_D \\le V_G + |V_T|$.' : 'First check $V_{GS}$ against $V_T$. Then use the shortcut: saturation iff $V_D \\ge V_G - V_T$.'],
@@ -259,6 +266,7 @@
     const c = cur(ID);
     const vg = 1 + vov;
     return {
+      fig: FIGS.mosBias(pm, `${f(vg)}\\,\\text{V}`, `W/L=${WL}`),
       q: `An ${pm ? 'PMOS' : 'NMOS'} with $W/L = ${WL}$ ($\\mu_${pm ? 'p' : 'n'}C_{ox} = ${pm ? 50 : 100}\\,\\mu\\text{A/V}^2$, $|V_T| = 1\\,\\text{V}$) has $V_{${pm ? 'SG' : 'GS'}} = ${f(vg)}\\,\\text{V}$ and is in saturation. Find $I_D$.`,
       parts: [{ lbl: 'I_D', unit: c.unit, ans: c.ans }],
       hints: ['$I_D = \\tfrac12\\mu C_{ox}\\tfrac{W}{L}V_{ov}^2$ with $V_{ov} = |V_{GS}| - |V_T|$.'],
@@ -270,6 +278,7 @@
     const WL = pick([25, 50, 100, 125, 200, 250, 400, 500]), vov = pick([0.1, 0.2, 0.3, 0.4, 0.5]);
     const ID = 0.5 * KN * WL * vov * vov;
     return {
+      fig: FIGS.mosBias(false, '?', `W/L=${WL}`, `I_D = ${curTeX(ID)}`),
       q: `An NMOS ($W/L = ${WL}$, $\\mu_nC_{ox} = 100\\,\\mu\\text{A/V}^2$, $V_T = 1\\,\\text{V}$) carries $I_D = ${curTeX(ID)}$ in saturation. Find $V_{GS}$.`,
       parts: [{ lbl: 'V_{GS}', unit: 'V', ans: 1 + vov }],
       hints: ['Invert the square law: $V_{ov} = \\sqrt{2I_D/(\\mu_nC_{ox}W/L)}$, then add $V_T$.'],
@@ -404,6 +413,7 @@
     const unit = pick([50, 100, 125, 200]), VG = pick([1.2, 1.4, 1.5, 2]), vov = VG - 1, mult = pick([0.25, 0.5, 1, 2, 4, 8]);
     const I = 0.5 * KN * unit * mult * vov * vov;
     return {
+      fig: FIGS.mosBias(false, `${f(VG)}\\,\\text{V}`, '?X', `I = ${curTeX(I)}`),
       q: `An NMOS has its source grounded and its gate at $${f(VG)}\\,\\text{V}$. It must carry $${curTeX(I)}$ in saturation. With $1X = ${unit}/1$, how many $X$ wide must it be?`,
       parts: [{ lbl: 'W/L\\ \\text{in units of }X', unit: '', ans: mult }],
       hints: ['$V_{ov} = V_{GS} - 1$ is fixed by the gate. Solve the square law for $W/L$, then divide by the size of $1X$.'],
@@ -415,6 +425,7 @@
     const WL = pick([50, 100, 200, 400]), vov = pick([0.1, 0.2, 0.4, 0.5]);
     const ID = 0.5 * KN * WL * vov * vov, gm = 2 * ID / vov;
     return {
+      fig: FIGS.mosBias(false, null, `W/L=${WL}`, `I_D = ${curTeX(ID)}`),
       q: `An NMOS ($W/L = ${WL}$) is biased in saturation at $I_D = ${curTeX(ID)}$. Find its transconductance $g_m$.`,
       parts: [{ lbl: 'g_m', unit: 'mA/V', ans: gm * 1e3 }],
       hints: ['$g_m = \\partial I_D/\\partial V_{GS} = \\mu_nC_{ox}\\tfrac{W}{L}V_{ov} = 2I_D/V_{ov}$. Find $V_{ov}$ first.'],

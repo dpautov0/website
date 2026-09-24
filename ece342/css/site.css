@@ -170,8 +170,11 @@ tr:last-child td { border-bottom: none; }
 .streak em { font-style: normal; font-size: 12px; color: var(--dim); margin-left: 2px; }
 .streak + .p-status { margin-left: 8px; }
 
-.fig { margin: 8px 0 12px; overflow-x: auto; }
+.fig { margin: 8px 0 12px; overflow-x: auto; overflow-y: hidden; }
 .fig svg { display: block; max-width: 100%; height: auto; margin: 0 auto; overflow: hidden; }
+.fig figcaption { text-align: center; font-size: 13px; color: var(--dim); margin-top: 4px; }
+.figrow { display: flex; flex-wrap: wrap; gap: 8px 28px; justify-content: center; align-items: flex-end; }
+.figrow > div { flex: 0 1 auto; min-width: 0; }
 .schem path, .schem circle, .schem rect { fill: none; stroke: var(--fg); stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
 .schem .fill, .plot .fill { fill: var(--fg); stroke: none; }
 .schem .fillbg { fill: var(--bg); }

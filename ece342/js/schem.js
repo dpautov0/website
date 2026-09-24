@@ -7,7 +7,7 @@
                                         n = name (TeX), s = shown value (TeX), v = value (SI)
                                         V/E: p1 is the + terminal.  I/G: arrow points p1 -> p2.
                                         D: p1 = anode.  E/G: {g: gain, c: [ctrl+, ctrl-]}
-     ['gnd', p]                         ground
+     ['gnd', p]                         ground (bars below p); ['gndu', p] bars above p (AC ground at a rail)
      ['rail', p, {n, v}]                supply bar (acts as a source to ground)
      ['term', p, {n, name, side}]       open terminal
      ['node', p, {n, name, side, dot}]  names a node (name used by answers)
@@ -17,6 +17,8 @@
      ['nmos'|'pmos', p, {n, sz, flip, dc}]  transistor centred at p. NMOS: D above, S below.
                                         PMOS: S above, D below. Gate 1 unit left (right if flip).
                                         dc: true draws the gate-drain (diode) connection.
+     ['C', p1, p2, {n, s}]              capacitor (drawn only; open at DC, left out of the netlist)
+     ['opamp', p]                       op-amp: − in (x−1, y−0.5), + in (x−1, y+0.5), out (x+1, y)
      ['box', p1, p2, {n}]               labelled black box
      ['txt', p, 'TeX', {a}]             free text; a = anchor l r c t b */
 (function () {
@@ -24,7 +26,7 @@
 
   const G = 64;       // pixels per grid unit
   const PAD = 30;
-  const TWO = new Set(['R', 'V', 'I', 'E', 'G', 'D', 'Vac', 'Iac', 'X']);
+  const TWO = new Set(['R', 'V', 'I', 'E', 'G', 'D', 'Vac', 'Iac', 'X', 'C']);
   const k = (p) => `${Math.round(p[0] * 1000)},${Math.round(p[1] * 1000)}`;
 
   function parseEntry(e) {
@@ -44,6 +46,11 @@
     const gx = el.opts.flip ? x + 1 : x - 1;
     if (el.type === 'nmos') return { D: [x, y - 1], S: [x, y + 1], G: [gx, y] };
     return { S: [x, y - 1], D: [x, y + 1], G: [gx, y] };
+  }
+  // op-amp centred at p: − input (x−1, y−0.5), + input (x−1, y+0.5), output (x+1, y)
+  function ampPins(el) {
+    const [x, y] = el.pts[0];
+    return { M: [x - 1, y - 0.5], P: [x - 1, y + 0.5], O: [x + 1, y] };
   }
 
   // ---------------------------------------------------------------- netlist
@@ -87,10 +94,13 @@
         }
       } else if (TWO.has(t)) {
         pins.push(el.pts[0], el.pts[1]);
-      } else if (t === 'gnd') {
+      } else if (t === 'gnd' || t === 'gndu') {
         pins.push(el.pts[0]); uf.union(k(el.pts[0]), 'GND');
       } else if (t === 'rail' || t === 'term' || t === 'node' || t === 'dot') {
         pins.push(el.pts[0]);
+      } else if (t === 'opamp') {
+        const P = ampPins(el);
+        pins.push(P.M, P.P, P.O);
       } else if (t === 'nmos' || t === 'pmos') {
         const P = mosPins(el);
         pins.push(P.D, P.G, P.S);
@@ -141,7 +151,7 @@
         out.push({ type: t, a: id(el.pts[0]), b: id(el.pts[1]), gain: o.g, ca: ref(o.c[0]), cb: ref(o.c[1]), tag: o.id });
       }
       else if (t === 'rail' && o.v !== undefined) out.push({ type: 'V', a: id(el.pts[0]), b: '0', val: o.v, tag: o.id });
-      else if (t === 'D' || t === 'X' || t === 'nmos' || t === 'pmos') linear = false;
+      else if (t === 'D' || t === 'X' || t === 'nmos' || t === 'pmos' || t === 'opamp') linear = false;
     }
     return { elements: out, names, id, linear, devices };
   }
@@ -169,7 +179,7 @@
   let EXT = null;
   function labelSize(html) {
     const lines = String(html).split(/<br\/?>/);
-    const w = Math.max(...lines.map((l) => l.replace(/<[^>]+>/g, '').replace(/\\tfrac\d\d/g, 'x').replace(/\\(text|mathrm|tfrac|dfrac|frac)/g, '').replace(/\\[a-zA-Z]+/g, 'x').replace(/\\[,;!]/g, '').replace(/[${}_^\\]/g, '').length)) * 7.6 + 6;
+    const w = Math.max(...lines.map((l) => l.replace(/<[^>]+>/g, '').replace(/\\tfrac\d\d/g, 'x').replace(/\\(text|mathrm|tfrac|dfrac|frac)/g, '').replace(/\\(sin|cos|ln|log|exp|infty)/g, 'xxx').replace(/\\[a-zA-Z]+/g, 'x').replace(/\\[,;!]/g, ' ').replace(/[${}_^\\]/g, '').length)) * 7.9 + 10;
     return { w, h: lines.length * 17 + 2 };
   }
   function track(x0, y0, x1, y1) {
@@ -218,6 +228,7 @@
     G: { h: 15, w: 15, draw() { return `<path d="M-15,0L0,-15L15,0L0,15Z"/><path d="M-8,0H5"/>${head(9, 0, 1, 0, 5)}`; } },
     D: { h: 8, w: 9, draw() { return '<path class="fillbg" d="M-8,-8L8,0L-8,8Z"/><path d="M8,-8V8"/>'; } },
     X: { h: 16, w: 10, draw() { return '<rect class="fillbg" x="-16" y="-10" width="32" height="20" rx="2"/>'; } },
+    C: { h: 4, w: 13, draw() { return '<path class="thick" d="M-4,-13V13M4,-13V13"/>'; } },
   };
 
   function drawTwo(el, X, Y) {
@@ -280,6 +291,7 @@
     for (const el of els) {
       el.pts.forEach(grow);
       if (el.type === 'nmos' || el.type === 'pmos') Object.values(mosPins(el)).forEach(grow);
+      if (el.type === 'opamp') { const [x, y] = el.pts[0]; grow([x - 1, y - 1]); grow([x + 1, y + 1]); }
     }
     const padL = 22 + (opts.padL || 0), padR = 22 + (opts.padR || 0), padT = 26 + (opts.padT || 0), padB = 26 + (opts.padB || 0);
     const X = (x) => (x - minx) * G + padL;
@@ -312,6 +324,9 @@
       } else if (t === 'gnd') {
         const x = X(el.pts[0][0]), y = Y(el.pts[0][1]);
         body += `<path d="M${x},${y}V${y + 10}M${x - 10},${y + 10}H${x + 10}M${x - 6.5},${y + 14}H${x + 6.5}M${x - 3},${y + 18}H${x + 3}"/>`;
+      } else if (t === 'gndu') {
+        const x = X(el.pts[0][0]), y = Y(el.pts[0][1]);
+        body += `<path d="M${x},${y}V${y - 10}M${x - 10},${y - 10}H${x + 10}M${x - 6.5},${y - 14}H${x + 6.5}M${x - 3},${y - 18}H${x + 3}"/>`;
       } else if (t === 'rail') {
         const x = X(el.pts[0][0]), y = Y(el.pts[0][1]);
         body += `<path d="M${x},${y}V${y - 10}"/><path class="thick" d="M${x - 14},${y - 10}H${x + 14}"/>`;
@@ -340,6 +355,13 @@
         body += sideLabel(x + ox, y + oy, tex(o.n), o.side || (d[0] ? 'a' : 'r'), 8, 'accent');
       } else if (t === 'nmos' || t === 'pmos') {
         body += drawMos(el, X, Y);
+      } else if (t === 'opamp') {
+        const [x0, y0] = el.pts[0];
+        const P = ampPins(el);
+        const lx = X(x0 - 0.72), rx = X(x0 + 0.8), ty = Y(y0 - 0.85), by = Y(y0 + 0.85), cy = Y(y0);
+        body += `<path class="fillbg" d="M${lx},${ty}L${rx},${cy}L${lx},${by}Z"/>`;
+        body += `<path d="M${X(P.M[0])},${Y(P.M[1])}H${lx}M${X(P.P[0])},${Y(P.P[1])}H${lx}M${rx},${cy}H${X(P.O[0])}"/>`;
+        body += minus(lx + 8, Y(P.M[1])) + plus(lx + 8, Y(P.P[1]));
       } else if (t === 'box') {
         const [a, b] = el.pts;
         const x = Math.min(X(a[0]), X(b[0])), y = Math.min(Y(a[1]), Y(b[1]));
@@ -361,7 +383,9 @@
         const P = mosPins(el);
         [P.D, P.G, P.S].forEach((p) => bump(p));
         if (el.opts.dc) { bump(P.G); bump(P.D); }
-      } else if (el.type === 'rail' || el.type === 'gnd') bump(el.pts[0]);
+      } else if (el.type === 'opamp') {
+        Object.values(ampPins(el)).forEach((p) => bump(p));
+      } else if (el.type === 'rail' || el.type === 'gnd' || el.type === 'gndu') bump(el.pts[0]);
     }
     for (const [a, b] of segs) for (const p of pins) if (onInterior(p, a, b)) bump(p, 2);
     let dots = '';
