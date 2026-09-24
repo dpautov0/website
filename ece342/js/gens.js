@@ -636,7 +636,7 @@
     const vo = vs * rd / (rd + c.R);
     return {
       fig: FIGS.vrx(c.Vs, c.R),
-      figHtml: FIGS.pwlPlot(c),
+      figHtml: FIGS.pwlPlot(c), qplot: FIGS.pwlPlot(c, true),
       q: `A nonlinear device has
 $$I(V)=\\begin{cases}0, & V<${c.Va}\\,\\text{V}\\\\ \\dfrac{V-${c.Va}}{${k(c.r1)}\\,\\text{k}\\Omega}, & ${c.Va}\\le V<${c.Vb}\\,\\text{V}\\\\ ${f(c.Ib * 1e3)}\\,\\text{mA}+\\dfrac{V-${c.Vb}}{${k(c.r2)}\\,\\text{k}\\Omega}, & V\\ge ${c.Vb}\\,\\text{V}\\end{cases}$$
 It is driven by $V_S = ${c.Vs}\\,\\text{V}$ in series with $R = ${k(c.R)}\\kO$, plus a small signal $v_s = 20\\,\\text{mV}\\sin\\omega t$. Find the operating point, the incremental resistance, and the small-signal amplitude across the device.`,

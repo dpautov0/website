@@ -103,12 +103,12 @@
     ['w', [0, 1.5], [0, 2], [1.8, 2]], ['gnd', [0.9, 2]], ['vlab', [2.25, 0.2], [2.25, 1.8], { n: 'V_D' }], ['iarr', [1.8, 0.3], 'd', { n: 'I_D', side: 'l', off: [-14, 0] }]];
   F.vrx = (vs, r) => [['Vac', [0, 0.2], [0, 1.2], { n: 'v_s', side: 'l' }], ['V', [0, 1.2], [0, 2.2], { n: 'V_S', s: V(vs), side: 'l' }], ['gnd', [0, 2.2]], ['w', [0, 0.2], [0, -0.4]],
     ['R', [0, -0.4], [1.8, -0.4], { n: 'R', s: U.si(r, 'Ω') }], ['X', [1.8, -0.4], [1.8, 2.2], { n: 'I(V)' }], ['gnd', [1.8, 2.2]], ['vlab', [2.3, 0.1], [2.3, 1.7], { n: 'V' }]];
-  F.pwlPlot = (c) => {
+  F.pwlPlot = (c, showQ) => {
     const Imax = c.Vs / c.R * 1e3;
     const I = (v) => (v < c.Va ? 0 : v < c.Vb ? (v - c.Va) / c.r1 * 1e3 : c.Ib * 1e3 + (v - c.Vb) / c.r2 * 1e3);
     return Schem.plot({ x: [0, c.Vs * 1.05], y: [0, Imax * 1.1], xl: 'V\\,(\\text{V})', yl: 'I\\,(\\text{mA})',
       xt: Array.from({ length: Math.floor(c.Vs) + 1 }, (_, i) => i).filter((i) => i % (c.Vs > 6 ? 2 : 1) === 0), yt: [0, +U.fmt(Imax / 2, 2), +U.fmt(Imax, 2)],
-      curves: [{ f: I, cls: 'dc' }, { f: (v) => (c.Vs - v) / c.R * 1e3, from: 0, to: c.Vs }], pts: [{ x: c.V0, y: c.I0 * 1e3, n: 'Q' }] });
+      curves: [{ f: I, cls: 'dc' }, { f: (v) => (c.Vs - v) / c.R * 1e3, from: 0, to: c.Vs }], pts: showQ ? [{ x: c.V0, y: c.I0 * 1e3, n: 'Q' }] : [] });
   };
   F.mosNodes = (pm, vg, vs, vd) => [[pm ? 'pmos' : 'nmos', [1, 1]], ['w', [1, 0], [1, -0.3]], ['w', [0, 1], [-0.4, 1]], ['w', [1, 2], [1, 2.3]],
     ['term', [-0.4, 1], { n: `V_G = ${vg}\\,\\text{V}`, side: 'l' }],

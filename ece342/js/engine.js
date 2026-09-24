@@ -138,6 +138,7 @@
         macros: MACROS, throwOnError: false, strict: 'ignore',
       });
     }
+    if (window.declutter) window.declutter(el);
   }
 
   function texInline(t) {
@@ -533,6 +534,8 @@
     document.getElementById('navtoggle').addEventListener('click', () => document.body.classList.toggle('nav-open'));
     window.addEventListener('hashchange', route);
     route();
+    // KaTeX fonts change label widths once loaded: tidy the figures again
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => window.declutter && window.declutter(document.getElementById('main')));
   });
 
   window.Engine = { mdToHtml, rich, renderMath, Store, LESSONS, BYID };

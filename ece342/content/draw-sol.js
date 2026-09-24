@@ -67,7 +67,7 @@
     });
   }
   wrap('pwl_q', (p) => {
-    p.figs = { ss: { fig: Dw.ss(p.fig, { rx: 'r_d' }), cap: 'small-signal circuit: $V_S$ shorted, device $\\to r_d$' } };
-    p.sol = `${p.sol}\n\n[[fig:ss]]`;
+    p.figs = { q: { svg: p.qplot, cap: 'the operating point $Q$' }, ss: { fig: Dw.ss(p.fig, { rx: 'r_d' }), cap: 'small-signal circuit: $V_S$ shorted, device $\\to r_d$' } };
+    p.sol = `[[fig:q]]\n\n${p.sol}\n\n[[fig:ss]]`;
   });
 })();
