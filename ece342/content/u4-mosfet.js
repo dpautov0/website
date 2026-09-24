@@ -541,6 +541,7 @@ Note $M_5$ has $V_{DS} = 0.2 = V_{ov}$: **exactly at the edge of saturation**. E
           G('mirror_rmax', { need: 2 }),
           G('stack_vov', { need: 2 }),
           G('mirror_ratio', { need: 2 }),
+          G('size_rules', { need: 1 }),
         ],
       },
     ],

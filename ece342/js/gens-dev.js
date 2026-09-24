@@ -449,6 +449,45 @@ $$|v_s|_{max} = 7.5\,\text{mV}\times\frac{R + ${two ? '2r_d' : 'r_d'}}{r_d} = 7.
     };
   };
 
+  // X-sizing: K per size, the same-V_GS rule (mirror) and the same-current rule (series).
+  GENS.size_rules = () => {
+    const c = tryUntil(() => {
+      const pm = Math.random() < 0.35, kp = pm ? 50e-6 : 100e-6;
+      const unit = pick([100, 125, 200, 250, 500]);
+      const s1 = pick([0.5, 1, 2]), s2 = pick([0.25, 0.5, 1, 2, 4, 8].filter((x) => x !== s1));
+      const K1 = 0.5 * kp * unit * s1, vov = pick([0.1, 0.2, 0.3, 0.4]);
+      const I1 = K1 * vov * vov;
+      return { pm, kp, unit, s1, s2, K1, vov, I1, I2: I1 * s2 / s1, vov2: vov * Math.sqrt(s1 / s2) };
+    }, (o) => clean(o.I1 * 1e3, 3) && clean(o.vov2, 3) && o.I1 >= 20e-6 && o.I1 <= 5e-3);
+    const dev = c.pm ? 'PMOS' : 'NMOS';
+    const mir = c.pm ? FIGS.pmirror({ s1: xs(c.s1), s2: xs(c.s2) }) : FIGS.nmirror({ s1: xs(c.s1), s2: xs(c.s2), RD: false });
+    const stack = c.pm
+      ? [['rail', [0, 0], { n: 'V_{DD}' }], ['pmos', [0, 1], { n: 'M_1', sz: xs(c.s1), flip: true }], ['w', [1, 1], [1, 2], [0, 2]],
+        ['pmos', [0, 3], { n: 'M_2', sz: xs(c.s2), flip: true }], ['w', [1, 3], [1, 4], [0, 4]], ['I', [0, 4], [0, 5.4], { n: 'I_1', side: 'l' }], ['gnd', [0, 5.4]]]
+      : [['rail', [0, 0], { n: 'V_{DD}' }], ['I', [0, 0], [0, 1.4], { n: 'I_1', side: 'l' }],
+        ['nmos', [0, 2.4], { n: 'M_2', sz: xs(c.s2), flip: true, dc: true }], ['nmos', [0, 4.4], { n: 'M_1', sz: xs(c.s1), flip: true, dc: true }], ['gnd', [0, 5.4]]];
+    const I1 = cur(c.I1), I2 = cur(c.I2);
+    return {
+      figHtml: DRAW.row([{ fig: mir, cap: 'mirror: same $V_{GS}$' }, { fig: stack, cap: 'series: same current' }]).svg,
+      q: md`$1X = ${c.unit}/1$ (${dev}, $\mu C_{ox} = ${f(c.kp * 1e6)}\,\mu\text{A/V}^2$, $|V_T| = 1\,\text{V}$). $M_1$ is $${xs(c.s1)}$ and $M_2$ is $${xs(c.s2)}$. Find $K_1 = \tfrac12\mu C_{ox}\tfrac{W}{L}$ for $M_1$, and $M_1$'s current at $V_{ov} = ${f(c.vov)}\,\text{V}$. Then find $M_2$'s current in the mirror (left), and $M_2$'s overdrive when it carries $M_1$'s current in series (right).`,
+      parts: [
+        { lbl: 'K_1', unit: 'mA/V²', ans: c.K1 * 1e3 },
+        { lbl: 'I_1', unit: I1.unit, ans: I1.ans },
+        { lbl: 'I_2\\text{ (mirror)}', unit: I2.unit, ans: I2.ans },
+        { lbl: 'V_{ov,2}\\text{ (series)}', unit: 'V', ans: c.vov2 },
+      ],
+      hints: [
+        md`$W/L$ of $M_1$ is $${c.unit}\times${f(c.s1)}$.`,
+        md`Mirror: same $V_{GS}$, so current scales with size. Series: same current, so $V_{ov}$ scales with $\dfrac{1}{\sqrt{\text{size}}}$.`,
+      ],
+      sol: md`**$K_1$:** $\tfrac12\times${f(c.kp * 1e6)}\,\mu\text{A/V}^2\times(${c.unit}\times${f(c.s1)}) = ${f(c.K1 * 1e3)}\,\text{mA/V}^2$, so $I_1 = K_1V_{ov}^2 = ${f(c.K1 * 1e3)}\times${f(c.vov)}^2 = ${curTeX(c.I1)}$.
+
+**Mirror** (same $V_{GS}$): $I_2 = I_1\times\dfrac{${f(c.s2)}}{${f(c.s1)}} = ${curTeX(c.I2)}$.
+
+**Series** (same current): $V_{ov,2} = V_{ov,1}\sqrt{\dfrac{${f(c.s1)}}{${f(c.s2)}}} = ${f(c.vov)}\times${f(Math.sqrt(c.s1 / c.s2))} = ${f(c.vov2)}\,\text{V}$, so $|V_{GS2}| = ${f(1 + c.vov2)}\,\text{V}$. ${c.s2 > c.s1 ? 'The bigger device needs less overdrive.' : 'The smaller device needs more overdrive.'}`,
+    };
+  };
+
   GENS.mirror_ratio = () => {
     const pm = Math.random() < 0.35;
     const sz = [0.25, 0.5, 1, 2, 3, 4, 6, 8];

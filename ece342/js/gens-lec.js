@@ -60,7 +60,7 @@ Roots: $V_D = ${f(r1)}\\,\\text{V}$ or $${f(r2)}\\,\\text{V}$. The second is abo
   const GEN_POOL = {
     lin: ['bb_scale', 'two_meas', 'reverse_thev', 'thev_dep', 'yparam', 'superpos', 'twoport_gain'],
     nl: ['sine_gain', 'inverse_op', 'two_point', 'diode_ss', 'diode_isrc', 'nl_src', 'pwl_q', 'cvd_branch', 'newton_step', 'swing_max'],
-    mos: ['stack_mirror_rmax', 'mos_rs_bias', 'pmos_rs_bias', 'mirror_rmax', 'stack_vov', 'size_for_current', 'diode_conn', 'triode_solve'],
+    mos: ['stack_mirror_rmax', 'mos_rs_bias', 'pmos_rs_bias', 'mirror_rmax', 'stack_vov', 'size_for_current', 'diode_conn', 'triode_solve', 'size_rules'],
   };
   const topicOf = (p) => {
     if (p.cat) return p.cat;
