@@ -57,34 +57,9 @@ The handwritten Handout 2 writes $y_{22} = 2\alpha_2V_{IN} + 2\beta_2V_{OUT}$. T
     }),
   );
 
-  // ================================================================ Unit 3: Newton step, the 5% rule, the 5 V → 5.1 V example
-  lesson('u3', 'u3-iterate').steps.push(
-    R(md`
-      **Newton–Raphson** (Handout 2) is the other iteration. Write KCL as $f(v_D) = \dfrac{V_S - v_D}{R_S} - I_Se^{v_D/(nV_T)} = 0$ and update
-      $$V_{D,n+1} = V_{D,n} - \frac{f(V_{D,n})}{f'(V_{D,n})},\qquad f'(v_D) = -\frac1{R_S} - \frac{I_S}{nV_T}e^{v_D/(nV_T)}$$
-      Handout 2's example ($2\,\text{V}$, $1\kO$, $I_S = 10^{-14}$, $V_T = 26\,\text{mV}$) converges to $666\,\text{mV}$, $1.334\,\text{mA}$, versus $1.3\,\text{mA}$ from the $0.7\,\text{V}$ model.
-    `),
-    P({
-      q: md`$V_S = 2\,\text{V}$, $R_S = 1\kO$, $V_T = 25\,\text{mV}$, and the diode's $I_S$ is such that it carries exactly $1\,\text{mA}$ at $0.700\,\text{V}$. Take **one** Newton–Raphson step from $V_{D,0} = 0.7\,\text{V}$.`,
-      parts: [{ lbl: 'V_{D,1}', unit: 'V', ans: 0.7 + 0.3e-3 / 0.041, tol: { rel: 0.0005 } }],
-      hints: [md`At $0.7\,\text{V}$: $I_Se^{v/V_T} = 1\,\text{mA}$, so $f = \frac{2-0.7}{1000} - 0.001$ and $f' = -\frac1{1000} - \frac{0.001}{0.025}$.`],
-      sol: md`$f = 1.3\,\text{mA} - 1\,\text{mA} = 0.3\,\text{mA}$, $f' = -0.001 - 0.04 = -0.041\,\text{S}$. $V_{D,1} = 0.7 + \dfrac{0.3\,\text{m}}{0.041} = 0.7 + 7.32\,\text{mV} = 0.7073\,\text{V}$.`,
-    }),
-  );
-
+  // ================================================================ Unit 3: the 5 V → 5.1 V example
+  // (Newton–Raphson and the 5% swing rule have their own lessons in content/diode-numerics.js.)
   lesson('u3', 'u3-rd').steps.push(
-    R(md`
-      **How small is "small"?** (Handout 2.) With $\alpha = \dfrac{v_d}{nV_T}$, the first-order model's relative current error is
-      $$\varepsilon = 1 - \frac{1+\alpha}{e^{\alpha}} \approx \frac{\alpha^2}{2}$$
-      For $\varepsilon \le 5\%$ the handout gets $|v_d| \lesssim 7.5\,\text{mV}$. In a circuit, the source's swing is bigger by the divider: $v_d = \dfrac{r_d}{R + r_d}v_s$, so
-      $$|v_s| \le v_{d,max}\left(1 + \frac{R}{r_d}\right)$$
-      (Handout 2 also uses $V_T = 26\,\text{mV}$ and an ideality factor $n$, with $r_d = nV_T/I_D$. Lectures and the NS notes use $25\,\text{mV}$ and $n = 1$. Use whatever the problem gives.)
-    `),
-    P({
-      q: md`A diode biased at $I_D = 1\,\text{mA}$ ($V_T = 25\,\text{mV}$, $n = 1$) sits in series with $R = 1\kO$. Keeping $|v_d| \le 7.5\,\text{mV}$ (the 5% rule), what's the largest input swing $|v_s|$?`,
-      parts: [{ lbl: 'r_d', unit: 'Ω', ans: 25 }, { lbl: '|v_s|_{max}', unit: 'mV', ans: 7.5 * 41 }],
-      sol: md`$r_d = 25\,\Omega$. $|v_s| \le 7.5\,\text{mV}\,(1 + 1000/25) = 7.5 \times 41 = 307.5\,\text{mV}$. The big resistor does most of the work, so the input can swing far more than the diode.`,
-    }),
     P({
       id: 'HO2-EX', src: 'Lecture example · Handout 2', title: 'Incremental analysis, 5 V → 5.1 V', cat: 'nl', kind: 'lec',
       q: md`A $5\,\text{V}$ source drives a diode through $2.15\kO$. Use $V_{D0} = 0.7\,\text{V}$ and $V_T = 25\,\text{mV}$. The source then rises to $5.1\,\text{V}$. Using the incremental model, find the original current $I_1$, $r_d$, the change $\Delta I$, and the new total current.`,

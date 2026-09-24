@@ -59,7 +59,7 @@ Roots: $V_D = ${f(r1)}\\,\\text{V}$ or $${f(r2)}\\,\\text{V}$. The second is abo
   const OVERRIDE = { 'P1-P1b': 'nl', 'P1-P1c': 'mos', 'F23-P1c': 'nl', 'S26-P1b': 'nl', 'MC-P1b': 'nl', 'MD-P1b': 'nl' };
   const GEN_POOL = {
     lin: ['bb_scale', 'two_meas', 'reverse_thev', 'thev_dep', 'yparam', 'superpos', 'twoport_gain'],
-    nl: ['sine_gain', 'inverse_op', 'two_point', 'diode_ss', 'diode_isrc', 'nl_src', 'pwl_q', 'cvd_branch'],
+    nl: ['sine_gain', 'inverse_op', 'two_point', 'diode_ss', 'diode_isrc', 'nl_src', 'pwl_q', 'cvd_branch', 'newton_step', 'swing_max'],
     mos: ['stack_mirror_rmax', 'mos_rs_bias', 'pmos_rs_bias', 'mirror_rmax', 'stack_vov', 'size_for_current', 'diode_conn', 'triode_solve'],
   };
   const topicOf = (p) => {

@@ -92,18 +92,10 @@
   const itPlot = plot({ x: [0, 1.1], y: [0, 5], xl: 'V_D\\,(\\text{V})', yl: 'I_D\\,(\\text{mA})', xt: [0, 0.5, 1], yt: [0, 2, 4],
     curves: [{ f: (v) => 6.9e-16 * Math.exp(v / 0.025) * 1e3, cls: 'dc' }, { f: (v) => (5 - v), from: 0, to: 1.1 }], pts: [{ x: 0.736, y: 4.26, n: 'Q' }] });
   add('u3', 'u3-iterate', 0, { it: Dw.row([{ fig: FIGS.vrd('5\\,\\text{V}', '1\\kO'), cap: 'the circuit' }, { svg: itPlot, cap: 'the iteration walks to the crossing $Q$' }]) });
-  const nrPlot = plot({ x: [0.6, 0.8], y: [-3, 3], xl: 'v_D\\,(\\text{V})', yl: 'f(v_D)\\,(\\text{mA})', xt: [0.6, 0.7, 0.8], yt: [-2, 0, 2],
-    curves: [{ f: (v) => (2 - v) - Math.exp((v - 0.7) / 0.025), cls: 'dc' }, { f: (v) => 0.3 - 41 * (v - 0.7), from: 0.66, to: 0.74 }], pts: [{ x: 0.7, y: 0.3, n: 'V_{D,0}' }, { x: 0.7073, y: 0, n: 'V_{D,1}' }] });
-  add('u3', 'u3-iterate', 2, { nr: Dw.row([{ fig: FIGS.vrd('V_S', 'R_S'), cap: 'same circuit' }, { svg: nrPlot, cap: 'Newton: follow the tangent to zero' }]) });
-  const itP = probs('u3', 'u3-iterate'); const nrP = itP.find((p) => /Newton/.test(p.q)); if (nrP) nrP.fig = FIGS.vrd('2\\,\\text{V}', '1\\kO');
 
   const rdPlot = plot({ x: [0.6, 0.8], y: [0, 10], xl: 'V_D', yl: 'I_D\\,(\\text{mA})', xt: [0.6, 0.7, 0.8], yt: [0, 5, 10],
     curves: [{ f: (v) => 2 * Math.exp((v - 0.7) / 0.025), cls: 'dc' }, { f: (v) => 2 + 80 * (v - 0.7), from: 0.66, to: 0.78 }], pts: [{ x: 0.7, y: 2, n: 'Q\\ (I_{D0} = 2\\,\\text{mA})' }] });
   add('u3', 'u3-rd', 0, { rd: Dw.row([{ fig: FIGS.diode1('V_{D0}+v_d', 'I_{D0}+i_d'), cap: 'diode at $Q$' }, { svg: rdPlot, cap: 'tangent slope $I_{D0}/V_T$' }, { fig: [['term', [0, -0.4]], ['w', [0, -0.4], [0, 0]], ['R', [0, 0], [0, 1.4], { n: 'r_d = V_T/I_{D0}' }], ['w', [0, 1.4], [0, 1.8]], ['term', [0, 1.8]]], cap: 'small-signal model' }]) });
-  const errC = [['Vac', [0, 0.2], [0, 1.2], { n: 'v_s', side: 'l' }], ['V', [0, 1.2], [0, 2.2], { n: 'V_S', side: 'l' }], ['gnd', [0, 2.2]], ['w', [0, 0.2], [0, -0.4]], ['R', [0, -0.4], [1.8, -0.4], { n: 'R' }], ['D', [1.8, -0.4], [1.8, 2.2]], ['gnd', [1.8, 2.2]], ['vlab', [2.25, 0], [2.25, 1.8], { n: 'v_d' }]];
-  add('u3', 'u3-rd', 2, { er: Dw.row([{ fig: errC, cap: 'the circuit' }, { fig: Dw.ss(errC), cap: 'small signal: $v_d = \\frac{r_d}{R + r_d}v_s$' }]) });
-  const rdP = probs('u3', 'u3-rd');
-  const swP = rdP.find((p) => /5% rule/.test(p.q)); if (swP) swP.fig = errC.map((e) => (e[0] === 'R' ? ['R', e[1], e[2], { n: 'R', s: '1\\kO' }] : e));
   const ho2 = byId('HO2-EX');
   if (ho2) {
     ho2.fig = [['Vac', [0, 0.2], [0, 1.2], { n: '\\Delta V = 0.1\\,\\text{V}', side: 'l' }], ['V', [0, 1.2], [0, 2.2], { n: '5\\,\\text{V}', side: 'l' }], ['gnd', [0, 2.2]], ['w', [0, 0.2], [0, -0.4]], ['R', [0, -0.4], [1.8, -0.4], { n: '2.15\\kO' }], ['D', [1.8, -0.4], [1.8, 2.2]], ['gnd', [1.8, 2.2]], ['iarr', [1.8, 0.1], 'd', { n: 'I_1 + \\Delta I', side: 'l', off: [-14, 0] }]];

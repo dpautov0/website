@@ -181,6 +181,104 @@
     };
   };
 
+  // curve samples kept inside the plot window (Schem.plot would otherwise draw past the axes)
+  const clipPts = (fn, a, b, lo, hi) => { const out = []; for (let i = 0; i <= 200; i++) { const x = a + (b - a) * i / 200, y = fn(x); if (y >= lo && y <= hi) out.push([x, y]); } return out; };
+
+  // Newton–Raphson on the diode KCL (Handout 2): one step by hand, then iterate to the answer.
+  GENS.newton_step = () => {
+    const c = tryUntil(() => {
+      const useIS = Math.random() < 0.5;
+      const vt = useIS ? pick([0.025, 0.026]) : 0.025, n = useIS ? 1 : pick([1, 1, 2]);
+      const IS = useIS ? pick([1e-14, 1e-15]) : 0, I0 = useIS ? 0 : pick([0.5, 1, 2]) * 1e-3;
+      const Vs = pick([1.5, 2, 3, 5]), R = pick([500, 1000, 2000, 4700]);
+      const Id = (v) => (useIS ? IS * Math.exp(v / (n * vt)) : I0 * Math.exp((v - 0.7) / (n * vt)));
+      const fn = (v) => (Vs - v) / R - Id(v), G = (v) => 1 / R + Id(v) / (n * vt);
+      let lo = 0, hi = Vs;
+      for (let i = 0; i < 200; i++) { const m = (lo + hi) / 2; if (fn(m) > 0) lo = m; else hi = m; }
+      const vq = (lo + hi) / 2;
+      const v0 = pick([0.6, 0.65, 0.7, 0.75, 0.8, 0.85].filter((x) => x - vq > -0.03 && x - vq < 0.06));
+      return { useIS, vt, n, IS, I0, Vs, R, Id, fn, G, vq, v0 };
+    }, (o) => o.v0 !== undefined && Math.abs(o.fn(o.v0)) > 5e-5);
+    const rows = [];
+    for (let v = c.v0, i = 0; i < 12; i++) {
+      const fv = c.fn(v), g = c.G(v), dv = fv / g;
+      rows.push({ i, v, fv, g, dv });
+      v += dv;
+      if (Math.abs(dv) < 1e-6) break;
+    }
+    const r0 = rows[0], v1 = c.v0 + r0.dv, ID = (c.Vs - c.vq) / c.R;
+    const IR0 = (c.Vs - c.v0) / c.R, ID0 = c.Id(c.v0);
+    const law = c.useIS ? 'I_D = I_Se^{V_D/(nV_T)}' : `I_D = ${f(c.I0 * 1e3)}\\,\\text{mA}\\cdot e^{(V_D - 0.7)/(nV_T)}`;
+    const params = c.useIS ? `$I_S = ${f(c.IS)}\\,\\text{A}$, $n = 1$, $V_T = ${f(c.vt * 1e3)}\\,\\text{mV}$`
+      : `$n = ${c.n}$ and $V_T = 25\\,\\text{mV}$ (it carries $${f(c.I0 * 1e3)}\\,\\text{mA}$ at $0.7\\,\\text{V}$)`;
+    const fm = (v) => c.fn(v) * 1e3, f0 = fm(c.v0), g0 = c.G(c.v0) * 1e3;
+    const a = Math.min(c.v0, v1, c.vq) - 0.015, b = Math.max(c.v0, v1, c.vq) + 0.015, ys = Math.max(Math.abs(f0), 0.2) * 1.6;
+    const tan = Schem.plot({ w: 360, h: 230, x: [a, b], y: [-ys, ys], xl: 'V_D\\,(\\text{V})', yl: 'f\\,(\\text{mA})', xt: [c.v0], yt: [0],
+      curves: [{ pts: clipPts(fm, a, b, -ys, ys), cls: 'dc' }, { pts: clipPts((v) => f0 - g0 * (v - c.v0), a, b, -ys, ys) }],
+      pts: [{ x: c.v0, y: f0, n: 'V_{D,0}' }, { x: v1, y: 0, n: 'V_{D,1}' }] });
+    const tbl = rows.map((r) => `| ${r.i} | ${r.v.toFixed(5)} | ${f(r.fv * 1e3)} | ${f(-r.g * 1e3)} | ${(r.dv * 1e3).toFixed(3)} |`).join('\n');
+    return {
+      fig: FIGS.vrd(Vv(c.Vs), kO(c.R)),
+      q: md`$V_S = ${f(c.Vs)}\,\text{V}$ drives a diode through $R_S = ${kO(c.R)}$. The diode obeys $${law}$ with ${params}. Use Newton–Raphson from $V_{D,0} = ${f(c.v0)}\,\text{V}$: find $f(V_{D,0})$, $f'(V_{D,0})$ and $V_{D,1}$, then iterate to the operating current $I_D$.`,
+      parts: [
+        { lbl: 'f(V_{D,0})', unit: 'mA', ans: f0, tol: { rel: 0.01 } },
+        { lbl: "f'(V_{D,0})", unit: 'mS', ans: -g0, tol: { rel: 0.01 } },
+        { lbl: 'V_{D,1}', unit: 'V', ans: v1, tol: { rel: 0.0005 } },
+        { lbl: 'I_D', unit: 'mA', ans: ID * 1e3, tol: { rel: 0.005 } },
+      ],
+      hints: [
+        md`Evaluate both laws at the guess: $I_R = \dfrac{V_S - V_{D,0}}{R_S}$ and $I_D(V_{D,0})$. The mismatch is $f = I_R - I_D$.`,
+        md`$f' = -\left(\dfrac{1}{R_S} + \dfrac{I_D}{nV_T}\right)$. With currents in mA and conductances in mS, $f/f'$ comes out in volts.`,
+        md`$V_{D,1} = V_{D,0} - \dfrac{f}{f'}$. Repeat until the step is tiny, then $I_D = \dfrac{V_S - V_D}{R_S}$.`,
+      ],
+      sol: md`**At $V_{D,0} = ${f(c.v0)}\,\text{V}$:**
+$$I_D = ${f(ID0 * 1e3)}\,\text{mA},\qquad I_R = \frac{${f(c.Vs)} - ${f(c.v0)}}{${k(c.R)}\kO} = ${f(IR0 * 1e3)}\,\text{mA}$$
+$$f = ${f(IR0 * 1e3)} - ${f(ID0 * 1e3)} = ${f(f0)}\,\text{mA},\qquad f' = -\left(${f(1e3 / c.R)} + \frac{${f(ID0 * 1e3)}}{${f(c.n * c.vt)}}\right) = ${f(-g0)}\,\text{mS}$$
+$$V_{D,1} = ${f(c.v0)} - \frac{${f(f0)}}{${f(-g0)}} = ${v1.toFixed(5)}\,\text{V}$$
+[[fig:tan]]
+Keep going:
+
+| $n$ | $V_{D,n}$ (V) | $f$ (mA) | $f'$ (mS) | step (mV) |
+|---|---|---|---|---|
+${tbl}
+
+Converged: $V_D = ${c.vq.toFixed(5)}\,\text{V}$, so $I_D = \dfrac{${f(c.Vs)} - ${c.vq.toFixed(4)}}{${k(c.R)}\kO} = ${f(ID * 1e3)}\,\text{mA}$.`,
+      figs: { tan: { svg: tan, cap: 'the tangent at $V_{D,0}$ hits zero at $V_{D,1}$' } },
+    };
+  };
+
+  // How large may the input swing be before the diode's small-signal model is off by 5%?
+  GENS.swing_max = () => {
+    const c = tryUntil(() => {
+      const kd = pick([1, 1, 2]), vt = pick([0.025, 0.026]), R = pick([500, 1000, 2000, 4700, 10000]);
+      const ID = pick([0.25, 0.5, 1, 2, 5]) * 1e-3;
+      return { kd, vt, R, ID, Vs: +(ID * R + 0.7 * kd).toFixed(4) };
+    }, (o) => o.Vs <= 15 && clean(o.Vs, 2));
+    const rd = c.vt / c.ID, vs = 7.5e-3 * (c.R + c.kd * rd) / rd;
+    const fig = [
+      ['Vac', [0, 0.2], [0, 1.2], { n: 'v_s', side: 'l' }], ['V', [0, 1.2], [0, 2.2], { n: 'V_S', s: Vv(c.Vs), side: 'l' }], ['gnd', [0, 2.2]],
+      ['w', [0, 0.2], [0, -0.4]], ['R', [0, -0.4], [2, -0.4], { n: 'R', s: kO(c.R) }],
+      ...diodeString(2, -0.4, c.kd, 2.6 / c.kd), ['gnd', [2, 2.2]],
+      ...(c.kd === 1 ? [['vlab', [2.5, -0.1], [2.5, 1.9], { n: 'V_D + v_d' }]] : []),
+    ];
+    const two = c.kd > 1;
+    return {
+      fig,
+      q: md`A small signal $v_s$ rides on $V_S = ${f(c.Vs)}\,\text{V}$, which biases ${two ? 'two identical diodes in series' : 'a diode'} through $R = ${kO(c.R)}$. Use $0.7\,\text{V}$ per diode for the DC pass, $V_T = ${f(c.vt * 1e3)}\,\text{mV}$, $n = 1$, and the 5% rule ($|v_d| \le 7.5\,\text{mV}$ per diode). Find $I_D$, $r_d$${two ? ' (per diode)' : ''} and the largest acceptable $|v_s|$.`,
+      parts: [{ lbl: 'I_D', unit: 'mA', ans: c.ID * 1e3 }, { lbl: 'r_d', unit: 'Ω', ans: rd }, { lbl: '|v_s|_{max}', unit: 'mV', ans: vs * 1e3 }],
+      hints: [
+        md`DC pass: $v_s = 0$ and each diode drops $0.7\,\text{V}$.`,
+        md`$r_d = \dfrac{nV_T}{I_D}$ for each diode.`,
+        md`Small-signal circuit: $V_S$ shorted, each diode → $r_d$. Each diode gets $v_d = \dfrac{r_d}{R + ${two ? '2r_d' : 'r_d'}}v_s$. Set $|v_d| = 7.5\,\text{mV}$.`,
+      ],
+      sol: md`**DC:** $I_D = \dfrac{${f(c.Vs)} - ${f(0.7 * c.kd)}}{${k(c.R)}\kO} = ${f(c.ID * 1e3)}\,\text{mA}$, so $r_d = \dfrac{${f(c.vt * 1e3)}\,\text{mV}}{${f(c.ID * 1e3)}\,\text{mA}} = ${f(rd)}\,\Omega$.
+[[fig:ss]]
+**Divider:** each diode sees $v_d = \dfrac{r_d}{R + ${two ? '2r_d' : 'r_d'}}v_s$. Keep $|v_d| \le 7.5\,\text{mV}$:
+$$|v_s|_{max} = 7.5\,\text{mV}\times\frac{R + ${two ? '2r_d' : 'r_d'}}{r_d} = 7.5\,\text{mV}\times\frac{${f(c.R)} + ${f(c.kd * rd)}}{${f(rd)}} = ${f(vs * 1e3)}\,\text{mV}$$`,
+      figs: { ss: { fig: DRAW.ss(fig, { rds: `${f(rd)}\\,\\Omega` }), cap: 'small-signal circuit: $V_S$ shorted, diodes → $r_d$' } },
+    };
+  };
+
   GENS.diode_ss = () => {
     const n = pick([1, 2]), R = pk([1, 2, 4]);
     const c = tryUntil(() => { const Vs = pick([2, 3, 4, 5, 6, 8]) + (n === 2 ? 0.4 : 0.7); return { Vs, ID: (Vs - 0.7 * n) / R }; }, (o) => o.ID > 0 && clean(o.ID * 1e3, 3));

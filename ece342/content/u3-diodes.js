@@ -253,7 +253,7 @@ $$Kv_x + \frac{v_{out}(1 + R_1/R_L)}{R_2} + \frac{v_{out}}{R_L} = 0\;\Rightarrow
 
             Handy values: $0.5\,\text{mA} \to 50\,\Omega$, $1\,\text{mA} \to 25\,\Omega$, $2\,\text{mA} \to 12.5\,\Omega$, $5\,\text{mA} \to 5\,\Omega$. Past papers were written calculator-free, so their numbers land on these. A clean $r_d$ is still a good sanity check with a calculator.
 
-            Diodes in series each get their own $r_d$, and they add. The model is accurate for $|v_d| \lesssim 5\,\text{mV}$.
+            Diodes in series each get their own $r_d$, and they add. The model is within 5% while each diode's swing stays under about $7.5\,\text{mV}$ (next lesson).
 
             !!trap Don't carry the 0.7 V
             The $0.7\,\text{V}$ is a DC quantity. It disappears in the small-signal circuit; only $r_d$ remains.
@@ -299,6 +299,8 @@ $$Kv_x + \frac{v_{out}(1 + R_1/R_L)}{R_2} + \frac{v_{out}}{R_L} = 0\;\Rightarrow
           G('diode_isrc', { need: 2 }),
           G('rd', { need: 2 }),
           G('decade', { need: 1 }),
+          G('newton_step', { need: 1 }),
+          G('swing_max', { need: 1 }),
         ],
       },
     ],
