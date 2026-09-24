@@ -11,7 +11,7 @@
     q: md`$R_S = 200\,\Omega$, $R_D = 1.25\kO$, $W/L = 125/1$, $\mu_nC_{ox} = 100\,\mu\text{A/V}^2$, $V_T = 1\,\text{V}$. Find $I_D$, $V_D$, $V_S$ and $R_{D,max}$ for saturation.`,
     fig: FIGS.nbias({ vdds: V(2), RDs: '1.25\\kO', RSs: '200\\,\\Omega', wls: 'W/L=125/1', vgs: V(1.6) }),
     parts: [{ lbl: 'I_D', unit: 'mA', ans: 1 }, { lbl: 'V_D', unit: 'V', ans: 0.75 }, { lbl: 'V_S', unit: 'V', ans: 0.2 }, { lbl: 'R_{D,max}', unit: 'kΩ', ans: 1.4 }],
-    hints: [md`Assume saturation: $I_D = 6.25\,\text{mA/V}^2\,(V_{GS} - 1)^2$ with $V_{GS} = 1.6 - 200I_D$.`, md`The quadratic has roots 9 mA and 1 mA. One of them makes $V_{GS} < V_T$.`, md`$R_{D,max}$: saturation needs $V_D \ge V_G - V_T = 0.6\,\text{V}$.`],
+    hints: [md`Assume saturation: $I_D = k'(V_{GS} - 1)^2$, where $k' = 6.25\,\text{mA/V}^2$ and $V_{GS} = 1.6 - 200I_D$.`, md`The quadratic has roots 9 mA and 1 mA. One of them makes $V_{GS} < V_T$.`, md`$R_{D,max}$: saturation needs $V_D \ge V_G - V_T = 0.6\,\text{V}$.`],
     sol: md`$\tfrac12(100\mu)(125) = 6.25\,\text{mA/V}^2$. $I_D = 6.25\text{m}(0.6 - 200I_D)^2 \Rightarrow 250I_D^2 - 2.5I_D + 2.25\text{m} = 0 \Rightarrow I_D = 9$ or $1\,\text{mA}$.
 
 $9\,\text{mA}$ would give $V_{GS} = 1.6 - 1.8 < V_T$: reject. **$I_D = 1\,\text{mA}$**, $V_S = 0.2\,\text{V}$, $V_D = 2 - 1.25 = 0.75\,\text{V}$. Check: $V_{DS} = 0.55 \ge V_{ov} = 0.4$. ✓
@@ -50,18 +50,18 @@ $R_{D,max}$: $V_D \le V_G + 1 = 1.8 \Rightarrow R_{D,max} = 1.8/2\text{m} = 900\
     parts: [{ lbl: 'N_1', unit: 'V', ans: 3.7 }, { lbl: 'N_2', unit: 'V', ans: 2.3 }, { lbl: 'N_3', unit: 'V', ans: 1.2 }, { lbl: 'I_{2X}', unit: 'mA', ans: 2 }, { lbl: 'I_X', unit: 'mA', ans: 1 }, { lbl: 'M_X\\text{ size}', unit: 'X', ans: 1 }],
     hints: [
       md`The $1X$ at the bottom has $V_{GS} = 1.2$, so $V_{ov} = 0.2$ and it sets the stack current. Compute it.`,
-      md`Same current through $4X$ and $\tfrac14X$: overdrive scales as $1/\sqrt{W/L}$, so $0.1\,\text{V}$ and $0.4\,\text{V}$. Stack the $V_{GS}$ drops down from $N_1 = 5 - 1.3\text{k}\cdot I$.`,
+      md`Same current through $4X$ and $\tfrac14X$: overdrive scales as $\dfrac{1}{\sqrt{W/L}}$, so $0.1\,\text{V}$ and $0.4\,\text{V}$. Stack the $V_{GS}$ drops down from $N_1 = 5 - 1.3\text{k}\cdot I$.`,
       md`$M_X$'s gate is on $N_2$ (the wire hops over the vertical line). Its current is $I_{1\text{k}} - I_{2X}$, and its source sits on the $1.1\kO$.`,
     ],
     sol: md`**Stack current:** $1X$: $I = \tfrac12(100\mu)(500)(0.2)^2 = 1\,\text{mA}$.
 
-**Overdrives at 1 mA:** $1X$: 0.2 V; $4X$: $0.2/\sqrt4 = 0.1$ V ($V_{GS} = 1.1$); $\tfrac14X$: $0.2\cdot\sqrt4 = 0.4$ V ($V_{GS} = 1.4$).
+**Overdrives at 1 mA:** $1X$: 0.2 V; $4X$: $\dfrac{0.2}{\sqrt4} = 0.1$ V ($V_{GS} = 1.1$); $\tfrac14X$: $0.2\cdot\sqrt4 = 0.4$ V ($V_{GS} = 1.4$).
 
 **Nodes:** $N_1 = 5 - 1.3 = 3.7\,\text{V}$, $N_2 = 3.7 - 1.4 = 2.3\,\text{V}$, $N_3 = 2.3 - 1.1 = 1.2\,\text{V}$.
 
 **$2X$:** gate at $N_3 = 1.2$ V, so $V_{ov} = 0.2$, $I = \tfrac12(100\mu)(1000)(0.04) = 2\,\text{mA}$.
 
-**$M_X$:** $I_{1\text{k}} = (5-2)/1\text{k} = 3\,\text{mA}$, so $I_X = 3 - 2 = 1\,\text{mA}$. $V_S = 1.1\,\text{V}$, $V_G = N_2 = 2.3$, so $V_{GS} = 1.2$ and $V_{ov} = 0.2$: $W/L = \dfrac{2(1\text{m})}{(100\mu)(0.04)} = 500 = 1X$. Saturation: $V_D = 2 \ge V_G - V_T = 1.3$. ✓`,
+**$M_X$:** $I_{1\text{k}} = \dfrac{5-2}{1\}text{k} = 3\,\text{mA}$, so $I_X = 3 - 2 = 1\,\text{mA}$. $V_S = 1.1\,\text{V}$, $V_G = N_2 = 2.3$, so $V_{GS} = 1.2$ and $V_{ov} = 0.2$: $W/L = \dfrac{2(1\text{m})}{(100\mu)(0.04)} = 500 = 1X$. Saturation: $V_D = 2 \ge V_G - V_T = 1.3$. ✓`,
   });
 
   X.PS34 = P({
@@ -475,7 +475,7 @@ Note $M_5$ has $V_{DS} = 0.2 = V_{ov}$: **exactly at the edge of saturation**. E
             !!key X-sizing notation
             Problems define a unit device, e.g. $1X = 500/1$, and label transistors $2X$, $4X$, $\tfrac14X$. Two scaling laws do all the work. **Don't mix them up:**
             - **Same $V_{GS}$** (gates and sources tied): $I_D \propto W/L$. A $4X$ mirrors 4× the current.
-            - **Same current** (devices in series): $V_{ov} \propto 1/\sqrt{W/L}$. A $4X$ has half the overdrive; a $\tfrac14X$ has double.
+            - **Same current** (devices in series): $V_{ov} \propto \dfrac{1}{\sqrt{W/L}}$. A $4X$ has half the overdrive; a $\tfrac14X$ has double.
 
             A mirror output stays a current source only while it's **saturated**. The drain resistor you can hang on it is limited by the shortcut: $V_D \ge V_G - V_T$ (NMOS) or $V_D \le V_G + |V_T|$ (PMOS).
           `),
@@ -494,7 +494,7 @@ Note $M_5$ has $V_{DS} = 0.2 = V_{ov}$: **exactly at the edge of saturation**. E
           R(md`
             Devices in **series** carry the same current. So:
             - Each diode-connected device in a stack drops its own $V_{GS} = V_T + V_{ov}$; node voltages add up from ground (or down from the rail).
-            - $V_{ov} \propto 1/\sqrt{W/L}$: with $1X$ at $0.2\,\text{V}$, a $4X$ drops $1.1\,\text{V}$ and a $\tfrac14X$ drops $1.4\,\text{V}$. **No square roots needed.**
+            - $V_{ov} \propto \dfrac{1}{\sqrt{W/L}}$: with $1X$ at $0.2\,\text{V}$, a $4X$ drops $1.1\,\text{V}$ and a $\tfrac14X$ drops $1.4\,\text{V}$. **No square roots needed.**
 
             **Source followers.** A transistor whose drain is at the rail and whose current is set by something below it has $V_S = V_G - V_{GS}$, where $V_{GS}$ comes from that current. Two identical devices stacked with the same current split the voltage equally (Fall 2023 P3: $V_3 = V_2/2$).
           `),

@@ -36,7 +36,7 @@
   const rincPlot = plot({ x: [0, 3], y: [0, 5], xl: 'V', yl: 'I', xt: [0, 1, 2, 3], yt: [0, 2, 4],
     curves: [{ f: (v) => 0.5 * v * v, cls: 'dc' }, { f: (v) => 2 + 2 * (v - 2), from: 1.2, to: 2.9 }], pts: [{ x: 2, y: 2, n: 'Q' }] });
   const Xel = [['term', [0, -0.4]], ['w', [0, -0.4], [0, 0]], ['X', [0, 0], [0, 1.6], { n: 'I = f(V)' }], ['w', [0, 1.6], [0, 2]], ['term', [0, 2]], ['vlab', [0.55, 0.1], [0.55, 1.5], { n: 'v' }], ['iarr', [0, -0.25], 'd', { n: 'i', side: 'l', off: [-14, 0] }]];
-  const Rel = [['term', [0, -0.4]], ['w', [0, -0.4], [0, 0]], ['R', [0, 0], [0, 1.6], { n: 'r = 1/f\'(V_0)' }], ['w', [0, 1.6], [0, 2]], ['term', [0, 2]]];
+  const Rel = [['term', [0, -0.4]], ['w', [0, -0.4], [0, 0]], ['R', [0, 0], [0, 1.6], { n: 'r = \\dfrac{1}{f\'(V_0)}' }], ['w', [0, 1.6], [0, 2]], ['term', [0, 2]]];
   add('u2', 'u2-rinc', 0, { ri: Dw.row([{ fig: Xel, cap: 'the device' }, { svg: rincPlot, cap: 'its slope at $Q$' }, { fig: Rel, cap: 'for small signals: a resistor' }]) });
 
   const tpOrig = [['Vac', [0, 0.2], [0, 1.2], { n: 'v_s', side: 'l' }], ['V', [0, 1.2], [0, 2.2], { n: 'V_S', side: 'l' }], ['gnd', [0, 2.2]], ['w', [0, 0.2], [0, -0.4]],
@@ -45,7 +45,7 @@
   const tpSS = Dw.ss(tpOrig, { rds: '\\tfrac{V_T}{I_D}' });
   add('u2', 'u2-twopass', 0, { tp: Dw.row([{ fig: tpOrig, cap: 'the circuit' }, { fig: tpDC, cap: 'DC pass: $v_s = 0$, diode $\\to 0.7\\,\\text{V}$' }, { fig: tpSS, cap: 'small-signal pass: $V_S$ shorted, diode $\\to r_d$' }]) });
 
-  const nlSrc = [['term', [0, 0]], ['term', [0, 1.6]], ['vlab', [0.3, 0.2], [0.3, 1.4], { n: 'v_X' }], ['G', [1.8, 0], [1.8, 1.6], { n: 'G_M\\,v_X^2/V_A' }], ['w', [1.8, 0], [2.8, 0]], ['w', [1.8, 1.6], [2.8, 1.6]], ['term', [2.8, 0]], ['term', [2.8, 1.6]]];
+  const nlSrc = [['term', [0, 0]], ['term', [0, 1.6]], ['vlab', [0.3, 0.2], [0.3, 1.4], { n: 'v_X' }], ['G', [1.8, 0], [1.8, 1.6], { n: '\\tfrac{G_M\\,v_X^2}{V_A}' }], ['w', [1.8, 0], [2.8, 0]], ['w', [1.8, 1.6], [2.8, 1.6]], ['term', [2.8, 0]], ['term', [2.8, 1.6]]];
   const linSrc = nlSrc.map((e) => (e[0] === 'G' ? ['G', e[1], e[2], { n: 'K\\,v_x' }] : e[0] === 'vlab' ? ['vlab', e[1], e[2], { n: 'v_x' }] : e));
   add('u2', 'u2-nlsrc', 0, { ns: Dw.row([{ fig: nlSrc, cap: 'large signal: nonlinear' }, { fig: linSrc, cap: 'small signal: $K = \\frac{2G_MV_{X0}}{V_A}$' }]) });
   const nl2 = [['box', [1.2, -0.3], [3.4, 2.1], { n: 'nonlinear<br/>two-port' }], ['w', [0.4, 0], [1.2, 0]], ['w', [0.4, 1.8], [1.2, 1.8]], ['w', [3.4, 0], [4.2, 0]], ['w', [3.4, 1.8], [4.2, 1.8]],

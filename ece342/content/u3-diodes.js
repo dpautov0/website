@@ -13,7 +13,7 @@
     return [
       ['Vac', [0, 0.2], [0, 1.2], { n: 'v_{in}', side: 'l' }], ['V', [0, 1.2], [0, 2.2], { n: 'V_{IN}', side: 'l' }],
       ['w', [0, 0.2], [0, -0.4]], ['R', [0, -0.4], [1.6, -0.4], { n: 'R_S' }], ...d,
-      ['w', [1.6, -0.4], [2.9, -0.4]], ['I', [2.9, -0.4], [2.9, 2.6], { n: 'G_Mv_X^2/V_A' }],
+      ['w', [1.6, -0.4], [2.9, -0.4]], ['I', [2.9, -0.4], [2.9, 2.6], { n: '\\tfrac{G_Mv_X^2}{V_A}' }],
       ['R', [2.9, -0.4], [4.4, -0.4], { n: 'R_1' }], ['w', [4.4, -0.4], [4.4, 0.4]], ['term', [4.4, 0.4]], ['term', [4.4, 1.7]], ['w', [4.4, 1.7], [4.4, 2.6]],
       ['vlab', [4.65, 0.5], [4.65, 1.6], { n: 'v_X' }],
       ['w', [4.4, -0.4], [5.6, -0.4]], ['R', [5.6, -0.4], [5.6, 2.6], { n: 'R_2' }],
@@ -23,13 +23,13 @@
 
   X.PS23 = P({
     id: 'PS2-3', src: 'Problem Set 2 · #3', title: 'Incremental model: three diodes and a square-law source', big: true,
-    q: md`$V_{IN} = 5\,\text{V}$, $R_S = 600\,\Omega$, $R_1 = 400\,\Omega$, $R_2 = 1000\,\Omega$, $G_M = 2\,\text{mA/V}$, $V_A = 1\,\text{V}$, $V_T = 25\,\text{mV}$, $I_S = 10^{-14}\,\text{A}$. The source is $G_Mv_X^2/V_A$ with $v_X$ the voltage across $R_2$. Find the DC voltage $V_{A0}$ at the diode node, the diode current, the incremental resistance of **one** diode, and the incremental transconductance $K$ of the controlled source.`,
+    q: md`$V_{IN} = 5\,\text{V}$, $R_S = 600\,\Omega$, $R_1 = 400\,\Omega$, $R_2 = 1000\,\Omega$, $G_M = 2\,\text{mA/V}$, $V_A = 1\,\text{V}$, $V_T = 25\,\text{mV}$, $I_S = 10^{-14}\,\text{A}$. The source is $\tfrac{G_Mv_X^2}{V_A}$ with $v_X$ the voltage across $R_2$. Find the DC voltage $V_{A0}$ at the diode node, the diode current, the incremental resistance of **one** diode, and the incremental transconductance $K$ of the controlled source.`,
     fig: clampFig(3),
     parts: [{ lbl: 'V_{A0}', unit: 'V', ans: 1.8437, tol: { rel: 0.004 } }, { lbl: 'I_{D0}', unit: 'mA', ans: 0.4747, tol: { rel: 0.03 } }, { lbl: 'r_d', unit: 'Ω', ans: 52.67, tol: { rel: 0.03 } }, { lbl: 'K', unit: 'mA/V', ans: 5.268, tol: { rel: 0.01 } }],
     hints: [
       md`Try the constant-voltage model first: 3 diodes ON would clamp the node at 2.1 V. Compute the diode current KCL leaves over. Is it positive?`,
       md`It comes out negative, so CVD is inconsistent. That's why $I_S$ is given: each diode drops $V_A/3$, so $I_D = I_Se^{V_A/(3V_T)}$. Solve the KCL at the diode node iteratively (try 1.84 V and 1.85 V).`,
-      md`$v_X = V_A \cdot R_2/(R_1+R_2)$. $K = dI/dv_X = 2G_MV_{X0}/V_A$.`,
+      md`$v_X = V_A\dfrac{R_2}{R_1+R_2}$. $K = \dfrac{dI}{dv_X} = \dfrac{2G_MV_{X0}}{V_A}$.`,
     ],
     sol: md`**CVD check.** ON would give $V_A = 2.1$, $V_X = 1.5$, and $I_D = \frac{2.9}{600} - (2\text{m})(1.5)^2 - \frac{2.1}{1400} = 4.83 - 4.5 - 1.5 = -1.17\,\text{mA}$. Negative, so CVD is inconsistent here.
 
@@ -37,7 +37,7 @@
 $$\frac{5 - V_A}{600} = 10^{-14}e^{V_A/0.075} + 2\text{m}\left(\frac{V_A}{1.4}\right)^2 + \frac{V_A}{1400}$$
 $V_A = 1.85$: RHS $5.33 >$ LHS $5.25$. $V_A = 1.84$: RHS $5.22 <$ LHS $5.27$. Converges to $V_{A0} = 1.844\,\text{V}$, $I_{D0} = 0.475\,\text{mA}$, $V_{X0} = 1.317\,\text{V}$.
 
-**Incremental parameters:** $r_d = 25/0.475 = 52.7\,\Omega$ per diode ($158\,\Omega$ for the string), $K = 2(2\text{m})(1.317)/1 = 5.27\,\text{mA/V}$.
+**Incremental parameters:** $r_d = 25/0.475 = 52.7\,\Omega$ per diode ($158\,\Omega$ for the string), $K = \dfrac{2(2\text{m})(1.317)}{1} = 5.27\,\text{mA/V}$.
 
 **Model:** $v_{in} \to 600\,\Omega \to$ node $A$; from $A$ to ground: $158\,\Omega$ and a VCCS $5.27\,\text{mA/V}\cdot v_x$; $A \to 400\,\Omega \to B$; $B \to 1000\,\Omega \to$ ground; $v_x = v_B$.`,
   });
@@ -47,10 +47,10 @@ $V_A = 1.85$: RHS $5.33 >$ LHS $5.25$. $V_A = 1.84$: RHS $5.22 <$ LHS $5.27$. Co
     q: md`Same circuit as Problem Set 2 #3 but with **two** diodes and no $I_S$ given: $V_{IN} = 5\,\text{V}$, $R_S = 600\,\Omega$, $R_1 = 400\,\Omega$, $R_2 = 1000\,\Omega$, $G_M = 2\,\text{mA/V}$, $V_A = 1\,\text{V}$, $V_T = 25\,\text{mV}$. Use the constant-voltage model. Give the diode current, the incremental resistance per diode, $K$, and (bonus) the small-signal gain $v_x/v_{in}$.`,
     fig: clampFig(2),
     parts: [{ lbl: 'I_{D0}', unit: 'mA', ans: 3 }, { lbl: 'r_d', unit: 'Ω', ans: 25 / 3 }, { lbl: 'K', unit: 'mA/V', ans: 4 }, { lbl: 'v_x/v_{in}', unit: 'V/V', ans: 0.018248, tol: { rel: 0.02 } }],
-    hints: [md`Two diodes ON clamp the node at 1.4 V, so $V_X = 1.4\cdot\frac{1000}{1400} = 1.0\,\text{V}$. Check the leftover diode current is positive.`, md`$K = 2G_MV_{X0}/V_A$.`, md`For the gain: nodal at the diode node with $2r_d$, $K v_x$ (with $v_x = v_A/1.4$), and $R_1 + R_2$ to ground.`],
+    hints: [md`Two diodes ON clamp the node at 1.4 V, so $V_X = 1.4\cdot\frac{1000}{1400} = 1.0\,\text{V}$. Check the leftover diode current is positive.`, md`$K = \dfrac{2G_MV_{X0}}{V_A}$.`, md`For the gain: nodal at the diode node with $2r_d$, $K v_x$ (with $v_x = v_A/1.4$), and $R_1 + R_2$ to ground.`],
     sol: md`**DC:** $V_A = 1.4$, $V_X = 1.0\,\text{V}$. $I_{RS} = 3.6/600 = 6\,\text{mA}$, $I_{src} = 2\text{m}(1)^2 = 2\,\text{mA}$, $I_{R_1} = 1.4/1400 = 1\,\text{mA}$, so $I_D = 6 - 2 - 1 = 3\,\text{mA} > 0$. ✓
 
-**Incremental:** $r_d = 25/3 = 8.33\,\Omega$ (pair: $16.7\,\Omega$). $K = 2(2\text{m})(1.0)/1 = 4\,\text{mA/V}$.
+**Incremental:** $r_d = 25/3 = 8.33\,\Omega$ (pair: $16.7\,\Omega$). $K = \dfrac{2(2\text{m})(1.0)}{1} = 4\,\text{mA/V}$.
 
 **Model:** $v_{in} \to 600 \to A$; $A \to 16.7\,\Omega \to$ gnd; $A \to 4\,\text{mA/V}\cdot v_x \to$ gnd; $A \to 400 \to B \to 1000 \to$ gnd; $v_x = v_B$.
 
@@ -72,7 +72,7 @@ $V_A = 1.85$: RHS $5.33 >$ LHS $5.25$. $V_A = 1.84$: RHS $5.22 <$ LHS $5.27$. Co
       md`DC: the diodes clamp $V_{OUT} = 1.4\,\text{V}$. KCL at the middle node with $I_{IN}$ pulling out.`,
       md`Small signal: $I_{IN}$ → open, $V_{IN}$ → short, diodes → $2r_d = 50\,\Omega$. Use superposition over $v_{in}$ and $i_{in}$ (allowed: the small-signal circuit is linear).`,
     ],
-    sol: md`**DC:** $V_{OUT} = 1.4$. KCL at the middle node: $\dfrac{10.6 - V_N}{4} = 0.3 + \dfrac{V_N - 1.4}{4} \Rightarrow V_N = 5.4\,\text{V}$, so $I_{D0} = (5.4 - 1.4)/4 = 1\,\text{mA}$.
+    sol: md`**DC:** $V_{OUT} = 1.4$. KCL at the middle node: $\dfrac{10.6 - V_N}{4} = 0.3 + \dfrac{V_N - 1.4}{4} \Rightarrow V_N = 5.4\,\text{V}$, so $I_{D0} = \dfrac{5.4 - 1.4}{4} = 1\,\text{mA}$.
 
 **Linearise:** $r_d = 25\,\Omega$ each, $2r_d = 50\,\Omega$.
 
@@ -94,7 +94,7 @@ $$v_{out} = \frac{2r_d}{R_1 + R_2 + 2r_d}\,(v_{in} - R_1i_{in}) = \frac{v_{in} -
     ],
     parts: [{ lbl: 'V_{OUT}', unit: 'V', ans: 1.4 }, { lbl: 'I_{IN}', unit: 'mA', ans: 6 }, { lbl: 'v_{out}\\text{ (ii)}', unit: 'µV', ans: 1000 * 50 / 650 }, { lbl: 'v_{out}\\text{ (iii)}', unit: 'µV', ans: -600 * 50 / 650 }],
     hints: [md`DC: $V_{OUT} = 1.4\,\text{V}$; the diodes carry $I_{IN} - I_{OUT}$. Check it's positive.`, md`Small signal: $I_{OUT}$ → open; the diodes are $2r_d$. (ii) is a divider; (iii) is $-i_{out}$ times the resistance seen at the output.`],
-    sol: md`**DC:** $V_{OUT} = 1.4\,\text{V}$, $I_{IN} = (5-1.4)/600 = 6\,\text{mA}$, $I_D = 6 - 5 = 1\,\text{mA}$, so $r_d = 25\,\Omega$, $2r_d = 50\,\Omega$.
+    sol: md`**DC:** $V_{OUT} = 1.4\,\text{V}$, $I_{IN} = \dfrac{5-1.4}{600} = 6\,\text{mA}$, $I_D = 6 - 5 = 1\,\text{mA}$, so $r_d = 25\,\Omega$, $2r_d = 50\,\Omega$.
 
 **(ii)** $v_{out} = 1\,\text{mV}\cdot\dfrac{50}{600+50} = 76.9\,\mu\text{V}$.
 
@@ -132,10 +132,10 @@ $$v_{out} = \frac{2r_d}{R_1 + R_2 + 2r_d}\,(v_{in} - R_1i_{in}) = \frac{v_{in} -
       ...nodeOut(5.4, -0.4, 'V_{OUT}+v_{out}'),
     ],
     parts: [{ lbl: 'I_{OUT}', unit: 'mA', ans: 19.6 }, { lbl: 'r_d', unit: 'Ω', ans: 25 }, { lbl: '|v_{out}|', unit: 'mV', ans: 21, accept: [20] }],
-    hints: [md`DC: diodes clamp $V_X = 1.4\,\text{V}$ (current $(2.4 - 1.4)/1\text{k} = 1\,\text{mA}$). $V_{OUT} = A(1.4)^3$.`, md`Small signal: $v_x = v_{in}\frac{2r_d}{R_y + 2r_d}$. The VCVS gain is $dV/dv_X = 3AV_{X0}^2$.`],
+    hints: [md`DC: diodes clamp $V_X = 1.4\,\text{V}$ (current $\dfrac{2.4 - 1.4}{1\}text{k} = 1\,\text{mA}$). $V_{OUT} = A(1.4)^3$.`, md`Small signal: $v_x = v_{in}\frac{2r_d}{R_y + 2r_d}$. The VCVS gain is $dV/dv_X = 3AV_{X0}^2$.`],
     sol: md`**DC:** $V_X = 1.4\,\text{V}$, diode current $1\,\text{mA}$ (> 0 ✓). $V_{OUT} = \dfrac{1.4^3}{0.14} = \dfrac{2.744}{0.14} = 19.6\,\text{V}$, $I_{OUT} = 19.6/1\text{k} = 19.6\,\text{mA}$.
 
-**Linearise:** $r_d = 25\,\Omega$ (pair $50\,\Omega$). VCVS gain $= 3AV_{X0}^2 = 3(1.96)/0.14 = 42$.
+**Linearise:** $r_d = 25\,\Omega$ (pair $50\,\Omega$). VCVS gain $= 3AV_{X0}^2 = \dfrac{3(1.96)}{0.14} = 42$.
 
 **Small signal:** $v_x = v_{in}\dfrac{50}{1000+50} \approx \dfrac{v_{in}}{20}$, so $v_{out} = 42\cdot\dfrac{0.01}{20}\sin\omega_ct = 21\,\text{mV}\sin\omega_ct$. (Exactly: $20\,\text{mV}$ without the approximation.)`,
   });
@@ -155,10 +155,10 @@ $$v_{out} = \frac{2r_d}{R_1 + R_2 + 2r_d}\,(v_{in} - R_1i_{in}) = \frac{v_{in} -
       ex('3*GM*VX0^2/VA^2', { GM: [1e-4, 1e-2], VX0: [0.2, 3], VA: [0.5, 3] }, 'K', { GM: 'G_M', VX0: 'V_{X0}', VA: 'V_A' }),
       ex('-K*R2*RL/(K*R1*R2 + RL + R1 + R2)', { K: [1e-4, 1e-2], R1: [100, 1e4], R2: [100, 1e4], RL: [100, 1e4] }, 'v_{out}/v_{in}', { K: 'K', R1: 'R_1', R2: 'R_2', RL: 'R_L' }),
     ],
-    hints: [md`$K = dI_X/dV_X$ at $V_{X0}$.`, md`The current that flows up through $R_L$ (namely $-v_{out}/R_L$) must come back down through $R_1$. So $v_S = -R_1v_{out}/R_L$ and $v_x = v_{in} - v_S$.`, md`KCL at the output node: $Kv_x + (v_{out} - v_S)/R_2 + v_{out}/R_L = 0$.`],
+    hints: [md`$K = dI_X/dV_X$ at $V_{X0}$.`, md`The current that flows up through $R_L$ (namely $-v_{out}/R_L$) must come back down through $R_1$. So $v_S = -\dfrac{R_1v_{out}}{R_L}$ and $v_x = v_{in} - v_S$.`, md`KCL at the output node: $Kv_x + \dfrac{v_{out} - v_S}{R_2} + \dfrac{v_{out}}{R_L} = 0$.`],
     sol: md`**(i)** $K = \dfrac{dI_X}{dV_X}\Big|_{V_{X0}} = \dfrac{3G_MV_{X0}^2}{V_A^2}$.
 
-**(ii)** The output node's only path to ground is $R_L$; the current coming up through $R_L$, $-v_{out}/R_L$, returns through $R_1$: $v_S = -R_1v_{out}/R_L$, so $v_x = v_{in} + \frac{R_1}{R_L}v_{out}$. KCL at the output:
+**(ii)** The output node's only path to ground is $R_L$; the current coming up through $R_L$, $-v_{out}/R_L$, returns through $R_1$: $v_S = -\dfrac{R_1v_{out}}{R_L}$, so $v_x = v_{in} + \frac{R_1}{R_L}v_{out}$. KCL at the output:
 $$Kv_x + \frac{v_{out}(1 + R_1/R_L)}{R_2} + \frac{v_{out}}{R_L} = 0\;\Rightarrow\;\frac{v_{out}}{v_{in}} = \frac{-KR_2R_L}{KR_1R_2 + R_L + R_1 + R_2}$$`,
   });
 
@@ -171,12 +171,12 @@ $$Kv_x + \frac{v_{out}(1 + R_1/R_L)}{R_2} + \frac{v_{out}}{R_L} = 0\;\Rightarrow
         steps: [
           R(md`
             A diode conducts easily one way (anode → cathode) and hardly at all the other way. Its large-signal law:
-            $$I_D = I_S\left(e^{V_D/nV_T} - 1\right) \approx I_Se^{V_D/nV_T}\quad(\text{forward bias})$$
+            $$I_D = I_S\left(e^{V_D/(nV_T)} - 1\right) \approx I_Se^{V_D/(nV_T)}\quad(\text{forward bias})$$
             - $I_S \approx 10^{-15}\,\text{A}$: the scale current, proportional to junction area. It doubles every $5^\circ\text{C}$.
             - $V_T = 25\,\text{mV}$ at room temperature (thermal voltage). $n = 1$ for integrated diodes (assume this).
             - Reverse bias: $I_D \approx -I_S$, which is negligible.
 
-            Inverting: $V_D = V_T\ln(I_D/I_S)$.
+            Inverting: $V_D = V_T\ln\dfrac{I_D}{I_S}$.
 
             !!key 60 mV per decade
             $$V_{D2} - V_{D1} = V_T\ln\frac{I_{D2}}{I_{D1}} = 2.3V_T\log_{10}\frac{I_{D2}}{I_{D1}} \approx 60\,\text{mV}\times(\text{decades})$$
@@ -228,8 +228,8 @@ $$Kv_x + \frac{v_{out}(1 + R_1/R_L)}{R_2} + \frac{v_{out}}{R_L} = 0\;\Rightarrow
 
             !!method Iteration (from the course notes)
             1. Assume ON; start with $V_D = 0.7\,\text{V}$.
-            2. Current from the **linear** part of the circuit: $I_D = (V_S - V_D)/R$.
-            3. Update the diode voltage: $V_D = V_T\ln(I_D/I_S)$.
+            2. Current from the **linear** part of the circuit: $I_D = \dfrac{V_S - V_D}{R}$.
+            3. Update the diode voltage: $V_D = V_T\ln\dfrac{I_D}{I_S}$.
             4. Repeat 2–3 until $V_D$ changes by less than about $0.01\,\text{V}$ (usually 2–3 rounds).
             5. Confirm the ON assumption.
 

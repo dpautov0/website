@@ -342,7 +342,7 @@
       fig,
       parts: [{ mc: order.map((i) => `$${opts[i][0]}$`), a: order.indexOf(0), why: order.map((i) => opts[i][1]) }],
       hints: ['List every element touching the node. Each one contributes exactly one term.'],
-      sol: `Correct: $${opts[0][0]}$.\n\nEvery element touching the node contributes one term. Resistor currents leaving are $(v_{\\text{this}} - v_{\\text{other}})/R$, and a current source is $+I$ if its arrow leaves the node, $-I$ if it enters.`,
+      sol: `Correct: $${opts[0][0]}$.\n\nEvery element touching the node contributes one term. Resistor currents leaving are $\\dfrac{v_{\\text{this}} - v_{\\text{other}}}{R}$, and a current source is $+I$ if its arrow leaves the node, $-I$ if it enters.`,
     };
   };
 
@@ -493,7 +493,7 @@
       fig = FIGS.transR({ iin, iins: '0.1\\,\\text{mA}', gm, gms: `${f(gm * 1e3)}\\,\\text{mS}`, RF, RFs: kO(RF), R1, R1s: kO(R1) });
       const T = Schem.thevenin(fig, 'o');
       q = 'A shunt-feedback stage. Find the open-circuit output voltage $\\VTH$ and the output resistance $\\RTH$.';
-      sol = `KCL: $I_{IN}$ flows through $R_F$ (the $v_x$ port draws nothing), so $v_x = v_{out} + I_{IN}R_F$. At the output: $v_{out}/R_1 + g_mv_x = I_{IN}$. Together:\n\n$$v_{out} = \\frac{1-g_mR_F}{1/R_1+g_m}I_{IN} = ${Vv(T.VTH)}$$\n\n**$\\RTH$:** with $I_{IN}$ open, no current flows in $R_F$, so $v_x = v_t$ and the source draws $g_mv_t$: $\\RTH = R_1\\pl\\dfrac{1}{g_m} = ${f(T.RTH / 1000)}\\kO$.`;
+      sol = `KCL: $I_{IN}$ flows through $R_F$ (the $v_x$ port draws nothing), so $v_x = v_{out} + I_{IN}R_F$. At the output: $\\dfrac{v_{out}}{R_1} + g_mv_x = I_{IN}$. Together:\n\n$$v_{out} = \\frac{1-g_mR_F}{\\frac{1}{R_1}+g_m}I_{IN} = ${Vv(T.VTH)}$$\n\n**$\\RTH$:** with $I_{IN}$ open, no current flows in $R_F$, so $v_x = v_t$ and the source draws $g_mv_t$: $\\RTH = R_1\\pl\\dfrac{1}{g_m} = ${f(T.RTH / 1000)}\\kO$.`;
       return { q, fig, parts: [{ lbl: '\\VTH', unit: 'V', ans: T.VTH }, { lbl: '\\RTH', unit: 'kΩ', ans: T.RTH / 1000 }], hints: hintsDep, sol };
     }
     // feedback amplifier (HW1 P1 structure)
@@ -523,7 +523,7 @@
       q: `A linear circuit (sources and resistors inside, unknown) drives a load. With $R_L = ${c.RL1}\\kO$ the load current is $${f(c.I1)}\\,\\text{mA}$. With $R_L = ${c.RL2}\\kO$ it is $${f(c.I2)}\\,\\text{mA}$. Find the Thévenin equivalent, and the voltage at the terminals if they were left open.`,
       fig: [['box', [0, 0], [2.2, 2], { n: 'Linear<br/>circuit' }], ['w', [2.2, 0.4], [3.4, 0.4]], ['w', [2.2, 1.6], [3.4, 1.6]], ['R', [3.4, 0.4], [3.4, 1.6], { n: 'R_L' }], ['iarr', [2.8, 0.4], 'r', { n: 'I_L' }]],
       parts: [{ lbl: '\\RTH', unit: 'kΩ', ans: c.RTH }, { lbl: 'V_{open}', unit: 'V', ans: c.VTH }],
-      hints: ['Any linear two-terminal circuit is $\\VTH$ in series with $\\RTH$, so $I_L = \\VTH/(\\RTH + R_L)$ for **both** measurements.', 'Set $I_1(\\RTH + R_{L1}) = I_2(\\RTH + R_{L2})$. That is one equation in $\\RTH$.'],
+      hints: ['Any linear two-terminal circuit is $\\VTH$ in series with $\\RTH$, so $I_L = \\dfrac{\\VTH}{\\RTH + R_L}$ for **both** measurements.', 'Set $I_1(\\RTH + R_{L1}) = I_2(\\RTH + R_{L2})$. That is one equation in $\\RTH$.'],
       sol: `$$\\VTH = ${f(c.I1)}(\\RTH + ${c.RL1}) = ${f(c.I2)}(\\RTH + ${c.RL2})$$\n\nSolving gives $\\RTH = ${f(c.RTH)}\\kO$, then $\\VTH = ${f(c.I1)}(${f(c.RTH)} + ${c.RL1}) = ${f(c.VTH)}\\,\\text{V}$. The open-circuit voltage **is** $\\VTH$.`,
     };
   };
@@ -543,7 +543,7 @@
       q: `The Thévenin equivalent at $A$–$B$ has $\\VTH = ${f(c.VTH)}\\,\\text{V}$ and $\\RTH = ${f(c.RTH)}\\kO$. Find $R_1$ and $R_2$.`,
       fig, parts: [{ lbl: 'R_1', unit: 'kΩ', ans: c.R1 }, { lbl: 'R_2', unit: 'kΩ', ans: c.R2 }],
       hints: ['Write both quantities symbolically: $\\VTH = V_S\\frac{R_2}{R_1+R_2}$ and $\\RTH = R_1\\pl R_2$.', 'Divide them: $\\VTH/\\RTH = V_S/R_1$. That gives $R_1$ in one line.'],
-      sol: `$\\dfrac{\\VTH}{\\RTH} = \\dfrac{V_SR_2/(R_1+R_2)}{R_1R_2/(R_1+R_2)} = \\dfrac{V_S}{R_1}$ (this ratio is also the Norton current: shorting $A$–$B$ shorts out $R_2$).\n\nSo $R_1 = V_S\\RTH/\\VTH = ${f(c.Vs)}\\cdot${f(c.RTH)}/${f(c.VTH)} = ${c.R1}\\kO$. Then $R_1\\pl R_2 = ${f(c.RTH)}$ gives $R_2 = ${c.R2}\\kO$.`,
+      sol: `$\\dfrac{\\VTH}{\\RTH} = \\dfrac{V_S\\frac{R_2}{R_1+R_2}}{\\frac{R_1R_2}{R_1+R_2}} = \\dfrac{V_S}{R_1}$ (this ratio is also the Norton current: shorting $A$–$B$ shorts out $R_2$).\n\nSo $R_1 = \\dfrac{V_S\\RTH}{\\VTH} = \\dfrac{${f(c.Vs)}\\cdot${f(c.RTH)}}{${f(c.VTH)}} = ${c.R1}\\kO$. Then $R_1\\pl R_2 = ${f(c.RTH)}$ gives $R_2 = ${c.R2}\\kO$.`,
     };
   };
 
@@ -612,10 +612,10 @@
       curves: [{ f: (v) => (v < Von ? 0 : (v - Von) / ron * 1e3), cls: 'dc' }, { f: (v) => (Vs - v) / R * 1e3, from: 0, to: Vs, cls: '' }],
     });
     return {
-      q: `A device with the amber $I$–$V$ curve ($I = 0$ below $${f(Von)}\\,\\text{V}$, then slope $1/${f(ron / 1000)}\\kO$) is driven by $V_S = ${f(Vs)}\\,\\text{V}$ through $R = ${k(R)}\\kO$. The teal line is the load line. Find its current-axis intercept and the operating point.`,
+      q: `A device with the amber $I$–$V$ curve ($I = 0$ below $${f(Von)}\\,\\text{V}$, then slope $\\frac{1}{${f(ron / 1000)}\\kO}$) is driven by $V_S = ${f(Vs)}\\,\\text{V}$ through $R = ${k(R)}\\kO$. The teal line is the load line. Find its current-axis intercept and the operating point.`,
       figHtml,
       parts: [{ lbl: 'I_{sc}=V_S/R', unit: 'mA', ans: Vs / R * 1e3 }, { lbl: 'V_0', unit: 'V', ans: V0 }, { lbl: 'I_0', unit: 'mA', ans: I0 * 1e3 }],
-      hints: ['The load line is $I = (V_S - V)/R$. It hits $V = V_S$ when $I = 0$ and $I = V_S/R$ when $V = 0$.', `Assume the device is on its sloped part: set $(V_S - V)/R = (V - ${f(Von)})/r_{on}$.`],
+      hints: ['The load line is $I = \\dfrac{V_S - V}{R}$. It hits $V = V_S$ when $I = 0$ and $I = V_S/R$ when $V = 0$.', `Assume the device is on its sloped part: set $\\dfrac{V_S - V}{R} = \\dfrac{V - ${f(Von)}}{r_{on}}$.`],
       sol: `Load line intercepts: $V_S = ${f(Vs)}\\,\\text{V}$ and $V_S/R = ${f(Vs / R * 1e3)}\\,\\text{mA}$.\n\nOn the sloped part: $\\dfrac{${f(Vs)} - V}{${k(R)}} = \\dfrac{V - ${f(Von)}}{${f(ron / 1000)}}$ gives $V_0 = ${Vv(V0)}$, $I_0 = ${mA(I0)}$. Check: $V_0 > ${f(Von)}\\,\\text{V}$, so the device really is on the sloped segment.`,
     };
   };
@@ -655,7 +655,7 @@ It is driven by $V_S = ${c.Vs}\\,\\text{V}$ in series with $R = ${k(c.R)}\\kO$, 
       fig: FIGS.elemVI(),
         q: `A device obeys $V = g(I) = ${a}\\,I + ${b}\\,I^2$ (volts, amps). It is biased at $I_0 = ${f(I0 * 1e3)}\\,\\text{mA}$. Find its incremental resistance.`,
         parts: [{ lbl: 'r', unit: 'Ω', ans: r }],
-        hints: ['$r = \\left.dV/dI\\right|_{I_0}$. Differentiate, then plug in the bias current.'],
+        hints: ['$r = \\left.\\dfrac{dV}{dI}\\right|_{I_0}$. Differentiate, then plug in the bias current.'],
         sol: `$r = \\dfrac{dg}{dI} = ${a} + ${2 * b}I_0 = ${a} + ${2 * b}(${f(I0)}) = ${f(r)}\\,\\Omega$.`,
       };
     }
@@ -664,7 +664,7 @@ It is driven by $V_S = ${c.Vs}\\,\\text{V}$ in series with $R = ${k(c.R)}\\kO$, 
       const gd = 2 * K * (V0 - Vt);
       return {
       fig: FIGS.elemVI(),
-        q: `A device obeys $I = ${f(K * 1e3)}\\,\\text{mA/V}^2\\,(V - ${Vt})^2$ for $V > ${Vt}\\,\\text{V}$. At $V_0 = ${f(V0)}\\,\\text{V}$, find the incremental resistance.`,
+        q: `A device obeys $I = K(V - ${Vt})^2$ for $V > ${Vt}\\,\\text{V}$, with $K = ${f(K * 1e3)}\\,\\text{mA/V}^2$. At $V_0 = ${f(V0)}\\,\\text{V}$, find the incremental resistance.`,
         parts: [{ lbl: 'r', unit: 'Ω', ans: 1 / gd }],
         hints: ['This time $I$ is given as a function of $V$, so find $dI/dV$ and invert it.'],
         sol: `$\\dfrac{dI}{dV} = 2(${f(K * 1e3)}\\,\\text{mA/V}^2)(V_0 - ${Vt}) = ${f(gd * 1e3)}\\,\\text{mS}$, so $r = 1/${f(gd * 1e3)}\\,\\text{mS} = ${f(1 / gd)}\\,\\Omega$.`,
@@ -675,7 +675,7 @@ It is driven by $V_S = ${c.Vs}\\,\\text{V}$ in series with $R = ${k(c.R)}\\kO$, 
       fig: FIGS.elemVI(),
       q: `An exponential device $I = I_Se^{V/V_T}$ ($V_T = 25\\,\\text{mV}$) carries $I_0 = ${f(I0 * 1e3)}\\,\\text{mA}$. Find its incremental resistance.`,
       parts: [{ lbl: 'r', unit: 'Ω', ans: 0.025 / I0 }],
-      hints: ['$dI/dV = I_Se^{V/V_T}/V_T = I/V_T$. The $I_S$ drops out.'],
+      hints: ['$\\dfrac{dI}{dV} = \\dfrac{I_Se^{V/V_T}}{V_T} = \\dfrac{I}{V_T}$. The $I_S$ drops out.'],
       sol: `$r = \\dfrac{V_T}{I_0} = \\dfrac{25\\,\\text{mV}}{${f(I0 * 1e3)}\\,\\text{mA}} = ${f(0.025 / I0)}\\,\\Omega$.`,
     };
   };
@@ -702,7 +702,7 @@ It is driven by $V_S = ${c.Vs}\\,\\text{V}$ in series with $R = ${k(c.R)}\\kO$, 
       fig: FIGS.depsrc(t),
         q: `A dependent current source obeys $I = G_M\\dfrac{v_X^2}{V_A}$ with $G_M = ${f(GM * 1e3)}\\,\\text{mA/V}$ and $V_A = ${VA}\\,\\text{V}$. At the operating point $V_{X0} = ${f(vx0)}\\,\\text{V}$, what is its incremental transconductance $K$ (so that $i = Kv_x$)?`,
         parts: [{ lbl: 'K', unit: 'mA/V', ans: K * 1e3 }],
-        hints: ['$K = dI/dv_X$ evaluated at $V_{X0}$. $G_M$ itself is **not** the answer.'],
+        hints: ['$K = \\dfrac{dI}{dv_X}$ evaluated at $V_{X0}$. $G_M$ itself is **not** the answer.'],
         sol: `$K = \\dfrac{2G_MV_{X0}}{V_A} = \\dfrac{2(${f(GM * 1e3)})(${f(vx0)})}{${VA}} = ${f(K * 1e3)}\\,\\text{mA/V}$.`,
       };
     }

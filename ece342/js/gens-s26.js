@@ -67,7 +67,7 @@
       hints: [
         md`$R_2 = \infty$ is an **open circuit**, so that $V_2$ is $V_{OC} = \VTH$. $R_2 = 0$ is a **short circuit**, so that $I_2$ is $I_{SC} = \IN$. Say so explicitly; the rubric awards points for it.`,
         `No internal sources, so by homogeneity both scale with the source: $\\VTH = (\\text{const})\\cdot ${S}$ and $\\IN = (\\text{const})\\cdot ${S}$. Find each constant from its own measurement.`,
-        md`$\RTH = \VTH/\IN$ doesn't depend on the source. Then $I_2 = \VTH/(\RTH + R_2)$ and $V_2 = I_2R_2$.`,
+        md`$\RTH = \VTH/\IN$ doesn't depend on the source. Then $I_2 = \dfrac{\VTH}{\RTH + R_2}$ and $V_2 = I_2R_2$.`,
       ],
       sol: `**Open circuit** ($R_2 = \\infty$): $V_{OC} = ${f(c.VOCa)}\\,\\text{V}$ at $${S} = ${c.Sa}$, so $\\VTH = ${f(c.kv)}\\,${S}$.
 

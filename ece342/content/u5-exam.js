@@ -49,13 +49,13 @@ $$\VTH = \frac{g_mR_D}{1+g_mR_S}v_{in}$$
   ];
   const MA2 = P({
     id: 'MA-P2', src: 'Mock midterm A · P2 (35 pts)', title: 'Diode clamp driving a square-law transconductor', big: true,
-    q: md`$V_{IN} = 3.4\,\text{V}$, $R_1 = R_L = 1\kO$, $G_M = 1\,\text{mA/V}$, $V_A = 1\,\text{V}$, $V_T = 25\,\text{mV}$, CVD $0.7\,\text{V}$. The source $G_Mv_X^2/V_A$ pulls current out of the output node. Find the diode current, the incremental resistance of one diode, the DC output $V_O$, the incremental transconductance $K$, and the small-signal gain $v_o/v_{in}$.`,
+    q: md`$V_{IN} = 3.4\,\text{V}$, $R_1 = R_L = 1\kO$, $G_M = 1\,\text{mA/V}$, $V_A = 1\,\text{V}$, $V_T = 25\,\text{mV}$, CVD $0.7\,\text{V}$. The source $\tfrac{G_Mv_X^2}{V_A}$ pulls current out of the output node. Find the diode current, the incremental resistance of one diode, the DC output $V_O$, the incremental transconductance $K$, and the small-signal gain $v_o/v_{in}$.`,
     fig: ma2Fig,
     parts: [{ lbl: 'I_{D0}', unit: 'mA', ans: 2 }, { lbl: 'r_d', unit: 'Ω', ans: 12.5 }, { lbl: 'V_O', unit: 'V', ans: 3.04 }, { lbl: 'K', unit: 'mA/V', ans: 2.8 }, { lbl: 'v_o/v_{in}', unit: 'V/V', ans: -2.8 * 25 / 1025, tol: { rel: 0.03 } }],
-    hints: [md`Two diodes clamp $V_X = 1.4\,\text{V}$. The sensing port draws nothing, so the whole $R_1$ current goes into the diodes.`, md`$V_O = 5 - R_L\cdot G_MV_X^2/V_A$. $K = 2G_MV_{X0}/V_A$.`, md`Small signal: $v_x = v_{in}\frac{2r_d}{R_1 + 2r_d}$ and $v_o = -KR_Lv_x$.`],
-    sol: md`**DC:** $V_X = 1.4\,\text{V}$, $I_D = (3.4 - 1.4)/1\text{k} = 2\,\text{mA}$ (> 0 ✓). Source current $= 1\text{m}(1.4)^2 = 1.96\,\text{mA}$, so $V_O = 5 - 1.96 = 3.04\,\text{V}$.
+    hints: [md`Two diodes clamp $V_X = 1.4\,\text{V}$. The sensing port draws nothing, so the whole $R_1$ current goes into the diodes.`, md`$V_O = 5 - R_L\dfrac{G_MV_X^2}{V_A}$. $K = \dfrac{2G_MV_{X0}}{V_A}$.`, md`Small signal: $v_x = v_{in}\frac{2r_d}{R_1 + 2r_d}$ and $v_o = -KR_Lv_x$.`],
+    sol: md`**DC:** $V_X = 1.4\,\text{V}$, $I_D = \dfrac{3.4 - 1.4}{1\}text{k} = 2\,\text{mA}$ (> 0 ✓). Source current $= 1\text{m}(1.4)^2 = 1.96\,\text{mA}$, so $V_O = 5 - 1.96 = 3.04\,\text{V}$.
 
-**Linearise:** $r_d = 25/2 = 12.5\,\Omega$ (string $25\,\Omega$); $K = 2(1\text{m})(1.4)/1 = 2.8\,\text{mA/V}$.
+**Linearise:** $r_d = 25/2 = 12.5\,\Omega$ (string $25\,\Omega$); $K = \dfrac{2(1\text{m})(1.4)}{1} = 2.8\,\text{mA/V}$.
 
 **Small signal:** $v_x = v_{in}\frac{25}{1000+25} \approx v_{in}/41$; $v_o = -KR_Lv_x = -2.8\cdot\frac{25}{1025}v_{in} = -0.068\,v_{in}$ (about $-0.07$ if you use $1000+25\approx1000$).`,
   });
@@ -125,7 +125,7 @@ Feedback lowered the output resistance below $R_O = 1\kO$. That's what shunt fee
     fig: mb2Fig,
     parts: [{ lbl: 'I_{D0}', unit: 'mA', ans: 1 }, { lbl: 'r_d', unit: 'Ω', ans: 25 }, { lbl: 'v_{out}/v_{in}', unit: 'V/V', ans: 25 / 3025 }, { lbl: 'v_{out}/i_b', unit: 'Ω', ans: -(2000 * 1025 / 3025) * (25 / 1025) }],
     hints: [md`DC: $V_{OUT} = 0.7$. KCL at the middle node: what comes in through $R_1$ leaves through $I_B$ and $R_2$.`, md`Small signal: the DC sink opens, but $i_b$ is a small current pulled out of the middle node. Use superposition over $v_{in}$ and $i_b$.`],
-    sol: md`**DC:** $\frac{5.7 - V_N}{2} = 1 + \frac{V_N - 0.7}{1} \Rightarrow 5.1 = 3V_N \Rightarrow V_N = 1.7\,\text{V}$, $I_D = (1.7 - 0.7)/1\text{k} = 1\,\text{mA}$ (> 0 ✓), $r_d = 25\,\Omega$.
+    sol: md`**DC:** $\frac{5.7 - V_N}{2} = 1 + \frac{V_N - 0.7}{1} \Rightarrow 5.1 = 3V_N \Rightarrow V_N = 1.7\,\text{V}$, $I_D = \dfrac{1.7 - 0.7}{1\}text{k} = 1\,\text{mA}$ (> 0 ✓), $r_d = 25\,\Omega$.
 
 **$v_{in}$ alone:** $v_{out} = v_{in}\dfrac{r_d}{R_1 + R_2 + r_d} = \dfrac{25}{3025}v_{in} = 0.00826\,v_{in}$.
 

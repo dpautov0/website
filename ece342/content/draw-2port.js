@@ -198,7 +198,7 @@
 
       **$\RTH$ at port 2** depends on what drives port 1, because switching that source off sets a different boundary condition:
       - **Ideal voltage source** off is a short: $V_1 = 0$, so $I_2 = y_{22}V_2$ and $\RTH = \dfrac1{y_{22}}$ ($y_{21}$, $y_{12}$ don't matter).
-      - **Ideal current source** off is an open: $I_1 = 0$, so $V_1 = -\dfrac{y_{12}}{y_{11}}V_2$ and $\RTH = \dfrac{1}{y_{22} - y_{12}y_{21}/y_{11}}$.
+      - **Ideal current source** off is an open: $I_1 = 0$, so $V_1 = -\dfrac{y_{12}}{y_{11}}V_2$ and $\RTH = \dfrac{1}{y_{22} - \frac{y_{12}y_{21}}{y_{11}}}$.
 
       [[fig:rth]]
     `),
@@ -234,7 +234,7 @@ $y_{22} = \frac1{2\text{k}} + \frac1{2\text{k}} = 1\,\text{mS}$, $y_{12} = -0.5\
 
 [[fig:ri]]
 
-(b) $\RTH = \dfrac{1}{1 - (-0.5)(-0.5)/1}\,\text{k} = \dfrac{1}{0.75}\,\text{k} = 1.33\kO$. Directly: $R_3\pl(R_2 + R_1 + R_4) = 2\pl4 = 1.33\kO$ ✓.`,
+(b) $\RTH = \dfrac{1}{1 - \frac{(-0.5)(-0.5)}{1}}\,\text{k} = \dfrac{1}{0.75}\,\text{k} = 1.33\kO$. Directly: $R_3\pl(R_2 + R_1 + R_4) = 2\pl4 = 1.33\kO$ ✓.`,
     }),
     ...(f23b ? [f23b] : []),
     ...ypGen,

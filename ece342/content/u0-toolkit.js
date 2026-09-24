@@ -131,7 +131,7 @@
 
             The $-1$ is the source: its arrow points **into** node 1. Multiply by 6: $3(v_1 - 10) + 2v_1 - 6 = 0 \Rightarrow 5v_1 = 36 \Rightarrow v_1 = 7.2\,\text{V}$.
 
-            **Check:** current out through $R_1$ is $(7.2-10)/2 = -1.4$ mA (so $1.4$ mA actually flows *in* from the source); out through $R_2$: $2.4$ mA; in from $I_S$: $1$ mA. In: $1.4 + 1 = 2.4$. Out: $2.4$. ✓
+            **Check:** current out through $R_1$ is $\dfrac{7.2-10}{2} = -1.4$ mA (so $1.4$ mA actually flows *in* from the source); out through $R_2$: $2.4$ mA; in from $I_S$: $1$ mA. In: $1.4 + 1 = 2.4$. Out: $2.4$. ✓
           `),
           G('nodal1', { need: 3 }),
         ],

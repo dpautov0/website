@@ -54,7 +54,7 @@
       ],
       sol: md`$v_x = v_{out} + i_{in}R_F$ (KCL at $x$).
 
-**Short circuit:** $v_x = i_{in}R_F$. Current into the short: $i_{in}$ through $R_F$ plus $A_vi_{in}R_F/R_O$ through $R_O$:
+**Short circuit:** $v_x = i_{in}R_F$. Current into the short: $i_{in}$ through $R_F$ plus $\dfrac{A_vi_{in}R_F}{R_O}$ through $R_O$:
 $$\IN = i_{in}\frac{R_O + A_vR_F}{R_O}$$
 
 **Test source** ($i_{in}$ open): $R_F$ carries nothing, so $v_x = v_t$:
@@ -103,7 +103,7 @@ positive and always less than one.
       hints: [md`The $v_{x1}$ port draws no current, so $R_X$ drops nothing: $v_{x1} = v_{in}$.`, md`Each stage is Problem 2 with $R_S=0$: output $= -g_mRv_x$, and the next stage's sensing port doesn't load it.`],
       sol: md`$v_{x1} = v_{in}$ (no current in $R_X$). Stage 1: $v_{x2} = -g_{m1}R_1v_{in}$ (unloaded, since $v_{x2}$ is an open port). Stage 2: $v_{out} = -g_{m2}R_2v_{x2}$.
 $$v_{out} = g_{m1}g_{m2}R_1R_2\,v_{in}$$
-Multiplying stage gains is only legal because each stage has **infinite input resistance**. With a finite $R_{in}$ you'd get a divider $R_{in}/(R_{TH1}+R_{in})$ between the stages.`,
+Multiplying stage gains is only legal because each stage has **infinite input resistance**. With a finite $R_{in}$ you'd get a divider $\dfrac{R_{in}}{R_{TH1}+R_{in}}$ between the stages.`,
     }),
     P({
       id: 'PS1-5', src: 'Problem Set 1 · #5', title: 'Resistors from a Thévenin equivalent',
@@ -235,7 +235,7 @@ In (b), $1\,\text{A}$ splits equally between $R_1 = 1\,\Omega$ and $R_{in} = 1\,
     q: md`A linear circuit with $V_{IN} = 10\,\text{V}$ drives $R_L$ between $C$ and $D$. With $R_L = 5\kO$ the load current is $1\,\text{mA}$. With $R_L = 1\kO$ it is $2\,\text{mA}$. What is the voltage across $C$–$D$ if left open?`,
     fig: [['V', [0, 0.4], [0, 1.4], { n: 'V_{IN}', side: 'l' }], ['w', [0, 0.4], [0, 0], [1, 0]], ['w', [0, 1.4], [0, 1.8], [1, 1.8]], ['box', [1, -0.3], [3, 2.1], { n: 'Linear<br/>circuit' }], ['w', [3, 0], [4, 0]], ['w', [3, 1.8], [4, 1.8]], ['R', [4, 0], [4, 1.8], { n: 'R_L' }], ['iarr', [3.5, 0], 'r', { n: 'I_L' }], ['term', [3.5, 1.8], { n: 'D', side: 'b' }]],
     parts: [{ lbl: 'V_{CD,open}', unit: 'V', ans: 8 }],
-    hints: [md`$I_L = \VTH/(\RTH + R_L)$ holds for both loads.`],
+    hints: [md`$I_L = \dfrac{\VTH}{\RTH + R_L}$ holds for both loads.`],
     sol: md`$\VTH = 1(\RTH + 5) = 2(\RTH + 1)$ (kΩ, mA) $\Rightarrow \RTH = 3\kO$, $\VTH = 8\,\text{V}$. The open-circuit voltage is $\VTH = 8\,\text{V}$.`,
   });
 
@@ -322,7 +322,7 @@ In (b), $1\,\text{A}$ splits equally between $R_1 = 1\,\Omega$ and $R_{in} = 1\,
 
               Compute two of them independently and use the third as a free check. The official solutions do this on every problem.
 
-            When a network has **no dependent sources**, $\RTH$ is just resistor combining with the sources switched off. Once you have the equivalent, a load draws $I_L = \VTH/(\RTH + R_L)$.
+            When a network has **no dependent sources**, $\RTH$ is just resistor combining with the sources switched off. Once you have the equivalent, a load draws $I_L = \dfrac{\VTH}{\RTH + R_L}$.
           `),
           G('thev_indep', { need: 3 }),
           P({
@@ -459,7 +459,7 @@ In (b), $1\,\text{A}$ splits equally between $R_1 = 1\,\Omega$ and $R_{in} = 1\,
               $$\RTH = \frac{1}{y_{22}}$$
               $y_{21}$ and $y_{12}$ play no role.
             - Port 1 driven by an **ideal current source** → deactivating it opens port 1 → $I_1 = 0$ → $V_1 = -\frac{y_{12}}{y_{11}}V_2$ →
-              $$\RTH = \frac{1}{y_{22} - y_{12}y_{21}/y_{11}}$$
+              $$\RTH = \frac{1}{y_{22} - \frac{y_{12}y_{21}}{y_{11}}}$$
           `),
           X.F23P1b,
           G('yparam', { need: 3 }),

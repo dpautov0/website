@@ -35,8 +35,8 @@
   const ss = {
     'PS2-1': { rx: 'r' },
     'PS2-2': { rxs: { 'g(I_1)': 'r_1', 'f(V_2)': 'r_2' } },
-    'PS2-3': { src: { 'G_Mv_X^2/V_A': K } },
-    'F22-P2': { src: { 'G_Mv_X^2/V_A': K }, rds: '\\tfrac{25}{3}\\,\\Omega' },
+    'PS2-3': { src: { '\\tfrac{G_Mv_X^2}{V_A}': K } },
+    'F22-P2': { src: { '\\tfrac{G_Mv_X^2}{V_A}': K }, rds: '\\tfrac{25}{3}\\,\\Omega' },
     'F23-P2': { src: { 'Av_X^3': '42\\,v_x' }, rds: '25\\,\\Omega' },
     'P1-P2': { rds: '25\\,\\Omega' }, 'P4-P2': { rds: '25\\,\\Omega' }, 'P5-P2': { rds: '25\\,\\Omega' },
     'P6-P2': { src: { 'G_M\\tfrac{V_X^3}{V_A^2}': K } },

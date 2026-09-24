@@ -25,15 +25,15 @@ Find the operating point, the incremental resistance, and the small-signal volta
       fig: ps21fig,
       parts: [{ lbl: 'V_0', unit: 'V', ans: 19 / 3 }, { lbl: 'I_0', unit: 'mA', ans: 11 / 6 }, { lbl: 'r_d', unit: 'kΩ', ans: 4 }, { lbl: '|v_o|', unit: 'mV', ans: 40 / 3 }, { lbl: '|i_o|', unit: 'µA', ans: 10 / 3 }],
       hints: [
-        md`Load line: $I = (10 - V)/2\,\text{k}\Omega$. Guess the $V \ge 3$ segment and solve.`,
+        md`Load line: $I = \dfrac{10 - V}{2\,\text{k}\Omega}$. Guess the $V \ge 3$ segment and solve.`,
         md`Verify that $V_0 \ge 3\,\text{V}$. That check is its own graded step on the homework.`,
         md`Small signal: kill the 10 V (short). Then $v_s$ drives $R_S$ in series with $r_d$.`,
       ],
-      sol: md`**DC** (assume $V\ge3$): $\dfrac{10-V}{2} = 1 + \dfrac{V-3}{4} \xrightarrow{\times4} 20 - 2V = V + 1 \Rightarrow V_0 = 19/3 = 6.33\,\text{V}$, $I_0 = (10 - 6.33)/2 = 1.833\,\text{mA}$.
+      sol: md`**DC** (assume $V\ge3$): $\dfrac{10-V}{2} = 1 + \dfrac{V-3}{4} \xrightarrow{\times4} 20 - 2V = V + 1 \Rightarrow V_0 = 19/3 = 6.33\,\text{V}$, $I_0 = \dfrac{10 - 6.33}{2} = 1.833\,\text{mA}$.
 
 **Verify:** $6.33 \ge 3$. ✓ Plugging into the device law also gives $1 + 3.33/4 = 1.833$. ✓
 
-**Linearise:** slope of that segment is $1/4\kO$, so $r_d = 4\kO$.
+**Linearise:** slope of that segment is $\dfrac{1}{4\kO}$, so $r_d = 4\kO$.
 
 **Small signal:** $v_o = 20\,\text{mV}\cdot\dfrac{4}{2+4} = 13.33\,\text{mV}$, $i_o = \dfrac{20\,\text{mV}}{6\kO} = 3.33\,\mu\text{A}$.
 
@@ -61,7 +61,7 @@ $V_{1,0} = 1000(0.002244) + 5000(0.002244)^2 = 2.269\,\text{V}$, $V_{2,0} = 1 + 
 
 **Small signal:** all in series: $R_{total} = 2000 + 1022 + 1000 = 4022\,\Omega$.
 
-Cross-check: differentiating the KVL quadratic gives $dI_0/dV_S = 1/(10000I_0 + 4000) = 1/4022$. Same number.`,
+Cross-check: differentiating the KVL quadratic gives $\dfrac{dI_0}{dV_S} = \dfrac{1}{10000I_0 + 4000} = \dfrac{1}{4022}$. Same number.`,
     }),
   ];
 
@@ -93,7 +93,7 @@ Cross-check: differentiating the KVL quadratic gives $dI_0/dV_S = 1/(10000I_0 + 
         id: 'u2-loadline', title: 'Nonlinear devices and the load line',
         steps: [
           R(md`
-            Put a nonlinear device in a circuit and the equations stop being linear: a diode gives $I = I_Se^{V/V_T}$, which you can't combine with $I = (V_S - V)/R$ in closed form.
+            Put a nonlinear device in a circuit and the equations stop being linear: a diode gives $I = I_Se^{V/V_T}$, which you can't combine with $I = \dfrac{V_S - V}{R}$ in closed form.
 
             **The load line** is the graphical fix. Whatever linear network surrounds the device, reduce it to its Thévenin equivalent ($\VTH$, $\RTH$). The device must then satisfy both
             $$I = f(V)\quad\text{(the device)}\qquad\text{and}\qquad I = \frac{\VTH - V}{\RTH}\quad\text{(the load line)}$$
@@ -103,7 +103,7 @@ Cross-check: differentiating the KVL quadratic gives $dI_0/dV_S = 1/(10000I_0 + 
           `),
           G('loadline', { need: 3 }),
           P({
-            q: md`A device with $I = 0$ for $V < 2\,\text{V}$ and $I = (V-2)/2\kO$ above is connected across $R_2$ of a divider: $V_S = 12\,\text{V}$, $R_1 = R_2 = 4\kO$. Find its operating point.`,
+            q: md`A device with $I = 0$ for $V < 2\,\text{V}$ and $I = \dfrac{V-2}{2\kO}$ above is connected across $R_2$ of a divider: $V_S = 12\,\text{V}$, $R_1 = R_2 = 4\kO$. Find its operating point.`,
             fig: [['V', [0, 0.5], [0, 1.5], { n: 'V_S', s: '12\\,\\text{V}', side: 'l' }], ['w', [0, 0.5], [0, 0]], ['R', [0, 0], [2, 0], { n: 'R_1', s: '4\\kO' }], ['R', [2, 0], [2, 2], { n: 'R_2', s: '4\\kO' }], ['w', [2, 0], [3.4, 0]], ['X', [3.4, 0], [3.4, 2], { n: '\\text{device}' }], ['w', [0, 1.5], [0, 2], [3.4, 2]], ['gnd', [2, 2]]],
             parts: [{ lbl: 'V_0', unit: 'V', ans: 4 }, { lbl: 'I_0', unit: 'mA', ans: 1 }],
             hints: [md`Thévenize everything except the device: $\VTH = 6\,\text{V}$, $\RTH = R_1\pl R_2 = 2\kO$.`],
@@ -161,9 +161,9 @@ Cross-check: differentiating the KVL quadratic gives $dI_0/dV_S = 1/(10000I_0 + 
             | Device given as | Incremental resistance |
             |---|---|
             | Exponential $I = I_Se^{V/V_T}$ | $r_d = V_T/I_{D0}$ |
-            | Piecewise-linear $I(V)$ | $1/(\text{slope of the active segment})$ |
+            | Piecewise-linear $I(V)$ | $\dfrac{1}{\text{slope of the active segment}}$ |
             | $V = g(I)$ | $r = g'(I_0)$ |
-            | $I = f(V)$ | $r = 1/f'(V_0)$ |
+            | $I = f(V)$ | $r = \dfrac{1}{f'(V_0)}$ |
 
             **The value depends on where you're biased.** The same device is a different resistor at a different operating point. That's why the DC pass always comes first.
           `),
@@ -214,8 +214,8 @@ Cross-check: differentiating the KVL quadratic gives $dI_0/dV_S = 1/(10000I_0 + 
 
             | Large-signal law | Incremental source | Seen on |
             |---|---|---|
-            | $I = G_Mv_X^2/V_A$ (VCCS) | $i = \dfrac{2G_MV_{X0}}{V_A}v_x$ | PS2 #3, Fall 2022 P2 |
-            | $I = G_Mv_X^3/V_A^2$ (VCCS) | $i = \dfrac{3G_MV_{X0}^2}{V_A^2}v_x$ | practice paper P2 |
+            | $I = \tfrac{G_Mv_X^2}{V_A}$ (VCCS) | $i = \dfrac{2G_MV_{X0}}{V_A}v_x$ | PS2 #3, Fall 2022 P2 |
+            | $I = \tfrac{G_Mv_X^3}{V_A^2}$ (VCCS) | $i = \dfrac{3G_MV_{X0}^2}{V_A^2}v_x$ | practice paper P2 |
             | $V = Av_X^3$ (VCVS) | $v = 3AV_{X0}^2\,v_x$ | Fall 2023 P2 |
 
             !!trap $G_M$ is not the answer

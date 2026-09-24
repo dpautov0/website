@@ -153,7 +153,7 @@ $V_{IN} = V_{OUT} + R_1\dfrac{G_MV_{OUT}^3}{3V_T^2} = V_{OUT}(1 + 1) = 2V_T\sqrt
     q: md`In the linear circuit in the Figure below, when $R_2 = \infty$ and $V_1 = 2\,\text{V}$, we find $V_2 = 3\,\text{V}$. Furthermore, when $R_2 = 0$ and $V_1 = 4\,\text{V}$, then $I_2 = 2\,\text{A}$. Find $V_2$ and $I_2$ when $R_2 = 1.5\,\Omega$ and $V_1 = 6\,\text{V}$.`,
     fig: FIGS.blackbox({ src: 'V' }),
     parts: [{ lbl: '\\RTH', unit: 'Ω', ans: 3 }, { lbl: 'V_2', unit: 'V', ans: 3 }, { lbl: 'I_2', unit: 'A', ans: 2 }],
-    sol: md`$\VTH = 1.5V_1$ (open circuit), $\IN = 0.5V_1$ (short circuit), $\RTH = 3\,\Omega$. At $V_1 = 6$: $\VTH = 9\,\text{V}$, $I_2 = 9/(3 + 1.5) = 2\,\text{A}$, $V_2 = 3\,\text{V}$.`,
+    sol: md`$\VTH = 1.5V_1$ (open circuit), $\IN = 0.5V_1$ (short circuit), $\RTH = 3\,\Omega$. At $V_1 = 6$: $\VTH = 9\,\text{V}$, $I_2 = \dfrac{9}{3 + 1.5} = 2\,\text{A}$, $V_2 = 3\,\text{V}$.`,
   });
   const MD1b = P({
     id: 'MD-P1b', src: 'Mock midterm D · P1(b)', title: 'Inverting nonlinear block',
@@ -203,12 +203,12 @@ $M_4$ ($2X = 4\times M_3$): $0.8\,\text{mA}$; $I_{R_1} = 0.8 - 0.6 = 0.2\,\text{
         1. **Name** the open-circuit and short-circuit cases.
         2. **Write the scaling**: $\VTH = \alpha V_1$, $\IN = \beta V_1$.
         3. **Scale both to the new $V_1$** before combining them.
-        4. $\RTH = \VTH/\IN$; then $I_2 = \VTH/(\RTH + R_2)$ and $V_2 = I_2R_2$.
+        4. $\RTH = \VTH/\IN$; then $I_2 = \dfrac{\VTH}{\RTH + R_2}$ and $V_2 = I_2R_2$.
 
         !!trap The common mistake
         Dividing a $V_{OC}$ measured at $V_1 = 1$ by an $I_{SC}$ measured at $V_1 = 2$ gives the wrong $\RTH$. Put both at the same $V_1$ first. This cost a real student 5 points.
 
-        **Worked example (Spring 2026).** $R_2 = \infty$, $V_1 = 1$: $V_2 = 2$, so $\VTH = 2V_1$. $R_2 = 0$, $V_1 = 2$: $I_2 = 1$, so $\IN = 0.5V_1$. $\RTH = 4\,\Omega$. At $V_1 = 3$, $R_2 = 2\,\Omega$: $I_2 = 6/(4+2) = 1\,\text{A}$, $V_2 = 2\,\text{V}$.
+        **Worked example (Spring 2026).** $R_2 = \infty$, $V_1 = 1$: $V_2 = 2$, so $\VTH = 2V_1$. $R_2 = 0$, $V_1 = 2$: $I_2 = 1$, so $\IN = 0.5V_1$. $\RTH = 4\,\Omega$. At $V_1 = 3$, $R_2 = 2\,\Omega$: $I_2 = \dfrac{6}{4+2} = 1\,\text{A}$, $V_2 = 2\,\text{V}$.
       `),
       G('bb_scale', { need: 4 }),
       P({
@@ -269,9 +269,9 @@ $M_4$ ($2X = 4\times M_3$): $0.8\,\text{mA}$; $I_{R_1} = 0.8 - 0.6 = 0.2\,\text{
         6. **DC KVL** for anything else ($V_{IN} = V_{OUT} + R_1I_X$).
 
         !!trap Read the divider off the model
-        On the real exam, $v_{out}/v_{in} = r_x/R_1$ (instead of $r_x/(R_1+r_x)$) cost 10 points. Draw the model; the divider is then obvious.
+        On the real exam, $v_{out}/v_{in} = r_x/R_1$ (instead of $\dfrac{r_x}{R_1+r_x}$) cost 10 points. Draw the model; the divider is then obvious.
 
-        **Worked example (Spring 2026).** $i_X = G_Mv_X^2/(2V_T)$, shunt, $A_v = \tfrac13$. Then $r_x = V_T/(G_MV_{OUT})$; $\tfrac13 \Rightarrow r_x = R_1/2$; so $V_{OUT} = 2V_T/(G_MR_1)$; and $V_{IN} = V_{OUT} + R_1\frac{G_MV_{OUT}^2}{2V_T} = 2V_{OUT} = 4V_T/(G_MR_1)$.
+        **Worked example (Spring 2026).** $i_X = \dfrac{G_Mv_X^2}{2V_T}$, shunt, $A_v = \tfrac13$. Then $r_x = \dfrac{V_T}{G_MV_{OUT}}$; $\tfrac13 \Rightarrow r_x = R_1/2$; so $V_{OUT} = \dfrac{2V_T}{G_MR_1}$; and $V_{IN} = V_{OUT} + R_1\frac{G_MV_{OUT}^2}{2V_T} = 2V_{OUT} = \dfrac{4V_T}{G_MR_1}$.
 
         | Element law | $r_x$ |
         |---|---|
@@ -280,10 +280,10 @@ $M_4$ ($2X = 4\times M_3$): $0.8\,\text{mA}$; $I_{R_1} = 0.8 - 0.6 = 0.2\,\text{
         | $i = I_Se^{v/V_T}$ | $\frac{V_T}{I_X}$ |
       `),
       P({
-        q: md`Numeric version of the Spring 2026 circuit: $i_X = G_Mv_X^2/(2V_T)$ with $G_M = 2\,\text{mA/V}$, $V_T = 1\,\text{V}$, $R_1 = 1\kO$, and the incremental gain is $\tfrac13$. Find $r_x$, $V_{OUT}$ and $V_{IN}$.`,
+        q: md`Numeric version of the Spring 2026 circuit: $i_X = \dfrac{G_Mv_X^2}{2V_T}$ with $G_M = 2\,\text{mA/V}$, $V_T = 1\,\text{V}$, $R_1 = 1\kO$, and the incremental gain is $\tfrac13$. Find $r_x$, $V_{OUT}$ and $V_{IN}$.`,
         fig: FIGS.shuntX(),
         parts: [{ lbl: 'r_x', unit: 'Ω', ans: 500 }, { lbl: 'V_{OUT}', unit: 'V', ans: 1 }, { lbl: 'V_{IN}', unit: 'V', ans: 2 }],
-        hints: [md`$r_x = R_1/2$. Then $r_x = V_T/(G_MV_{OUT})$.`],
+        hints: [md`$r_x = R_1/2$. Then $r_x = \dfrac{V_T}{G_MV_{OUT}}$.`],
         sol: md`$r_x = R_1/2 = 500\,\Omega$. $V_{OUT} = \dfrac{V_T}{G_Mr_x} = \dfrac{1}{(2\text{m})(500)} = 1\,\text{V}$. $i_X = \dfrac{2\text{m}\cdot1}{2} = 1\,\text{mA}$, so $V_{IN} = 1 + (1\text{k})(1\text{m}) = 2\,\text{V}$.`,
       }),
       G('inverse_op', { need: 4 }),

@@ -40,7 +40,7 @@
       parts: [{ lbl: 'V_D\\text{ (if saturated)}', unit: 'V', ans: c.VDsat }, { lbl: 'I_D', unit: 'mA', ans: c.ID * 1e3 }, { lbl: 'V_D', unit: 'V', ans: c.VD }],
       hints: [
         md`Saturation: $I_D = \tfrac12\mu_nC_{ox}\tfrac{W}{L}V_{ov}^2$, then $V_D = V_{DD} - I_DR_D$. Compare with $V_{ov}$: saturation needs $V_{DS} \ge V_{ov}$.`,
-        md`Triode: $I_D = \mu_nC_{ox}\tfrac{W}{L}\left[V_{ov}V_D - \tfrac12V_D^2\right]$ (source grounded, so $V_{DS} = V_D$). Set it equal to $(V_{DD} - V_D)/R_D$: a quadratic in $V_D$.`,
+        md`Triode: $I_D = \mu_nC_{ox}\tfrac{W}{L}\left[V_{ov}V_D - \tfrac12V_D^2\right]$ (source grounded, so $V_{DS} = V_D$). Set it equal to $\dfrac{V_{DD} - V_D}{R_D}$: a quadratic in $V_D$.`,
         md`Keep the root with $V_D < V_{ov}$. The other root is above $V_{ov}$, where the triode law doesn't apply.`,
       ],
       sol: `**Assume saturation:** $I_D = \\tfrac12(${f(c.k * 1e3)}\\,\\text{mA/V}^2)(${c.vov})^2 = ${mA(c.Isat)}$, so $V_D = ${f(c.VDD)} - ${f(c.Isat * c.RD)} = ${Vv(c.VDsat)}$. That's below $V_{ov} = ${c.vov}\\,\\text{V}$${c.VDsat < 0 ? ' (even negative)' : ''}: **not saturated**. The device is on, so it's in **triode**.

@@ -73,7 +73,7 @@
       fig: FIGS.diode1('V_D', 'I_D'),
         q: `By how much must a diode's forward voltage increase to multiply its current by ${ratio}? Use the exponential model with $V_T = 25\\,\\text{mV}$.`,
         parts: [{ lbl: '\\Delta V_D', unit: 'mV', ans: dv, accept: [60 * Math.log10(ratio)] }],
-        hints: ['$I_{D2}/I_{D1} = e^{\\Delta V/V_T}$, so $\\Delta V = V_T\\ln(I_{D2}/I_{D1})$.'],
+        hints: ['$\\dfrac{I_{D2}}{I_{D1}} = e^{\\Delta V/V_T}$, so $\\Delta V = V_T\\ln\\dfrac{I_{D2}}{I_{D1}}$.'],
         sol: `$\\Delta V = V_T\\ln ${ratio} = 25\\,\\text{mV}\\times${f(Math.log(ratio))} = ${f(dv)}\\,\\text{mV}$. The rule of thumb is $\\approx 60\\,\\text{mV}$ per decade ($2.3V_T$), so a factor of 10 costs only about $58$–$60\\,\\text{mV}$.`,
       };
     }
@@ -83,7 +83,7 @@
       fig: FIGS.diode1('V_D', 'I_D'),
       q: `A diode's forward voltage rises by $${f(dv * 1e3)}\\,\\text{mV}$. By what factor does its current increase? ($V_T = 25\\,\\text{mV}$)`,
       parts: [{ lbl: 'I_{D2}/I_{D1}', unit: '', ans: ratio }],
-      hints: ['$I_{D2}/I_{D1} = e^{\\Delta V/V_T}$.'],
+      hints: ['$\\dfrac{I_{D2}}{I_{D1}} = e^{\\Delta V/V_T}$.'],
       sol: `$e^{${f(dv * 1e3)}/25} = e^{${f(dv / VT)}} = ${f(ratio)}$.`,
     };
   };
@@ -108,7 +108,7 @@
       fig: FIGS.diode1('V_D', 'I_D'),
       q: `A diode with $I_S = ${f(IS)}\\,\\text{A}$ carries $I_D = ${mA(ID)}$. Find $V_D$ ($V_T = 25\\,\\text{mV}$).`,
       parts: [{ lbl: 'V_D', unit: 'V', ans: VD, tol: { rel: 0.005 } }],
-      hints: ['$V_D = V_T\\ln(I_D/I_S)$.'],
+      hints: ['$V_D = V_T\\ln\\dfrac{I_D}{I_S}$.'],
       sol: `$V_D = 0.025\\ln\\dfrac{${f(ID)}}{${f(IS)}} = ${Vv(VD)}$. This is why a conducting diode almost always sits between 0.6 and 0.8 V.`,
     };
   };
@@ -176,7 +176,7 @@
       fig: FIGS.vrd(Vv(Vs), kO(R)),
       q: `$V_S = ${Vs}\\,\\text{V}$ drives a diode ($I_S = ${f(IS)}\\,\\text{A}$) through $R = ${k(R)}\\kO$. Run the iterative method starting from $V_D = 0.7\\,\\text{V}$: give the diode voltage after the first update, and the converged current.`,
       parts: [{ lbl: 'V_D^{(1)}', unit: 'V', ans: V1, tol: { rel: 0.005 } }, { lbl: 'I_D', unit: 'mA', ans: ID * 1e3, tol: { rel: 0.005 } }],
-      hints: ['Step 1: $I_D = (V_S - 0.7)/R$. Step 2: $V_D = V_T\\ln(I_D/I_S)$. Repeat until $V_D$ stops changing (2–3 rounds).'],
+      hints: ['Step 1: $I_D = \\dfrac{V_S - 0.7}{R}$. Step 2: $V_D = V_T\\ln\\dfrac{I_D}{I_S}$. Repeat until $V_D$ stops changing (2–3 rounds).'],
       sol: `Round 1: $I = \\frac{${Vs}-0.7}{${k(R)}} = ${mA(I1)}$, $V_D = 0.025\\ln\\frac{${f(I1)}}{${f(IS)}} = ${Vv(V1)}$.\n\nRound 2: $I = \\frac{${Vs}-${f(V1)}}{${k(R)}} = ${mA((Vs - V1) / R)}$, and so on. It converges to $V_D = ${Vv(VD)}$, $I_D = ${mA(ID)}$. The current barely moves because the diode voltage barely moves.`,
     };
   };
@@ -218,7 +218,7 @@
     return {
       q: `CVD model ($0.7\\,\\text{V}$), $V_T = 25\\,\\text{mV}$. (i) Find $I_{IN}$ and the diode current. (ii) Find $v_{out}$ for a small $v_{in} = 1\\,\\text{mV}$ (the current source is an ideal DC source).`,
       fig, parts: [{ lbl: 'I_{IN}', unit: 'mA', ans: c.IIN * 1e3 }, { lbl: 'I_{D0}', unit: 'mA', ans: c.ID * 1e3 }, { lbl: 'v_{out}', unit: 'µV', ans: 1e-3 * a * 1e6 }],
-      hints: ['DC: the two diodes clamp $V_{OUT} = 1.4\\,\\text{V}$. $I_{IN} = (V_{IN} - 1.4)/R_1$, and the diodes get $I_{IN} - I_{OUT}$.', 'Small signal: the DC current source becomes an **open**. Then $v_{out}$ comes from a divider between $R_1$ and $2r_d$.'],
+      hints: ['DC: the two diodes clamp $V_{OUT} = 1.4\\,\\text{V}$. $I_{IN} = \\dfrac{V_{IN} - 1.4}{R_1}$, and the diodes get $I_{IN} - I_{OUT}$.', 'Small signal: the DC current source becomes an **open**. Then $v_{out}$ comes from a divider between $R_1$ and $2r_d$.'],
       sol: `**DC:** $V_{OUT} = 1.4\\,\\text{V}$, $I_{IN} = \\frac{${c.VIN} - 1.4}{${f(c.R1)}} = ${mA(c.IIN)}$, $I_{D0} = ${f(c.IIN * 1e3)} - ${f(c.IOUT * 1e3)} = ${mA(c.ID)}$.\n\n**Small signal:** $2r_d = \\frac{2(25\\,\\text{mV})}{${f(c.ID * 1e3)}\\,\\text{mA}} = ${f(rt)}\\,\\Omega$. $v_{out} = 1\\,\\text{mV}\\cdot\\frac{${f(rt)}}{${f(c.R1)}+${f(rt)}} = ${f(a * 1e3)}\\,\\mu\\text{V}$.\n\n(If instead a small $i_{out}$ were pulled from the output, $v_{out} = -i_{out}(R_1\\pl 2r_d) = -i_{out}\\cdot${f(rp)}\\,\\Omega$.)`,
     };
   };
@@ -281,7 +281,7 @@
       fig: FIGS.mosBias(false, '?', `W/L=${WL}`, `I_D = ${curTeX(ID)}`),
       q: `An NMOS ($W/L = ${WL}$, $\\mu_nC_{ox} = 100\\,\\mu\\text{A/V}^2$, $V_T = 1\\,\\text{V}$) carries $I_D = ${curTeX(ID)}$ in saturation. Find $V_{GS}$.`,
       parts: [{ lbl: 'V_{GS}', unit: 'V', ans: 1 + vov }],
-      hints: ['Invert the square law: $V_{ov} = \\sqrt{2I_D/(\\mu_nC_{ox}W/L)}$, then add $V_T$.'],
+      hints: ['Invert the square law: $V_{ov} = \\sqrt{\\dfrac{2I_D}{\\mu_nC_{ox}W/L}}$, then add $V_T$.'],
       sol: `$\\tfrac12\\mu_nC_{ox}\\tfrac{W}{L} = ${f(0.5 * KN * WL * 1e3)}\\,\\text{mA/V}^2$. $V_{ov}^2 = \\dfrac{${f(ID * 1e3)}}{${f(0.5 * KN * WL * 1e3)}} = ${f(vov * vov)}\\Rightarrow V_{ov} = ${f(vov)}\\,\\text{V}$, $V_{GS} = ${f(1 + vov)}\\,\\text{V}$.`,
     };
   };
@@ -388,7 +388,7 @@
     return {
       q: `$1X = ${unit}/1$. A current source pushes $${curTeX(I)}$ down through a stack of diode-connected NMOS. Find the node voltages, bottom-up (${labels.slice(0, n).map((x) => `$${x}$`).join(', ')}).`,
       fig, parts: labels.slice(0, n).map((l, i) => ({ lbl: l, unit: 'V', ans: nodes[i] })),
-      hints: [`The ${xs(1)} device carries $${curTeX(I)}$: find its $V_{ov}$ first.`, 'Same current through every device ⇒ $V_{ov} \\propto 1/\\sqrt{W/L}$: $4X$ halves it, $\\tfrac14X$ doubles it.', 'Each node is the one below it plus that device\'s $V_{GS} = 1 + V_{ov}$.'],
+      hints: [`The ${xs(1)} device carries $${curTeX(I)}$: find its $V_{ov}$ first.`, 'Same current through every device ⇒ $V_{ov} \\propto \\dfrac{1}{\\sqrt{W/L}}$: $4X$ halves it, $\\tfrac14X$ doubles it.', 'Each node is the one below it plus that device\'s $V_{GS} = 1 + V_{ov}$.'],
       sol: `For $1X$: $V_{ov} = \\sqrt{\\dfrac{2(${f(I * 1e3)}\\text{m})}{(100\\mu)(${unit})}} = ${f(vov1)}\\,\\text{V}$.\n\n${sizes.map((m, i) => `- ${xs(m)}: $V_{ov} = ${f(vovs[i])}$, $V_{GS} = ${f(vgs[i])}\\,\\text{V}$`).join('\n')}\n\nStacking from ground: ${labels.slice(0, n).map((l, i) => `$${l} = ${f(nodes[i])}\\,\\text{V}$`).join(', ')}.`,
     };
   };
@@ -428,8 +428,8 @@
       fig: FIGS.mosBias(false, null, `W/L=${WL}`, `I_D = ${curTeX(ID)}`),
       q: `An NMOS ($W/L = ${WL}$) is biased in saturation at $I_D = ${curTeX(ID)}$. Find its transconductance $g_m$.`,
       parts: [{ lbl: 'g_m', unit: 'mA/V', ans: gm * 1e3 }],
-      hints: ['$g_m = \\partial I_D/\\partial V_{GS} = \\mu_nC_{ox}\\tfrac{W}{L}V_{ov} = 2I_D/V_{ov}$. Find $V_{ov}$ first.'],
-      sol: `$V_{ov} = \\sqrt{2I_D/(\\mu_nC_{ox}W/L)} = ${f(vov)}\\,\\text{V}$, so $g_m = 2I_D/V_{ov} = ${f(gm * 1e3)}\\,\\text{mA/V}$.`,
+      hints: ['$g_m = \\dfrac{\\partial I_D}{\\partial V_{GS}} = \\mu_nC_{ox}\\tfrac{W}{L}V_{ov} = \\dfrac{2I_D}{V_{ov}}$. Find $V_{ov}$ first.'],
+      sol: `$V_{ov} = \\sqrt{\\dfrac{2I_D}{\\mu_nC_{ox}W/L}} = ${f(vov)}\\,\\text{V}$, so $g_m = \\dfrac{2I_D}{V_{ov}} = ${f(gm * 1e3)}\\,\\text{mA/V}$.`,
     };
   };
 })();
