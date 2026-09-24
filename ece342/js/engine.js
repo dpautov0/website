@@ -188,7 +188,7 @@
 
   const KIND = {
     lesson: 'Lesson', checkpoint: 'Checkpoint', pset: 'Problem Set', exam: 'Past midterm',
-    mock: 'Mock exam', review: 'Mixed review', read: 'Reference',
+    mock: 'Mock exam', review: 'Mixed review', read: 'Reference', paper: 'Typed exam',
   };
 
   // ---------------------------------------------------------------- sidebar
@@ -233,6 +233,7 @@
         <div class="home-actions">
           <a class="btn primary" href="#/l/${(last || next).id}">${last ? 'Continue: ' + last.title : 'Start: ' + next.title}</a>
           <a class="btn" href="#/l/u5-bank">Question bank</a>
+          ${BYID.has('u5-s26-paper') ? '<a class="btn" href="#/l/u5-s26-paper">Midterm 1, Spring 2026</a>' : ''}
         </div>
         <div class="units">${COURSE.units.map((u) => {
           const pct = Math.round(unitProgress(u) * 100);
@@ -276,9 +277,24 @@
         </nav>
       </article>`;
     const wrap = main.querySelector('.steps');
+    if (l.steps.some((s) => s.t === 'paper')) {
+      const bar = document.createElement('div');
+      bar.className = 'pp-bar';
+      bar.innerHTML = '<button class="btn pp-all" aria-pressed="false">Show all answers</button>';
+      const b = bar.firstChild;
+      b.addEventListener('click', () => {
+        const show = b.getAttribute('aria-pressed') !== 'true';
+        wrap.querySelectorAll('.pp-tog').forEach((t) => setAnswer(t, show));
+        b.setAttribute('aria-pressed', show);
+        b.textContent = show ? 'Hide all answers' : 'Show all answers';
+      });
+      wrap.appendChild(bar);
+    }
     let pnum = 0;
     for (const s of l.steps) {
-      if (s.t === 'read') {
+      if (s.t === 'paper') {
+        wrap.appendChild(paperBlock(s));
+      } else if (s.t === 'read') {
         const d = document.createElement('section');
         d.className = 'read';
         const figHtml = s.fig ? `<figure class="fig">${typeof s.fig === 'string' ? s.fig : Schem.render(s.fig)}</figure>` : '';
@@ -292,13 +308,38 @@
         wrap.appendChild(genCard(s, pnum, l));
       }
     }
-    if (!l.steps.some((s) => s.t !== 'read')) Store.markDone('visit:' + l.id);
+    if (!l.steps.some((s) => s.t === 'prob' || s.t === 'gen')) Store.markDone('visit:' + l.id);
     renderMath(main);
     refreshLessonProgress(l);
     buildSidebar(l.id);
     updateTopProgress();
     document.title = `${l.title} · ECE 342`;
     window.scrollTo(0, 0);
+  }
+
+  // typed exam paper: question as printed, answer hidden behind its own toggle
+  function paperBlock(s) {
+    const d = document.createElement('section');
+    d.className = 'pp';
+    d.innerHTML = (s.html || '') + (s.head ? `<div class="pp-head">${rich(s.head, s.figs)}</div>` : '')
+      + (s.items || []).map((it) => `
+        <div class="pp-item">
+          <div class="pp-q">${rich(it.q, it.figs)}</div>
+          <button class="btn pp-tog" aria-expanded="false">Show answer</button>
+          <div class="pp-ans" hidden>
+            <div class="pp-final"><div class="sol-h">Answer</div>${rich(it.ans)}</div>
+            ${it.sol ? `<div class="sol-h">Worked solution</div>${rich(it.sol, it.figs)}` : ''}
+          </div>
+        </div>`).join('');
+    d.querySelectorAll('.pp-tog').forEach((b) => b.addEventListener('click', () => setAnswer(b, b.getAttribute('aria-expanded') !== 'true')));
+    return d;
+  }
+  function setAnswer(b, show) {
+    const a = b.nextElementSibling;
+    a.hidden = !show;
+    b.setAttribute('aria-expanded', show);
+    b.textContent = show ? 'Hide answer' : 'Show answer';
+    if (show) renderMath(a);
   }
 
   function refreshLessonProgress(l) {

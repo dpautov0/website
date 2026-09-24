@@ -257,3 +257,25 @@ tr:last-child td { border-bottom: none; }
   .part input { width: 120px; }
 }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+
+/* ---------- typed exam paper ---------- */
+.pp-bar { display: flex; justify-content: flex-end; margin-bottom: -8px; }
+.pp { font-size: 15px; padding-top: 16px; border-top: 1px solid var(--line-2); }
+.pp p { margin: 0 0 10px; max-width: 72ch; }
+.pp-title { display: flex; justify-content: space-between; gap: 12px; font-weight: 700; padding-bottom: 4px; border-bottom: 1px solid var(--fg); }
+.pp-meta { display: flex; flex-wrap: wrap; gap: 4px 22px; margin: 8px 0 18px; font-size: 14px; color: var(--dim); }
+.pp table { width: auto; }
+.pp td { border: 0; padding: 2px 16px 2px 0; }
+.pp-pts { margin: 0 0 14px; }
+.pp-pts tr:last-child td { padding-top: 6px; }
+.pp-sub { font-weight: 700; margin: 0 0 4px; }
+.pp-head { margin-bottom: 4px; }
+.pp-item { margin: 14px 0 0; }
+.pp-item + .pp-item { padding-top: 14px; border-top: 1px dashed var(--line); }
+.pp-tog { margin-top: 2px; }
+.pp-ans { margin-top: 12px; padding: 2px 0 2px 14px; border-left: 1px solid var(--line-2); }
+.pp-ans h3 { font-size: 15px; margin: 18px 0 6px; }
+.pp-ans ul, .pp-ans ol { margin: 0 0 10px; padding-left: 22px; }
+.pp-final { margin-bottom: 14px; }
+.pp-final p { margin: 0; }
+@media (max-width: 520px) { .pp-title { font-size: 14px; } .pp-ans { padding-left: 10px; } }
