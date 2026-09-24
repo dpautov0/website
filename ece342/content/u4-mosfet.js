@@ -11,7 +11,7 @@
     q: md`$R_S = 200\,\Omega$, $R_D = 1.25\kO$, $W/L = 125/1$, $\mu_nC_{ox} = 100\,\mu\text{A/V}^2$, $V_T = 1\,\text{V}$. Find $I_D$, $V_D$, $V_S$ and $R_{D,max}$ for saturation.`,
     fig: FIGS.nbias({ vdds: V(2), RDs: '1.25\\kO', RSs: '200\\,\\Omega', wls: 'W/L=125/1', vgs: V(1.6) }),
     parts: [{ lbl: 'I_D', unit: 'mA', ans: 1 }, { lbl: 'V_D', unit: 'V', ans: 0.75 }, { lbl: 'V_S', unit: 'V', ans: 0.2 }, { lbl: 'R_{D,max}', unit: 'kΩ', ans: 1.4 }],
-    hints: [md`Assume saturation: $I_D = k'(V_{GS} - 1)^2$, where $k' = 6.25\,\text{mA/V}^2$ and $V_{GS} = 1.6 - 200I_D$.`, md`The quadratic has roots 9 mA and 1 mA. One of them makes $V_{GS} < V_T$.`, md`$R_{D,max}$: saturation needs $V_D \ge V_G - V_T = 0.6\,\text{V}$.`],
+    hints: [md`Assume saturation: $I_D = K(V_{GS} - 1)^2$, where $K = 6.25\,\text{mA/V}^2$ and $V_{GS} = 1.6 - 200I_D$.`, md`The quadratic has roots 9 mA and 1 mA. One of them makes $V_{GS} < V_T$.`, md`$R_{D,max}$: saturation needs $V_D \ge V_G - V_T = 0.6\,\text{V}$.`],
     sol: md`$\tfrac12(100\mu)(125) = 6.25\,\text{mA/V}^2$. $I_D = 6.25\text{m}(0.6 - 200I_D)^2 \Rightarrow 250I_D^2 - 2.5I_D + 2.25\text{m} = 0 \Rightarrow I_D = 9$ or $1\,\text{mA}$.
 
 $9\,\text{mA}$ would give $V_{GS} = 1.6 - 1.8 < V_T$: reject. **$I_D = 1\,\text{mA}$**, $V_S = 0.2\,\text{V}$, $V_D = 2 - 1.25 = 0.75\,\text{V}$. Check: $V_{DS} = 0.55 \ge V_{ov} = 0.4$. ✓
@@ -390,7 +390,7 @@ Note $M_5$ has $V_{DS} = 0.2 = V_{ov}$: **exactly at the edge of saturation**. E
             In saturation:
             $$I_D = \tfrac12\,\mu_nC_{ox}\,\frac{W}{L}\,V_{ov}^2\qquad\Longleftrightarrow\qquad V_{ov} = \sqrt{\frac{2I_D}{\mu_nC_{ox}\,W/L}}$$
 
-            **Precompute the constant.** Write $k' = \tfrac12\mu_nC_{ox}\tfrac{W}{L}$ once per device, then $I_D = k'V_{ov}^2$. For example, $W/L = 125$ gives $k' = 6.25\,\text{mA/V}^2$.
+            **Precompute the constant.** Write $K = \tfrac12\mu_nC_{ox}\tfrac{W}{L}$ once per device, then $I_D = KV_{ov}^2$. For example, $W/L = 125$ gives $K = 6.25\,\text{mA/V}^2$. (Not the exam cover's $k_n'$: that one is $\mu_nC_{ox}$ alone.)
 
             Useful facts:
             - Doubling $V_{ov}$ quadruples $I_D$.
@@ -422,7 +422,7 @@ Note $M_5$ has $V_{DS} = 0.2 = V_{ov}$: **exactly at the edge of saturation**. E
             q: md`A PMOS ($W/L = 200$) has its source at $5\,\text{V}$ and gate at $3.6\,\text{V}$. It's saturated. Find $I_D$.`,
             parts: [{ lbl: 'I_D', unit: 'mA', ans: 0.8 }],
             hints: [md`$V_{SG} = 1.4$, so $V_{ov} = 0.4$. Use $\mu_pC_{ox} = 50\,\mu\text{A/V}^2$.`],
-            sol: md`$V_{SG} = 5 - 3.6 = 1.4$, $V_{ov} = 0.4$. $k' = \tfrac12(50\mu)(200) = 5\,\text{mA/V}^2$, so $I_D = 5\text{m}\times(0.4)^2 = 0.8\,\text{mA}$. An NMOS of the same size would carry twice that.`,
+            sol: md`$V_{SG} = 5 - 3.6 = 1.4$, $V_{ov} = 0.4$. $K = \tfrac12(50\mu)(200) = 5\,\text{mA/V}^2$, so $I_D = 5\text{m}\times(0.4)^2 = 0.8\,\text{mA}$. An NMOS of the same size would carry twice that.`,
           }),
         ],
       },
@@ -433,15 +433,27 @@ Note $M_5$ has $V_{DS} = 0.2 = V_{ov}$: **exactly at the edge of saturation**. E
             The standard bias problem: gate at a fixed voltage, resistor $R_S$ in the source. The source voltage rises with current, which **reduces** $V_{GS}$. That's negative feedback, and it makes the math a quadratic.
 
             !!method Procedure
-            1. Assume saturation. $I_D = k'(V_{GS} - V_T)^2$.
+            1. Assume saturation. $I_D = K(V_{GS} - V_T)^2$.
             2. $V_{GS} = V_G - I_DR_S$ (NMOS) or $V_{SG} = (V_{DD} - I_DR_S) - V_G$ (PMOS).
             3. Substitute → quadratic in $I_D$.
-            4. **Reject the root that makes $V_{GS} < V_T$.** Always the larger one. Say so explicitly; it's graded.
+            4. **Keep the root with $V_{GS} > V_T$; reject the other.** Solving for $I_D$, the fake root is the **larger** current: its big $I_DR_S$ lifts the source until $V_{GS} < V_T$. Write the reason: "reject, it gives $V_{GS} < V_T$". It's graded.
             5. Back out $V_S$ and $V_D$.
             6. **Verify saturation** with the shortcut.
 
+            !!key Cleaner: solve for $V_{ov}$ instead
+            $V_G - V_T = V_{ov} + I_DR_S$ with $I_D = KV_{ov}^2$:
+            $$KR_S\,V_{ov}^2 + V_{ov} - (V_G - V_T) = 0$$
+            This always has one positive and one negative root. Keep the positive one; nothing to remember. (PMOS: the same with $V_{DD} - V_G - |V_T|$ on the right.)
+
+            | Solved for | Keep | Reject |
+            |---|---|---|
+            | $I_D$ or $V_S$ | smaller root | larger root |
+            | $V_{ov}$ or $V_{GS}$ | positive root | negative root |
+
+            Why a fake root exists at all: the square law only holds for $V_{ov} > 0$, but $V_{ov}^2$ can't tell $+0.6$ from $-0.6$.
+
             !!tip Speed trick
-            If you suspect the numbers are "nice", guess $V_{ov}$ from $\{0.1, 0.2, 0.4, \dots\}$, compute $I_D = k'V_{ov}^2$, and check $V_G = V_T + V_{ov} + I_DR_S$. Even with a calculator (allowed on your exam), this is often faster than the quadratic.
+            If you suspect the numbers are "nice", guess $V_{ov}$ from $\{0.1, 0.2, 0.4, \dots\}$, compute $I_D = KV_{ov}^2$, and check $V_G = V_T + V_{ov} + I_DR_S$. Even with a calculator (allowed on your exam), this is often faster than the quadratic.
           `),
           G('mos_rs_bias', { need: 3 }),
           G('pmos_rs_bias', { need: 2 }),
@@ -459,7 +471,7 @@ Note $M_5$ has $V_{DS} = 0.2 = V_{ov}$: **exactly at the edge of saturation**. E
 
             Since $V_{GS} \ge V_{GS} - V_T$ always holds, **a conducting diode-connected transistor is always saturated.** No check needed.
 
-            It behaves as a two-terminal device with $I = k'(V - V_T)^2$. Push a current into it and it produces exactly the $V_{GS}$ needed to carry that current. That's how references are made: **current in → voltage out**, then that voltage drives other gates.
+            It behaves as a two-terminal device with $I = K(V - V_T)^2$. Push a current into it and it produces exactly the $V_{GS}$ needed to carry that current. That's how references are made: **current in → voltage out**, then that voltage drives other gates.
           `),
           G('diode_conn', { need: 3 }),
         ],

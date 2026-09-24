@@ -302,7 +302,7 @@ $M_4$ ($2X = 4\times M_3$): $0.8\,\text{mA}$; $I_{R_1} = 0.8 - 0.6 = 0.2\,\text{
           $$R_{1,max} = \frac{V_G + |V_T|}{I_{M4} - I_2}$$
 
         !!tip Why the PMOS was $\tfrac12X$
-        $\mu_pC_{ox}$ is half of $\mu_nC_{ox}$, so a $\tfrac12X$ PMOS has a quarter of a $1X$ NMOS's $k'$. At the same current, its overdrive is **twice** as large (0.4 V vs 0.2 V). That's how the exam keeps every number clean.
+        $\mu_pC_{ox}$ is half of $\mu_nC_{ox}$, so a $\tfrac12X$ PMOS has a quarter of a $1X$ NMOS's $K = \tfrac12\mu C_{ox}\tfrac{W}{L}$. At the same current, its overdrive is **twice** as large (0.4 V vs 0.2 V). That's how the exam keeps every number clean.
 
         !!trap Two things to check
         The current source needs headroom ($V_3 > V_2$), and every device must actually be on. Do the one-line check.
