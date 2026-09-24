@@ -233,7 +233,7 @@
         <div class="home-actions">
           <a class="btn primary" href="#/l/${(last || next).id}">${last ? 'Continue: ' + last.title : 'Start: ' + next.title}</a>
           <a class="btn" href="#/l/u5-bank">Question bank</a>
-          ${BYID.has('u5-s26-paper') ? '<a class="btn" href="#/l/u5-s26-paper">Midterm 1, Spring 2026</a>' : ''}
+          ${BYID.has('u5-s26-paper') ? '<a class="btn" href="#/sp26">SP26 Exam</a>' : ''}
         </div>
         <div class="units">${COURSE.units.map((u) => {
           const pct = Math.round(unitProgress(u) * 100);
@@ -549,8 +549,11 @@
   function route() {
     const h = location.hash || '#/';
     const m = /^#\/l\/(.+)$/.exec(h);
+    const id = h === '#/sp26' ? 'u5-s26-paper' : m && m[1];
     document.body.classList.remove('nav-open');
-    if (m && BYID.has(m[1])) renderLesson(BYID.get(m[1]));
+    const tl = document.querySelector('.top-link');
+    if (tl) tl.classList.toggle('on', id === 'u5-s26-paper');
+    if (id && BYID.has(id)) renderLesson(BYID.get(id));
     else renderHome();
   }
 

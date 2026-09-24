@@ -185,9 +185,8 @@ $$R_{1,max} = \frac{4.6\,\text{V}}{0.25\,\text{mA}} = 18.4\kO$$
     }],
   };
 
-  const at = u5.lessons.findIndex((l) => l.id === 'u5-playbook') + 1;
-  u5.lessons.splice(at, 0, {
-    id: 'u5-s26-paper', title: 'Midterm 1, Spring 2026 (typed)', kind: 'paper',
+  u5.lessons.unshift({
+    id: 'u5-s26-paper', title: 'SP26 Exam (Midterm 1)', kind: 'paper',
     steps: [cover, P1, P2, P3],
   });
 })();

@@ -39,6 +39,8 @@ h1, h2, h3, h4 { font-weight: 700; letter-spacing: 0; text-wrap: balance; }
 .brand, .brand:visited { display: flex; align-items: center; gap: 9px; border: 0; color: var(--fg); font-size: 15px; }
 .brand b { font-weight: 400; color: var(--dim); }
 .brand-mark svg { fill: none; stroke: var(--dim); stroke-width: 1.8; stroke-linejoin: round; stroke-linecap: round; }
+.top-link, .top-link:visited { border: 0; color: var(--dim); font-size: 14px; padding: 2px 0; }
+.top-link:hover, .top-link.on { color: var(--fg); }
 .top-progress { margin-left: auto; display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--dim); font-variant-numeric: tabular-nums; }
 .top-meter { width: 120px; height: 2px; background: var(--line); overflow: hidden; }
 .top-meter span { display: block; height: 100%; width: 0; background: var(--fg); transition: width .3s; }
@@ -255,6 +257,7 @@ tr:last-child td { border-bottom: none; }
 @media (max-width: 480px) {
   .prob { padding: 12px 12px 10px; }
   .part input { width: 120px; }
+  .top-meter { display: none; }
 }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 
