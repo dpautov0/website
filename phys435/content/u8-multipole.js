@@ -333,7 +333,7 @@
       RF(md`
         ### Which term matters
 
-        Each term is smaller than the one before by roughly (size of the distribution)/$r$: the $n$-th term carries $(r')^n/r^{n+1}$, with $r' \lesssim a$. At $r = 10a$ each successive term is down by about a factor of ten.
+        Each term is smaller than the one before by roughly (size of the distribution)/$r$: the $n$-th term carries $\dfrac{(r')^n}{r^{n+1}}$, with $r' \lesssim a$. At $r = 10a$ each successive term is down by about a factor of ten.
 
         !!key The first nonzero term dominates far away
           Find the lowest $n$ whose moment is not zero. Far away, $V$ is approximately that term alone, and $V \propto 1/r^{n+1}$. The later terms are corrections of relative size about $a/r$, $(a/r)^2$, and so on.
@@ -472,7 +472,7 @@
 
           $$V \approx \kq\left[\frac qr + \frac{3qa\cos\theta}{r^2} + \frac{qa^2(3\cos^2\theta - 1)}{2r^3}\right].$$
 
-          On the $+z$ axis at $r = 20a$: $\dfrac{3qa/r^2}{q/r} = \dfrac{3a}{r} = 0.15$. A $15\%$ correction is large because the charge is not centered on the origin.
+          On the $+z$ axis at $r = 20a$: $\dfrac{3qa}{r^2}\cdot\dfrac{r}{q} = \dfrac{3a}{r} = 0.15$. A $15\%$ correction is large because the charge is not centered on the origin.
 
           Sign check on the dipole moment: the $-q$ below the origin contributes $(-q)(-a) = +qa$, the same as a positive charge above the origin would. Both make the top side more positive.
 
@@ -688,7 +688,7 @@
       if (lead >= 0) curves.push({ f: (x) => lg(cs[lead]) - (lead + 1) * x, cls: 'dash' });
       $('.p1').innerHTML = PF.plot({ w: 330, h: 230, x: [0.15, 2], y: [-7, 1], xl: 'r', yl: '|V|', ml: 52,
         xt: [[1, '10a'], [2, '100a']], yt: [[0, '1'], [-2, '10^{-2}'], [-4, '10^{-4}'], [-6, '10^{-6}']], curves });
-      let txt = `<p>$Q = ${fm(Q)}\\,q$, $\\ \\vb p = (p_y, p_z) = (${fm(py)}, ${fm(pz)})\\,qa$ about the origin. Units: $V$ in $q/(4\\pi\\varepsilon_0 a)$, $r$ in $a$.</p>`;
+      let txt = `<p>$Q = ${fm(Q)}\\,q$, $\\ \\vb p = (p_y, p_z) = (${fm(py)}, ${fm(pz)})\\,qa$ about the origin. Units: $V$ in $\\dfrac{q}{4\\pi\\varepsilon_0 a}$, $r$ in $a$.</p>`;
       if (lead < 0) txt += '<p>$V = 0$ at every point of this ray (each point is equidistant from charges that cancel), so there is nothing to plot. Change the angle.</p>';
       else {
         txt += `<p>Along this ray the first nonzero term is $n = ${lead}$, the ${ORD[lead]}: far away $|V| \\propto 1/r^{${lead + 1}}$, a straight line of slope $-${lead + 1}$ here (dashed). The solid curve is the exact $|V|$.</p>`;
@@ -874,7 +874,7 @@
         - If $Q = 0$, then $\bar{\vb p} = \vb p$: **the dipole moment of a neutral system does not depend on the origin.** That is why "the dipole moment of a water molecule" makes sense.
         - If $Q \neq 0$, $\vb p$ depends on the origin, and "what is the dipole moment?" has to be answered with "about which origin?" You can even make it vanish: put the origin at the **center of charge** $\vb r_c = \vb p/Q$, and then $\bar{\vb p} = \vb p - Q\vb r_c = 0$.
 
-        The potential itself does not care where you put the origin; only its split into terms changes. (More generally, the lowest nonzero moment never depends on the origin: Griffiths Prob. 3.52.)
+        The potential itself does not care where you put the origin; only its split into terms changes. (More generally, the lowest nonzero moment never depends on the origin: Griffiths 4th ed. Prob. 3.52.)
 
         !!intuition Why the origin matters only when $Q \neq 0$
           Moving the origin shifts every position vector by the same $-\vb a$, so $\vb p$ changes by $-\vb a$ times the total charge. With equal amounts of $+$ and $-$, the shifts cancel.
@@ -1516,7 +1516,7 @@
           **Checks.**
           - Units: $\dfrac{q}{4\pi\varepsilon_0 r^2}$ is a field and $a/r$ is a pure number.
           - Far out, $E_r < 0$ in every direction: the net charge $-q$ wins.
-          - Above ($\theta = 0$) the dipole term weakens the inward field ($-1 + 2a/r$); below ($\theta = \pi$) it strengthens it ($-1 - 2a/r$). That fits: the positive charge is on top.
+          - Above ($\theta = 0$) the dipole term weakens the inward field, $-1 + \dfrac{2a}{r}$; below ($\theta = \pi$) it strengthens it, $-1 - \dfrac{2a}{r}$. That fits: the positive charge is on top.
           - No $\phi$-dependence, although the charges are not symmetric about $z$. The asymmetry first shows up at the next order (quadrupole, $1/r^4$ in $\vb E$).
 
           !!trap Origin dependence
@@ -1674,7 +1674,7 @@
           null,
           md`$Q \propto \int_0^\pi\cos\theta'\sin\theta'\,d\theta' = 0$, for one.`,
           md`$n = 1$ survives: $\int_{-1}^1x\cdot x\,dx = \tfrac23 \neq 0$ (as long as the radial integral is nonzero).`],
-        md`Each moment factors: $2\pi\displaystyle\int_0^R f(r')\,r'^{\,n+2}\,dr'\times\int_0^\pi P_n(\cos\theta')\cos\theta'\sin\theta'\,d\theta'$. With $x = \cos\theta'$ the angular factor is $\int_{-1}^1P_n(x)P_1(x)\,dx$, zero unless $n = 1$. So the outside potential is pure dipole, $\propto\cos\theta/r^2$, like the shell with $\sigma = k\cos\theta$ in Lesson 2. In general, if the angular dependence is a single $P_\ell(\cos\theta')$, only the $n = \ell$ moment survives.`,
+        md`Each moment factors: $2\pi\displaystyle\int_0^R f(r')\,r'^{\,n+2}\,dr'\times\int_0^\pi P_n(\cos\theta')\cos\theta'\sin\theta'\,d\theta'$. With $x = \cos\theta'$ the angular factor is $\int_{-1}^1P_n(x)P_1(x)\,dx$, zero unless $n = 1$. So the outside potential is pure dipole, $\propto \dfrac{\cos\theta}{r^2}$, like the shell with $\sigma = k\cos\theta$ in Lesson 2. In general, if the angular dependence is a single $P_\ell(\cos\theta')$, only the $n = \ell$ moment survives.`,
         { figHtml: fRhoCos() }),
 
       Q(md`A sphere carries $\rho = f(r)\sin\theta$. Which moments must vanish by symmetry alone?`,
@@ -1699,11 +1699,11 @@
 
         !!method Off-axis from on-axis (azimuthal symmetry)
           1. Find $V$ on the $+z$ axis exactly.
-          2. Expand in powers of $1/z$ (for $z$ beyond the source): $V = \sum c_n/z^{n+1}$.
+          2. Expand in powers of $1/z$ (for $z$ beyond the source): $V = \sum_n \dfrac{c_n}{z^{n+1}}$.
           3. Replace $\dfrac{c_n}{z^{n+1}}$ by $\dfrac{c_n\,P_n(\cos\theta)}{r^{n+1}}$.
           This is HW 5 Prob. 3.24 (the disk), worked in Unit 7.
 
-        ### Worked example: a uniform ring (Griffiths Prob. 3.28)
+        ### Worked example: a uniform ring (Griffiths 4th ed. Prob. 3.28)
 
         A ring of radius $b$ in the $xy$-plane, centered on the origin, carries total charge $Q$ spread uniformly.
 
@@ -1746,7 +1746,7 @@
           md`Those are the odd-$n$ terms, which vanish for a source symmetric under $z \to -z$.`,
           null,
           md`Only a point charge at the origin (or a uniform sphere) gives just $1/r$. The rod has a quadrupole term.`],
-        md`Moments: $\displaystyle\int_{-a}^{a}\frac{Q}{2a}\,z'^{\,n}\,dz' = \frac{Qa^n}{n+1}$ for even $n$ and $0$ for odd $n$. So $V = \kq\left[\dfrac Qr + \dfrac{Qa^2}{3}\dfrac{P_2(\cos\theta)}{r^3} + \dfrac{Qa^4}{5}\dfrac{P_4(\cos\theta)}{r^5} + \cdots\right]$ (Griffiths Prob. 3.44). On the axis the quadrupole correction is positive: the near half of the rod gains more than the far half loses.`,
+        md`Moments: $\displaystyle\int_{-a}^{a}\frac{Q}{2a}\,z'^{\,n}\,dz' = \frac{Qa^n}{n+1}$ for even $n$ and $0$ for odd $n$. So $V = \kq\left[\dfrac Qr + \dfrac{Qa^2}{3}\dfrac{P_2(\cos\theta)}{r^3} + \dfrac{Qa^4}{5}\dfrac{P_4(\cos\theta)}{r^5} + \cdots\right]$ (Griffiths 4th ed. Prob. 3.44). On the axis the quadrupole correction is positive: the near half of the rod gains more than the far half loses.`,
         { figHtml: fSeg() }),
 
       Q(md`A uniformly charged disk (HW 5 Prob. 3.24, worked in Unit 7) lies in the $xy$-plane. Which multipole terms appear in its far potential?`,
@@ -1770,7 +1770,7 @@
 
       Q(md`A rod from $z = -a$ to $z = a$ carries $\lambda(z) = k\,z/a$. Which term leads far away?`,
         [md`Monopole`, md`Dipole`, md`Quadrupole`, md`Octopole`], 1,
-        [md`$\int_{-a}^a kz'/a\,dz' = 0$: as much negative charge below as positive above.`,
+        [md`$\displaystyle\int_{-a}^a \frac{kz'}{a}\,dz' = 0$: as much negative charge below as positive above.`,
           null,
           md`The dipole moment $\int_{-a}^a \dfrac{kz'^2}{a}\,dz' = \tfrac23ka^2$ is already nonzero.`,
           md`Lower orders are nonzero.`],
@@ -1818,7 +1818,7 @@
           { lbl: md`$\int_0^L\lambda z'\,dz'$ (dipole moment)`, expr: 'lambda*L^2/2', vars: { lambda: [0.5, 3], L: [0.5, 2] } },
           { lbl: md`$\int_0^L\lambda z'^2\,dz'$ (quadrupole moment)`, expr: 'lambda*L^3/3', vars: { lambda: [0.5, 3], L: [0.5, 2] } },
           { lbl: md`Which origin would make the dipole term vanish?`, mc: [md`$z = 0$, the bottom end`, md`$z = L/2$, the midpoint`, md`$z = L$, the top end`, md`None, since $Q \neq 0$`], a: 1,
-            why: [md`About $z = 0$ the dipole moment is $\lambda L^2/2 \neq 0$: that's the case you just computed.`, null, md`About the top end the dipole moment is $-\lambda L^2/2$.`, md`For $Q \neq 0$ you can always remove $\vb p$ by putting the origin at the center of charge, $p/Q = L/2$.`] },
+            why: [md`About $z = 0$ the dipole moment is $\tfrac12\lambda L^2 \neq 0$: that's the case you just computed.`, null, md`About the top end the dipole moment is $-\tfrac12\lambda L^2$.`, md`For $Q \neq 0$ you can always remove $\vb p$ by putting the origin at the center of charge, $p/Q = L/2$.`] },
         ],
         sol: md`
           (a) $V(z) = \kq\displaystyle\int_0^L\frac{\lambda\,dz'}{z - z'} = \kq\,\lambda\ln\frac{z}{z - L}$.

@@ -150,7 +150,20 @@
       });
     }
     if (window.declutter) window.declutter(el);
+    fitMath(el);
   }
+
+  // A display equation wider than the column is scaled down to fit (not below 70%); the rest still scrolls.
+  function fitMath(el) {
+    (el || document).querySelectorAll('.katex-display').forEach((d) => {
+      if (!d.clientWidth) return;                     // hidden: fitted when revealed
+      d.style.fontSize = '';
+      const over = d.scrollWidth / d.clientWidth;
+      if (over > 1.01) d.style.fontSize = `${Math.max(0.7, 1 / over) * 100}%`;
+    });
+  }
+  let fitTimer = null;
+  window.addEventListener('resize', () => { clearTimeout(fitTimer); fitTimer = setTimeout(() => fitMath(document.getElementById('main')), 150); });
 
   function texInline(t) {
     if (window.katex) { try { return window.katex.renderToString(t, { macros: MACROS, throwOnError: false }); } catch (e) { /* fallthrough */ } }
@@ -609,7 +622,7 @@
     window.addEventListener('hashchange', route);
     route();
     // KaTeX fonts change label widths once loaded: tidy the figures again
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => window.declutter && window.declutter(document.getElementById('main')));
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { const m = document.getElementById('main'); if (window.declutter) window.declutter(m); fitMath(m); });
   });
 
   window.Engine = { mdToHtml, rich, renderMath, Store, LESSONS, BYID, texInline };
