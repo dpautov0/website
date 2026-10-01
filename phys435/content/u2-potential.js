@@ -3329,7 +3329,7 @@
           md`$V$ finite at $r=0$`,
           md`the jump in $\partial V/\partial r$ at $r=R$`], 2,
         [md`That condition belongs to region II, which reaches infinity. It removes $B$, not $A'$.`,
-          md`Continuity only links $A+A'/R$ to $B'/R$. On its own it cannot make $A'$ vanish.`,
+          md`Continuity only links $A+A'/R$ to $B+B'/R$. On its own it cannot make $A'$ vanish.`,
           null,
           md`The jump fixes $B'$, the size of the outside $1/r$ term. It says nothing about the center.`],
         md`$A'/r$ blows up at $r=0$. It would be the potential of a point charge $4\pi\ep A'$ sitting at the center, and there is none. "Finite at the origin" counts as a boundary condition even though no surface is there.`,

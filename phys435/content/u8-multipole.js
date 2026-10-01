@@ -552,9 +552,12 @@
     return f.svg();
   };
   const fDipTheta = () => yz([], { pre: (f) => pArrow(f, 0, 0, 90, 30, '\\vb p', 'tl'), P: [2.4, 120], Prat: 'tr', ext: [1.2, 2.4, 2.0, 1.4] });
+  // triangle edges as short pieces (dl): a single slanted segment's bounding box would cover the whole interior,
+  // and the runtime declutter would push the "O" (or a side label) out of the triangle
+  const triEdges = (f, pts, o) => pts.forEach((p, i) => { const n = pts[(i + 1) % pts.length]; dl(f, p[0], p[1], n[0], n[1], o); });
   const fTri = () => {
     const f = PF.fig(), A = [0, -46], B = [-40, 23], Cc = [40, 23];
-    f.poly([A, B, Cc], { cls: 'thin dim dash' });
+    triEdges(f, [A, B, Cc], { cls: 'thin dim dash' });
     f.charge(A[0], A[1], { q: '-', lab: '-2q', at: 't' }); f.charge(B[0], B[1], { q: '+', lab: 'q', at: 'bl' }); f.charge(Cc[0], Cc[1], { q: '+', lab: 'q', at: 'br' });
     f.dot(0, 0, 2); f.tag(0, 0, 'O', 'r', 5, 'small');
     return f.svg();
@@ -613,7 +616,7 @@
   };
   const fTriB = () => {
     const f = PF.fig(), A = [0, -46], B = [-40, 23], Cc = [40, 23];
-    f.poly([A, B, Cc], { cls: 'thin dim' });
+    triEdges(f, [A, B, Cc], { cls: 'thin dim' });
     f.charge(A[0], A[1], { q: '-', lab: '-q', at: 't' }); f.charge(B[0], B[1], { q: '+', lab: 'q', at: 'bl' }); f.charge(Cc[0], Cc[1], { q: '+', lab: 'q', at: 'br' });
     f.tag(-20, -11.5, 'a', 'tl', 8, 'small'); f.tag(20, -11.5, 'a', 'tr', 8, 'small'); f.tag(0, 23, 'a', 'b', 8, 'small');
     return f.svg();
@@ -1622,7 +1625,7 @@
     f.dim(96, 0, 96, -205, 'z', { at: 'r' });
     f.dot(0, 0, 2.2);
     if (!sol) {
-      f.line(0, 0, R * 0.7071, R * 0.7071, { cls: 'dim thin' }); f.label(28, 18, 'R', 'bl', 'small');
+      dl(f, 0, 0, R * 0.7071, R * 0.7071, { cls: 'dim thin' }); f.label(28, 18, 'R', 'bl', 'small');
       f.label(0, -30, '\\rho(r,\\theta)', 'c', 'small');
     } else {
       f.circle(0, 0, R / 2, { cls: 'dim dash thin' });
