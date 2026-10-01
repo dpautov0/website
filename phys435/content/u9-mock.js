@@ -490,6 +490,159 @@
     ],
   };
 
-  U5.lessons.push(chooser, mockA, mockB);
+  // ---------------------------------------------------------------- mock exam C: boundary-value problems only
+  const planeQ = () => { const f = PF.fig(); f.plane(10, 290, 130, { lab: 'V=0' }); f.charge(150, 50, { q: '+', lab: 'q', at: 'r' }); f.dim(120, 50, 120, 130, 'd', { at: 'l' }); f.line(150, 64, 150, 126, { cls: 'dash dim thin' }); return f.svg(); };
+  const squarePipe2 = () => squarePipe({ top: 'V_0', bottom: 'V_0', center: true });
+  const sphereSigma = () => sphereV('\\sigma_0(3\\cos^2\\theta-1)');
+  const mockC = {
+    id: 'x-mock3', title: 'Mock exam C: boundary-value problems', kind: 'mock',
+    steps: [
+      R(md`Only images and separation of variables, the way last year's exam leaned. 50 minutes, formula sheet only. Before each solution, write the boundary conditions as a numbered list: half the points on a real exam are for setting the problem up.`),
+      {
+        t: 'paper',
+        html: '<div class="pp-title"><span>PHYS 435 · Mock Hour Exam I (C)</span><span>100 pts</span></div><div class="pp-meta"><span>Problems 1–5</span><span>Formula sheet allowed</span></div>',
+        items: [
+          {
+            q: md`
+              **Problem 1 (20 pts).** A point charge $q$ sits a height $d$ above an infinite grounded conducting plane.
+
+              [[fig:p1]]
+
+              (a) Find the induced surface charge density directly below $q$. (b) Within what radius of the point directly below $q$ does half of the total induced charge lie? (c) How much work must you do to pull $q$ away to infinity? (d) A second grounded plane is now added, parallel to the first, a distance $d$ above $q$. What is the force on $q$, and how many image charges does the new problem need?
+            `,
+            figs: { p1: { svg: planeQ(), cap: 'Charge above a grounded plane.' } },
+            ans: md`
+              - (a) $\sigma(0) = -\dfrac{q}{2\pi d^2}$.
+              - (b) $s = \sqrt3\,d$.
+              - (c) $W = \dfrac{q^2}{16\pi\varepsilon_0 d}$ (you do positive work).
+              - (d) Zero force, by symmetry; infinitely many images.
+            `,
+            sol: md`
+              **Boundary conditions:** (1) $V = 0$ on $z = 0$; (2) $V\to0$ far away. Region: $z>0$. Image: $-q$ at $z = -d$.
+
+              **(a)** $\sigma = -\varepsilon_0\,\partial V/\partial z|_{0} = -\dfrac{qd}{2\pi(s^2+d^2)^{3/2}}$, where $s$ is the distance along the plane from the foot of the charge. At $s = 0$: $-\dfrac{q}{2\pi d^2}$.
+
+              **(b)** Charge within radius $s$: $\displaystyle\int_0^{s}\sigma\,2\pi s'\,ds' = -q\left(1 - \frac{d}{\sqrt{s^2+d^2}}\right)$. Half of $-q$ when $\dfrac{d}{\sqrt{s^2+d^2}} = \dfrac12$, i.e. $s = \sqrt3\,d$. Most of the induced charge is within a couple of $d$ of the foot of the charge.
+
+              **(c)** With $q$ at height $z$, the force is the image's pull, $\dfrac{q^2}{4\pi\varepsilon_0(2z)^2}$ toward the plane. Pulling it out: $W = \displaystyle\int_d^\infty\frac{q^2}{16\pi\varepsilon_0z^2}dz = \frac{q^2}{16\pi\varepsilon_0d}$. This is minus the system's energy $-\dfrac{q^2}{16\pi\varepsilon_0d}$, as it must be: the energy goes from that value to zero.
+
+              **(d)** The charge is now midway between two grounded planes: by symmetry the forces from the two sides cancel, so $F = 0$ (an unstable equilibrium). The images: each plane reflects the charge and every image of the other plane, giving an infinite row of alternating charges spaced $2d$ apart.
+            `,
+          },
+          {
+            q: md`
+              **Problem 2 (20 pts).** A grounded conducting sphere of radius $R$ is centered at the origin. A point charge $q$ is at distance $a = 2R$ from the center.
+
+              [[fig:p2]]
+
+              (a) Find the image charge and its position. (b) Find the ratio of the induced surface charge density at the point nearest $q$ to that at the farthest point. (c) Find the force on $q$. (d) If the sphere is instead isolated and neutral, what is the force on $q$?
+            `,
+            figs: { p2: { svg: sphereQ({ A: 120, alab: '2R' }), cap: 'Grounded sphere, charge at $2R$ from the center.' } },
+            ans: md`
+              - (a) $q' = -q/2$ at $R/2$ from the center, toward $q$.
+              - (b) $\sigma_{\text{near}}/\sigma_{\text{far}} = \left(\dfrac{a+R}{a-R}\right)^3 = 27$.
+              - (c) $\dfrac{2}{9}\dfrac{q^2}{4\pi\varepsilon_0R^2}$, attractive.
+              - (d) $\dfrac{7}{72}\dfrac{q^2}{4\pi\varepsilon_0R^2}$, still attractive.
+            `,
+            sol: md`
+              **Boundary conditions:** (1) $V = 0$ on $r = R$; (2) $V\to0$ as $r\to\infty$. Region: $r>R$.
+
+              **(a)** $q' = -\dfrac Ra q = -\dfrac q2$ at $b = \dfrac{R^2}{a} = \dfrac R2$.
+
+              **(b)** $\sigma(\theta)\propto\dfrac{1}{(R^2+a^2-2aR\cos\theta)^{3/2}}$, so $\dfrac{\sigma(0)}{\sigma(\pi)} = \left(\dfrac{R^2+a^2+2aR}{R^2+a^2-2aR}\right)^{3/2} = \left(\dfrac{a+R}{a-R}\right)^3 = 3^3 = 27$.
+
+              **(c)** Distance $a - b = \tfrac32R$: $F = \dfrac{q(q/2)}{4\pi\varepsilon_0(3R/2)^2} = \dfrac29\dfrac{q^2}{4\pi\varepsilon_0R^2}$, toward the sphere.
+
+              **(d)** Neutral and isolated: add $+q/2$ at the center (keeps $V$ constant on the sphere, makes the total zero). $F = \dfrac{q^2}{4\pi\varepsilon_0R^2}\left[-\dfrac{1/2}{(3/2)^2} + \dfrac{1/2}{2^2}\right] = \dfrac{q^2}{4\pi\varepsilon_0R^2}\left(-\dfrac{16}{72} + \dfrac{9}{72}\right) = -\dfrac{7}{72}\dfrac{q^2}{4\pi\varepsilon_0R^2}$: weaker, still attractive.
+            `,
+          },
+          {
+            q: md`
+              **Problem 3 (20 pts).** A long square pipe $0\le x\le a$, $0\le y\le a$: the sides $x = 0$ and $x = a$ are grounded; the sides $y = 0$ and $y = a$ are both held at $V_0$ (insulated from the others).
+
+              [[fig:p3]]
+
+              (a) List the boundary conditions and write a form of the general solution that already satisfies the symmetric ones. (b) Find the coefficients. (c) What is $V$ at the center (no series needed)? Check with the first term. (d) What is $\vb E$ at the center?
+            `,
+            figs: { p3: { svg: squarePipe2(), cap: 'Top and bottom at $V_0$, sides grounded.' } },
+            ans: md`
+              - (a) $V = \sum_n C_n\sin\dfrac{n\pi x}{a}\cosh\dfrac{n\pi(y-a/2)}{a}$.
+              - (b) $C_n = \dfrac{4V_0}{n\pi\cosh(n\pi/2)}$ for odd $n$, $0$ for even.
+              - (c) $V_0/2$; the first term gives $0.507\,V_0$.
+              - (d) $\vb E = 0$.
+            `,
+            sol: md`
+              **Boundary conditions:** (1) $V(0,y) = 0$; (2) $V(a,y) = 0$; (3) $V(x,0) = V_0$; (4) $V(x,a) = V_0$.
+
+              **(a)** Conditions 1 and 2 are the homogeneous pair, so $x$ gets $\sin(n\pi x/a)$ with $k = n\pi/a$. Then $Y'' = k^2Y$. Conditions 3 and 4 are identical, so $V$ is symmetric about $y = a/2$: use $\cosh\big(k(y - a/2)\big)$, which is even about the midline. (Using $A\cosh ky + B\sinh ky$ also works, with more algebra.)
+
+              **(b)** At $y = 0$: $V_0 = \sum C_n\cosh(n\pi/2)\sin(n\pi x/a)$. Fourier: $C_n\cosh\dfrac{n\pi}{2} = \dfrac{2}{a}\displaystyle\int_0^aV_0\sin\frac{n\pi x}{a}dx = \frac{4V_0}{n\pi}$ (odd $n$). Condition 4 then holds automatically by symmetry.
+
+              **(c)** Rotating the square by $90°$ swaps the roles of the faces: the "sides live" problem plus this one equals "all four faces at $V_0$", whose solution is $V_0$ everywhere. At the center the two are equal by symmetry, so each is $V_0/2$. First term: $\dfrac{4V_0}{\pi\cosh(\pi/2)}\sin\dfrac\pi2 = \dfrac{1.273}{2.509}V_0 = 0.507\,V_0$; the series sums to $0.500\,V_0$.
+
+              **(d)** The center is symmetric under $x\to a-x$ and $y\to a-y$, so every component of $\vb E$ must vanish there. (It's a saddle point of $V$: highest along $y$, lowest along $x$.)
+            `,
+          },
+          {
+            q: md`
+              **Problem 4 (20 pts).** A spherical shell of radius $R$ carries the surface charge $\sigma_0(\theta) = \sigma_0(3\cos^2\theta - 1)$. There are no other charges.
+
+              [[fig:p4]]
+
+              (a) What is the total charge? (b) Find $V$ inside and outside. (c) Find $\vb E$ inside, in Cartesian components. (d) How does $V$ fall off far away, and why?
+            `,
+            figs: { p4: { svg: sphereSigma(), cap: 'A shell with $\\sigma_0(3\\cos^2\\theta-1)$ glued on.' } },
+            ans: md`
+              - (a) $0$.
+              - (b) $V_{\text{in}} = \dfrac{2\sigma_0}{5\varepsilon_0R}r^2P_2(\cos\theta)$, $V_{\text{out}} = \dfrac{2\sigma_0R^4}{5\varepsilon_0}\dfrac{P_2(\cos\theta)}{r^3}$.
+              - (c) $\vb E = \dfrac{\sigma_0}{5\varepsilon_0R}(2x\,\uv x + 2y\,\uv y - 4z\,\uv z)$.
+              - (d) As $1/r^3$: the leading term is the quadrupole.
+            `,
+            sol: md`
+              **Boundary conditions:** (1) $V$ finite at $r = 0$; (2) $V\to0$ as $r\to\infty$; (3) $V$ continuous at $r = R$; (4) $\dfrac{\partial V_{\text{out}}}{\partial r} - \dfrac{\partial V_{\text{in}}}{\partial r} = -\dfrac{\sigma_0(\theta)}{\varepsilon_0}$ at $r = R$.
+
+              **(a)** $3\cos^2\theta - 1 = 2P_2(\cos\theta)$ has no $P_0$ part, so $\displaystyle\int\sigma\,da = 0$.
+
+              **(b)** Only $\ell = 2$ appears. Conditions 1–2: $V_{\text{in}} = A\,r^2P_2$, $V_{\text{out}} = B\,r^{-3}P_2$. Condition 3: $B = AR^5$. Condition 4: $-3AR - 2AR = -\dfrac{2\sigma_0}{\varepsilon_0}$, so $A = \dfrac{2\sigma_0}{5\varepsilon_0R}$.
+
+              **(c)** $V_{\text{in}} = \dfrac{2\sigma_0}{5\varepsilon_0R}\cdot\dfrac{3z^2 - r^2}{2} = \dfrac{\sigma_0}{5\varepsilon_0R}(2z^2 - x^2 - y^2)$. Then $\vb E = -\nabla V = \dfrac{\sigma_0}{5\varepsilon_0R}(2x, 2y, -4z)$. Check: $\nabla\cdot\vb E = 0$ inside, as it must be with no charge there.
+
+              **(d)** Zero monopole (no net charge) and zero dipole (the pattern is even in $z$): the first surviving term is $\ell = 2$, so $V\propto 1/r^3$.
+            `,
+          },
+          {
+            q: md`
+              **Problem 5 (20 pts, short answers).** For each setup, give what's asked in one line.
+
+              (a) Slot: grounded plates at $y = 0$ and $y = a$, end $x = 0$ at $V_0(y)$, open to $x\to\infty$. Which $x$-dependence goes with $\sin(n\pi y/a)$?
+              (b) The same slot, but closed by a grounded plate at $x = b$. Which $x$-dependence now?
+              (c) A sphere with given $V_0(\theta)$: which radial functions do you keep outside it?
+              (d) A neutral metal sphere in a uniform field $E_0\uv z$: which $\ell$ appear in $V$ outside?
+              (e) The region between two concentric spheres $a<r<b$ with potentials given on both: which radial functions?
+              (f) An isolated conductor carrying total charge $Q$: what are its boundary conditions?
+            `,
+            ans: md`
+              - (a) $e^{-n\pi x/a}$.
+              - (b) $\sinh\big(n\pi(b - x)/a\big)$.
+              - (c) $r^{-(\ell+1)}$ only.
+              - (d) Only $\ell = 1$.
+              - (e) Both $r^\ell$ and $r^{-(\ell+1)}$.
+              - (f) $V = V_c$ (an unknown constant) on its surface, plus $\oint\sigma\,da = -\varepsilon_0\oint\dfrac{\partial V}{\partial n}da = Q$.
+            `,
+            sol: md`
+              - (a) $V\to0$ as $x\to\infty$ kills $e^{+n\pi x/a}$.
+              - (b) It must vanish at $x = b$: $\sinh\big(n\pi(b-x)/a\big)$ does, and still allows any value at $x = 0$.
+              - (c) $V\to0$ at infinity kills $r^\ell$.
+              - (d) The far field is $-E_0r\cos\theta$ (pure $\ell = 1$), and $V = $ const on the sphere is matched by adding $B_1\cos\theta/r^2$; no other $\ell$ is needed. The constant is zero for a neutral sphere ($B_0 = 0$).
+              - (e) Neither $r = 0$ nor $r\to\infty$ is in the region, so nothing kills either family.
+              - (f) The surface is an equipotential with an unknown value, fixed by requiring the total charge to be $Q$ (the second uniqueness theorem).
+            `,
+          },
+        ],
+      },
+    ],
+  };
+
+  U5.lessons.push(chooser, mockA, mockB, mockC);
   U5.lessons.push(U5.lessons.splice(U5.lessons.findIndex((l) => l.id === 'x-quiz'), 1)[0]);   // quiz last
 })();

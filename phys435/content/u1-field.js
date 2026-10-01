@@ -370,13 +370,13 @@
   }
 
   // circular arc of line charge (semicircle or quarter circle) with field point at the centre
-  function figArc(kind = 'semi', sol) {
+  function figArc(kind = 'semi', sol, rl = 'R') {
     const f = fig();
     const cx = 160, cy = 150, R = 100, a1 = kind === 'semi' ? 180 : 90;
     f.pl(f.arcPts(cx, cy, R, R, 0, a1), { cls: 'thick' });
     f.dot(cx, cy, 3.2);
     f.tag(cx, cy, 'P', sol ? 'tl' : (kind === 'semi' ? 'b' : 'bl'));
-    f.line(cx, cy, cx + R, cy, { cls: 'dim dash' }); f.label(cx + R / 2 + 8, cy + 4, 'R', 't', 'small');
+    f.line(cx, cy, cx + R, cy, { cls: 'dim dash' }); f.label(cx + R / 2 + 8, cy + 4, rl, 't', 'small');
     const lp = pol(cx, cy, R + 14, kind === 'semi' ? 140 : 70); f.label(lp[0], lp[1], md`\lambda`, 'c', 'small');
     if (sol) {
       const ph = kind === 'semi' ? 52 : 35, e = pol(cx, cy, R, ph);
@@ -575,13 +575,13 @@
     return f.svg();
   }
 
-  // charged sheet edge-on with the normal fields just above and below and a thin pillbox.
+  // charged sheet edge-on with the normal fields just above and below; o.box adds a thin pillbox (solutions only).
   // o.above / o.below: signed lengths in units (+ = along n-hat, up); 0 = no arrow. Arrows stay outside the pillbox.
   function figSheetBC(o = {}) {
     const f = fig();
     const y = 110, L = 30;
     f.line(20, y, 300, y, { cls: 'thick' }); f.label(296, y - 6, o.slab || md`\sigma`, 'br', 'small');
-    if (o.box !== false) f.rect(130, y - 22, 60, 44, { cls: 'dash' });
+    if (o.box) f.rect(130, y - 22, 60, 44, { cls: 'dash' });
     const up = o.above ?? 1, dn = o.below ?? -1;
     const len = (v) => L * Math.min(1.5, Math.abs(v));
     if (up > 0) f.arrow(160, y - 26, 160, y - 26 - len(up), { hs: 7 });
@@ -734,7 +734,7 @@
       const eb = pol(cx, cy, b, 135); f.line(cx, cy, eb[0], eb[1], { cls: 'dim' });
       const lb = pol(cx, cy, 86, 150); f.label(lb[0], lb[1], 'b', 'c', 'small');
       f.label(cx + 16, cy - 16, md`\rho`, 'c', 'small');
-      const s = pol(cx, cy, b + 18, 300); f.label(s[0], s[1], md`-\sigma`, 'c', 'small');
+      const s = pol(cx, cy, b + 18, 300); f.label(s[0], s[1], md`\sigma`, 'c', 'small');
       return f.svg();
     }
     f.circle(cx, cy, 20, { cls: 'dash' }); f.circle(cx, cy, 72, { cls: 'dash' }); f.circle(cx, cy, 126, { cls: 'dash' });
@@ -752,7 +752,7 @@
     tint(f, [[x1, y - a], [x2 + 45, y - a], [x2 + 45, y + a], [x1, y + a]], 0.3);
     f.line(x1, y - a, x2 + 45, y - a); f.line(x1, y + a, x2 + 45, y + a);
     f.ellipse(x2 + 45, y, a * e, a);
-    f.label(x2 + 30, y - a - 6, md`\rho`, 'b', 'small'); f.label(x2 - 30, y - b - 6, md`-\sigma`, 'b', 'small');
+    f.label(x2 + 30, y - a - 6, md`\rho`, 'b', 'small'); f.label(x2 - 30, y - b - 6, md`\sigma`, 'b', 'small');
     f.line(35, y - a, x1, y - a, { cls: 'dim thin' }); f.line(35, y + b, x1, y + b, { cls: 'dim thin' });
     f.dim(35, y, 35, y - a, 'a', { at: 'l' }); f.dim(35, y, 35, y + b, 'b', { at: 'l' });
     f.text((x1 + x2) / 2, y + b + 10, 'long cable, cut away', 't');
@@ -938,14 +938,18 @@
     return f.svg();
   }
   // charged surface edge-on with the tangential field drawn above it (continuity of E-parallel)
-  function figTanBC() {
+  function figTanBC(sol) {
     const f = fig();
     const y = 110;
     f.line(20, y, 300, y, { cls: 'thick' }); f.label(296, y - 6, md`\sigma`, 'br', 'small');
     f.arrow(110, y - 30, 200, y - 30, { hs: 7 }); f.label(206, y - 30, md`E_\parallel=3E_0`, 'l', 'small');
-    f.label(155, y + 30, md`E_\parallel=\ ?`, 'c', 'small');
     f.text(70, y - 30, 'east', 'r');
+    if (!sol) { f.label(155, y + 30, md`E_\parallel=\ ?`, 'c', 'small'); return f.svg(); }
+    f.arrow(110, y + 30, 200, y + 30, { hs: 7 }); f.label(206, y + 30, md`E_\parallel=3E_0`, 'l', 'small');
+    // thin rectangular loop straddling the surface, traversed counterclockwise
     f.rect(130, y - 12, 70, 24, { cls: 'dash' });
+    headAt(f, [[130, y + 12], [200, y + 12]], 0.5, { hs: 6 }); headAt(f, [[200, y - 12], [130, y - 12]], 0.5, { hs: 6 });
+    f.label(165, y - 16, md`\ell`, 'b', 'small');
     return f.svg();
   }
 
@@ -1185,7 +1189,9 @@
 
       P({
         id: 'HW1-2.59', src: 'HW 1 · Computational 2.59', title: 'Zeros of the field inside a polygon of charges', big: true,
-        q: md`Consider an $n$-sided polygon, inscribed in a circle of radius $a$, with a point charge $q$ at each vertex. The electric field is zero at the center, but there are $n$ other points inside the polygon where the field is zero. Where are these points for $n=4$ and $n=5$?
+        q: md`Consider an $n$-sided polygon, inscribed in a circle of radius $a$, with a point charge $q$ at each vertex. The electric field is zero at the center, but there are $n$ other points inside the [polygon] where the field is zero. Where are these points for $n=4$ and $n=5$?
+
+        (The homework sheet says “inside the triangle”, a slip in the printed problem; it means inside the polygon.)
 
         [[fig:setup]]`,
         hints: [
@@ -1340,7 +1346,7 @@ for n in (4, 5):
       Q(md`And for $L\gg z$ (very close to a long segment)?`,
         [md`$\kq\,\dfrac{2\lambda L}{z^2}\,\uv z$`, md`$\kq\,\dfrac{\lambda}{z^2}\,\uv z$`, md`$\kq\,\dfrac{2\lambda}{z}\,\uv z$`, md`$\dfrac{\lambda}{2\ep}\,\uv z$`], 2,
         [md`That is the far limit. Close to the segment, the far ends hardly matter and $L$ must drop out.`,
-          md`Units: $\lambda/z^2$ has the units of $\sigma$, not of a field times $4\pi\ep$. A line field must go as $\lambda/z$.`,
+          md`Units: $\lambda/z^2$ is charge per volume (C/m³), but a field times $4\pi\ep$ is charge per area (C/m², like $q/z^2$). A line field must go as $\lambda/z$.`,
           null,
           md`$\lambda/2\ep$ has the wrong units (it would need $\sigma$). That is the shape of the sheet answer.`],
         md`Close to a long segment you cannot see its ends, so it looks infinite and $L$ drops out: $\vb E\approx\kq\dfrac{2\lambda}{z}\uv z=\dfrac{\lambda}{2\pi\ep z}\uv z$, the field of an infinite straight wire. (The notes write both limits as $\vb E=$ a scalar; multiply by $\uv z$.)`,
@@ -1605,14 +1611,14 @@ for n in (4, 5):
         [[fig:p]]`,
         { figHtml: figRing(), figs: { p: { svg: plotRing(), cap: md`The axial field of a ring peaks at $z=r/\sqrt2$.` } } }),
 
-      Q(md`Half of the ring is removed (keep only the half with $x>0$). What is the field at the centre now?`,
+      Q(md`Half of the ring is removed; only the upper half is left, as drawn. What is the field at the centre now?`,
         [md`Still zero, by symmetry`, md`$\dfrac{\lambda}{2\pi\ep r}$, in the plane of the ring, pointing away from the remaining half`, md`$\dfrac{\lambda}{2\pi\ep r}$, along the axis`, md`Half of the full-ring value at the centre`], 1,
         [md`The symmetry that made it zero needed every piece to have an opposite partner. Half the partners are gone.`,
           null,
           md`At the centre each piece's field lies in the plane of the ring; there is no axial part.`,
           md`The full ring gives zero at the centre, and half of zero is zero, which is wrong here.`],
-        md`This is the semicircle from the previous lesson: each piece now has no partner across the centre, and the sum of the in-plane pushes is $\dfrac{\lambda}{2\pi\ep r}$ pointing away from the remaining arc.`,
-        { figHtml: figArc('semi') }),
+        md`This is the semicircle from the previous lesson: each piece now has no partner across the centre, and the sum of the in-plane pushes is $\dfrac{\lambda}{2\pi\ep r}$ pointing away from the remaining arc (straight down in the figure).`,
+        { figHtml: figArc('semi', false, 'r') }),
 
       RF(md`
         ### Disks: a stack of rings
@@ -1677,7 +1683,7 @@ for n in (4, 5):
 
       Q(md`At the height $z=R$ above the centre of the disk, what fraction of the infinite-sheet value $\sigma/2\ep$ does the disk produce?`,
         [md`$1/2$`, md`$1-1/\sqrt2\approx0.29$`, md`$1/\sqrt2\approx0.71$`, md`$1/4$`], 1,
-        [md`Put $z=R$ in the bracket: $1-\dfrac{R}{\sqrt{2R^2}}=1-\dfrac{1}{\sqrt2}$.`, null, md`$1/\sqrt2$ is the part you subtract, not what is left.`, md`$1/4$ would come from the far-field formula, which is not valid at $z=R$.`],
+        [md`That is what the far-field (point-charge) formula gives at $z=R$: $\dfrac{\sigma R^2}{4\ep z^2}=\dfrac{1}{2}\cdot\dfrac{\sigma}{2\ep}$. But $z=R$ is not far away. Put $z=R$ in the exact bracket: $1-\dfrac{R}{\sqrt{2R^2}}=1-\dfrac{1}{\sqrt2}\approx0.29$.`, null, md`$1/\sqrt2$ is the part you subtract, not what is left.`, md`Close in size, but not it: the exact bracket at $z=R$ is $1-\dfrac{1}{\sqrt2}\approx0.29$. No limit formula holds at $z=R$ (the far-field one would give $1/2$).`],
         md`$E_z=\dfrac{\sigma}{2\ep}\left(1-\dfrac{z}{\sqrt{z^2+R^2}}\right)$ at $z=R$ is $\dfrac{\sigma}{2\ep}\left(1-\dfrac{1}{\sqrt2}\right)\approx0.29\,\dfrac{\sigma}{2\ep}$. At a height equal to its radius, the disk already gives less than a third of the sheet value: the sheet approximation needs $z\ll R$.`,
         { figHtml: figDisk() }),
 
@@ -1943,14 +1949,16 @@ for n in (4, 5):
 
       Q(md`A charge $q$ sits at the centre of one face of a cube. What is the total flux through the cube?`,
         [md`$q/\ep$`, md`$q/6\ep$`, md`$q/2\ep$`, md`$0$, because the charge is not inside`], 2,
-        [md`The charge is on the surface, not inside. Half of its lines go outward away from the cube.`, md`$q/6\ep$ is one face's share when the charge is at the centre.`, null, md`A charge on the surface is half in, half out; it does not give zero.`],
-        md`Put a second cube against the face: the two cubes form a box with $q$ at its centre, total flux $q/\ep$, shared equally by the two halves. Each cube gets $q/2\ep$. (A smooth surface through a point charge sees half its lines.)`,
+        [md`The charge is on the surface, not inside. Half of its lines go outward away from the cube.`, md`$\tfrac{q}{6\ep}$ is one face's share when the charge is at the centre.`, null, md`On a flat face the charge is half in, half out: half its lines enter the cube and leave through the other faces. That is not zero.`],
+        md`Put a second cube against the face: the two cubes form a box with $q$ at its centre, total flux $\tfrac{q}{\ep}$, shared equally by the two halves. Each cube gets $\tfrac{q}{2\ep}$.
+
+        The general rule: a charge sitting on a closed surface sends through it the fraction of its lines that point into the inside. At a **smooth** point (flat face, sphere) the inside is a half-space, so the fraction is $\tfrac12$. At an edge or a corner it is not: on a cube edge the inside is a quarter of the directions ($\tfrac14$), at a cube corner an eighth ($\tfrac18$). Do not use “half” there.`,
         { figHtml: figCube('face') }),
 
       Q(md`A charge $q$ sits at the midpoint of an edge of a cube. What is the total flux through the cube?`,
         [md`$q/4\ep$`, md`$q/2\ep$`, md`$q/8\ep$`, md`$q/12\ep$`], 0,
         [null, md`An edge is shared by four cubes, not two.`, md`A corner is shared by eight cubes; an edge by four.`, md`The flux through the cube is the share of one cube among those that meet at the edge.`],
-        md`Four cubes meet at an edge. Together they surround the charge (total $q/\ep$), so each gets $q/4\ep$.`,
+        md`Four cubes meet at an edge. Together they surround the charge (total $\tfrac{q}{\ep}$), so each gets $\tfrac{q}{4\ep}$. Nothing here uses the midpoint: anywhere on an edge (not at a corner) the cube still gets a quarter. The “half the flux” rule is only for a smooth part of the surface.`,
         { figHtml: figCube('edge') }),
 
       RF(md`
@@ -2273,7 +2281,7 @@ for n in (4, 5):
         id: 'HW1-2.13', src: 'HW 1 · Griffiths 2.13', title: 'Infinite straight wire', big: true,
         q: md`Find the electric field a distance $s$ from an infinitely long straight wire that carries a uniform line charge $\lambda$. Compare Eq. 2.9.
 
-        (Eq. 2.9 is the $L\to\infty$ limit of the finite-segment result: $\vb E=\kq\dfrac{2\lambda}{z}$.)`,
+        (Eq. 2.9 is the $L\to\infty$ limit of the finite-segment result: $\vb E=\kq\dfrac{2\lambda}{z}\,\uv z$, with $z$ the distance from the line.)`,
         figHtml: figLineCyl(false, { P: true }),
         hints: [
           md`Cylindrical symmetry: $\vb E=E(s)\,\uv s$. Use a Gaussian cylinder of radius $s$ and length $l$, coaxial with the wire.`,
@@ -2388,9 +2396,9 @@ for n in (4, 5):
           **What to remember.** Several regions, one Gaussian surface per region, same flux formula; only $\Qenc$ changes. This is why a coaxial cable's field stays inside it.
         `,
         figs: {
-          setup: { svg: PF.row([{ svg: figCoaxSide(), cap: 'side view' }, { svg: figCoax(), cap: 'cross-section' }]).svg, cap: md`Inner cylinder of radius $a$ with uniform $\rho$; outer thin shell of radius $b$ with negative surface charge.` },
+          setup: { svg: PF.row([{ svg: figCoaxSide(), cap: 'side view' }, { svg: figCoax(), cap: 'cross-section' }]).svg, cap: md`Inner cylinder of radius $a$ with uniform $\rho$; outer thin shell of radius $b$ with surface charge $\sigma<0$ (sized so the cable is neutral).` },
           s: { svg: figCoax(true), cap: md`Gaussian cylinders (seen end-on) in the three regions.` },
-          p: { svg: plotCoax(), cap: md`$|\vb E|(s)$: linear inside, $1/s$ between the conductors, zero outside; the drop at $s=b$ is the outer surface charge.` },
+          p: { svg: plotCoax(), cap: md`$|\vb E|(s)$: linear inside, $1/s$ between the cylinders, zero outside; the drop at $s=b$ is the outer surface charge.` },
         },
       }),
 
@@ -2415,7 +2423,7 @@ for n in (4, 5):
         !!key Boundary condition at a charged surface
           Make the pillbox flatter and flatter until its height is zero. The side no longer carries flux, whatever the field does, and only the charge **on** the surface is enclosed. Gauss's law then gives, for **any** charged surface (close up, every surface looks flat):
           $$E^\perp_{\text{above}}-E^\perp_{\text{below}}=\dfrac{\sigma}{\ep}.$$
-          The normal component jumps by $\sigma/\ep$. (The tangential component is continuous; that comes from $\curl\vb E=0$, in the last lesson of this unit.) This condition is the bridge to the boundary-value problems later in the course.
+          Here $\uv n$ is the unit normal pointing from the “below” side to the “above” side, and $E^\perp=\vb E\cdot\uv n$ on each side, with the **same** $\uv n$ (so a field pointing away from the surface below it has $E^\perp_{\text{below}}<0$). The normal component jumps by $\sigma/\ep$. (The tangential component is continuous; that comes from $\curl\vb E=0$, in the last lesson of this unit.) This condition is the bridge to the boundary-value problems later in the course.
       `, { s: { svg: figPlane(true), cap: md`Gaussian pillbox straddling the plane. Flux leaves through both lids.` } }),
 
       Q(md`An infinite charged plane: how does the field at $1\ \text{m}$ from it compare with the field at $100\ \text{m}$?`,

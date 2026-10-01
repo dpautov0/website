@@ -2365,6 +2365,28 @@
     thetaMark(f, 0, 0, 50, 14);
     return f.svg();
   })();
+  // point charge q on the z axis a distance d from the center of a grounded metal sphere: setup (hatched metal),
+  // or the image solution (sphere dashed and unhatched, image q' = -qR/d at z = R^2/d)
+  const qSphere = (img) => {
+    const f = PF.fig();
+    const rr = 46, D = 120, xd = -rr - 24;
+    if (img) { f.circle(0, 0, rr, { cls: 'dash dim' }); f.dot(0, 0, 2.2); }
+    else { f.hatchBand(f.arcPts(0, 0, rr, rr, 0, 360)); f.circle(0, 0, rr, { cls: 'thick' }); }
+    zAxis(f, 0, img ? 0 : -rr - 4, -D - 30);
+    f.charge(0, -D, { q: '+', lab: 'q', at: 'r' });
+    f.line(-rr - 4, 0, xd - 6, 0, { cls: 'dim thin' });
+    f.line(-11, -D, xd - 6, -D, { cls: 'dim thin' });
+    f.line(xd, 0, xd, -D, { cls: 'dim', arrow: 'both', hs: 6 });
+    f.tag(xd, -D / 2, 'd', 'l', 6, 'small');
+    const e = at(0, 0, rr, 135);
+    f.line(0, 0, e[0], e[1], { cls: 'dim' });
+    labRay(f, e[0], e[1], 135, 'R', 5, 'small');
+    leader(f, 0, 0, rr, 50, img ? 'V=0' : '\\text{grounded}', 14);
+    if (img) f.charge(0, -(rr * rr) / D, { q: '-', lab: "q'", at: 'r', image: true, r: 6 });
+    return f.svg();
+  };
+  FIG.qGround = qSphere(false);
+  FIG.qGroundImg = qSphere(true);
   FIG.ring = ringFig({ P: { r: 112, th: 42 } });
   FIG.disk = diskFig({ P: { f: 1.5, th: 50 } });
   FIG.diskHalves = diskFig({ halves: ['A_\\ell', "A'_\\ell"] });
@@ -2530,6 +2552,61 @@
         [null, md`That decays away from the origin; inside $r \lt d$ the terms must be $r^\ell$.`, md`That is the $\ell = 1$ term for $r \gt d$.`, md`Units: the $\ell$ term is $\frac{r^\ell}{d^{\ell+1}}$, so $\frac{r}{d^2}$.`],
         md`$\frac{q}{4\pi\varepsilon_0}\frac{r}{d^2}P_1(\cos\theta) = \frac{q\,z}{4\pi\varepsilon_0d^2}$. Its gradient is the uniform field $-\frac{q}{4\pi\varepsilon_0d^2}\uv z$, the charge's field at the origin (pointing away from $q$).`,
         { figHtml: FIG.axisQ }),
+
+      P({
+        title: 'A charge outside a grounded sphere, by separation of variables',
+        q: md`A point charge $q$ sits on the $z$ axis at $z = d$, outside a grounded metal sphere of radius $R$ centered at the origin ($d \gt R$). Solve it with Legendre polynomials instead of images. Outside the metal write
+
+        $$V = \frac{q}{4\pi\varepsilon_0\,|\vb r - d\uv z|} + V_{\text{ind}}, \qquad V_{\text{ind}} = \sum_\ell\frac{B_\ell}{r^{\ell+1}}P_\ell(\cos\theta),$$
+
+        where $V_{\text{ind}}$ is the potential of the charge induced on the sphere. Find (a) $B_0$, (b) $B_1$, (c) the total induced charge, and (d) the point charge whose potential is $V_{\text{ind}}$.`,
+        figHtml: FIG.qGround,
+        hints: [
+          md`What kind of problem: a point charge next to a conductor held at a known potential. Superpose the charge's own potential (it carries the singularity) and a Laplace solution for the induced charge. Region $r \ge R$. Boundary conditions: (1) $V = 0$ on $r = R$; (2) $V \to 0$ as $r \to \infty$, so $V_{\text{ind}}$ has only $B_\ell/r^{\ell+1}$ terms; (3) the only singularity is $q$ itself.`,
+          md`To use BC 1 you need the charge's potential on the sphere as a Legendre series. On $r = R$ you have $r \lt d$, so use the axis-trick expansion from the reading: $\dfrac{1}{|\vb r - d\uv z|} = \sum_\ell\dfrac{r^\ell}{d^{\ell+1}}P_\ell(\cos\theta)$.`,
+          md`BC 1, one $\ell$ at a time: $\dfrac{q}{4\pi\varepsilon_0}\dfrac{R^\ell}{d^{\ell+1}} + \dfrac{B_\ell}{R^{\ell+1}} = 0$.`,
+        ],
+        parts: [
+          { lbl: md`(a) $B_0$`, expr: '-q*R/(4*pi*eps0*d)', vars: { q: [1, 3], R: [1, 2], d: [3, 5], eps0: [0.5, 2] } },
+          { lbl: md`(b) $B_1$`, expr: '-q*R^3/(4*pi*eps0*d^2)', vars: { q: [1, 3], R: [1, 2], d: [3, 5], eps0: [0.5, 2] } },
+          { lbl: md`(c) total induced charge on the sphere`, expr: '-q*R/d', vars: { q: [1, 3], R: [1, 2], d: [3, 5] } },
+          { lbl: md`(d) $V_{\text{ind}}$ is the potential of`, mc: [md`a charge $-q$ at $z = \dfrac{R^2}{d}$`, md`a charge $-\dfrac{qR}{d}$ at the center`, md`a charge $-\dfrac{qR}{d}$ at $z = \dfrac{R^2}{d}$`, md`a charge $-q$ at $z = -d$, the mirror point`], a: 2,
+            why: [md`Wrong size: the total induced charge is $4\pi\varepsilon_0B_0 = -\dfrac{qR}{d}$, not $-q$. Not every field line from $q$ ends on a sphere.`, md`A charge at the center would give only an $\ell = 0$ term. Here every $B_\ell$ is nonzero and $\dfrac{B_{\ell+1}}{B_\ell} = \dfrac{R^2}{d}$: the source sits off center, at $z = R^2/d$.`, null, md`That is the image for a grounded plane. For a sphere the image sits inside the sphere, at $z = R^2/d$, with charge $-qR/d$.`] },
+        ],
+        sol: md`
+          **Region:** $r \ge R$, outside the metal; it contains the charge $q$. **Boundary conditions:**
+          1. $V(R,\theta) = 0$ (grounded): fixes the $B_\ell$.
+          2. $V \to 0$ as $r \to \infty$: kills every $r^\ell$ term in $V_{\text{ind}}$.
+          3. Near $q$, $V$ must look like $\dfrac{q}{4\pi\varepsilon_0|\vb r - d\uv z|}$: the first term does that, and $V_{\text{ind}}$ stays finite everywhere outside the metal.
+
+          **The charge's potential on the sphere.** On $r = R$ you have $r \lt d$, so by the axis trick
+
+          $$\frac{q}{4\pi\varepsilon_0|\vb r - d\uv z|} = \frac{q}{4\pi\varepsilon_0}\sum_\ell\frac{r^\ell}{d^{\ell+1}}P_\ell(\cos\theta)$$
+
+          **BC 1, term by term:**
+
+          $$\frac{q}{4\pi\varepsilon_0}\frac{R^\ell}{d^{\ell+1}} + \frac{B_\ell}{R^{\ell+1}} = 0 \quad\Longrightarrow\quad B_\ell = -\frac{q}{4\pi\varepsilon_0}\,\frac{R^{2\ell+1}}{d^{\ell+1}}$$
+
+          (a) $B_0 = -\dfrac{qR}{4\pi\varepsilon_0d}$.
+
+          (b) $B_1 = -\dfrac{qR^3}{4\pi\varepsilon_0d^2}$. The induced dipole is $p = 4\pi\varepsilon_0B_1 = -\dfrac{qR^3}{d^2}$: it points away from $q$, because the negative induced charge crowds onto the side facing $q$.
+
+          (c) Gauss's law on a big sphere: the induced charge is $4\pi\varepsilon_0B_0 = -\dfrac{qR}{d}$. It is smaller in size than $q$: some field lines from $q$ go off to infinity instead of ending on the sphere.
+
+          (d) Pull out the common factor:
+
+          $$V_{\text{ind}} = \frac{1}{4\pi\varepsilon_0}\left(-\frac{qR}{d}\right)\sum_\ell\frac{\left(R^2/d\right)^\ell}{r^{\ell+1}}P_\ell(\cos\theta)$$
+
+          A point charge $q'$ at $z = b$ has, for $r \gt b$, the potential $\dfrac{q'}{4\pi\varepsilon_0}\sum_\ell\dfrac{b^\ell}{r^{\ell+1}}P_\ell(\cos\theta)$. The two match with $q' = -\dfrac{qR}{d}$ and $b = \dfrac{R^2}{d}$: exactly the image charge of Unit 5 (which calls the distance $a$).
+
+          [[fig:img]]
+
+          **Checks.** $b = R^2/d \lt R$: the image sits inside the sphere, outside the region, as an image must. As $d \to R$ it becomes $-q$ just inside the surface (the plane result); as $d \to \infty$ the induced charge $-qR/d$ goes to zero.
+
+          **What to remember:** separation of variables and images give the same answer, as the uniqueness theorem says they must. Images are faster for $V$ itself; the series hands you the induced charge ($B_0$) and dipole moment ($B_1$) directly.
+        `,
+        figs: { img: { svg: FIG.qGroundImg, cap: 'The induced potential is that of an image charge $q\' = -qR/d$ at $z = R^2/d$, inside the sphere. The sphere is dashed: the image replaces the metal.' } },
+      }),
 
       Q(md`A ring of charge $Q$ (radius $a$) lies in the $xy$ plane. Which $\ell$ appear in its expansion?`,
         [md`All $\ell$`, md`Odd $\ell$ only`, md`$\ell = 0$ only`, md`Even $\ell$ only`], 3,
@@ -2775,6 +2852,7 @@
           - Between two spheres keep both $A_\ell$ and $B_\ell$; each $\ell$ is a $2\times2$ system from the two surfaces.
           - A charge $q$ at the center adds $\frac{q}{4\pi\varepsilon_0r}$ and shifts $A_0$; with $V$ given on the shell, the outside does not change.
           - Axis trick: $P_\ell(1) = 1$, so expand $V$ on the axis in powers of $r$ and attach $P_\ell(\cos\theta)$. Point charge: $\frac{q}{4\pi\varepsilon_0}\sum\frac{r^\ell}{d^{\ell+1}}P_\ell$ for $r \lt d$.
+          - Charge $q$ at $z = d$ outside a grounded sphere: $B_\ell = -\frac{q}{4\pi\varepsilon_0}\frac{R^{2\ell+1}}{d^{\ell+1}}$, which is the image $-\frac{qR}{d}$ at $\frac{R^2}{d}$.
           - If charge cuts through the region (the disk), split the region; odd terms flip sign between the halves.
           - Before you finish: check every BC, the center value, the far field and a known limit.
       `),

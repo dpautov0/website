@@ -272,7 +272,7 @@
           md`$W = q\,\Delta V = (-e)(+10\text{ V}) = -10$ eV $=-1.6\times10^{-18}$ J. An electron is pulled toward higher potential, so the field does the work and you only hold it back. One electron volt is the energy $e\times(1\text{ V})$.`,
           { nofig: 'Only two potential values matter; there is no geometry.' }),
 
-        Q(md`In the figure above, you carry a charge $q$ from $a$ to $c$ along the dashed circle around $+Q$. The work you do is`,
+        Q(md`In the figure, you carry a charge $q$ from $a$ to $c$ along the dashed circle around $+Q$. The work you do is`,
           [md`$\dfrac{qQ}{4\pi\varepsilon_0 r}$`, md`positive, since the field is not zero along the circle`, md`zero`, md`negative, since $q$ moves around $Q$ rather than toward it`], 2,
           [md`That is the work to bring $q$ from infinity onto the circle. Moving **around** the circle afterwards costs nothing more.`,
             md`The field is not zero, but it is radial, and every step along the circle is perpendicular to it: $\vb F_{\text{ext}}\cdot d\vb l = 0$ at each step.`, null,
@@ -592,7 +592,7 @@
             md`Whether something holds the charges in place is a separate question. Here they are nailed down.`,
             md`Its size is the binding energy: the work to separate them to infinity.`],
           md`Bringing $-q$ in toward $+q$, the field pulls it in and you hold it back: you do negative work. So the assembled pair has less energy than the separated charges. To separate them you must supply $+\dfrac{q^2}{4\pi\varepsilon_0 r}$.`,
-          { nofig: 'Two charges at distance r; the formula is given.' }),
+          { figHtml: pairFig() }),
 
         RF(md`
           ### Counting every pair twice: $W = \tfrac12\sum q_iV(\vb r_i)$
@@ -725,14 +725,14 @@
 
             **(a)** The total is the corner square plus this last step (that's just the pairwise sum regrouped):
 
-            $$W = \left(4+\sqrt2\right) - 4\sqrt2 = 4-3\sqrt2\approx -0.243\quad\text{(units } q^2/4\pi\varepsilon_0 a).$$
+            $$W = \left(4+\sqrt2\right) - 4\sqrt2 = 4-3\sqrt2\approx -0.243\quad\left(\text{units of } \dfrac{q^2}{4\pi\varepsilon_0 a}\right).$$
 
             Slightly negative: the central charge more than pays for the corner repulsion, so the whole thing is (barely) bound.
           `,
         }),
 
         Q(md`Three equal charges $+q$ are arranged either (1) on a line with spacing $a$ or (2) at the corners of an equilateral triangle of side $a$. Which arrangement stores more energy?`,
-          [md`The triangle: $3$ versus $2.5$ (units $q^2/4\pi\varepsilon_0 a$)`, md`The line: its charges are spread out over a longer distance`, md`They are equal: both have three pairs`, md`The line: $3.5$ versus $3$`], 0,
+          [md`The triangle: $3$ versus $2.5$ (units of $q^2/(4\pi\varepsilon_0 a)$)`, md`The line: its charges are spread out over a longer distance`, md`They are equal: both have three pairs`, md`The line: $3.5$ versus $3$`], 0,
           [null, md`Spreading out lowers energy. In the line the end pair is $2a$ apart; in the triangle all three pairs are at $a$.`,
             md`Three pairs each, but at different separations: the line's end pair is at $2a$.`,
             md`The line gives $1 + 1 + \tfrac12 = 2.5$, not 3.5.`],
@@ -848,6 +848,15 @@
     f.label(cx - 22, cy - 18, o.lab || '\\rho', 'c');
     return f;
   }
+  // a charge +q and a charge -q a distance r apart
+  function pairFig() {
+    const f = PF.fig();
+    f.charge(50, 50, { q: '+', lab: '+q', at: 't' });
+    f.charge(210, 50, { q: '-', lab: '-q', at: 't' });
+    f.line(50, 60, 50, 80, { cls: 'dim thin' }); f.line(210, 60, 210, 80, { cls: 'dim thin' });
+    f.dim(50, 76, 210, 76, 'r', { at: 'b' });
+    return f.svg();
+  }
 
   // ===================================================================================== Lesson 3
   const L3 = () => {
@@ -896,14 +905,14 @@
       return f.svg();
     };
     const plotShell = () => PF.row([
-      { svg: PF.plot({ w: 230, h: 160, x: [0, 4], y: [0, 1.3], xl: 'r', yl: 'E', xt: [[1, 'R']], curves: [{ f: () => 0, from: 0, to: 0.995 }, { f: (r) => 1 / (r * r), from: 1, to: 4 }] }), cap: '$E$: zero inside, $q/4\\pi\\varepsilon_0 r^2$ outside' },
-      { svg: PF.plot({ w: 230, h: 160, x: [0, 4], y: [0, 1.3], xl: 'r', yl: 'V', xt: [[1, 'R']], curves: [{ f: () => 1, from: 0, to: 1 }, { f: (r) => 1 / r, from: 1, to: 4 }] }), cap: '$V$: constant inside, $q/4\\pi\\varepsilon_0 r$ outside' },
+      { svg: PF.plot({ w: 230, h: 160, x: [0, 4], y: [0, 1.3], xl: 'r', yl: 'E', xt: [[1, 'R']], curves: [{ f: () => 0, from: 0, to: 0.995 }, { f: (r) => 1 / (r * r), from: 1, to: 4 }] }), cap: '$E$: zero inside, $\\dfrac{q}{4\\pi\\varepsilon_0 r^2}$ outside' },
+      { svg: PF.plot({ w: 230, h: 160, x: [0, 4], y: [0, 1.3], xl: 'r', yl: 'V', xt: [[1, 'R']], curves: [{ f: () => 1, from: 0, to: 1 }, { f: (r) => 1 / r, from: 1, to: 4 }] }), cap: '$V$: constant inside, $\\dfrac{q}{4\\pi\\varepsilon_0 r}$ outside' },
     ]);
     const plotFrac = () => PF.plot({ w: 330, h: 190, x: [0, 10], y: [0, 1.1], xl: 'r', yl: '\\text{fraction of } W \\text{ inside } r', xt: [[1, 'R'], [2, '2R'], [5, '5R'], [10, '10R']], yt: [[0.5, '0.5'], [0.9, '0.9']],
       curves: [{ f: (r) => (r < 1 ? 0 : 1 - 1 / r), n: 400 }], pts: [{ x: 2, y: 0.5 }, { x: 10, y: 0.9 }] });
     const plotBall = () => PF.row([
       { svg: PF.plot({ w: 230, h: 160, x: [0, 3], y: [0, 1.25], xl: 'r', yl: 'E', xt: [[1, 'R']], curves: [{ f: (r) => (r < 1 ? r : 1 / (r * r)), n: 300 }] }), cap: '$E$ grows like $r$ inside, falls like $1/r^2$ outside' },
-      { svg: PF.plot({ w: 230, h: 160, x: [0, 3], y: [0, 1.7], xl: 'r', yl: 'V', xt: [[1, 'R']], yt: [[1.5, '\\tfrac32'], [1, '1']], curves: [{ f: (r) => (r < 1 ? 0.5 * (3 - r * r) : 1 / r), n: 300 }] }), cap: '$V$ in units of $q/4\\pi\\varepsilon_0R$' },
+      { svg: PF.plot({ w: 230, h: 160, x: [0, 3], y: [0, 1.7], xl: 'r', yl: 'V', xt: [[1, 'R']], yt: [[1.5, '\\tfrac32'], [1, '1']], curves: [{ f: (r) => (r < 1 ? 0.5 * (3 - r * r) : 1 / r), n: 300 }] }), cap: '$V$ in units of $q/(4\\pi\\varepsilon_0R)$' },
     ]);
 
     return {
@@ -980,7 +989,7 @@
         RF(md`
           ### Worked example (Griffiths Ex. 2.9): energy of a charged shell, two ways
 
-          A thin spherical shell of radius $R$ carries total charge $q$, spread uniformly ($\sigma = q/4\pi R^2$).
+          A thin spherical shell of radius $R$ carries total charge $q$, spread uniformly ($\sigma = q/(4\pi R^2)$).
 
           [[fig:shell]]
 
@@ -1011,7 +1020,7 @@
           [md`$\sqrt2\,R$`, md`$4R$`, md`$10R$`, md`$2R$`], 3,
           [md`The fraction inside $r$ is $1 - R/r$, which equals $\tfrac12$ at $r = 2R$; at $\sqrt2\,R$ it is only $0.29$.`, md`At $4R$ the fraction is $1 - \tfrac14 = 0.75$.`, md`At $10R$ the fraction is $0.9$.`, null],
           md`Energy outside radius $r$: $\dfrac{q^2}{8\pi\varepsilon_0r}$. Inside $r$: $\dfrac{q^2}{8\pi\varepsilon_0}\left(\dfrac1R-\dfrac1r\right)$, a fraction $1 - R/r$. Setting this to $\tfrac12$ gives $r = 2R$. The energy is concentrated near the charge, where the field is strong.`,
-          { nofig: 'Uses the shell figure and the plot above.' }),
+          { figHtml: fShell() }),
 
         Q(md`For a uniformly charged ball (charge $q$, radius $R$), where is the energy density $u = \tfrac{\varepsilon_0}{2}E^2$ largest?`,
           [md`At the centre, where the charge is deepest`, md`It is the same everywhere inside`, md`At the surface, $r = R$`, md`Far outside, since most of the energy is outside`], 2,
@@ -1040,7 +1049,7 @@
           hints: [md`$W = \dfrac{q^2}{8\pi\varepsilon_0 R} = \dfrac12\cdot\dfrac{1}{4\pi\varepsilon_0}\cdot\dfrac{q^2}{R}$.`, md`Just outside, $E = \dfrac{q}{4\pi\varepsilon_0R^2}$ and $u = \tfrac{\varepsilon_0}{2}E^2$. You need $\varepsilon_0 = 8.85\times10^{-12}$ F/m.`, md`The fraction of the energy outside radius $r$ is $R/r$.`],
           parts: [
             { lbl: md`(a) $W$`, ans: 44.94, unit: 'mJ' },
-            { lbl: md`(b) energy density just outside the shell, in J per cubic metre`, ans: 3.576, unit: '' },
+            { lbl: md`(b) energy density $u$ just outside the shell`, ans: 3.576, unit: 'J/m³' },
             { lbl: md`(c) fraction of $W$ stored beyond $r = 1$ m`, ans: 0.1, unit: '' },
           ],
           sol: md`
@@ -1062,7 +1071,7 @@
           parts: [
             { lbl: md`(a) $V(r)$, $r<R$`, expr: 'q/(8*pi*eps0*R)*(3 - r^2/R^2)', vars: { q: [0.5, 3], eps0: [0.5, 2], R: [2, 3], r: [0.2, 1.8] }, accepts: ['q*(3*R^2 - r^2)/(8*pi*eps0*R^3)'] },
             { lbl: md`(b) $W$`, expr: '3*q^2/(20*pi*eps0*R)', vars: { q: [0.5, 3], eps0: [0.5, 2], R: [0.5, 3] }, accepts: ['(3/5)*q^2/(4*pi*eps0*R)'] },
-            { lbl: md`(c) fraction inside`, ans: 1 / 6, unit: '' },
+            { lbl: md`(c) fraction of $W$ stored inside the ball`, ans: 1 / 6, unit: '' },
           ],
           sol: md`
             **(a)** Integrate $E$ in from the surface:
@@ -1312,13 +1321,13 @@
           | $\tfrac{\varepsilon_0}{2}\int E^2\,d\tau$ | yes | never negative |
 
           **Where is the energy stored?** $\tfrac12\int\rho V$ says "on the charge"; $\tfrac{\varepsilon_0}{2}\int E^2$ says "in the field". In electrostatics this is bookkeeping: both give the same total. (In radiation theory it is useful to regard the energy as stored in the field.)
-        `, { self: { svg: plotSelf(), cap: 'Field energy of a point charge stored outside radius $r$: $q^2/(8\\pi\\varepsilon_0 r)$, plotted with $q^2/8\\pi\\varepsilon_0 = 1$. It diverges as $r\\to0$.' } }),
+        `, { self: { svg: plotSelf(), cap: 'Field energy of a point charge stored outside radius $r$: $q^2/(8\\pi\\varepsilon_0 r)$, plotted with $q^2/(8\\pi\\varepsilon_0) = 1$. It diverges as $r\\to0$.' } }),
 
         Q(md`A charge $+q$ and a charge $-q$ are a distance $r$ apart. What does $\tfrac{\varepsilon_0}{2}\int_{\text{all space}}E^2\,d\tau$ give for this configuration?`,
           [md`$-\dfrac{q^2}{4\pi\varepsilon_0 r}$`, md`$+\dfrac{q^2}{4\pi\varepsilon_0 r}$`, md`$+\infty$`, md`$0$, because the net charge is zero`], 2,
           [md`That's the pairwise result. The field integral can never be negative.`, md`The integrand $E^2$ diverges like $1/r^4$ near each point charge, and $\int r^{-4}\,r^2\,dr$ diverges at $0$.`, null, md`Zero net charge only makes the far field fall off faster. Near each charge $E^2$ still blows up.`],
           md`The field integral includes each charge's self-energy, $\tfrac{q^2}{8\pi\varepsilon_0}\int_0^\infty dr/r^2 = \infty$. The finite, negative interaction energy rides on top of two infinite positive self-energies. That's why the pairwise formula is the useful one for point charges.`,
-          { nofig: 'Two point charges; the question is about the formula.' }),
+          { figHtml: pairFig() }),
 
         Q(md`You slowly move two point charges from separation $a$ to separation $2a$. The change in $\tfrac{\varepsilon_0}{2}\int E^2\,d\tau$ is`,
           [md`infinite, since the field energy of point charges is infinite`, md`$\dfrac{q_1q_2}{4\pi\varepsilon_0}\left(\dfrac{1}{2a}-\dfrac1a\right)$, the change in the pair energy`, md`zero: rearranging charges cannot change the field energy`, md`twice the change in the pair energy`], 1,
