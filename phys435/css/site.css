@@ -173,11 +173,12 @@ tr:last-child td { border-bottom: none; }
 .streak + .p-status { margin-left: 8px; }
 
 .fig { margin: 8px 0 12px; overflow-x: auto; overflow-y: hidden; }
-.fig svg { display: block; max-width: 100%; height: auto; margin: 0 auto; overflow: hidden; }
+/* only the figure's own svg, never KaTeX's internal svgs (\sqrt, stretchy arrows) inside labels */
+.fig svg.schem, .fig svg.plot, .fig > svg { display: block; max-width: 100%; height: auto; margin: 0 auto; overflow: hidden; }
 .fig figcaption { text-align: center; font-size: 13px; color: var(--dim); margin-top: 4px; }
 .figrow { display: flex; flex-wrap: wrap; gap: 8px 28px; justify-content: center; align-items: flex-end; }
 .figrow > div { flex: 0 1 auto; min-width: 0; }
-.schem path, .schem circle, .schem rect { fill: none; stroke: var(--fg); stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
+svg.schem > path, svg.schem > circle, svg.schem > rect, svg.schem > g > path { fill: none; stroke: var(--fg); stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
 .schem .fill, .plot .fill { fill: var(--fg); stroke: none; }
 .schem .fillbg { fill: var(--bg); }
 .schem .thick { stroke-width: 2.6; }
@@ -316,8 +317,13 @@ tr:last-child td { border-bottom: none; }
 .widget .w-note { font-size: 14px; color: var(--dim); margin-top: 6px; }
 .widget .w-note p { margin: 0 0 6px; }
 .widget canvas { display: block; max-width: 100%; height: auto; margin: 6px auto; border: 1px solid var(--line); }
-.widget .w-plot svg { display: block; max-width: 100%; height: auto; margin: 0 auto; }
+.widget .w-plot svg.schem { display: block; max-width: 100%; height: auto; margin: 0 auto; }
 .widget .w-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px 18px; align-items: start; }
 .widget .btn { font-size: 13px; padding: 3px 10px; }
 /* a thin halo in the page colour keeps labels legible where they sit on hatching or near lines */
 .schem .lbl .katex, .schem .lbl .ptxt { text-shadow: 0 0 2px var(--bg), 0 0 2px var(--bg), 0 0 3px var(--bg), 0 0 4px var(--bg); }
+.plan { margin: -12px 0 30px; }
+.plan h2 { font-size: 15px; margin: 0 0 6px; }
+.plan ol { margin: 0; padding-left: 22px; font-size: 14.5px; color: var(--dim); }
+.plan li { margin-bottom: 4px; }
+.plan b { color: var(--fg); font-weight: 700; }

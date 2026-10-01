@@ -270,6 +270,22 @@
     return widen(f).svg();
   }
 
+  // the slot turned on its side: grounded walls x = 0 and x = L, live strip along y = 0, open toward +y
+  function upSlot() {
+    const f = PF.fig();
+    const L = 120, H = 170;
+    f.wall(0, -H, -4, { side: 'left' });
+    f.wall(L, -H, -4, { side: 'right' });
+    f.line(0, -H, 0, -H - 22, { cls: 'dim dash' }); f.line(L, -H, L, -H - 22, { cls: 'dim dash' });
+    f.plane(3, L - 3, 0, { side: 'below' });
+    f.label(L / 2, 15, 'V_0(x)', 't');
+    f.label(-16, -H * 0.55, 'V=0', 'r', 'small'); f.label(L + 16, -H * 0.55, 'V=0', 'l', 'small');
+    f.line(L + 14, 0, L + 38, 0, { cls: 'dim', arrow: 'end', hs: 6 }); f.label(L + 40, 0, 'x', 'l', 'small accent');
+    f.line(L / 2, -H - 6, L / 2, -H - 34, { cls: 'dim', arrow: 'end', hs: 6 }); f.label(L / 2 + 5, -H - 30, 'y', 'l', 'small accent');
+    f.label(-15, 12, '0', 'r', 'small accent'); f.label(L + 6, 22, 'L', 'tl', 'small accent');
+    return widen(f).svg();
+  }
+
   // ================================================================ figures used in several places
   const SLOT = slot({ dimA: true });
   const SLOT_BC = slot({ bcn: true });
@@ -522,7 +538,7 @@
 
           Q(md`Why is the slot a two-dimensional problem?`,
             [md`The plates and the strip extend to $\pm\infty$ in $z$ and nothing changes along $z$, so $\partial^2 V/\partial z^2 = 0$.`, md`Because $V = 0$ at $z = \pm\infty$.`, md`Because the plates are thin.`, md`Because $E_z = 0$ on the plates.`], 0,
-            [null, md`No condition at $z = \pm\infty$ is used. The potential is simply the same at every $z$.`, md`Thickness is irrelevant. What matters is that the setup looks identical at every $z$.`, md`$E_z = 0$ everywhere, not just on the plates, and that is a consequence of $V$ not depending on $z$.`],
+            [null, md`No condition at $z = \pm\infty$ is used. The potential is the same at every $z$, which is all you need.`, md`Thickness is irrelevant. What matters is that the setup looks identical at every $z$.`, md`$E_z = 0$ everywhere, not just on the plates, and that is a consequence of $V$ not depending on $z$.`],
             md`If you slide along $z$ the configuration does not change, so neither does $V$. Then $\partial V/\partial z = 0$ and the $z$ term drops out of the Laplacian (the blue note in the lecture: "0 since no variation in $z$").`,
             { figHtml: SLOT3D }),
 
@@ -653,6 +669,37 @@
             [null, md`$V = V_0 \ne 0$ on a face is uniform but **not** homogeneous: two solutions that each have $V_0$ there add up to $2V_0$.`, md`A conductor makes $V$ uniform on that surface, not zero. The live strip is a conductor too.`, md`BC #4 is homogeneous, but so are BCs #1 and #2 at finite $y$.`],
             md`"Homogeneous" means "zero", so that it is preserved under adding solutions and under multiplying by constants. Those are the conditions you can impose term by term. The non-zero one is fitted last with the coefficients.`,
             { figHtml: SLOT_BC }),
+
+          P({
+            title: 'The slot turned on its side',
+            q: md`Two grounded walls stand at $x = 0$ and $x = L$ and run up to $y \to \infty$; the bottom, $y = 0$, is a strip held at $V_0(x)$ and insulated from the walls. Nothing depends on $z$. Without finding the coefficients, set up the separation.`,
+            figHtml: upSlot(),
+            hints: [
+              md`List the four BCs and mark which are zero. Which coordinate has **two** zero boundaries?`,
+              md`That coordinate gets the negative separation constant (sines); the other gets exponentials.`,
+              md`Which exponential survives as $y \to \infty$?`,
+            ],
+            parts: [
+              { lbl: md`Which sign assignment?`, mc: [md`$X''/X = +k^2$, $Y''/Y = -k^2$`, md`$X''/X = -k^2$, $Y''/Y = +k^2$`, md`both $-k^2$`, md`both $+k^2$`], a: 1, why: [md`That's the lecture's slot. Here the zero walls are at $x = 0$ and $x = L$, so $x$ must oscillate.`, null, md`The two constants must add to zero.`, md`They must add to zero.`] },
+              { lbl: md`The product solutions are`, mc: [md`$\sin\frac{n\pi y}{L}\,e^{-n\pi x/L}$`, md`$\cos\frac{n\pi x}{L}\,e^{-n\pi y/L}$`, md`$\sin\frac{n\pi x}{L}\,e^{+n\pi y/L}$`, md`$\sin\frac{n\pi x}{L}\,e^{-n\pi y/L}$`], a: 3, why: [md`The roles of $x$ and $y$ are swapped here.`, md`$\cos 0 = 1$: the wall at $x = 0$ wouldn't be grounded.`, md`It blows up as $y \to \infty$.`, null] },
+              { lbl: md`$k$ for the first mode ($n = 1$)`, expr: 'pi/L', vars: { L: [1, 3] } },
+              { lbl: md`Which BC fixes the coefficients?`, mc: [md`$V = V_0(x)$ at $y = 0$`, md`$V = 0$ at $x = 0$`, md`$V = 0$ at $x = L$`, md`$V \to 0$ as $y \to \infty$`], a: 0, why: [null, md`It removes $\cos kx$.`, md`It quantizes $k = n\pi/L$.`, md`It removes $e^{+ky}$.`] },
+            ],
+            sol: md`
+              **Boundary conditions** (region $0 < x < L$, $y > 0$):
+
+              1. $V(0, y) = 0$ (homogeneous) $\Rightarrow$ no $\cos kx$
+              2. $V(L, y) = 0$ (homogeneous) $\Rightarrow k = n\pi/L$
+              3. $V(x, 0) = V_0(x)$ (live) $\Rightarrow C_n$
+              4. $V \to 0$ as $y \to \infty$ (homogeneous) $\Rightarrow$ no $e^{+ky}$
+
+              $x$ has the two zero boundaries, so $X''/X = -k^2$ and $Y''/Y = +k^2$: the lecture's slot with $x$ and $y$ swapped.
+
+              $$V(x,y) = \sum_{n=1}^{\infty} C_n\,e^{-n\pi y/L}\sin\frac{n\pi x}{L}, \qquad C_n = \frac{2}{L}\int_0^L V_0(x)\sin\frac{n\pi x}{L}\,dx .$$
+
+              **What to remember:** don't memorize "$y$ gets the sines". Find the direction with two zero boundaries, whatever it is called.
+            `,
+          }),
 
           RF(md`
             !!key Patterns to remember
@@ -866,9 +913,9 @@
 
           Q(md`Inside the slot with a constant strip $V_0 > 0$, the potential is:`,
             [md`Between $0$ and $V_0$ everywhere.`, md`Above $V_0$ near the corners (Gibbs).`, md`Negative close to the plates.`, md`Exactly $V_0/2$ on the midline $y = a/2$.`], 0,
-            [null, md`Gibbs overshoot is a property of *truncated* sums on the boundary, not of the true potential.`, md`Every term is positive near the plates... more simply: a harmonic function takes its extreme values on the boundary, which is at $0$ and $V_0$.`, md`On the midline $V$ falls from $V_0$ (at the strip) toward $0$ (far away).`],
+            [null, md`Gibbs overshoot is a property of *truncated* sums on the boundary, not of the true potential.`, md`Near a plate $V$ falls to $0$ from above. A harmonic function takes its extreme values on the boundary, here $0$ and $V_0$, so it can't dip below $0$ anywhere inside.`, md`On the midline $V$ falls from $V_0$ (at the strip) toward $0$ (far away).`],
             md`Solutions of Laplace's equation have no local maxima or minima inside the region (the averaging property from Lecture 9). So $V$ lies between the smallest and largest boundary values: $0 < V < V_0$. Use this as a sanity check on any answer.`,
-            { figHtml: SLOT_MAP }),
+            { figHtml: SLOT }),
 
           Q(md`What are the units of the coefficients $C_n$ in $V = \sum C_n e^{-n\pi x/a}\sin(n\pi y/a)$?`,
             [md`Dimensionless.`, md`Volts per meter.`, md`Volt-meters.`, md`Volts.`], 3,
@@ -1025,7 +1072,7 @@
             [md`$\dfrac{4V_0}{\pi}$`, md`$V_0/2$`, md`$0$`, md`$V_0$`], 3,
             [md`That's the first term alone. The other terms alternate in sign there and bring the sum down.`, md`$V_0/2$ is what a sine series gives at a *jump*. The midpoint of the strip is not a jump.`, md`$0$ is the value at the corners, where every sine vanishes.`, null],
             md`At $y = a/2$: $\tfrac{4V_0}{\pi}\left(1 - \tfrac13 + \tfrac15 - \tfrac17 + \dots\right) = \tfrac{4V_0}{\pi}\cdot\tfrac{\pi}{4} = V_0$ (Leibniz series). The series reproduces BC #3 at every point where $V_0(y)$ is continuous.`,
-            { figHtml: GIBBS }),
+            { figHtml: SLOT }),
 
           Q(md`At the corner $(x, y) = (0, 0)$, where the strip meets the bottom plate, the series gives:`,
             [md`$V_0$`, md`$0$, because every $\sin(n\pi y/a)$ vanishes at $y = 0$.`, md`$V_0/2$, the average of the two sides of the jump.`, md`It diverges.`], 1,
@@ -1037,7 +1084,7 @@
             [md`Disappears once you keep about 20 terms.`, md`Grows without bound.`, md`Stays at about 9% of the jump (peak $\approx 1.18V_0$), but moves closer to the corner and gets narrower.`, md`Moves to the middle of the strip.`], 2,
             [md`It never disappears for finite $N$; it only gets narrower.`, md`It saturates near $1.179V_0$.`, null, md`The middle converges nicely; the trouble is at the jumps.`],
             md`Numerically the peak of the partial sum is $1.200V_0$ with 2 terms, $1.188V_0$ with 3, $1.181V_0$ with 6, $1.1797V_0$ with 11 and $1.1790V_0$ with 51, always just inside the corner, at about $y = a/(n_{\max} + 1)$. This is a property of truncated Fourier series at a jump, not of the real potential.`,
-            { figHtml: GIBBS }),
+            { figHtml: SLOT }),
 
           Q(md`At which point do you need the **most** terms of the series to get $V$ to 1%?`,
             [md`$(0.02a,\; 0.02a)$, right next to the corner.`, md`$(a,\; a/2)$`, md`$(2a,\; a/4)$`, md`All points need the same number.`], 0,
@@ -1067,13 +1114,13 @@
             [md`A single half-sine, $\sin(\pi y/a)$, with an amplitude that decays like $e^{-\pi x/a}$.`, md`A constant $V_0$ across the slot.`, md`A straight line in $y$.`, md`A sum of all harmonics with comparable weights.`], 0,
             [null, md`It must still vanish on both plates.`, md`A straight line can't vanish at both $y = 0$ and $y = a$ unless it's zero.`, md`Higher harmonics die like $e^{-n\pi x/a}$, much faster than $n = 1$.`],
             md`The lowest mode wins at large distance, the same way the lowest-order multipole wins far from a charge distribution: everything else dies faster.`,
-            { figHtml: SLOT_MAP }),
+            { figHtml: SLOT }),
 
           Q(md`Far down the slot, by what factor does the potential on the midline drop between $x = a$ and $x = 2a$?`,
             [md`$\tfrac12$`, md`$e^{-1} \approx 0.37$`, md`$e^{-\pi} \approx 0.043$`, md`$e^{-2\pi} \approx 0.0019$`], 2,
             [md`The decay is exponential, not $1/x$.`, md`That's a drop over a distance $a/\pi$, not $a$.`, null, md`That's the decay of the $n = 2$ term (which is absent for a constant strip anyway), or of $n = 1$ over $2a$.`],
             md`$V \approx \tfrac{4V_0}{\pi}e^{-\pi x/a}$ on the midline, so moving by $\Delta x = a$ multiplies $V$ by $e^{-\pi} \approx 1/23$.`,
-            { figHtml: FAR }),
+            { figHtml: SLOT }),
 
           Q(md`Over what distance does the far-field potential fall by a factor $e$?`,
             [md`$a$`, md`$\pi a$`, md`$a/2$`, md`$a/\pi$`], 3,
@@ -1838,7 +1885,7 @@
             [md`At the faces $x = \pm b$.`, md`It is constant along the midline.`, md`At $x = \pm b/2$.`, md`At the center $x = 0$.`], 3,
             [md`The faces are at $V_0$, the largest value anywhere.`, md`$\cosh$ varies with $x$.`, md`$\cosh(n\pi x/a)$ has its minimum at $x = 0$, not at $\pm b/2$.`, null],
             md`$V$ is fed from both ends and sags in the middle: every term has $\cosh(n\pi x/a)$, minimum at $x = 0$. For $b = a$ the center value is $\tfrac{4V_0}{\pi}\sum_{\text{odd}}\tfrac{(-1)^{(n-1)/2}}{n\cosh(n\pi)} = 0.110V_0$.`,
-            { figHtml: EX34_MAP }),
+            { figHtml: G_EX34 }),
 
           Q(md`Ex. 3.4 with $b = a/2$, so the cross-section is a square. What is $V$ at its center?`,
             [md`$V_0/4$`, md`$V_0/2$`, md`$V_0/\sqrt2$`, md`$\dfrac{4V_0}{\pi}$`], 1,
@@ -2179,7 +2226,7 @@
               md`Translate the words: "welded together and grounded" means $V = 0$ on five faces; "insulated, held at $V_0$" means the top $z = a$ is the live face. Write all six BCs, two per variable.`,
               md`$x$ and $y$ each have two zero faces: $\sin(n\pi x/a)\sin(m\pi y/a)$. Then $Z''/Z = +\gamma^2$ with $\gamma = \tfrac{\pi}{a}\sqrt{n^2 + m^2}$, and $V = 0$ at $z = 0$ picks $\sinh(\gamma z)$.`,
               md`At $z = a$: $\sum\sum C_{nm}\sinh(\gamma_{nm}a)\sin\tfrac{n\pi x}{a}\sin\tfrac{m\pi y}{a} = V_0$. The double Fourier coefficient of a constant on a square is $\tfrac{16V_0}{\pi^2nm}$ ($n$, $m$ odd).`,
-              md`The center: six identical faces. Add the six problems with one face live each...`,
+              md`For the center, imagine six copies of the box, each with a different face live and the rest grounded. What do the six add up to, and how much does each copy contribute at the center?`,
             ],
             parts: [
               { lbl: md`Which $z$-dependence goes with $\sin\frac{n\pi x}{a}\sin\frac{m\pi y}{a}$?`, mc: [md`$\sinh\big(\pi\sqrt{n^2 + m^2}\,z/a\big)$`, md`$\sinh\big(\pi(n + m)z/a\big)$`, md`$e^{-\pi\sqrt{n^2 + m^2}\,z/a}$`, md`$\cosh\big(\pi\sqrt{n^2 + m^2}\,z/a\big)$`], a: 0, why: [null, md`The constants add in quadrature: $\gamma^2 = k^2 + l^2$.`, md`The box is finite and the bottom $z = 0$ is grounded: you need a function that vanishes there.`, md`$\cosh 0 = 1$: the bottom wouldn't be grounded.`] },
@@ -2664,7 +2711,7 @@
             [md`Always.`, md`Only on the strip itself.`, md`Only at the exact center of the slot.`, md`At distances of about $a/2$ or more from the live face, where the next term is down by $\tfrac13e^{-2\pi x/a} \lesssim 1.4\%$.`], 3,
             [md`Near the strip one term is off by several percent (e.g. 6% at $x = a/4$).`, md`On the strip it's worst: convergence is slow there.`, md`Not only there.`, null],
             md`State the approximation and its size when you use it: "keeping $n = 1$; the $n = 3$ term is smaller by $\tfrac13e^{-2\pi x/a}$."`,
-            { figHtml: FAR }),
+            { figHtml: SLOT }),
 
           P({
             title: 'Charge induced on the bottom plate',

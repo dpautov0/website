@@ -247,6 +247,15 @@
           ${BYID.has('x-quiz') ? '<a class="btn" href="#/l/x-quiz">Concept quiz</a>' : ''}
           ${BYID.has('x-sheet') ? '<a class="btn" href="#/l/x-sheet">Formula sheet</a>' : ''}
         </div>
+        <section class="plan">
+          <h2>Before Monday</h2>
+          <ol>
+            <li><b>Boundary-value problems first.</b> Units 5–7 (images, separation in Cartesian and spherical) and Unit B (boundary conditions). Last year's exam was mostly these.</li>
+            <li><b>The ground they stand on.</b> Unit 4 (Laplace and uniqueness), and the boundary-condition lessons in Units 2–3.</li>
+            <li><b>Fields, Gauss, potential, energy.</b> Units 0–3, fast if you're confident, with every homework problem worked.</li>
+            <li><b>Test yourself.</b> The method chooser, then Mock exams A and B on paper with only the formula sheet. Use the concept quiz in between.</li>
+          </ol>
+        </section>
         <div class="units">${COURSE.units.map((u) => {
           const pct = Math.round(unitProgress(u) * 100);
           return `<a class="unit-card" href="#/l/${u.lessons[0].id}">

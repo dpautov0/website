@@ -911,7 +911,14 @@
             { lbl: md`$V(0,0,z)$ for $z\gg d$`, expr: '2*q*d/(4*pi*eps0*z^2)', vars: { q: [1, 3], eps0: [0.5, 2], d: [0.1, 0.3], z: [5, 9] }, accepts: ['q*d/(2*pi*eps0*z^2)'] },
           ],
           sol: md`
-            **Region and boundary conditions.** Region $z\ge0$; (1) $V=0$ on $z=0$, (2) $V\to0$ far away. The image $-q$ at $(0,0,-d)$ meets both (equidistant points on the plane; every term dies at infinity) and leaves the charge in $z>0$ unchanged. So for $z\ge0$
+            **Region of interest:** $z\ge0$, where the only charge is $q$.
+
+            **Boundary conditions:**
+
+            1. $V=0$ on $z=0$ (grounded).
+            2. $V\to0$ far away.
+
+            **Image:** $-q$ at $(0,0,-d)$. **Check:** (1) every point of the plane is equidistant from $\pm q$, so the two terms cancel; (2) both terms die far away; and the image is below the plane, so the charge in $z>0$ is unchanged. So for $z\ge0$
 
             $$V = \kq\left(\frac{q}{\srm_+} - \frac{q}{\srm_-}\right).$$
 
@@ -1208,7 +1215,14 @@
             { lbl: md`(c) $E_z$`, expr: '-q/(2*pi*eps0*d^2)', vars: { q: [1, 3], eps0: [0.5, 2], d: [1, 3] } },
           ],
           sol: md`
-            **Set-up.** Region $z\ge0$. Boundary conditions: (1) $V=0$ on $z=0$; (2) $V\to0$ far away. The image $-q$ at $(0,0,-d)$ meets both, so $\sigma = -\varepsilon_0\,\partial V/\partial z|_{z=0} = \dfrac{-qd}{2\pi(x^2+y^2+d^2)^{3/2}}$ (derived in the lesson).
+            **Region of interest:** $z\ge0$.
+
+            **Boundary conditions:**
+
+            1. $V=0$ on $z=0$ (grounded).
+            2. $V\to0$ far away.
+
+            **Image:** $-q$ at $(0,0,-d)$. **Check:** (1) points of the plane are equidistant from $\pm q$, so $V=0$ there; (2) both terms vanish far away; the image is outside the region. Then $\sigma = -\varepsilon_0\,\partial V/\partial z|_{z=0} = \dfrac{-qd}{2\pi(x^2+y^2+d^2)^{3/2}}$ (derived in the lesson).
 
             **(a)** $x^2+y^2 = 4d^2$:
 
@@ -1247,7 +1261,14 @@
               why: [null, md`The surface charge is positive here, and the field points away from positive charge: up, toward the negative charge.`, md`At a conductor's surface the field is perpendicular to it.`] },
           ],
           sol: md`
-            **Set-up.** Region $z\ge0$; conditions $V=0$ on $z=0$ and $V\to0$ far away. Image: $+q$ at $(0,0,-2a)$. Everything is the earlier result with $q\to-q$ and $d\to2a$.
+            **Region of interest:** $z\ge0$, containing only the charge $-q$.
+
+            **Boundary conditions:**
+
+            1. $V=0$ on $z=0$ (grounded).
+            2. $V\to0$ far away.
+
+            **Image:** $+q$ at $(0,0,-2a)$. **Check:** (1) on the plane the two terms are equal and opposite; (2) both vanish far away; the image is below the plane. Everything is the earlier result with $q\to-q$ and $d\to2a$.
 
             **(a)**
             $$\sigma = \frac{+q(2a)}{2\pi(x^2+y^2+4a^2)^{3/2}},\qquad \sigma(0,0) = \frac{2qa}{2\pi\cdot8a^3} = \frac{q}{8\pi a^2}.$$
@@ -1477,7 +1498,14 @@
             { lbl: md`(c) classmate's answer ÷ correct answer`, ans: 2 },
           ],
           sol: md`
-            **Set-up.** Region $z\ge0$. Boundary conditions: (1) $V=0$ on the plane, (2) $V\to0$ far away. Image $-q$ at the mirror point, always a distance $2h$ from $q$ when $q$ is at height $h$.
+            **Region of interest:** $z\ge0$.
+
+            **Boundary conditions:**
+
+            1. $V=0$ on $z=0$ (grounded).
+            2. $V\to0$ far away.
+
+            **Image:** $-q$ at the mirror point, always a distance $2h$ from $q$ when $q$ is at height $h$. **Check:** (1) the plane bisects the pair; (2) both terms die far away; the image is below the plane.
 
             [[fig:img]]
 
@@ -1514,6 +1542,15 @@
             { lbl: md`$\sigma$ under the charge`, ans: -1.415, unit: 'µC/m²' },
           ],
           sol: md`
+            **Region of interest:** $z\ge0$, above the plate.
+
+            **Boundary conditions:**
+
+            1. $V=0$ on the plate (grounded; treat it as an infinite plane, since $d$ is small compared with the plate).
+            2. $V\to0$ far away.
+
+            **Image:** $-q$ at depth $d$. **Check:** the plate bisects the pair, so (1) holds; both terms die far away, so (2) holds.
+
             **Force.** $F = \dfrac{1}{4\pi\varepsilon_0}\dfrac{q^2}{(2d)^2} = \dfrac{(8.99\times10^9)(2.0\times10^{-9})^2}{(0.030)^2} = 4.0\times10^{-5}\ \text{N} = 39.9\ \mu\text{N}$, toward the plate.
 
             **Energy.** $W = -\dfrac{1}{4\pi\varepsilon_0}\dfrac{q^2}{4d} = -\dfrac{(8.99\times10^9)(4.0\times10^{-18})}{0.060} = -6.0\times10^{-7}\ \text{J} = -0.599\ \mu\text{J}$.
@@ -1649,7 +1686,14 @@
             { lbl: md`(b) $V(M)$`, ans: 1.1056 },
           ],
           sol: md`
-            **Boundary conditions.** Region $z\ge0$. (1) $V=0$ on $z=0$; (2) $V\to0$ far away. Images: $-q$ at $(-a,0,-a)$ and $-q$ at $(a,0,-a)$. Each real-image pair cancels on the plane, and both images are below it, so the four-charge potential is the answer above the plane.
+            **Region of interest:** $z\ge0$.
+
+            **Boundary conditions:**
+
+            1. $V=0$ on $z=0$ (grounded).
+            2. $V\to0$ far away.
+
+            **Images:** $-q$ at $(-a,0,-a)$ and $-q$ at $(a,0,-a)$. **Check:** (1) each real-image pair cancels on the plane; (2) every term dies far away; both images are below the plane. So the four-charge potential is the answer above the plane.
 
             [[fig:img]]
 
@@ -1756,7 +1800,14 @@
             { lbl: md`(c) $F/L$`, expr: 'lambda^2/(4*pi*eps0*d)', vars: { lambda: [1, 3], eps0: [0.5, 2], d: [1, 3] } },
           ],
           sol: md`
-            **Boundary conditions.** Region $z\ge0$. (1) $V=0$ on the plane; (2) $V\to0$ far away. Image: $-\lambda$ at depth $d$. Check: on the plane every point is equidistant from both lines, so $\ln(s_-/s_+) = 0$; far away $s_-/s_+\to1$.
+            **Region of interest:** $z\ge0$.
+
+            **Boundary conditions:**
+
+            1. $V=0$ on the plane.
+            2. $V\to0$ far from the wire.
+
+            **Image:** $-\lambda$ at depth $d$. **Check:** (1) on the plane every point is equidistant from both lines, so $\ln(s_-/s_+) = 0$; (2) far away $s_-/s_+\to1$, so $V\to0$; the image is below the plane.
 
             [[fig:img]]
 
@@ -1838,9 +1889,14 @@
             { lbl: md`(b) net $F_z$`, ans: -0.09028 },
           ],
           sol: md`
-            **Boundary conditions.** Region $z\ge0$. (1) $V=0$ on the plane; (2) $V\to0$ far away.
+            **Region of interest:** $z\ge0$.
 
-            **(a) Images.** $+q$ at $2a$ → $-q$ at $-2a$. $-q$ at $a$ → $+q$ at $-a$. Each pair cancels on the plane, and both images are below it. The image dipole runs from $-q$ (at $-2a$) to $+q$ (at $-a$): **up**, the same way as the real dipole (from $-q$ at $a$ to $+q$ at $2a$). That is the rule "mirror, then reverse".
+            **Boundary conditions:**
+
+            1. $V=0$ on $z=0$ (grounded).
+            2. $V\to0$ far away.
+
+            **(a) Images.** $+q$ at $2a$ → $-q$ at $-2a$. $-q$ at $a$ → $+q$ at $-a$. **Check:** (1) each real-image pair cancels on the plane; (2) all four terms die far away; both images are below the plane. The image dipole runs from $-q$ (at $-2a$) to $+q$ (at $-a$): **up**, the same way as the real dipole (from $-q$ at $a$ to $+q$ at $2a$). That is the rule "mirror, then reverse".
 
             [[fig:img]]
 
@@ -1985,7 +2041,15 @@
             { lbl: md`(c) $F_z$, bottom plane only`, ans: -4 },
           ],
           sol: md`
-            **Boundary conditions.** Region $0\le z\le L$. (1) $V=0$ on $z=0$; (2) $V=0$ on $z=L$; (3) $V\to0$ far along the slab. The infinite image row (lesson) meets all three, with every image outside the slab.
+            **Region of interest:** the slab $0\le z\le L$.
+
+            **Boundary conditions:**
+
+            1. $V=0$ on $z=0$.
+            2. $V=0$ on $z=L$.
+            3. $V\to0$ far along the slab.
+
+            **Images:** the infinite row from the lesson. **Check:** (1) and (2) each plane is the perpendicular bisector of infinitely many $\pm$ pairs; (3) every term dies far along the slab, and the series converges; every image is outside the slab.
 
             [[fig:img]]
 
@@ -2207,7 +2271,15 @@
             { lbl: md`(b) $W$`, ans: -0.2632 },
           ],
           sol: md`
-            **Boundary conditions.** Region $x\ge0$, $y\ge0$. (1) $V=0$ on $x=0$; (2) $V=0$ on $y=0$; (3) $V\to0$ far away. The checkerboard of images satisfies all three (each plane bisects two $\pm$ pairs), with every image outside the quadrant.
+            **Region of interest:** the quadrant $x\ge0$, $y\ge0$.
+
+            **Boundary conditions:**
+
+            1. $V=0$ on $x=0$.
+            2. $V=0$ on $y=0$.
+            3. $V\to0$ far away.
+
+            **Images:** $-q$ at $(-d,2d)$, $-q$ at $(d,-2d)$, $+q$ at $(-d,-2d)$. **Check:** (1) the plane $x=0$ bisects $q$ with the $-q$ at $(-d,2d)$, and the $-q$ at $(d,-2d)$ with the $+q$; (2) the plane $y=0$ bisects $q$ with the $-q$ at $(d,-2d)$, and the $-q$ at $(-d,2d)$ with the $+q$; (3) every term dies far away; no image is in the quadrant.
 
             [[fig:img]]
 
@@ -2314,9 +2386,15 @@
             { lbl: md`(b) $F$ along the bisector`, ans: -0.6726 },
           ],
           sol: md`
-            **Boundary conditions.** Region: the wedge $0\le\phi\le60^\circ$. (1) $V=0$ on $\phi=0$; (2) $V=0$ on $\phi=60^\circ$; (3) $V\to0$ far away.
+            **Region of interest:** the wedge $0\le\phi\le60^\circ$.
 
-            **(a)** $60^\circ = 180^\circ/3$, so $n=3$: $2n-1 = 5$ images. With $q$ at $30^\circ$ on a circle of radius $a$: $-q$ at $90^\circ$, $+q$ at $150^\circ$, $-q$ at $210^\circ$, $+q$ at $270^\circ$, $-q$ at $330^\circ$. Check: the wall at $0^\circ$ bisects the pairs ($30^\circ$, $330^\circ$), ($90^\circ$, $270^\circ$), ($150^\circ$, $210^\circ$), each $\pm$; the wall at $60^\circ$ bisects ($30^\circ$, $90^\circ$), ($330^\circ$, $150^\circ$), ($270^\circ$, $210^\circ$), each $\pm$. Both walls are at $V=0$.
+            **Boundary conditions:**
+
+            1. $V=0$ on the wall $\phi=0$.
+            2. $V=0$ on the wall $\phi=60^\circ$.
+            3. $V\to0$ far away.
+
+            **(a)** $60^\circ = 180^\circ/3$, so $n=3$: $2n-1 = 5$ images. With $q$ at $30^\circ$ on a circle of radius $a$: $-q$ at $90^\circ$, $+q$ at $150^\circ$, $-q$ at $210^\circ$, $+q$ at $270^\circ$, $-q$ at $330^\circ$. Check: the wall at $0^\circ$ bisects the pairs ($30^\circ$, $330^\circ$), ($90^\circ$, $270^\circ$), ($150^\circ$, $210^\circ$), each $\pm$; the wall at $60^\circ$ bisects ($30^\circ$, $90^\circ$), ($330^\circ$, $150^\circ$), ($270^\circ$, $210^\circ$), each $\pm$. Both walls are at $V=0$ (conditions 1 and 2); every term dies far away (condition 3); no image is inside the wedge.
 
             [[fig:img]]
 
@@ -2355,7 +2433,15 @@
             { lbl: md`(b) $V(3a,0,0)$`, ans: 0 },
           ],
           sol: md`
-            **Boundary conditions.** Quadrant $x\ge0$, $y\ge0$; $V=0$ on $x=0$ and on $y=0$; $V\to0$ far away. Images: $-q$ at $(-a,a)$, $-q$ at $(a,-a)$, $+q$ at $(-a,-a)$.
+            **Region of interest:** the quadrant $x\ge0$, $y\ge0$.
+
+            **Boundary conditions:**
+
+            1. $V=0$ on $x=0$.
+            2. $V=0$ on $y=0$.
+            3. $V\to0$ far away.
+
+            **Images:** $-q$ at $(-a,a)$, $-q$ at $(a,-a)$, $+q$ at $(-a,-a)$. **Check:** each wall bisects two $\pm$ pairs (conditions 1 and 2); every term dies far away (3); no image is in the quadrant. Part (b) is an explicit check of condition 2 at one point.
 
             [[fig:img]]
 
@@ -2728,9 +2814,14 @@
             { lbl: md`$W$`, ans: -0.0625 },
           ],
           sol: md`
-            **Boundary conditions.** Region $r\ge R$. (1) $V(R)=0$; (2) $V\to0$ at infinity.
+            **Region of interest:** $r\ge R$.
 
-            **Image.** $q' = -\dfrac{R}{3R}q = -\dfrac q3$ at $b = \dfrac{R^2}{3R} = \dfrac R3$ (inside the sphere). Check at the near point: $\dfrac{q}{2R} - \dfrac{q/3}{2R/3} = 0$; at the far point: $\dfrac{q}{4R} - \dfrac{q/3}{4R/3} = 0$.
+            **Boundary conditions:**
+
+            1. $V(R)=0$.
+            2. $V\to0$ at infinity.
+
+            **Image.** $q' = -\dfrac{R}{3R}q = -\dfrac q3$ at $b = \dfrac{R^2}{3R} = \dfrac R3$ (inside the sphere). Check at the near point: $\dfrac{q}{2R} - \dfrac{q/3}{2R/3} = 0$; at the far point: $\dfrac{q}{4R} - \dfrac{q/3}{4R/3} = 0$. These check condition 1 (the lesson's algebra makes it hold at every $\theta$); condition 2 holds because both terms die at infinity.
 
             [[fig:img]]
 
@@ -3087,9 +3178,14 @@
             { lbl: md`(b) $Q_{\text{sphere}}$`, expr: '7*q/18', vars: { q: [1, 3] } },
           ],
           sol: md`
-            **Boundary conditions.** Region $r\ge R$. (1) $V(R,\theta) = V_0$; (2) $V\to0$ at infinity.
+            **Region of interest:** $r\ge R$.
 
-            **Images.** $q' = -\dfrac q2$ at $\dfrac R2$ makes $V=0$ on the sphere together with $q$; $q'' = 4\pi\varepsilon_0RV_0$ at the center raises the sphere to $V_0$. Check: on the sphere $V = 0 + \dfrac{q''}{4\pi\varepsilon_0R} = V_0$.
+            **Boundary conditions:**
+
+            1. $V(R,\theta) = V_0$ for every $\theta$.
+            2. $V\to0$ at infinity.
+
+            **Images.** $q' = -\dfrac q2$ at $\dfrac R2$ makes $V=0$ on the sphere together with $q$; $q'' = 4\pi\varepsilon_0RV_0$ at the center raises the sphere to $V_0$. **Check:** on the sphere $V = 0 + \dfrac{q''}{4\pi\varepsilon_0R} = V_0$ (condition 1); every term dies at infinity (condition 2); both images are inside the sphere.
 
             [[fig:img]]
 
@@ -3225,9 +3321,13 @@
             { lbl: md`$\sigma$ at the nearest point, in units of $q/R^2$`, ans: -0.4775 },
           ],
           sol: md`
-            **Boundary condition.** Region $r\le R$; (1) $V(R)=0$.
+            **Region of interest:** the cavity $r\le R$, containing only $q$.
 
-            **Image.** $q' = -\dfrac{R}{R/2}q = -2q$ at $b = \dfrac{R^2}{R/2} = 2R$, outside the shell. Check at $\theta=0$: distances $R/2$ and $R$: $\dfrac{q}{R/2} - \dfrac{2q}{R} = 0$. At $\theta=\pi$: $\dfrac{3R}{2}$ and $3R$: $\dfrac{q}{3R/2} - \dfrac{2q}{3R} = 0$.
+            **Boundary condition:**
+
+            1. $V(R)=0$ (the grounded wall is the whole boundary of the cavity).
+
+            **Image.** $q' = -\dfrac{R}{R/2}q = -2q$ at $b = \dfrac{R^2}{R/2} = 2R$, outside the shell. Check at $\theta=0$: distances $R/2$ and $R$: $\dfrac{q}{R/2} - \dfrac{2q}{R} = 0$. At $\theta=\pi$: $\dfrac{3R}{2}$ and $3R$: $\dfrac{q}{3R/2} - \dfrac{2q}{3R} = 0$. The distance ratio is $1:2$ all around the wall, so condition 1 holds everywhere, and the image is outside the cavity.
 
             [[fig:img]]
 
@@ -3474,9 +3574,14 @@
             { lbl: md`The plane approximation's force, same units`, ans: -1 },
           ],
           sol: md`
-            **Boundary conditions.** Region $r\ge R$. (1) $V(R)=0$; (2) $V\to0$ at infinity.
+            **Region of interest:** $r\ge R$.
 
-            **Image.** $q' = -\dfrac{R}{3R/2}q = -\dfrac23q$ at $b = \dfrac{R^2}{3R/2} = \dfrac23R$. Check at the near point: $\dfrac{q}{R/2} - \dfrac{2q/3}{R/3} = 2\dfrac qR - 2\dfrac qR = 0$. At the far point: $\dfrac{q}{5R/2} - \dfrac{2q/3}{5R/3} = 0$.
+            **Boundary conditions:**
+
+            1. $V(R)=0$.
+            2. $V\to0$ at infinity.
+
+            **Image.** $q' = -\dfrac{R}{3R/2}q = -\dfrac23q$ at $b = \dfrac{R^2}{3R/2} = \dfrac23R$. Check at the near point: $\dfrac{q}{R/2} - \dfrac{2q/3}{R/3} = 2\dfrac qR - 2\dfrac qR = 0$. At the far point: $\dfrac{q}{5R/2} - \dfrac{2q/3}{5R/3} = 0$. Those check condition 1; condition 2 holds since every term dies at infinity.
 
             [[fig:img]]
 
@@ -3560,9 +3665,20 @@
             { lbl: md`(c) final $V_{\text{sphere}}$`, expr: '-q/(16*pi*eps0*R)', vars: { q: [1, 3], eps0: [0.5, 2], R: [1, 3] }, accepts: ['-(q/4)/(4*pi*eps0*R)'] },
           ],
           sol: md`
-            **(a)** Conditions: region $r\ge R$; (1) $V(R)=0$; (2) $V\to0$ at infinity. Image $q' = -\dfrac{R}{4R}q = -\dfrac q4$ at $\dfrac R4$, so the sphere carries $Q = -\dfrac q4$.
+            **(a)** Region of interest: $r\ge R$. Boundary conditions while grounded:
 
-            **(b)** After the cut the conditions are: the sphere is an equipotential with total charge $-\dfrac q4$, and $V\to0$ at infinity. The old solution meets them (its sphere is an equipotential at $0$, carrying $-\dfrac q4$), so by uniqueness nothing changes: $V_{\text{sphere}} = 0$.
+            1. $V(R)=0$.
+            2. $V\to0$ at infinity.
+
+            Image $q' = -\dfrac{R}{4R}q = -\dfrac q4$ at $\dfrac R4$ (check at the near point: $\dfrac{q}{3R} - \dfrac{q/4}{3R/4} = 0$), so the sphere carries $Q = -\dfrac q4$.
+
+            **(b)** After the cut the boundary conditions are:
+
+            1. the sphere is an equipotential (value not given);
+            2. its total charge is $-\dfrac q4$;
+            3. $V\to0$ at infinity.
+
+            The old solution meets all three (its sphere is an equipotential at $0$ carrying $-\dfrac q4$), so by uniqueness nothing changes: $V_{\text{sphere}} = 0$.
 
             **(c)** The charge is trapped: $Q = -\dfrac q4$. With $q$ gone, it spreads uniformly over the sphere, and
 

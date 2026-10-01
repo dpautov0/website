@@ -1539,6 +1539,99 @@
     ],
   };
 
+  // ================================================================ Lesson 4 figures
+  // a charge distribution, a source element at (r', theta'), the field point P on the +z axis
+  const fAxisTheta = () => {
+    const f = PF.fig(), R = 85, rp = 45, tp = 50 * D2R;
+    shadeP(f, f.arcPts(0, 0, R, R, 0, 360)); f.circle(0, 0, R);
+    f.line(0, R + 26, 0, -215, { cls: 'dim', arrow: 'end', hs: 6 }); f.label(4, -217, 'z', 'bl', 'small accent');
+    const S = [rp * Math.sin(tp), -rp * Math.cos(tp)];
+    da(f, 0, 0, S[0] - 2, S[1] + 2.5, { hs: 6 }); f.rect(S[0] - 4, S[1] - 4, 8, 8); f.tag(S[0], S[1], "d\\tau'", 'r', 8, 'small');
+    f.angle(0, 0, 26, 90 - 50, 90, "\\theta'");
+    f.label(24, -12, "\\vb r'", 'tl', 'small');
+    f.dot(0, -190, 3); f.tag(0, -190, 'P', 'r', 8);
+    f.dim(-112, 0, -112, -190, 'z', { at: 'l' });
+    return f.svg();
+  };
+  // density sketches in a sphere cross-section: sign of g(theta) shown with + and - marks
+  const fRho = (g, lab) => {
+    const f = PF.fig(), R = 62;
+    f.circle(0, 0, R);
+    f.line(0, -R, 0, -R - 34, { cls: 'dim', arrow: 'end', hs: 6 }); f.line(0, R, 0, R + 18, { cls: 'dim' }); f.label(4, -R - 36, 'z', 'bl', 'small accent');
+    for (const rr of [0.32, 0.6, 0.86]) for (const th of [12, 38, 64, 90, 116, 142, 168]) for (const sgn of [1, -1]) {
+      const v = g(th * D2R);
+      if (Math.abs(v) < 0.35) continue;
+      const x = sgn * rr * R * Math.sin(th * D2R), y = -rr * R * Math.cos(th * D2R);
+      if (Math.abs(x) < 6) continue;
+      (v > 0 ? plus : minus)(f, x, y);
+    }
+    f.label(R + 12, -R + 6, lab, 'l', 'small');
+    return f.svg();
+  };
+  const fRhoCos = () => fRho((t) => Math.cos(t), '\\rho = f(r)\\cos\\theta');
+  const fRhoSin = () => fRho((t) => Math.sin(t), '\\rho = f(r)\\sin\\theta');
+  // a ring (or a disk) seen at an angle, centred on the origin in the xy-plane, field point P on the axis
+  const fRingLike = (o = {}) => {
+    const f = PF.fig(), rx = 66, ry = o.ry || 30, zP = 150;
+    if (o.disk) { shadeP(f, f.arcPts(0, 0, rx, ry, 0, 360)); f.ellipse(0, 0, rx, ry); } else f.ellipse(0, 0, rx, ry, { cls: 'thick' });
+    f.line(0, ry + 40, 0, -zP - 36, { cls: 'dim', arrow: 'end', hs: 6 }); f.label(4, -zP - 38, 'z', 'bl', 'small accent');
+    if (!o.center) { f.line(0, 0, rx, 0, { cls: 'dim thin' }); f.label(rx / 2, -12.5, o.rlab || 'b', 'c', 'small'); }
+    if (o.center) f.charge(0, 0, { q: '+', lab: '+q', at: 'tl' });
+    f.tag(-rx * 0.7, ry * 0.71, o.lab || 'Q', 'bl', 7, 'small');
+    f.dot(0, -zP, 3); f.tag(0, -zP, 'P', 'r', 8);
+    f.dim(-rx - 26, 0, -rx - 26, -zP, 'z', { at: 'l' });
+    return f.svg();
+  };
+  const fRing = () => fRingLike({ lab: 'Q' });
+  const fRingQ = () => fRingLike({ lab: '-q \\text{ (ring)}', center: true, ry: 34 });
+  const fDisk = () => fRingLike({ disk: true, lab: '\\sigma', rlab: 'R' });
+  // a rod on the z axis from -a to a, field point P off the axis
+  const rodFig = (lab) => {
+    const f = PF.fig(), A = 55;
+    f.line(0, 80, 0, -140, { cls: 'dim', arrow: 'end', hs: 6 }); f.label(4, -142, 'z', 'bl', 'small accent');
+    f.line(0, A, 0, -A, { cls: 'thick' }); f.line(-5, -A, 5, -A); f.line(-5, A, 5, A);
+    f.label(-9, -A, 'a', 'r', 'small'); f.label(-9, A, '-a', 'r', 'small');
+    dl(f, 0, 0, 110, -90, { cls: 'dim dash thin' }); f.dot(110, -90, 3); f.tag(110, -90, 'P', 'tr', 7);
+    f.angle(0, 0, 22, 90 - 50.7, 90, '\\theta');
+    f.label(10, 30, lab, 'l', 'small');
+    return f.svg();
+  };
+  const lamPlot = (fn, yr, yt) => PF.plot({ w: 230, h: 160, x: [-1, 1], y: yr, zero: true, xl: 'z', yl: '\\lambda(z)', ml: 36,
+    xt: [[-1, '-a'], [1, 'a']], yt, curves: [{ f: fn }] });
+  const rodLam = (fn, yr, yt) => PF.row([{ svg: rodFig('\\lambda(z)') }, { svg: lamPlot(fn, yr, yt) }]).svg;
+  const fSeg = () => rodFig('\\text{uniform, total } Q');
+  // rod from 0 to L, P on the axis and a general point
+  const fRod0L = () => {
+    const f = PF.fig(), Lp = 70, zP = 165;
+    f.line(0, 30, 0, -zP - 34, { cls: 'dim', arrow: 'end', hs: 6 }); f.label(4, -zP - 36, 'z', 'bl', 'small accent');
+    f.line(0, 0, 0, -Lp, { cls: 'thick' }); f.line(-5, -Lp, 5, -Lp); f.label(9, -Lp / 2, '\\lambda', 'l', 'small');
+    f.dim(-26, 0, -26, -Lp, 'L', { at: 'l' });
+    f.dot(0, -zP, 3); f.tag(0, -zP, 'P', 'r', 8);
+    f.dim(-64, 0, -64, -zP, 'z', { at: 'l' });
+    const t = 52 * D2R, R = 175, px = R * Math.sin(t), py = -R * Math.cos(t);
+    dl(f, 0, 0, px, py, { cls: 'dim dash thin' }); f.dot(px, py, 3); f.tag(px, py, '(r,\\theta)', 'r', 7, 'small');
+    f.angle(0, 0, 34, 90 - 52, 90, '\\theta');
+    return f.svg();
+  };
+  // HW 5 Prob. 3.27: the sphere and a far point on the z axis
+  const f327 = (sol) => {
+    const f = PF.fig(), R = 64;
+    shadeP(f, f.arcPts(0, 0, R, R, 0, 360)); f.circle(0, 0, R);
+    f.line(0, R, 0, R + 26, { cls: 'dim' }); f.line(0, -R, 0, -232, { cls: 'dim', arrow: 'end', hs: 6 }); f.label(4, -234, 'z', 'bl', 'small accent');
+    f.dot(0, -205, 3); f.tag(0, -205, 'P', 'r', 8);
+    f.dim(96, 0, 96, -205, 'z', { at: 'r' });
+    f.dot(0, 0, 2.2);
+    if (!sol) {
+      f.line(0, 0, R * 0.7071, R * 0.7071, { cls: 'dim thin' }); f.label(28, 18, 'R', 'bl', 'small');
+      f.label(0, -30, '\\rho(r,\\theta)', 'c', 'small');
+    } else {
+      f.circle(0, 0, R / 2, { cls: 'dim dash thin' });
+      for (const th of [62, 90, 118]) for (const sgn of [1, -1]) plus(f, sgn * 17 * Math.sin(th * D2R), -17 * Math.cos(th * D2R));
+      for (const th of [42, 66, 90, 114, 138]) for (const sgn of [1, -1]) minus(f, sgn * 48 * Math.sin(th * D2R), -48 * Math.cos(th * D2R));
+    }
+    return f.svg();
+  };
+
   // @@NEXT@@
   C.unit({ id: 'u8', num: 'Unit 8', title: 'Multipole expansion', blurb: 'tmp', lessons: [L1, L2, L3] });
 })();

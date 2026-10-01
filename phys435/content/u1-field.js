@@ -44,6 +44,18 @@
     }
     return f;
   }
+  // Ramer-Douglas-Peucker simplification (drops nearly collinear points, which render as dotted joints)
+  function simplify(pts, eps) {
+    if (pts.length < 3) return pts;
+    const [x1, y1] = pts[0], [x2, y2] = pts[pts.length - 1], L = Math.hypot(x2 - x1, y2 - y1) || 1;
+    let imax = 0, dmax = 0;
+    for (let i = 1; i < pts.length - 1; i++) {
+      const d = Math.abs((x2 - x1) * (y1 - pts[i][1]) - (x1 - pts[i][0]) * (y2 - y1)) / L;
+      if (d > dmax) { dmax = d; imax = i; }
+    }
+    if (dmax <= eps) return [pts[0], pts[pts.length - 1]];
+    return simplify(pts.slice(0, imax + 1), eps).slice(0, -1).concat(simplify(pts.slice(imax), eps));
+  }
   // field lines in the plane of the page for point charges ch = [[x, y, q], ...] (screen px, y down)
   function fieldLines(f, ch, o = {}) {
     const box = o.box, per = o.per || 8, step = 1.5, R0 = o.r0 || 9;
@@ -68,7 +80,7 @@
           if (ch.some(([qx, qy, qq]) => qq * q < 0 && Math.hypot(x - qx, y - qy) < R0)) break;
         }
         if (q < 0) pts.reverse();
-        if (pts.length > 2) { f.pl(pts, { cls: 'thin' }); headAt(f, pts, o.at || 0.5, { hs: 5.5 }); }
+        if (pts.length > 2) { const sp = simplify(pts, 0.35); f.pl(sp, { cls: 'thin' }); headAt(f, sp, o.at || 0.5, { hs: 5.5 }); }
       }
     }
     return f;

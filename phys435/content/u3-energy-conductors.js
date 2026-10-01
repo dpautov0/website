@@ -322,7 +322,7 @@
           Negative: $q$ moves away from both charges, to lower potential, and the field does the work.
 
           **(c) Check path independence.** Straight from infinity to $P$: $qV(P) = \sqrt2\,\dfrac{qQ}{4\pi\varepsilon_0 d}$, which equals (a) + (b) $= (2 + \sqrt2 - 2)\,\dfrac{qQ}{4\pi\varepsilon_0 d}$.
-        `, { two: { svg: fTwoQ(true), cap: 'Two fixed charges $+Q$ a distance $2d$ apart. $O$ is midway; $P$ is a height $d$ above $O$, a distance $\\sqrt2\\,d$ from each charge.' } }),
+        `, { two: { svg: fTwoQ(true), cap: 'Two fixed charges $+Q$ a distance $2d$ apart. $O$ is midway; $P$ is a height $d$ above $O$.' } }),
 
         Q(md`In the worked example, the field at $O$ is zero. Someone concludes that no work is needed to bring $q$ in from infinity to $O$. What is wrong?`,
           [md`Nothing: zero field at $O$ means zero work`, md`The work is infinite because $q$ passes close to the charges`, md`The work depends on the direction $q$ comes in from`, md`The work depends on the field along the whole way in, i.e. on $V(O)$, which is not zero`], 3,
@@ -659,7 +659,7 @@
           **Check with $\tfrac12\sum q_iV(\vb r_i)$.** Every charge sees two opposite charges at $a$ and an equal charge at $\sqrt2\,a$, so every product $q_iV(\vb r_i)$ equals $\dfrac{q^2}{4\pi\varepsilon_0a}\left(-2+\dfrac1{\sqrt2}\right)$. Then $W = \tfrac12\cdot4\cdot\left(-2+\tfrac1{\sqrt2}\right) = -4+\sqrt2$ in the same units.
 
           Notice (a) $\neq$ (b): the cost of the last charge is not the energy of the configuration. The total is negative, so the square is bound: pulling it apart costs $2.59\,q^2/(4\pi\varepsilon_0 a)$.
-        `, { setup: { svg: fSq(false), cap: 'Three charges at the corners of a square of side $a$; the fourth corner is empty.' }, sol: { svg: fSq(true), cap: 'All six pairs: four sides (solid, unlike charges, distance $a$) and two diagonals (dashed, like charges, distance $\\sqrt2\\,a$).' } }),
+        `, { setup: { svg: fSq(false), cap: 'Three charges at the corners of a square of side $a$; the fourth corner is empty.' }, sol: { svg: fSq(true), cap: 'All six pairs: four sides (solid, unlike charges, distance $a$) and two diagonals (dashed: like charges, the diagonal distance).' } }),
 
         wSquare(),
 
@@ -2657,6 +2657,8 @@
             { lbl: md`(c) $V$`, ans: 15.03, unit: 'kV' },
           ],
           sol: md`
+            **Conditions.** The film is a conductor: one potential, charge $Q$ on its surface, uniform by symmetry ($\sigma = Q/4\pi R^2$). Just outside, $E = \sigma/\varepsilon_0$; the force per area is $\sigma^2/2\varepsilon_0$, outward.
+
             **(a)** $P = \dfrac{\sigma^2}{2\varepsilon_0} = \dfrac{1}{2\varepsilon_0}\left(\dfrac{Q}{4\pi R^2}\right)^2 = \dfrac{Q^2}{32\pi^2\varepsilon_0R^4}$.
 
             **(b)** $Q^2 = 32\pi^2\varepsilon_0R^4\cdot\dfrac{4\gamma}{R} = 128\pi^2\varepsilon_0\gamma R^3$, so
@@ -3066,6 +3068,8 @@
           hints: [md`(a) Use $C = 4\pi\varepsilon_0ab/(b-a)$.`, md`(b) The field lives only between the shells. You have done this integral before: two concentric shells with $\pm q$ (Lesson 4).`],
           parts: [{ lbl: 'W', expr: 'Q^2*(b - a)/(8*pi*eps0*a*b)', vars: { Q: [0.5, 3], eps0: [0.5, 2], a: [0.5, 1.5], b: [2, 4] }, accepts: ['Q^2/(8*pi*eps0)*(1/a - 1/b)'] }],
           sol: md`
+            **Conditions.** Two conductors with charges $\pm Q$ given (isolated); each an equipotential; the field is radial and lives only between the shells.
+
             **(a)** $W = \dfrac{Q^2}{2C} = \dfrac{Q^2(b-a)}{8\pi\varepsilon_0ab} = \dfrac{Q^2}{8\pi\varepsilon_0}\left(\dfrac1a - \dfrac1b\right)$.
 
             **(b)** $W = \dfrac{\varepsilon_0}{2}\displaystyle\int_a^b\left(\frac{Q}{4\pi\varepsilon_0r^2}\right)^2 4\pi r^2\,dr = \frac{Q^2}{8\pi\varepsilon_0}\left(\frac1a - \frac1b\right).$

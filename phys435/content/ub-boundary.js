@@ -2279,6 +2279,198 @@
     ],
   });
 
+  // =====================================================================================
+  // Lesson 7. Find the mistake
+  // =====================================================================================
+  const STEPS = (d) => [md`Step 1 (${d[0]})`, md`Step 2 (${d[1]})`, md`Step 3 (${d[2]})`, md`Step 4 (${d[3]})`];
+  const MQ = (setup, svg, steps, d, a, why, sol) => QF(
+    md`${setup}
+
+      [[fig:s]]
+
+      ${steps}
+
+      Exactly one step contains a boundary-condition error. Which one?`,
+    STEPS(d), a, why, sol, { figs: { s: { svg, cap: 'The setup.' } } });
+
+  LESSONS.push({
+    id: 'ub-mistake', title: 'Find the mistake: boundary-condition errors in worked solutions',
+    steps: [
+      RF(md`
+        Each problem below shows a short worked solution with exactly one boundary-condition error. The rest of the steps are done correctly, given what came before, so an early mistake propagates. Find the step where the solution first goes wrong. These are the errors that cost the most points on boundary-value problems.
+
+        !!method How to audit a solution
+          1. Is the region named, and is every boundary of it in the BC list? (No infinity unless the region reaches it; no origin unless it contains it.)
+          2. Is each BC the right **kind** for the words (grounded, neutral, held at, uniform field far away)?
+          3. Does each BC act on the right term (which function it kills, which length quantizes $k$)?
+          4. Are images outside the region? Is $\hat{\mathbf n}$ out of the metal?
+          5. Check the final answer against every BC.
+      `),
+
+      MQ(md`**Problem.** A spherical surface of radius $R$ is held at $V_0(\theta)=k\cos\theta$. Find $V$ inside.`,
+        figShell({ lab: md`k\cos\theta`, inLab: md`V\ ?` }),
+        md`1. Region $r<R$, no charge: $V=\sum\left(A_\ell r^\ell+B_\ell r^{-(\ell+1)}\right)P_\ell(\cos\theta)$.
+          2. BCs: $V(R,\theta)=k\cos\theta$, and $V\to0$ as $r\to\infty$.
+          3. The second BC kills every $A_\ell$, so $V=\sum B_\ell r^{-(\ell+1)}P_\ell$.
+          4. Matching at $r=R$: $B_1/R^2=k$, so $V=kR^2\cos\theta/r^2$ inside.`,
+        ['general solution', 'the BC list', 'which terms die', 'matching at R'], 1,
+        [md`The general solution is right; the BCs decide which parts survive.`, null,
+          md`Given the BC in step 2 this follows. The problem is the BC itself.`, md`Correct algebra for the (wrong) set of terms it was handed.`],
+        md`The region $r<R$ contains the origin, not infinity. The condition is **$V$ finite at $r=0$**, which kills the $B_\ell$ (Lecture 13: $V(0,\theta)\neq\infty\Rightarrow B=0$). Correct result: $V=k\dfrac rR\cos\theta$. The wrong answer blows up at the center, which is a quick way to spot it.`),
+
+      MQ(md`**Problem.** The slot: grounded plates at $y=0$ and $y=a$, end strip at $x=0$ held at $V_0$, region $x>0$.`,
+        figSlot({ top: 'V=0', bot: 'V=0', end: 'V_0' }),
+        md`1. Separate: $X''=k^2X$, $Y''=-k^2Y$.
+          2. $V\to0$ as $x\to\infty$ keeps $X=e^{-kx}$.
+          3. $V$ should be symmetric about the slot, so take $Y=\cos ky$.
+          4. $V=0$ at $y=a$: $\cos ka=0$, so $k=(n-\tfrac12)\pi/a$.`,
+        ['separate', 'x-dependence', 'choice of Y', 'quantize k'], 2,
+        [md`Correct: $y$ has the two zero faces, so it oscillates.`, md`Correct for $x\to+\infty$.`, null, md`Follows from step 3; fix step 3 and this changes.`],
+        md`$V=0$ at $y=0$ requires $D=0$ in $C\sin ky+D\cos ky$: $\cos0=1$ can't vanish there (Lecture 11). The symmetry argument is also misplaced: the slot is symmetric about $y=a/2$, not $y=0$. Correct: $Y=\sin ky$, $k=n\pi/a$, $V=\dfrac{4V_0}{\pi}\sum_{\text{odd }n}\dfrac1ne^{-n\pi x/a}\sin\dfrac{n\pi y}{a}$.`),
+
+      MQ(md`**Problem.** A pipe $0<x<b$, $0<y<a$: faces $x=0$, $y=0$, $y=a$ grounded; face $x=b$ at $V_0(y)$.`,
+        figBox({ top: 'V=0', bot: 'V=0', left: 'V=0', right: md`V_0(y)` }),
+        md`1. The faces $y=0$ and $y=a$ are grounded, so $Y=\sin ky$.
+          2. The live face is at $x=b$, so the allowed values are $k=n\pi/b$.
+          3. $V=0$ at $x=0$ gives $X=\sinh kx$.
+          4. Fourier at $x=b$: $C_n\sinh(n\pi)=\dfrac2b\displaystyle\int_0^aV_0(y)\sin\dfrac{n\pi y}{b}\,dy$.`,
+        ['Y', 'quantize k', 'X', 'Fourier'], 1,
+        [md`Right: two zero faces in $y$.`, null, md`Right: $\sinh$ vanishes at $x=0$.`, md`It inherits step 2's wrong $k$.`],
+        md`$k$ is quantized by the second zero face **in the oscillating direction**: $\sin ka=0$, so $k=n\pi/a$. The length $b$ belongs to the other direction and only appears in $\sinh(n\pi b/a)$. Correct: $C_n\sinh\dfrac{n\pi b}{a}=\dfrac2a\displaystyle\int_0^aV_0(y)\sin\dfrac{n\pi y}{a}\,dy$.`),
+
+      MQ(md`**Problem.** A charge $q$ at distance $a$ from the center of a grounded sphere of radius $R$. Find the image.`,
+        figSphereQ({ wire: 'ground' }),
+        md`1. BCs: $V(R,\theta)=0$, $V\to0$.
+          2. Try one image $q'$ at distance $b$ from the center, on the line to $q$.
+          3. $V(R,\theta)=0$ for all $\theta$ gives $q^2b=q'^2a$ and $(a-b)(R^2-ab)=0$.
+          4. Take the simpler root, $b=a$ and $q'=-q$.`,
+        ['BCs', 'ansatz', 'equations', 'choosing the root'], 3,
+        [md`Right (Lecture 10).`, md`Right: by symmetry the image is on the line through $q$.`, md`Right (Lecture 11).`, null],
+        md`$b=a$ puts the image on top of the real charge, **inside the region** $r>R$. It cancels $q$ and gives $V\equiv0$, the solution of a problem with no charge. Images must sit outside the region: $b=R^2/a<R$, $q'=-\dfrac Raq$.`),
+
+      MQ(md`**Problem.** A charge $q>0$ sits inside a grounded spherical shell (radius $R$) at distance $a$ from the center. Find the induced $\sigma$ on the inner wall.`,
+        figInside({}),
+        md`1. Region $r<R$; BC: $V(R,\theta)=0$.
+          2. Image $q'=-Rq/a$ at $b=R^2/a$, outside the region.
+          3. $\sigma=-\varepsilon_0\,\partial V/\partial r$ at $r=R$.
+          4. Evaluating it gives $\sigma>0$ everywhere on the wall.`,
+        ['region and BC', 'image', 'formula for sigma', 'result'], 2,
+        [md`Right: bounded region, one condition.`, md`Right: Kelvin's construction, now with $b>R$.`, null, md`It follows from step 3; a positive induced charge near a positive $q$ is the giveaway.`],
+        md`$\sigma=-\varepsilon_0\,\partial V/\partial n$ with $\hat{\mathbf n}$ pointing **out of the metal into the field region**: here $-\hat{\mathbf r}$. So $\sigma=+\varepsilon_0\,\partial V/\partial r\big|_R$, which is negative everywhere and integrates to $-q$.`),
+
+      MQ(md`**Problem.** A charge $q$ at distance $a$ from a grounded sphere of radius $R$. Find the force on $q$ and the total induced charge.`,
+        figSphereQ({ wire: 'ground' }),
+        md`1. BCs: $V(R,\theta)=0$, $V\to0$.
+          2. Image $q'=-\dfrac Raq$ at $b=\dfrac{R^2}{a}$.
+          3. Force: $F=\dfrac{qq'}{4\pi\varepsilon_0(a-b)^2}=-\dfrac{q^2Ra}{4\pi\varepsilon_0(a^2-R^2)^2}$, attractive.
+          4. The grounded sphere must absorb all of $q$'s field lines, so the induced charge is $-q$.`,
+        ['BCs', 'image', 'force', 'induced charge'], 3,
+        [md`Right.`, md`Right.`, md`Right (Griffiths Eq. 3.18).`, null],
+        md`Not all of $q$'s field lines end on the sphere; many go to infinity. Outside the sphere the real field equals the image system's, so Gauss's law around the sphere gives the image's charge: $Q_{\text{ind}}=q'=-Rq/a$. Only the infinite plane ($R\to\infty$) captures all of it.`),
+
+      MQ(md`**Problem.** A charge $q$ at distance $a$ from an **isolated, neutral** metal sphere. Find $V$ outside.`,
+        figSphereQ({ cond: md`Q=0` }),
+        md`1. BCs: $V(R,\theta)=0$ and $V\to0$.
+          2. Image $q'=-\dfrac Raq$ at $\dfrac{R^2}{a}$.
+          3. $V=\dfrac{1}{4\pi\varepsilon_0}\left(\dfrac q\srm+\dfrac{q'}{\srm'}\right)$ outside.
+          4. The force on $q$ is $\dfrac{qq'}{4\pi\varepsilon_0(a-R^2/a)^2}$.`,
+        ['BCs', 'image', 'V', 'force'], 0,
+        [null, md`Right for the BCs it was given.`, md`Right for that image system.`, md`Right for that image system.`],
+        md`Neutral and isolated is not grounded. The BCs are $V(R,\theta)=V_c$ (unknown constant), total charge $0$, $V\to0$. Fix: add $+\dfrac Raq$ at the center. Then $V_c=\dfrac{q}{4\pi\varepsilon_0a}$ and the force is weaker: $F=-\dfrac{q^2}{4\pi\varepsilon_0}\dfrac{R^3(2a^2-R^2)}{a^3(a^2-R^2)^2}$.`),
+
+      MQ(md`**Problem.** An uncharged metal sphere in a field that is uniform far away, $E_0\hat{\mathbf z}$. Find $V$ outside.`,
+        figField({ note: 'uncharged metal sphere' }),
+        md`1. BCs: $V(R,\theta)=0$ and $V\to0$ as $r\to\infty$.
+          2. Region $r>R$: $V=\sum\left(A_\ell r^\ell+B_\ell r^{-(\ell+1)}\right)P_\ell$.
+          3. The far condition kills all $A_\ell$; the sphere condition then gives $B_\ell=0$.
+          4. So $V=0$ everywhere outside.`,
+        ['BCs', 'general solution', 'coefficients', 'result'], 0,
+        [null, md`Right.`, md`Correct consequences of step 1.`, md`Correct consequence; the absurd result (no field at all) points back to step 1.`],
+        md`In a uniform field $V$ does not go to zero far away: $V\to-E_0r\cos\theta$ (Griffiths 3.74). That **supplies** $A_1=-E_0$; then $B_1=E_0R^3$ from the sphere. Correct: $V=-E_0\left(r-\dfrac{R^3}{r^2}\right)\cos\theta$.`),
+
+      MQ(md`**Problem.** A pipe $0<x<b$, $0<y<a$ with the face $x=0$ grounded, $x=b$ at $V_0$, and the faces $y=0$, $y=a$ grounded.`,
+        figBox({ top: 'V=0', bot: 'V=0', left: 'V=0', right: 'V_0' }),
+        md`1. $y$ has two grounded faces: $\sin(n\pi y/a)$, $k=n\pi/a$.
+          2. The region is finite in $x$, so both exponentials are allowed; combine them as $\cosh kx$.
+          3. At $x=b$: $\sum C_n\cosh(n\pi b/a)\sin(n\pi y/a)=V_0$, so $C_n\cosh(n\pi b/a)=\dfrac{4V_0}{n\pi}$ for odd $n$.
+          4. The center value follows by summing the series at $(b/2,a/2)$.`,
+        ['Y and k', 'X', 'Fourier', 'center value'], 1,
+        [md`Right.`, null, md`Right algebra for the function chosen in step 2.`, md`Correct procedure, wrong function.`],
+        md`Both exponentials are allowed, but the grounded face $x=0$ picks the combination: $V(0,y)=0$ needs $A+B=0$, i.e. $\sinh kx$. $\cosh kx$ is right only when the two $x$-faces have the same potential (Ex. 3.4). Correct: $C_n\sinh(n\pi b/a)=\dfrac{4V_0}{n\pi}$, $X=\sinh(n\pi x/a)$.`),
+
+      MQ(md`**Problem.** An isolated metal sphere with charge $Q$ in a field uniform far away, $E_0\hat{\mathbf z}$. Find $V$ outside.`,
+        figField({ q: 'Q', note: 'isolated metal sphere, charge Q' }),
+        md`1. BCs: $V(R,\theta)=V_c$; total charge $Q$; $V\to-E_0r\cos\theta$ (choose $C=0$).
+          2. Far field: $A_1=-E_0$, all other $A_\ell=0$.
+          3. Equipotential sphere: $B_1=E_0R^3$, $B_\ell=0$ for $\ell\ge2$.
+          4. A constant potential on the sphere needs no $\ell=0$ term, so $B_0=0$: $V=-E_0\left(r-\dfrac{R^3}{r^2}\right)\cos\theta$.`,
+        ['BCs', 'far field', 'l ≥ 1 terms', 'l = 0 term'], 3,
+        [md`Right: the full set, including the charge.`, md`Right.`, md`Right.`, null],
+        md`Step 4 ignores BC "total charge $Q$". Gauss's law on any sphere around it gives $4\pi B_0=Q/\varepsilon_0$, so $B_0=\dfrac{Q}{4\pi\varepsilon_0}$. Correct: $V=-E_0\left(r-\dfrac{R^3}{r^2}\right)\cos\theta+\dfrac{Q}{4\pi\varepsilon_0r}$, with the sphere at $V_c=\dfrac{Q}{4\pi\varepsilon_0R}$.`),
+
+      MQ(md`**Problem.** A thin shell of radius $R$ carries $\sigma_0(\theta)=k\cos\theta$ (no metal). Find $V$ inside.`,
+        figShell({ lab: md`k\cos\theta` }),
+        md`1. $V_{\text{in}}=\sum A_\ell r^\ell P_\ell$, $V_{\text{out}}=\sum B_\ell r^{-(\ell+1)}P_\ell$.
+          2. Continuity at $R$: $B_\ell=A_\ell R^{2\ell+1}$.
+          3. Jump: $\partial_rV_{\text{out}}-\partial_rV_{\text{in}}=+\sigma_0/\varepsilon_0$ at $r=R$.
+          4. Only $\ell=1$: $-3A_1=k/\varepsilon_0$, so $V_{\text{in}}=-\dfrac{k}{3\varepsilon_0}r\cos\theta$.`,
+        ['general forms', 'continuity', 'jump', 'result'], 2,
+        [md`Right: finite at the origin inside, zero at infinity outside.`, md`Right.`, null, md`Correct algebra; the sign was lost in step 3.`],
+        md`$E_r$ jumps **up** by $\sigma/\varepsilon_0$ going outward, so $\partial_rV=-E_r$ jumps **down**: $\partial_rV_{\text{out}}-\partial_rV_{\text{in}}=-\sigma_0/\varepsilon_0$ (Griffiths 2.36). Correct: $A_1=+\dfrac{k}{3\varepsilon_0}$, $V_{\text{in}}=\dfrac{k}{3\varepsilon_0}z$. Sanity check: the field inside should run from the positive north cap to the negative south cap, i.e. along $-\hat{\mathbf z}$; the wrong answer has it backwards.`),
+
+      MQ(md`**Problem.** Half of a symmetric slot: $V=0$ on the plate $y=0$, the midplane $y=a$ is a mirror plane, end at $x=0$ held at $V_0$.`,
+        figSlot({ top: md`\partial V/\partial y=0`, topMirror: true, bot: 'V=0', end: 'V_0' }),
+        md`1. $V=0$ at $y=0$ gives $Y=\sin ky$.
+          2. $V\to0$ as $x\to\infty$ gives $X=e^{-kx}$.
+          3. The top boundary $y=a$ requires $\sin ka=0$, so $k=n\pi/a$.
+          4. Fourier's trick on $0<y<a$ with $\sin(n\pi y/a)$.`,
+        ['Y', 'X', 'quantize k', 'Fourier'], 2,
+        [md`Right.`, md`Right.`, null, md`Follows step 3; with the right $k$ the same trick works on the right functions.`],
+        md`The top is a mirror plane, so the condition there is $\partial V/\partial y=0$: $k\cos ka=0$, so $k=(n-\tfrac12)\pi/a$. With $\sin ka=0$ every mode would vanish on the midplane, which describes a grounded plate there, a different problem.`),
+
+      MQ(md`**Problem.** Two grounded half-planes at $90^\circ$ with a charge $q$ at $(a,b)$.`,
+        figCorner({}),
+        md`1. Region $x>0$, $y>0$; BCs: $V=0$ on both half-planes, $V\to0$.
+          2. The wall $x=0$ needs an image $-q$ at $(-a,b)$.
+          3. The floor $y=0$ needs an image $-q$ at $(a,-b)$.
+          4. These two images make both half-planes equipotentials, so $V=\dfrac{q}{4\pi\varepsilon_0}\left[\dfrac1{\srm}-\dfrac1{\srm_1}-\dfrac1{\srm_2}\right]$.`,
+        ['BCs', 'first image', 'second image', 'claim and V'], 3,
+        [md`Right.`, md`Right, as far as it goes.`, md`Right, as far as it goes.`, null],
+        md`Each new image spoils the other plane: on the wall $x=0$, the image $-q$ at $(a,-b)$ has no partner. A third image $+q$ at $(-a,-b)$ pairs with both $-q$'s and fixes both planes. Always check every BC with the full image set.`),
+
+      MQ(md`**Problem.** Both slot plates are held at $V_1$; the end strip at $x=0$ is at $V_0$.`,
+        figSlot({ top: 'V_1', bot: 'V_1', end: 'V_0' }),
+        md`1. BCs: $V=V_1$ on both plates, $V(0,y)=V_0$, $V\to0$ as $x\to\infty$.
+          2. Write $V=V_1+\tilde V$.
+          3. $\tilde V$ is zero on both plates and $V_0-V_1$ on the end.
+          4. $\tilde V=\dfrac{4(V_0-V_1)}{\pi}\displaystyle\sum_{\text{odd }n}\dfrac1ne^{-n\pi x/a}\sin\dfrac{n\pi y}{a}$.`,
+        ['BCs', 'shift', 'shifted BCs', 'series'], 0,
+        [null, md`A good move.`, md`Right.`, md`Right, and it actually satisfies $V\to V_1$, contradicting step 1.`],
+        md`Far down the slot you are between two plates at $V_1$, so $V\to V_1$, not $0$. Steps 2–4 are correct and give a $V$ that tends to $V_1$, which shows that step 1's far condition was inconsistent with the plates.`),
+
+      MQ(md`**Problem.** The plane $y=0$ carries $\sigma_0\sin kx$; no other charges. Find $V$.`,
+        figSheet({}),
+        md`1. In each half-space $V=(Ae^{ky}+Be^{-ky})\sin kx$.
+          2. $V\to0$ far away keeps $e^{-ky}$ in both half-spaces.
+          3. Continuity at $y=0$: the two amplitudes are equal.
+          4. Jump: $\partial_yV\big|_{0^+}-\partial_yV\big|_{0^-}=-\sigma_0\sin kx/\varepsilon_0$.`,
+        ['separated form', 'far-field', 'continuity', 'jump'], 1,
+        [md`Right: the source picks $\sin kx$.`, null, md`Right.`, md`Right, but with step 2's functions both slopes are equal and the jump comes out $0$, a contradiction.`],
+        md`Below the sheet, $y\to-\infty$, and $e^{-ky}$ blows up there. Keep $e^{+ky}$ below: $V=Ce^{-k|y|}\sin kx$ with $C=\sigma_0/2\varepsilon_0k$. With $e^{-ky}$ on both sides there is no kink, hence no charge, and the jump condition can't be met.`),
+
+      RF(md`
+        !!key Patterns to remember (the error list)
+          - Wrong region boundary: $V\to0$ for an inside problem, "finite at $0$" for an outside one, $V\to0$ in a uniform field or between plates at $V_1$.
+          - Wrong kind of condition: neutral or isolated treated as grounded; a total charge forgotten ($B_0$).
+          - Wrong function: $\cos$ where $V=0$; $\cosh$ next to a grounded face; $e^{-ky}$ on the $y<0$ side.
+          - Wrong quantization: the length of the wrong direction; $\sin ka=0$ at a mirror plane.
+          - Images: inside the region, or too few (corner).
+          - Signs: $\hat{\mathbf n}$ into the metal; the jump written as $+\sigma/\varepsilon_0$.
+          - Totals: induced charge on a grounded sphere is $q'$, not $-q$; on a cavity wall it is $-q$, not $q'$.
+      `),
+    ],
+  });
+
 
   C.unit({
     id: 'ub', num: 'Unit B', title: 'Boundary conditions: the whole picture',
