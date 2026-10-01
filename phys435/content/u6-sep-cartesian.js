@@ -418,7 +418,9 @@
   // cube 0..a in x (toward the viewer), y (right), z (up); top face shaded and labelled (Griffiths Fig. 3.23)
   function cube(o = {}) {
     const A = o.A || 100, f = PF.fig({ proj: { ox: 60, oy: 175, s: 1 } });
+    if (o.front) f.add(`<path class="shade nodecl" d="M${[[A, 0, 0], [A, A, 0], [A, A, A], [A, 0, A]].map((p) => f.p3(...p).map((v) => v.toFixed(1)).join(',')).join('L')}Z"/>`);
     f.box3(A, A, A, { shadeTop: true });
+    if (o.front) { const c = f.p3(A, A * 0.3, A * 0.6); f.line(c[0], c[1], c[0] - 52, c[1] - 10, { cls: 'dim thin' }); f.label(c[0] - 55, c[1] - 10, o.front, 'r'); }
     f.axes3(A + 45, { box: [A, A, A] });
     const t = f.p3(A / 2, A / 2, A);
     f.line(t[0], t[1], t[0] + 18, t[1] - 44, { cls: 'dim thin' });
@@ -568,8 +570,8 @@
             { nofig: 'pure logic of the separation step' }),
 
           Q(md`Which is the general solution of $\dfrac{d^2X}{dx^2} = k^2 X$ with $k > 0$?`,
-            [md`$X = A\sin kx + B\cos kx$`, md`$X = Ae^{kx} + Be^{-kx}$`, md`$X = A + Bx$`, md`$X = Ae^{kx}$`], 1,
-            [md`That solves $X'' = -k^2X$: $(\sin kx)'' = -k^2\sin kx$.`, null, md`That solves $X'' = 0$, the special case $k = 0$.`, md`A second-order equation has two independent solutions. Keep both until a boundary condition removes one.`],
+            [md`$X = A\sin kx + B\cos kx$`, md`$X = Ae^{kx}$`, md`$X = A + Bx$`, md`$X = Ae^{kx} + Be^{-kx}$`], 3,
+            [md`That solves $X'' = -k^2X$: $(\sin kx)'' = -k^2\sin kx$.`, md`A second-order equation has two independent solutions. Keep both until a boundary condition removes one.`, md`That solves $X'' = 0$, the special case $k = 0$.`, null],
             md`Try $e^{\lambda x}$: $\lambda^2 = k^2$, so $\lambda = \pm k$. Equivalent forms: $A'\cosh kx + B'\sinh kx$. Which form is most convenient depends on the region (Lesson 5).`,
             { nofig: 'an ODE fact' }),
 
@@ -699,8 +701,8 @@
           `, { roles: { svg: ROLES, cap: 'The job of each boundary condition in the slot.' } }),
 
           Q(md`Apply BC #1, $V(x, 0) = 0$, to $V = (Ae^{kx} + Be^{-kx})(C\sin ky + D\cos ky)$. What do you learn?`,
-            [md`$C = 0$`, md`$D = 0$`, md`$A = 0$`, md`$k = 0$`], 1,
-            [md`$C$ multiplies $\sin ky$, which is already zero at $y = 0$. BC #1 says nothing about $C$.`, null, md`$A$ multiplies $e^{kx}$. Removing it is the job of BC #4 (the condition far away).`, md`$k = 0$ would make $\sin ky$ vanish everywhere and leave a trivial solution.`],
+            [md`$C = 0$`, md`$k = 0$`, md`$A = 0$`, md`$D = 0$`], 3,
+            [md`$C$ multiplies $\sin ky$, which is already zero at $y = 0$. BC #1 says nothing about $C$.`, md`$k = 0$ would make $\sin ky$ vanish everywhere and leave a trivial solution.`, md`$A$ multiplies $e^{kx}$. Removing it is the job of BC #4 (the condition far away).`, null],
             md`At $y = 0$: $\sin 0 = 0$ and $\cos 0 = 1$, so $V(x, 0) = (Ae^{kx} + Be^{-kx})\,D$. This must vanish for every $x$, and the $x$-bracket isn't identically zero (else $V \equiv 0$), so $D = 0$.`,
             { figHtml: SLOT_BC }),
 
@@ -805,8 +807,8 @@
             { nofig: 'a standard integral' }),
 
           Q(md`Where does the factor $\dfrac{2}{a}$ in $C_n = \dfrac{2}{a}\displaystyle\int_0^a V_0(y)\sin\dfrac{n\pi y}{a}\,dy$ come from?`,
-            [md`It makes $C_n$ the average value of $V_0(y)$.`, md`It undoes the $\tfrac{a}{2}$ that orthogonality leaves on the other side.`, md`It is a convention; any constant would do.`, md`It normalizes the exponentials $e^{-n\pi x/a}$.`], 1,
-            [md`For a constant $V_0$ the result is $\tfrac{4V_0}{n\pi}$ (odd $n$), not $V_0$. It isn't an average.`, null, md`Change it and the series no longer equals $V_0(y)$ at $x = 0$: BC #3 fails. Forgetting it is a classic exam error.`, md`At $x = 0$ the exponentials are all $1$; they play no role in the trick.`],
+            [md`It undoes the $\tfrac{a}{2}$ that orthogonality leaves on the other side.`, md`It makes $C_n$ the average value of $V_0(y)$.`, md`It is a convention; any constant would do.`, md`It normalizes the exponentials $e^{-n\pi x/a}$.`], 0,
+            [null, md`For a constant $V_0$ the result is $\tfrac{4V_0}{n\pi}$ (odd $n$), not $V_0$. It isn't an average.`, md`Change it and the series no longer equals $V_0(y)$ at $x = 0$: BC #3 fails. Forgetting it is a classic exam error.`, md`At $x = 0$ the exponentials are all $1$; they play no role in the trick.`],
             md`$\int_0^a V_0\sin(m\pi y/a)\,dy = \tfrac{a}{2}C_m$, so $C_m = \tfrac{2}{a}\int\dots$. If you use $\tfrac{1}{a}$ instead, your series reproduces $V_0/2$ on the strip.`,
             { nofig: 'about a formula' }),
 
@@ -989,8 +991,8 @@
           `),
 
           Q(md`You found $V = \tfrac{4V_0}{\pi}\sum_{\text{odd}}\tfrac1n e^{-n\pi x/a}\sin\tfrac{n\pi y}{a}$ by *assuming* product solutions. How do you know it is *the* potential in the slot and not just one of several?`,
-            [md`Because Fourier series are unique.`, md`It satisfies Laplace's equation and all four BCs, and by the uniqueness theorem only one function does that.`, md`Because the series converges.`, md`You don't; other solutions could exist that aren't sums of products.`], 1,
-            [md`That says the coefficients are unique once you use sines. It doesn't rule out a completely different function.`, null, md`Convergence makes it a well-defined function. It doesn't make it the only solution.`, md`Uniqueness rules them out: two solutions with the same boundary values would differ by a harmonic function that is zero on every boundary, which is zero.`],
+            [md`Because Fourier series are unique.`, md`You don't; other solutions could exist that aren't sums of products.`, md`Because the series converges.`, md`It satisfies Laplace's equation and all four BCs, and by the uniqueness theorem only one function does that.`], 3,
+            [md`That says the coefficients are unique once you use sines. It doesn't rule out a completely different function.`, md`Uniqueness rules them out: two solutions with the same boundary values would differ by a harmonic function that is zero on every boundary, which is zero.`, md`Convergence makes it a well-defined function. It doesn't make it the only solution.`, null],
             md`This is the same logic as the method of images: produce *any* function that satisfies Laplace's equation in the region and matches $V$ on every boundary, and uniqueness guarantees it's the answer. Separation is a systematic way of producing one.`,
             { figHtml: SLOT_BC }),
 
@@ -1208,8 +1210,8 @@
             { figHtml: slot({ end: 'V_0\\sin(\\pi y/a)' }) }),
 
           Q(md`The live end is held at $V_0(y) = V_0\left[2\sin(\pi y/a) - \sin(4\pi y/a)\right]$. What is $C_4$?`,
-            [md`$V_0$`, md`$-V_0$`, md`$0$`, md`$-V_0/2$`], 1,
-            [md`Watch the sign: the $\sin(4\pi y/a)$ term enters with $-1$.`, null, md`$\sin(4\pi y/a)$ is present in $V_0(y)$, so $C_4 \ne 0$.`, md`No factor of $\tfrac12$: comparing coefficients of identical sines gives them directly.`],
+            [md`$V_0$`, md`$0$`, md`$-V_0$`, md`$-V_0/2$`], 2,
+            [md`Watch the sign: the $\sin(4\pi y/a)$ term enters with $-1$.`, md`$\sin(4\pi y/a)$ is present in $V_0(y)$, so $C_4 \ne 0$.`, null, md`No factor of $\tfrac12$: comparing coefficients of identical sines gives them directly.`],
             md`Match term by term: $C_1 = 2V_0$, $C_4 = -V_0$, all others zero. So $V = 2V_0e^{-\pi x/a}\sin\tfrac{\pi y}{a} - V_0e^{-4\pi x/a}\sin\tfrac{4\pi y}{a}$. The $n = 4$ part dies four times faster.`,
             { figHtml: slot({ end: 'V_0[2\\sin(\\pi y/a)-\\sin(4\\pi y/a)]' }) }),
 
@@ -1281,8 +1283,8 @@
             { figHtml: STRIPS }),
 
           Q(md`$V_0$ on the lower half of the end, $0$ on the upper half (row 3). Why is $C_4 = 0$?`,
-            [md`Because the upper half is grounded.`, md`Because $\int_0^{a/2}\sin(4\pi y/a)\,dy = 0$: one full wave fits in the lower half.`, md`Because $4$ is even.`, md`Because $\sin(4\pi\cdot\tfrac12) = 0$.`], 1,
-            [md`The grounded upper half contributes nothing to the integral, true, but that alone doesn't zero $C_4$; $C_2$ survives.`, null, md`$C_2 = \tfrac{2V_0}{\pi} \ne 0$ is even too.`, md`That's the value of the sine at the midpoint, not the integral.`],
+            [md`Because the upper half is grounded.`, md`Because $\sin(4\pi\cdot\tfrac12) = 0$.`, md`Because $4$ is even.`, md`Because $\int_0^{a/2}\sin(4\pi y/a)\,dy = 0$: one full wave fits in the lower half.`], 3,
+            [md`The grounded upper half contributes nothing to the integral, true, but that alone doesn't zero $C_4$; $C_2$ survives.`, md`That's the value of the sine at the midpoint, not the integral.`, md`$C_2 = \tfrac{2V_0}{\pi} \ne 0$ is even too.`, null],
             md`$\int_0^{a/2}\sin\tfrac{4\pi y}{a}dy = \tfrac{a}{4\pi}(1 - \cos 2\pi) = 0$. The formula $C_n = \tfrac{2V_0}{n\pi}(1 - \cos\tfrac{n\pi}{2})$ is zero exactly when $n$ is a multiple of 4.`,
             { figHtml: HALF }),
 
@@ -1833,8 +1835,8 @@
             { figHtml: G_EX34 }),
 
           Q(md`Along the midline $y = a/2$ of Ex. 3.4, where is $V$ smallest?`,
-            [md`At the faces $x = \pm b$.`, md`At the center $x = 0$.`, md`At $x = \pm b/2$.`, md`It is constant along the midline.`], 1,
-            [md`The faces are at $V_0$, the largest value anywhere.`, null, md`$\cosh(n\pi x/a)$ has its minimum at $x = 0$, not at $\pm b/2$.`, md`$\cosh$ varies with $x$.`],
+            [md`At the faces $x = \pm b$.`, md`It is constant along the midline.`, md`At $x = \pm b/2$.`, md`At the center $x = 0$.`], 3,
+            [md`The faces are at $V_0$, the largest value anywhere.`, md`$\cosh$ varies with $x$.`, md`$\cosh(n\pi x/a)$ has its minimum at $x = 0$, not at $\pm b/2$.`, null],
             md`$V$ is fed from both ends and sags in the middle: every term has $\cosh(n\pi x/a)$, minimum at $x = 0$. For $b = a$ the center value is $\tfrac{4V_0}{\pi}\sum_{\text{odd}}\tfrac{(-1)^{(n-1)/2}}{n\cosh(n\pi)} = 0.110V_0$.`,
             { figHtml: EX34_MAP }),
 
@@ -2098,7 +2100,722 @@
           `),
         ],
       },
-      // @@NEXT_LESSON@@
+      // ============================================================ LESSON 7
+      {
+        id: 'u6-3d', title: 'Three dimensions: two quantized constants',
+        steps: [
+          RF(md`
+            In 3-D, $V = X(x)Y(y)Z(z)$. Substitute and divide by $XYZ$:
+
+            $$\frac{X''}{X} + \frac{Y''}{Y} + \frac{Z''}{Z} = 0 .$$
+
+            Three pieces, each a function of one variable, so each is a constant, and the three constants add to zero. Now **two** directions can have pairs of zero faces, so two constants are negative and the third is their positive sum:
+
+            $$\frac{Y''}{Y} = -k^2, \qquad \frac{Z''}{Z} = -l^2, \qquad \frac{X''}{X} = k^2 + l^2 .$$
+
+            Two quantization conditions, two integers $n$ and $m$, and a **double** sum.
+
+            ### Griffiths Ex. 3.5: an infinite rectangular pipe with a live end
+
+            A long rectangular metal pipe (sides $a$ and $b$) is grounded, but its end at $x = 0$ is held at $V_0(y, z)$.
+
+            [[fig:pipe]]
+
+            **Boundary conditions** (region $x > 0$, $0 < y < a$, $0 < z < b$):
+
+            1. $V = 0$ at $y = 0$ (homogeneous) $\Rightarrow$ no $\cos ky$
+            2. $V = 0$ at $y = a$ (homogeneous) $\Rightarrow k = n\pi/a$
+            3. $V = 0$ at $z = 0$ (homogeneous) $\Rightarrow$ no $\cos lz$
+            4. $V = 0$ at $z = b$ (homogeneous) $\Rightarrow l = m\pi/b$
+            5. $V \to 0$ as $x \to \infty$ (homogeneous) $\Rightarrow$ no growing exponential
+            6. $V = V_0(y, z)$ at $x = 0$ (live) $\Rightarrow C_{nm}$
+
+            $$V(x,y,z) = \sum_{n=1}^{\infty}\sum_{m=1}^{\infty} C_{nm}\,e^{-\gamma_{nm}x}\sin\frac{n\pi y}{a}\sin\frac{m\pi z}{b}, \qquad \gamma_{nm} = \pi\sqrt{\frac{n^2}{a^2} + \frac{m^2}{b^2}} .$$
+
+            Fourier's trick twice: multiply by $\sin\tfrac{n'\pi y}{a}\sin\tfrac{m'\pi z}{b}$ and integrate over the end face. Each integral gives a factor $\tfrac{a}{2}$ or $\tfrac{b}{2}$, so
+
+            $$C_{nm} = \frac{4}{ab}\int_0^a\!\!\int_0^b V_0(y,z)\sin\frac{n\pi y}{a}\sin\frac{m\pi z}{b}\,dz\,dy .$$
+
+            For a constant $V_0$ the double integral factorizes into two lecture integrals: $C_{nm} = \tfrac{4V_0}{ab}\cdot\tfrac{2a}{n\pi}\cdot\tfrac{2b}{m\pi} = \dfrac{16V_0}{\pi^2nm}$ for $n$ and $m$ both odd, zero otherwise.
+
+            The slowest mode is $(1, 1)$, with $\gamma_{11} = \pi\sqrt{1/a^2 + 1/b^2}$: a 3-D pipe screens its live end faster than the 2-D slot of the same width ($\sqrt2\,\pi/a$ instead of $\pi/a$ for a square pipe).
+          `, { pipe: { svg: PIPE3D, cap: 'Griffiths Fig. 3.22: the pipe runs along $x$ to infinity; its end at $x = 0$ (thick, shaded) is held at $V_0(y,z)$.' } }),
+
+          Q(md`In a 3-D separation problem, how many of the three separation constants can you choose independently?`,
+            [md`One`, md`Two`, md`Three`, md`None; they are fixed by Laplace's equation.`], 1,
+            [md`In 2-D there is one ($k^2$, $-k^2$). In 3-D one more is free.`, null, md`They must add to zero, which removes one.`, md`Laplace's equation fixes only their sum.`],
+            md`$X''/X + Y''/Y + Z''/Z = 0$: three constants, one constraint. The two oscillating directions each get their own quantized constant ($k = n\pi/a$, $l = m\pi/b$), and the third is $k^2 + l^2$.`,
+            { figHtml: PIPE3D }),
+
+          Q(md`In Ex. 3.5, what is $X''/X$?`,
+            [md`$-(k^2 + l^2)$`, md`$k^2 - l^2$`, md`$k^2 + l^2$, with $k = n\pi/a$, $l = m\pi/b$`, md`$k^2$ only`], 2,
+            [md`Negative would make $X$ oscillate, and it couldn't decay along the pipe.`, md`The constants must sum to zero: $(k^2 + l^2) - k^2 - l^2 = 0$.`, null, md`That leaves $Y''/Y + Z''/Z = -k^2 - l^2$ unbalanced.`],
+            md`$Y''/Y = -k^2$ and $Z''/Z = -l^2$, so $X''/X = k^2 + l^2$ and $X = e^{-\sqrt{k^2 + l^2}\,x}$. The decay rate grows with both mode numbers.`,
+            { nofig: 'algebra of the constants' }),
+
+          Q(md`Square pipe ($a = b$) with a live end. How does the $(n, m)$ term decay along the pipe?`,
+            [md`$e^{-\pi(n + m)x/a}$`, md`$e^{-\pi nmx/a}$`, md`$e^{-\pi\sqrt{nm}\,x/a}$`, md`$e^{-\pi\sqrt{n^2 + m^2}\,x/a}$`], 3,
+            [md`The constants add as squares: $k^2 + l^2$, not $k + l$.`, md`No product appears; $k^2$ and $l^2$ add.`, md`$\sqrt{nm}$ isn't what $k^2 + l^2$ gives.`, null],
+            md`$\gamma = \sqrt{(n\pi/a)^2 + (m\pi/a)^2} = \tfrac{\pi}{a}\sqrt{n^2 + m^2}$. For $(1, 1)$ that is $\sqrt2\,\pi/a$; for $(1, 3)$, $\sqrt{10}\,\pi/a$.`,
+            { figHtml: PIPE_SQ }),
+
+          Q(md`The end of the Ex. 3.5 pipe is at a constant $V_0$. Which $(n, m)$ have non-zero $C_{nm}$?`,
+            [md`All $n$ and $m$`, md`$n$ odd, any $m$`, md`$n + m$ even`, md`$n$ and $m$ both odd`], 3,
+            [md`The integral factorizes; each factor vanishes for an even index.`, md`The $z$ integral $\int_0^b\sin\tfrac{m\pi z}{b}dz$ vanishes for even $m$ too.`, md`$n = 2$, $m = 2$ has $n + m$ even but $C_{22} = 0$.`, null],
+            md`$C_{nm} = \tfrac{4V_0}{ab}\left[\int_0^a\sin\tfrac{n\pi y}{a}dy\right]\left[\int_0^b\sin\tfrac{m\pi z}{b}dz\right]$. Each bracket is the lecture's integral: zero for even index. So both must be odd: $C_{nm} = \tfrac{16V_0}{\pi^2nm}$.`,
+            { figHtml: PIPE3D }),
+
+          Q(md`Why is the prefactor in $C_{nm}$ equal to $\dfrac{4}{ab}$?`,
+            [md`It is the area of the end face.`, md`Two orthogonality integrals, giving $\tfrac{a}{2}\cdot\tfrac{b}{2} = \tfrac{ab}{4}$, which you divide by.`, md`It is $\left(\tfrac{2}{a}\right)^2$ for a square.`, md`It normalizes the exponential.`], 1,
+            [md`The area is $ab$; the factor is $4/(ab)$.`, null, md`That's only the special case $a = b$; in general it is $\tfrac{2}{a}\cdot\tfrac{2}{b}$.`, md`At $x = 0$ the exponential is $1$.`],
+            md`$\int_0^a\sin\tfrac{n\pi y}{a}\sin\tfrac{n'\pi y}{a}dy = \tfrac a2\delta_{nn'}$ and $\int_0^b\sin\tfrac{m\pi z}{b}\sin\tfrac{m'\pi z}{b}dz = \tfrac b2\delta_{mm'}$. One factor of $\tfrac{2}{\text{width}}$ per direction.`,
+            { nofig: 'about a formula' }),
+
+          P({
+            id: 'D4-3.18', src: 'Discussion 4 · Griffiths 3.18', title: 'A cube with a live lid', big: true,
+            q: md`A cubical box (sides of length $a$) consists of five metal plates, which are welded together and grounded (Fig. 3.23). The top is made of a separate sheet of metal, insulated from the others, and held at a constant potential $V_0$. Find the potential inside the box. [What should the potential at the center $(a/2, a/2, a/2)$ be? Check numerically that your formula is consistent with this value.]`,
+            figHtml: CUBE,
+            hints: [
+              md`Translate the words: "welded together and grounded" means $V = 0$ on five faces; "insulated, held at $V_0$" means the top $z = a$ is the live face. Write all six BCs, two per variable.`,
+              md`$x$ and $y$ each have two zero faces: $\sin(n\pi x/a)\sin(m\pi y/a)$. Then $Z''/Z = +\gamma^2$ with $\gamma = \tfrac{\pi}{a}\sqrt{n^2 + m^2}$, and $V = 0$ at $z = 0$ picks $\sinh(\gamma z)$.`,
+              md`At $z = a$: $\sum\sum C_{nm}\sinh(\gamma_{nm}a)\sin\tfrac{n\pi x}{a}\sin\tfrac{m\pi y}{a} = V_0$. The double Fourier coefficient of a constant on a square is $\tfrac{16V_0}{\pi^2nm}$ ($n$, $m$ odd).`,
+              md`The center: six identical faces. Add the six problems with one face live each...`,
+            ],
+            parts: [
+              { lbl: md`Which $z$-dependence goes with $\sin\frac{n\pi x}{a}\sin\frac{m\pi y}{a}$?`, mc: [md`$\sinh\big(\pi\sqrt{n^2 + m^2}\,z/a\big)$`, md`$\sinh\big(\pi(n + m)z/a\big)$`, md`$e^{-\pi\sqrt{n^2 + m^2}\,z/a}$`, md`$\cosh\big(\pi\sqrt{n^2 + m^2}\,z/a\big)$`], a: 0, why: [null, md`The constants add in quadrature: $\gamma^2 = k^2 + l^2$.`, md`The box is finite and the bottom $z = 0$ is grounded: you need a function that vanishes there.`, md`$\cosh 0 = 1$: the bottom wouldn't be grounded.`] },
+              { lbl: md`What should $V$ be at the center, in units of $V_0$? (no series needed)`, ans: 1 / 6, unit: '' },
+              { lbl: md`The $(n, m) = (1, 1)$ term alone at the center, in units of $V_0$`, ans: 0.17377, unit: '' },
+              { lbl: md`Including all odd $n, m \le 3$ (four terms), the center value is`, mc: [md`$0.1738V_0$`, md`$0.1665V_0$`, md`$0.2500V_0$`, md`$0.1580V_0$`], a: 1, why: [md`That's the $(1,1)$ term alone. The three new terms are negative at the center.`, null, md`$1/4$ belongs to a square with one live side, not a cube.`, md`Too low: the corrections total only $-0.0073V_0$.`] },
+            ],
+            sol: md`
+              **Translate the words.** "Five metal plates welded together and grounded": $V = 0$ on five faces. "The top... insulated from the others, and held at a constant potential $V_0$": $V = V_0$ on $z = a$. Nothing inside: Laplace.
+
+              **Boundary conditions** (region $0 < x, y, z < a$), two per variable:
+
+              1. $V = 0$ at $x = 0$ (homogeneous)
+              2. $V = 0$ at $x = a$ (homogeneous) $\Rightarrow \sin(n\pi x/a)$
+              3. $V = 0$ at $y = 0$ (homogeneous)
+              4. $V = 0$ at $y = a$ (homogeneous) $\Rightarrow \sin(m\pi y/a)$
+              5. $V = 0$ at $z = 0$ (homogeneous) $\Rightarrow \sinh(\gamma z)$
+              6. $V = V_0$ at $z = a$ (live) $\Rightarrow C_{nm}$
+
+              **Separate.** $X''/X = -k^2$, $Y''/Y = -l^2$, $Z''/Z = k^2 + l^2$. BCs #1–#4 give $k = n\pi/a$, $l = m\pi/a$. In $z$: $Z = Ae^{\gamma z} + Be^{-\gamma z}$ with $\gamma_{nm} = \tfrac{\pi}{a}\sqrt{n^2 + m^2}$; BC #5 gives $B = -A$, so $Z \propto \sinh(\gamma_{nm}z)$. Superpose:
+
+              $$V = \sum_{n,m}C_{nm}\sin\frac{n\pi x}{a}\sin\frac{m\pi y}{a}\sinh(\gamma_{nm}z).$$
+
+              **BC #6** (double Fourier trick, as in Ex. 3.5):
+
+              $$C_{nm}\sinh(\gamma_{nm}a) = \frac{4}{a^2}\int_0^a\!\!\int_0^a V_0\sin\frac{n\pi x}{a}\sin\frac{m\pi y}{a}\,dx\,dy = \begin{cases}\dfrac{16V_0}{\pi^2nm}, & n, m \text{ both odd}\\[4pt] 0, & \text{otherwise.}\end{cases}$$
+
+              !!key Result
+                $$V(x,y,z) = \frac{16V_0}{\pi^2}\sum_{n,m\ \text{odd}}\frac{1}{nm}\,\sin\frac{n\pi x}{a}\,\sin\frac{m\pi y}{a}\,\frac{\sinh\big(\pi\sqrt{n^2 + m^2}\,z/a\big)}{\sinh\big(\pi\sqrt{n^2 + m^2}\big)}$$
+
+              **The center, without a series.** Imagine six copies of the box, each with a different face live and the other five grounded. Added together, all six faces are at $V_0$, and the solution of that is $V = V_0$ everywhere. The center is equivalent with respect to every face, so each copy contributes the same: $6V_c = V_0$, $V_c = V_0/6 = 0.16667V_0$.
+
+              **Numerical check.** At the center $\sin\tfrac{n\pi}{2}\sin\tfrac{m\pi}{2} = \pm1$ and $\tfrac{\sinh(\gamma a/2)}{\sinh(\gamma a)} = \tfrac{1}{2\cosh(\gamma a/2)}$:
+
+              $$V_c = \frac{8V_0}{\pi^2}\sum_{n,m\ \text{odd}}\frac{(-1)^{(n+m)/2 - 1}}{nm\cosh\big(\tfrac{\pi}{2}\sqrt{n^2 + m^2}\big)} .$$
+
+              | terms kept | $V_c/V_0$ |
+              |---|---|
+              | $(1,1)$ only | $0.17377$ |
+              | $n, m \le 3$ | $0.16648$ |
+              | $n, m \le 5$ | $0.166673$ |
+              | $n, m \le 7$ | $0.1666665$ |
+              | $n, m \le 21$ | $0.1666667$ |
+
+              (computed in Python; the $(1,1)$ term is $\tfrac{8}{\pi^2}\cdot\tfrac{1}{\cosh(\pi/\sqrt2)} = 0.8106 \times 0.2144$). The series converges to $1/6$ within a few terms, because $\cosh$ grows so fast.
+
+              [[fig:slice]]
+
+              **Checks.** Each zero face: a sine or $\sinh 0$ vanishes. Top: ratio of $\sinh$'s is $1$, and the double series is the expansion of $V_0$. Range: $0 < V < V_0$ inside.
+
+              **What to remember:** in 3-D, two directions get sines, the third gets $\sinh$/$\cosh$/$e$ with $\gamma = \sqrt{k^2 + l^2}$; the coefficient of a constant face is $\tfrac{16V_0}{\pi^2nm}$; the center of a cube with one live face is $V_0/6$.
+            `,
+            figs: { slice: { svg: CUBE_SLICE, cap: 'Equipotentials in the mid-slice $y = a/2$ ($0.05V_0$, then $0.1V_0$ to $0.9V_0$). The dot is the center, at $V_0/6$.' } },
+          }),
+
+          WG.cube(),
+
+          Q(md`In the cube of Prob. 3.18, why does the $(1,1)$ term alone give $0.174V_0$ at the center, **more** than the exact $V_0/6 = 0.167V_0$?`,
+            [md`The series is wrong; it should be exact with one term.`, md`The $(1,1)$ coefficient is too large because of Gibbs.`, md`The next terms, $(1,3)$, $(3,1)$ and $(3,3)$, carry $\sin\tfrac{3\pi}{2} = -1$ factors at the center, and the two negative ones outweigh the positive one.`, md`Because $\sinh$ grows too fast.`], 2,
+            [md`A constant face is not a single mode; higher modes are needed.`, md`Gibbs is about overshoot near the edges of the live face, not about the center.`, null, md`The $\sinh$ ratio is what makes the series converge quickly; it doesn't bias it upward.`],
+            md`$(1,3)$ and $(3,1)$: $\sin\tfrac{\pi}{2}\sin\tfrac{3\pi}{2} = -1$ each; $(3,3)$: $(+1)$. With the $\cosh$ factors, they total $-0.0073V_0$, bringing $0.1738$ down to $0.1665$.`,
+            { figHtml: CUBE_C }),
+
+          Q(md`Same cube, but the top is held at $V_0\sin(\pi x/a)\sin(\pi y/a)$ instead of a constant. How many terms does the series have?`,
+            [md`One: only $(n, m) = (1, 1)$.`, md`Infinitely many, both indices odd.`, md`Four.`, md`Infinitely many, $n = 1$ and all $m$.`], 0,
+            [null, md`That's for a constant lid. This lid already is the $(1,1)$ mode.`, md`There's no reason for four; orthogonality picks one.`, md`$\sin(\pi y/a)$ is already a single $y$-mode.`],
+            md`$V = V_0\sin\tfrac{\pi x}{a}\sin\tfrac{\pi y}{a}\dfrac{\sinh(\sqrt2\pi z/a)}{\sinh(\sqrt2\pi)}$. Read off the coefficient, as in 2-D.`,
+            { figHtml: CUBE_SINE }),
+
+          Q(md`The cube's top is held at $V_0\sin(2\pi x/a)\sin(\pi y/a)$. What is the $z$-dependence?`,
+            [md`$\sinh(3\pi z/a)$`, md`$\sinh(\sqrt3\,\pi z/a)$`, md`$\sinh(2\pi z/a)$`, md`$\sinh(\sqrt5\,\pi z/a)$`], 3,
+            [md`$\gamma$ is $\sqrt{k^2 + l^2}$, not $k + l$.`, md`$2^2 + 1^2 = 5$, not $3$.`, md`That ignores the $y$-mode: $l = \pi/a$ contributes too.`, null],
+            md`$k = 2\pi/a$, $l = \pi/a$, $\gamma = \tfrac{\pi}{a}\sqrt{4 + 1} = \sqrt5\,\pi/a$. The $z$-function must curve upward exactly enough to cancel both downward curvatures.`,
+            { nofig: 'algebra of the constants' }),
+
+          Q(md`Counting boundary conditions: how many does the cube problem need, and why?`,
+            [md`One, the live lid; the rest are automatic.`, md`Four, like the slot.`, md`Six: Laplace's equation is second order in each of $x$, $y$, $z$, so two per variable.`, md`Eight, one per corner.`], 2,
+            [md`The five grounded faces are conditions too; they shape the functions.`, md`The slot has four because it is 2-D (two per variable, one of them at infinity).`, null, md`Corners are not separate conditions; they're where faces meet.`],
+            md`Two conditions per variable, one per face of the box. In the slot, "$x \to \infty$" plays the role of the missing far face. If you count fewer conditions than that, you've forgotten one.`,
+            { figHtml: CUBE }),
+
+          Q(md`In the mid-slice $y = a/2$ of the cube with a live lid, where are the equipotentials most crowded (strongest field)?`,
+            [md`At the center.`, md`Along the bottom face.`, md`Uniformly spread.`, md`Near the top corners, where the live lid meets the grounded walls.`], 3,
+            [md`The center is a gentle region at $V_0/6$.`, md`The bottom is far from the lid; the potential there is tiny and slowly varying.`, md`The field is far from uniform: it's concentrated near the lid.`, null],
+            md`At the insulating gaps between the lid and the side walls, $V$ jumps from $V_0$ to $0$ over a tiny distance: the contours pile up there. Everywhere else the potential varies smoothly.`,
+            { figHtml: box({ w: 120, h: 120, T: 'V_0', L: '0', R: '0', B: '0', xl: 'x', yl: 'z', xt: [[120, 'a']], yt: [[120, 'a']] }) }),
+
+          P({
+            title: 'A cube with a single-mode lid',
+            q: md`A cubical box of side $a$ has five grounded faces. The top ($z = a$) is held at $V_0\sin(\pi x/a)\sin(\pi y/a)$. Find $V(x, y, z)$ and the potential at the center.`,
+            figHtml: CUBE_SINE,
+            hints: [
+              md`Same BCs #1–#5 as Prob. 3.18, so the same product functions. Only the lid changed.`,
+              md`The lid already is the $(1, 1)$ mode: no Fourier integral needed.`,
+              md`$\sinh(u)/\sinh(2u) = 1/(2\cosh u)$ with $u = \pi/\sqrt2$.`,
+            ],
+            parts: [
+              { lbl: 'V(x,y,z)', expr: 'V0*sin(pi*x/a)*sin(pi*y/a)*sinh(sqrt(2)*pi*z/a)/sinh(sqrt(2)*pi)', vars: { V0: [1, 3], x: [0.1, 0.9], y: [0.1, 0.9], z: [0.1, 0.9], a: [1, 1.5] }, accepts: ['V0*sin(pi*x/a)*sin(pi*y/a)*sinh(pi*sqrt(2)*z/a)/sinh(pi*sqrt(2))'] },
+              { lbl: md`$V(\text{center})/V_0$`, ans: 0.10719, unit: '' },
+            ],
+            sol: md`
+              **BCs:** $V = 0$ on $x = 0, a$ and $y = 0, a$ (sines in $x$ and $y$) and on $z = 0$ ($\sinh$ in $z$); $V = V_0\sin\tfrac{\pi x}{a}\sin\tfrac{\pi y}{a}$ on $z = a$ (live).
+
+              The lid is the $(1, 1)$ mode, so only $C_{11}$ survives: $C_{11}\sinh(\gamma_{11}a) = V_0$ with $\gamma_{11} = \sqrt2\,\pi/a$.
+
+              $$V = V_0\,\sin\frac{\pi x}{a}\,\sin\frac{\pi y}{a}\,\frac{\sinh(\sqrt2\,\pi z/a)}{\sinh(\sqrt2\,\pi)} .$$
+
+              Center: $V = V_0\cdot 1\cdot 1\cdot\dfrac{\sinh(\pi/\sqrt2)}{\sinh(\sqrt2\pi)} = \dfrac{V_0}{2\cosh(\pi/\sqrt2)} = \dfrac{V_0}{2 \times 4.664} = 0.107V_0$.
+
+              **Check:** $\nabla^2V = \left[-\tfrac{\pi^2}{a^2} - \tfrac{\pi^2}{a^2} + \tfrac{2\pi^2}{a^2}\right]V = 0$. Smaller than the constant lid's $V_0/6$, as it should be: this lid is at $V_0$ only in its middle and falls to $0$ at its edges.
+            `,
+          }),
+
+          P({
+            title: 'Far down a square pipe',
+            q: md`The Ex. 3.5 pipe has a square cross-section ($a = b$) and its end is at a constant $V_0$. Estimate $V$ at P, on the axis of the pipe one side-length from the end: $(x, y, z) = (a, a/2, a/2)$.`,
+            figHtml: PIPE_SQ,
+            hints: [
+              md`Far from the end, keep only the slowest mode, $(1, 1)$.`,
+              md`$C_{11} = \tfrac{16V_0}{\pi^2}$ and $\gamma_{11} = \sqrt2\,\pi/a$.`,
+            ],
+            parts: [{ lbl: md`$V(\text{P})/V_0$`, ans: 0.019068, unit: '' }],
+            sol: md`
+              **BCs:** four grounded walls (sines in $y$ and $z$), $V \to 0$ as $x \to \infty$ (decaying exponential), $V_0$ on the end (live). With a constant end, $C_{nm} = \tfrac{16V_0}{\pi^2nm}$ for odd $n, m$.
+
+              One term: $V \approx \dfrac{16V_0}{\pi^2}e^{-\sqrt2\pi x/a}\sin\dfrac{\pi y}{a}\sin\dfrac{\pi z}{a}$. At P: $1.621 \times e^{-\sqrt2\pi} \times 1 \times 1 = 1.621 \times 0.01176 = 0.0191V_0$.
+
+              The next modes, $(1,3)$ and $(3,1)$, decay like $e^{-\sqrt{10}\pi} \approx 5\times10^{-5}$: the full series gives $0.0190V_0$, within 0.3%.
+
+              Compare the 2-D slot at the same distance: $\tfrac{4V_0}{\pi}e^{-\pi} = 0.055V_0$. Walls on all four sides screen the end about three times more strongly.
+            `,
+          }),
+
+          P({
+            title: 'A cube with two live faces',
+            q: md`A cube has its top **and** its front face (the face $x = a$) held at $V_0$, each insulated from the rest; the other four faces are grounded. (a) What is the potential at the center? (b) How would you write the full solution?`,
+            figHtml: cube({ top: 'V_0', front: 'V_0\\ (x=a)', groundText: 'other four faces grounded' }),
+            hints: [md`Superpose two one-live-face cubes and use the six-face argument for the center.`],
+            parts: [
+              { lbl: md`(a) $V(\text{center})/V_0$`, ans: 1 / 3, unit: '' },
+              { lbl: md`(b) The full solution is`, mc: [md`one double series with $\sinh$ in $z$`, md`the Prob. 3.18 solution plus the same solution with the roles of $x$ and $z$ exchanged`, md`the Prob. 3.18 solution times 2`, md`impossible to write with separation of variables`], a: 1, why: [md`With two adjacent live faces, no single set of product functions has all the zero BCs.`, null, md`That would put $2V_0$ on the top and $0$ on the front face.`, md`Superposition handles it.`] },
+            ],
+            sol: md`
+              **Split by live faces.** Subproblem 1: only the top live (Prob. 3.18). Subproblem 2: only the front face $x = a$ live: the same solution with $x$ and $z$ exchanged (sines in $y$ and $z$, $\sinh$ in $x$). On every face exactly one subproblem is live, so the sum satisfies all six BCs.
+
+              (a) Each subproblem gives $V_0/6$ at the center, so $V_c = V_0/3$.
+
+              (b) $V = V_{3.18}(x, y, z) + V_{3.18}(z, y, x)$, where $V_{3.18}$ is the Prob. 3.18 result.
+            `,
+          }),
+
+          RF(md`
+            !!key Patterns to remember
+              - 3-D: three separation constants summing to zero; two quantized ($k = n\pi/a$, $l = m\pi/b$), the third is $\gamma^2 = k^2 + l^2$.
+              - Coefficients: $C_{nm} = \tfrac{4}{ab}\iint V_0\sin\sin$; a constant face gives $\tfrac{16V_0}{\pi^2nm}$, both odd.
+              - Cube with one live face: $\tfrac{16V_0}{\pi^2}\sum\tfrac{1}{nm}\sin\sin\tfrac{\sinh(\gamma z)}{\sinh(\gamma a)}$; center $V_0/6$.
+              - Six faces, six BCs, two per variable. "Welded and grounded" means $V = 0$ on those faces; "insulated, held at $V_0$" means a live face.
+              - A pipe screens its end faster than a slot: $\gamma_{11} = \sqrt2\pi/a$ vs $\pi/a$.
+          `),
+        ],
+      },
+      // ============================================================ LESSON 8
+      {
+        id: 'u6-bcdrill', title: 'Boundary-condition drill',
+        steps: [
+          RF(md`
+            Half the work in a separation problem is getting the boundary conditions right: reading them out of the words, writing them as a numbered list, sorting them into homogeneous and live, and knowing which one does what. This lesson is pure drill.
+
+            ### From words to conditions
+
+            | the problem says | the condition |
+            |---|---|
+            | "grounded", "earthed" | $V = 0$ on that surface |
+            | "welded together and grounded" | $V = 0$ on all of those faces (one conductor) |
+            | "held at", "maintained at" $V_0$ | $V = V_0$ on that surface: a live face |
+            | "maintained at a specified potential $V_0(y)$" | $V(b, y) = V_0(y)$: a live face with a profile |
+            | "insulated from the others" | that face may sit at a different potential; the corner has a thin gap |
+            | "infinitely long", "parallel to $z$ from $-\infty$ to $+\infty$" | nothing depends on $z$: a 2-D problem |
+            | "far from the live end", $x \to \infty$, between grounded plates | $V \to 0$ |
+            | far away between plates at $0$ and $V_1$ | $V \to V_1y/a$ (not zero) |
+            | "no charge inside", "empty" | $\nabla^2V = 0$ in the region |
+
+            ### Counting
+
+            Laplace's equation is second order in each variable, so it needs **two conditions per variable**: four for a 2-D box (one may sit at infinity, as in the slot), six for a 3-D box. Count before you solve; a missing condition shows up later as an undetermined constant.
+
+            ### Sorting
+
+            !!method The boundary-condition routine
+              1. Write the region (e.g. $0 < x < b$, $0 < y < a$) and every BC as a numbered list.
+              2. Mark each one homogeneous ($V = 0$, or $V \to 0$) or live.
+              3. Find the direction whose two BCs are both homogeneous: it gets $\sin$, and those BCs remove $\cos$ and quantize $k$.
+              4. In the other direction, the homogeneous BC (or the condition at infinity, or a symmetry) picks $e^{-kx}$, $\sinh$ or $\cosh$.
+              5. The live BC fixes the coefficients by Fourier's trick.
+              6. If no direction has two homogeneous BCs: split into subproblems with one live face each, or peel off a $k = 0$ piece.
+              7. At the end, plug your answer back into every BC on the list.
+          `),
+
+          Q(md`A student lists the slot's boundary conditions as: $V = 0$ at $y = 0$; $V = 0$ at $y = a$; $V = V_0(y)$ at $x = 0$. What is missing, and what goes wrong without it?`,
+            [md`Nothing; three conditions are enough in 2-D.`, md`$V \to 0$ as $x \to \infty$. Without it, $Ae^{+kx}$ terms are allowed and the solution is not unique.`, md`$\partial V/\partial z = 0$. Without it the problem is 3-D.`, md`$V = 0$ at $x = a$.`], 1,
+            [md`Two per variable: four in 2-D. With three, a constant per mode is left undetermined.`, null, md`That's a statement about the dimension, not a boundary condition on the 2-D region.`, md`The slot has no wall at $x = a$; it runs to infinity.`],
+            md`The fourth condition sits at infinity. It is the one that kills $e^{+kx}$; without it you could add $C\,e^{+kx}\sin ky$ with any $C$ and still satisfy the other three.`,
+            { figHtml: SLOT }),
+
+          Q(md`"The top is made of a separate sheet of metal, insulated from the others, and held at a constant potential $V_0$." Which condition does this sentence give?`,
+            [md`$V = V_0$ on the whole top face, while the adjacent faces may be at other potentials.`, md`$\partial V/\partial z = 0$ on the top.`, md`$V = 0$ on the top, since it is insulated.`, md`The charge on the top is $Q = 0$.`], 0,
+            [null, md`That would be a condition on the field, not the potential. "Held at $V_0$" fixes the potential.`, md`"Insulated" means electrically separated from the other plates, not grounded.`, md`Nothing is said about its charge; it's connected to whatever keeps it at $V_0$.`],
+            md`"Held at $V_0$": a live face with $V = V_0$. "Insulated from the others": that's what allows it to differ from the grounded walls; the corners carry thin insulating gaps where $V$ jumps.`,
+            { figHtml: CUBE }),
+
+          Q(md`"A cubical box consists of five metal plates, which are welded together and grounded." What do you write for those five faces?`,
+            [md`$V = 0$ on each of the five faces.`, md`$V = $ const on the five faces, with the constant to be found.`, md`$\vb E = 0$ on the five faces.`, md`The total charge on the five faces is zero.`], 0,
+            [null, md`"Grounded" fixes the constant: zero.`, md`The field is perpendicular to a conductor's surface, not zero there.`, md`Their charge is whatever is induced; the condition is on $V$.`],
+            md`"Welded together" makes them one conductor (one potential); "grounded" makes that potential $0$. Five homogeneous BCs, one live face: one subproblem.`,
+            { figHtml: CUBE }),
+
+          Q(md`"A rectangular pipe, running parallel to the $z$-axis from $-\infty$ to $+\infty$..." What does this phrase tell you?`,
+            [md`$V \to 0$ as $z \to \pm\infty$.`, md`Nothing depends on $z$, so the problem is 2-D: $\partial^2V/\partial x^2 + \partial^2V/\partial y^2 = 0$.`, md`$V$ is constant along the pipe's walls only.`, md`You need separation in $z$ with $e^{\pm kz}$.`], 1,
+            [md`It's the opposite: an infinitely long pipe looks the same at every $z$, so there's no decay in $z$.`, null, md`Every quantity, inside and on the walls, is independent of $z$.`, md`With no $z$-dependence there is no $z$-function to find.`],
+            md`An infinite, uniform pipe has translation symmetry along $z$. That removes $\partial^2V/\partial z^2$ and leaves the 2-D Laplace equation in the cross-section, the setting of HW 3.17 and Ex. 3.4.`,
+            { figHtml: G_HW }),
+
+          Q(md`A slot's bottom plate is grounded and its top plate is at $V_1$; the end strip at $x = 0$ is grounded. What is the correct condition far down the slot?`,
+            [md`$V \to 0$`, md`$V \to V_1$`, md`$V \to V_1/2$`, md`$V \to V_1\,y/a$`], 3,
+            [md`With the plates at different potentials there is a field between them all the way down.`, md`That's only the top plate's value.`, md`That's only the midline value.`, null],
+            md`Far from the end nothing depends on $x$, so $V'' = 0$ in $y$ with $V(0) = 0$, $V(a) = V_1$: the parallel-plate potential $V_1y/a$. Writing "$V \to 0$" by habit here gives a wrong answer.`,
+            { figHtml: K0 }),
+
+          Q(md`Which list is the correct set of boundary conditions for the pipe shown (HW Prob. 3.17)?`,
+            [md`$V(x,0) = 0$, $V(x,a) = 0$, $V(0,y) = 0$, $V(b,y) = V_0(y)$`, md`$V(x,0) = 0$, $V(x,a) = 0$, $V(0,y) = V_0(y)$, $V(b,y) = 0$`, md`$V(x,0) = 0$, $V(x,a) = 0$, $V(0,y) = 0$, $V \to 0$ as $x \to \infty$`, md`$V(0,y) = 0$, $V(b,y) = 0$, $V(x,0) = 0$, $V(x,a) = V_0(y)$`], 0,
+            [null, md`Live and grounded sides swapped: the live side is $x = b$.`, md`The pipe is closed at $x = b$; there is no infinity in $x$.`, md`The live side is the one at $x = b$, and its profile depends on $y$.`],
+            md`Read each side off the figure: three grounded ($y = 0$, $y = a$, $x = 0$), one live ($x = b$, profile $V_0(y)$). Two per variable, four in all.`,
+            { figHtml: G_HW }),
+
+          Q(md`Which list is right for Griffiths Ex. 3.4 (shown)?`,
+            [md`$V = 0$ at $y = 0, a$; $V \to 0$ as $x \to \pm\infty$`, md`$V = V_0$ at $y = 0, a$; $V = 0$ at $x = \pm b$`, md`$V = 0$ at $y = 0, a$; $V = V_0$ at $x = \pm b$`, md`$V = 0$ at $y = 0, a$; $V = V_0$ at $x = b$; $V = 0$ at $x = -b$`], 2,
+            [md`The pipe is closed by the two live strips at $x = \pm b$.`, md`Swapped: the plates are grounded, the strips are live.`, null, md`Both strips are at $V_0$.`],
+            md`Four BCs: two homogeneous (the plates, so sines in $y$) and two live (the strips). Because the live ones are opposite and equal, symmetry gives $\cosh$ and one Fourier problem fits both.`,
+            { figHtml: G_EX34 }),
+
+          Q(md`Which is BC #3 for the slot with $\pm V_0$ strips (Discussion Problem 3.15)?`,
+            [md`$V(0, y) = 0$`, md`$V(0, y) = V_0$ for $0 < y < a$`, md`$V(0, y) = V_0$ for $0 < y < a/2$ and $-V_0$ for $a/2 < y < a$`, md`$V(x, a/2) = 0$`], 2,
+            [md`The end isn't grounded; it's two live strips.`, md`That's the lecture's constant strip, not this problem.`, null, md`That's a consequence of the antisymmetry, not one of the given BCs.`],
+            md`A piecewise live face. Write it out in pieces; in Fourier's trick split the integral at $a/2$. The midplane result $V(x, a/2) = 0$ is a check, not an input.`,
+            { figHtml: STRIPS }),
+
+          Q(md`In HW 3.17, which boundary condition turns $Ae^{kx} + Be^{-kx}$ into $\sinh kx$?`,
+            [md`$V(0, y) = 0$`, md`$V(x, 0) = 0$`, md`$V(x, a) = 0$`, md`$V(b, y) = V_0(y)$`], 0,
+            [null, md`That one acts on the $y$-function (it removes the cosine).`, md`Also a $y$ condition; it quantizes $k$.`, md`The live side sets the coefficients, not the shape of $X$.`],
+            md`$X(0) = A + B = 0 \Rightarrow X = A(e^{kx} - e^{-kx}) = 2A\sinh kx$. The grounded side at $x = 0$ does it.`,
+            { figHtml: G_HW }),
+
+          Q(md`In the cube with a live lid (Prob. 3.18), which boundary condition selects $\sinh(\gamma z)$ over $\cosh(\gamma z)$?`,
+            [md`$V = V_0$ at $z = a$`, md`$V = 0$ at $x = 0$`, md`$V = 0$ at $z = 0$`, md`$V = 0$ at $y = a$`], 2,
+            [md`The lid fixes the coefficients $C_{nm}$.`, md`That one acts on $X$: it removes $\cos$ in $x$.`, null, md`That quantizes $l = m\pi/a$.`],
+            md`$Z(0) = 0$ needs $\sinh$, since $\cosh 0 = 1$. Every grounded face has a job: four of them shape the sines and fix $n$, $m$; the bottom picks $\sinh$; the lid sets $C_{nm}$.`,
+            { figHtml: CUBE }),
+
+          Q(md`In the slot, which boundary condition determines the coefficients $C_n$?`,
+            [md`BC #4, $V \to 0$ far away`, md`BC #2, $V(x, a) = 0$`, md`BC #1, $V(x, 0) = 0$`, md`BC #3, $V(0, y) = V_0(y)$`], 3,
+            [md`It removes $e^{+kx}$.`, md`It quantizes $k$.`, md`It removes $\cos ky$.`, null],
+            md`The live face is the only non-zero BC, and it is used last: $C_n = \tfrac{2}{a}\int_0^a V_0(y)\sin\tfrac{n\pi y}{a}dy$.`,
+            { figHtml: SLOT_BC }),
+
+          Q(md`For the HW 3.17 pipe, a student proposes $V = \dfrac{4V_0}{\pi}\sum_{\text{odd}}\dfrac{1}{n}\dfrac{\cosh(n\pi x/a)}{\cosh(n\pi b/a)}\sin\dfrac{n\pi y}{a}$. Which boundary condition does it violate?`,
+            [md`$V(x, 0) = 0$`, md`$V(b, y) = V_0$`, md`$V(x, a) = 0$`, md`$V(0, y) = 0$`], 3,
+            [md`Every term has $\sin(0) = 0$ there.`, md`At $x = b$ the ratio is $1$ and the series gives $V_0$: that one is fine.`, md`$\sin(n\pi) = 0$: fine.`, null],
+            md`At $x = 0$, $\cosh 0 = 1$, so $V(0, y) = \tfrac{4V_0}{\pi}\sum\tfrac{1}{n\cosh(n\pi b/a)}\sin\tfrac{n\pi y}{a} \ne 0$. This is Ex. 3.4's function used in the wrong geometry; the grounded side needs $\sinh$.`,
+            { figHtml: G_HW }),
+
+          Q(md`For the slot, a student writes $V = \dfrac{4V_0}{\pi}\sum_{\text{odd}}\dfrac1n e^{-n\pi x/2a}\sin\dfrac{n\pi y}{2a}$. Which BC fails?`,
+            [md`BC #1, $V(x, 0) = 0$`, md`BC #2, $V(x, a) = 0$`, md`BC #4, $V \to 0$ far away`, md`None; it's a valid alternative.`], 1,
+            [md`$\sin 0 = 0$: fine.`, null, md`Each term decays: fine.`, md`At $y = a$: $\sin(n\pi/2) = \pm1$ for odd $n$, so $V \ne 0$ on the top plate.`],
+            md`$k = n\pi/2a$ fits half-waves into $2a$, not $a$. BC #2 is the one that sets $k = n\pi/a$; the wrong $k$ shows up as a non-zero top plate.`,
+            { figHtml: SLOT_BC }),
+
+          Q(md`For the slot with a constant strip, a student gets $V = \dfrac{2V_0}{\pi}\sum_{\text{odd}}\dfrac1n e^{-n\pi x/a}\sin\dfrac{n\pi y}{a}$. Which BC fails?`,
+            [md`BC #3: on the strip it gives $V_0/2$ instead of $V_0$.`, md`BC #1`, md`BC #4`, md`None.`], 0,
+            [null, md`Every sine vanishes at $y = 0$.`, md`Every term decays.`, md`Check $x = 0$, $y = a/2$: $\tfrac{2V_0}{\pi}\cdot\tfrac{\pi}{4} = \tfrac{V_0}{2}$.`],
+            md`A factor of 2 lost in Fourier's trick (using $\tfrac1a$ instead of $\tfrac2a$) shows up only on the live face. Always test the live face at one convenient point.`,
+            { figHtml: SLOT_BC }),
+
+          Q(md`For the cube with a live lid, a student writes: (1) $V = 0$ at $x = 0$; (2) $V = 0$ at $x = a$; (3) $V = 0$ at $y = 0$; (4) $V = 0$ at $y = a$; (5) $V = V_0$ at $z = a$; (6) $V \to 0$ as $z \to -\infty$. Which one is wrong?`,
+            [md`(1)`, md`(4)`, md`(5)`, md`(6)`], 3,
+            [md`The face $x = 0$ is grounded: correct.`, md`The face $y = a$ is grounded: correct.`, md`The lid is live: correct.`, null],
+            md`The box is closed: the bottom face is grounded, so (6) should be $V = 0$ at $z = 0$. Conditions at infinity only appear when the region actually extends to infinity.`,
+            { figHtml: CUBE }),
+
+          Q(md`For Ex. 3.4, a student writes BC #4 as "$V \to 0$ as $x \to \infty$". What's wrong?`,
+            [md`Nothing.`, md`It should be $V \to V_0$ as $x \to \infty$.`, md`The region is $-b < x < b$; the condition is $V = V_0$ at $x = -b$.`, md`It should be $\partial V/\partial x = 0$ at $x = 0$.`], 2,
+            [md`The region doesn't reach infinity.`, md`Still the wrong place: there is no infinity in this region.`, null, md`That's true by symmetry, but it's a consequence, not the given BC; the given one is on the face $x = -b$.`],
+            md`Habits from the slot leak into closed boxes. Read the region first; then every BC sits on an actual face of it.`,
+            { figHtml: G_EX34 }),
+
+          Q(md`Why does the standard recipe solve one subproblem per live face, with **every other face grounded**?`,
+            [md`Because the potential of a face can't be changed once it's set.`, md`To make the series converge.`, md`Because Laplace's equation is nonlinear.`, md`In each subproblem one direction then has two zero faces (sines, quantized $k$), and on each face exactly one subproblem is non-zero, so the sum reproduces every boundary value.`], 3,
+            [md`Not a reason.`, md`Convergence isn't the issue.`, md`It's linear; that's what makes adding subproblems legal.`, null],
+            md`Two needs: each subproblem must be solvable (a direction with two homogeneous faces), and the subproblems must add up to the real boundary values (each face live in exactly one). Grounding all other faces achieves both.`,
+            { figHtml: SUPER.svg }),
+
+          Q(md`A box has the top at $V_1$, the right side at $V_2$, the left side at $V_3$, and the bottom grounded. In the subproblem that handles the right side, what are the four BCs?`,
+            [md`Right $V_2$; top $V_1$; left $V_3$; bottom $0$.`, md`Right $V_2$; top, left, bottom all $0$.`, md`Right $V_2$; left $V_2$; top and bottom $0$.`, md`Right $V_2$; top $V_1$; left and bottom $0$.`], 1,
+            [md`That's the full problem, not a subproblem.`, null, md`The left side belongs to its own subproblem at $V_3$.`, md`The top belongs to another subproblem; here it must be $0$.`],
+            md`In subproblem 2 only the right side is live. Then $y$ has two zero faces (top and bottom): $\sin(n\pi y/a)$ with $\sinh(n\pi x/a)$ (zero at the left). Three subproblems in all, added at the end.`,
+            { figHtml: box({ T: 'V_1', R: 'V_2', L: 'V_3', B: '0', xt: [[170, 'b']], yt: [[110, 'a']] }) }),
+
+          Q(md`Slot with plates at $0$ (bottom) and $V_1$ (top), grounded end. After writing $V = V_1y/a + W$, which BCs does $W$ satisfy?`,
+            [md`$W = 0$ on both plates and far away; $W(0, y) = -V_1y/a$ on the end.`, md`$W = 0$ on the bottom, $V_1$ on the top, $0$ on the end.`, md`$W = 0$ everywhere on the boundary.`, md`$W = V_1y/a$ on the end.`], 0,
+            [null, md`Then nothing was gained: the top is still non-zero.`, md`Then $W = 0$ and $V = V_1y/a$, which isn't $0$ on the grounded end.`, md`Sign: $W(0, y) = V(0, y) - V_1y/a = 0 - V_1y/a$.`],
+            md`Subtracting the $k = 0$ piece moves the non-zero plate into the live face: three homogeneous BCs and one live one, the standard slot.`,
+            { figHtml: K0 }),
+
+          Q(md`Why does Ex. 3.3 specify that the end strip is **insulated** from the plates?`,
+            [md`So that no charge can sit on the strip.`, md`So the strip can be held at $V_0$ while the plates are at $0$; otherwise they would be one conductor at one potential.`, md`To make $\partial V/\partial n = 0$ on the strip.`, md`Because the problem is infinite.`], 1,
+            [md`The strip carries induced charge; insulation only separates it electrically from the plates.`, null, md`Insulated means electrically separated, not a condition on the field.`, md`Unrelated.`],
+            md`Two touching conductors share one potential. A thin insulating gap lets $V$ jump from $V_0$ to $0$ at the corners, which is exactly where the Fourier series rings (Gibbs).`,
+            { figHtml: SLOT }),
+
+          Q(md`How many boundary conditions does a separation problem in a closed 3-D rectangular box need, and how many in a 2-D semi-infinite slot?`,
+            [md`6 and 4`, md`6 and 3`, md`3 and 2`, md`8 and 4`], 0,
+            [null, md`The slot needs four: the fourth sits at infinity.`, md`Two per variable, not one.`, md`A box has six faces, not eight.`],
+            md`Second order in each variable: two conditions per variable. Box: $2 \times 3 = 6$ (one per face). Slot: $2 \times 2 = 4$, one of them the condition at $x \to \infty$.`,
+            { figHtml: PF.row([{ svg: CUBE, cap: 'box' }, { svg: SLOT, cap: 'slot' }]).svg }),
+
+          P({
+            title: 'Match each boundary condition to its job (2-D)',
+            q: md`The box $0 < x < a$, $0 < y < b$ has its top ($y = b$) at $V_0$ and the other three sides grounded. For each BC, pick what it does in the solution $V = \sum C_n\sin\frac{n\pi x}{a}\sinh\frac{n\pi y}{a}$.`,
+            figHtml: BOX_TOP,
+            hints: [md`The two grounded sides facing each other ($x = 0$, $x = a$) shape the sine; the grounded bottom shapes the $y$-function; the live top sets the coefficients.`],
+            parts: [
+              { lbl: md`$V(0, y) = 0$`, mc: [md`removes $\cos(kx)$`, md`quantizes $k = n\pi/a$`, md`picks $\sinh$ over $\cosh$ in $y$`, md`fixes $C_n$`], a: 0, why: [null, md`That's $V(a, y) = 0$.`, md`That's the bottom, $V(x, 0) = 0$.`, md`That's the live top.`] },
+              { lbl: md`$V(a, y) = 0$`, mc: [md`removes $\cos(kx)$`, md`quantizes $k = n\pi/a$`, md`picks $\sinh$ over $\cosh$ in $y$`, md`fixes $C_n$`], a: 1, why: [md`That's $V(0, y) = 0$; once the cosine is gone, this one forces $\sin ka = 0$.`, null, md`That's the bottom.`, md`That's the top.`] },
+              { lbl: md`$V(x, 0) = 0$`, mc: [md`removes $\cos(kx)$`, md`quantizes $k = n\pi/a$`, md`picks $\sinh$ over $\cosh$ in $y$`, md`fixes $C_n$`], a: 2, why: [md`It acts on the $y$-function, not on $\cos kx$.`, md`$k$ is fixed by the $x$ walls.`, null, md`That's the top.`] },
+              { lbl: md`$V(x, b) = V_0$`, mc: [md`removes $\cos(kx)$`, md`quantizes $k = n\pi/a$`, md`picks $\sinh$ over $\cosh$ in $y$`, md`fixes $C_n$`], a: 3, why: [md`A live face can't remove a function.`, md`A live face can't quantize anything.`, md`The bottom does that.`, null] },
+            ],
+            sol: md`
+              **Boundary conditions** (region $0 < x < a$, $0 < y < b$):
+
+              | BC | kind | job |
+              |---|---|---|
+              | 1. $V(0, y) = 0$ | homogeneous | $X = C\sin kx + D\cos kx$: $D = 0$ |
+              | 2. $V(a, y) = 0$ | homogeneous | $\sin ka = 0$: $k = n\pi/a$ |
+              | 3. $V(x, 0) = 0$ | homogeneous | $Y = Ae^{ky} + Be^{-ky}$ with $A + B = 0$: $\sinh ky$ |
+              | 4. $V(x, b) = V_0$ | live | $C_n\sinh(n\pi b/a) = \tfrac{4V_0}{n\pi}$ (odd $n$) |
+
+              Result: $V = \tfrac{4V_0}{\pi}\sum_{\text{odd}}\tfrac1n\sin\tfrac{n\pi x}{a}\tfrac{\sinh(n\pi y/a)}{\sinh(n\pi b/a)}$. **Verify:** $x = 0, a$: sines vanish. $y = 0$: $\sinh 0 = 0$. $y = b$: ratio $1$, sine series of $V_0$.
+            `,
+          }),
+
+          P({
+            title: 'Match each boundary condition to its job (3-D pipe)',
+            q: md`For Griffiths Ex. 3.5 (the semi-infinite rectangular pipe with its end at $V_0(y,z)$), pick what each condition does.`,
+            figHtml: PIPE3D,
+            hints: [md`Four walls shape the two sines and quantize $k$ and $l$; the condition far away picks the exponential; the end fixes $C_{nm}$.`],
+            parts: [
+              { lbl: md`$V = 0$ at $z = b$`, mc: [md`quantizes $l = m\pi/b$`, md`quantizes $k = n\pi/a$`, md`removes $e^{+\gamma x}$`, md`fixes $C_{nm}$`], a: 0, why: [null, md`$k$ is set by the walls $y = 0$ and $y = a$.`, md`That's the condition at infinity.`, md`That's the live end.`] },
+              { lbl: md`$V \to 0$ as $x \to \infty$`, mc: [md`quantizes $l = m\pi/b$`, md`quantizes $k = n\pi/a$`, md`removes $e^{+\gamma x}$`, md`fixes $C_{nm}$`], a: 2, why: [md`Conditions at infinity don't quantize.`, md`Same.`, null, md`It's homogeneous; it can't fix coefficients.`] },
+              { lbl: md`$V = V_0(y, z)$ at $x = 0$`, mc: [md`quantizes $l = m\pi/b$`, md`quantizes $k = n\pi/a$`, md`removes $e^{+\gamma x}$`, md`fixes $C_{nm}$`], a: 3, why: [md`The live face fixes coefficients, not the allowed modes.`, md`Same.`, md`That's the condition far away.`, null] },
+              { lbl: md`How many BCs in total?`, mc: [md`4`, md`5`, md`6`, md`8`], a: 2, why: [md`Two per variable and three variables.`, md`One is missing: count two each for $x$, $y$, $z$.`, null, md`Six faces (one of them at infinity), not eight.`] },
+            ],
+            sol: md`
+              **Boundary conditions** (region $x > 0$, $0 < y < a$, $0 < z < b$):
+
+              | BC | kind | job |
+              |---|---|---|
+              | 1. $V = 0$ at $y = 0$ | homogeneous | removes $\cos ky$ |
+              | 2. $V = 0$ at $y = a$ | homogeneous | $k = n\pi/a$ |
+              | 3. $V = 0$ at $z = 0$ | homogeneous | removes $\cos lz$ |
+              | 4. $V = 0$ at $z = b$ | homogeneous | $l = m\pi/b$ |
+              | 5. $V \to 0$ as $x \to \infty$ | homogeneous | removes $e^{+\gamma x}$, $\gamma = \sqrt{k^2 + l^2}$ |
+              | 6. $V = V_0(y,z)$ at $x = 0$ | live | $C_{nm} = \tfrac{4}{ab}\iint V_0\sin\tfrac{n\pi y}{a}\sin\tfrac{m\pi z}{b}$ |
+
+              Six conditions for three variables.
+            `,
+          }),
+
+          RF(md`
+            !!key Patterns to remember
+              - Translate first: grounded $\to V = 0$; held at $V_0$ $\to$ live; insulated $\to$ allowed to differ; infinitely long $\to$ 2-D; far away $\to$ $0$ (or the parallel-plate value).
+              - Two BCs per variable: 4 in 2-D, 6 in 3-D. Infinity counts as a face when the region reaches it.
+              - Homogeneous pairs make sines and quantize; a single homogeneous face picks $\sinh$ (or $\sinh k(b - x)$); infinity picks the decaying exponential; symmetry picks $\cosh$; the live face fixes coefficients.
+              - Wrong function on a grounded face, wrong $k$, missing $\tfrac2a$, or a condition at a non-existent infinity: test every BC at the end and they all show up.
+          `),
+        ],
+      },
+      // ============================================================ LESSON 9
+      {
+        id: 'u6-exam', title: 'Exam strategy and mixed practice',
+        steps: [
+          RF(md`
+            ### The order of work
+
+            1. **Draw** the region; write each face's potential next to it; mark the region of interest.
+            2. **List the BCs**, numbered; mark each homogeneous or live; say what each will do.
+            3. **Write the general solution** in one line: sines in the direction with two zero faces, $k = n\pi/\text{width}$; the matching $e^{-kx}$, $\sinh$ or $\cosh$ with the **same** $k$; a double sum in 3-D.
+            4. **Fourier's trick** on the live face, using the standard integrals.
+            5. **Simplify**: which $n$ survive (use symmetry before integrating); write the final series compactly.
+            6. **Check**: every BC; $V$ between the extreme boundary values; units ($C_n$ in volts); a symmetric point; a limit; the far field.
+
+            ### Time-savers
+
+            - Boundary data already a sum of $\sin(n\pi y/a)$: read off the coefficients.
+            - Symmetric about the midline: odd $n$ only. Antisymmetric: even $n$ only.
+            - Several live faces: one subproblem each. Boundary data that is a sum: coefficients add.
+            - Write the $x$-factor as a ratio, e.g. $\sinh(n\pi x/a)/\sinh(n\pi b/a)$, so the coefficients are the plain Fourier ones.
+            - Center of a square: the average of the four sides. Center of a cube: the average of the six faces.
+            - $\dfrac{\sinh u}{\sinh 2u} = \dfrac{1}{2\cosh u}$: center values in one line.
+            - Far from a live face keep one term: decay length $a/\pi$ in a slot, $a/(\sqrt2\,\pi)$ in a square pipe.
+
+            ### Know these cold (they are not on the formula sheet)
+
+            | what | formula |
+            |---|---|
+            | orthogonality | $\displaystyle\int_0^a\sin\frac{n\pi y}{a}\sin\frac{m\pi y}{a}\,dy = \frac{a}{2}\delta_{nm}$ |
+            | Fourier's trick | $C_n = \dfrac{2}{a}\displaystyle\int_0^a V_0(y)\sin\frac{n\pi y}{a}\,dy$ |
+            | constant face | $\displaystyle\int_0^a\sin\frac{n\pi y}{a}\,dy = \frac{a}{n\pi}(1 - \cos n\pi)$, so $C_n = \dfrac{4V_0}{n\pi}$, odd $n$ |
+            | part of a face | $\displaystyle\int_0^c\sin\frac{n\pi y}{a}\,dy = \frac{a}{n\pi}\left(1 - \cos\frac{n\pi c}{a}\right)$ |
+            | ramp | $\displaystyle\int_0^a y\sin\frac{n\pi y}{a}\,dy = -\frac{a^2\cos n\pi}{n\pi}$ |
+            | 3-D constant face | $C_{nm} = \dfrac{16V_0}{\pi^2nm}$, $n$ and $m$ odd |
+            | the slot | $V = \dfrac{4V_0}{\pi}\displaystyle\sum_{\text{odd}}\frac1n e^{-n\pi x/a}\sin\frac{n\pi y}{a}$ |
+
+            ### A model answer (what a full-credit solution looks like)
+
+            *Region* $x > 0$, $0 < y < a$; no charge, so $\nabla^2V = 0$; nothing depends on $z$.
+            *BCs:* (1) $V(x,0) = 0$, (2) $V(x,a) = 0$, (3) $V(0,y) = V_0$, (4) $V \to 0$ as $x \to \infty$; (1), (2), (4) homogeneous.
+            *Separate:* $V = XY$, $X''/X = k^2$, $Y''/Y = -k^2$ ($y$ has two zero faces). $X = Ae^{kx} + Be^{-kx}$, $Y = C\sin ky + D\cos ky$.
+            *Apply:* (1) $D = 0$; (4) $A = 0$; (2) $k = n\pi/a$. *Superpose:* $V = \sum C_ne^{-n\pi x/a}\sin\tfrac{n\pi y}{a}$.
+            *Fourier:* $C_n = \tfrac2a\int_0^aV_0\sin\tfrac{n\pi y}{a}dy = \tfrac{2V_0}{n\pi}(1 - \cos n\pi)$: $\tfrac{4V_0}{n\pi}$ odd, $0$ even.
+            *Answer:* $V = \tfrac{4V_0}{\pi}\sum_{\text{odd}}\tfrac1n e^{-n\pi x/a}\sin\tfrac{n\pi y}{a}$.
+            *Check:* each BC; $0 < V < V_0$; far field $\tfrac{4V_0}{\pi}e^{-\pi x/a}\sin\tfrac{\pi y}{a}$.
+          `),
+
+          Q(md`You open an exam problem about a pipe with given wall potentials. What should you write first?`,
+            [md`The cross-section with each wall's potential, and the numbered list of BCs marked homogeneous or live.`, md`The general solution $\sum C_n e^{-n\pi x/a}\sin(n\pi y/a)$.`, md`Fourier's trick.`, md`The answer from the lecture slot.`], 0,
+            [null, md`The right functions depend on the BCs; writing the slot's solution by habit is how $\cosh$/$\sinh$/$e^{-kx}$ mix-ups happen.`, md`Fourier's trick is the last step, after the zero BCs have shaped the functions.`, md`Only if the geometry really is the slot.`],
+            md`The BC list decides everything that follows: which direction gets sines, which function in the other direction, which face goes into the coefficients. It is also where a lot of the credit is.`,
+            { figHtml: G_HW }),
+
+          Q(md`For a square pipe with one side at $V_0$ and three grounded, your series gives $0.31V_0$ at the center. What do you conclude?`,
+            [md`Fine; center values depend on the number of terms.`, md`Fine, as long as $0 < V < V_0$.`, md`Something is wrong: the center must be exactly $V_0/4$.`, md`The rotation argument doesn't apply to series answers.`], 2,
+            [md`The series converges fast at the center: $0.2537$, $0.2499$, $0.2500$. You can't be at $0.31$.`, md`That's necessary but not sufficient; there's a sharper check.`, null, md`It applies to the true potential, which your series must equal.`],
+            md`Superpose the four rotations: all sides at $V_0$ gives $V_0$ everywhere, so each piece gives $V_0/4$ at the center. Common culprits: $\cosh$ instead of $\sinh$, a missing $\tfrac{1}{\sinh}$ normalization, even $n$ kept.`,
+            { figHtml: SQ1 }),
+
+          Q(md`Your answer gives $V = 1.2V_0$ at a point inside a slot whose boundary values are $0$ and $V_0$. What do you conclude?`,
+            [md`Possible near the corners (Gibbs).`, md`Possible if the plates are close together.`, md`Possible in 3-D but not 2-D.`, md`Impossible: Laplace's equation allows no maximum inside, so $V$ must lie between $0$ and $V_0$.`], 3,
+            [md`Gibbs overshoot belongs to truncated sums *on the boundary*; the true potential inside never exceeds $V_0$.`, md`Geometry doesn't change the maximum principle.`, md`It holds in any dimension.`, null],
+            md`A harmonic function is the average of its neighbours, so it can't have a local maximum or minimum inside. Any interior value outside the boundary range signals an error (often a wrong sign or a $\cosh$ where a $\sinh$ belongs).`,
+            { figHtml: SLOT }),
+
+          Q(md`Your coefficients come out as $C_n = \dfrac{4V_0a}{n\pi}$. What does the units check tell you?`,
+            [md`Nothing; $a$ is just a length.`, md`$C_n$ must be in volts; an extra length means the $\tfrac{2}{a}$ (or a $\tfrac{1}{a}$ from integrating) was dropped.`, md`The answer is right for a wide slot.`, md`You should have used $\tfrac{1}{a}$.`], 1,
+            [md`$V = \sum C_n\times(\text{dimensionless})$, so $C_n$ must be volts.`, null, md`The width only appears through $x/a$ and $y/a$ in a correct answer.`, md`$\tfrac{1}{a}$ would fix the units but be off by a factor of 2.`],
+            md`The exponentials and sines are dimensionless, so $[C_n] = [V]$. The notes' own slip on L12-3 (the missing $\tfrac{a}{m\pi}$) would break units mid-calculation; a units check catches it.`,
+            { nofig: 'units' }),
+
+          Q(md`The live end of a slot is at $V_0\cos(\pi y/a)$: $+V_0$ at the bottom, $-V_0$ at the top. Which $n$ appear?`,
+            [md`Only odd $n$`, md`Only $n = 1$`, md`All $n$`, md`Only even $n$`], 3,
+            [md`$\cos(\pi y/a)$ is antisymmetric about $a/2$: odd $n$ (symmetric sines) have zero overlap.`, md`$\cos$ is not $\sin$; on $(0, a)$ it needs many sines.`, md`Symmetry kills the odd ones.`, null],
+            md`$\cos\tfrac{\pi(a - y)}{a} = -\cos\tfrac{\pi y}{a}$: antisymmetric, so even $n$ only. Explicitly $C_n = \tfrac{4nV_0}{\pi(n^2 - 1)}$ for even $n$: $C_2 = \tfrac{8V_0}{3\pi}$.`,
+            { figHtml: slot({ end: 'V_0\\cos(\\pi y/a)' }) }),
+
+          Q(md`In a closed box, your answer doesn't vanish on a face that should be grounded. The most likely cause?`,
+            [md`A $\cosh$ (or an $e^{\pm kx}$, or a $\cos$) where the grounded face needed a $\sinh$ (or a $\sin$).`, md`Too few terms.`, md`The wrong live-face value.`, md`A wrong overall sign.`], 0,
+            [null, md`Each term should vanish exactly on a grounded face; truncation can't create a non-zero value there.`, md`The live face's value affects only the coefficients, not the zero faces.`, md`$-0 = 0$: a sign error can't make a zero face non-zero.`],
+            md`Grounded faces are built into each term through the choice of function. If one isn't zero, look at the function chosen for that direction.`,
+            { figHtml: BOX_TOP }),
+
+          Q(md`Does the order in which you apply the homogeneous boundary conditions matter?`,
+            [md`Yes; the lecture's order (#1, #4, #2) is required.`, md`Yes; quantize $k$ first or the others fail.`, md`No, the homogeneous ones can go in any order, but the live face must come after superposition.`, md`No; the live face can go first too.`], 2,
+            [md`Griffiths applies (iv) first; the lecture applies #1 first. Same result.`, md`You can quantize $k$ before or after removing the cosine.`, null, md`A single product can't match a general $V_0(y)$; you need the full sum first.`],
+            md`Homogeneous BCs act on each product separately and commute. The live face acts on the whole sum, so it is last.`,
+            { figHtml: SLOT_BC }),
+
+          Q(md`The potential in a slot is $V = V_0e^{-\pi x/a}\sin\dfrac{\pi y}{a} + \dfrac{V_0}{3}e^{-3\pi x/a}\sin\dfrac{3\pi y}{a}$. What is the potential on the end strip at its midpoint, $(0, a/2)$?`,
+            [md`$\dfrac{4V_0}{3}$`, md`$\dfrac{2V_0}{3}$`, md`$V_0$`, md`$0$`], 1,
+            [md`$\sin\tfrac{3\pi}{2} = -1$, not $+1$.`, null, md`You'd need the full constant-strip series for that.`, md`Only the corners are at $0$.`],
+            md`Set $x = 0$: $V(0, y) = V_0\sin\tfrac{\pi y}{a} + \tfrac{V_0}{3}\sin\tfrac{3\pi y}{a}$. At $y = a/2$: $V_0 - \tfrac{V_0}{3} = \tfrac{2V_0}{3}$. Reading the boundary data back off a series is a quick way to check one.`,
+            { figHtml: slot({ end: 'V(0,y)=\\,?' }) }),
+
+          Q(md`When is a single term of the slot series good enough for a numerical answer?`,
+            [md`Always.`, md`Only on the strip itself.`, md`Only at the exact center of the slot.`, md`At distances of about $a/2$ or more from the live face, where the next term is down by $\tfrac13e^{-2\pi x/a} \lesssim 1.4\%$.`], 3,
+            [md`Near the strip one term is off by several percent (e.g. 6% at $x = a/4$).`, md`On the strip it's worst: convergence is slow there.`, md`Not only there.`, null],
+            md`State the approximation and its size when you use it: "keeping $n = 1$; the $n = 3$ term is smaller by $\tfrac13e^{-2\pi x/a}$."`,
+            { figHtml: FAR }),
+
+          P({
+            title: 'Charge induced on the bottom plate',
+            q: md`For the slot with a constant strip $V_0$ (Ex. 3.3), find the surface charge density $\sigma(x)$ induced on the bottom plate ($y = 0$): (a) far down the slot, using one term; (b) exactly, by summing the series. (c) Which way does $\vb E$ point just above the plate?`,
+            figHtml: slot({ end: 'V_0', pts: [[0.8, 0, '\\sigma(x)\\,?', 'tr']] }),
+            hints: [
+              md`Conductor boundary condition: $\sigma = -\varepsilon_0\dfrac{\partial V}{\partial n}$, with $\hat{\mathbf n}$ pointing out of the conductor into the field region. Here $\hat{\mathbf n} = +\hat{\mathbf y}$.`,
+              md`Differentiate the series term by term with respect to $y$, then set $y = 0$: each $\cos(0) = 1$.`,
+              md`$\sum_{n\ \text{odd}}e^{-n\pi x/a} = \dfrac{e^{-\pi x/a}}{1 - e^{-2\pi x/a}} = \dfrac{1}{2\sinh(\pi x/a)}$ (a geometric series).`,
+            ],
+            parts: [
+              { lbl: md`(a) $\sigma(x)$ far down the slot`, expr: '-4*eps0*V0*exp(-pi*x/a)/a', vars: { eps0: [0.5, 2], V0: [1, 3], x: [0.5, 3], a: [0.5, 2] }, accepts: ['-(4*eps0*V0/a)*exp(-pi*x/a)'] },
+              { lbl: md`(b) exact $\sigma(x)$`, expr: '-2*eps0*V0/(a*sinh(pi*x/a))', vars: { eps0: [0.5, 2], V0: [1, 3], x: [0.2, 3], a: [0.5, 2] }, accepts: ['-(2*eps0*V0/a)/sinh(pi*x/a)'] },
+              { lbl: md`(c) Just above the plate, $\vb E$ points`, mc: [md`along $-\hat{\mathbf y}$, into the plate, so $\sigma < 0$`, md`along $+\hat{\mathbf y}$, away from the plate`, md`along $+\hat{\mathbf x}$, parallel to the plate`, md`nowhere: $\vb E = 0$ at a conductor`], a: 0, why: [null, md`$V$ increases away from the grounded plate (toward the interior), so $\vb E = -\nabla V$ points toward the plate.`, md`At a conductor's surface $\vb E$ is perpendicular to it.`, md`$\vb E = 0$ *inside* the metal; just outside it is $\sigma/\varepsilon_0$ along the normal.`] },
+            ],
+            sol: md`
+              **Conductor BC at the plate:** $E_{\perp} = \sigma/\varepsilon_0$ just outside, i.e. $\sigma = -\varepsilon_0\,\partial V/\partial n$ with $\hat{\mathbf n} = +\hat{\mathbf y}$ out of the bottom plate.
+
+              $$\frac{\partial V}{\partial y}\bigg|_{y=0} = \frac{4V_0}{\pi}\sum_{\text{odd}}\frac1n\cdot\frac{n\pi}{a}e^{-n\pi x/a}\cos 0 = \frac{4V_0}{a}\sum_{\text{odd}}e^{-n\pi x/a}.$$
+
+              (a) Far away only $n = 1$: $\sigma \approx -\dfrac{4\varepsilon_0V_0}{a}e^{-\pi x/a}$.
+
+              (b) Geometric series: $\sum_{\text{odd}}q^n = \dfrac{q}{1 - q^2}$ with $q = e^{-\pi x/a}$, which is $\dfrac{1}{2\sinh(\pi x/a)}$. So
+
+              $$\sigma(x) = -\frac{2\varepsilon_0V_0}{a\,\sinh(\pi x/a)} .$$
+
+              (Same result from the closed form $V = \tfrac{2V_0}{\pi}\tan^{-1}\tfrac{\sin(\pi y/a)}{\sinh(\pi x/a)}$.) For large $x$, $\sinh \to \tfrac12e^{\pi x/a}$ and (b) reduces to (a).
+
+              (c) $V > 0$ inside and $V = 0$ on the plate, so $V$ grows going up; $\vb E = -\nabla V$ points down into the plate, ending on negative induced charge.
+
+              **Checks:** units $\varepsilon_0V_0/a$ = C/m². The charge piles up near the strip ($\sigma \propto 1/x$ for $x \ll a$, the corner singularity) and dies exponentially far away.
+            `,
+          }),
+
+          P({
+            title: 'A pipe with opposite live sides',
+            q: md`A long pipe has cross-section $-b < x < b$, $0 < y < a$, with $b = a$. The plates at $y = 0$ and $y = a$ are grounded; the side at $x = +b$ is at $+V_0$ and the side at $x = -b$ is at $-V_0$. (a) Write $V$. (b) What is $V$ on the plane $x = 0$? (c) Find $V$ at P $= (b/2, a/2)$.`,
+            figHtml: box({ center: true, L: '-V_0', R: '+V_0', T: '0', B: '0', w: 220, h: 110, pts: [[165, 55, 'P', 'tr']] }),
+            hints: [
+              md`Sines in $y$ as in Ex. 3.4. In $x$ the data is *odd*: $V(-x, y) = -V(x, y)$.`,
+              md`Odd in $x$ means $\sinh(n\pi x/a)$.`,
+              md`What does (b) say about the right half of the pipe? Compare with HW 3.17.`,
+            ],
+            parts: [
+              { lbl: md`(a) The $x$-factor of each term is`, mc: [md`$\dfrac{\cosh(n\pi x/a)}{\cosh(n\pi b/a)}$`, md`$\dfrac{\sinh(n\pi x/a)}{\sinh(n\pi b/a)}$`, md`$e^{-n\pi(b - x)/a}$`, md`$\dfrac{\sinh(n\pi(b - x)/a)}{\sinh(2n\pi b/a)}$`], a: 1, why: [md`Even in $x$: it would give $+V_0$ on both sides.`, null, md`Not odd, and the region is closed.`, md`That vanishes at $x = b$, where the potential is $+V_0$.`] },
+              { lbl: md`(b) On the plane $x = 0$, $V$ is`, mc: [md`$V_0/2$`, md`$0$ everywhere`, md`$V_0\sin(\pi y/a)$`, md`undefined`], a: 1, why: [md`The two sides are equal and opposite; the middle is halfway in potential: $0$.`, null, md`$\sinh 0 = 0$ kills every term.`, md`It's well-defined: $0$.`] },
+              { lbl: md`(c) $V(\text{P})/V_0$`, ans: 0.25, unit: '' },
+            ],
+            sol: md`
+              **BCs:** (1) $V(x, 0) = 0$, (2) $V(x, a) = 0$ (homogeneous: sines in $y$, $k = n\pi/a$); (3) $V(b, y) = +V_0$, (4) $V(-b, y) = -V_0$ (live, odd under $x \to -x$).
+
+              (a) Odd symmetry $V(-x, y) = -V(x, y)$ forces $A = -B$: $\sinh$. With $C_n\sinh(n\pi b/a) = \tfrac{4V_0}{n\pi}$ (odd $n$) from BC (3):
+
+              $$V = \frac{4V_0}{\pi}\sum_{n\ \text{odd}}\frac1n\,\frac{\sinh(n\pi x/a)}{\sinh(n\pi b/a)}\,\sin\frac{n\pi y}{a}.$$
+
+              BC (4) follows automatically from oddness.
+
+              (b) $\sinh 0 = 0$: $V = 0$ on the whole plane $x = 0$, like a grounded sheet.
+
+              (c) So the right half ($0 < x < b$) is exactly HW 3.17 with $b = a$: three grounded sides (including the "virtual" one at $x = 0$) and one at $V_0$. P is its center, so $V(\text{P}) = V_0/4$. Series check: $\tfrac{4V_0}{\pi}\sum\tfrac{(-1)^{(n-1)/2}}{n}\tfrac{\sinh(n\pi/2)}{\sinh(n\pi)} = 0.2500V_0$.
+            `,
+          }),
+
+          P({
+            title: 'Reading boundary data off a series',
+            q: md`The potential in a slot (grounded plates at $y = 0$, $a$; live strip at $x = 0$) is
+
+            $$V = V_0e^{-\pi x/a}\sin\frac{\pi y}{a} + \frac{V_0}{3}e^{-3\pi x/a}\sin\frac{3\pi y}{a}.$$
+
+            (a) What potential profile $V_0(y)$ is the strip held at? (b) Find $V$ on the strip at its midpoint. (c) Is $V_0(y)$ symmetric about $y = a/2$?`,
+            figHtml: slot({ end: 'V_0(y)=\\,?' }),
+            hints: [md`Set $x = 0$.`, md`Both modes have odd $n$.`],
+            parts: [
+              { lbl: md`(a) $V_0(y)$`, expr: 'V0*sin(pi*y/a)+(V0/3)*sin(3*pi*y/a)', vars: { V0: [1, 3], y: [0.1, 0.9], a: [1, 2] }, accepts: ['V0*(sin(pi*y/a)+sin(3*pi*y/a)/3)'] },
+              { lbl: md`(b) $V(0, a/2)/V_0$`, ans: 2 / 3, unit: '' },
+              { lbl: md`(c) Symmetric about $a/2$?`, mc: [md`Yes: both terms have odd $n$.`, md`No: the $n = 3$ term breaks the symmetry.`, md`Only if $V_0 > 0$.`, md`Can't tell without the integral.`], a: 0, why: [null, md`Every odd-$n$ sine is symmetric about $a/2$.`, md`The sign of $V_0$ doesn't affect symmetry.`, md`The symmetry rule reads it straight off the modes.`] },
+            ],
+            sol: md`
+              (a) At $x = 0$ both exponentials are $1$: $V_0(y) = V_0\sin\tfrac{\pi y}{a} + \tfrac{V_0}{3}\sin\tfrac{3\pi y}{a}$.
+
+              (b) $V(0, a/2) = V_0(1) + \tfrac{V_0}{3}(-1) = \tfrac{2V_0}{3}$.
+
+              (c) Yes: odd-$n$ sines are symmetric about $a/2$, so any combination of them is. (This $V_0(y)$ is flatter in the middle than a single sine: the first two terms of the constant strip's series, rescaled.)
+
+              The other BCs hold automatically: every term vanishes on the plates and dies far away.
+            `,
+          }),
+
+          P({
+            title: 'A strip held at a cosine profile',
+            q: md`The end strip of a slot is held at $V_0(y) = V_0\cos(\pi y/a)$ (from $+V_0$ at the bottom to $-V_0$ at the top); the plates are grounded. (a) Find $C_2$. (b) Estimate $V$ at $(a/2,\, a/4)$ with one term.`,
+            figHtml: slot({ end: 'V_0\\cos(\\pi y/a)', pts: [[0.5, 0.25, 'P', 'tr']] }),
+            hints: [
+              md`Antisymmetric about $a/2$: only even $n$.`,
+              md`$\int_0^a\cos\tfrac{\pi y}{a}\sin\tfrac{n\pi y}{a}dy = \tfrac{a}{\pi}\cdot\tfrac{n(1 + \cos n\pi)}{n^2 - 1}$ for $n \ne 1$ (product-to-sum).`,
+              md`At $(a/2, a/4)$ the $n = 4$ term vanishes ($\sin\pi = 0$), so $n = 2$ alone is very accurate.`,
+            ],
+            parts: [
+              { lbl: md`(a) $C_2/V_0$`, ans: 8 / (3 * PI), unit: '' },
+              { lbl: md`(b) $V(a/2, a/4)/V_0$`, ans: 0.036664, unit: '' },
+            ],
+            sol: md`
+              **BCs:** (1), (2) $V = 0$ on the plates; (4) $V \to 0$ far away (homogeneous: the lecture's functions); (3) $V(0, y) = V_0\cos(\pi y/a)$ (live).
+
+              $\sin A\cos B = \tfrac12[\sin(A + B) + \sin(A - B)]$ gives $\int_0^a\cos\tfrac{\pi y}{a}\sin\tfrac{n\pi y}{a}dy = \tfrac{a}{\pi}\tfrac{n(1 + \cos n\pi)}{n^2 - 1}$, so
+
+              $$C_n = \frac{4nV_0}{\pi(n^2 - 1)}\ \ (n \text{ even}),\qquad C_n = 0\ \ (n \text{ odd}).$$
+
+              (a) $C_2 = \tfrac{8V_0}{3\pi} = 0.849V_0$.
+
+              (b) $V \approx C_2e^{-\pi}\sin\tfrac{\pi}{2} = 0.849 \times 0.0432\,V_0 = 0.0367V_0$. The $n = 4$ term vanishes at $y = a/4$, and $n = 6$ is down by $e^{-2\pi}$: the full series gives $0.03666V_0$.
+
+              Note the $1/n$ fall-off: $\cos(\pi y/a)$ is non-zero at both plates, so the data jumps there (and the partial sums ring at the corners).
+            `,
+          }),
+
+          P({
+            title: 'A single-mode lid on a pipe',
+            q: md`A long pipe has cross-section $0 < x < b$, $0 < y < a$. Three sides are grounded; the top ($y = a$) is held at $V_0\sin(\pi x/b)$. (a) Find $V(x, y)$. (b) Find $V$ at the center when $a = b$.`,
+            figHtml: box({ T: 'V_0\\sin(\\pi x/b)', L: '0', R: '0', B: '0', w: 150, h: 110, xt: [[150, 'b']], yt: [[110, 'a']] }),
+            hints: [
+              md`The two grounded sides facing each other are $x = 0$ and $x = b$: sines in $x$ with $k = n\pi/b$.`,
+              md`Zero at $y = 0$: $\sinh(ky)$ with the same $k$.`,
+              md`The lid is the $n = 1$ mode: one term.`,
+            ],
+            parts: [
+              { lbl: 'V(x,y)', expr: 'V0*sin(pi*x/b)*sinh(pi*y/b)/sinh(pi*a/b)', vars: { V0: [1, 3], x: [0.1, 0.9], y: [0.1, 0.9], a: [1, 2], b: [1, 2] }, accepts: ['V0*sinh(pi*y/b)*sin(pi*x/b)/sinh(pi*a/b)'] },
+              { lbl: md`(b) $V(\text{center})/V_0$ for $a = b$`, ans: 0.19927, unit: '' },
+            ],
+            sol: md`
+              **BCs:** (1) $V(0, y) = 0$, (2) $V(b, y) = 0$ $\Rightarrow \sin(n\pi x/b)$; (3) $V(x, 0) = 0$ $\Rightarrow \sinh(n\pi y/b)$; (4) $V(x, a) = V_0\sin(\pi x/b)$ (live) $\Rightarrow$ only $n = 1$.
+
+              (a) $V = V_0\sin\dfrac{\pi x}{b}\,\dfrac{\sinh(\pi y/b)}{\sinh(\pi a/b)}$. Note $k = \pi/b$ in the $\sinh$ too: it's set by the width of the sine direction, not by $a$.
+
+              (b) $a = b$, center: $\sin\tfrac{\pi}{2} = 1$, $\tfrac{\sinh(\pi/2)}{\sinh\pi} = \tfrac{1}{2\cosh(\pi/2)} = \tfrac{1}{5.018}$, so $V = 0.199V_0$.
+
+              **Check:** less than the constant lid's $V_0/4$, because this lid is at $V_0$ only in its middle.
+            `,
+          }),
+
+          RF(md`
+            !!key The whole unit on one card
+              - **When:** charge-free region bounded by coordinate planes, $V$ given on every boundary.
+              - **BCs:** numbered list, two per variable, each marked homogeneous or live, each with its job.
+              - **Functions:** two zero faces $\Rightarrow \sin(n\pi y/a)$; then $e^{-kx}$ (to infinity), $\sinh kx$ (zero at $x = 0$), $\sinh k(b - x)$ (zero at $x = b$), $\cosh kx$ (equal faces at $\pm b$), all with the same $k$; $k = 0$ (linear) when two opposite plates differ.
+              - **Coefficients:** $C_n = \tfrac2a\int_0^aV_0\sin\tfrac{n\pi y}{a}dy$; constant $\Rightarrow \tfrac{4V_0}{n\pi}$ odd; $\pm$ strips $\Rightarrow \tfrac{8V_0}{n\pi}$, $n = 2, 6, 10$; symmetry picks odd or even $n$; 3-D constant $\Rightarrow \tfrac{16V_0}{\pi^2nm}$.
+              - **Many live faces:** one subproblem each, add.
+              - **Checks:** every BC; $V$ within the boundary range; units; square center $V_0/4$, cube center $V_0/6$; far field one term; $b \to \infty$ gives the slot.
+          `),
+        ],
+      },
     ],
   });
 })();

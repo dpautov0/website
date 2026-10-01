@@ -325,10 +325,11 @@
         `, { two: { svg: fTwoQ(true), cap: 'Two fixed charges $+Q$ a distance $2d$ apart. $O$ is midway; $P$ is a height $d$ above $O$, a distance $\\sqrt2\\,d$ from each charge.' } }),
 
         Q(md`In the worked example, the field at $O$ is zero. Someone concludes that no work is needed to bring $q$ in from infinity to $O$. What is wrong?`,
-          [md`Nothing: zero field at $O$ means zero work`, md`The work depends on the field along the whole way in, i.e. on $V(O)$, which is not zero`, md`The work is infinite because $q$ passes close to the charges`, md`The work depends on the direction $q$ comes in from`], 1,
-          [md`Zero field at the **end point** says nothing about the field on the way in. $W = qV(O) = 2qQ/(4\pi\varepsilon_0 d)$.`, null,
+          [md`Nothing: zero field at $O$ means zero work`, md`The work is infinite because $q$ passes close to the charges`, md`The work depends on the direction $q$ comes in from`, md`The work depends on the field along the whole way in, i.e. on $V(O)$, which is not zero`], 3,
+          [md`Zero field at the **end point** says nothing about the field on the way in. $W = qV(O) = 2qQ/(4\pi\varepsilon_0 d)$.`,
             md`$q$ never has to pass through a charge; any reasonable path keeps it a finite distance away, and the work is finite: $qV(O)$.`,
-            md`Path independence: every route from infinity to $O$ costs $qV(O)$.`],
+            md`Path independence: every route from infinity to $O$ costs $qV(O)$.`,
+            null],
           md`$W = -q\int_\infty^O \vb E\cdot d\vb l = qV(O)$. The integral samples $\vb E$ along the whole path, not just at the end. $\vb E = -\nabla V$ is zero at $O$ because $V$ has a stationary point there (a saddle), not because $V$ is zero.`,
           { figHtml: fTwoQ(false) }),
 
@@ -616,9 +617,11 @@
         `),
 
         Q(md`In $W = \tfrac12\sum_i q_iV(\vb r_i)$ for point charges, $V(\vb r_i)$ is`,
-          [md`the total potential at $\vb r_i$, including $q_i$'s own`, md`the potential at $\vb r_i$ from the charges that were in place before $q_i$ was brought in`, md`the potential at $\vb r_i$ from all the other charges`, md`the potential at the centre of the configuration`], 2,
-          [md`$q_i$'s own potential at its own position is infinite. It is left out.`, md`That is what the **pairwise** step-by-step construction uses. In the $\tfrac12$ form every other charge counts, whenever it arrived; that is exactly why every pair is counted twice.`, null,
-            md`Each charge is multiplied by the potential at **its own** location.`],
+          [md`the total potential at $\vb r_i$, including $q_i$'s own`, md`the potential at $\vb r_i$ from the charges that were in place before $q_i$ was brought in`, md`the potential at the centre of the configuration`, md`the potential at $\vb r_i$ from all the other charges`], 3,
+          [md`$q_i$'s own potential at its own position is infinite. It is left out.`,
+            md`That is what the **pairwise** step-by-step construction uses. In the $\tfrac12$ form every other charge counts, whenever it arrived; that is exactly why every pair is counted twice.`,
+            md`Each charge is multiplied by the potential at **its own** location.`,
+            null],
           md`$V(\vb r_i) = \sum_{j\ne i}\dfrac{q_j}{4\pi\varepsilon_0\srm_{ij}}$: everyone except $q_i$. Using all the others double counts each pair, which the $\tfrac12$ fixes.`,
           { nofig: 'Definition question.' }),
 
@@ -848,7 +851,7 @@
 
   // ===================================================================================== Lesson 3
   const L3 = () => {
-    const fBigS = () => {
+    const fBigS = (bare) => {
       const f = PF.fig(), cx = 130, cy = 110;
       const blob = shape(cx, cy, 34, 24, { rot: 20, h: [[3, 0.12, 0], [2, 0.1, 40]] });
       f.add(`<path class="shade nodecl" d="M${blob.map((p) => `${r1(p[0])},${r1(p[1])}`).join('L')}Z"/>`);
@@ -859,9 +862,11 @@
       const a = 210 * DEG, ex = cx + 95 * Math.cos(a), ey = cy - 95 * Math.sin(a);
       f.line(cx + 36 * Math.cos(a), cy - 36 * Math.sin(a), ex, ey, { cls: 'dim thin' });
       f.label(cx + 66 * Math.cos(a) - 5, cy - 66 * Math.sin(a) - 9, 'r', 'c', 'small');
-      f.label(cx + 106, cy - 32, 'V\\sim 1/r', 'l', 'small');
-      f.label(cx + 106, cy, 'E\\sim 1/r^2', 'l', 'small');
-      f.label(cx + 106, cy + 32, '\\text{area}\\sim 4\\pi r^2', 'l', 'small');
+      if (!bare) {
+        f.label(cx + 106, cy - 32, 'V\\sim 1/r', 'l', 'small');
+        f.label(cx + 106, cy, 'E\\sim 1/r^2', 'l', 'small');
+        f.label(cx + 106, cy + 32, '\\text{area}\\sim 4\\pi r^2', 'l', 'small');
+      }
       return f.svg();
     };
     const fShell = () => shellFig({ lab: '\\sigma' }).svg();
@@ -947,7 +952,7 @@
             md`Far away $\vb E$ is radial, perpendicular to the sphere and parallel to $d\vb a$. The dot product is as large as it can be.`,
             md`The volume integral converges to the finite $W$; it does not blow up. The surface term goes to zero on its own.`],
           md`Far from a bounded charge distribution $V\approx\dfrac{Q}{4\pi\varepsilon_0 r}$ and $E\approx\dfrac{Q}{4\pi\varepsilon_0 r^2}$ (or smaller still if $Q=0$). The surface term is roughly $V E\cdot4\pi r^2\sim 1/r\to0$, while $\int E^2$ grows toward its limit. Their sum is $W$ for every choice of $S$.`,
-          { figHtml: fBigS() }),
+          { figHtml: fBigS(true) }),
 
         Q(md`A thin shell carries charge $q$. You integrate $\tfrac{\varepsilon_0}{2}E^2$ only over a ball of radius $10R$ centred on it. Compared with the shell's energy $W$, you get`,
           [md`exactly $W$`, md`$0.9\,W$; the surface term on the ball makes up the rest`, md`more than $W$`, md`zero, since the charge does not fill the ball`], 1,
@@ -958,8 +963,11 @@
           { figHtml: fShell() }),
 
         Q(md`Which identity turns $\int(\divg\vb E)\,V\,d\tau$ into $-\int\vb E\cdot\nabla V\,d\tau + \oint V\vb E\cdot d\vb a$?`,
-          [md`$\curl(V\vb E) = V\,\curl\vb E + \nabla V\times\vb E$, then Stokes' theorem`, md`$\lap V = -\rho/\varepsilon_0$`, md`$\divg(V\vb E) = V\,\divg\vb E + \vb E\cdot\nabla V$, then the divergence theorem`, md`$\nabla(\vb E\cdot\vb E) = 2\vb E\cdot\nabla\vb E$`], 2,
-          [md`Curl identities and Stokes' theorem give line integrals around loops. You need a surface integral over a closed surface.`, md`Poisson's equation is true, but it does not move a derivative from one factor to the other.`, null, md`That identity involves only $\vb E$; the step needs to shift the derivative from $\vb E$ onto $V$.`],
+          [md`$\curl(V\vb E) = V\,\curl\vb E + \nabla V\times\vb E$, then Stokes' theorem`, md`$\lap V = -\rho/\varepsilon_0$`, md`$\nabla(\vb E\cdot\vb E) = 2\vb E\cdot\nabla\vb E$`, md`$\divg(V\vb E) = V\,\divg\vb E + \vb E\cdot\nabla V$, then the divergence theorem`], 3,
+          [md`Curl identities and Stokes' theorem give line integrals around loops. You need a surface integral over a closed surface.`,
+            md`Poisson's equation is true, but it does not move a derivative from one factor to the other.`,
+            md`That identity involves only $\vb E$; the step needs to shift the derivative from $\vb E$ onto $V$.`,
+            null],
           md`Integrate the product rule over $\mathcal V$: $\int V\,\divg\vb E\,d\tau = \int\divg(V\vb E)\,d\tau - \int\vb E\cdot\nabla V\,d\tau = \oint_S V\vb E\cdot d\vb a - \int\vb E\cdot\nabla V\,d\tau$. This is integration by parts in three dimensions (Griffiths Eq. 1.59).`,
           { nofig: 'Vector identity; no geometry.' }),
 
@@ -1004,6 +1012,18 @@
           [md`The fraction inside $r$ is $1 - R/r$, which equals $\tfrac12$ at $r = 2R$; at $\sqrt2\,R$ it is only $0.29$.`, md`At $4R$ the fraction is $1 - \tfrac14 = 0.75$.`, md`At $10R$ the fraction is $0.9$.`, null],
           md`Energy outside radius $r$: $\dfrac{q^2}{8\pi\varepsilon_0r}$. Inside $r$: $\dfrac{q^2}{8\pi\varepsilon_0}\left(\dfrac1R-\dfrac1r\right)$, a fraction $1 - R/r$. Setting this to $\tfrac12$ gives $r = 2R$. The energy is concentrated near the charge, where the field is strong.`,
           { nofig: 'Uses the shell figure and the plot above.' }),
+
+        Q(md`For a uniformly charged ball (charge $q$, radius $R$), where is the energy density $u = \tfrac{\varepsilon_0}{2}E^2$ largest?`,
+          [md`At the centre, where the charge is deepest`, md`It is the same everywhere inside`, md`At the surface, $r = R$`, md`Far outside, since most of the energy is outside`], 2,
+          [md`At the centre $E = 0$ by symmetry, so $u = 0$ there.`, md`Inside, $E\propto r$, so $u\propto r^2$: it grows toward the surface.`, null, md`Most of the **total** is outside because the volume out there is huge, but the density itself falls like $1/r^4$.`],
+          md`$E$ rises linearly inside and falls like $1/r^2$ outside, peaking at $r = R$ where $E = \dfrac{q}{4\pi\varepsilon_0R^2}$. So $u$ peaks at the surface. The outside still holds $5/6$ of the total, because $u\cdot4\pi r^2$ falls only like $1/r^2$.`,
+          { figHtml: fBall() }),
+
+        Q(md`Dry air breaks down at about $E = 3\times10^6$ V/m. Roughly how much energy per cubic metre does a field that strong store?`,
+          [md`About $80$ J/m$^3$`, md`About $4\times10^{12}$ J/m$^3$`, md`About $40$ J/m$^3$`, md`About $3\times10^{-5}$ J/m$^3$`], 2,
+          [md`That's $\varepsilon_0E^2$: the $\tfrac12$ is missing.`, md`That's $E^2/2$ without the factor $\varepsilon_0 = 8.85\times10^{-12}$ F/m.`, null, md`That's $\varepsilon_0E$, with $E$ not squared.`],
+          md`$u = \tfrac12\varepsilon_0E^2 = \tfrac12(8.85\times10^{-12})(3\times10^6)^2\approx40$ J/m$^3$. A litre of such field holds only $0.04$ J, which is why practical capacitors use very thin gaps filled with materials that tolerate larger fields.`,
+          { nofig: 'A numbers question; no geometry.' }),
 
         Q(md`A thin shell with charge $q$ is squeezed from radius $R$ to radius $R/2$ (the charge stays uniform). How much work does that take?`,
           [md`$\dfrac{q^2}{8\pi\varepsilon_0R}$, the field energy that now fills $R/2<r<R$`, md`None, since the field outside $R$ is unchanged`, md`$\dfrac{q^2}{16\pi\varepsilon_0R}$`, md`$-\dfrac{q^2}{8\pi\varepsilon_0R}$; the shell gives energy up`], 0,
@@ -1142,6 +1162,35 @@
       f.label(150, 194, '\\vb E_1\\cdot\\vb E_2<0 \\text{ outside the dashed sphere}', 'c', 'small');
       return f.svg();
     };
+    const fTwoSph = () => {
+      const f = PF.fig();
+      for (const cx of [60, 280]) { f.circle(cx, 70, 32); signsAt(f, circ(cx, 70, 32), cx, 70, [0, 60, 120, 180, 240, 300], 1, -8, false); }
+      f.line(60, 112, 60, 136, { cls: 'dim thin' }); f.line(280, 112, 280, 136, { cls: 'dim thin' });
+      f.dim(60, 136, 280, 136, 'd\\to\\infty', { at: 'b' });
+      f.label(60, 22, 'q_1', 'b'); f.label(280, 22, 'q_2', 'b');
+      return f.svg();
+    };
+    const fQinShell = () => {
+      const f = PF.fig(), cx = 110, cy = 100, R = 60;
+      f.circle(cx, cy, R);
+      signsAt(f, circ(cx, cy, R), cx, cy, [0, 45, 90, 135, 180, 225, 270], 1, -9, false);
+      f.charge(cx, cy, { q: '+', lab: 'q', at: 'b' });
+      const ang = -30 * DEG;
+      f.line(cx + 9 * Math.cos(ang), cy - 9 * Math.sin(ang), cx + R * Math.cos(ang), cy - R * Math.sin(ang), { cls: 'dim thin' });
+      f.label(cx + 36 * Math.cos(ang) + 6, cy - 36 * Math.sin(ang) - 9, 'R', 'c', 'small');
+      f.label(cx + (R + 30) * Math.cos(66 * DEG), cy - (R + 30) * Math.sin(66 * DEG), 'Q', 'c');
+      return f.svg();
+    };
+    const fPairPM = () => {
+      const f = PF.fig(), A = [50, 70], B = [250, 70], Pp = [150, 70];
+      f.line(A[0] + 9, A[1], B[0] - 9, B[1], { cls: 'dim dash thin' });
+      f.charge(...A, { q: '+', lab: '+q', at: 't' });
+      f.charge(...B, { q: '-', lab: '-q', at: 't' });
+      f.dot(...Pp, 3); f.tag(Pp[0], Pp[1], 'P', 't', 8);
+      f.arrow(Pp[0] - 10, Pp[1] + 18, Pp[0] + 34, Pp[1] + 18); f.tag(Pp[0] + 34, Pp[1] + 18, md`\vb E_1`, 'r', 5);
+      f.arrow(Pp[0] - 10, Pp[1] + 38, Pp[0] + 34, Pp[1] + 38, { cls: 'dash' }); f.tag(Pp[0] + 34, Pp[1] + 38, md`\vb E_2`, 'r', 5);
+      return f.svg();
+    };
     const fShells = (s2) => {
       const f = PF.fig(), cx = 120, cy = 110, a = 40, b = 88;
       f.circle(cx, cy, a); f.circle(cx, cy, b);
@@ -1216,8 +1265,30 @@
         Q(md`For $+q$ and $-q$, the cross term $\varepsilon_0\int\vb E_1\cdot\vb E_2\,d\tau = -\dfrac{q^2}{4\pi\varepsilon_0 a}$ is negative. Yet on the segment between the charges, $\vb E_1$ and $\vb E_2$ point the same way. How is the total negative?`,
           [md`It isn't; the cross term for $\pm q$ is positive`, md`The integrand is negative only at the two charges themselves`, md`$\vb E_1\cdot\vb E_2$ is positive only inside the sphere having the segment as a diameter, and negative in all the space outside it, which wins`, md`The cross term is negative because $W_1$ and $W_2$ are infinite`], 2,
           [md`The pair energy of opposite charges is negative, and the cross term equals the pair energy.`, md`Points, by themselves, carry no volume. The sign is decided over regions of space.`, null, md`The self-energies are separate terms; they don't change the sign of the cross term.`],
-          md`$\vb E_1$ points away from $+q$, $\vb E_2$ points toward $-q$. At a point $P$ they make an acute angle (positive product) exactly when the angle $q_1Pq_2$ is obtuse, i.e. when $P$ is inside the sphere with the segment as diameter (Thales). Everywhere outside, the product is negative, and that region is much bigger.`,
-          { figHtml: fThales() }),
+          md`
+            $\vb E_1$ points away from $+q$, $\vb E_2$ points toward $-q$. At a point $P$ they make an acute angle (positive product) exactly when the angle $q_1Pq_2$ is obtuse, i.e. when $P$ is inside the sphere that has the segment as a diameter (Thales). Everywhere outside, the product is negative, and that region is much bigger.
+
+            [[fig:th]]
+          `,
+          { figHtml: fPairPM(), figs: { th: { svg: fThales(), cap: 'The sign of $\\vb E_1\\cdot\\vb E_2$ for $+q$ and $-q$: positive only inside the dashed sphere.' } } }),
+
+        Q(md`Two charged spheres, each with energy $W_0$ on its own, are moved very far apart from each other. The total energy approaches`,
+          [md`$4W_0$, since energy is quadratic`, md`$2W_0$: the cross term, $\dfrac{q_1q_2}{4\pi\varepsilon_0 d}$, dies away as $d\to\infty$`, md`$0$`, md`$\sqrt2\,W_0$`], 1,
+          [md`$4W_0$ is for two **identical** configurations superposed on top of each other. Far apart, the fields hardly overlap.`, null, md`Each sphere keeps its own field energy; nothing cancels.`, md`Energies don't combine like that. The total is $W_1+W_2$ plus a cross term.`],
+          md`For spheres far apart the cross term is just the interaction energy $\dfrac{q_1q_2}{4\pi\varepsilon_0d}$, which vanishes as $d\to\infty$. Energies add only when the fields don't overlap. That's why "the energy of a configuration" really means "relative to its parts infinitely far apart".`,
+          { figHtml: fTwoSph() }),
+
+        Q(md`A point charge $q$ sits at the centre of a thin shell of radius $R$ that carries charge $Q$. The cross term $\varepsilon_0\int\vb E_1\cdot\vb E_2\,d\tau$ is`,
+          [md`$0$, since the shell's field is zero where $q$ is`, md`infinite, since $q$ is a point charge`, md`$\dfrac{qQ}{4\pi\varepsilon_0R}$`, md`$\dfrac{qQ}{8\pi\varepsilon_0R}$`], 2,
+          [md`The shell's field is zero **inside**, but outside the shell both fields are nonzero and parallel, and that region contributes.`, md`$q$'s infinite self-energy sits in $W_1$, not in the cross term. The cross term only gets contributions from $r>R$, where everything is finite.`, null, md`There is no $\tfrac12$ in the cross term: $W = W_1 + W_2 + \varepsilon_0\int\vb E_1\cdot\vb E_2\,d\tau$.`],
+          md`$\vb E_2 = 0$ inside the shell, so only $r>R$ counts: $\varepsilon_0\displaystyle\int_R^\infty\frac{q}{4\pi\varepsilon_0r^2}\cdot\frac{Q}{4\pi\varepsilon_0r^2}\,4\pi r^2\,dr = \frac{qQ}{4\pi\varepsilon_0R}$. That's $q$ times the shell's potential at the centre: the work to bring $q$ in, just as the pairwise picture says.`,
+          { figHtml: fQinShell() }),
+
+        Q(md`At a point where $\vb E_1\perp\vb E_2$, the energy density $\tfrac{\varepsilon_0}{2}\lvert\vb E_1+\vb E_2\rvert^2$ equals`,
+          [md`$\tfrac{\varepsilon_0}{2}(E_1+E_2)^2$`, md`$0$`, md`$\varepsilon_0E_1E_2$`, md`$\tfrac{\varepsilon_0}{2}(E_1^2+E_2^2)$, the two separate densities added`], 3,
+          [md`That would need $\vb E_1\parallel\vb E_2$.`, md`Perpendicular fields don't cancel; the total has magnitude $\sqrt{E_1^2+E_2^2}$.`, md`That's the cross term's integrand for **parallel** fields.`, null],
+          md`$\lvert\vb E_1+\vb E_2\rvert^2 = E_1^2+E_2^2+2\,\vb E_1\cdot\vb E_2$, and the dot product vanishes for perpendicular fields. Locally, energy densities add only where the fields are perpendicular (or one is zero); the cross term keeps the books everywhere else.`,
+          { nofig: 'A pointwise identity; no geometry.' }),
 
         RF(md`
           ### A perplexing "inconsistency": self-energy
@@ -1461,6 +1532,19 @@
       f.text(218, 86, 'charge slides', 'l');
       return f.svg();
     };
+    const fBlobQ = (line) => {
+      const f = PF.fig(), cx = 110, cy = 95;
+      const pts = shape(cx, cy, 70, 48, { rot: 15, h: [[3, 0.1, 30], [2, 0.08, 0]] });
+      metal(f, [pts]);
+      signsAt(f, pts, cx, cy, [0, 60, 120, 180, 240, 300], 1, 8, true);
+      if (line) {
+        const i = at(pts, cx, cy, 70), p = pts[i], [nx, ny] = nrm(pts, i), tx = ny, ty = -nx;
+        const d = [(nx + tx) / Math.SQRT2, (ny + ty) / Math.SQRT2], T = [p[0] + d[0] * 62, p[1] + d[1] * 62];
+        f.arrow(p[0] + d[0] * 3, p[1] + d[1] * 3, T[0], T[1], { cls: 'dash' });
+        f.text(T[0] - 6, T[1] - 10, 'proposed field line', 'r');
+      }
+      return f.svg();
+    };
     const fInduced = () => {
       const f = PF.fig(), cx = 190, cy = 90;
       const pts = shape(cx, cy, 60, 55, { h: [[3, 0.06, 0]] });
@@ -1591,8 +1675,11 @@
         `, { screen: { svg: fScreen(), cap: 'Screening: electrons crowd around a charge placed inside the metal. The leftover $+q$ goes to the outer surface.' }, gauss: { svg: fGauss(), cap: 'A Gaussian surface just inside the metal encloses no net charge, because $\\vb E = 0$ on it.' } }),
 
         Q(md`"$\rho = 0$ inside a conductor" means`,
-          [md`there are no charged particles inside the metal`, md`all the electrons have moved to the surface`, md`the positive and negative charge densities cancel in every small volume`, md`the charge density is too small to measure`], 2,
-          [md`The metal is full of nuclei and electrons. $\rho$ is the **net** charge density.`, md`Only a tiny surplus or deficit of electrons sits at the surface. The vast majority stay inside, balancing the nuclei.`, null, md`It is exactly zero in equilibrium, not merely small: $\rho = \varepsilon_0\divg\vb E$ and $\vb E = 0$.`],
+          [md`there are no charged particles inside the metal`, md`all the electrons have moved to the surface`, md`the charge density is too small to measure`, md`the positive and negative charge densities cancel in every small volume`], 3,
+          [md`The metal is full of nuclei and electrons. $\rho$ is the **net** charge density.`,
+            md`Only a tiny surplus or deficit of electrons sits at the surface. The vast majority stay inside, balancing the nuclei.`,
+            md`It is exactly zero in equilibrium, not merely small: $\rho = \varepsilon_0\divg\vb E$ and $\vb E = 0$.`,
+            null],
           md`$\rho$ is net charge per volume. Inside the metal $\rho = \varepsilon_0\,\divg\vb E = 0$ exactly. The free electrons are still there, distributed so that they neutralise the ions everywhere except in the thin surface layer.`,
           { figHtml: fScreen() }),
 
@@ -1636,7 +1723,7 @@
           [md`fine, if the surface charge there is large`, md`fine, if the conductor is not a sphere`, md`fine just outside, as long as $\vb E = 0$ inside`, md`impossible: the tangential part would drive charge along the surface`], 3,
           [md`The size of $\sigma$ sets the size of $\vb E$, not its direction.`, md`Property 5 holds for every shape.`, md`$\vb E=0$ inside is not enough: the tangential part **outside** would also act on the surface charge.`, null],
           md`The surface charge feels any tangential field and moves until it is gone, so in equilibrium $E_\parallel = 0$ just outside. Field lines meet a conductor at right angles (curving to do so, as in the sphere-in-a-field picture).`,
-          { figHtml: fPerpB() }),
+          { figHtml: fBlobQ(true) }),
 
         Q(md`On an irregular charged conductor, point $a$ is on a sharp corner where $\sigma$ is large and point $b$ is on a flat part where $\sigma$ is small. Compare their potentials.`,
           [md`$V(a) = V(b)$`, md`$V(a) > V(b)$, since there is more charge at $a$`, md`$V(a) < V(b)$, since the field near $a$ pushes charge away`, md`It depends on the sign of the charge`], 0,
@@ -1648,7 +1735,7 @@
           [md`are perpendicular to the conductor's surface`, md`follow the shape of the conductor's surface`, md`are evenly spaced spheres, whatever the shape`, md`do not exist, since the field is perpendicular`], 1,
           [md`It's the **field lines** that are perpendicular to the surface. Equipotentials are perpendicular to field lines, so they run parallel to the surface.`, null, md`Far away they become spheres; close in they hug the conductor.`, md`Equipotentials exist wherever $V$ is defined: they are the surfaces perpendicular to $\vb E$.`],
           md`The conductor's surface is itself an equipotential. Nearby equipotentials are slightly displaced copies of it, crowded together where $E$ is large (sharp points) and spread out where $E$ is small. Far away they round off into spheres.`,
-          { figHtml: fPerpA() }),
+          { figHtml: fBlobQ(false) }),
 
         RF(md`
           ### Induced charge and attraction
@@ -1792,7 +1879,7 @@
 
   // ===================================================================================== Lesson 6
   const L6 = () => {
-    const fFaraday = () => {
+    const fFaraday = (bare) => {
       const f = PF.fig(), cx = 160, cy = 100;
       const outer = shape(cx, cy, 118, 64, { h: [[3, 0.05, 20], [2, 0.04, 0]] });
       const cav = shape(cx + 34, cy + 2, 46, 30, { h: [[3, 0.05, 0]] });
@@ -1801,11 +1888,13 @@
       for (const y of [72, 128]) f.arrow(302, y, 350, y);
       f.arrow(70, 16, 250, 16);
       f.label(258, 16, md`\vb E\neq0`, 'l');
-      f.line(160, 120, 160, 84, { cls: 'thick', arrow: 'end' });
-      const back = [];
-      for (let k = 0; k <= 40; k++) { const t = k / 40; back.push([160 - 46 * Math.sin(Math.PI * t), 84 + 36 * t]); }
-      f.pl(back, { cls: 'dash' });
-      f.label(207, 102, md`\vb E = 0`, 'c', 'small');
+      if (!bare) {
+        f.line(160, 120, 160, 84, { cls: 'thick', arrow: 'end' });
+        const back = [];
+        for (let k = 0; k <= 40; k++) { const t = k / 40; back.push([160 - 46 * Math.sin(Math.PI * t), 84 + 36 * t]); }
+        f.pl(back, { cls: 'dash' });
+        f.label(207, 102, md`\vb E = 0`, 'c', 'small');
+      } else f.text(194, 104, 'empty', 'c');
       return f.svg();
     };
     // peanut-shaped conductor with a cavity holding +q (lecture figure); options: gauss, ground
@@ -1816,8 +1905,8 @@
       const cav = shape(ccx, ccy, 36, 25, { rot: 10, h: [[3, 0.05, 0]] });
       metal(f, [outer, cav]);
       f.charge(ccx - 4, ccy, { q: '+', lab: 'q', at: 'r' });
-      signsAt(f, cav, ccx, ccy, [60, 105, 150, 195, 240, 285], -1, 7, false);
-      if (!o.ground) signsAt(f, outer, cx, cy, [0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330], 1, -9, false);
+      if (!o.bare) signsAt(f, cav, ccx, ccy, [60, 105, 150, 195, 240, 285], -1, 7, false);
+      if (!o.ground && !o.bare) signsAt(f, outer, cx, cy, [0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330], 1, -9, false);
       if (o.gauss) {
         const gs = shape(ccx, ccy, 52, 38, { rot: 10 });
         f.poly(gs, { cls: 'dash' });
@@ -1828,14 +1917,16 @@
       if (o.ground) { const i = at(outer, cx, cy, -90); f.line(outer[i][0], outer[i][1], outer[i][0], outer[i][1] + 22); f.ground(outer[i][0], outer[i][1] + 22); }
       return f.svg();
     };
-    const fEx210 = () => {
+    const fEx210 = (bare) => {
       const f = PF.fig(), cx = 130, cy = 110, R = 90, kx = cx - 30, ky = cy + 22;
       const cav = shape(kx, ky, 32, 23, { h: [[2, 0.15, 30], [3, 0.12, 0]] });
       metal(f, [circ(cx, cy, R), cav]);
       f.charge(kx - 13, ky + 3, { q: '+', lab: 'q', at: 'r' });
-      signsAt(f, cav, kx, ky, [100, 150, 190, 230, 280], -1, 7, false);
-      signsAt(f, circ(cx, cy, R), cx, cy, [10, 50, 90, 130, 170, 210, 250, 290, 330], 1, -9, false);
-      f.poly(shape(kx, ky, 47, 38), { cls: 'dash' });
+      if (!bare) {
+        signsAt(f, cav, kx, ky, [100, 150, 190, 230, 280], -1, 7, false);
+        signsAt(f, circ(cx, cy, R), cx, cy, [10, 50, 90, 130, 170, 210, 250, 290, 330], 1, -9, false);
+        f.poly(shape(kx, ky, 47, 38), { cls: 'dash' });
+      }
       const ang = 30 * DEG, Pp = [cx + 128 * Math.cos(ang), cy - 128 * Math.sin(ang)];
       f.line(cx, cy, Pp[0] - 4 * Math.cos(ang), Pp[1] + 4 * Math.sin(ang), { cls: 'dim dash thin' });
       f.dot(...Pp, 3); f.tag(Pp[0], Pp[1], 'P', 'tr', 6);
@@ -1930,17 +2021,23 @@
           [md`$+$ on one side and $-$ on the other, totalling zero`, md`None, anywhere on the wall`, md`A charge equal and opposite to the charge on the outer surface`, md`It depends on the shape of the cavity`], 1,
           [md`Wall charges of opposite sign would send a field line across the cavity, and the loop argument rules that out.`, null, md`The outer surface carries the induced charge that cancels the external field; the cavity wall carries nothing.`, md`The argument works for any shape.`],
           md`With $\vb E = 0$ both in the metal and in the cavity, the jump condition $E_{\perp,\text{above}} - E_{\perp,\text{below}} = \sigma/\varepsilon_0$ gives $\sigma = 0$ at every point of the wall. All the induced charge sits on the **outer** surface.`,
-          { figHtml: fFaraday() }),
+          { figHtml: fFaraday(true) }),
 
         Q(md`The external field around the conductor is doubled. The field inside the empty cavity`,
-          [md`doubles`, md`stays zero`, md`increases, but by less than a factor of two`, md`reverses`], 1,
-          [md`The induced charge on the outer surface doubles too, and still cancels the field everywhere inside the outer surface.`, null, md`Shielding is complete in electrostatics, not partial.`, md`Nothing inside changes; it stays zero.`],
+          [md`doubles`, md`increases, but by less than a factor of two`, md`reverses`, md`stays zero`], 3,
+          [md`The induced charge on the outer surface doubles too, and still cancels the field everywhere inside the outer surface.`,
+            md`Shielding is complete in electrostatics, not partial.`,
+            md`Nothing inside changes; it stays zero.`,
+            null],
           md`Whatever the external field, the outer surface charge rearranges to make $\vb E = 0$ in the metal, and the loop argument then forces $\vb E = 0$ in the empty cavity. Shielding doesn't weaken as the outside field grows.`,
-          { figHtml: fFaraday() }),
+          { figHtml: fFaraday(true) }),
 
         Q(md`The proof that an empty cavity is field-free relies on which fact?`,
-          [md`$\oint\vb E\cdot d\vb a = Q_{\text{enc}}/\varepsilon_0$ for a surface around the cavity`, md`The cavity is spherical`, md`$\oint\vb E\cdot d\vb l = 0$ around any closed loop`, md`$V = 0$ on the cavity wall`], 2,
-          [md`Gauss's law only shows that the **total** wall charge is zero; it allows $+$ on one side and $-$ on the other. The loop argument is what kills that.`, md`No assumption about shape is needed.`, null, md`The wall is at the conductor's potential, which needn't be zero. What matters is that it is **one** constant.`],
+          [md`$\oint\vb E\cdot d\vb a = Q_{\text{enc}}/\varepsilon_0$ for a surface around the cavity`, md`The cavity is spherical`, md`$V = 0$ on the cavity wall`, md`$\oint\vb E\cdot d\vb l = 0$ around any closed loop`], 3,
+          [md`Gauss's law only shows that the **total** wall charge is zero; it allows $+$ on one side and $-$ on the other. The loop argument is what kills that.`,
+            md`No assumption about shape is needed.`,
+            md`The wall is at the conductor's potential, which needn't be zero. What matters is that it is **one** constant.`,
+            null],
           md`A field line from $+$ wall charge to $-$ wall charge, closed through the metal, would give $\oint\vb E\cdot d\vb l>0$. Since $\curl\vb E = 0$, that's impossible. (Equivalently: the whole wall is one equipotential, and a field line always runs downhill in $V$, so it can't start and end at the same potential.)`,
           { nofig: 'Question about the logic of the proof.' }),
 
@@ -1980,31 +2077,31 @@
           [md`$0$, since the conductor is neutral`, md`$+q$`, md`$-q/2$`, md`$-q$`], 3,
           [md`The **conductor** is neutral overall; its charge splits into $-q$ on the wall and $+q$ outside.`, md`The wall charge must cancel $q$'s field in the metal, so it has the opposite sign.`, md`Gauss with a surface in the metal: $q + q_{\text{wall}} = 0$ exactly.`, null],
           md`A Gaussian surface inside the metal around the cavity has $\vb E = 0$ on it, so it encloses zero charge: $q_{\text{wall}} = -q$, regardless of the cavity's shape or where $q$ sits.`,
-          { figHtml: fCav() }),
+          { figHtml: fCav({ bare: true }) }),
 
         Q(md`Same neutral conductor. The total charge on its **outer** surface is`,
           [md`$+q$`, md`$0$`, md`$-q$`, md`it depends on where $q$ sits in the cavity`], 0,
           [null, md`The conductor is neutral: if $-q$ went to the wall, $+q$ is left over and must sit on the outer surface (no charge in the metal itself).`, md`That's the cavity wall.`, md`Only the total matters: $0 - (-q) = +q$, wherever $q$ is.`],
           md`Charge conservation: conductor total $= q_{\text{wall}} + q_{\text{outer}} = 0$, so $q_{\text{outer}} = +q$. That's why the conductor "looks charged" from outside.`,
-          { figHtml: fCav() }),
+          { figHtml: fCav({ bare: true }) }),
 
         Q(md`The charge $q$ is moved from the middle of the cavity to a spot close to the cavity wall. What changes?`,
           [md`The field outside the conductor`, md`The charge distribution on the outer surface`, md`Only the distribution of the $-q$ on the cavity wall (and the field in the cavity)`, md`Nothing at all, inside or outside`], 2,
           [md`The outside sees only the total charge on the outer surface, which hasn't changed, and its distribution, which doesn't depend on the inside.`, md`The outer charge is shielded from the inside: it arranges itself as if the cavity weren't there.`, null, md`Inside the cavity things do change: the wall charge crowds toward $q$.`],
           md`The wall charge rearranges to keep cancelling $q$'s field in the metal. Outside, nothing changes: "we have lost all information about the charge location". Shielding works for the outside world.`,
-          { figHtml: fCav() }),
+          { figHtml: fCav({ bare: true }) }),
 
         Q(md`In Griffiths Ex. 2.10 the cavity is irregular and $q$ is off-centre. The surface charge on the **cavity wall** is`,
           [md`uniform, $-q/A_{\text{wall}}$`, md`denser where the wall is closest to $q$`, md`zero, as in an empty cavity`, md`positive near $q$`], 1,
           [md`Uniform would cancel $q$'s field in the metal only for a spherical cavity with $q$ at its centre.`, null, md`The cavity isn't empty: it must carry $-q$ in total.`, md`Near $q$ the wall charge is attracted: it's negative, and densest there.`],
           md`The $-q$ on the wall has to cancel $q$'s field everywhere in the metal, so it crowds toward $q$, like the induced charge under a point charge near a plane (images, Lecture 10). Only a centred charge in a spherical cavity gives a uniform wall charge.`,
-          { figHtml: fEx210() }),
+          { figHtml: fEx210(true) }),
 
         Q(md`In the same example, the charge on the **outer** surface of the sphere is`,
           [md`$+q$, crowded toward the side nearest the cavity`, md`$+q$, crowded toward the side nearest $q$`, md`$+q$, uniform`, md`zero, since the conductor is neutral`], 2,
           [md`The outer charge feels no field from the inside, so the position of the cavity is invisible to it.`, md`The inside is shielded from the outer charge's point of view; $q$'s location doesn't matter.`, null, md`Neutral overall means outer $= -(\text{wall}) = +q$.`],
           md`$q$ plus the wall's $-q$ produce zero field in the metal and beyond, so the outer $+q$ is like charge on an isolated sphere: uniform. The field outside is $\dfrac{q}{4\pi\varepsilon_0r^2}\uv r$ from the sphere's centre.`,
-          { figHtml: fEx210() }),
+          { figHtml: fEx210(true) }),
 
         Q(md`A point charge $q$ sits off-centre in a **spherical** cavity in a big piece of metal. Is the force on $q$ zero?`,
           [md`Yes: the field in the cavity is zero`, md`Yes: the metal shields it`, md`No: the wall charge crowds toward $q$ and pulls it toward the nearer wall`, md`No: $q$ is pushed toward the centre`], 2,
@@ -2036,7 +2133,7 @@
           [md`$V = 0$ on the cavity wall and on the outer surface; the wall carries $-q$; the outer surface carries no charge`, md`$V = 0$ only on the outer surface; the cavity wall is at $q/(4\pi\varepsilon_0 r)$`, md`The wall charge drains away to the ground along with the outer charge`, md`The field in the cavity drops to zero`], 0,
           [null, md`The whole conductor is one equipotential, including the cavity wall.`, md`The wall's $-q$ is held by $q$'s field and is needed to keep $\vb E = 0$ in the metal; only the outer $+q$ drains away.`, md`The cavity still contains $q$, so the field there is $q$'s field plus that of the wall charge, as before.`],
           md`Grounding fixes $V_c = 0$ on every surface of the conductor. Gauss still requires $-q$ on the wall. Outside, $V = 0$ on the outer surface and $V\to0$ at infinity with no charges outside: the solution is $V = 0$ everywhere outside, so the outer surface charge ($\sigma = -\varepsilon_0\,\partial V/\partial n$) is zero. The outer $+q$ went to ground.`,
-          { figHtml: fCav({ ground: true }) }),
+          { figHtml: fCav({ ground: true, bare: true }) }),
 
         RF(md`
           ### Worked example: a charge inside a thick shell, isolated or grounded
@@ -2254,6 +2351,14 @@
       f.label(105, 94, '\\vb E = 0\\ \\text{in the metal}', 't', 'small');
       return f.svg();
     };
+    const fSurfP = () => {
+      const f = PF.fig();
+      f.plane(0, 220, 80);
+      for (const x of [20, 55, 90, 160, 195]) glyph(f, x, 72, 1);
+      f.dot(125, 58, 3); f.tag(125, 58, 'P', 't', 7);
+      f.label(110, 100, '\\text{metal}', 't', 'small');
+      return f.svg();
+    };
     const fVnorm = () => {
       const f = PF.fig();
       f.plane(0, 220, 120);
@@ -2327,6 +2432,18 @@
       f.arrow(B0[0], B0[1], B0[0], T[1], { cls: 'dash', hs: 6 }); f.label(B0[0], T[1] - 9, 'dF_z', 'b', 'small');
       return f.svg();
     };
+    const fHemiSetup = () => {
+      const f = PF.fig(), cx = 130, cy = 120, R = 80;
+      ringMetal(f, cx, cy, R - 8, R);
+      f.line(cx - R - 14, cy, cx + R + 14, cy, { cls: 'dash dim' });
+      f.dot(cx, cy, 2);
+      const e = [cx + R * Math.cos(-35 * DEG), cy - R * Math.sin(-35 * DEG)];
+      f.line(cx, cy, ...e, { cls: 'dim thin' }); f.tag(...e, 'R', 'br', 6);
+      f.label(cx - R - 6, cy - R + 8, '\\text{northern}', 'r', 'small');
+      f.label(cx - R - 6, cy + R - 8, '\\text{southern}', 'r', 'small');
+      f.label(cx, cy - R - 10, '\\text{total charge } Q', 'b', 'small');
+      return f.svg();
+    };
     const fProj = () => PF.row([
       { svg: (() => { const f = PF.fig(), cx = 100, cy = 100, R = 70; f.pl(f.arcPts(cx, cy, R, R, 0, 180)); f.line(cx - R, cy, cx + R, cy, { cls: 'dash dim' }); for (let a = 15; a <= 165; a += 25) { const c = Math.cos(a * DEG), s = Math.sin(a * DEG); f.arrow(cx + (R + 3) * c, cy - (R + 3) * s, cx + (R + 22) * c, cy - (R + 22) * s, { hs: 5 }); } return f.svg(); })(), cap: 'pressure $P$ on the hemisphere' },
       { svg: (() => { const f = PF.fig(), cx = 100, cy = 100, R = 70; f.ellipse(cx, cy, R, 18); for (let x = -50; x <= 50; x += 25) f.arrow(cx + x, cy - 4, cx + x, cy - 40, { hs: 5 }); return f.svg(); })(), cap: 'same $P$ on the flat disk $\\pi R^2$' },
@@ -2376,11 +2493,14 @@
           [md`$\sigma/2\varepsilon_0$`, md`$2\sigma/\varepsilon_0$`, md`$\sigma/\varepsilon_0$`, md`$0$, since the conductor screens it`], 2,
           [md`That's an isolated sheet, with field on both sides. A conductor has no field inside, so all the flux goes out one side.`, md`The boundary condition gives a jump of exactly $\sigma/\varepsilon_0$, and the inside value is 0.`, null, md`$\vb E = 0$ inside the metal, not just outside it.`],
           md`$E_{\text{above}} - E_{\text{below}} = \sigma/\varepsilon_0$ with $E_{\text{below}} = 0$. Check on a charged sphere: $\sigma = \dfrac{Q}{4\pi R^2}$ and $E(R^+) = \dfrac{Q}{4\pi\varepsilon_0R^2} = \dfrac{\sigma}{\varepsilon_0}$.`,
-          { figHtml: fPillB() }),
+          { figHtml: fSurfP() }),
 
         Q(md`A large, thin metal plate carries total charge $Q$ (both faces together) over area $A$. The field just outside either face has magnitude`,
-          [md`$\dfrac{Q}{\varepsilon_0A}$`, md`$\dfrac{Q}{2\varepsilon_0A}$`, md`$\dfrac{Q}{4\varepsilon_0A}$`, md`$0$`], 1,
-          [md`That uses $\sigma = Q/A$ on one face. The charge splits between the two faces: $Q/2A$ each.`, null, md`$\sigma/\varepsilon_0$ with $\sigma = Q/2A$ gives $Q/2\varepsilon_0A$, not half of that.`, md`The field is zero inside the metal, not outside it.`],
+          [md`$\dfrac{Q}{\varepsilon_0A}$`, md`$\dfrac{Q}{4\varepsilon_0A}$`, md`$0$`, md`$\dfrac{Q}{2\varepsilon_0A}$`], 3,
+          [md`That uses $\sigma = Q/A$ on one face. The charge splits between the two faces: $Q/2A$ each.`,
+            md`$\sigma/\varepsilon_0$ with $\sigma = Q/2A$ gives $Q/2\varepsilon_0A$, not half of that.`,
+            md`The field is zero inside the metal, not outside it.`,
+            null],
           md`By symmetry each face carries $\sigma_{\text{face}} = \dfrac{Q}{2A}$, and just outside a conductor $E = \sigma_{\text{face}}/\varepsilon_0 = \dfrac{Q}{2\varepsilon_0A}$. Same as a non-conducting sheet with $\sigma = Q/A$: $\dfrac{\sigma}{2\varepsilon_0}$. Consistent.`,
           { nofig: 'A single flat plate; the description is complete.' }),
 
@@ -2388,7 +2508,7 @@
           [md`positive: $V$ increases going outward`, md`zero, since the conductor is an equipotential`, md`undefined, since $V$ jumps at the surface`, md`negative: $V$ decreases going outward`], 3,
           [md`Away from positive charge the potential falls.`, md`$V$ is constant **along** the surface, not across it. The normal derivative is $-\sigma/\varepsilon_0$.`, md`$V$ is continuous across any surface charge; only its normal derivative jumps.`, null],
           md`$\dfrac{\partial V}{\partial n} = -\dfrac{\sigma}{\varepsilon_0}<0$ for $\sigma>0$. Inside the metal the derivative is 0; outside it is $-\sigma/\varepsilon_0$. The jump in slope, with $V$ itself continuous, is the surface charge.`,
-          { figHtml: fPillB() }),
+          { figHtml: fSurfP() }),
 
         Q(md`Which of these is **not** a boundary condition at the surface of a conductor in electrostatics?`,
           [md`$V$ is the same at every point of the surface`, md`$\partial V/\partial n$ is continuous across the surface`, md`The tangential component of $\vb E$ just outside is zero`, md`$\sigma = -\varepsilon_0\,\partial V/\partial n$, the derivative taken just outside`], 1,
@@ -2494,7 +2614,7 @@
           [md`Because the charge is spread through a layer, half of it above the midpoint`, md`Because a patch of charge cannot exert force on itself, and averaging removes exactly the patch's own field`, md`Because $\vb E_{\text{above}}$ is always twice the true field`, md`It's a convention; either choice works if used consistently`], 1,
           [md`The thickness doesn't enter. The argument works for an ideal zero-thickness sheet.`, null, md`Only for a conductor (where $\vb E_{\text{below}} = 0$) is $\vb E_{\text{above}}$ twice the average.`, md`It's physics, not convention: $\sigma\vb E_{\text{above}}$ would give twice the correct force on a conductor.`],
           md`$\vb E_{\text{above}}$ and $\vb E_{\text{below}}$ both include the patch's own $\pm\sigma/2\varepsilon_0$; their average is exactly $\vb E_{\text{other}}$, the field of everything else, which is what pushes the patch.`,
-          { figHtml: fPatch() }),
+          { nofig: 'Asks about the patch argument drawn just above; repeating that drawing would give the answer away.' }),
 
         Q(md`A metal object carries **negative** charge. The electrostatic force on its surface charge points`,
           [md`inward, since negative charge is attracted toward the positive nuclei`, md`outward, the same as for positive charge`, md`inward where $\sigma<0$ and outward where $\sigma>0$`, md`along the surface`], 1,
@@ -2572,7 +2692,7 @@
         P({
           id: 'HW4-2.43', src: 'HW 4 · Griffiths 2.43', title: 'Force between the hemispheres of a charged sphere', big: true,
           q: md`A metal sphere of radius $R$ carries a total charge $Q$. What is the force of repulsion between the "northern" hemisphere and the "southern" hemisphere?`,
-          figHtml: fHemi(),
+          figHtml: fHemiSetup(),
           hints: [
             md`Conditions: isolated conductor with charge $Q$, spherical, so $\sigma = Q/4\pi R^2$ uniformly. The force on surface charge is the pressure $P = \sigma^2/2\varepsilon_0$, outward.`,
             md`The force on the northern hemisphere from the southern one equals the total electrostatic force on the northern hemisphere (it can't push itself). By symmetry only the $z$ component survives.`,
@@ -2592,6 +2712,8 @@
 
             **Integrate.** By symmetry the $x$ and $y$ components cancel; keep $dF_z = P\cos\theta\,da$:
 
+            [[fig:hemi]]
+
             $$F = \frac{\sigma^2}{2\varepsilon_0}\int_0^{2\pi}\!\!\int_0^{\pi/2}\cos\theta\,R^2\sin\theta\,d\theta\,d\phi = \frac{\sigma^2}{2\varepsilon_0}\cdot2\pi R^2\cdot\frac12 = \frac{\sigma^2}{2\varepsilon_0}\,\pi R^2.$$
 
             With $\sigma = \dfrac{Q}{4\pi R^2}$:
@@ -2604,7 +2726,8 @@
 
             **Checks.** Units: $Q^2/(\varepsilon_0R^2)$ is a force. Size: like two charges $Q/2$ about $R$ apart, but smaller, since much of each half's charge is farther away: $\dfrac{(Q/2)^2}{4\pi\varepsilon_0R^2} = \dfrac{Q^2}{16\pi\varepsilon_0R^2}$ is twice our answer.
           `,
-          figs: { proj: Object.assign(fProj(), { cap: 'Uniform pressure on the hemisphere gives the same net $z$ force as on the flat disk it covers.' }) },
+          figs: { proj: Object.assign(fProj(), { cap: 'Uniform pressure on the hemisphere gives the same net $z$ force as on the flat disk it covers.' }),
+            hemi: { svg: fHemi(), cap: 'Pressure acts outward on every element. For the element at polar angle $\\theta$, only $dF_z = P\\cos\\theta\\,da$ survives the sum.' } },
         }),
 
         RF(md`
@@ -2619,11 +2742,463 @@
     };
   };
 
-  // @@MORE_LESSONS@@
+  // ===================================================================================== Lesson 8
+  const L8 = () => {
+    const fTwoCond = () => {
+      const f = PF.fig();
+      const A = shape(70, 90, 42, 56, { h: [[3, 0.08, 10], [2, 0.06, 0]] });
+      const B = shape(260, 90, 40, 54, { h: [[3, 0.07, 200], [2, 0.05, 30]] });
+      metal(f, [A]); metal(f, [B]);
+      for (const [aa, bb, bulge] of [[28, 152, -34], [0, 180, 0], [-28, 208, 34]]) {
+        const P0 = A[at(A, 70, 90, aa)], P1 = B[at(B, 260, 90, bb)], M = [(P0[0] + P1[0]) / 2, (P0[1] + P1[1]) / 2 + bulge];
+        const pts = [];
+        for (let k = 0; k <= 30; k++) { const t = k / 30, u = 1 - t; pts.push([u * u * P0[0] + 2 * t * u * M[0] + t * t * P1[0], u * u * P0[1] + 2 * t * u * M[1] + t * t * P1[1]]); }
+        f.pl(pts, { cls: 'thin' }); headOn(f, pts, 0.55, { hs: 5 });
+      }
+      f.label(70, 22, '+Q', 'b'); f.label(260, 24, '-Q', 'b');
+      return f.svg();
+    };
+    const fPP3D = () => {
+      const g = PF.fig({ proj: { ox: 70, oy: 150, s: 1 } });
+      const a = 130, b = 210, h = 46;
+      const plate = (z) => g.poly([[0, 0, z], [a, 0, z], [a, b, z], [0, b, z]].map((p) => g.p3(...p)), { cls: 'bgfill' });
+      plate(0); plate(h);
+      const tl = g.p3(a, 0, h), bl = g.p3(a, 0, 0), tbr = g.p3(0, b, h), bbr = g.p3(0, b, 0);
+      g.tag(tbr[0], tbr[1], '+Q', 'r', 8); g.tag(bbr[0], bbr[1], '-Q', 'r', 8);
+      const c = g.p3(a / 2, b / 2 + 20, h); g.label(c[0], c[1], 'A', 'c');
+      g.dim(tl[0], tl[1], bl[0], bl[1], 'd', { off: 18, at: 'l' });
+      g.arrow(bbr[0] + 70, bbr[1] + 40, bbr[0] + 70, bbr[1] + 4, { hs: 6 }); g.tag(bbr[0] + 70, bbr[1] + 4, '\\hat{\\vb z}', 'r', 5);
+      return g.svg();
+    };
+    const fSup = () => {
+      const f = PF.fig();
+      f.line(20, 60, 250, 60, { cls: 'thick' }); f.line(20, 120, 250, 120, { cls: 'thick' });
+      f.label(12, 60, '+\\sigma', 'r'); f.label(12, 120, '-\\sigma', 'r');
+      f.arrow(80, 52, 80, 18); f.arrow(110, 18, 110, 52, { cls: 'dash' });
+      f.arrow(80, 68, 80, 112); f.arrow(110, 68, 110, 112, { cls: 'dash' });
+      f.arrow(80, 128, 80, 162); f.arrow(110, 162, 110, 128, { cls: 'dash' });
+      f.label(130, 34, '\\vb E = 0', 'l', 'small');
+      f.label(130, 90, '\\lvert\\vb E\\rvert = \\sigma/\\varepsilon_0', 'l', 'small');
+      f.label(130, 146, '\\vb E = 0', 'l', 'small');
+      f.dim(262, 60, 262, 120, 'd', { at: 'r' });
+      return f.svg();
+    };
+    const fVq = () => {
+      const f = PF.fig(), ox = 40, oy = 160, W = 200, H = 120;
+      f.add(`<path class="shade nodecl" d="M${ox},${oy}L${ox + W},${oy}L${ox + W},${oy - H}Z"/>`);
+      f.axes(ox, oy, { x: [0, W + 30], y: [0, H + 30], xl: 'q', yl: 'V(q) = q/C' });
+      f.line(ox, oy, ox + W, oy - H, { cls: 'thick' });
+      f.line(ox + W, oy, ox + W, oy - H, { cls: 'dim dash thin' });
+      f.line(ox, oy - H, ox + W, oy - H, { cls: 'dim dash thin' });
+      f.label(ox + W, oy + 6, 'Q', 't', 'small');
+      f.label(ox - 6, oy - H, 'V', 'r', 'small');
+      f.label(ox + W * 0.64, oy - 22, 'W = \\tfrac12 QV', 'c', 'small');
+      f.text(ox + 44, oy - 82, 'slope 1/C', 'c');
+      return f.svg();
+    };
+    const fSphCap = (sol) => {
+      const f = PF.fig(), cx = 120, cy = 110, a = 38, b = 90;
+      metal(f, [circ(cx, cy, a)]); ringMetal(f, cx, cy, b, b + 8);
+      const P = (r, deg) => [cx + r * Math.cos(deg * DEG), cy - r * Math.sin(deg * DEG)];
+      f.line(cx, cy, ...P(a, 150), { cls: 'dim thin' }); f.tag(...P(a, 150), 'a', 'tl', 6);
+      f.line(cx, cy, ...P(b + 8, 35), { cls: 'dim thin' }); f.tag(...P(b + 8, 35), 'b', 'tr', 6);
+      f.label(...P(51, 300), '+Q', 'c', 'small');
+      f.label(...P(b + 32, 225), '-Q', 'c', 'small');
+      if (sol) {
+        f.circle(cx, cy, 70, { cls: 'dash' });
+        for (const d of [80, 190, 250]) { const p0 = P(43, d), p1 = P(60, d); f.arrow(...p0, ...p1, { hs: 5 }); }
+      }
+      return f.svg();
+    };
+    const fCoax3D = () => {
+      const f = PF.fig(), y0 = 90, x0 = 80, x1 = 280, B = 46, A = 20, k = 0.3;
+      f.ellipse(x0, y0, k * B, B);
+      f.pl(f.arcPts(x1, y0, k * B, B, -90, 90));
+      f.line(x0, y0 - B, x1, y0 - B); f.line(x0, y0 + B, x1, y0 + B);
+      f.ellipse(x0 - 50, y0, k * A, A);
+      f.line(x0 - 50, y0 - A, x0, y0 - A); f.line(x0 - 50, y0 + A, x0, y0 + A);
+      f.line(x0, y0 - A, x1, y0 - A, { cls: 'dash dim' }); f.line(x0, y0 + A, x1, y0 + A, { cls: 'dash dim' });
+      f.label(x0 - 50, y0 - A - 10, '\\text{inner tube}', 'b', 'small');
+      f.label(x1 - 40, y0 - B - 8, '\\text{outer tube}', 'b', 'small');
+      return f.svg();
+    };
+    const fCoaxEnd = (sol) => {
+      const f = PF.fig(), cx = 90, cy = 90, A = 26, B = 66;
+      ringMetal(f, cx, cy, A - 5, A); ringMetal(f, cx, cy, B, B + 5);
+      const P = (r, deg) => [cx + r * Math.cos(deg * DEG), cy - r * Math.sin(deg * DEG)];
+      f.dot(cx, cy, 2);
+      if (!sol) {
+        f.line(cx, cy, ...P(A, 140), { cls: 'dim thin' }); f.tag(...P(A, 140), 'a', 'tl', 6);
+        f.line(cx, cy, ...P(B + 5, 30), { cls: 'dim thin' }); f.tag(...P(B + 5, 30), 'b', 'tr', 6);
+      } else {
+        f.circle(cx, cy, 48, { cls: 'dash' });
+        f.line(cx, cy, ...P(48, 45), { cls: 'dim thin' }); f.label(...P(37, 75), 's', 'c', 'small');
+        for (const d of [150, 210, 270, 330]) f.arrow(...P(29, d), ...P(43, d), { hs: 4.5 });
+        f.label(...P(37, 110), '+\\lambda', 'c', 'small');
+        f.label(...P(B + 24, 230), '-\\lambda', 'c', 'small');
+      }
+      return f.svg();
+    };
+    const fCoax = () => PF.row([{ svg: fCoax3D(), cap: 'coaxial tubes (side view)' }, { svg: fCoaxEnd(false), cap: 'cross-section' }]).svg;
+    const fIso = () => {
+      const f = PF.fig(), cx = 90, cy = 80, R = 46;
+      metal(f, [circ(cx, cy, R)]);
+      const e = [cx + R * Math.cos(-35 * DEG), cy - R * Math.sin(-35 * DEG)];
+      f.line(cx, cy, ...e, { cls: 'dim thin' }); f.tag(...e, 'R', 'br', 6);
+      f.label(cx, cy - R - 10, 'Q', 'b');
+      f.text(cx + R + 20, cy - 10, 'the second conductor is', 'l');
+      f.text(cx + R + 20, cy + 10, 'a sphere at infinity', 'l');
+      return f.svg();
+    };
+    const fPPside = () => {
+      const f = PF.fig();
+      metal(f, [[[20, 40], [240, 40], [240, 48], [20, 48]]]); metal(f, [[[20, 100], [240, 100], [240, 108], [20, 108]]]);
+      f.label(250, 44, '+Q', 'l'); f.label(250, 104, '-Q', 'l');
+      f.dim(10, 48, 10, 100, 'd', { at: 'l' });
+      f.label(130, 30, '\\text{area } A', 'b', 'small');
+      return f.svg();
+    };
+
+    // interactive: separate the plates at fixed Q or at fixed V
+    const wCap = () => C.W(`
+      <div class="w-title">Pull the plates apart: isolated (charge fixed) or connected to a battery (voltage fixed)</div>
+      <div class="w-row"><label><input type="radio" name="u3capmode" value="q" checked> isolated: $Q$ fixed</label><label><input type="radio" name="u3capmode" value="v"> battery: $V$ fixed</label></div>
+      <div class="w-row"><label>separation $d/d_0$ <input class="dd" type="range" min="0.5" max="3" step="0.05" value="1"></label><span class="w-out dv"></span></div>
+      <div class="w-grid"><div class="w-plot p1"></div><div class="w-note bars"></div></div>
+      <div class="w-note nt"></div>`, (el) => {
+      const fm = (v) => (Math.abs(v) < 5e-3 ? '0' : v.toFixed(2));
+      function draw() {
+        const x = +el.querySelector('.dd').value, mode = el.querySelector('input[name="u3capmode"]:checked').value;
+        el.querySelector('.dv').textContent = x.toFixed(2);
+        const Cc = 1 / x, Qq = mode === 'q' ? 1 : 1 / x, Vv = mode === 'q' ? x : 1, Ee = Vv / x, Ww = Qq * Vv;
+        const f = PF.fig(), w = 190, top = 24, gap = 40 * x;
+        f.line(20, top, 20 + w, top, { cls: 'thick' }); f.line(20, top + gap, 20 + w, top + gap, { cls: 'thick' });
+        const nq = Math.max(1, Math.round(8 * Qq));
+        for (let i = 0; i < nq; i++) { const X = 20 + (i + 0.5) * w / nq; glyph(f, X, top - 9, 1); glyph(f, X, top + gap + 9, -1); }
+        const ne = Math.max(1, Math.round(6 * Ee));
+        for (let i = 0; i < ne; i++) { const X = 20 + (i + 0.5) * w / ne; f.arrow(X, top + 5, X, top + gap - 5, { hs: 5 }); }
+        el.querySelector('.p1').innerHTML = f.svg();
+        const rows = [['C', Cc], ['Q', Qq], ['V', Vv], ['E', Ee], ['W', Ww]];
+        el.querySelector('.bars').innerHTML = rows.map(([k, v]) => `<div style="display:flex;align-items:center;gap:8px;margin:4px 0"><span style="width:24px">$${k}$</span><span style="flex:0 0 150px;height:8px;background:var(--line);position:relative"><span style="position:absolute;left:0;top:0;bottom:0;width:${Math.min(100, v / 3 * 100).toFixed(1)}%;background:var(--fg)"></span></span><span>$${fm(v)}\\,${k}_0$</span></div>`).join('');
+        el.querySelector('.nt').innerHTML = mode === 'q'
+          ? `<p>Isolated: the charge has nowhere to go, so $Q$ stays. $\\sigma = Q/A$ is fixed, so $E = \\sigma/\\varepsilon_0$ is fixed; $V = Ed$ grows with $d$; $C = \\varepsilon_0A/d$ falls; $W = Q^2/2C$ grows. Work you do: $${fm(x - 1)}\\,W_0$ (the plates attract with $F = Q^2/2\\varepsilon_0A$; negative means they pulled themselves together).</p>`
+          : `<p>Battery: $V$ is held. $C$ falls, so charge flows back into the battery ($Q = CV$); $E = V/d$ falls; the field energy $W = \\tfrac12CV^2$ falls. Work you do: $${fm(1 - 1 / x)}\\,W_0$ (the plates still attract). Energy delivered to the battery: $${fm(2 * (1 - 1 / x))}\\,W_0$, your work plus the field energy released.</p>`;
+        if (window.Engine) Engine.renderMath(el);
+      }
+      el.querySelectorAll('input').forEach((i) => i.addEventListener('input', draw));
+      draw();
+    });
+
+    return {
+      id: 'u3-capacitors', title: 'Capacitance and the energy of a capacitor',
+      steps: [
+        RF(md`
+          ### Capacitance
+
+          Two conductors carry $+Q$ and $-Q$. Each is an equipotential, so the potential difference
+
+          $$V = V_+ - V_- = -\int_{(-)}^{(+)}\vb E\cdot d\vb l$$
+
+          is well defined.
+
+          [[fig:two]]
+
+          In-class question: how does $V$ change with the charge? Poisson's equation $\lap V = -\rho/\varepsilon_0$ is **linear**: multiply every charge by the same factor and $V$ and $\vb E$ get multiplied by that factor. (Griffiths flags the fine print: doubling $Q$ really does double $\rho$ everywhere rather than rearranging it. That's a uniqueness theorem, next unit.) So $V\propto Q$, and the constant
+
+          $$C = \frac{Q}{V}\qquad\left[\frac{\text{coulomb}}{\text{volt}} = \text{farad}\right]$$
+
+          is the **capacitance**: how much charge the pair holds per volt. It depends only on geometry (sizes, shapes, separation) and on the material between the conductors, never on $Q$ or $V$. By convention $Q$ is the charge of the positive conductor and $V = V_+ - V_-$, so $C>0$. Capacitors are used for energy storage, filtering, and pulsed applications.
+
+          **One conductor alone:** the "other plate" is a sphere at infinity, and $V$ is measured from $V(\infty) = 0$. An isolated sphere has $V = \dfrac{Q}{4\pi\varepsilon_0R}$, so $C = 4\pi\varepsilon_0R$.
+
+          !!key Boundary conditions for capacitor problems
+            Each plate is an equipotential. Either the **charges** $\pm Q$ are given (an isolated capacitor) and you compute $V$, or the **voltage** is given (a battery: $V = V_0$ on one plate, $0$ on the other) and you compute $Q$. $C$ links the two either way.
+        `, { two: { svg: fTwoCond(), cap: 'Lecture 7: two conductors with charges $+Q$ and $-Q$. Field lines run from one to the other.' } }),
+
+        Q(md`The charges on the two conductors are doubled, to $\pm2Q$. The capacitance`,
+          [md`doubles`, md`halves`, md`quadruples, since the energy quadruples`, md`stays the same; $V$ doubles`], 3,
+          [md`$C = Q/V$, and $V$ doubles along with $Q$.`, md`$C$ depends only on geometry; changing $Q$ can't change it.`, md`The energy does quadruple ($Q^2/2C$), but $C$ itself is unchanged.`, null],
+          md`Linearity: $V\propto Q$ with a constant of proportionality $1/C$ that depends only on the conductors' shapes and arrangement. Double $Q$, double $V$, same $C$.`,
+          { figHtml: fTwoCond() }),
+
+        Q(md`How big would an isolated metal sphere have to be to have a capacitance of 1 farad?`,
+          [md`Radius about $9\times10^9$ m, some 20 times the Earth–Moon distance`, md`Radius about 9 cm`, md`Radius about 9 m`, md`Radius about 9 km`], 0,
+          [null, md`$4\pi\varepsilon_0(0.09\text{ m}) = 10^{-11}$ F, ten picofarads.`, md`$4\pi\varepsilon_0(9\text{ m}) = 10^{-9}$ F, one nanofarad.`, md`$4\pi\varepsilon_0(9000\text{ m}) = 10^{-6}$ F, one microfarad.`],
+          md`$R = \dfrac{C}{4\pi\varepsilon_0} = (1\text{ F})(8.99\times10^9\text{ m/F}) = 9\times10^9$ m. A farad is enormous; practical capacitors are measured in pF to mF (and reach large values only with tiny gaps and large areas).`,
+          { figHtml: fIso() }),
+
+        Q(md`Treating the Earth (radius $6.4\times10^6$ m) as an isolated conducting sphere, its capacitance is about`,
+          [md`0.7 F`, md`0.7 $\mu$F`, md`7 kF`, md`0.7 mF`], 3,
+          [md`That would need a radius of about $6\times10^9$ m.`, md`That's the capacitance of a sphere of radius 6 km.`, md`Far too large; $4\pi\varepsilon_0 R$ is only about $10^{-10}$ F per metre of radius.`, null],
+          md`$C = 4\pi\varepsilon_0R = (6.4\times10^6\text{ m})/(8.99\times10^9\text{ m/F}) = 7.1\times10^{-4}$ F $\approx 0.7$ mF. The whole planet is a modest capacitor.`,
+          { figHtml: fIso() }),
+
+        Q(md`A charged capacitor is disconnected from its battery, and then its plates are pulled apart. Which quantity stays fixed?`,
+          [md`The voltage $V$`, md`The capacitance $C$`, md`The stored energy`, md`The charge $Q$`], 3,
+          [md`$V$ is fixed only while a battery holds it. Disconnected, $V = Q/C$ changes as $C$ changes.`, md`$C = \varepsilon_0A/d$ depends on the separation.`, md`The energy changes: you do work pulling the plates apart.`, null],
+          md`Isolated conductors keep their charge: that's the boundary condition ("isolated with charge $\pm Q$"). With $Q$ fixed and $C$ falling, $V = Q/C$ rises and $W = Q^2/2C$ rises.`,
+          { figHtml: fPPside() }),
+
+        RF(md`
+          ### The parallel-plate capacitor (Lecture 8)
+
+          Two plates of area $A$, a distance $d$ apart, with $+Q$ on the top plate and $-Q$ on the bottom. Take $\sqrt A\gg d$ so that fringing (edge effects) can be neglected; then $\sigma = Q/A$.
+
+          [[fig:pp]]
+
+          **One sheet**, by a pillbox: $2EA' = \sigma A'/\varepsilon_0$, so $E = \dfrac{\sigma}{2\varepsilon_0}$, pointing away from a positive sheet on both sides. (The notes write $+\tfrac{\sigma}{2\varepsilon_0}\hat{\vb z}$ below the sheet too; below a positive sheet the field points down, $-\tfrac{\sigma}{2\varepsilon_0}\hat{\vb z}$. Their drawing has it right.)
+
+          **Two plates** (in-class question): superpose. Above the top plate and below the bottom plate the two contributions cancel; between the plates they add.
+
+          [[fig:sup]]
+
+          $$\lvert\vb E\rvert = \frac{\sigma}{\varepsilon_0}\ \text{between the plates, pointing from } + \text{ to } -;\qquad \vb E = 0\ \text{outside}.$$
+
+          (The notes write $\vb E = \tfrac{\sigma}{\varepsilon_0}\hat{\vb z}$ between the plates. With $+Q$ on top the field points down, $-\tfrac{\sigma}{\varepsilon_0}\hat{\vb z}$. The magnitude, and everything below, is unaffected.)
+
+          **Integrate $\vb E$ to get $V$:** $V = V_+ - V_- = \dfrac{\sigma}{\varepsilon_0}d = \dfrac{Q}{A\varepsilon_0}d$, so
+
+          $$C = \frac{\varepsilon_0A}{d}.$$
+
+          Example: plates $1\ \text{cm}\times1\ \text{cm}$, $1$ mm apart: $C = \dfrac{(8.85\times10^{-12})(10^{-4})}{10^{-3}} = 8.9\times10^{-13}$ F, about $0.9$ pF.
+
+          Since $\vb E = 0$ outside, the conductor rule $\sigma = \varepsilon_0E_{\text{outside}}$ says the outer faces carry no charge: all of $\pm Q$ sits on the **inner** faces, facing each other.
+        `, { pp: { svg: fPP3D(), cap: 'Lecture 7–8: parallel plates of area $A$, separation $d$, charges $\\pm Q$.' }, sup: { svg: fSup(), cap: 'Solid arrows: the field of the $+$ plate, $\\sigma/2\\varepsilon_0$ each side. Dashed: the $-$ plate. They cancel outside and add in between.' } }),
+
+        Q(md`For an ideal parallel-plate capacitor (fringing neglected), the field just above the top plate, on the outside, is`,
+          [md`$\sigma/2\varepsilon_0$, from the top plate alone`, md`$\sigma/\varepsilon_0$, as just outside any conductor`, md`zero`, md`$2\sigma/\varepsilon_0$`], 2,
+          [md`The bottom plate contributes $\sigma/2\varepsilon_0$ in the opposite direction there; they cancel.`, md`$\sigma/\varepsilon_0$ is the field next to the charged face, which is the **inner** face. The outer face has no charge, and the field there is zero.`, null, md`Nothing adds up to that anywhere.`],
+          md`Each plate contributes $\sigma/2\varepsilon_0$; outside the pair they point in opposite directions and cancel. Consistent with the conductor rule: the outer faces carry no charge, so the field just outside them is $0/\varepsilon_0 = 0$.`,
+          { figHtml: fPPside() }),
+
+        Q(md`The plate separation of a parallel-plate capacitor is doubled. Its capacitance`,
+          [md`doubles`, md`stays the same`, md`drops to a quarter`, md`halves`], 3,
+          [md`A bigger gap means a bigger $V$ for the same $Q$, so less charge per volt.`, md`$C$ depends on geometry, and the geometry changed.`, md`$C\propto 1/d$, not $1/d^2$.`, null],
+          md`$C = \varepsilon_0A/d$. Double $d$, half $C$. (Double $A$ instead and $C$ doubles.)`,
+          { figHtml: fPPside() }),
+
+        Q(md`Where does the charge sit on the plates of a parallel-plate capacitor?`,
+          [md`On the inner faces, facing each other`, md`On the outer faces`, md`Half on each face of each plate`, md`Spread through the thickness of the plates`], 0,
+          [null, md`The field outside is zero, so the outer faces carry no charge ($\sigma = \varepsilon_0E_{\text{out}} = 0$).`, md`That's an isolated charged plate. Here the opposite charge on the other plate pulls all of it to the inner face.`, md`Charge on a conductor sits on its surface, never in its bulk.`],
+          md`$+Q$ on the inner face of the top plate, $-Q$ on the inner face of the bottom plate. Each face gives $\sigma/\varepsilon_0$ just outside it (into the gap), which is exactly the gap field.`,
+          { figHtml: fPPside() }),
+
+        Q(md`An isolated parallel-plate capacitor (charge fixed) has its plates pulled farther apart. The field between the plates`,
+          [md`decreases, since the plates are farther apart`, md`increases, since $V$ increases`, md`drops to zero`, md`stays the same`], 3,
+          [md`The field of a large sheet doesn't depend on distance. With $\sigma$ fixed, $E = \sigma/\varepsilon_0$ is fixed.`, md`$V = Ed$ increases because $d$ does, not because $E$ does.`, md`The plates still carry $\pm Q$.`, null],
+          md`$E = \sigma/\varepsilon_0 = Q/(\varepsilon_0A)$: independent of $d$. The voltage $V = Ed$ grows, and so does the volume $Ad$ filled with the same energy density $\tfrac{\varepsilon_0}{2}E^2$.`,
+          { figHtml: fPPside() }),
+
+        RF(md`
+          ### Energy stored in a capacitor
+
+          To charge a capacitor, move charge from the $-$ plate to the $+$ plate a little at a time. When the plates hold $\pm q$, the potential difference is $q/C$, so moving the next $dq$ costs (the notes' green line) $dW = V\,dq$:
+
+          $$dW = \frac{q}{C}\,dq\qquad\Longrightarrow\qquad W = \int_0^Q\frac{q}{C}\,dq = \frac{Q^2}{2C} = \frac12CV^2 = \frac12QV.$$
+
+          [[fig:tri]]
+
+          **Why the $\tfrac12$:** the first bits of charge cross almost no voltage; only the last bit crosses the full $V$. On average, charge crosses $V/2$.
+
+          **Check with the field energy** for parallel plates: $u = \tfrac{\varepsilon_0}{2}\left(\tfrac{\sigma}{\varepsilon_0}\right)^2$ fills the volume $Ad$, so $W = \dfrac{\sigma^2}{2\varepsilon_0}Ad = \dfrac{Q^2d}{2\varepsilon_0A} = \dfrac{Q^2}{2C}$. The same.
+
+          Capacitance will only ever depend on geometry and materials; the energy is then fixed by $Q$ (or $V$).
+        `, { tri: { svg: fVq(), cap: 'While charging, $V$ grows linearly with $q$. The work is the area under the line: a triangle, $\\tfrac12 QV$.' } }),
+
+        wCap(),
+
+        Q(md`A capacitor holds charge $Q$ at voltage $V$. Someone says the stored energy is $QV$. Why is that twice too big?`,
+          [md`Because only half of the charge is on the positive plate`, md`Because half the energy is stored outside the plates`, md`Because $V$ is measured from the midpoint of the gap`, md`Because the voltage was smaller while the charge was being moved: it grew from 0 to $V$`], 3,
+          [md`All of $+Q$ is on the positive plate (and $-Q$ on the other); $Q$ in $\tfrac12QV$ is that whole charge.`, md`For ideal plates there's no field outside at all.`, md`$V$ is the full plate-to-plate difference.`, null],
+          md`$QV$ would be the work to move all of $Q$ across the **final** voltage. But during charging the voltage was $q/C$, growing from 0. Averaging: $W = \int_0^Q V(q)\,dq = \tfrac12QV$. (Compare $W = \tfrac12\sum q_iV_i$ for point charges: the same $\tfrac12$.)`,
+          { figHtml: fPPside() }),
+
+        Q(md`An isolated capacitor (charge fixed) has its plate separation doubled. The stored energy`,
+          [md`halves`, md`stays the same, since the charge is unchanged`, md`doubles; the extra comes from the work you did pulling the plates apart`, md`quadruples`], 2,
+          [md`That's what happens at fixed **voltage**. At fixed charge, $W = Q^2/2C$ and $C$ halves.`, md`$W = Q^2/2C$, and $C$ changed.`, null, md`$W\propto1/C\propto d$: a factor 2, not 4.`],
+          md`$W = \dfrac{Q^2}{2C} = \dfrac{Q^2d}{2\varepsilon_0A}\propto d$. The plates attract, so pulling them apart takes work, and that work is stored as field energy in the newly opened volume ($u$ is unchanged, the volume doubled).`,
+          { figHtml: fPPside() }),
+
+        Q(md`A capacitor stays connected to a battery while its plate separation is doubled. The stored energy halves. Which statement is right?`,
+          [md`You did negative work: the plates pushed themselves apart`, md`Energy is not conserved here`, md`The battery supplied the missing energy`, md`You still did positive work, and both your work and the released field energy went into the battery`], 3,
+          [md`Opposite charges attract no matter what; separating the plates always takes positive work.`, md`It is conserved once you include the battery.`, md`The battery **absorbed** energy: charge was pushed back into it against its voltage.`, null],
+          md`With $V$ fixed, $Q = CV$ halves, so $\tfrac12Q_0$ flows back into the battery, which gains $V\cdot\tfrac12Q_0 = W_0$ (with $W_0 = \tfrac12Q_0V$). The field energy fell by $\tfrac12W_0$, and you supplied the other $\tfrac12W_0$. Try both modes in the widget above.`,
+          { figHtml: fPPside() }),
+
+        Q(md`For an isolated parallel-plate capacitor with charge $Q$, the force of attraction between the plates`,
+          [md`is $\dfrac{Q^2}{2\varepsilon_0A}$, the same at any separation (while $d\ll\sqrt A$)`, md`falls off like $1/d^2$, as for point charges`, md`is $\dfrac{Q^2}{\varepsilon_0A}$, from $Q$ times the field $Q/\varepsilon_0A$`, md`is zero, since the field outside is zero`], 0,
+          [null, md`Each plate is a large sheet whose field doesn't depend on distance.`, md`That uses the full field at the plate; the plate's own charge can't push itself. Use the other plate's field, $\sigma/2\varepsilon_0$, which is the average field.`, md`The field outside is zero, but each plate feels the other plate's field in the gap.`],
+          md`Force per area on the plate's surface charge: $\dfrac{\sigma^2}{2\varepsilon_0}$, so $F = \dfrac{\sigma^2}{2\varepsilon_0}A = \dfrac{Q^2}{2\varepsilon_0A}$. Energy check: $W = \dfrac{Q^2x}{2\varepsilon_0A}$ at separation $x$, and $F = dW/dx = \dfrac{Q^2}{2\varepsilon_0A}$: constant, so pulling the plates from $d$ to $2d$ costs $Fd = W_0$, the doubling of the previous question.`,
+          { figHtml: fPPside() }),
+
+        P({
+          title: 'Spherical capacitor (Griffiths Ex. 2.12)',
+          q: md`Two concentric metal spherical shells have radii $a$ (inner) and $b$ (outer). Find the capacitance, then check two limits.`,
+          figHtml: fSphCap(false),
+          hints: [md`Conditions: put $+Q$ on the inner shell and $-Q$ on the outer; each shell is an equipotential.`, md`Gauss between the shells: $E = \dfrac{Q}{4\pi\varepsilon_0r^2}$. Then $V = -\int_b^a E\,dr$.`, md`For the thin-gap limit, write $b = a + d$ with $d\ll a$.`],
+          parts: [
+            { lbl: 'C', expr: '4*pi*eps0*a*b/(b - a)', vars: { eps0: [0.5, 2], a: [0.5, 1.5], b: [2, 4] }, accepts: ['4*pi*eps0/(1/a - 1/b)'] },
+            { lbl: md`As $b\to\infty$, $C$ tends to`, mc: [md`$\infty$`, md`$0$`, md`$4\pi\varepsilon_0 a$, the isolated sphere`], a: 2,
+              why: [md`$\dfrac{ab}{b-a}\to a$, which is finite.`, md`$\dfrac{ab}{b-a}\to a$, not 0. An isolated sphere still has capacitance.`, null] },
+            { lbl: md`If $b = a + d$ with $d\ll a$, $C$ tends to`, mc: [md`$\dfrac{\varepsilon_0\,4\pi a^2}{d}$, a parallel-plate capacitor of area $4\pi a^2$`, md`$4\pi\varepsilon_0 a$`, md`$\dfrac{\varepsilon_0\,4\pi a^2}{2d}$`], a: 0,
+              why: [null, md`That's the opposite limit (outer shell far away).`, md`$\dfrac{ab}{b-a}\approx\dfrac{a^2}{d}$, with no factor $\tfrac12$.`] },
+          ],
+          sol: md`
+            **Conditions.** Two conductors, each an equipotential; inner shell $+Q$, outer $-Q$ (isolated, charges given). By symmetry each charge is uniform.
+
+            **Field:** Gauss with a sphere of radius $r$ between the shells encloses $Q$: $E = \dfrac{Q}{4\pi\varepsilon_0r^2}$. Inside $a$ and outside $b$ the field is zero.
+
+            [[fig:g]]
+
+            **Voltage:**
+
+            $$V = V(a) - V(b) = -\int_b^a\frac{Q}{4\pi\varepsilon_0r^2}\,dr = \frac{Q}{4\pi\varepsilon_0}\left(\frac1a - \frac1b\right),\qquad C = \frac{Q}{V} = 4\pi\varepsilon_0\frac{ab}{b-a}.$$
+
+            **Limits.** $b\to\infty$: $C\to4\pi\varepsilon_0a$, the isolated sphere (the outer shell is the "plate at infinity"). Thin gap $b = a+d$: $C\approx4\pi\varepsilon_0\dfrac{a^2}{d} = \dfrac{\varepsilon_0(4\pi a^2)}{d}$, a parallel-plate capacitor with area $4\pi a^2$. Both make sense.
+          `,
+          figs: { g: { svg: fSphCap(true), cap: 'Gaussian sphere of radius $r$ (dashed) between the shells; the field points outward, from $+Q$ to $-Q$.' } },
+        }),
+
+        P({
+          title: 'Energy of the spherical capacitor, two ways',
+          q: md`The spherical capacitor above holds charges $\pm Q$. Find its energy (a) from $Q^2/2C$ and (b) from $\tfrac{\varepsilon_0}{2}\int E^2\,d\tau$, and check they agree.`,
+          figHtml: fSphCap(false),
+          hints: [md`(a) Use $C = 4\pi\varepsilon_0ab/(b-a)$.`, md`(b) The field lives only between the shells. You have done this integral before: two concentric shells with $\pm q$ (Lesson 4).`],
+          parts: [{ lbl: 'W', expr: 'Q^2*(b - a)/(8*pi*eps0*a*b)', vars: { Q: [0.5, 3], eps0: [0.5, 2], a: [0.5, 1.5], b: [2, 4] }, accepts: ['Q^2/(8*pi*eps0)*(1/a - 1/b)'] }],
+          sol: md`
+            **(a)** $W = \dfrac{Q^2}{2C} = \dfrac{Q^2(b-a)}{8\pi\varepsilon_0ab} = \dfrac{Q^2}{8\pi\varepsilon_0}\left(\dfrac1a - \dfrac1b\right)$.
+
+            **(b)** $W = \dfrac{\varepsilon_0}{2}\displaystyle\int_a^b\left(\frac{Q}{4\pi\varepsilon_0r^2}\right)^2 4\pi r^2\,dr = \frac{Q^2}{8\pi\varepsilon_0}\left(\frac1a - \frac1b\right).$
+
+            They agree, as they must: $\tfrac12CV^2$ is the field energy. This is exactly the "two concentric shells" worked example of Lesson 4.
+          `,
+        }),
+
+        P({
+          title: 'An isolated sphere as a capacitor',
+          q: md`An isolated metal sphere of radius $R = 10$ cm is charged to $V = 10$ kV (relative to infinity). Find its capacitance, its charge, and the stored energy. Use $\dfrac{1}{4\pi\varepsilon_0} = 8.99\times10^9$ m/F.`,
+          figHtml: fIso(),
+          hints: [md`$C = 4\pi\varepsilon_0R$.`, md`$Q = CV$ and $W = \tfrac12CV^2$.`],
+          parts: [
+            { lbl: 'C', ans: 11.13, unit: 'pF' },
+            { lbl: 'Q', ans: 111.3, unit: 'nC' },
+            { lbl: 'W', ans: 0.5563, unit: 'mJ' },
+          ],
+          sol: md`
+            **Conditions.** One conductor, potential given ($V = 10$ kV), $V(\infty) = 0$.
+
+            $C = 4\pi\varepsilon_0R = \dfrac{0.10}{8.99\times10^9} = 1.11\times10^{-11}$ F $= 11.1$ pF.
+
+            $Q = CV = (1.11\times10^{-11})(10^4) = 1.11\times10^{-7}$ C $= 111$ nC.
+
+            $W = \tfrac12CV^2 = \tfrac12(1.11\times10^{-11})(10^4)^2 = 5.6\times10^{-4}$ J $= 0.56$ mJ.
+
+            Check: $W = \dfrac{Q^2}{8\pi\varepsilon_0R}$, the shell energy of Lesson 3, gives the same.
+          `,
+        }),
+
+        P({
+          title: 'Separating the plates at fixed charge',
+          q: md`An isolated parallel-plate capacitor (area $A$, separation $d$) carries $\pm Q$. The plates are slowly pulled apart from $d$ to $2d$. Answer each part relative to the starting values $C_0$, $V_0$, $E_0$, $W_0$.`,
+          figHtml: fPPside(),
+          hints: [md`Conditions: isolated, so $Q$ is fixed. $C = \varepsilon_0A/d$, $E = \sigma/\varepsilon_0$, $V = Ed$, $W = Q^2/2C$.`],
+          parts: [
+            { lbl: md`$C$ becomes`, mc: [md`$2C_0$`, md`$C_0/2$`, md`$C_0$`, md`$C_0/4$`], a: 1, why: [md`$C\propto1/d$.`, null, md`$C$ depends on $d$.`, md`$C\propto 1/d$, not $1/d^2$.`] },
+            { lbl: md`$V$ becomes`, mc: [md`$V_0/2$`, md`$V_0$`, md`$4V_0$`, md`$2V_0$`], a: 3, why: [md`$V = Q/C$ and $C$ halved.`, md`$V$ is only fixed when a battery is attached.`, md`$V = Ed$ with $E$ unchanged: a factor 2.`, null] },
+            { lbl: md`$E$ between the plates becomes`, mc: [md`$E_0$`, md`$E_0/2$`, md`$2E_0$`, md`$0$`], a: 0, why: [null, md`$E = \sigma/\varepsilon_0$ and $\sigma$ didn't change.`, md`$E = \sigma/\varepsilon_0$ and $\sigma$ didn't change.`, md`The plates still carry their charge.`] },
+            { lbl: md`$W$ becomes`, mc: [md`$W_0/2$`, md`$W_0$`, md`$2W_0$`, md`$4W_0$`], a: 2, why: [md`That's the fixed-$V$ result.`, md`$W = Q^2/2C$ and $C$ halved.`, null, md`$W\propto d$, a factor 2.`] },
+            { lbl: md`The work you did, in units of $W_0$`, ans: 1, unit: '' },
+          ],
+          sol: md`
+            **Conditions.** Isolated plates: $Q$ fixed. Then $C = \varepsilon_0A/d$ halves, $E = \sigma/\varepsilon_0 = Q/\varepsilon_0A$ is unchanged, $V = Ed$ doubles, and $W = Q^2/2C = \tfrac12QV$ doubles.
+
+            **Work:** $W_{\text{you}} = \Delta W = 2W_0 - W_0 = W_0$. Directly: the attraction $F = Q^2/2\varepsilon_0A$ is constant, and $F\cdot d = \dfrac{Q^2d}{2\varepsilon_0A} = W_0$. The energy density $\tfrac{\varepsilon_0}{2}E^2$ didn't change; the volume holding it doubled.
+          `,
+        }),
+
+        P({
+          title: 'Separating the plates at fixed voltage',
+          q: md`The same capacitor stays connected to a battery of voltage $V_0$ while the plates are slowly pulled apart from $d$ to $2d$. Answer relative to the starting values $Q_0$, $E_0$, $W_0$ (with $W_0 = \tfrac12Q_0V_0$).`,
+          figHtml: fPPside(),
+          hints: [md`Conditions: the battery holds $V = V_0$. $C$ still halves.`, md`$Q = CV$, $E = V/d$, $W = \tfrac12CV^2$. The battery's energy changes by $V_0\,\Delta Q$.`],
+          parts: [
+            { lbl: md`$Q$ becomes`, mc: [md`$Q_0$`, md`$2Q_0$`, md`$Q_0/2$`, md`$Q_0/4$`], a: 2, why: [md`With $V$ fixed and $C$ halved, $Q = CV$ halves.`, md`$Q = CV$ and $C$ went down.`, null, md`$Q\propto C\propto1/d$: a factor 2.`] },
+            { lbl: md`$E$ becomes`, mc: [md`$E_0/2$`, md`$E_0$`, md`$2E_0$`, md`$E_0/4$`], a: 0, why: [null, md`$E = V/d$ with $V$ fixed and $d$ doubled. (Equivalently $\sigma$ halved.)`, md`$E = V/d$ decreases.`, md`$E = V/d$: one factor of 2.`] },
+            { lbl: md`$W$ becomes`, mc: [md`$2W_0$`, md`$W_0$`, md`$W_0/4$`, md`$W_0/2$`], a: 3, why: [md`That's the fixed-$Q$ result.`, md`$W = \tfrac12CV^2$ and $C$ halved.`, md`$W\propto C$: a factor 2.`, null] },
+            { lbl: md`Energy delivered **to** the battery, in units of $W_0$`, ans: 1, unit: '' },
+            { lbl: md`Work you did, in units of $W_0$`, ans: 0.5, unit: '' },
+          ],
+          sol: md`
+            **Conditions.** The battery fixes $V = V_0$. $C = \varepsilon_0A/d$ halves, so $Q = CV_0$ halves, $E = V_0/d$ halves, and $W = \tfrac12CV_0^2$ halves.
+
+            **Energy bookkeeping.** Charge $\tfrac12Q_0$ flows back into the battery against its voltage, so the battery gains $V_0\cdot\tfrac12Q_0 = W_0$. The field lost $\tfrac12W_0$. Conservation: your work $= W_0 - \tfrac12W_0 = \tfrac12W_0$, positive (the plates still attract, now with a decreasing force $F = Q^2/2\varepsilon_0A$).
+
+            **Compare with fixed $Q$:** there $W$ doubled and you did $W_0$. The difference is the battery.
+          `,
+        }),
+
+        P({
+          id: 'HW4-2.44', src: 'HW 4 · Griffiths 2.44', title: 'Capacitance of coaxial tubes', big: true,
+          q: md`Find the capacitance per unit length of two coaxial metal cylindrical tubes, of radii $a$ and $b$ (Fig. 2.53).`,
+          figHtml: fCoax(),
+          hints: [
+            md`Conditions: two conductors, each an equipotential. Put charge $+\lambda$ per unit length on the inner tube and $-\lambda$ on the outer. Treat the tubes as very long (ignore the ends).`,
+            md`Gauss with a cylinder of radius $s$ ($a<s<b$) and length $\ell$: $E\cdot2\pi s\ell = \lambda\ell/\varepsilon_0$.`,
+            md`$V = V(a) - V(b) = \displaystyle\int_a^b E\,ds$. Then $C/\ell = \lambda/V$.`,
+          ],
+          parts: [
+            { lbl: md`$E(s)$ between the tubes`, expr: 'lambda/(2*pi*eps0*s)', vars: { lambda: [0.5, 3], eps0: [0.5, 2], s: [1, 3] } },
+            { lbl: md`C/L`, expr: '2*pi*eps0/ln(b/a)', vars: { eps0: [0.5, 2], a: [0.5, 1.5], b: [2, 5] }, accepts: ['2*pi*eps0/(ln(b) - ln(a))'] },
+            { lbl: md`If the gap is thin, $b = a + d$ with $d\ll a$, $C/L$ tends to`, mc: [md`$2\pi\varepsilon_0$`, md`$\dfrac{\varepsilon_0\,2\pi a}{d}$, parallel plates of width $2\pi a$`, md`$0$`, md`$\dfrac{\varepsilon_0\,\pi a^2}{d}$`], a: 1,
+              why: [md`That's $\ln(b/a) = 1$, i.e. $b = ea$, not a thin gap.`, null, md`A thin gap makes $C$ **large**: $\ln(1+d/a)\approx d/a\to0$ in the denominator.`, md`The relevant area per unit length is the circumference $2\pi a$, not the cross-section.`] },
+            { lbl: md`If the inner conductor shrinks to a thin wire ($a\to0$) at fixed $b$, $C/L$`, mc: [md`grows without bound`, md`stays finite and nonzero`, md`goes to zero, but only logarithmically slowly`], a: 2,
+              why: [md`$\ln(b/a)\to\infty$, so $C/L\to0$.`, md`$\ln(b/a)$ grows without bound as $a\to0$.`, null] },
+          ],
+          sol: md`
+            **Conditions.** Two conductors, each an equipotential: inner tube with $+\lambda$ per unit length, outer tube with $-\lambda$ (isolated, charges given). Long tubes: by symmetry $\vb E = E(s)\hat{\vb s}$.
+
+            **Field.** Gauss with a cylinder of radius $s$ and length $\ell$ (dashed in the cross-section):
+
+            [[fig:g]]
+
+            $$E\cdot2\pi s\ell = \frac{\lambda\ell}{\varepsilon_0}\quad\Longrightarrow\quad \vb E = \frac{\lambda}{2\pi\varepsilon_0 s}\hat{\vb s}\quad(a<s<b).$$
+
+            Inside the inner tube and outside the outer one the enclosed charge is zero, so $\vb E = 0$ there.
+
+            **Voltage.**
+
+            $$V = V(a) - V(b) = \int_a^b\frac{\lambda}{2\pi\varepsilon_0s}\,ds = \frac{\lambda}{2\pi\varepsilon_0}\ln\frac ba .$$
+
+            **Capacitance per unit length.**
+
+            $$\frac{C}{L} = \frac{\lambda}{V} = \frac{2\pi\varepsilon_0}{\ln(b/a)}.$$
+
+            **Checks.**
+            - Thin gap, $b = a+d$: $\ln(1+d/a)\approx d/a$, so $C/L\approx\dfrac{2\pi\varepsilon_0a}{d} = \dfrac{\varepsilon_0(2\pi a)}{d}$: parallel plates whose width is the circumference.
+            - Numbers: with $b/a = e$, $C/L = 2\pi\varepsilon_0 = 55.6$ pF/m, the right size for real coaxial cable.
+            - Energy: $\dfrac{\lambda^2}{2(C/L)} = \dfrac{\lambda^2\ln(b/a)}{4\pi\varepsilon_0}$ per unit length, the same as $\tfrac{\varepsilon_0}{2}\int_a^b E^2\,2\pi s\,ds$.
+
+            **What to remember:** set up $\pm Q$ (or $\pm\lambda$), get $\vb E$ by Gauss, integrate between the conductors for $V$, divide. $C$ never depends on the charge you assumed.
+          `,
+          figs: { g: { svg: fCoaxEnd(true), cap: 'Cross-section: inner tube $+\\lambda$, outer tube $-\\lambda$, Gaussian cylinder of radius $s$ (dashed); $\\vb E$ is radial in the gap.' } },
+        }),
+
+        RF(md`
+          !!key Patterns to remember
+            - $C = Q/V$: geometry only. Recipe: assume $\pm Q$ (or $\pm\lambda$), Gauss for $\vb E$, integrate from one conductor to the other for $V$, divide.
+            - Parallel plates $\dfrac{\varepsilon_0A}{d}$; spherical $\dfrac{4\pi\varepsilon_0ab}{b-a}$; isolated sphere $4\pi\varepsilon_0R$; coaxial $\dfrac{2\pi\varepsilon_0}{\ln(b/a)}$ per length. Thin gaps all reduce to $\varepsilon_0(\text{area})/d$.
+            - $W = \dfrac{Q^2}{2C} = \tfrac12CV^2 = \tfrac12QV$, equal to $\tfrac{\varepsilon_0}{2}\int E^2\,d\tau$.
+            - Isolated capacitor: $Q$ fixed (use $Q^2/2C$). Battery attached: $V$ fixed (use $\tfrac12CV^2$, and count the battery's energy).
+            - Parallel plates: $E = \sigma/\varepsilon_0$ inside, $0$ outside, charge on the inner faces, attraction $Q^2/2\varepsilon_0A$.
+        `),
+      ],
+    };
+  };
+
 
   C.unit({
     id: 'u3', num: 'Unit 3', title: 'Work, energy and conductors',
     blurb: 'The work to move and assemble charges, field energy, the seven properties of conductors, cavities and shielding, surface charge and electrostatic pressure, capacitors.',
-    lessons: [L1(), L2(), L3(), L4(), L5(), L6(), L7()],
+    lessons: [L1(), L2(), L3(), L4(), L5(), L6(), L7(), L8()],
   });
 })();

@@ -521,13 +521,13 @@
           This is a shear pattern: the push along $\uv y$ at one height differs from the push at a neighbouring height, so a paddle wheel with its axle along $\uv x$ spins. Check the curl even when the field lines look harmless.
         `, { figHtml: figSinZ(), title: 'Straight lines, still not electrostatic' }),
       Q(md`**Field 3:** $\vb E = \dfrac{qC}{4\pi\ep r^3}\left(2\cos\theta\,\uv r+\sin\theta\,\hat{\boldsymbol\theta}\right)$ in spherical coordinates ($q$ and $C$ constants). Is it electrostatic, and if so, what produces it?`,
-        [md`Yes. Its curl is zero. It is the far field of a dipole: charges $\pm q$ a distance $C$ apart along the $z$ axis.`,
-          md`No. The $\hat{\boldsymbol\theta}$ component makes the field lines curve, and curved lines mean curl.`,
+        [md`No. The $\hat{\boldsymbol\theta}$ component makes the field lines curve, and curved lines mean curl.`,
           md`Yes. It is the field of a single point charge $qC$ at the origin.`,
-          md`No. Its magnitude falls as $1/r^3$, and Coulomb fields fall as $1/r^2$.`], 0,
-        [null,
-          md`Curved field lines are fine; circulation is what is forbidden. The $\hat{\boldsymbol\phi}$ component of the curl, $\tfrac1r\big[\partial_r(rE_\theta)-\partial_\theta E_r\big]$, has two terms that cancel.`,
+          md`Yes. Its curl is zero. It is the far field of a dipole: charges $\pm q$ a distance $C$ apart along the $z$ axis.`,
+          md`No. Its magnitude falls as $1/r^3$, and Coulomb fields fall as $1/r^2$.`], 2,
+        [md`Curved field lines are fine; circulation is what is forbidden. The $\hat{\boldsymbol\phi}$ component of the curl, $\tfrac1r\big[\partial_r(rE_\theta)-\partial_\theta E_r\big]$, has two terms that cancel.`,
           md`A point charge gives a purely radial field $\propto\uv r/r^2$. This one has a $\hat{\boldsymbol\theta}$ part and falls as $1/r^3$.`,
+          null,
           md`Each charge gives $1/r^2$, but far away the fields of $+q$ and $-q$ nearly cancel, leaving $1/r^3$. A superposition of Coulomb fields is still electrostatic.`],
         md`
           Use the spherical curl from the formula sheet. With $E_\phi=0$ and nothing depending on $\phi$, the $\uv r$ and $\hat{\boldsymbol\theta}$ components vanish at once. The $\hat{\boldsymbol\phi}$ component:
@@ -590,14 +590,14 @@
         md`Out along (i) and back along (ii) is a closed loop: $5\text{ V}+\int_{b}^{a}\vb E\cdot d\vb l\,\big|_{(\text{ii})}=0$. Reversing (ii) flips the sign, so $\int_a^b\vb E\cdot d\vb l\,\big|_{(\text{ii})}=5$ V. Then $V(b)-V(a)=-5$ V, whatever path you use.`,
         { figHtml: figLoopPaths() }),
       Q(md`Why must $\int\vb E\cdot d\vb l$ be path-independent before $V(\vb r)=-\int_{\mathcal O}^{\vb r}\vb E\cdot d\vb l$ makes sense?`,
-        [md`Otherwise different paths from $\mathcal O$ to $\vb r$ would give different numbers, and $V$ would not be a single-valued function of position.`,
-          md`Because the reference point has to be at infinity.`,
+        [md`Because the reference point has to be at infinity.`,
           md`Because $V$ is a vector and needs a definite direction.`,
-          md`Because Gauss's law only holds for closed surfaces.`], 0,
-        [null,
-          md`The reference point can be anywhere. Path independence is needed whatever $\mathcal O$ you pick.`,
+          md`Because Gauss's law only holds for closed surfaces.`,
+          md`Otherwise different paths from $\mathcal O$ to $\vb r$ would give different numbers, and $V$ would not be a single-valued function of position.`], 3,
+        [md`The reference point can be anywhere. Path independence is needed whatever $\mathcal O$ you pick.`,
           md`$V$ is a scalar: the integrand $\vb E\cdot d\vb l$ is a dot product, a number.`,
-          md`Gauss's law concerns $\divg\vb E$. Path independence comes from $\curl\vb E=0$ through Stokes' theorem.`],
+          md`Gauss's law concerns $\divg\vb E$. Path independence comes from $\curl\vb E=0$ through Stokes' theorem.`,
+          null],
         md`A function assigns one value to each point. If the line integral depended on the route, "the potential at $\vb r$" would have one value per path. Chain of logic: zero curl ⇒ zero loop integrals ⇒ path independence ⇒ $V$ well defined. For a swirl like $C(-y\,\uv x+x\,\uv y)$ no potential exists at all.`,
         { figHtml: figLoopPaths() }),
       Q(md`A closed loop winds around a point charge $q$ (the charge is inside the region the loop encloses). What is $\oint\vb E\cdot d\vb l$ around the loop?`,
@@ -875,13 +875,13 @@
         The usual choice is $V(\infty)=0$: a point far from all the charges. In the lab the reference is the Earth, "ground": the 120 V of a wall outlet is measured relative to it. (Large solar and magnetic storms can shift ground potentials.)
       `),
       Q(md`You compute $V$ for some charges with $V(\infty)=0$ and find $V=50$ V at the point $\mathcal O'$. A classmate uses $\mathcal O'$ as the reference instead. Compared with yours, the classmate's potential is`,
-        [md`lower by 50 V everywhere, with the same $\vb E$`,
-          md`the same everywhere, since physics cannot depend on the reference`,
+        [md`the same everywhere, since physics cannot depend on the reference`,
           md`lower by 50 V at $\mathcal O'$ only, and unchanged far away`,
-          md`shifted by different amounts at different points, so $\vb E$ changes too`], 0,
-        [null,
-          md`The physics (fields, differences) is the same, but the numbers change: the classmate's $V(\mathcal O')=0$ while yours is 50 V.`,
+          md`lower by 50 V everywhere, with the same $\vb E$`,
+          md`shifted by different amounts at different points, so $\vb E$ changes too`], 2,
+        [md`The physics (fields, differences) is the same, but the numbers change: the classmate's $V(\mathcal O')=0$ while yours is 50 V.`,
           md`The shift is one constant added everywhere: $V'=V-50$ V, including far away, where the classmate gets $V'(\infty)=-50$ V.`,
+          null,
           md`$V'-V=-\int_{\mathcal O'}^{\mathcal O}\vb E\cdot d\vb l$ does not depend on the field point. A constant shift leaves $\vb E=-\nabla V$ unchanged.`],
         md`$V'(\vb r)=V(\vb r)+K$, and $V'(\mathcal O')=0$ fixes $K=-50$ V. So $V'=V-50$ V everywhere and $\vb E'=-\nabla V'=-\nabla V=\vb E$. This is the Lecture 4 in-class question: does the constant change the electric field? No.`,
         { figHtml: figRefShift() }),
@@ -1737,11 +1737,11 @@
         md`$\partial V/\partial z$ only needs $V$ along the axis, which you have. $\partial V/\partial x$ needs $V$ at $(\delta x,0,z)$, which you do not. The transverse components on the axis vanish only when symmetry says so. HW 2.26 below has a case where they do not.`,
         { figHtml: figSegment() }),
       Q(md`For the segment, how does $V(z)$ behave far away ($z\gg L$)?`,
-        [md`$V\approx\kq\dfrac{2\lambda L}{z}$`, md`$V\approx\dfrac{\lambda}{4\pi\ep}\ln\dfrac{2L}{z}$`, md`$V\to0$ faster than any power of $z$`, md`$V\approx\kq\dfrac{2\lambda L}{z^2}$`], 0,
-        [null,
-          md`That log form belongs to the opposite limit, very close to a long segment.`,
+        [md`$V\approx\dfrac{\lambda}{4\pi\ep}\ln\dfrac{2L}{z}$`, md`$V\to0$ faster than any power of $z$`, md`$V\approx\kq\dfrac{2\lambda L}{z^2}$`, md`$V\approx\kq\dfrac{2\lambda L}{z}$`], 3,
+        [md`That log form belongs to the opposite limit, very close to a long segment.`,
           md`$V\to0$, but only as $1/z$: from far away the segment is a point charge $2\lambda L$.`,
-          md`$1/z^2$ is the field. The potential of a point charge goes as $1/z$.`],
+          md`$1/z^2$ is the field. The potential of a point charge goes as $1/z$.`,
+          null],
         md`$\dfrac{L+s}{s-L}=\dfrac{(L+s)^2}{z^2}$ so $V=\dfrac{\lambda}{2\pi\ep}\ln\dfrac{L+\sqrt{L^2+z^2}}{z}$. For $z\gg L$, $\ln\left(\dfrac Lz+\sqrt{1+\dfrac{L^2}{z^2}}\right)\approx\dfrac Lz$, so $V\approx\dfrac{\lambda L}{2\pi\ep z}=\kq\dfrac{2\lambda L}{z}$. Always run this check: the total charge seen from far away.`,
         { figHtml: figSegment() }),
       Q(md`And very close to the middle of a long segment ($z\ll L$)?`,
@@ -2407,9 +2407,881 @@
     ],
   };
 
+  // ================================================================== Lesson 6 figures
+  const figShellEjump = () => gplot({
+    w: 300, h: 180, x: [0, 3], y: [0, 1.25], xt: [[1.2, 'R']], xl: 'r', yl: 'E',
+    curves: [{ f: () => 0, from: 0, to: 1.2 }, { f: (r) => (1.2 / r) ** 2, from: 1.2, to: 3 }],
+    extra: (f, X, Y) => {
+      f.line(X(1.2), Y(0), X(1.2), Y(1), { cls: 'dash dim' });
+      f.line(X(1.2) - 9, Y(0) - 3, X(1.2) - 9, Y(1) + 3, { cls: 'dim', arrow: 'both', hs: 5 });
+      f.label(X(1.2) - 15, Y(0.5), md`\Delta E=\sigma/\varepsilon_0`, 'r', 'small');
+    },
+  });
+  const figShellEnum = () => gplot({
+    w: 300, h: 180, x: [0, 0.6], y: [0, 5.5], xt: [[0.2, '0.20']], yt: [[4.5, '4.5']], xl: md`r\ (\text{m})`, yl: md`E\ (\text{kV/m})`,
+    curves: [{ f: () => 0, from: 0, to: 0.2 }, { f: (r) => 4.5 * (0.2 / r) ** 2, from: 0.2, to: 0.6 }],
+    extra: (f, X, Y) => f.line(X(0.2), Y(0), X(0.2), Y(4.5), { cls: 'dash dim' }),
+  });
+  const figPillbox = () => {
+    const f = PF.fig();
+    const y0 = 110;
+    f.line(20, y0, 300, y0, { cls: 'thick' });
+    f.label(298, y0 + 8, md`\sigma`, 'tr', 'small');
+    f.line(110, 90, 210, 90); f.line(110, 90, 110, y0); f.line(210, 90, 210, y0);
+    f.line(110, y0, 110, 130, { cls: 'dash' }); f.line(210, y0, 210, 130, { cls: 'dash' }); f.line(110, 130, 210, 130, { cls: 'dash' });
+    f.arrow(160, 88, 160, 48, { hs: 7 });
+    f.label(167, 60, md`E^{\perp}_{\text{above}}`, 'l', 'small');
+    f.arrow(160, 172, 160, 134, { hs: 7 });
+    f.label(167, 158, md`E^{\perp}_{\text{below}}`, 'l', 'small');
+    f.label(128, 84, 'A', 'b', 'small');
+    f.dim(110, 90, 110, 130, '', { off: 14 });
+    f.label(90, 97, md`\epsilon`, 'r', 'small');
+    f.arrow(266, y0, 266, 74, { hs: 7 });
+    f.label(272, 80, md`\uv n`, 'l', 'small');
+    f.text(30, 74, 'above', 'l');
+    f.text(30, 150, 'below', 'l');
+    return f.svg();
+  };
+  const figLoopBC = () => {
+    const f = PF.fig();
+    const y0 = 110, xa = 110, xb = 230, yt = 96, yb = 124;
+    f.line(20, y0, 300, y0, { cls: 'thick' });
+    f.label(298, y0 + 8, md`\sigma`, 'tr', 'small');
+    pathArrow(f, [[xb, yt], [xa, yt]], { t: 0.5 });
+    f.line(xa, yt, xa, y0); f.line(xb, y0, xb, yt);
+    f.line(xa, y0, xa, yb, { cls: 'dash' }); f.line(xb, yb, xb, y0, { cls: 'dash' });
+    pathArrow(f, [[xa, yb], [xb, yb]], { t: 0.5, cls: 'dash' });
+    f.arrow(130, 66, 200, 66, { hs: 7 });
+    f.label(165, 58, md`E^{\parallel}_{\text{above}}`, 'b', 'small');
+    f.arrow(130, 178, 200, 178, { hs: 7 });
+    f.label(165, 186, md`E^{\parallel}_{\text{below}}`, 't', 'small');
+    f.dim(xa, yb, xb, yb, '', { off: 14 });
+    f.label(170, 144, 'l', 't', 'small');
+    f.label(100, 95, md`\epsilon`, 'r', 'small');
+    f.text(30, 74, 'above', 'l'); f.text(30, 150, 'below', 'l');
+    return f.svg();
+  };
+  const figNormal = () => {
+    const f = PF.fig();
+    const S = (x) => 128 - 0.0016 * (x - 160) ** 2;
+    const pts = [];
+    for (let x = 20; x <= 300; x += 5) pts.push([x, S(x)]);
+    f.pl(pts, { cls: 'thick' });
+    f.dot(160, S(160), 3.2);
+    f.arrow(160, S(160) - 4, 160, S(160) - 46, { hs: 7 });
+    f.label(167, S(160) - 40, md`\uv n`, 'l', 'small');
+    f.text(40, 50, 'above: the side n points into', 'l');
+    f.text(40, 170, 'below', 'l');
+    f.label(300, S(300) + 8, md`\sigma`, 'tl', 'small');
+    return f.svg();
+  };
+  const figFlatSurface = () => {
+    const f = PF.fig();
+    const y0 = 110;
+    f.line(20, y0, 300, y0, { cls: 'thick' });
+    f.dot(160, y0, 3.2); f.tag(160, y0, 'P', 'br', 6);
+    f.arrow(160, y0 - 4, 160, y0 - 50, { hs: 7 }); f.label(167, y0 - 42, md`\uv n=\uv z`, 'l', 'small');
+    f.text(30, 60, 'above: z > 0', 'l'); f.text(30, 140, 'below: z < 0', 'l');
+    f.arrow(250, 180, 290, 180, { cls: 'dim', hs: 6 }); f.label(294, 180, 'x', 'l', 'small accent');
+    f.arrow(250, 180, 250, 140, { cls: 'dim', hs: 6 }); f.label(254, 138, 'z', 'bl', 'small accent');
+    f.label(24, y0 + 8, md`\sigma`, 'tl', 'small');
+    return f.svg();
+  };
+  const figSheetVsConductor = () => {
+    const a = PF.fig();
+    a.line(20, 100, 200, 100, { cls: 'thick' });
+    for (let x = 30; x <= 190; x += 20) plus(a, x, 92, 3);
+    for (const x of [50, 110, 170]) { a.arrow(x, 80, x, 50, { hs: 6 }); a.arrow(x, 112, x, 142, { hs: 6 }); }
+    a.label(178, 62, md`\sigma/2\varepsilon_0`, 'l', 'small'); a.label(178, 130, md`\sigma/2\varepsilon_0`, 'l', 'small');
+    const b = PF.fig();
+    b.hatchBand([[20, 100], [200, 100], [200, 150], [20, 150]]);
+    b.line(20, 100, 200, 100, { cls: 'thick' });
+    for (let x = 30; x <= 190; x += 20) plus(b, x, 92, 3);
+    for (const x of [50, 110, 170]) b.arrow(x, 80, x, 30, { hs: 6 });
+    b.label(178, 52, md`\sigma/\varepsilon_0`, 'l', 'small');
+    b.text(206, 125, 'E = 0 inside', 'l');
+    return PF.row([{ svg: a.svg(), cap: '(a) Isolated sheet' }, { svg: b.svg(), cap: '(b) Surface of a conductor' }]).svg;
+  };
+  const figConductorPt = (o = {}) => {
+    const f = PF.fig();
+    f.hatchBand([[20, 130], [250, 130], [250, 185], [20, 185]]);
+    f.line(20, 130, 250, 130, { cls: 'thick' });
+    f.text(256, 158, 'conductor', 'l');
+    f.arrow(50, 128, 50, 88, { hs: 7 }); f.label(56, 94, md`\uv n`, 'l', 'small');
+    if (o.p) { f.dot(180, 80, 3.2); f.tag(180, 80, 'P', 'r', 7); f.dim(180, 130, 180, 80, '', { off: -22 }); f.label(152, 105, o.d || '', 'r', 'small'); }
+    return f.svg();
+  };
+  // E(r): surface charge at a (jump) and a volume shell a<r<b (no jump at b)
+  const figEjumpKink = () => gplot({
+    w: 280, h: 170, x: [0, 4], y: [0, 1.25], xt: [[1, 'a'], [2, 'b']], xl: 'r', yl: 'E',
+    curves: [{ f: () => 0, from: 0, to: 1 }, { f: (r) => (0.6 + (3.4 / 7) * (r ** 3 - 1)) / (r * r), from: 1, to: 2 }, { f: (r) => 4 / (r * r), from: 2, to: 4 }],
+    extra: (f, X, Y) => f.line(X(1), Y(0), X(1), Y(0.6), { cls: 'dash dim' }),
+  });
+  const figEtwoJumps = () => gplot({
+    w: 300, h: 200, x: [0, 0.4], y: [0, 10], xt: [[0.1, '0.10'], [0.2, '0.20']], yt: [[9, '9.0'], [2.25, '2.25'], [0.75, '0.75']], xl: md`r\ (\text{m})`, yl: md`E\ (\text{kV/m})`,
+    curves: [{ f: () => 0, from: 0, to: 0.1 }, { f: (r) => 9 * (0.1 / r) ** 2, from: 0.1, to: 0.2 }, { f: (r) => 0.75 * (0.2 / r) ** 2, from: 0.2, to: 0.4 }],
+    extra: (f, X, Y) => { f.line(X(0.1), Y(0), X(0.1), Y(9), { cls: 'dash dim' }); f.line(X(0.2), Y(0.75), X(0.2), Y(2.25), { cls: 'dash dim' }); },
+  });
+
+  // ================================================================== Lesson 6
+  const L6 = {
+    id: 'u2-bc', title: 'Boundary conditions I: the jump in E',
+    steps: [
+      RF(md`
+        ### Where the field jumps: the charged shell (Lecture 5)
+
+        Lecture 5 introduces boundary conditions with the uniformly charged spherical shell. Gauss's law on a sphere inside ($Q_{\text{enc}}=0$) and on one outside gives
+
+        $$E=0\quad(r<R),\qquad E=\frac{\sigma R^2}{\ep r^2}\quad(r>R).$$
+
+        Just outside, $E=\sigma/\ep$. So crossing the shell, the field jumps from $0$ to $\sigma/\ep$:
+
+        [[fig:jump]]
+
+        "This discontinuity always occurs near a sheet charge." This lesson shows why, for any surface (curved or flat, uniform or not), and pins down exactly which part of $\vb E$ jumps. Lesson 7 does the same for $V$.
+
+        !!key The boundary conditions in one place (each is derived below)
+          At a surface carrying charge density $\sigma$, with $\uv n$ the unit normal pointing from "below" to "above":
+          1. $E^\perp_{\text{above}}-E^\perp_{\text{below}}=\dfrac{\sigma}{\ep}$ (pillbox and Gauss's law)
+          2. $E^\parallel_{\text{above}}=E^\parallel_{\text{below}}$ (thin loop and $\oint\vb E\cdot d\vb l=0$)
+          3. Together: $\vb E_{\text{above}}-\vb E_{\text{below}}=\dfrac{\sigma}{\ep}\,\uv n$
+          4. $V_{\text{above}}=V_{\text{below}}$ and $\dfrac{\partial V_{\text{above}}}{\partial n}-\dfrac{\partial V_{\text{below}}}{\partial n}=-\dfrac{\sigma}{\ep}$ (Lesson 7)
+
+          These are **not** on the formula sheet. Know them, and know where each comes from.
+      `, { jump: { svg: figShellEjump(), cap: 'Lecture 5: the shell\'s field jumps by $\\sigma/\\varepsilon_0$ at $r=R$.' } }),
+      Q(md`From the graph, by how much does $E$ jump at the shell?`,
+        [md`$\dfrac{\sigma}{2\ep}$`, md`$\dfrac{\sigma}{\ep}$`, md`$\dfrac{\sigma R}{\ep}$`, md`$\dfrac{4\pi R^2\sigma}{\ep}$`], 1,
+        [md`$\sigma/(2\ep)$ is the field on **one** side of an isolated flat sheet. The jump from one side to the other is twice that.`,
+          null,
+          md`Units: $\sigma R/\ep$ is a potential (V), not a field. It is in fact the shell's potential $V(R)$.`,
+          md`That is $q/\ep$, the total flux through a sphere around the shell, not a field.`],
+        md`Just outside, $E=\dfrac{\sigma R^2}{\ep R^2}=\dfrac{\sigma}{\ep}$; just inside, $E=0$. The jump is $\sigma/\ep$. Watch the classic slip: $\sigma/(2\ep)$ is the isolated-sheet field on each side, and the jump across that sheet is again $\tfrac{\sigma}{2\ep}-\left(-\tfrac{\sigma}{2\ep}\right)=\tfrac{\sigma}{\ep}$.`,
+        { figHtml: figShellEjump() }),
+      P({
+        title: 'Read σ off an E(r) graph',
+        q: md`The graph shows the measured $E(r)$ (radial, outward positive) around a thin spherical shell of radius $0.20$ m: zero inside, $4.5$ kV/m just outside. Find the surface charge density $\sigma$ and the shell's total charge $q$. Use $\ep=8.85\times10^{-12}$ C²/(N·m²).`,
+        figHtml: figShellEnum(),
+        hints: [md`The boundary condition: $E^\perp_{\text{out}}-E^\perp_{\text{in}}=\sigma/\ep$, with "above" = outside.`, md`$q=4\pi R^2\sigma$. Check it with $E=\kq\dfrac{q}{R^2}$ just outside.`],
+        parts: [
+          { lbl: '\\sigma', ans: 39.84, unit: 'nC/m²' },
+          { lbl: 'q', ans: 20.03, unit: 'nC' },
+        ],
+        sol: md`
+          **Boundary condition used:** $E^\perp_{\text{above}}-E^\perp_{\text{below}}=\sigma/\ep$, with "above" = outside, $\uv n=\uv r$.
+
+          $\sigma=\ep\,(4500-0)\ \text{V/m}=(8.85\times10^{-12})(4500)=3.98\times10^{-8}$ C/m² $=39.8$ nC/m².
+
+          $q=4\pi R^2\sigma=4\pi(0.20)^2(3.98\times10^{-8})=2.0\times10^{-8}$ C $=20.0$ nC.
+
+          Check: $\kq\dfrac{q}{R^2}=\dfrac{(8.99\times10^9)(2.0\times10^{-8})}{0.040}=4.5\times10^3$ V/m. The jump in $E$ measures the local $\sigma$ directly, with no Gaussian surface needed.
+        `,
+      }),
+      RF(md`
+        ### $E^\perp$: the pillbox
+
+        Take a tiny patch of any charged surface; close up it looks flat. Straddle it with a Gaussian pillbox: lids of area $A$ just above and just below, height $\epsilon$. (Lecture 5 draws it on a tilted sheet; here it is side-on.)
+
+        [[fig:pb]]
+
+        Let $E^\perp$ be the component along $\uv n$ (upward is positive on **both** sides). The top lid's outward normal is $+\uv n$ and the bottom lid's is $-\uv n$, so Gauss's law gives
+
+        $$\oint\vb E\cdot d\vb a=E^\perp_{\text{above}}A-E^\perp_{\text{below}}A+(\text{side walls})=\frac{Q_{\text{enc}}}{\ep}=\frac{\sigma A}{\ep}.$$
+
+        Now let $\epsilon\to0$. The side walls have area proportional to $\epsilon$, so their flux vanishes; that is the only place $E^\parallel$ could have entered. Any volume charge inside contributes $\rho A\epsilon\to0$. What is left:
+
+        $$\boxed{E^\perp_{\text{above}}-E^\perp_{\text{below}}=\frac{\sigma}{\ep}}$$
+
+        In the lecture's words: $\vb E$ points the same way on both lids but $d\vb a$ points in opposite directions, which is where the minus sign comes from. "Evidently the result for the spherical shell is general." Where $\sigma=0$, $E^\perp$ is continuous, even where the volume charge density jumps (the surface of a uniformly charged solid sphere, for example).
+      `, { pb: { svg: figPillbox(), cap: 'Side view of the Gaussian pillbox. Its height $\\epsilon$ is exaggerated; it shrinks to zero.' } }),
+      Q(md`Why does $E^\parallel$ drop out of the pillbox calculation?`,
+        [md`$E^\parallel=0$ at any charged surface.`,
+          md`$E^\parallel$ only passes through the side walls, whose area goes to zero as the height $\epsilon\to0$.`,
+          md`$E^\parallel$ on the top lid cancels $E^\parallel$ on the bottom lid.`,
+          md`Gauss's law only applies to perpendicular fields.`], 1,
+        [md`$E^\parallel$ can be anything; it just has to be the same on both sides (the loop argument).`,
+          null,
+          md`$E^\parallel$ lies in the plane of each lid, so it contributes no flux through the lids at all; there is nothing to cancel.`,
+          md`Gauss's law counts the flux of the whole field. $E^\parallel$ simply has no flux through the lids.`],
+        md`Flux through a lid is $\vb E\cdot\uv n\,A=E^\perp A$; $E^\parallel$ is along the lid. The parallel component only crosses the side walls, of area (perimeter)$\times\epsilon\to0$. So the pillbox says nothing about $E^\parallel$, and you need a different tool for it: the loop.`,
+        { figHtml: figPillbox() }),
+      Q(md`In $E^\perp_{\text{above}}A-E^\perp_{\text{below}}A=\dfrac{\sigma A}{\ep}$, where does the minus sign come from?`,
+        [md`The field below always points down.`,
+          md`The charge below the surface is negative.`,
+          md`On the bottom lid the outward normal is $-\uv n$, so its flux is $-E^\perp_{\text{below}}A$, with $E^\perp_{\text{below}}$ measured along $+\uv n$.`,
+          md`It is a convention that subtracts the field of the other charges.`], 2,
+        [md`$E^\perp_{\text{below}}$ is measured along $+\uv n$ and can have either sign. The minus sign is there whatever its direction.`,
+          md`The sign of the charge enters through $\sigma$ on the right side, not through this minus sign.`,
+          null,
+          md`Nothing is being subtracted on purpose; it is just the direction of the bottom lid's area vector.`],
+        md`Outward area vectors: $+A\uv n$ on top, $-A\uv n$ on the bottom. With both $E^\perp$'s measured along $+\uv n$, the fluxes are $+E^\perp_{\text{above}}A$ and $-E^\perp_{\text{below}}A$. Lecture: "$\vb E$ points in the same direction but $d\vb A$ points in opposite directions on the surface."`,
+        { figHtml: figPillbox() }),
+      Q(md`As the pillbox height $\epsilon\to0$, what charge does it enclose?`,
+        [md`$\sigma A$ plus $\rho A\epsilon$ from any volume charge, which stays finite`,
+          md`nothing, since the box has no volume left`,
+          md`only $\sigma A$: a volume charge contributes $\rho A\epsilon\to0$`,
+          md`all the charge within a distance $\sqrt A$ of the patch`], 2,
+        [md`$\rho A\epsilon$ goes to zero with $\epsilon$. A finite volume density has no charge in zero thickness.`,
+          md`The surface charge sits exactly on the surface, inside the box for every $\epsilon>0$: $\sigma A$ stays.`,
+          null,
+          md`Only charge inside the closed surface counts in Gauss's law.`],
+        md`That is why only **surface** charge makes $E^\perp$ jump. A jump in volume density $\rho$ (like the edge of a solid sphere) leaves $\vb E$ continuous; it only changes how fast $E$ varies.`,
+        { figHtml: figPillbox() }),
+      RF(md`
+        ### $E^\parallel$: the thin loop
+
+        Now take a thin rectangular loop standing across the surface: two long sides of length $l$ parallel to it, one just above and one just below, and two short ends of height $\epsilon$.
+
+        [[fig:loop]]
+
+        For an electrostatic field $\oint\vb E\cdot d\vb l=0$. As $\epsilon\to0$ the ends contribute nothing (finite field times vanishing length), and the long sides give
+
+        $$\oint\vb E\cdot d\vb l=E^\parallel_{\text{above}}\,l-E^\parallel_{\text{below}}\,l=0\quad\Longrightarrow\quad\boxed{E^\parallel_{\text{above}}=E^\parallel_{\text{below}}}$$
+
+        (minus because the loop runs the opposite way along the lower side). Turn the loop to face any tangent direction and the same holds: **every** tangential component is continuous. Surface charge only pushes perpendicular to itself, on net.
+      `, { loop: { svg: figLoopBC(), cap: 'Side view of the thin loop (Lecture 5, blue in the notes). Its height $\\epsilon$ shrinks to zero.' } }),
+      Q(md`Which law gives the continuity of $E^\parallel$ across a surface charge?`,
+        [md`$\oint\vb E\cdot d\vb l=0$, i.e. $\curl\vb E=0$`, md`Gauss's law`, md`the superposition principle`, md`Poisson's equation`], 0,
+        [null,
+          md`Gauss's law (the pillbox) gives the $E^\perp$ condition, not this one.`,
+          md`Superposition explains the result (the patch's own field is perpendicular), but the derivation uses the loop.`,
+          md`Poisson's equation is Gauss's law in terms of $V$; it gives the $\partial V/\partial n$ jump, not this.`],
+        md`Two Maxwell equations, two conditions: $\divg\vb E=\rho/\ep$ (Gauss, via the pillbox) controls $E^\perp$; $\curl\vb E=0$ (via the loop and Stokes) controls $E^\parallel$.`,
+        { figHtml: figLoopBC() }),
+      Q(md`Why do the two short ends of the loop drop out?`,
+        [md`$\vb E$ is perpendicular to them.`, md`They cancel each other.`, md`$E^\parallel=0$ there.`, md`Their length $\epsilon\to0$ while $\vb E$ stays finite.`], 3,
+        [md`$E^\perp$ runs along the short ends and is generally nonzero there; it is not perpendicular to them.`,
+          md`They need not cancel: $E^\perp$ is different just above and just below. They vanish individually.`,
+          md`The ends are along $\uv n$; $E^\parallel$ is irrelevant to them.`,
+          null],
+        md`Each end contributes about $E^\perp\epsilon$, which goes to zero as $\epsilon\to0$ no matter what $E^\perp$ is. That is the trick in both derivations: shrink the dimension across the surface so that only the faces parallel to it survive.`,
+        { figHtml: figLoopBC() }),
+      RF(md`
+        ### One vector equation, and which way $\uv n$ points
+
+        Combine the two (Lecture 6). With $\uv n$ the unit normal pointing from "below" to "above",
+
+        $$\boxed{\vb E_{\text{above}}-\vb E_{\text{below}}=\frac{\sigma}{\ep}\,\uv n}$$
+
+        "$\vb E_{\text{above}}$ denotes the field on the side toward which $\uv n$ points." The labels are yours to choose: call the other side "above" and $\uv n$ flips, the left side flips sign too, and the equation says the same thing. For a closed surface (sphere, cylinder) the usual choice is "above" = outside, $\uv n=\uv r$ or $\uv s$.
+
+        [[fig:nhat]]
+
+        !!intuition Where the jump comes from
+          Split the field near a point of the surface into the part made by a tiny patch of surface right there and the part made by everything else. Close enough, the patch looks like an infinite plane: it gives $+\tfrac{\sigma}{2\ep}\uv n$ just above and $-\tfrac{\sigma}{2\ep}\uv n$ just below. Everything else is smooth through the patch. So $\vb E_{\text{above}}=\vb E_{\text{other}}+\tfrac{\sigma}{2\ep}\uv n$ and $\vb E_{\text{below}}=\vb E_{\text{other}}-\tfrac{\sigma}{2\ep}\uv n$: the whole jump comes from the local patch (Griffiths' footnote to Eq. 2.33).
+
+        !!method Using the boundary conditions on given fields
+          1. Pick "above" and draw $\uv n$ pointing into it.
+          2. Split each field into its component along $\uv n$ and its components along the surface.
+          3. Tangential parts must agree. If they do not, the data are impossible.
+          4. $\sigma=\ep\left(\vb E_{\text{above}}-\vb E_{\text{below}}\right)\cdot\uv n$.
+      `, { nhat: { svg: figNormal(), cap: 'A charged surface, with $\\hat{\\mathbf n}$ pointing from "below" into "above".' } }),
+      Q(md`At a point of a charged surface, $\vb E_{\text{below}}=0$ and $\vb E_{\text{above}}=-(5.0\text{ kV/m})\,\uv n$: the field above points toward the surface. What is $\sigma$?`,
+        [md`$+44.3$ nC/m²`, md`$-22.1$ nC/m²`, md`$0$, since the field below is zero`, md`$-44.3$ nC/m²`], 3,
+        [md`Sign: $(\vb E_{\text{above}}-\vb E_{\text{below}})\cdot\uv n=-5.0$ kV/m. Field lines arriving at a surface end on negative charge.`,
+          md`No factor of 1/2: the whole difference $-5.0$ kV/m equals $\sigma/\ep$.`,
+          md`A zero field on one side is exactly the conductor case; the surface still carries charge.`,
+          null],
+        md`$\sigma=\ep\left(\vb E_{\text{above}}-\vb E_{\text{below}}\right)\cdot\uv n=(8.85\times10^{-12})(-5000)=-4.43\times10^{-8}$ C/m². Field pointing into a surface means negative charge there.`,
+        { figHtml: figNormal() }),
+      Q(md`You relabel the two sides, calling the old "below" side "above", so $\uv n$ flips. In $\vb E_{\text{above}}-\vb E_{\text{below}}=\dfrac{\sigma}{\ep}\uv n$,`,
+        [md`both sides change sign, and $\sigma$ is unchanged`, md`$\sigma$ changes sign`, md`only the right side changes sign, so the equation now fails`, md`nothing changes on either side`], 0,
+        [null,
+          md`$\sigma$ is a physical property of the surface. It cannot depend on what you call the sides.`,
+          md`The left side flips too: the old $\vb E_{\text{below}}$ is now $\vb E_{\text{above}}$.`,
+          md`Swapping labels swaps the two fields in the difference, which flips its sign, and $\uv n$ flips as well.`],
+        md`New labels: $\vb E'_{\text{above}}-\vb E'_{\text{below}}=\vb E_{\text{below}}-\vb E_{\text{above}}=-\tfrac{\sigma}{\ep}\uv n=\tfrac{\sigma}{\ep}\uv n'$. Same physics. Griffiths: "it doesn't matter which side you call above". Just stay consistent within one problem.`,
+        { figHtml: figNormal() }),
+      Q(md`At a point of a charged surface (the $xy$ plane, $\uv n=\uv z$), which pair could be the fields just above and just below? (kV/m)`,
+        [md`above $(2,\,0,\,5)$, below $(3,\,0,\,5)$`, md`above $(2,\,1,\,5)$, below $(2,\,-1,\,1)$`, md`above $(2,\,0,\,5)$, below $(2,\,0,\,1)$`, md`above $(0,\,0,\,5)$, below $(2,\,0,\,1)$`], 2,
+        [md`$E_x$ differs (2 versus 3). Tangential components must be continuous.`,
+          md`$E_y$ flips sign across the surface. Tangential components must be continuous.`,
+          null,
+          md`$E_x$ is 0 above and 2 below: a tangential jump, impossible.`],
+        md`Only $E_z$ (the normal component) may jump. In the first pair $E_x$ and $E_y$ match and $E_z$ jumps by 4 kV/m, so $\sigma=\ep\cdot4000\text{ V/m}=35$ nC/m².`,
+        { figHtml: figFlatSurface() }),
+      Q(md`Just above a surface $\vb E=(2.0\text{ kV/m})\,\uv n$ and just below $\vb E=(5.0\text{ kV/m})\,\uv n$: the field points the same way on both sides but is weaker above. What is $\sigma$?`,
+        [md`$+26.6$ nC/m²`, md`$-26.6$ nC/m²`, md`$+62.0$ nC/m²`, md`$0$, since the field points the same way on both sides`], 1,
+        [md`Sign: above minus below is $2.0-5.0=-3.0$ kV/m.`,
+          null,
+          md`That adds the two fields. The boundary condition uses their difference.`,
+          md`Direction is not the test; the normal component changed from 5.0 to 2.0 kV/m, so there is charge.`],
+        md`$\sigma=\ep(2.0-5.0)\text{ kV/m}=-3.0\times10^3\,\ep=-2.66\times10^{-8}$ C/m². Some field lines arriving from below end on the surface: negative charge.`,
+        { figHtml: figFlatSurface() }),
+      Q(md`Near a point of a charged surface, write $\vb E_{\text{above}}=\vb E_{\text{other}}+\tfrac{\sigma}{2\ep}\uv n$ and $\vb E_{\text{below}}=\vb E_{\text{other}}-\tfrac{\sigma}{2\ep}\uv n$. What is $\vb E_{\text{other}}$?`,
+        [md`the field of the whole surface charge`,
+          md`the field of all charges except the tiny patch at that point; it is continuous through the patch`,
+          md`the average of $\vb E_{\text{above}}$ and $\vb E_{\text{below}}$, which is always zero`,
+          md`the external field applied to the surface, before it was charged`], 1,
+        [md`The local patch is the part that has been split off; $\vb E_{\text{other}}$ excludes it.`,
+          null,
+          md`It is the average, but it need not vanish: at a conductor's surface the average is $\tfrac{\sigma}{2\ep}\uv n$.`,
+          md`$\vb E_{\text{other}}$ includes the rest of the surface charge too, not just outside sources.`],
+        md`The patch acts like an infinite plane at close range ($\pm\tfrac{\sigma}{2\ep}\uv n$); every other charge is a finite distance away, so its field is smooth through the patch. The difference therefore comes entirely from the patch. This is also the field a patch of charge feels (the average), which matters when you compute forces on surface charge.`,
+        { figHtml: figNormal() }),
+      RF(md`
+        ### Worked example: σ from the fields on both sides
+
+        At a point $P$ on a charged surface (the $xy$ plane), the fields just below and just above are
+
+        $$\vb E_{\text{below}}=(2.0\,\uv x+3.0\,\uv z)\ \text{kV/m},\qquad \vb E_{\text{above}}=(2.0\,\uv x+8.0\,\uv z)\ \text{kV/m}.$$
+
+        [[fig:flat]]
+
+        **Boundary conditions to use** ("above" is $z>0$, $\uv n=\uv z$):
+
+        1. $E^\parallel$ continuous: $E_x$ and $E_y$ must match.
+        2. $E^\perp_{\text{above}}-E^\perp_{\text{below}}=\sigma/\ep$.
+
+        **Check 1:** $E_x=2.0$ on both sides, $E_y=0$ on both. Consistent.
+
+        **Use 2:** $\sigma=\ep(8.0-3.0)\text{ kV/m}=(8.85\times10^{-12})(5000)=4.43\times10^{-8}$ C/m² $=44.3$ nC/m².
+
+        Positive: more field leaves the surface upward than arrives from below.
+      `, { flat: { svg: figFlatSurface(), cap: 'The surface z = 0 seen edge-on, with n̂ = ẑ.' } }),
+      P({
+        title: 'Find σ from the fields on both sides',
+        q: md`Two points on a charged sheet lying in the $xy$ plane. Take "above" to be $z>0$.
+
+          (1) At $P_1$: $\vb E_{\text{below}}=(1.5\,\uv x-2.0\,\uv y-4.0\,\uv z)$ kV/m and $\vb E_{\text{above}}=(1.5\,\uv x-2.0\,\uv y+2.0\,\uv z)$ kV/m.
+
+          (2) At $P_2$: $\vb E_{\text{above}}=-1.0\,\uv z$ kV/m and $\vb E_{\text{below}}=+3.0\,\uv z$ kV/m.
+
+          Find $\sigma$ at each point (in nC/m²; $\ep=8.85\times10^{-12}$ C²/(N·m²)).`,
+        figHtml: figFlatSurface(),
+        hints: [md`List the conditions first: tangential components continuous; $E_z$ jumps by $\sigma/\ep$.`, md`$\sigma=\ep\,(E_{z,\text{above}}-E_{z,\text{below}})$. Keep the signs of the $z$ components.`],
+        parts: [
+          { lbl: md`At $P_1$, are the tangential components consistent?`, mc: [md`yes`, md`no, $E_x$ differs`, md`no, $E_z$ differs`], a: 0, why: [null, md`$E_x=1.5$ kV/m on both sides (and $E_y=-2.0$ on both).`, md`$E_z$ is the normal component; it is allowed to jump.`] },
+          { lbl: '\\sigma(P_1)', ans: 53.13, unit: 'nC/m²' },
+          { lbl: '\\sigma(P_2)', ans: -35.42, unit: 'nC/m²' },
+        ],
+        sol: md`
+          **Conditions:** $E^\parallel$ (here $E_x,E_y$) continuous; $E_{z,\text{above}}-E_{z,\text{below}}=\sigma/\ep$.
+
+          **$P_1$:** $E_x$ and $E_y$ match. $\sigma=\ep(2.0-(-4.0))\text{ kV/m}=6.0\times10^3\,\ep=53.1$ nC/m². Below the sheet the field points down (away from the sheet) and above it points up: field leaving on both sides, positive charge.
+
+          **$P_2$:** $\sigma=\ep(-1.0-3.0)\text{ kV/m}=-4.0\times10^3\,\ep=-35.4$ nC/m². Both fields point toward the sheet: field lines end there, negative charge.
+        `,
+      }),
+      RF(md`
+        ### An isolated sheet versus the surface of a conductor
+
+        The jump is always $\sigma/\ep$. How it splits between the two sides depends on the other charges.
+
+        [[fig:svc]]
+
+        - **Isolated flat sheet:** by symmetry the field is $\tfrac{\sigma}{2\ep}$ pointing away on both sides. Jump: $\tfrac{\sigma}{2\ep}-\left(-\tfrac{\sigma}{2\ep}\right)=\tfrac{\sigma}{\ep}$.
+        - **Surface of a conductor:** in electrostatics $\vb E=0$ inside a conductor (the conductors unit shows why). With "below" = inside, $\vb E_{\text{below}}=0$, so just outside
+          $$\vb E_{\text{outside}}=\frac{\sigma}{\ep}\,\uv n,\qquad \sigma=\ep\,\vb E_{\text{outside}}\cdot\uv n,$$
+          with $\uv n$ pointing out of the conductor. That is twice the isolated sheet's field: the rest of the conductor's charge cancels the patch's field inside and doubles it outside.
+        - **Parallel plates** (Griffiths Ex. 2.6): $\pm\sigma$ give $\sigma/\ep$ between the plates and $0$ outside. At each plate the jump is again $\pm\sigma/\ep$, with $\vb E=0$ on the outer side, just like a conductor surface.
+
+        Since $E^\parallel$ is continuous and zero inside the conductor, $E^\parallel=0$ just outside too: the field leaves a conductor perpendicular to its surface.
+      `, { svc: { svg: figSheetVsConductor(), cap: 'Same σ, same jump σ/ε₀, different split.' } }),
+      Q(md`An isolated flat sheet and the flat face of a conductor carry the same $\sigma>0$. Which statement is correct?`,
+        [md`The conductor's field outside is half the sheet's.`,
+          md`The jump in $E^\perp$ is $\sigma/\ep$ for the conductor but $\sigma/(2\ep)$ for the sheet.`,
+          md`The jump is $\sigma/\ep$ for both; the sheet has $\tfrac{\sigma}{2\ep}$ on each side, the conductor $\tfrac{\sigma}{\ep}$ outside and $0$ inside.`,
+          md`Both have $\tfrac{\sigma}{2\ep}$ on each side, since only the local $\sigma$ matters.`], 2,
+        [md`Backwards: the conductor's outside field is $\sigma/\ep$, twice the sheet's $\sigma/(2\ep)$.`,
+          md`The jump is fixed by the local $\sigma$ alone: $\sigma/\ep$ for both. Only the split differs.`,
+          null,
+          md`The jump depends only on the local $\sigma$, but the individual fields depend on all the other charges. Inside a conductor the field is zero.`],
+        md`The boundary condition fixes the difference, $\sigma/\ep$, not the individual values. The isolated sheet splits it symmetrically; the conductor puts all of it outside, because the conductor's other charges arrange themselves to cancel the field inside.`,
+        { figHtml: figSheetVsConductor() }),
+      Q(md`Just outside a conductor, $E=3.0$ kV/m pointing away from the surface. What is $\sigma$ there?`,
+        [md`$+26.6$ nC/m²`, md`$+13.3$ nC/m²`, md`$-26.6$ nC/m²`, md`$0$, since $\vb E=0$ inside`], 0,
+        [null,
+          md`That uses the isolated-sheet formula $E=\sigma/(2\ep)$. At a conductor $E_{\text{out}}=\sigma/\ep$.`,
+          md`Field pointing away from the surface means positive charge.`,
+          md`$\vb E=0$ inside is exactly why the jump, $3.0$ kV/m, is all on the outside. The surface is charged.`],
+        md`$\sigma=\ep E_{\text{outside}}\cdot\uv n=(8.85\times10^{-12})(3000)=2.66\times10^{-8}$ C/m². The boundary condition with $\vb E_{\text{inside}}=0$.`,
+        { figHtml: figConductorPt() }),
+      Q(md`Just outside the surface of a conductor in electrostatic equilibrium, can $\vb E$ have a component parallel to the surface?`,
+        [md`Yes, if the surface charge is not uniform.`,
+          md`Yes, near sharp edges.`,
+          md`No: $E^\parallel$ is continuous, and it is zero inside the conductor, so it is zero just outside.`,
+          md`Only if the conductor is not grounded.`], 2,
+        [md`A non-uniform $\sigma$ changes $E^\perp$ from point to point, but $E^\parallel$ is still continuous and still zero inside.`,
+          md`Near edges the field is strong, but it is still perpendicular to the surface right at the surface.`,
+          null,
+          md`Grounding changes the conductor's potential and charge, not this boundary condition.`],
+        md`$E^\parallel_{\text{outside}}=E^\parallel_{\text{inside}}=0$. The field meets a conductor at right angles. Equivalently, the surface is an equipotential, and $\vb E$ is always perpendicular to equipotentials (Lesson 2).`,
+        { figHtml: figConductorPt() }),
+      P({
+        title: 'Two shells from an E(r) graph',
+        q: md`The graph shows $E(r)$ (radial, outward positive) for two concentric thin shells of radii $0.10$ m and $0.20$ m. Just outside the inner shell $E=9.0$ kV/m; just inside the outer shell $E=2.25$ kV/m; just outside it $E=0.75$ kV/m. Find the surface charge densities $\sigma_1$ (inner) and $\sigma_2$ (outer). Use $\ep=8.85\times10^{-12}$ C²/(N·m²).`,
+        figHtml: figEtwoJumps(),
+        hints: [md`At each shell: $E_{\text{just out}}-E_{\text{just in}}=\sigma/\ep$ ("above" = outside).`, md`Inside the inner shell $E=0$.`],
+        parts: [
+          { lbl: '\\sigma_1', ans: 79.69, unit: 'nC/m²' },
+          { lbl: '\\sigma_2', ans: -13.28, unit: 'nC/m²' },
+          { lbl: md`The total charge of the two shells together is`, mc: [md`positive`, md`negative`, md`zero`], a: 0, why: [null, md`Outside both shells $E>0$ (outward), so by Gauss the total enclosed charge is positive.`, md`$E\neq0$ outside both shells, so the total is not zero.`] },
+        ],
+        sol: md`
+          **Condition at each shell:** $E^\perp_{\text{out}}-E^\perp_{\text{in}}=\sigma/\ep$, with "above" = outside.
+
+          - Inner shell: $\sigma_1=\ep(9.0-0)\text{ kV/m}=(8.85\times10^{-12})(9000)=79.7$ nC/m².
+          - Outer shell: $\sigma_2=\ep(0.75-2.25)\text{ kV/m}=-1.5\times10^3\,\ep=-13.3$ nC/m².
+
+          Check with charges: $q_1=4\pi(0.10)^2\sigma_1=10.0$ nC and $q_2=4\pi(0.20)^2\sigma_2=-6.7$ nC. Outside, $\kq\dfrac{q_1+q_2}{(0.20)^2}=\dfrac{(8.99\times10^9)(3.3\times10^{-9})}{0.040}=0.75$ kV/m. Consistent.
+        `,
+      }),
+      Q(md`This $E(r)$ graph (outward positive) belongs to a spherically symmetric charge distribution. Where is there **surface** charge?`,
+        [md`at $r=a$ only`, md`at $r=b$ only`, md`at both $a$ and $b$`, md`nowhere: the field is finite everywhere`], 0,
+        [null,
+          md`At $b$ the graph has a corner but no jump. A corner in $E$ means the volume charge stops there, not a surface charge.`,
+          md`Only $a$ has a jump in $E$. At $b$, $E$ is continuous.`,
+          md`A finite field can still jump. A jump is the signature of surface charge, and there is one at $a$.`],
+        md`Surface charge ⇔ jump in $E^\perp$. At $a$ the field jumps from 0 to a finite value: a charged shell. Between $a$ and $b$, $E$ grows faster than $1/r^2$ allows, so there is volume charge there; at $b$ it stops, and the graph turns over with a corner but no jump.`,
+        { figHtml: figEjumpKink() }),
+      RF(md`
+        !!key Patterns to remember
+          - $\vb E_{\text{above}}-\vb E_{\text{below}}=\dfrac{\sigma}{\ep}\uv n$, $\uv n$ from below to above. Only the normal component jumps; every tangential component is continuous.
+          - Pillbox (Gauss) gives the $E^\perp$ condition; thin loop ($\oint\vb E\cdot d\vb l=0$) gives the $E^\parallel$ condition. Shrink the thickness to zero in both.
+          - The jump is $\sigma/\ep$, never $\sigma/(2\ep)$. The split depends on other charges: isolated sheet $\pm\tfrac{\sigma}{2\ep}$; conductor $\tfrac{\sigma}{\ep}$ outside, 0 inside.
+          - Reading graphs: a jump in $E$ means surface charge; a corner in $E$ means volume charge starting or stopping.
+          - Field into a surface means negative $\sigma$; field out of it, positive.
+          - Data with a tangential mismatch across a surface are impossible.
+      `),
+    ],
+  };
+
+  // ================================================================== Lesson 7 figures
+  const figVcont = () => {
+    const f = PF.fig();
+    const y0 = 110;
+    f.line(20, y0, 300, y0, { cls: 'thick' });
+    f.label(24, y0 + 8, md`\sigma`, 'tl', 'small');
+    f.dot(160, 130, 3.2); f.tag(160, 130, 'a', 'r', 8);
+    f.dot(160, 90, 3.2); f.tag(160, 90, 'b', 'r', 8);
+    f.arrow(160, 126, 160, 95, { hs: 6 });
+    f.text(30, 74, 'above', 'l'); f.text(30, 150, 'below', 'l');
+    f.text(200, 60, 'path length → 0', 'l');
+    return f.svg();
+  };
+  const figTent = () => gplot({
+    w: 300, h: 170, x: [-2, 2], y: [0, 1.2], xt: [[0, '0']], xl: 'x', yl: 'V', vlines: [[0, md`\sigma>0`]],
+    curves: [{ f: (x) => 1 - 0.4 * Math.abs(x) }],
+  });
+  const figKinkV = () => gplot({
+    w: 300, h: 170, x: [-2, 2], y: [0, 12], xt: [[-1, '-1'], [1, '1']], yt: [[10, '10']], xl: md`x\ (\text{m})`, yl: md`V\ (\text{V})`, vlines: [[0, 'sheet']],
+    curves: [{ f: (x) => (x < 0 ? 10 + 4 * x : 10 - 2 * x) }],
+  });
+  const figVshellNum = () => gplot({
+    w: 300, h: 180, x: [0, 0.6], y: [0, 1050], xt: [[0.15, '0.15']], yt: [[900, '900']], xl: md`r\ (\text{m})`, yl: md`V\ (\text{V})`,
+    curves: [{ f: () => 900, from: 0, to: 0.15 }, { f: (r) => 135 / r, from: 0.15, to: 0.6 }],
+  });
+  const figV2kinks = () => gplot({
+    w: 300, h: 180, x: [0, 0.6], y: [0, 600], xt: [[0.1, '0.10'], [0.3, '0.30']], yt: [[500, '500'], [100, '100']], xl: md`r\ (\text{m})`, yl: md`V\ (\text{V})`,
+    curves: [{ f: () => 500, from: 0, to: 0.1 }, { f: (r) => 60 / r - 100, from: 0.1, to: 0.3 }, { f: (r) => 30 / r, from: 0.3, to: 0.6 }],
+  });
+  const figVplates = () => gplot({
+    w: 320, h: 170, x: [-1, 8.5], y: [0, 12], xt: [[0, '0'], [2, '2'], [4, '4'], [6, '6']], yt: [[10, '10']], xl: md`x\ (\text{cm})`, yl: md`V\ (\text{V})`,
+    curves: [{ f: (x) => (x < 0 ? 0 : x < 2 ? 5 * x : x < 4 ? 10 : x < 6 ? 10 - 5 * (x - 4) : 0), n: 400 }],
+  });
+  const figConductorSphere = () => {
+    const f = PF.fig();
+    const cx = 100, cy = 100, R = 60;
+    f.hatchBand(f.arcPts(cx, cy, R, R, 0, 360));
+    f.circle(cx, cy, R, { cls: 'thick' });
+    f.line(cx, cy, cx + R, cy, { cls: 'dim' });
+    f.label(cx + R + 6, cy, md`R=0.10\text{ m}`, 'l', 'small');
+    f.label(30, 30, md`V_0=1.0\text{ kV}`, 'c', 'small');
+    return f.svg();
+  };
+  const fig231 = () => {
+    const a = PF.fig();
+    a.line(20, 90, 160, 90, { cls: 'thick' });
+    for (let x = 30; x <= 150; x += 20) plus(a, x, 82, 3);
+    a.label(166, 90, md`\sigma`, 'l', 'small');
+    const b = PF.fig();
+    b.line(50, 30, 50, 150, { cls: 'thick' }); b.line(130, 30, 130, 150, { cls: 'thick' });
+    for (let y = 40; y <= 140; y += 20) { plus(b, 42, y, 3); minus(b, 138, y, 3); }
+    b.label(50, 22, md`+\sigma`, 'b', 'small'); b.label(130, 22, md`-\sigma`, 'b', 'small');
+    b.label(22, 90, '(\\text{i})', 'c', 'small'); b.label(90, 90, '(\\text{ii})', 'c', 'small'); b.label(162, 90, '(\\text{iii})', 'c', 'small');
+    const c = PF.fig();
+    c.circle(80, 90, 50, { cls: 'thick' });
+    c.line(80, 90, 80 + 50 * Math.cos(45 * DEG), 90 - 50 * Math.sin(45 * DEG), { cls: 'dim' });
+    c.label(91, 66, 'R', 'c', 'small');
+    c.label(30, 30, md`\sigma`, 'c', 'small');
+    const d = PF.fig();
+    d.ellipse(40, 90, 14, 40);
+    d.line(40, 50, 200, 50); d.line(40, 130, 200, 130);
+    d.ellipse(200, 90, 14, 40, { half: 'front' }); d.pl(d.arcPts(200, 90, 14, 40, 90, 270), { cls: 'dash dim' });
+    d.line(40, 90, 40, 50, { cls: 'dim' }); d.label(24, 70, 'R', 'r', 'small');
+    d.label(120, 42, md`\sigma`, 'b', 'small');
+    return PF.row([{ svg: a.svg(), cap: '(a) Ex. 2.5: plane' }, { svg: b.svg(), cap: '(a) Ex. 2.6: two planes' }, { svg: c.svg(), cap: '(a), (c) shell' }, { svg: d.svg(), cap: '(b) long tube' }]).svg;
+  };
+  const fig231sol = () => {
+    const a = PF.fig();
+    a.line(20, 90, 160, 90, { cls: 'thick' });
+    for (const x of [40, 90, 140]) { a.arrow(x, 82, x, 52, { hs: 6 }); a.arrow(x, 98, x, 128, { hs: 6 }); }
+    a.label(146, 62, md`\tfrac{\sigma}{2\varepsilon_0}`, 'l', 'small'); a.label(146, 118, md`\tfrac{\sigma}{2\varepsilon_0}`, 'l', 'small');
+    const b = PF.fig();
+    b.line(50, 30, 50, 150, { cls: 'thick' }); b.line(130, 30, 130, 150, { cls: 'thick' });
+    for (const y of [50, 90, 130]) b.arrow(58, y, 122, y, { hs: 6 });
+    b.label(90, 72, md`\sigma/\varepsilon_0`, 'c', 'small');
+    b.label(22, 90, '0', 'c', 'small'); b.label(158, 90, '0', 'c', 'small');
+    const c = PF.fig();
+    c.circle(80, 90, 40, { cls: 'thick' });
+    for (let k = 0; k < 8; k++) { const t = (k * 45 + 22.5) * DEG; c.arrow(80 + 48 * Math.cos(t), 90 - 48 * Math.sin(t), 80 + 72 * Math.cos(t), 90 - 72 * Math.sin(t), { hs: 6 }); }
+    c.label(80, 90, md`E=0`, 'c', 'small');
+    return PF.row([{ svg: a.svg(), cap: 'plane: ±σ/2ε₀' }, { svg: b.svg(), cap: 'two planes: σ/ε₀ between' }, { svg: c.svg(), cap: 'shell: 0 inside' }]).svg;
+  };
+  const figTubeE = () => gplot({
+    w: 280, h: 170, x: [0, 4], y: [0, 1.25], xt: [[1, 'R']], yt: [[1, '\\sigma/\\varepsilon_0']], xl: 's', yl: 'E',
+    curves: [{ f: () => 0, from: 0, to: 1 }, { f: (s) => 1 / s, from: 1, to: 4 }],
+    extra: (f, X, Y) => f.line(X(1), Y(0), X(1), Y(1), { cls: 'dash dim' }),
+  });
+  const figShellV28 = () => gplot({
+    w: 280, h: 170, x: [0, 4], y: [0, 1.25], xt: [[1, 'R']], yt: [[1, '\\tfrac{R\\sigma}{\\varepsilon_0}']], xl: 'r', yl: 'V',
+    curves: [{ f: () => 1, from: 0, to: 1 }, { f: (r) => 1 / r, from: 1, to: 4 }],
+  });
+  // V(r) for positive shells at R and 2R, normalized
+  const V2pos = (r) => (r < 1 ? 1 : r < 2 ? (1 / r + 0.5) / 1.5 : 2 / (1.5 * r));
+
+  // ================================================================== Lesson 7
+  const L7 = {
+    id: 'u2-bcv', title: 'Boundary conditions II: V, conductors, and drill',
+    steps: [
+      RF(md`
+        ### $V$ is continuous
+
+        Take a point $a$ just below the surface and a point $b$ just above it. Then
+
+        $$V(b)-V(a)=-\int_a^b\vb E\cdot d\vb l .$$
+
+        As the path shrinks to zero length the field stays finite (it only jumps), so the integral goes to zero (Griffiths Eq. 2.34):
+
+        $$\boxed{V_{\text{above}}=V_{\text{below}}}$$
+
+        [[fig:cont]]
+
+        ### Its normal derivative jumps
+
+        $\vb E=-\nabla V$ turns the field condition into one on $\nabla V$ (Lecture 6):
+
+        $$\nabla V_{\text{above}}-\nabla V_{\text{below}}=-\frac{\sigma}{\ep}\,\uv n,\qquad\text{or}\qquad\boxed{\frac{\partial V_{\text{above}}}{\partial n}-\frac{\partial V_{\text{below}}}{\partial n}=-\frac{\sigma}{\ep}},\qquad \frac{\partial V}{\partial n}\equiv\nabla V\cdot\uv n .$$
+
+        The derivatives **along** the surface do not jump: $V$ is continuous at every point of the surface, so its slopes along the surface agree on the two sides. Only the slope **across** the surface changes. On a graph of $V$ along a line crossing the surface, surface charge appears as a corner:
+
+        - $\sigma>0$: crossing in the $\uv n$ direction, the slope drops by $\sigma/\ep$. The corner points up (a ridge).
+        - $\sigma<0$: the corner points down (a valley).
+        - $V$ itself never jumps. (A jump would need an infinite field in zero thickness, a "dipole layer", which is outside this course.)
+
+        [[fig:tent]]
+
+        !!trap The sign
+          The minus in $\dfrac{\partial V_{\text{above}}}{\partial n}-\dfrac{\partial V_{\text{below}}}{\partial n}=-\dfrac{\sigma}{\ep}$ comes from $\vb E=-\nabla V$. Check it on the isolated sheet, $V=-\dfrac{\sigma}{2\ep}|z|$: slope $-\tfrac{\sigma}{2\ep}$ above and $+\tfrac{\sigma}{2\ep}$ below, difference $-\tfrac{\sigma}{\ep}$.
+      `, { cont: { svg: figVcont(), cap: 'From a just below to b just above: a path of vanishing length.' }, tent: { svg: figTent(), cap: 'V along a line crossing a positively charged surface: continuous, with a corner.' } }),
+      Q(md`Across a surface carrying charge $\sigma\neq0$, which quantities are continuous?`,
+        [md`$V$ and $E^\perp$`, md`$\vb E$ only`, md`$V$, $E^\parallel$ and $E^\perp$`, md`$V$ and $E^\parallel$`], 3,
+        [md`$E^\perp$ is the component that jumps, by $\sigma/\ep$.`,
+          md`$\vb E$ is the quantity with a jump (in its normal part). $V$ is continuous.`,
+          md`$E^\perp$ jumps; otherwise $\sigma$ would be zero.`,
+          null],
+        md`$V$ (path of zero length) and $E^\parallel$ (thin loop) are continuous. $E^\perp$ and $\partial V/\partial n$ jump. Surface charge is invisible in $V$ itself and in the tangential field, and shows up only in the normal direction.`,
+        { figHtml: figVcont() }),
+      Q(md`A student's answer for $V$ jumps by 5 V at a charged surface. What would such a jump require?`,
+        [md`A large surface charge, $\sigma=5\ep$ per metre`,
+          md`An infinite field across zero thickness (a dipole layer), not an ordinary surface charge`,
+          md`Nothing unusual: $V$ always jumps by $\sigma/\ep$ times the thickness`,
+          md`A conductor on one side`], 1,
+        [md`Surface charge makes the slope of $V$ jump, not $V$ itself.`,
+          null,
+          md`For a surface of zero thickness that product is zero. $V$ is continuous.`,
+          md`A conductor's surface still has $V$ continuous: the outside value at the surface equals the conductor's constant value.`],
+        md`$\Delta V=-\int\vb E\cdot d\vb l$ over a vanishing path can only be nonzero if $\vb E$ is infinite there. Ordinary surface charge gives a finite (jumping) field, so $V$ is continuous. When a calculation gives a jump in $V$, look for an algebra slip, typically a wrong constant when splitting an integral.`,
+        { figHtml: figVcont() }),
+      Q(md`$V$ depends only on $x$. Moving in the $+x$ direction across a charged plane at $x=0$, the slope of $V$ changes from $+4.0$ V/m to $-2.0$ V/m. With $\uv n=+\uv x$, what is $\sigma$? (SI units, slopes in V/m)`,
+        [md`$-6\ep$`, md`$+2\ep$`, md`$-2\ep$`, md`$+6\ep$`], 3,
+        [md`Sign: $\partial V/\partial n$ above minus below is $-2-4=-6$ V/m, and that equals $-\sigma/\ep$.`,
+          md`The change in slope is $-2-(+4)=-6$, not the sum.`,
+          md`Use the change in slope, $-6$ V/m, not one side's slope.`,
+          null],
+        md`$\dfrac{\partial V_{\text{above}}}{\partial n}-\dfrac{\partial V_{\text{below}}}{\partial n}=-2-4=-6\ \text{V/m}=-\dfrac{\sigma}{\ep}$, so $\sigma=+6\ep\approx5.3\times10^{-11}$ C/m². Positive: $V$ has a ridge at the plane, and the field points away from it on both sides ($E_x=-4$ V/m on the left, $+2$ V/m on the right).`,
+        { figHtml: figKinkV() }),
+      Q(md`On a graph of $V$ along a line crossing a charged surface, how does **negative** surface charge show up?`,
+        [md`as a corner pointing up (a ridge)`, md`as a jump down`, md`as a corner pointing down (a valley)`, md`as a smooth minimum`], 2,
+        [md`A ridge is positive charge: the slope drops as you cross.`,
+          md`$V$ never jumps at a surface charge.`,
+          null,
+          md`A smooth minimum has continuous slope, which means no surface charge (volume charge only).`],
+        md`$\sigma<0$ makes the slope **increase** by $|\sigma|/\ep$ as you cross along $\uv n$: from falling to rising, a V-shaped valley. Negative charges are pits in the landscape; a negative sheet is a crease at the bottom of a valley.`,
+        { figHtml: figTent() }),
+      Q(md`Which derivatives of $V$ are continuous across a charged surface?`,
+        [md`all of them, since $V$ is continuous`,
+          md`only the normal derivative $\partial V/\partial n$`,
+          md`none of them`,
+          md`the derivatives along the surface; only $\partial V/\partial n$ jumps`], 3,
+        [md`Continuity of a function does not make its slope continuous: think of $|x|$.`,
+          md`Backwards: the normal derivative is the one that jumps.`,
+          md`The tangential derivatives are continuous: they are $-E^\parallel$, which is continuous.`,
+          null],
+        md`Tangential derivatives are $-E^\parallel$ (continuous); the normal derivative is $-E^\perp$ (jumps by $-\sigma/\ep$). Since $V$ is the same function on both faces of the surface, its rates of change along the surface must agree.`,
+        { figHtml: figNormal() }),
+      Q(md`Going outward through a thin spherical shell, the slope $dV/dr$ changes from $-3.0$ kV/m just inside to $-1.0$ kV/m just outside. What is $\sigma$ on the shell?`,
+        [md`$+17.7$ nC/m²`, md`$+35.4$ nC/m²`, md`$-35.4$ nC/m²`, md`$-17.7$ nC/m²`], 3,
+        [md`Sign: $\partial V/\partial n$ out minus in is $(-1)-(-3)=+2$ kV/m $=-\sigma/\ep$, so $\sigma<0$.`,
+          md`Wrong sign, and that adds the slopes instead of subtracting.`,
+          md`The change in slope is 2.0 kV/m, not 4.0.`,
+          null],
+        md`"Above" = outside, $\uv n=\uv r$: $(-1.0)-(-3.0)=+2.0$ kV/m $=-\sigma/\ep$, so $\sigma=-2000\,\ep=-1.77\times10^{-8}$ C/m². In field terms: the outward field drops from 3.0 to 1.0 kV/m across the shell, so the shell is negative (it partly screens positive charge inside it).`,
+        { figHtml: figShell() }),
+      RF(md`
+        ### Worked example: σ from a V(r) graph
+
+        A thin spherical shell of radius $0.15$ m. Measured: $V=900$ V everywhere inside; outside, $V=\dfrac{135\ \text{V·m}}{r}$.
+
+        [[fig:vs]]
+
+        **Boundary conditions to use** ("above" = outside, $\uv n=\uv r$, so $\partial V/\partial n=\partial V/\partial r$):
+
+        1. $V_{\text{out}}=V_{\text{in}}$ at $r=R$.
+        2. $\dfrac{\partial V_{\text{out}}}{\partial r}-\dfrac{\partial V_{\text{in}}}{\partial r}=-\dfrac{\sigma}{\ep}$ at $r=R$.
+
+        **Check 1:** $135/0.15=900$ V. Continuous, as it must be.
+
+        **Use 2:** inside the slope is $0$; outside $\dfrac{dV}{dr}=-\dfrac{135}{r^2}=-\dfrac{135}{0.0225}=-6000$ V/m at $R$. So $-6000-0=-\sigma/\ep$ and
+
+        $$\sigma=6000\,\ep=5.31\times10^{-8}\ \text{C/m}^2=53.1\ \text{nC/m}^2 .$$
+
+        Cross-check with the total charge: $q=4\pi R^2\sigma=15.0$ nC, and $\kq\dfrac{q}{R}=900$ V. The corner in $V$ is the surface charge.
+      `, { vs: { svg: figVshellNum(), cap: 'V(r) of the shell: flat inside, 135/r outside.' } }),
+      P({
+        title: 'Two shells from a V(r) graph',
+        q: md`The graph shows $V(r)$ for two concentric thin shells at $r=0.10$ m and $r=0.30$ m: $V=500$ V for $r<0.10$ m; $V=\dfrac{60}{r}-100$ (volts, $r$ in metres) between the shells; $V=\dfrac{30}{r}$ outside. Find $\sigma_1$ and $\sigma_2$. Use $\ep=8.85\times10^{-12}$ C²/(N·m²).`,
+        figHtml: figV2kinks(),
+        hints: [md`First check $V$ is continuous at both radii. Then at each shell use $\dfrac{\partial V_{\text{out}}}{\partial r}-\dfrac{\partial V_{\text{in}}}{\partial r}=-\dfrac{\sigma}{\ep}$.`, md`Slopes: between the shells $dV/dr=-60/r^2$; outside $dV/dr=-30/r^2$; inside $0$.`],
+        parts: [
+          { lbl: md`Is $V$ continuous at both shells?`, mc: [md`yes`, md`no, it jumps at 0.10 m`, md`no, it jumps at 0.30 m`], a: 0, why: [null, md`At 0.10 m: $60/0.10-100=500$ V, equal to the inside value.`, md`At 0.30 m: $60/0.30-100=100$ V and $30/0.30=100$ V.`] },
+          { lbl: '\\sigma_1', ans: 53.13, unit: 'nC/m²' },
+          { lbl: '\\sigma_2', ans: -2.951, unit: 'nC/m²' },
+        ],
+        sol: md`
+          **Conditions at each shell** ("above" = outside): $V$ continuous; $\partial_rV_{\text{out}}-\partial_rV_{\text{in}}=-\sigma/\ep$.
+
+          **Continuity:** $r=0.10$: $500$ V on both sides. $r=0.30$: $100$ V on both sides.
+
+          **Inner shell:** slope inside $0$, just outside $-60/(0.10)^2=-6000$ V/m. $\sigma_1=-\ep(-6000-0)=6000\,\ep=53.1$ nC/m².
+
+          **Outer shell:** just inside $-60/(0.30)^2=-666.7$ V/m, just outside $-30/(0.30)^2=-333.3$ V/m. Difference $+333.3$ V/m, so $\sigma_2=-333.3\,\ep=-2.95$ nC/m².
+
+          Check with charges: $q_1=4\pi(0.10)^2\sigma_1=6.68$ nC gives $\kq q_1=60$ V·m, the coefficient between the shells; $q_2=4\pi(0.30)^2\sigma_2=-3.34$ nC, and $\kq(q_1+q_2)=30$ V·m, the coefficient outside. The outer shell's corner is gentle because its $\sigma$ is small.
+        `,
+      }),
+      RF(md`
+        ### At the surface of a conductor
+
+        Inside a conductor in equilibrium $\vb E=0$ and $V$ is constant. Take "below" = inside and $\uv n$ pointing out. The boundary conditions give, just outside,
+
+        $$\vb E=\frac{\sigma}{\ep}\,\uv n\qquad\text{and}\qquad \sigma=-\ep\,\frac{\partial V}{\partial n}\quad(\text{Griffiths Eqs. 2.48, 2.49}),$$
+
+        since $\partial V_{\text{below}}/\partial n=0$. So you can read the surface charge off the potential just outside a conductor: wherever $V$ falls steeply away from the surface, $\sigma$ is large and positive.
+
+        The surface is an equipotential, so $\vb E$ just outside is perpendicular to it (no tangential component, by continuity of $E^\parallel$ with the zero field inside). Unit 4 uses $\sigma=-\ep\,\partial V/\partial n$ constantly: solve Laplace's equation for $V$ outside a conductor, then differentiate at the surface to get the induced charge.
+      `, { }),
+      Q(md`Just outside a conductor, $V$ falls by 20 V over the first 1.0 mm out from the surface (a uniform field there). What is $\sigma$ at that spot?`,
+        [md`$+88.5$ nC/m²`, md`$-177$ nC/m²`, md`$0$, since $V$ is constant on a conductor`, md`$+177$ nC/m²`], 3,
+        [md`That is the isolated-sheet formula $\sigma/(2\ep)$. At a conductor, $\sigma=\ep E_{\text{out}}$ with no factor of 2.`,
+          md`Sign: $\partial V/\partial n=-2.0\times10^4$ V/m, and $\sigma=-\ep\,\partial V/\partial n>0$.`,
+          md`$V$ is constant on and inside the conductor, but it changes outside; the outside slope gives $\sigma$.`,
+          null],
+        md`$\dfrac{\partial V}{\partial n}=\dfrac{-20\text{ V}}{1.0\times10^{-3}\text{ m}}=-2.0\times10^4$ V/m, so $\sigma=-\ep\dfrac{\partial V}{\partial n}=(8.85\times10^{-12})(2.0\times10^4)=1.77\times10^{-7}$ C/m². $V$ falling away from the surface means a field pointing out of it: positive charge.`,
+        { figHtml: figConductorPt({ p: true, d: md`1.0\text{ mm}` }) }),
+      Q(md`The surface of a conductor is an equipotential. What does that tell you about $\vb E$ just outside?`,
+        [md`$\vb E=0$ just outside too`, md`$\vb E$ is parallel to the surface`, md`$|\vb E|$ is the same at every point of the surface`, md`$\vb E$ is perpendicular to the surface`], 3,
+        [md`$\vb E=0$ inside; just outside $E=\sigma/\ep$, which is zero only where $\sigma=0$.`,
+          md`Backwards: moving along an equipotential does not change $V$, so $\vb E$ has no component along it.`,
+          md`$|\vb E|=\sigma/\ep$ follows $\sigma$, which is generally not uniform (it piles up at sharp points).`,
+          null],
+        md`$dV=-\vb E\cdot d\vb l=0$ for every $d\vb l$ along the surface, so $\vb E$ has no tangential part: it is normal to the surface, with size $\sigma/\ep$.`,
+        { figHtml: figConductorPt() }),
+      Q(md`At a conductor's surface the field just outside is $\sigma/\ep$, but an isolated sheet with the same $\sigma$ gives only $\tfrac{\sigma}{2\ep}$ on each side. Where does the extra $\tfrac{\sigma}{2\ep}$ outside come from?`,
+        [md`From the conductor's atoms, which double the charge at the surface`,
+          md`The two cases have different $\sigma$, since a conductor holds charge on both faces`,
+          md`From the external field that charged the conductor`,
+          md`From the rest of the conductor's charge, which cancels the local patch's field inside and adds to it outside`], 3,
+        [md`$\sigma$ is the same by assumption; nothing doubles it.`,
+          md`Take one face with the same $\sigma$ as the sheet; the local patch is identical. The difference is in the other charges.`,
+          md`There need be no external field at all (an isolated charged conductor works the same way).`,
+          null],
+        md`Split the field as before: patch $\pm\tfrac{\sigma}{2\ep}\uv n$ plus $\vb E_{\text{other}}$. Inside the conductor the total is zero, so $\vb E_{\text{other}}=+\tfrac{\sigma}{2\ep}\uv n$ there; it is continuous through the patch, so outside the total is $\tfrac{\sigma}{2\ep}+\tfrac{\sigma}{2\ep}=\tfrac{\sigma}{\ep}$. (Griffiths uses this average field to get the pressure on a conductor's surface.)`,
+        { figHtml: figSheetVsConductor() }),
+      P({
+        title: 'σ on a conducting sphere from ∂V/∂n',
+        q: md`A conducting sphere of radius $R=0.10$ m is held at $V_0=1.0$ kV (with $V(\infty)=0$). Outside, $V=V_0R/r$. Use the boundary condition on $\partial V/\partial n$ to find the surface charge density, then the total charge. ($\ep=8.85\times10^{-12}$ C²/(N·m²).)`,
+        figHtml: figConductorSphere(),
+        hints: [md`Inside the conductor $V=V_0$, so $\partial V/\partial r=0$ there.`, md`Just outside, $\dfrac{\partial V}{\partial r}=-\dfrac{V_0R}{r^2}\Big|_R=-\dfrac{V_0}{R}$. Then $\sigma=-\ep\left(\dfrac{\partial V_{\text{out}}}{\partial r}-\dfrac{\partial V_{\text{in}}}{\partial r}\right)$.`],
+        parts: [
+          { lbl: '\\sigma', ans: 88.54, unit: 'nC/m²' },
+          { lbl: 'q', ans: 11.13, unit: 'nC' },
+        ],
+        sol: md`
+          **Conditions at $r=R$** ("above" = outside): $V$ continuous ($V_0R/R=V_0$, consistent); $\partial_rV_{\text{out}}-\partial_rV_{\text{in}}=-\sigma/\ep$.
+
+          $\partial_rV_{\text{out}}=-V_0/R=-1.0\times10^4$ V/m and $\partial_rV_{\text{in}}=0$, so
+
+          $$\sigma=\ep\frac{V_0}{R}=(8.85\times10^{-12})(1.0\times10^4)=8.85\times10^{-8}\text{ C/m}^2=88.5\text{ nC/m}^2 .$$
+
+          $q=4\pi R^2\sigma=4\pi(0.010)(8.85\times10^{-8})=1.11\times10^{-8}$ C $=11.1$ nC. Check: $\kq\dfrac qR=\dfrac{(8.99\times10^9)(1.11\times10^{-8})}{0.10}=1.0$ kV.
+        `,
+      }),
+      P({
+        id: 'HW3-2.31', src: 'HW 3 · Griffiths 2.31', title: 'Checking the boundary conditions', big: true,
+        q: md`
+          (a) Check that the results of Exs. 2.5 and 2.6, and Prob. 2.11, are consistent with Eq. 2.33.
+          (b) Use Gauss's law to find the field inside and outside a long hollow cylindrical tube, which carries a uniform surface charge $\sigma$. Check that your result is consistent with Eq. 2.33.
+          (c) Check that the result of Ex. 2.8 is consistent with boundary conditions 2.34 and 2.36.
+
+          (Ex. 2.5: infinite plane, $\tfrac{\sigma}{2\ep}$ away from it on each side. Ex. 2.6: planes $+\sigma$ and $-\sigma$. Prob. 2.11: spherical shell by Gauss's law. Ex. 2.8: potential of a spherical shell, $V=R\sigma/\ep$ inside and $R^2\sigma/(\ep r)$ outside. Eq. 2.33: $\vb E_{\text{above}}-\vb E_{\text{below}}=\tfrac{\sigma}{\ep}\uv n$; 2.34: $V_{\text{above}}=V_{\text{below}}$; 2.36: $\tfrac{\partial V_{\text{above}}}{\partial n}-\tfrac{\partial V_{\text{below}}}{\partial n}=-\tfrac{\sigma}{\ep}$.)
+        `,
+        figHtml: fig231(),
+        hints: [
+          md`In every part: choose "above" and $\uv n$ first, then write each field as a multiple of $\uv n$ just above and just below.`,
+          md`(a) Two planes: the field is $\sigma/\ep$ (pointing from $+\sigma$ to $-\sigma$) between them and zero outside. Check each plate separately with its own $\sigma$.`,
+          md`(b) Gaussian cylinder of radius $s$ and length $\ell$, coaxial with the tube. Inside it encloses nothing; outside it encloses $\sigma\,2\pi R\ell$.`,
+          md`(c) "Above" = outside, so $\partial/\partial n=\partial/\partial r$. Evaluate both $V$'s and both slopes at $r=R$.`,
+        ],
+        parts: [
+          { lbl: md`(a) For the infinite plane, $\vb E_{\text{above}}-\vb E_{\text{below}}$ is`, mc: [md`$\vb 0$, since the two fields have equal size`, md`$\dfrac{\sigma}{2\ep}\uv n$`, md`$\dfrac{\sigma}{\ep}\uv n$`, md`$\dfrac{2\sigma}{\ep}\uv n$`], a: 2, why: [md`Equal size but opposite directions: $\tfrac{\sigma}{2\ep}\uv n-\left(-\tfrac{\sigma}{2\ep}\uv n\right)$.`, md`That is the field on one side, not the difference.`, null, md`Each side contributes $\tfrac{\sigma}{2\ep}$, so the difference is $\tfrac{\sigma}{\ep}$.`] },
+          { lbl: md`(a) Two planes, at the right plate ($-\sigma$), with $\uv n=+\uv x$ pointing out of the gap: $\vb E_{\text{above}}-\vb E_{\text{below}}=$`, mc: [md`$+\dfrac{\sigma}{\ep}\uv x$`, md`$\vb 0$`, md`$-\dfrac{\sigma}{2\ep}\uv x$`, md`$-\dfrac{\sigma}{\ep}\uv x$`], a: 3, why: [md`Above (outside) the field is 0 and below (in the gap) it is $+\tfrac{\sigma}{\ep}\uv x$: the difference is negative, matching the plate's $-\sigma$.`, md`The field is $\sigma/\ep$ in the gap and 0 outside: there is a jump.`, md`The field in the gap is $\sigma/\ep$ (both plates add), not $\sigma/(2\ep)$.`, null] },
+          { lbl: 'E\\ \\text{outside the tube}\\ (s>R)', expr: 'sigma*R/(eps0*s)', vars: { sigma: [0.5, 2], R: [0.5, 1.2], eps0: [0.5, 2], s: [1.5, 3] } },
+          { lbl: md`(b) Jump in $E_s$ at $s=R$, in units of $\sigma/\ep$`, ans: 1, unit: '' },
+          { lbl: md`(c) At $r=R$, Ex. 2.8 gives $V_{\text{in}}$ and $V_{\text{out}}$ equal to`, mc: [md`$\dfrac{R\sigma}{\ep}$ on both sides`, md`$\dfrac{R\sigma}{\ep}$ inside and $0$ outside`, md`$\dfrac{R\sigma}{\ep}$ inside and $\dfrac{R\sigma}{2\ep}$ outside`, md`$0$ inside and $\dfrac{R\sigma}{\ep}$ outside`], a: 0, why: [null, md`Outside, $V=\tfrac{R^2\sigma}{\ep r}$, which at $r=R$ is $\tfrac{R\sigma}{\ep}$.`, md`$\tfrac{R^2\sigma}{\ep R}=\tfrac{R\sigma}{\ep}$; no factor of 1/2.`, md`Inside, $V=\tfrac{R\sigma}{\ep}$, constant but not zero.`] },
+          { lbl: md`(c) $\dfrac{\partial V_{\text{out}}}{\partial r}-\dfrac{\partial V_{\text{in}}}{\partial r}$ at $r=R$, in units of $\sigma/\ep$`, ans: -1, unit: '' },
+        ],
+        sol: md`
+          In every part, "above" is the side $\uv n$ points into, and Eq. 2.33 says $\vb E_{\text{above}}-\vb E_{\text{below}}=\tfrac{\sigma}{\ep}\uv n$.
+
+          [[fig:fields]]
+
+          **(a) Ex. 2.5, infinite plane.** Above: $+\tfrac{\sigma}{2\ep}\uv n$; below: $-\tfrac{\sigma}{2\ep}\uv n$. Difference $\tfrac{\sigma}{\ep}\uv n$. Consistent.
+
+          **Ex. 2.6, two planes** ($+\sigma$ on the left, $-\sigma$ on the right). The field is $\tfrac{\sigma}{\ep}\uv x$ between them and 0 outside.
+          - Left plate, $\uv n=+\uv x$ (from region (i) into region (ii)): $\tfrac{\sigma}{\ep}\uv x-0=\tfrac{(+\sigma)}{\ep}\uv x$. Consistent.
+          - Right plate, $\uv n=+\uv x$ (from (ii) into (iii)): $0-\tfrac{\sigma}{\ep}\uv x=\tfrac{(-\sigma)}{\ep}\uv x$. Consistent with charge $-\sigma$.
+
+          **Prob. 2.11, spherical shell.** Inside $\vb E=0$; just outside $\vb E=\tfrac{\sigma R^2}{\ep R^2}\uv r=\tfrac{\sigma}{\ep}\uv r$. With $\uv n=\uv r$: difference $\tfrac{\sigma}{\ep}\uv r$. Consistent.
+
+          **(b) Long tube.** Gaussian cylinder of radius $s$, length $\ell$, coaxial with the tube. By symmetry $\vb E=E(s)\,\uv s$ and only the curved side has flux.
+          - $s<R$: $E\cdot2\pi s\ell=0$, so $\vb E=0$.
+          - $s>R$: $E\cdot2\pi s\ell=\dfrac{\sigma\,2\pi R\ell}{\ep}$, so $\vb E=\dfrac{\sigma R}{\ep s}\,\uv s$.
+
+          At $s=R$, with $\uv n=\uv s$: $\vb E_{\text{out}}-\vb E_{\text{in}}=\dfrac{\sigma R}{\ep R}\uv s-0=\dfrac{\sigma}{\ep}\uv s$. Consistent.
+
+          [[fig:tube]]
+
+          **(c) Ex. 2.8.** $V=\dfrac{R\sigma}{\ep}$ for $r\le R$ and $V=\dfrac{R^2\sigma}{\ep r}$ for $r\ge R$. "Above" = outside, $\uv n=\uv r$.
+          - **2.34:** at $r=R$ both give $\dfrac{R\sigma}{\ep}$. Continuous.
+          - **2.36:** $\dfrac{\partial V_{\text{out}}}{\partial r}\Big|_R=-\dfrac{R^2\sigma}{\ep R^2}=-\dfrac{\sigma}{\ep}$ and $\dfrac{\partial V_{\text{in}}}{\partial r}=0$. Difference: $-\dfrac{\sigma}{\ep}$. Consistent.
+
+          [[fig:v28]]
+
+          **What to remember.** Every check has the same three moves: choose $\uv n$, write the fields (or slopes) just on either side as multiples of $\uv n$, subtract. The jump always matches the local $\sigma$, whatever the rest of the configuration does.
+        `,
+        figs: {
+          fields: { svg: fig231sol(), cap: 'Fields for part (a): the jump at every sheet is σ/ε₀ along n̂.' },
+          tube: { svg: figTubeE(), cap: 'Tube: E(s) jumps from 0 to σ/ε₀ at s = R, then falls as 1/s.' },
+          v28: { svg: figShellV28(), cap: 'Ex. 2.8: V(r) is continuous at R; its slope jumps from 0 to −σ/ε₀.' },
+        },
+      }),
+      Q(md`Two thin shells, at $R$ and $2R$, both positively charged (no other charge). Which graph is $V(r)$, with $V(\infty)=0$?`,
+        ['A', 'B', 'C', 'D'], 3,
+        [md`This has a corner only at $R$. The outer shell's charge must make a corner at $2R$ too.`,
+          md`$V$ cannot jump at $2R$; only its slope can.`,
+          md`A smooth curve with no flat part means volume charge everywhere and no field-free region. Inside the inner shell $\vb E=0$, so $V$ must be flat there.`,
+          null],
+        md`Flat inside $R$ (no field); $\tfrac1r$-shaped between, plus a constant from the outer shell; $\tfrac1r$ outside with the total charge. At each shell $V$ is continuous with a downward-bending corner (positive $\sigma$: the slope drops as you go out).`,
+        { figHtml: rowABCD([
+          thumb([{ f: (r) => (r < 1 ? 1 : (1 / r + 0.5) / 1.5), from: 0 }], { xt: [[1, 'R'], [2, '2R']] }),
+          thumb([{ f: () => 1, from: 0, to: 1 }, { f: (r) => (1 / r + 0.5) / 1.5, from: 1, to: 2 }, { f: (r) => 1 / (1.5 * r), from: 2 }], { xt: [[1, 'R'], [2, '2R']] }),
+          thumb([{ f: (r) => 1 / Math.sqrt(1 + 0.6 * r * r), from: 0 }], { xt: [[1, 'R'], [2, '2R']] }),
+          thumb([{ f: V2pos, from: 0, n: 400 }], { xt: [[1, 'R'], [2, '2R']] }),
+        ]) }),
+      Q(md`For a uniformly charged thin spherical shell, which of $E(r)$, $V(r)$ and $dV/dr$ are discontinuous at $r=R$?`,
+        [md`all three`, md`only $V(r)$`, md`only $E(r)$`, md`$E(r)$ and $dV/dr$, but not $V(r)$`], 3,
+        [md`$V$ is continuous: $\tfrac{q}{4\pi\ep R}$ from both sides.`,
+          md`Backwards: $V$ is the continuous one.`,
+          md`$dV/dr=-E_r$, so it jumps exactly when $E_r$ does.`,
+          null],
+        md`$E_r$ jumps by $\sigma/\ep$; $dV/dr=-E_r$ jumps by $-\sigma/\ep$; $V$ is continuous with a corner. Lecture 5's $E(r)$ graph and Lesson 5's $V(r)$ graph show both.`,
+        { figHtml: figShell() }),
+      Q(md`Along a line crossing a plane at $x=0$, $V(x)$ is a single straight line with the same slope on both sides. What is $\sigma$ on the plane?`,
+        [md`It depends on the slope.`, md`It depends on the value of $V$ at $x=0$.`, md`$0$`, md`$\ep$ times the slope`], 2,
+        [md`The slope gives the field, $E_x=-dV/dx$, which is the same on both sides. Only a change of slope signals surface charge.`,
+          md`$V(0)$ depends on the reference point; it says nothing about the charge.`,
+          null,
+          md`That would be a conductor-type formula, which needs zero field on one side. Here the field is the same on both sides: no jump.`],
+        md`No change in $\partial V/\partial n$ means no surface charge. A uniform field passing straight through a plane does not need any charge on it.`,
+        { nofig: 'described in words; a straight line' }),
+      Q(md`For a spherical shell you take "above" to be the outside. Then`,
+        [md`$\uv n=-\uv r$ and $\dfrac{\partial V}{\partial n}=-\dfrac{\partial V}{\partial r}$`, md`$\uv n=\uv r$ and $\dfrac{\partial V}{\partial n}=\dfrac{\partial V}{\partial r}$`, md`$\uv n$ is tangent to the shell`, md`$\uv n=\uv r$ and $\dfrac{\partial V}{\partial n}=\dfrac1r\dfrac{\partial V}{\partial\theta}$`], 1,
+        [md`$\uv n$ points from below (inside) to above (outside): that is $+\uv r$.`,
+          null,
+          md`The normal is perpendicular to the surface: radial for a sphere.`,
+          md`$\tfrac1r\tfrac{\partial V}{\partial\theta}$ is a tangential derivative (along the shell).`],
+        md`$\uv n$ always points into the "above" region. For a sphere with "above" = outside, $\uv n=\uv r$ and $\nabla V\cdot\uv r=\partial V/\partial r$. Then 2.36 reads $\partial_rV_{\text{out}}-\partial_rV_{\text{in}}=-\sigma/\ep$.`,
+        { figHtml: figShell() }),
+      P({
+        title: 'Four planes from V(x)',
+        q: md`Four large parallel planes sit at $x=0$, $2$, $4$ and $6$ cm. The potential depends only on $x$ and is shown in the graph: $0$ for $x<0$, rising linearly to 10 V at $x=2$ cm, flat at 10 V up to $x=4$ cm, falling linearly to 0 at $x=6$ cm, and 0 beyond. Find the surface charge density on each plane and $E_x$ in $0<x<2$ cm. ($\ep=8.85\times10^{-12}$ C²/(N·m²).)`,
+        figHtml: figVplates(),
+        hints: [md`Slopes: $0$, $+500$ V/m, $0$, $-500$ V/m, $0$ (10 V over 2 cm is 500 V/m).`, md`At each plane, with $\uv n=+\uv x$: $\sigma=-\ep\left(\dfrac{dV}{dx}\Big|_{\text{right}}-\dfrac{dV}{dx}\Big|_{\text{left}}\right)$.`],
+        parts: [
+          { lbl: '\\sigma(x=0)', ans: -4.427, unit: 'nC/m²' },
+          { lbl: '\\sigma(x=2\\text{ cm})', ans: 4.427, unit: 'nC/m²' },
+          { lbl: '\\sigma(x=4\\text{ cm})', ans: 4.427, unit: 'nC/m²' },
+          { lbl: '\\sigma(x=6\\text{ cm})', ans: -4.427, unit: 'nC/m²' },
+          { lbl: 'E_x\\ (0<x<2\\text{ cm})', ans: -500, unit: 'V/m' },
+          { lbl: md`What could the region $2<x<4$ cm be?`, mc: [md`the inside of a conducting slab`, md`a slab of uniform positive charge`, md`empty space with a uniform field`], a: 0, why: [null, md`Uniform volume charge would curve $V$ (Poisson). Here $V$ is flat.`, md`A flat $V$ means zero field, not a uniform nonzero one.`] },
+        ],
+        sol: md`
+          **Condition at each plane** ($\uv n=+\uv x$, "above" = the right side): $\sigma=-\ep\big(V'_{\text{right}}-V'_{\text{left}}\big)$. $V$ is continuous everywhere on the graph, as it must be.
+
+          | plane | slope left (V/m) | slope right (V/m) | $\sigma$ |
+          |---|---|---|---|
+          | $x=0$ | $0$ | $+500$ | $-500\,\ep=-4.43$ nC/m² |
+          | $x=2$ cm | $+500$ | $0$ | $+500\,\ep=+4.43$ nC/m² |
+          | $x=4$ cm | $0$ | $-500$ | $+500\,\ep=+4.43$ nC/m² |
+          | $x=6$ cm | $-500$ | $0$ | $-500\,\ep=-4.43$ nC/m² |
+
+          Field: $E_x=-dV/dx=-500$ V/m in $0<x<2$ cm (pointing from the $+$ plane at 2 cm to the $-$ plane at 0), zero in $2<x<4$ cm, $+500$ V/m in $4<x<6$ cm.
+
+          **Picture:** a conducting slab at 10 V between two grounded plates, both faces of the slab positive. The total charge is zero, so the field outside vanishes. Ridges in $V$ (at 2 and 4 cm) are positive, valleys (at 0 and 6 cm) negative.
+        `,
+      }),
+      RF(md`
+        ### Summary: every boundary condition
+
+        At a surface with charge density $\sigma$, $\uv n$ pointing from "below" into "above":
+
+        | Quantity | Across the surface |
+        |---|---|
+        | $E^\perp$ | jumps: $E^\perp_{\text{above}}-E^\perp_{\text{below}}=\sigma/\ep$ (pillbox) |
+        | $E^\parallel$ | continuous (thin loop) |
+        | $\vb E$ | $\vb E_{\text{above}}-\vb E_{\text{below}}=\dfrac{\sigma}{\ep}\uv n$ |
+        | $V$ | continuous (path of zero length) |
+        | $\partial V/\partial n$ | jumps: $\dfrac{\partial V_{\text{above}}}{\partial n}-\dfrac{\partial V_{\text{below}}}{\partial n}=-\dfrac{\sigma}{\ep}$ |
+        | tangential derivatives of $V$ | continuous |
+        | conductor surface | $\vb E_{\text{out}}=\dfrac{\sigma}{\ep}\uv n$, $\sigma=-\ep\dfrac{\partial V}{\partial n}$, $\vb E\perp$ surface |
+
+        !!key Patterns to remember
+          - Always pick "above" and $\uv n$ first, and list the conditions before using them.
+          - $\sigma$ from fields: $\ep(\vb E_{\text{above}}-\vb E_{\text{below}})\cdot\uv n$. From potentials: $-\ep$ times the change in normal slope.
+          - Graph reading: $V$ never jumps; a corner in $V$ (a jump in $E$) is surface charge; a ridge is positive, a valley negative. Curvature without a corner is volume charge.
+          - Conductor: zero field inside, so the whole jump is outside: $E=\sigma/\ep$, perpendicular to the surface.
+          - These conditions are what Unit 4 uses to fix the constants in solutions of Laplace's equation.
+
+        Below: a drill that serves every multiple-choice question in this unit at random.
+      `),
+      G('concept', { need: 5, units: ['u2'] }),
+    ],
+  };
+
   C.unit({
     id: 'u2', num: 'Unit 2', title: 'Electric potential',
     blurb: 'Curl-free fields and V, E = −∇V, reference points, superposing V, Poisson\'s equation, V(r) of spheres and cylinders, and boundary conditions at surface charge.',
-    lessons: [L1, L2, L3, L4, L5],
+    lessons: [L1, L2, L3, L4, L5, L6, L7],
   });
 })();

@@ -675,7 +675,7 @@
       for (const [r, L] of [[22, 4], [45, 10], [80, 22]]) { const p = pol(cx, cy, r, a), q2 = pol(cx, cy, r + L, a); f.arrow(p[0], p[1], q2[0], q2[1], { hs: 5 }); }
     }
     f.dot(cx, cy, 2.4);
-    const e = pol(cx, cy, 70, 0); f.line(cx, cy, e[0], e[1], { cls: 'dim thin' }); f.label(cx + 35, cy + 5, 'R', 't', 'small');
+    const e = pol(cx, cy, 70, 0); f.line(cx, cy, e[0], e[1], { cls: 'dim thin' }); f.label(cx + 80, cy, 'R', 'l', 'small');
     return f.svg();
   }
 
@@ -894,6 +894,48 @@
     const c = f.p3(a, a / 2, a / 2); f.label(c[0], c[1], md`\rho`, 'c', 'small');
     return f.svg();
   }
+  // an open surface S (tinted) and its closed boundary P (Stokes' theorem)
+  function figStokes() {
+    const f = fig();
+    const P2 = blobPts(160, 110, 80, [[2, 0.12, 20], [3, 0.07, 0]]).map(([x, y]) => [x, 110 + (y - 110) * 0.55]);
+    tint(f, P2, 0.16); f.poly(P2, { cls: 'thick' });
+    headAt(f, P2.slice(0, 40), 0.5, { hs: 7 }); headAt(f, P2.slice(60, 100), 0.5, { hs: 7 });
+    f.arrow(160, 110, 160, 40, { hs: 7 }); f.label(166, 46, md`d\mathbf{a}`, 'l', 'small');
+    f.label(118, 112, 'S', 'c', 'small');
+    const r = P2.reduce((m, p) => (p[0] > m[0] ? p : m), [0, 0]); f.label(r[0] + 10, r[1], 'P', 'l', 'small');
+    return f.svg();
+  }
+  // a circulating field k/s phi-hat around a line (seen end on)
+  function figVortex() {
+    const f = fig();
+    const cx = 120, cy = 110;
+    f.field((x, y) => { const dx = x - cx, dy = y - cy, r2 = dx * dx + dy * dy; if (r2 < 300) return null; return [dy / r2, -dx / r2]; }, [30, 20, 210, 200], 7, 7, { len: 22, mag: true });
+    f.dot(cx, cy, 3);
+    return f.svg();
+  }
+  // the swirl k(y, -x, 0) (clockwise for k > 0, growing with distance) and a circle of radius R traversed counterclockwise
+  function figSwirl() {
+    const f = fig();
+    const cx = 120, cy = 110, R = 62;
+    f.field((x, y) => { const dx = x - cx, dy = y - cy; if (dx * dx + dy * dy < 100) return null; return [-dy, dx]; }, [30, 20, 210, 200], 7, 7, { len: 20, mag: true, cls: 'dim' });
+    const C = f.arcPts(cx, cy, R, R, 0, 360);
+    f.pl(C, { cls: 'dash' });
+    headAt(f, f.arcPts(cx, cy, R, R, 30, 60), 0.5, { hs: 7 });
+    headAt(f, f.arcPts(cx, cy, R, R, 210, 240), 0.5, { hs: 7 });
+    f.dot(cx, cy, 2.4);
+    return f.svg();
+  }
+  // charged surface edge-on with the tangential field drawn above it (continuity of E-parallel)
+  function figTanBC() {
+    const f = fig();
+    const y = 110;
+    f.line(20, y, 300, y, { cls: 'thick' }); f.label(296, y - 6, md`\sigma`, 'br', 'small');
+    f.arrow(110, y - 30, 200, y - 30, { hs: 7 }); f.label(206, y - 30, md`E_\parallel=3E_0`, 'l', 'small');
+    f.label(155, y + 30, md`E_\parallel=\ ?`, 'c', 'small');
+    f.text(70, y - 30, 'east', 'r');
+    f.rect(130, y - 12, 70, 24, { cls: 'dash' });
+    return f.svg();
+  }
 
   // =====================================================================================
   // Lesson 1 — Coulomb's law, the field, superposition (Lecture 1; Griffiths 2.1.1–2.1.3)
@@ -956,7 +998,7 @@
 
       Q(md`Lecture 1 lists three features of classical electrodynamics. Which statement describes it being the first **gauge** theory?`,
         [md`It describes fields rather than forces between particles.`, md`It is Lorentz invariant: the speed of light is the same in every frame.`, md`It is written in SI units rather than CGS units.`, md`The potentials can be chosen in different gauges and still describe the same $\vb E$ and $\vb B$.`], 3,
-        [md`That is the "first field theory" feature.`, md`That is the "compatible with special relativity" feature.`, md`Units are a convention for this course. The notes call CGS "more mathematically beautiful but impractical".`, null],
+        [md`That is the “first field theory” feature.`, md`That is the “compatible with special relativity” feature.`, md`Units are a convention for this course. The notes call CGS “more mathematically beautiful but impractical”.`, null],
         md`The three features in the notes: compatible with special relativity (Lorentz invariant), the first field theory (fields instead of forces between particles), and the first gauge theory (the potentials $V$ and $\vb A$ can be chosen in different gauges and give the same fields). The gauge idea later inspired relativistic quantum mechanics.`,
         { nofig: 'definition question about the course overview, no geometry' }),
 
@@ -1272,7 +1314,7 @@ for n in (4, 5):
         [md`For every piece at $+x$ there is a piece at $-x$ whose $x$ component is opposite. They cancel.`,
           md`Every piece contributes, not only the ends, and the pieces on the two sides balance.`,
           md`Symmetry fixes the direction before any integral.`, null],
-        md`Pair the piece at $x$ with the piece at $-x$. Same distance, mirror-image directions: their $x$ components cancel and their $z$ components add. The total points along $+\uv z$ (for $\lambda>0$). The notes: "$x$ component is 0 by symmetry".`,
+        md`Pair the piece at $x$ with the piece at $-x$. Same distance, mirror-image directions: their $x$ components cancel and their $z$ components add. The total points along $+\uv z$ (for $\lambda>0$). The notes: “$x$ component is 0 by symmetry”.`,
         { figHtml: figSegBis() }),
 
       Q(md`In-class question: what do you expect when $z\gg L$?`,
@@ -1332,7 +1374,7 @@ for n in (4, 5):
           md`Total charge is not the issue: a segment with the same charge still falls as $1/z^2$ far away. What matters is how much of the charge is about as close as $z$.`,
           md`Every piece obeys the same $1/\srm^2$ law. The $1/z$ comes from adding the pieces.`,
           md`The field lines of a line charge spread out radially in the plane perpendicular to the line. They spread in two dimensions instead of three, which is the Gauss's-law version of the same answer.`],
-        md`At distance $z$, roughly a length $\sim z$ of the line is within distance $\sim z$ of you. That length carries charge $\sim\lambda z$, and its field is $\sim\lambda z/z^2=\lambda/z$. The farther you go, the more charge "comes into view". You will see the same answer from Gauss's law: lines spreading over a cylinder of area $2\pi z L$ instead of a sphere.`,
+        md`At distance $z$, roughly a length $\sim z$ of the line is within distance $\sim z$ of you. That length carries charge $\sim\lambda z$, and its field is $\sim\lambda z/z^2=\lambda/z$. The farther you go, the more charge “comes into view”. You will see the same answer from Gauss's law: lines spreading over a cylinder of area $2\pi z L$ instead of a sphere.`,
         { figHtml: plotLineSeg() }),
 
       Q(md`The integral $\displaystyle\int\dfrac{dx}{(x^2+z^2)^{3/2}}$ shows up whenever a straight line of charge is involved. Which substitution turns it into an elementary integral?`,
@@ -1342,6 +1384,12 @@ for n in (4, 5):
           md`$\cosh^2-1=\sinh^2$ would need $x^2-z^2$. Here the sign is $+$.`, null],
         md`$x=z\tan\theta$ uses $1+\tan^2\theta=\sec^2\theta$, so $(x^2+z^2)^{3/2}=z^3\sec^3\theta$ and $dx=z\sec^2\theta\,d\theta$; the integrand becomes $\cos\theta/z^2$. Keep the companion in mind: $\displaystyle\int\dfrac{x\,dx}{(x^2+z^2)^{3/2}}=-\dfrac{1}{\sqrt{x^2+z^2}}$ by $u=x^2+z^2$.`,
         { nofig: 'integration technique only' }),
+
+      Q(md`Which of these could be the field of a line charge $\lambda$ at distance $z$ from it? (Use units only.)`,
+        [md`$\dfrac{\lambda}{4\pi\ep z^2}$`, md`$\dfrac{\lambda}{2\pi\ep z}$`, md`$\dfrac{\lambda z}{4\pi\ep}$`, md`$\dfrac{\lambda}{2\ep}$`], 1,
+        [md`$\dfrac{q}{4\pi\ep z^2}$ is a field; with $\lambda=q/\text{length}$ in place of $q$ this is a field divided by a length.`, null, md`That is a field times a length squared.`, md`$\sigma/2\ep$ is a field; $\lambda/2\ep$ is a field times a length.`],
+        md`$\dfrac{q}{4\pi\ep z^2}$ is a field, so $\dfrac{\lambda}{4\pi\ep}$ is a field times a length, and a line-charge field must be $\dfrac{\lambda}{4\pi\ep}\times\dfrac{1}{\text{length}}$. Only $\dfrac{\lambda}{2\pi\ep z}$ qualifies. Likewise a surface-charge field is $\sigma/\ep$ times a pure number. A units check like this catches most slips in a final answer.`,
+        { nofig: 'units only' }),
 
       P({
         title: 'On the axis of a rod',
@@ -1615,6 +1663,12 @@ for n in (4, 5):
         md`For $z\ll R$, $z/\sqrt{z^2+R^2}\to0$ and $E_z\to\sigma/2\ep$. From close up, the disk fills your whole view like an infinite plane. Far away ($z\gg R$) it shrinks to a point charge $\pi R^2\sigma$.`,
         { figHtml: figDisk() }),
 
+      Q(md`At the height $z=R$ above the centre of the disk, what fraction of the infinite-sheet value $\sigma/2\ep$ does the disk produce?`,
+        [md`$1/2$`, md`$1-1/\sqrt2\approx0.29$`, md`$1/\sqrt2\approx0.71$`, md`$1/4$`], 1,
+        [md`Put $z=R$ in the bracket: $1-\dfrac{R}{\sqrt{2R^2}}=1-\dfrac{1}{\sqrt2}$.`, null, md`$1/\sqrt2$ is the part you subtract, not what is left.`, md`$1/4$ would come from the far-field formula, which is not valid at $z=R$.`],
+        md`$E_z=\dfrac{\sigma}{2\ep}\left(1-\dfrac{z}{\sqrt{z^2+R^2}}\right)$ at $z=R$ is $\dfrac{\sigma}{2\ep}\left(1-\dfrac{1}{\sqrt2}\right)\approx0.29\,\dfrac{\sigma}{2\ep}$. At a height equal to its radius, the disk already gives less than a third of the sheet value: the sheet approximation needs $z\ll R$.`,
+        { figHtml: figDisk() }),
+
       Q(md`Why is the field of an infinite plane independent of the distance from it, even though each piece obeys $1/\srm^2$?`,
         [md`The plane's field lines are straight and parallel, and that is enough`, md`As you move away, each piece's field weakens, but more of the plane comes into view at a comparable angle; the two effects cancel exactly`, md`The plane carries infinite charge, so its field is infinite and the distance does not matter`, md`It is an approximation that fails far away`], 1,
         [md`Parallel field lines are the result, not the reason. The reason is in how the contributions add up.`, null,
@@ -1634,8 +1688,14 @@ for n in (4, 5):
       Q(md`In the $z\gg R$ check you expanded $\dfrac{z}{\sqrt{z^2+R^2}}\approx1-\dfrac{R^2}{2z^2}$. Why is it wrong to stop at the first term ($\approx1$)?`,
         [md`Because the first term is not accurate when $z\gg R$`, md`Because then $E_z\approx\dfrac{\sigma}{2\ep}(1-1)=0$: the leading terms cancel, so the physics is in the next term`, md`Because you must always keep two terms of a binomial series`, md`It is not wrong: the far field of a disk is zero`], 1,
         [md`The first term is accurate; it is just cancelled by the $1$ already in the bracket.`, null, md`Keep as many terms as you need to get the first non-zero result. Here that is the second one.`, md`The disk has charge $\pi R^2\sigma$, so far away its field is that of a point charge, not zero.`],
-        md`When a bracket like $\left(1-\dfrac{z}{\sqrt{z^2+R^2}}\right)$ is a difference of nearly equal terms, expand until something survives. Here the survivor is $\dfrac{R^2}{2z^2}$, giving $\kq\dfrac{\pi R^2\sigma}{z^2}$. The same move appears in every "check the limit" step: dipoles, rings, shells.`,
+        md`When a bracket like $\left(1-\dfrac{z}{\sqrt{z^2+R^2}}\right)$ is a difference of nearly equal terms, expand until something survives. Here the survivor is $\dfrac{R^2}{2z^2}$, giving $\kq\dfrac{\pi R^2\sigma}{z^2}$. The same move appears in every “check the limit” step: dipoles, rings, shells.`,
         { nofig: 'series expansion only' }),
+
+      Q(md`A ring and a disk have the same radius $R$ and the same total charge $Q$. Far out on the axis ($z\gg R$), how do their fields compare?`,
+        [md`They are equal to leading order: both $\approx\kq\dfrac{Q}{z^2}$`, md`The ring's field is larger, because its charge is farther out`, md`The disk's field is larger, because its charge is spread over an area`, md`It depends on $R$`], 0,
+        [null, md`Far away the distribution of the charge does not matter at leading order, only its total.`, md`Far away only the total charge matters at leading order.`, md`For $z\gg R$, $R$ drops out of the leading term.`],
+        md`From far away every finite charge distribution looks like a point charge equal to its total charge. Ring: $\kq\dfrac{Qz}{(R^2+z^2)^{3/2}}\to\kq\dfrac{Q}{z^2}$. Disk: $\kq\dfrac{Q}{z^2}$ from the expansion in Problem 2.6. They differ only in the next correction, which depends on how the charge is spread.`,
+        { figHtml: PF.row([{ svg: figRing(), cap: 'ring' }, { svg: figDisk(), cap: 'disk' }]).svg }),
 
       P({
         title: 'A disk with a hole',
@@ -1674,7 +1734,7 @@ for n in (4, 5):
 
           **Checks.** At $z=0$ (the centre of the hole) $E_z=0$, as at the centre of a ring. For $z\gg R$, $E_z\to\sigma/2\ep$: far away the hole does not matter. You can also get the result directly by integrating rings from $r'=R$ to $\infty$.
 
-          **What to remember.** "Hole $=$ object $+$ negative patch" is the same superposition trick as the clock with a missing charge. It will come back with a cavity in a charged sphere.
+          **What to remember.** “Hole $=$ object $+$ negative patch” is the same superposition trick as the clock with a missing charge. It will come back with a cavity in a charged sphere.
         `,
       }),
 
@@ -1790,7 +1850,7 @@ for n in (4, 5):
       Q(md`Suppose the force law were $1/r^3$ instead of $1/r^2$. How would the flux of a point charge through a concentric sphere depend on its radius?`,
         [md`It would not depend on $r$`, md`It would grow as $r$`, md`It would fall as $1/r^2$`, md`It would fall as $1/r$`], 3,
         [md`The $r$-independence needs the area ($r^2$) and the field ($1/r^2$) to cancel exactly.`, md`A weaker-at-distance field gives less flux far away, not more.`, md`Area $\times$ field $=r^2\times r^{-3}$.`, null],
-        md`Flux $\propto r^2\times r^{-3}=1/r$. Gauss's law, with its "only the enclosed charge matters", is special to inverse-square fields: Coulomb's law and Newtonian gravity.`,
+        md`Flux $\propto r^2\times r^{-3}=1/r$. Gauss's law, with its “only the enclosed charge matters”, is special to inverse-square fields: Coulomb's law and Newtonian gravity.`,
         { figHtml: figConcentric() }),
 
       RF(md`
@@ -1828,7 +1888,7 @@ for n in (4, 5):
       Q(md`The charge is now **outside** the sphere $S$. Which is true?`,
         [md`$\vb E=0$ everywhere on $S$, since the flux is zero`, md`The flux is negative because lines enter $S$`, md`The flux through $S$ is zero, but $\vb E\ne0$ on $S$`, md`The flux is $q/\ep$ because the charge's lines touch the sphere`], 2,
         [md`Zero flux means as much flux in as out, not zero field. Lines go in on the near side and out on the far side.`, md`Every line that enters also leaves. Net flux zero.`, null, md`Only enclosed charge produces net flux.`],
-        md`Each field line of the outside charge that crosses $S$ crosses it twice, once in and once out, so the net flux is zero. The field on $S$ is certainly not zero. "$\Phi=0$" never implies "$\vb E=0$".`,
+        md`Each field line of the outside charge that crosses $S$ crosses it twice, once in and once out, so the net flux is zero. The field on $S$ is certainly not zero. “$\Phi=0$” never implies “$\vb E=0$”.`,
         { figHtml: figSphereQ('out') }),
 
       P({
@@ -1913,7 +1973,7 @@ for n in (4, 5):
       Q(md`A cube carries a uniform volume charge. A student applies Gauss's law with a cube-shaped surface just outside it and writes $E\cdot6a^2=Q/\ep$. What is wrong?`,
         [md`Nothing: the cube is symmetric enough`, md`$\Qenc$ should be $Q/6$`, md`$|\vb E|$ is not constant on the faces and $\vb E$ is not normal to them, so $E$ cannot come out of the integral`, md`Gauss's law does not hold for cubes`], 2,
         [md`A cube's symmetry is not enough to make $|\vb E|$ constant on any surface.`, md`The whole charge is enclosed.`, null, md`Gauss's law holds for every closed surface. It is only not useful here.`],
-        md`The flux really is $Q/\ep$. But near a face centre the field is stronger and normal to the face; near the edges it is weaker and tilted. "$E\cdot\text{area}$" assumes a constant normal field, which only spherical, cylindrical or planar symmetry provides.`,
+        md`The flux really is $Q/\ep$. But near a face centre the field is stronger and normal to the face; near the edges it is weaker and tilted. “$E\cdot\text{area}$” assumes a constant normal field, which only spherical, cylindrical or planar symmetry provides.`,
         { figHtml: figCubeSolid() }),
 
       Q(md`To find the field of an infinite plane of charge, which Gaussian surface do you use?`,
@@ -1941,7 +2001,7 @@ for n in (4, 5):
     steps: [
       RF(md`
         ### The symmetry argument
-        Suppose $\rho$ depends only on the distance $r$ from a centre. Then $\vb E$ must point radially and its size can depend only on $r$. (Griffiths' argument: suppose $\vb E$ pointed "east" somewhere. Nothing in a spherically symmetric distribution picks out east over west or north; the same reasoning would prove it points west. The only direction a sphere singles out is radial.)
+        Suppose $\rho$ depends only on the distance $r$ from a centre. Then $\vb E$ must point radially and its size can depend only on $r$. (Griffiths' argument: suppose $\vb E$ pointed “east” somewhere. Nothing in a spherically symmetric distribution picks out east over west or north; the same reasoning would prove it points west. The only direction a sphere singles out is radial.)
 
         Take a Gaussian sphere of radius $r$ through the field point. On it $\vb E=E(r)\,\uv r$ is parallel to $d\vb a$ and has the same size everywhere, so
 
@@ -2021,7 +2081,7 @@ for n in (4, 5):
 
       RF(md`
         ### The uniformly charged solid sphere (Lecture 3)
-        A ball of radius $R$ with uniform $\rho$. Inside, take a Gaussian sphere of radius $r<R$. The notes: "$E$ is constant over the shell", "$r$ is constant and we integrate over $\sin\theta\,d\theta\,d\varphi$":
+        A ball of radius $R$ with uniform $\rho$. Inside, take a Gaussian sphere of radius $r<R$. The notes: “$E$ is constant over the shell”, “$r$ is constant and we integrate over $\sin\theta\,d\theta\,d\varphi$”:
 
         $$E\cdot4\pi r^2=\dfrac{\rho\cdot\tfrac43\pi r^3}{\ep}\qquad\Longrightarrow\qquad \vb E=\dfrac{\rho}{3\ep}\,\vb r\qquad(r\le R).$$
 
@@ -2037,7 +2097,7 @@ for n in (4, 5):
       `, { s: { svg: figSolid(true), cap: md`Gaussian sphere of radius $r<R$ inside the uniformly charged ball; $d\vb a$ is radial.` },
         p: { svg: plotSolid(), cap: md`$|\vb E|(r)$ for a uniform ball: linear inside, $1/r^2$ outside, continuous at $R$.` } }),
 
-      Q(md`A student says: "Inside a charged solid sphere the field is zero, just like inside a shell." What is the correct statement?`,
+      Q(md`A student says: “Inside a charged solid sphere the field is zero, just like inside a shell.” What is the correct statement?`,
         [md`It is right for any charged sphere`, md`It is right only at the surface`, md`It is right only for a ball made of conductor, or a shell; inside a uniformly charged insulating ball $E=\rho r/3\ep$`, md`It is wrong: inside the ball the field grows as $1/r^2$ toward the centre`], 2,
         [md`A Gaussian sphere inside a solid ball encloses charge, so $E\ne0$.`, md`At the surface the field is at its largest, $\rho R/3\ep$.`, null, md`The field goes to zero at the centre; it grows linearly with $r$.`],
         md`Zero field inside needs zero enclosed charge (a shell) or a conductor (whose charges rearrange; later in the course). A uniformly charged insulating ball has $\Qenc\propto r^3$, so $E\propto r^3/r^2=r$.`,
@@ -2104,7 +2164,7 @@ for n in (4, 5):
 
       RF(md`
         ### Lecture 3 example: two overlapping spheres
-        Two spheres, each of radius $R$, carry uniform densities $+\rho$ and $-\rho$. They overlap. Call $\vb d$ the vector from the positive centre to the negative centre. What is the field in the overlap region? (Griffiths 2.18 in the 4th edition; the professor: "tell me the steps".)
+        Two spheres, each of radius $R$, carry uniform densities $+\rho$ and $-\rho$. They overlap. Call $\vb d$ the vector from the positive centre to the negative centre. What is the field in the overlap region? (Griffiths 2.18 in the 4th edition; the professor: “tell me the steps”.)
 
         [[fig:s]]
       `, { s: { svg: figOverlap(), cap: md`Uniform spheres of $+\rho$ and $-\rho$, radius $R$, centres separated by $\vb d$. The lens in the middle is the overlap.` } }),
@@ -2112,7 +2172,7 @@ for n in (4, 5):
       Q(md`In-class question: how should you approach the overlapping spheres?`,
         [md`Gauss's law with a sphere around the overlap region`, md`Find the field of each sphere separately with Gauss's law, then add them (superposition)`, md`The overlap is neutral, so $\vb E=0$ there; no calculation needed`, md`Integrate Coulomb's law over the lens-shaped overlap`], 1,
         [md`The whole arrangement has no spherical symmetry, so no Gaussian surface makes $|\vb E|$ constant.`, null, md`Neutral charge density does not mean zero field: the field at a point depends on all the charge, not only the charge at that point.`, md`Possible in principle, but a hard integral. Each sphere separately is easy.`],
-        md`The combination has no symmetry, but each sphere alone does. Use Gauss's law on each sphere (inside: $\vb E=\rho\vb r/3\ep$), then superpose. This "break it into symmetric pieces" idea is the main way to stretch Gauss's law beyond the three symmetric cases.`,
+        md`The combination has no symmetry, but each sphere alone does. Use Gauss's law on each sphere (inside: $\vb E=\rho\vb r/3\ep$), then superpose. This “break it into symmetric pieces” idea is the main way to stretch Gauss's law beyond the three symmetric cases.`,
         { figHtml: figOverlap() }),
 
       RF(md`
@@ -2157,7 +2217,7 @@ for n in (4, 5):
 
           [[fig:s]]
 
-          The field in the cavity is uniform, of magnitude $\dfrac{\rho a}{3\ep}$, pointing along $\vb a$ (from the ball's centre toward the cavity's centre). This is the overlapping-spheres result again: there $\vb d$ pointed from the $+$ centre to the $-$ centre; here the "negative sphere" is the cavity at $\vb a$.
+          The field in the cavity is uniform, of magnitude $\dfrac{\rho a}{3\ep}$, pointing along $\vb a$ (from the ball's centre toward the cavity's centre). This is the overlapping-spheres result again: there $\vb d$ pointed from the $+$ centre to the $-$ centre; here the “negative sphere” is the cavity at $\vb a$.
 
           **Check.** If the cavity is concentric ($\vb a=0$), the field in it is zero, as it must be by spherical symmetry (a Gaussian sphere inside the cavity encloses nothing).
         `,
@@ -2248,6 +2308,12 @@ for n in (4, 5):
         md`Gaussian cylinder of radius $s>R$: $E\cdot2\pi sl=\lambda l/\ep$. From outside, any cylindrically symmetric charge looks like a line on the axis, just as any spherically symmetric charge looks like a point.`,
         { figHtml: figLineCyl(false, { rod: true }) }),
 
+      Q(md`A long, thin cylindrical shell of radius $R$ carries uniform surface charge $\sigma$ (cross-section shown). What is the field inside it, at $s<R$?`,
+        [md`$0$`, md`$\dfrac{\sigma}{2\ep}$`, md`$\dfrac{\sigma R}{\ep s}$`, md`$\dfrac{\sigma}{\ep}$`], 0,
+        [null, md`That is the infinite-plane value. Inside the shell a coaxial Gaussian cylinder encloses nothing.`, md`That is the field **outside** ($s>R$): $E\cdot2\pi sl=\sigma\,2\pi Rl/\ep$.`, md`That is the value just outside the shell, at $s=R$.`],
+        md`A coaxial Gaussian cylinder with $s<R$ encloses no charge, and symmetry makes $E$ the same over its curved side, so $E=0$. Outside, $E=\dfrac{\sigma R}{\ep s}$. At $s=R$ the field jumps from $0$ to $\sigma/\ep$: the boundary condition again. This is the cylindrical twin of the spherical shell.`,
+        { figHtml: figShell() }),
+
       P({
         title: 'A cylinder with $\\rho=ks$',
         q: md`A long cylinder of radius $R$ carries a charge density proportional to the distance from its axis, $\rho=ks$ (Griffiths Ex. 2.4). Find the field inside and outside.`,
@@ -2316,6 +2382,12 @@ for n in (4, 5):
         },
       }),
 
+      Q(md`Why is the field outside the neutral coaxial cable zero, even though it contains charges?`,
+        [md`The outer shell is a conductor and blocks the field`, md`Any Gaussian cylinder outside encloses zero net charge, and by symmetry $E$ is the same all over its curved side, so $E\cdot2\pi sl=0$`, md`The field is not zero, only very weak`, md`The charges cancel only far away; near the cable the field is nonzero`], 1,
+        [md`Nothing in the problem is a conductor; the result follows from Gauss's law and symmetry alone.`, null, md`Gauss's law with $\Qenc=0$ and cylindrical symmetry gives exactly zero.`, md`The cancellation is exact at every $s>b$, not only far away.`],
+        md`Zero flux alone would not imply zero field. It is zero flux **plus** symmetry ($\vb E=E(s)\uv s$, same size on the whole curved side) that forces $E=0$. A neutral but lopsided object would still have a field outside.`,
+        { figHtml: figCoax() }),
+
       RF(md`
         ### The infinite plane: a pillbox
         An infinite plane carries uniform surface charge $\sigma$. By symmetry $\vb E$ is normal to the plane, points away from it on both sides (for $\sigma>0$), and has the same size at equal distances above and below. Use a **pillbox**: a short cylinder that straddles the plane, with lids of area $A$ parallel to it.
@@ -2345,6 +2417,12 @@ for n in (4, 5):
         [md`$E^\perp_{\text{below}}$ is $+2E_0$ (it points along $+\uv n$), so you subtract it.`, md`No factor of $1/2$: the jump itself is $\sigma/\ep$.`, md`The field above is larger in the $+\uv n$ direction, so $\sigma$ is positive.`, null],
         md`$\sigma=\ep\left(E^\perp_{\text{above}}-E^\perp_{\text{below}}\right)=\ep(5E_0-2E_0)=3\ep E_0$. Of the fields, $\pm\tfrac32E_0$ is the surface's own contribution; the remaining $\tfrac72E_0$ (the same on both sides) comes from other charges.`,
         { figHtml: figSheetBC({ above: 1.25, below: 0.5, la: md`5E_0`, lb: md`2E_0` }) }),
+
+      Q(md`A charged sheet ($\sigma>0$) sits in an external uniform field $E_0$ along its normal $\uv n$. Just above, the total normal field is $E_0+\sigma/2\ep$. What is it just below?`,
+        [md`$E_0+\sigma/2\ep$`, md`$E_0-\sigma/2\ep$`, md`$-E_0-\sigma/2\ep$`, md`$E_0$`], 1,
+        [md`The sheet's own field reverses across it: $+\sigma/2\ep$ above, $-\sigma/2\ep$ below.`, null, md`The external field does not reverse; only the sheet's own contribution does.`, md`The sheet still contributes below it.`],
+        md`Superpose: the external field is $E_0$ on both sides; the sheet adds $+\sigma/2\ep$ above and $-\sigma/2\ep$ below. The difference is still $\sigma/\ep$: the jump in $E^\perp$ depends only on the local surface charge, never on outside sources.`,
+        { figHtml: figSheetBC({ above: 1.4, below: 0, la: md`E_0+\sigma/2\varepsilon_0`, lb: md`?` }) }),
 
       Q(md`On a pillbox that straddles a charged plane, why is it safe to say the curved side carries no flux?`,
         [md`Because the side is short`, md`Because $\vb E$ is perpendicular to the plane, so it is parallel to the side: $\vb E\cdot d\vb a=0$ there`, md`Because there is no field at the plane`, md`Because the flux through the side cancels the lids`], 1,
@@ -2445,7 +2523,415 @@ for n in (4, 5):
     ],
   };
 
-  const LESSONS = [L1, L2, L3, L4, L5, L6];
+  // =====================================================================================
+  // Lesson 7 — Gauss's law in differential form (Lecture 2 p5–8, Lecture 3 p1, p3; Griffiths 2.2.1–2.2.2)
+  // =====================================================================================
+  const L7 = {
+    id: 'u1-div', title: "Gauss's law in differential form",
+    steps: [
+      RF(md`
+        ### From the integral form to a local law
+        The divergence theorem turns a flux through a closed surface into a volume integral over the region it bounds:
+
+        $$\oint_S\vb v\cdot d\vb a=\int_V(\divg\vb v)\,d\tau .$$
+
+        Apply it to Gauss's law:
+
+        $$\oint_S\vb E\cdot d\vb a=\int_V(\divg\vb E)\,d\tau=\dfrac{\Qenc}{\ep}.$$
+
+        Lecture 2 then asks how the enclosed charge is related to the charge density. Answer that first.
+      `),
+
+      Q(md`In-class question: how is the total charge inside a volume $V$ related to the charge density?`,
+        [md`$\Qenc=\rho V$ always`, md`$\Qenc=\displaystyle\int_V\rho\,d\tau$`, md`$\Qenc=\displaystyle\oint_S\rho\,da$`, md`$\Qenc=\ep\displaystyle\int_V\rho\,d\tau$`], 1,
+        [md`Only if $\rho$ is uniform. In general you add up $\rho\,d\tau$ over the volume.`, null, md`$\rho$ is charge per volume; integrating it over a surface does not give a charge.`, md`$\ep$ appears in Gauss's law, not in the definition of charge density.`],
+        md`$\rho$ is charge per unit volume, so the charge in $V$ is $\int_V\rho\,d\tau$. Then $\displaystyle\int_V(\divg\vb E)\,d\tau=\int_V\dfrac{\rho}{\ep}\,d\tau$. (The notes drop the $1/\ep$ on the right in this line and restore it in the next.)`,
+        { nofig: 'definition of charge density, no geometry' }),
+
+      RF(md`
+        So for **every** volume $V$,
+
+        $$\int_V\left(\divg\vb E-\dfrac{\rho}{\ep}\right)d\tau=0 .$$
+
+        The volume was arbitrary (the notes: “we did not specify”). If the bracket were nonzero at some point, a tiny volume around that point would make the integral nonzero. So the bracket vanishes everywhere:
+
+        $$\boxed{\ \divg\vb E=\dfrac{\rho}{\ep}\ }\qquad\text{(Gauss's law, differential form)}$$
+
+        - It is **local**: it relates the field near a point to the charge density **at that point**.
+        - It still holds when $\vb E$ and $\rho$ depend on time. It is one of Maxwell's equations.
+        - Used backwards it tells you which charge density produced a given field: $\rho=\ep\,\divg\vb E$.
+      `),
+
+      Q(md`The step from $\displaystyle\int_V\left(\divg\vb E-\rho/\ep\right)d\tau=0$ to $\divg\vb E=\rho/\ep$ is valid because`,
+        [md`the integrand is positive`, md`the integral of anything over a closed surface is zero`, md`$\divg\vb E$ is constant`, md`the equation holds for every volume, including arbitrarily small ones around any point`], 3,
+        [md`The integrand can have either sign; positivity is not the argument.`, md`This is a volume integral, and closed-surface integrals are not zero in general (that is the whole point of Gauss's law).`, md`Neither side needs to be constant.`, null],
+        md`For one particular volume, an integral can vanish with the integrand positive in one place and negative in another. For **all** volumes, including a tiny ball around any chosen point, the integrand itself must be zero everywhere. The same argument turns every integral law into a differential one.`,
+        { nofig: 'logic of the derivation, no geometry' }),
+
+      RF(md`
+        ### The divergence of $\srh/\srm^2$ and the point charge
+        Lecture 2 quotes a “useful divergence” (worked out in the vector-calculus unit):
+
+        $$\divg\left(\dfrac{\srh}{\srm^2}\right)=4\pi\,\delta^3(\sr),\qquad \delta^3(\sr)=\delta(x-x')\,\delta(y-y')\,\delta(z-z').$$
+
+        Here $\sr=\vb r-\vb r'$ and $\nabla$ acts on $\vb r$, the field point, not on $\vb r'$. Away from $\vb r'$ the field $\srh/\srm^2$ has zero divergence (the spherical formula gives $\dfrac{1}{r^2}\dfrac{\partial}{\partial r}\left(r^2\cdot\dfrac{1}{r^2}\right)=0$). But its flux through any sphere around $\vb r'$ is $4\pi$, so all of that divergence sits at the single point $\vb r'$: a delta function.
+
+        **Lecture example: the charge density of a point charge at the origin.** With $\vb E=\dfrac{q}{4\pi\ep}\dfrac{\uv r}{r^2}$,
+
+        $$\rho(\vb r)=\ep\,\divg\vb E=\dfrac{\ep q}{4\pi\ep}\,\divg\left(\dfrac{\uv r}{r^2}\right)=\dfrac{q}{4\pi}\cdot4\pi\,\delta^3(\vb r)=q\,\delta^3(\vb r).$$
+
+        Infinite at the charge, zero everywhere else, and $\int q\,\delta^3(\vb r)\,d\tau=q$. “Point charges are a useful tool but make no sense in real life.”
+
+        **Lecture example: Gauss's law from Coulomb's law.** Take the divergence of the Coulomb integral; $\nabla$ goes inside because it acts on $\vb r$ only:
+
+        $$\divg\vb E=\dfrac{1}{4\pi\ep}\int d\tau'\,\rho(\vb r')\,\divg\left(\dfrac{\srh}{\srm^2}\right)=\dfrac{1}{4\pi\ep}\int d\tau'\,\rho(\vb r')\,4\pi\,\delta^3(\vb r-\vb r')=\dfrac{\rho(\vb r)}{\ep}.$$
+
+        So Gauss's law is not a new assumption: it follows from Coulomb's law and superposition. (In this line the notes write $\nabla\cdot(\sr/\srm^2)$ without the hat; it should be $\srh/\srm^2$.)
+      `),
+
+      WG.fields({ f: 'radial' }),
+
+      Q(md`The spherical divergence formula gives $\divg(\uv r/r^2)=0$ for $r\neq0$, yet the flux of $\uv r/r^2$ through a sphere of any radius is $4\pi$. How do these fit together?`,
+        [md`The divergence is a delta function at the origin, $4\pi\delta^3(\vb r)$: zero everywhere except at $r=0$, where all the flux originates`, md`The divergence theorem fails for this field`, md`The formula is wrong; the divergence is $1/r^3$`, md`The flux is actually zero`], 0,
+        [null, md`The divergence theorem holds once you include the delta function; it is exactly what demands it.`, md`The formula is correct for $r\ne0$.`, md`$\oint\dfrac{\uv r}{r^2}\cdot r^2\sin\theta\,d\theta\,d\varphi\,\uv r=4\pi$.`],
+        md`$\int_V\divg\left(\dfrac{\uv r}{r^2}\right)d\tau$ over a ball must equal the flux $4\pi$. A function that is zero for $r\ne0$ but integrates to $4\pi$ is $4\pi\delta^3(\vb r)$. Physically: all the field lines start at the point charge.`,
+        { figHtml: figRadial('+') }),
+
+      Q(md`What are the units of $\delta^3(\vb r)$?`,
+        [md`Dimensionless`, md`$\text{m}^{-1}$`, md`$\text{m}^{-3}$`, md`$\text{m}^{3}$`], 2,
+        [md`$\int\delta^3(\vb r)\,d\tau=1$ is dimensionless and $d\tau$ is a volume, so $\delta^3$ must carry 1/volume.`, md`That is the one-dimensional $\delta(x)$.`, null, md`Inverse: it must cancel the $d\tau$.`],
+        md`$\int\delta^3(\vb r)\,d\tau=1$, so $\delta^3$ has units of 1/volume. Then $q\,\delta^3(\vb r)$ has units of charge per volume, a charge density, as it should.`,
+        { nofig: 'units only' }),
+
+      Q(md`What is $\displaystyle\int_V q\,\delta^3(\vb r-\vb a)\,d\tau$ when $V$ is a ball of radius $1$ centred at the origin and $|\vb a|=2$?`,
+        [md`$q$`, md`$q/2$`, md`$4\pi q$`, md`$0$`], 3,
+        [md`The delta function picks up $q$ only if its spike, at $\vb a$, is inside $V$.`, md`Half would be the answer if $\vb a$ were on the surface of the ball.`, md`The $4\pi$ belongs to $\divg(\srh/\srm^2)$, not to $\delta^3$ itself.`, null],
+        md`$q\,\delta^3(\vb r-\vb a)$ is a point charge at $\vb a$. The ball of radius 1 does not contain $\vb a$ ($|\vb a|=2$), so it encloses no charge: $0$.`,
+        { nofig: 'delta-function sifting, no geometry beyond the statement' }),
+
+      RF(md`
+        ### Finding $\rho$ from $\vb E$
+        $\rho=\ep\,\divg\vb E$. Use the divergence in the coordinates the field is written in (all three are on the formula sheet):
+
+        $$\divg\vb E=\dfrac{1}{r^2}\dfrac{\partial}{\partial r}\left(r^2E_r\right)+\dfrac{1}{r\sin\theta}\dfrac{\partial}{\partial\theta}\left(\sin\theta E_\theta\right)+\dfrac{1}{r\sin\theta}\dfrac{\partial E_\varphi}{\partial\varphi}\quad\text{(spherical)}$$
+
+        $$\divg\vb E=\dfrac{1}{s}\dfrac{\partial}{\partial s}\left(sE_s\right)+\dfrac{1}{s}\dfrac{\partial E_\varphi}{\partial\varphi}+\dfrac{\partial E_z}{\partial z}\quad\text{(cylindrical)}$$
+
+        !!method Charge density from a field
+          1. Pick the formula that matches the components you are given ($E_r$: spherical; $E_s$: cylindrical).
+          2. Keep the weights: $r^2$ inside the derivative in spherical, $s$ in cylindrical. Dropping them is the most common error.
+          3. Look for points where the formula breaks (usually $r=0$ or $s=0$). A field like $1/r^2$ hides a point charge there.
+          4. Check: the charge from $\int\rho\,d\tau$ must equal $\ep\times$ the flux of $\vb E$ through the boundary.
+      `),
+
+      P({
+        id: 'HW1-2.9', src: 'HW 1 · Griffiths 2.9', title: 'Charge density from a field', big: true,
+        q: md`Suppose the electric field in some region is found to be $\vb E=kr^3\,\uv r$, in spherical coordinates ($k$ is some constant).
+
+        (a) Find the charge density $\rho$.
+
+        (b) Find the total charge contained in a sphere of radius $R$, centered at the origin. (Do it two different ways.)`,
+        figHtml: figGrow(),
+        hints: [
+          md`(a) Differential Gauss's law: $\rho=\ep\,\divg\vb E$. Only $E_r$ is nonzero, so only the first term of the spherical divergence survives.`,
+          md`$\dfrac{1}{r^2}\dfrac{d}{dr}\left(r^2\cdot kr^3\right)=\dfrac{1}{r^2}\dfrac{d}{dr}\left(kr^5\right)$.`,
+          md`(b) Way 1: integrate $\rho$ over the ball with $d\tau=4\pi r^2\,dr$. Way 2: integral Gauss's law, $Q=\ep\oint\vb E\cdot d\vb a$ over the sphere $r=R$.`,
+        ],
+        parts: [
+          { lbl: md`(a) $\rho(r)$`, expr: '5*eps0*k*r^2', vars: { eps0: [0.5, 2], k: [1, 3], r: [0.2, 2] } },
+          { lbl: md`(b) Total charge in the sphere of radius $R$`, expr: '4*pi*eps0*k*R^5', vars: { eps0: [0.5, 2], k: [1, 3], R: [0.5, 2] } },
+          { lbl: md`The two ways in (b) are`, mc: [md`$\int\rho\,d\tau$ over the ball, and $\ep$ times the flux of $\vb E$ through the sphere $r=R$`, md`$\rho\times\tfrac43\pi R^3$, and $\int\rho\,d\tau$`, md`The flux through the sphere, and the flux through a cube around it`, md`Coulomb's law, and the divergence theorem applied to $\rho$`], a: 0,
+            why: [null, md`$\rho$ is not uniform here ($\propto r^2$), so $\rho\times$volume is wrong.`, md`Both are the same method (integral Gauss's law); and the cube flux is harder to compute.`, md`The divergence theorem applies to a vector field ($\vb E$), not to the scalar $\rho$.`] },
+        ],
+        sol: md`
+          **(a)** Only $E_r=kr^3$ is nonzero, so
+          $$\rho=\ep\,\divg\vb E=\ep\,\dfrac{1}{r^2}\dfrac{d}{dr}\left(r^2\,kr^3\right)=\ep\,\dfrac{1}{r^2}\,5kr^4=5\ep k\,r^2 .$$
+
+          [[fig:s]]
+
+          **(b), way 1: integrate the density.** Thin spherical shells, $d\tau=4\pi r^2\,dr$:
+          $$Q=\int_0^R5\ep kr^2\cdot4\pi r^2\,dr=20\pi\ep k\int_0^Rr^4\,dr=4\pi\ep kR^5 .$$
+
+          **(b), way 2: Gauss's law in integral form.** On the sphere $r=R$, $\vb E=kR^3\,\uv r$ is normal with constant size:
+          $$Q=\ep\oint\vb E\cdot d\vb a=\ep\,kR^3\cdot4\pi R^2=4\pi\ep kR^5 .$$
+
+          The two agree, as the divergence theorem guarantees.
+
+          **Checks.** Units: $\vb E$ has units of $k\cdot\text{m}^3$, so $k$ has units of $\text{V/m}^4$; then $\ep kR^5$ is $\ep\times(\text{V/m})\times\text{m}^2$, a charge. Good. Note the weight: $\divg(kr^3\uv r)$ is $5kr^2$, not the “naive” $3kr^2$ you get by differentiating $kr^3$ alone.
+
+          **What to remember.** $\rho=\ep\,\divg\vb E$ with the $r^2$ weight. To get a total charge you can integrate $\rho$ or, faster, take the flux of $\vb E$ through the boundary.
+        `,
+        figs: { s: { svg: figGrow(), cap: md`$\vb E=kr^3\uv r$: radial, growing with $r$. The sphere of radius $R$ is used in part (b).` } },
+      }),
+
+      Q(md`In spherical coordinates, $\vb E=c\,\vb r=cr\,\uv r$ (with $c$ constant). What charge density produces it?`,
+        [md`$\rho=\ep c$`, md`$\rho=2\ep c$`, md`$\rho=3\ep c$`, md`$\rho=0$`], 2,
+        [md`$\dfrac{d}{dr}(cr)=c$ drops the $r^2$ weight. Use $\dfrac{1}{r^2}\dfrac{d}{dr}(r^2\cdot cr)$.`, md`That is the cylindrical result for $\vb E=cs\,\uv s$.`, null, md`The field grows with $r$, so there must be charge.`],
+        md`$\dfrac{1}{r^2}\dfrac{d}{dr}(cr^3)=3c$, so $\rho=3\ep c$, uniform. This is the inside of a uniform ball: $\vb E=\dfrac{\rho}{3\ep}\vb r$ from Lesson 5, run backwards.`,
+        { nofig: 'the field is given as a formula' }),
+
+      Q(md`In cylindrical coordinates, $\vb E=c\,s\,\uv s$. What is $\rho$?`,
+        [md`$2\ep c$`, md`$3\ep c$`, md`$\ep c$`, md`$\ep c/s$`], 0,
+        [null, md`$3\ep c$ is the spherical answer. In cylindrical coordinates the weight is $s$, not $s^2$.`, md`That forgets the $s$ weight: use $\dfrac1s\dfrac{d}{ds}(s\cdot cs)$.`, md`$\dfrac1s\dfrac{d}{ds}(cs^2)=2c$, which is constant.`],
+        md`$\divg\vb E=\dfrac1s\dfrac{d}{ds}(s\cdot cs)=\dfrac1s\cdot2cs=2c$, so $\rho=2\ep c$: a uniformly charged long cylinder, whose inside field is $\dfrac{\rho s}{2\ep}$ (the coaxial-cable region (i)).`,
+        { nofig: 'the field is given as a formula' }),
+
+      Q(md`$\vb E=\dfrac{A}{r^2}\,\uv r$ everywhere (with $A$ a constant). Where is the charge, and how much?`,
+        [md`Spread uniformly: $\rho=\ep A$`, md`$\rho=-2\ep A/r^3$ everywhere`, md`There is no charge anywhere`, md`Only at the origin: a point charge $q=4\pi\ep A$`], 3,
+        [md`The divergence of $A\uv r/r^2$ vanishes away from the origin.`, md`That comes from differentiating $A/r^2$ without the $r^2$ weight.`, md`The flux through any sphere is $4\pi A$, so something is inside.`, null],
+        md`For $r\ne0$, $\dfrac{1}{r^2}\dfrac{d}{dr}\left(r^2\dfrac{A}{r^2}\right)=0$. But the flux through any sphere is $4\pi A$, so $\rho=\ep A\cdot4\pi\delta^3(\vb r)$: a point charge $q=4\pi\ep A$ at the origin. Step 3 of the method: check where the formula breaks.`,
+        { figHtml: figRadial('+') }),
+
+      P({
+        title: 'Read off the charge',
+        q: md`A field is $\vb E=E_0\dfrac{r^2}{R^2}\,\uv r$ for $r\le R$ and $\vb E=E_0\dfrac{R^2}{r^2}\,\uv r$ for $r\ge R$. Find the charge density inside and outside, and the total charge.`,
+        figHtml: figSolid(false, md`?`),
+        hints: [md`$\rho=\ep\dfrac{1}{r^2}\dfrac{d}{dr}(r^2E_r)$ in each region.`, md`Inside: $\dfrac{1}{r^2}\dfrac{d}{dr}\left(\dfrac{E_0r^4}{R^2}\right)$. Outside: $\dfrac{1}{r^2}\dfrac{d}{dr}(E_0R^2)$.`, md`Total charge two ways: $\int\rho\,d\tau$ over the inside, or $\ep\times$ the flux through any sphere with $r\ge R$.`],
+        parts: [
+          { lbl: md`$\rho$ inside ($r<R$)`, expr: '4*eps0*E0*r/R^2', vars: { eps0: [0.5, 2], E0: [1, 3], r: [0.1, 0.9], R: [1, 2] } },
+          { lbl: md`$\rho$ outside ($r>R$):`, mc: [md`$\ep E_0R^2/r^4$`, md`$-2\ep E_0R^2/r^3$`, md`$0$`, md`$4\ep E_0/R$`], a: 2,
+            why: [md`Differentiate $r^2E_r=E_0R^2$, a constant: the derivative is zero.`, md`That drops the $r^2$ weight.`, null, md`That is the inside value at $r=R$; outside, the field is a pure point-charge field.`] },
+          { lbl: md`Total charge`, expr: '4*pi*eps0*E0*R^2', vars: { eps0: [0.5, 2], E0: [1, 3], R: [0.5, 2] } },
+        ],
+        sol: md`
+          **Inside.** $r^2E_r=E_0r^4/R^2$, so $\rho=\ep\dfrac{1}{r^2}\cdot\dfrac{4E_0r^3}{R^2}=\dfrac{4\ep E_0\,r}{R^2}$: the density grows linearly with $r$ (like the $\rho=kr$ ball, with $k=4\ep E_0/R^2$).
+
+          **Outside.** $r^2E_r=E_0R^2$ is constant, so $\rho=0$: empty space, point-charge-like field.
+
+          **Total charge.** Flux through a sphere of radius $r\ge R$: $Q=\ep\,E_0\dfrac{R^2}{r^2}\,4\pi r^2=4\pi\ep E_0R^2$. Check by integrating: $\displaystyle\int_0^R\dfrac{4\ep E_0r}{R^2}\,4\pi r^2\,dr=\dfrac{16\pi\ep E_0}{R^2}\cdot\dfrac{R^4}{4}=4\pi\ep E_0R^2$. Good.
+
+          **What to remember.** Continuous $\vb E$ at $r=R$ means no surface charge there; a kink in $E_r(r)$ just means $\rho$ changes.
+        `,
+      }),
+
+      RF(md`
+        ### Divergence is local (Lecture 3)
+        “It's important to remember we are considering the charge density at a fixed point.” Between the plates of a parallel-plate capacitor the field is uniform, $\vb E=\dfrac{\sigma}{\ep}\uv z$:
+
+        [[fig:s]]
+
+        $$\divg\vb E=\divg\left(\dfrac{\sigma}{\ep}\,\uv z\right)=0\quad\Longrightarrow\quad\text{no charge density in the region between the plates.}$$
+
+        (The notes write $\divg\dfrac{\sigma}{\ep}$, the divergence of a scalar; it means the divergence of the uniform field $\dfrac{\sigma}{\ep}\uv z$.) A nonzero field does not need charge at that point; it needs charge somewhere. At a plate the field jumps from $0$ to $\sigma/\ep$ over zero distance, so $\divg\vb E\neq0$ there: “telling me that there is a charged object”. In fact $E_z$ jumps by $\sigma/\ep$, so $\partial E_z/\partial z=(\sigma/\ep)\,\delta(z-z_0)$ and $\rho=\sigma\,\delta(z-z_0)$: a sheet of charge, written as a volume density. That is the boundary condition $E^\perp_{\text{above}}-E^\perp_{\text{below}}=\sigma/\ep$ again, in differential form.
+      `, { s: { svg: figCapacitor({ box: true }), cap: md`Parallel plates with $\pm Q$. Between them $\vb E$ is uniform; a small box there has as much flux in as out.` } }),
+
+      Q(md`Between the capacitor plates $\vb E\ne0$. Is there charge between the plates?`,
+        [md`Yes, because there is a field there`, md`Yes, a uniform density $\ep\sigma$`, md`Only near the plates`, md`No: the field is uniform, so $\divg\vb E=0$ and $\rho=0$ there`], 3,
+        [md`A field at a point does not require charge at that point. The divergence, not the field, measures local charge.`, md`$\divg$ of a uniform field is zero.`, md`The field is uniform all the way across, so the divergence is zero right up to the plate surfaces.`, null],
+        md`$\rho$ at a point is $\ep\,\divg\vb E$ at that point. A uniform field has zero divergence. The charge that makes the field sits on the plates.`,
+        { figHtml: figCapacitor({ point: true }) }),
+
+      Q(md`What is the net flux of $\vb E$ out of the small box between the plates?`,
+        [md`$EA$, where $A$ is a face area`, md`$2EA$`, md`$\sigma A/\ep$`, md`Zero: as much flux enters through the left face as leaves through the right face`], 3,
+        [md`That is only the outgoing face.`, md`The left face has inward flux, which counts as negative.`, md`That would need charge $\sigma A$ inside the box, but the box is in empty space.`, null],
+        md`Uniform field: $-EA$ through the left face, $+EA$ through the right face, $0$ through the other four. Net zero, consistent with $\Qenc=0$ and with $\divg\vb E=0$.`,
+        { figHtml: figCapacitor({ box: true }) }),
+
+      Q(md`At the surface of the $+Q$ plate itself, what is $\divg\vb E$?`,
+        [md`Zero, as in the gap`, md`$\sigma/\ep$`, md`It is not defined, so it does not mean anything`, md`It is infinite: a delta function, $\divg\vb E=\dfrac{\sigma}{\ep}\,\delta(z-z_0)$, because the plate carries a surface charge`], 3,
+        [md`$E_z$ jumps there, so its derivative is not zero.`, md`$\sigma/\ep$ is the size of the jump in $E_z$, not the divergence. A jump over zero distance gives a delta function.`, md`It is a delta function; integrated across the plate it gives the jump $\sigma/\ep$.`, null],
+        md`$E_z$ goes from $0$ (outside) to $\sigma/\ep$ (inside) across the plate. The derivative of a step is a delta function, so $\divg\vb E=(\sigma/\ep)\,\delta(z-z_0)$ and $\rho=\sigma\,\delta(z-z_0)$. The differential form “sees” the charged plate exactly where it is.`,
+        { figHtml: figCapacitor() }),
+
+      Q(md`$\vb E=k\,x\,\uv x$ in some region (Cartesian; $k$ constant). Is there charge in that region?`,
+        [md`Yes, a uniform density $\rho=\ep k$`, md`No, because the field points along a fixed direction`, md`Yes, $\rho=\ep kx$`, md`Only where $x=0$`], 0,
+        [null, md`A field in a fixed direction can still have divergence if its size changes along that direction.`, md`$\partial(kx)/\partial x=k$, not $kx$.`, md`The divergence is $k$ everywhere, not only at $x=0$.`],
+        md`$\divg\vb E=\dfrac{\partial(kx)}{\partial x}=k$, so $\rho=\ep k$ everywhere. More field lines leave each small box than enter it, because the field is stronger on the far side. Compare the capacitor gap: same direction everywhere, but constant size, so no charge.`,
+        { nofig: 'formula only; the field is given' }),
+
+      RF(md`
+        !!key Patterns to remember
+          - $\divg\vb E=\rho/\ep$: divergence theorem + “for every volume”. Local; also valid for time-dependent fields.
+          - $\divg(\srh/\srm^2)=4\pi\delta^3(\sr)$, with $\nabla$ acting on $\vb r$. A point charge has $\rho=q\,\delta^3(\vb r-\vb r')$.
+          - $\rho=\ep\,\divg\vb E$ with the weights: $\dfrac{1}{r^2}\partial_r(r^2E_r)$, $\dfrac1s\partial_s(sE_s)$. Watch $r=0$ for hidden point charges.
+          - Total charge two ways: $\int\rho\,d\tau$ or $\ep\oint\vb E\cdot d\vb a$.
+          - $\vb E\ne0$ does not imply $\rho\ne0$ (capacitor gap, overlap of $\pm\rho$ spheres). A jump in $E^\perp$ is a surface charge: $\rho=\sigma\,\delta$.
+      `),
+    ],
+  };
+
+  // =====================================================================================
+  // Lesson 8 — The curl of E (Lecture 3 p3–5; Griffiths 2.2.4)
+  // =====================================================================================
+  const L8 = {
+    id: 'u1-curl', title: 'The curl of E',
+    steps: [
+      RF(md`
+        ### Stokes' theorem and the curl
+        Lecture 3 turns from the divergence (sources) to the curl (circulation), starting from Stokes' theorem:
+
+        $$\int_S(\curl\vb v)\cdot d\vb a=\oint_P\vb v\cdot d\vb l .$$
+
+        [[fig:s]]
+
+        On the left, a flux integral over an **open** surface $S$; on the right, a line integral around the **closed** path $P$ that bounds it. (The notes say “surface integral over an open boundary”; it is an open surface, and its boundary is the closed path.) The direction around $P$ and the direction of $d\vb a$ are tied by the right-hand rule. Any surface with the same boundary gives the same answer.
+
+        The curl itself, in Cartesian components:
+
+        $$\curl\vb v=\begin{vmatrix}\uv x&\uv y&\uv z\\ \partial_x&\partial_y&\partial_z\\ v_x&v_y&v_z\end{vmatrix}=\left(\partial_yv_z-\partial_zv_y\right)\uv x+\left(\partial_zv_x-\partial_xv_z\right)\uv y+\left(\partial_xv_y-\partial_yv_x\right)\uv z .$$
+
+        “The curl measures the degree to which the field rotates or circulates.” Picture a tiny paddle wheel in the field: if it spins, the curl is nonzero.
+      `, { s: { svg: figStokes(), cap: md`An open surface $S$ (tinted) and its closed boundary $P$. The arrows on $P$ and the normal $d\vb a$ follow the right-hand rule.` } }),
+
+      Q(md`In Stokes' theorem, $\displaystyle\int_S(\curl\vb v)\cdot d\vb a=\oint_P\vb v\cdot d\vb l$, what are $S$ and $P$?`,
+        [md`$S$ is a closed surface and $P$ is any path on it`, md`$S$ is an open surface and $P$ is its closed boundary`, md`$S$ is a volume and $P$ its surface`, md`$S$ and $P$ are unrelated; any surface and any loop work`], 1,
+        [md`A closed surface has no boundary. That is the setting of the divergence theorem, not Stokes'.`, null, md`Volume and surface is the divergence theorem.`, md`$P$ must be the boundary of $S$.`],
+        md`Stokes: flux of the curl through an open surface = circulation around the edge of that surface. Divergence theorem: integral of the divergence over a volume = flux through its closed boundary surface. Same pattern, one dimension down.`,
+        { figHtml: figStokes() }),
+
+      Q(md`You want $\oint_P\vb v\cdot d\vb l$ for a given loop $P$ and you know $\curl\vb v$. Which surface may you integrate the curl over?`,
+        [md`Only the flat surface spanning $P$`, md`Only a hemisphere-like surface`, md`Any surface whose boundary is $P$; all give the same flux of $\curl\vb v$`, md`A closed surface containing $P$`], 2,
+        [md`The flat one is often the easiest, but any surface bounded by $P$ gives the same result.`, md`Any surface bounded by $P$ works.`, null, md`A closed surface has no boundary, so its curl flux is always zero.`],
+        md`The right-hand side depends only on the loop, so the flux of $\curl\vb v$ is the same through every surface with that boundary. Pick the one that makes the integral easy.`,
+        { figHtml: figStokes() }),
+
+      RF(md`
+        ### The curl of a point charge's field
+        In-class example: what is $\curl\vb E$ for a point charge? Use the spherical curl (formula sheet) with
+
+        $$\vb E=\dfrac{1}{4\pi\ep}\dfrac{q}{r^2}\,\uv r,\qquad E_\theta=0,\quad E_\varphi=0 .$$
+
+        $$\curl\vb E=\dfrac{1}{r\sin\theta}\left[\dfrac{\partial}{\partial\theta}(\sin\theta\,E_\varphi)-\dfrac{\partial E_\theta}{\partial\varphi}\right]\uv r+\dfrac1r\left[\dfrac{1}{\sin\theta}\dfrac{\partial E_r}{\partial\varphi}-\dfrac{\partial}{\partial r}(rE_\varphi)\right]\uv\theta+\dfrac1r\left[\dfrac{\partial}{\partial r}(rE_\theta)-\dfrac{\partial E_r}{\partial\theta}\right]\uv\varphi .$$
+
+        Every term contains either $E_\theta$ or $E_\varphi$ (both zero) or an angular derivative of $E_r$ (zero, because $E_r$ depends only on $r$). So $\curl\vb E=0$. (In the last line of the notes the $\uv\theta$ term has lost its $1/r$; harmless, it is zero anyway.)
+
+        The widget shows the difference between a radial field (no curl) and a swirling one (curl).
+      `),
+
+      WG.fields({ f: 'swirl' }),
+
+      Q(md`For a point charge's field, why does every term of the spherical curl vanish?`,
+        [md`Because $E_r$ is zero`, md`Because $\vb E$ falls off as $1/r^2$`, md`Because of the $\sin\theta$ factors`, md`$E_\theta=E_\varphi=0$, and $E_r$ depends only on $r$, so its $\theta$ and $\varphi$ derivatives vanish`], 3,
+        [md`$E_r$ is the only nonzero component.`, md`The $1/r^2$ is not needed: any $E_r(r)$ alone has zero curl.`, md`The $\sin\theta$ factors are geometry; the zeros come from the components and derivatives.`, null],
+        md`The curl only involves the angular components and the angular derivatives of $E_r$. A purely radial field whose size depends only on $r$ has none of these. So any field of the form $f(r)\,\uv r$ is curl-free, not only $1/r^2$.`,
+        { figHtml: figRadial('+') }),
+
+      Q(md`Which of these fields could **not** be produced by any arrangement of static charges?`,
+        [md`$\vb E=k\,(-y\,\uv x+x\,\uv y)$, a swirl around the $z$ axis`, md`$\vb E=k\,r^3\,\uv r$`, md`$\vb E=k\,x\,\uv x$`, md`$\vb E=k\,\uv z$, uniform`], 0,
+        [null, md`Radial with size depending only on $r$: zero curl. (It is the field of Problem 2.9.)`, md`$\curl(kx\,\uv x)=0$: the only component depends only on its own coordinate.`, md`A uniform field has zero curl (a capacitor gap).`],
+        md`$\curl\left[k(-y,x,0)\right]=2k\,\uv z\ne0$. A paddle wheel would spin in it. Electrostatic fields always have zero curl, so no set of static charges can make this field. (A changing magnetic field can: that is Faraday's law, later in the course.)`,
+        { nofig: 'formula only; the swirl field is shown in the widget above' }),
+
+      RF(md`
+        ### Any static charge distribution
+        In-class question: what does this say about the curl of $\vb E$ for **any** static charge distribution, and how do you prove it?
+
+        By superposition, break the distribution into point charges. Each has a curl-free field, and the curl of a sum is the sum of the curls:
+
+        $$\curl\vb E=\curl\sum_{i=1}^{N}\vb E_{q_i}=\curl\vb E_{q_1}+\curl\vb E_{q_2}+\dots=0+0+\dots=0 .$$
+
+        Stokes' theorem then gives, for **every** closed loop,
+
+        $$\oint\vb E\cdot d\vb l=0 .$$
+
+        Griffiths' direct way to see it: for a point charge, $\vb E\cdot d\vb l$ only picks up the radial step $dr$, so $\displaystyle\int_a^b\vb E\cdot d\vb l=\dfrac{q}{4\pi\ep}\left(\dfrac{1}{r_a}-\dfrac{1}{r_b}\right)$ depends only on the endpoints. Around a closed loop $r_a=r_b$ and the integral is zero.
+
+        !!trap Only for static charges
+          The notes underline this: $\curl\vb E=0$ holds for **static** charge distributions. When magnetic fields change in time, $\curl\vb E=-\partial\vb B/\partial t$ (Faraday's law) and the loop integral is the EMF. Gauss's law, by contrast, holds in general.
+
+        !!key Why it matters
+          A curl-free field is the gradient of a scalar: the line integral of $\vb E$ is path independent, so $V(\vb r)=-\int_{\mathcal O}^{\vb r}\vb E\cdot d\vb l$ is well defined and $\vb E=-\nabla V$. That is the next unit. Also a boundary condition: around a thin rectangular loop straddling a surface, $\oint\vb E\cdot d\vb l=0$ forces the **tangential** component of $\vb E$ to be continuous across any surface, charged or not.
+      `),
+
+      Q(md`A closed path is made of two radial segments (1 and 3) and two arcs centred on a point charge $q$ (2 and 4). What is $\oint\vb E\cdot d\vb l$ around it, and why?`,
+        [md`Positive, because the path goes out along 1`, md`Zero: $\vb E\perp d\vb l$ on the arcs, and the two radial pieces cover the same range of $r$ in opposite directions`, md`It depends on the angle between the radial segments`, md`$q/\ep$, because the path is near the charge`], 1,
+        [md`Going out along 1 gives a positive contribution, but coming in along 3 gives exactly the opposite.`, null, md`The angle only changes the arc lengths, and the arcs contribute nothing.`, md`$q/\ep$ is a flux through a closed surface enclosing $q$. This is a line integral, and it vanishes.`],
+        md`On an arc, $d\vb l$ is along $\uv\theta$ or $\uv\varphi$, perpendicular to the radial $\vb E$: zero. Along 1 you go from $r_a$ to $r_b$, along 3 from $r_b$ back to $r_a$; $\vb E$ depends only on $r$, so the two cancel. Any loop can be approximated by such radial steps and arcs, which is the whole proof.`,
+        { figHtml: figWedge() }),
+
+      Q(md`The closed loop $C$ now goes **around** the point charge. What is $\oint_C\vb E\cdot d\vb l$?`,
+        [md`$q/\ep$, since the loop encloses the charge`, md`$q/2\ep$`, md`It depends on the shape of the loop`, md`Zero, as for every closed loop in an electrostatic field`], 3,
+        [md`That is the flux through a closed surface. “Enclosing” a charge matters for Gauss's law, not for line integrals.`, md`No; line integrals of an electrostatic field around closed loops vanish.`, md`$\oint\vb E\cdot d\vb l=0$ for every loop, whatever its shape.`, null],
+        md`$\int_a^b\vb E\cdot d\vb l=\dfrac{q}{4\pi\ep}\left(\dfrac{1}{r_a}-\dfrac{1}{r_b}\right)$ depends only on the endpoints; for a closed loop they coincide. Do not mix up the two laws: Gauss's law counts flux through a closed **surface**; $\oint\vb E\cdot d\vb l$ is around a closed **curve**.`,
+        { figHtml: figLoopQ(true) }),
+
+      Q(md`(Griffiths 2.20.) One of these is an impossible electrostatic field ($k$ is a constant). Which one?`,
+        [md`$\vb E=k\left[y^2\,\uv x+(2xy+z^2)\,\uv y+2yz\,\uv z\right]$`, md`$\vb E=k\left[xy\,\uv x+2yz\,\uv y+3xz\,\uv z\right]$`, md`Both are possible`, md`Both are impossible`], 1,
+        [md`Its curl is zero: $\partial_yE_z-\partial_zE_y=2z-2z=0$, $\partial_zE_x-\partial_xE_z=0-0=0$, $\partial_xE_y-\partial_yE_x=2y-2y=0$.`, null, md`Compute the curl of the second one: $\partial_yE_z-\partial_zE_y=0-2y\ne0$.`, md`The first one has zero curl, so it can be electrostatic.`],
+        md`For $k(xy,\,2yz,\,3xz)$: $\curl\vb E=k\left(-2y,\,-3z,\,-x\right)\ne0$, impossible. For $k(y^2,\,2xy+z^2,\,2yz)$ the curl is zero, so it is a possible electrostatic field; in fact it is $-\nabla V$ with $V=-k(xy^2+yz^2)$.`,
+        { nofig: 'formula only' }),
+
+      Q(md`$\curl\vb E=0$ holds`,
+        [md`always, it is one of Maxwell's equations in this form`, md`only inside conductors`, md`only far from charges`, md`for static charge distributions; with time-varying magnetic fields $\curl\vb E=-\partial\vb B/\partial t$`], 3,
+        [md`Maxwell's equation is $\curl\vb E=-\partial\vb B/\partial t$; it reduces to zero only in statics.`, md`It holds everywhere in electrostatics, inside and outside matter.`, md`It holds everywhere in electrostatics, also at and near the charges.`, null],
+        md`The notes put it in blue and underline “static”. Contrast: $\divg\vb E=\rho/\ep$ survives in electrodynamics unchanged, $\curl\vb E=0$ does not.`,
+        { nofig: 'conceptual statement' }),
+
+      Q(md`Just above a charged surface the tangential component of $\vb E$ is $3E_0$ (pointing east). What is the tangential component just below?`,
+        [md`$3E_0$, pointing east: the tangential component is continuous`, md`$-3E_0$`, md`$3E_0+\sigma/\ep$`, md`It cannot be known without $\sigma$`], 0,
+        [null, md`Reversal happens to the **normal** component of a sheet's own field, not the tangential one.`, md`$\sigma/\ep$ is the jump of the normal component.`, md`The tangential component does not depend on $\sigma$ at all.`],
+        md`Take a thin rectangular loop straddling the surface, long sides parallel to it. $\oint\vb E\cdot d\vb l=0$ and the short sides shrink to nothing, so $E_\parallel^{\text{above}}\,\ell-E_\parallel^{\text{below}}\,\ell=0$. Together with the Gauss pillbox: $E^\perp$ jumps by $\sigma/\ep$, $E^\parallel$ is continuous.`,
+        { figHtml: figTanBC() }),
+
+      Q(md`The field $\vb E=\dfrac{k}{s}\,\uv\varphi$ circles a line (seen end on in the figure). Its curl is zero everywhere except on the line itself. Could it be an electrostatic field in the region around the line?`,
+        [md`Yes, because its curl is zero there`, md`Yes, if there is charge on the line`, md`No: around a loop that circles the line, $\oint\vb E\cdot d\vb l=2\pi k\ne0$`, md`It depends on the value of $k$`], 2,
+        [md`Zero curl in a region with a hole is not enough. Electrostatics needs $\oint\vb E\cdot d\vb l=0$ around every loop, including those that circle the line.`, md`Charge produces divergence, not circulation. No static charge makes a field that circulates.`, null, md`For any $k\ne0$ the loop integral is nonzero.`],
+        md`On a circle of radius $s$: $\oint\dfrac{k}{s}\,s\,d\varphi=2\pi k$. An electrostatic field must give zero for every closed loop, so this is not electrostatic. (It is the shape of the **magnetic** field of a wire.)`,
+        { figHtml: figVortex() }),
+
+      P({
+        title: 'Make it curl-free',
+        q: md`For which value of the constant $\alpha$ is $\vb E=k\left[(\alpha xy+z^3)\,\uv x+x^2\,\uv y+3xz^2\,\uv z\right]$ a possible electrostatic field?`,
+        nofig: 'the field is given as a formula',
+        hints: [md`Electrostatic means $\curl\vb E=0$. Compute all three components.`, md`$(\curl\vb E)_z=\partial_xE_y-\partial_yE_x=k(2x-\alpha x)$.`, md`Check the other two components: are they already zero?`],
+        parts: [
+          { lbl: md`$\alpha$`, ans: 2 },
+          { lbl: md`With that $\alpha$, $\oint\vb E\cdot d\vb l$ around the unit square in the $xy$ plane is`, mc: [md`$2k$`, md`$0$`, md`$k$`, md`It depends on the direction of travel`], a: 1,
+            why: [md`A curl-free field has zero circulation around every loop.`, null, md`A curl-free field has zero circulation around every loop.`, md`Reversing the direction flips the sign of zero, which is still zero.`] },
+        ],
+        sol: md`
+          $$(\curl\vb E)_x=\partial_yE_z-\partial_zE_y=0-0=0,$$
+          $$(\curl\vb E)_y=\partial_zE_x-\partial_xE_z=3kz^2-3kz^2=0,$$
+          $$(\curl\vb E)_z=\partial_xE_y-\partial_yE_x=2kx-\alpha kx .$$
+
+          The field is curl-free only for $\alpha=2$. Then $\vb E=-\nabla V$ with $V=-k(x^2y+xz^3)$ (check: $-\partial_xV=k(2xy+z^3)$, $-\partial_yV=kx^2$, $-\partial_zV=3kxz^2$), and every closed loop integral vanishes by Stokes' theorem.
+        `,
+      }),
+
+      P({
+        title: 'Circulation of a swirl',
+        q: md`For $\vb E=k\,(y\,\uv x-x\,\uv y)$, compute $\oint\vb E\cdot d\vb l$ around a circle of radius $R$ in the $xy$ plane, centred on the origin, traversed counterclockwise (seen from $+z$). Then check with Stokes' theorem.`,
+        figHtml: figSwirl(),
+        hints: [md`Parametrize: $\vb r=R(\cos\varphi,\sin\varphi,0)$, $d\vb l=R(-\sin\varphi,\cos\varphi,0)\,d\varphi$.`, md`On the circle $\vb E=kR(\sin\varphi,-\cos\varphi,0)$, so $\vb E\cdot d\vb l=-kR^2\,d\varphi$.`, md`Stokes: $\curl\vb E=-2k\,\uv z$, and the flat disk has area $\pi R^2$ with $d\vb a$ along $+\uv z$.`],
+        parts: [
+          { lbl: md`$\oint\vb E\cdot d\vb l$`, expr: '-2*pi*k*R^2', vars: { k: [1, 3], R: [0.5, 2] } },
+          { lbl: md`So this field`, mc: [md`is electrostatic, since it is smooth`, md`is electrostatic only if $k<0$`, md`cannot be electrostatic`, md`is electrostatic inside the circle only`], a: 2,
+            why: [md`Smoothness is not the test; zero circulation is.`, md`The sign of $k$ only flips the direction of the swirl.`, null, md`Its curl is $-2k\,\uv z$ everywhere, so it fails everywhere.`] },
+        ],
+        sol: md`
+          **Direct.** With $\vb r=R(\cos\varphi,\sin\varphi,0)$: $\vb E=kR(\sin\varphi,-\cos\varphi,0)$ and $d\vb l=R(-\sin\varphi,\cos\varphi,0)\,d\varphi$, so
+          $$\vb E\cdot d\vb l=kR^2(-\sin^2\varphi-\cos^2\varphi)\,d\varphi=-kR^2\,d\varphi,\qquad \oint\vb E\cdot d\vb l=-2\pi kR^2 .$$
+
+          **Stokes.** $\curl\vb E=\left(\partial_xE_y-\partial_yE_x\right)\uv z=(-k-k)\,\uv z=-2k\,\uv z$. Through the disk (counterclockwise loop, so $d\vb a$ along $+\uv z$): $-2k\cdot\pi R^2$. Same.
+
+          The field circulates (clockwise, seen from $+z$, for $k>0$), so its curl is nonzero and it cannot be an electrostatic field.
+        `,
+      }),
+
+      RF(md`
+        ### The unit in one picture
+        Four statements about the electrostatic field, all from Coulomb's law plus superposition:
+
+        | statement | form | use it when |
+        |---|---|---|
+        | Coulomb / superposition | $\vb E=\kq\displaystyle\int\dfrac{dq}{\srm^2}\srh$ | no symmetry for Gauss; points on a symmetry axis |
+        | Gauss, integral | $\oint\vb E\cdot d\vb a=\Qenc/\ep$ | spherical, cylindrical or planar symmetry (or sums of them) |
+        | Gauss, differential | $\divg\vb E=\rho/\ep$ | you are given $\vb E$ and need $\rho$ |
+        | curl-free | $\curl\vb E=0$, $\oint\vb E\cdot d\vb l=0$ | testing whether a field is electrostatic; it lets you define $V$ |
+
+        Boundary conditions at a charged surface follow from the last three: $E^\perp$ jumps by $\sigma/\ep$ (pillbox), $E^\parallel$ is continuous (thin loop).
+
+        !!key Patterns to remember
+          - Stokes: flux of the curl through an **open** surface = circulation around its **closed** boundary.
+          - Any $f(r)\,\uv r$ is curl-free. Every static field is curl-free (superposition of point charges).
+          - $\oint\vb E\cdot d\vb l=0$ for every loop, whether or not it circles a charge. Only static fields.
+          - Test a candidate field: compute $\curl\vb E$. Nonzero anywhere, or nonzero circulation around some loop, means not electrostatic.
+          - Curl-free $\Rightarrow$ path-independent line integrals $\Rightarrow$ a potential $V$ with $\vb E=-\nabla V$ (next unit).
+      `),
+    ],
+  };
+
+  const LESSONS = [L1, L2, L3, L4, L5, L6, L7, L8];
 
   C.unit({
     id: 'u1', num: 'Unit 1', title: "Electric field and Gauss's law",

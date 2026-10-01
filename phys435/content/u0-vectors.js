@@ -1204,7 +1204,7 @@
           md`The $\theta$ term is missing: $r\cos\theta$ changes with $\theta$.`,
           md`That is $\nabla r$.`, null],
         md`$\dfrac{\partial}{\partial r}(r\cos\theta) = \cos\theta$ and $\dfrac1r\dfrac{\partial}{\partial\theta}(r\cos\theta) = -\sin\theta$, so $\nabla(r\cos\theta) = \cos\theta\,\uv r-\sin\theta\,\hat{\boldsymbol\theta}$. Check: $r\cos\theta = z$, so the answer must be $\uv z$, and the formula sheet indeed lists $\uv z = \cos\theta\,\uv r-\sin\theta\,\hat{\boldsymbol\theta}$.`,
-        { nofig: 'formula-sheet practice' }),
+        { figHtml: fPolar({}) }),
 
       RF(md`
         ### Worked example: a gradient at a point
@@ -1274,12 +1274,12 @@
         md`By the gradient theorem both equal $T(\vb b)-T(\vb a) = 7$. Climbing a hill, the height you gain depends only on where you start and finish.`,
         { figHtml: fTwoPaths() }),
 
-      Q(md`For $T = xy^2$, what is $\int\nabla T\cdot d\vb l$ from $(0,0,0)$ to $(2,1,0)$, along any path?`,
+      Q(md`For $T = xy^2$, what is $\int\nabla T\cdot d\vb l$ from $\vb a = (0,0,0)$ to $\vb b = (2,1,0)$, along either path shown (or any other)?`,
         [md`$1$`, md`$4$`, md`$2$`, md`It depends on the path`], 2,
         [md`$T(2,1,0) = 2\cdot1^2 = 2$.`, md`$4$ would come from $x^2y$; here $T = xy^2$.`, null,
           md`The integrand is a gradient, so the path doesn't matter.`],
         md`$\int_{\vb a}^{\vb b}\nabla T\cdot d\vb l = T(\vb b)-T(\vb a) = 2-0 = 2$. No parametrisation needed.`,
-        { nofig: 'one-line application of the theorem' }),
+        { figHtml: fTwoPaths() }),
 
       Q(md`A field $\vb F$ has $\oint\vb F\cdot d\vb l\neq0$ around one particular closed loop. What follows?`,
         [md`$\vb F$ is a gradient, but that loop is special`, md`$\vb F$ is not the gradient of any single-valued function`, md`$\vb F = 0$ on that loop`, md`Nothing`], 1,
@@ -1542,7 +1542,7 @@
 
         $$\nabla\cdot\vb E = \frac{\rho}{\varepsilon_0}.$$
 
-        Read it as: lines of $\vb E$ begin on positive charge and end on negative charge, and nowhere else. Because it is local, you can run it backwards: given $\vb E$, the charge that made it is $\rho = \varepsilon_0\nabla\cdot\vb E$. Unit 1 does the physics; here, practise the derivative.
+        Read it as: lines of $\vb E$ begin on positive charge and end on negative charge, and nowhere else. Because it is local, you can run it backwards: given $\vb E$, the charge that made it is $\rho = \varepsilon_0\nabla\cdot\vb E$. (In the middle step of that derivation Lecture 2 writes $\int\rho\,d\tau$ where $\int\rho\,d\tau/\varepsilon_0$ is meant; the next line restores the $\varepsilon_0$.) Unit 1 does the physics; here, practise the derivative.
       `),
 
       Q(md`In some region $\vb E = k\,(x\,\uv x+y\,\uv y+z\,\uv z)$ with $k$ constant. What is the charge density there?`,
@@ -1674,11 +1674,11 @@
         | face | $d\vb a$ | $\vb v\cdot d\vb a$ | flux |
         |---|---|---|---|
         | $x=1$ | $+\uv x\,dy\,dz$ | $y$ | $\tfrac12$ |
-        | $x=0$ | $-\uv x\,dy\,dz$ | $-0$ | $0$ |
+        | $x=0$ | $-\uv x\,dy\,dz$ | $0$ | $0$ |
         | $y=1$ | $+\uv y\,dx\,dz$ | $z$ | $\tfrac12$ |
-        | $y=0$ | $-\uv y\,dx\,dz$ | $-0$ | $0$ |
+        | $y=0$ | $-\uv y\,dx\,dz$ | $0$ | $0$ |
         | $z=1$ | $+\uv z\,dx\,dy$ | $x$ | $\tfrac12$ |
-        | $z=0$ | $-\uv z\,dx\,dy$ | $-0$ | $0$ |
+        | $z=0$ | $-\uv z\,dx\,dy$ | $0$ | $0$ |
 
         Total $\tfrac32$. It checks. Notice how the outward normal flips sign on opposite faces, and how each face integral is a simple 2-D integral once you set the fixed coordinate.
       `, { cube: { svg: fUnitCube(), cap: 'The unit cube; hidden edges dashed.' } }),
@@ -2326,7 +2326,7 @@
         "Everywhere" matters. $\hat{\boldsymbol\phi}/s$ has zero curl except on the $z$-axis, yet its circulation around the axis is $2\pi$. Every surface spanning such a loop is pierced by the axis, so Stokes gives no protection.
 
         **Why $\nabla\times\vb E = 0$ matters.** Lecture 3 showed that every static charge distribution has $\nabla\times\vb E = 0$ (superpose point-charge fields, each curl-free). So electrostatic fields are conservative: $\oint\vb E\cdot d\vb l = 0$, and there is a potential with $\vb E = -\nabla V$, $V(\vb r) = -\int_{\mathcal O}^{\vb r}\vb E\cdot d\vb l$. It also gives a quick **test**: a proposed static $\vb E$ with a nonzero curl anywhere is impossible. Unit 2's HW 2.21 asks exactly this. Lecture 3 stresses that this holds only for **static** charges: a changing magnetic field gives $\nabla\times\vb E = -\partial\vb B/\partial t$.
-      `, { thm: { svg: fThm1(), cap: 'The four equivalent statements and the arguments linking them.' } }),
+      `, { thm: { svg: fThm1(), cap: 'The four equivalent statements: (1) zero curl, (2) path-independent line integrals, (3) zero circulation around every loop, (4) a potential exists. Arrows show the arguments that link them.' } }),
 
       Q(md`Someone proposes the static field $\vb E = k\,(y\,\uv x-x\,\uv y)$ (figure). Is it possible?`,
         [md`No: its curl is $-2k\,\uv z\neq0$, and static fields are curl-free`, md`Yes: its divergence is zero, so it needs no charge`, md`Yes, if $k<0$`, md`Only inside a conductor`], 0,
@@ -2461,9 +2461,406 @@
     ],
   };
 
+  // ======================================================================
+  // Lesson 7 figures: the Dirac delta function
+  // ======================================================================
+  const radialField = (x, y) => { const r = Math.hypot(x, y); return [x / r ** 3, y / r ** 3]; };
+  const fParadox = () => fieldFig(radialField, { skip: near0(0.3), extra: (f, X) => { f.circle(0, 0, X(0.8), { cls: 'dash' }); f.circle(0, 0, X(1.6), { cls: 'dash' }); } });
+  const fSph3 = () => {
+    const f = PF.fig(), R = 75;
+    f.circle(0, 0, R, {});
+    f.ellipse(0, 0, R, R * 0.28, { half: 'back', cls: 'dash dim' });
+    f.ellipse(0, 0, R, R * 0.28, { half: 'front', cls: 'dim' });
+    f.line(0, 0, R * Math.cos(35 * DEG), -R * Math.sin(35 * DEG), { cls: 'dim' });
+    f.label(R * 0.5 * Math.cos(35 * DEG) - 5, -R * 0.5 * Math.sin(35 * DEG) - 7, '3', 'br', 'small');
+    f.dot(0, 0, 2.6); f.label(-7, 0, 'O', 'r', 'small');
+    return f.svg();
+  };
+  const fSphOff = () => {
+    const f = PF.fig(), u = 40;
+    f.arrow(0, 15, 0, -4.6 * u, { cls: 'dim', hs: 6 }); f.label(4, -4.6 * u - 3, 'z', 'bl', 'small accent');
+    f.circle(0, -3 * u, u, { cls: 'thick' });
+    f.dot(0, -3 * u, 2.4); f.label(6, -3 * u, 'z=3', 'l', 'small');
+    f.dot(0, 0, 2.6); f.label(6, 6, 'O', 'tl', 'small');
+    return f.svg();
+  };
+  // cube of half-size a centred on the origin; hidden edges (touching the far corner) dashed
+  const cubeC = (g, a) => {
+    const V = [-a, a];
+    for (const i of [0, 1]) for (const j of [0, 1]) {
+      const hid = (p) => p.every((c) => c < 0);
+      const edges = [[[V[0], V[i], V[j]], [V[1], V[i], V[j]]], [[V[i], V[0], V[j]], [V[i], V[1], V[j]]], [[V[i], V[j], V[0]], [V[i], V[j], V[1]]]];
+      for (const [p, q] of edges) g.l3(p, q, { cls: (hid(p) || hid(q)) ? 'dash dim' : '' });
+    }
+    return g;
+  };
+  const fCubeO = () => {
+    const g = fig3(0, 0, 45);
+    cubeC(g, 1);
+    dot3(g, [0, 0, 0], 2.8);
+    g.label(9, -7, 'O', 'bl', 'small');
+    return g.svg();
+  };
+  const fSpike = () => {
+    const rects = PF.fig();
+    rects.arrow(-90, 0, 105, 0, { cls: 'dim', hs: 6 }); rects.label(109, 2, 'x', 'l', 'small accent');
+    rects.rect(-30, -30, 60, 30, { cls: 'dim' }); rects.rect(-15, -60, 30, 60, { cls: 'dim' }); rects.rect(-7.5, -120, 15, 120, {});
+    rects.label(36, -36, 'n=1', 'bl', 'small'); rects.label(21, -66, 'n=2', 'bl', 'small'); rects.label(13.5, -126, 'n=4', 'bl', 'small');
+    rects.label(0, 6, 'a', 't', 'small accent');
+    const sp = PF.fig();
+    sp.arrow(-90, 0, 105, 0, { cls: 'dim', hs: 6 }); sp.label(109, 2, 'x', 'l', 'small accent');
+    sp.arrow(0, 0, 0, -122, { cls: 'thick' });
+    sp.label(9, -112, '\\delta(x-a)', 'l', 'small');
+    sp.text(9, -64, 'area 1', 'l');
+    sp.label(0, 6, 'a', 't', 'small accent');
+    return Object.assign(PF.row([{ svg: rects.svg(), cap: 'Rectangles of width $1/n$ and height $n$: area $1$ each.' }, { svg: sp.svg(), cap: 'The limit: a spike of area $1$.' }]), { cap: '' });
+  };
+  const fSpikeRange = (lo, hi, o = {}) => {
+    const f = PF.fig(), u = 40, X = (x) => x * u;
+    const x0 = o.x0 ?? 0, x1 = o.x1 ?? 4, at = o.at ?? 2;
+    f.rect(X(lo), -46, X(hi) - X(lo), 46, { cls: 'shade nodecl' });
+    f.arrow(X(x0 - 0.5), 0, X(x1 + 0.5), 0, { cls: 'dim', hs: 6 }); f.label(X(x1 + 0.5) + 4, 2, 'x', 'l', 'small accent');
+    for (let k = x0; k <= x1; k++) { f.line(X(k), 0, X(k), 4, { cls: 'dim' }); f.label(X(k), 7, String(k), 't', 'small accent'); }
+    f.arrow(X(at), 0, X(at), -80, { cls: 'thick' });
+    f.label(X(at), -87, o.lab ?? '\\delta(x-2)', 'b', 'small');
+    return f.svg();
+  };
+  const fPointZd = () => {
+    const g = fig3(0, 0, 1);
+    g.axes3(110, { Lz: 120 });
+    const q = g.p3(0, 0, 80);
+    g.charge(q[0], q[1], { q: '+', r: 6 });
+    g.tag(q[0], q[1], 'q', 'r', 12);
+    g.dim(-16, 0, -16, -80, 'd', { at: 'l' });
+    return g.svg();
+  };
+  const fLineCyl = () => {
+    const g = fig3(0, 0, 1);
+    const R = 45, z0 = 15, z1 = 125;
+    g.l3([0, 0, -20], [0, 0, 150], { cls: 'thick' });
+    ring3(g, R, z0, { cls: 'dash', backCls: 'dash dim' });
+    ring3(g, R, z1, { cls: 'dash', backCls: 'dash' });
+    for (const a of [109, -71]) { const c = Math.cos(a * DEG), s = Math.sin(a * DEG); g.l3([R * c, R * s, z0], [R * c, R * s, z1], { cls: 'dash' }); }
+    const r = g.p3(R * Math.cos(109 * DEG), R * Math.sin(109 * DEG), z0), r2 = g.p3(R * Math.cos(109 * DEG), R * Math.sin(109 * DEG), z1);
+    g.dim(r[0] + 22, r[1], r2[0] + 22, r2[1], 'L', { at: 'r' });
+    const top = g.p3(0, 0, 150);
+    g.text(top[0] + 8, top[1], 'line charge on the z-axis', 'l');
+    return g.svg();
+  };
+  const fSphPanel = (zc, R, below) => {
+    const f = PF.fig(), u = 16;
+    f.arrow(0, 14, 0, -(zc + R) * u - 26, { cls: 'dim', hs: 6 }); f.label(4, -(zc + R) * u - 29, 'z', 'bl', 'small accent');
+    f.circle(0, -zc * u, R * u, { cls: 'thick' });
+    f.dot(0, 0, 2.6); f.label(6, below ? 6 : -6, 'O', below ? 'tl' : 'bl', 'small');
+    return f.svg();
+  };
+  const fThreeSpheres = () => PF.row([
+    { svg: fSphPanel(0, 3, false), cap: '(a) radius 3, centre $O$' },
+    { svg: fSphPanel(4, 1, true), cap: '(b) radius 1, centre $(0,0,4)$' },
+    { svg: fSphPanel(1, 2, false), cap: '(c) radius 2, centre $(0,0,1)$' },
+  ]).svg;
+  const fCubeB = () => {
+    const g = fig3(0, 0, 40);
+    cubeC(g, 1);
+    dot3(g, [0, 0, 0], 2.8);
+    g.label(9, -7, 'O', 'bl', 'small');
+    const b = [1, 2, 2];
+    dot3(g, b, 3.2); tag3(g, b, `${B('b')} = (1,2,2)`, 'r', 10, 'small');
+    triad(g, -105, 75, 22);
+    return g.svg();
+  };
+
+  // ======================================================================
+  // Lesson 7: the Dirac delta function
+  // ======================================================================
+  const L7 = {
+    id: 'u0-delta', title: 'The Dirac delta function',
+    steps: [
+      RF(md`
+        ### A field that is all source and no divergence
+
+        Take $\vb v = \uv r/r^2$, the shape of a point charge's field. The spherical divergence gives
+
+        $$\nabla\cdot\vb v = \frac1{r^2}\frac{\partial}{\partial r}\Big(r^2\cdot\frac1{r^2}\Big) = \frac1{r^2}\frac{\partial}{\partial r}(1) = 0.$$
+
+        But the flux through a sphere of radius $R$ centred on the origin is
+
+        $$\oint\vb v\cdot d\vb a = \int\frac{1}{R^2}\,R^2\sin\theta\,d\theta\,d\phi = 4\pi,$$
+
+        for **every** $R$. The divergence theorem then says $\int\nabla\cdot\vb v\,d\tau = 4\pi$, not $0$. The way out: the calculation above divides by $r^2$ and is valid only for $r\neq0$. All of the divergence sits at the single point $r = 0$, where $\vb v$ blows up, and it integrates to $4\pi$ however small the sphere. Physically this is obvious: every field line of a point charge starts at the charge.
+
+        [[fig:par]]
+
+        The $4\pi$ is the full solid angle. The field falls as $1/R^2$ exactly as fast as the sphere's area $4\pi R^2$ grows, so every sphere catches the same flux. With $\vb E = \dfrac{q}{4\pi\varepsilon_0}\dfrac{\uv r}{r^2}$ this is Lecture 2's $\Phi_E = q/\varepsilon_0$.
+      `, { par: { svg: fParadox(), cap: 'A slice through $\\uv r/r^2$. Both dashed spheres catch the same flux, $4\\pi$, so the region between them has no net source: the source is all at the centre.' } }),
+
+      Q(md`What is the flux of $\uv r/r^2$ through the sphere of radius $3$ centred on the origin (figure)?`,
+        [md`$4\pi/9$`, md`$4\pi$`, md`$36\pi$`, md`$0$`], 1,
+        [md`$1/R^2 = 1/9$ is the field strength on the sphere, but the area $4\pi R^2 = 36\pi$ grows by exactly the same factor.`, null,
+          md`That is the area alone; the field on the sphere is $1/9$, not $1$.`,
+          md`The divergence is zero away from the origin, but the origin is inside this sphere.`],
+        md`$\oint\frac{1}{R^2}\,R^2\sin\theta\,d\theta\,d\phi = 4\pi$ for every $R$. The $R^2$ cancels; that is the whole point.`,
+        { figHtml: fSph3() }),
+
+      Q(md`What is the flux of $\uv r/r^2$ through the sphere of radius $1$ centred at $(0,0,3)$ (figure)?`,
+        [md`$0$`, md`$4\pi$`, md`$4\pi/9$`, md`$\pi$`], 0,
+        [null, md`$4\pi$ needs the origin, the source, inside the surface. This sphere doesn't contain it.`,
+          md`$1/9$ is roughly the field strength at the sphere's centre; the net flux counts what enters as well as what leaves.`,
+          md`Whatever enters on the near side leaves on the far side; nothing is left over.`],
+        md`Inside this sphere $\nabla\cdot(\uv r/r^2) = 0$ everywhere (the origin is outside), so by the divergence theorem the net flux is $0$. Field lines enter on the side facing the origin and leave on the far side.`,
+        { figHtml: fSphOff() }),
+
+      Q(md`What is the flux of $\uv r/r^2$ through the surface of the cube of side $2$ centred on the origin (figure)?`,
+        [md`$24$`, md`$4\pi$`, md`$0$`, md`$8$`], 1,
+        [md`$24$ is the cube's surface area; the field is neither $1$ on the faces nor perpendicular to them.`, null,
+          md`The origin is inside the cube.`, md`$8$ is the cube's volume.`],
+        md`The flux depends only on whether the origin is enclosed, not on the surface's shape: $\int\nabla\cdot(\uv r/r^2)\,d\tau = 4\pi$ for any volume containing the origin. (The six face integrals also give $4\pi$, with much more work.) That is why Gauss's law holds for any closed surface, not only spheres.`,
+        { figHtml: fCubeO() }),
+
+      Q(md`For $\uv r/r^3$, what is the flux through a sphere of radius $R$ centred on the origin (figure)?`,
+        [md`$4\pi/R$; it depends on $R$, so $\nabla\cdot(\uv r/r^3)\neq0$ away from the origin`, md`$4\pi$ for every $R$`, md`$4\pi R$`, md`$0$`], 0,
+        [null, md`Only $1/r^2$ gives an $R$-independent flux: $\frac1{R^3}\cdot4\pi R^2 = \frac{4\pi}{R}$.`,
+          md`Check the powers: $R^{-3}\cdot R^2 = R^{-1}$.`, md`The field points outward everywhere, so the flux is positive.`],
+        md`$\frac1{R^3}\cdot4\pi R^2 = 4\pi/R$. The flux through spheres falls as $R$ grows, so the shells in between have negative divergence: $\nabla\cdot(r^{-3}\uv r) = (n+2)r^{n-1} = -r^{-4}$ with $n = -3$. The inverse-square law is special.`,
+        { figHtml: fBallR() }),
+
+      RF(md`
+        ### The one-dimensional delta function
+
+        $\delta(x)$ is an infinitely tall, infinitely narrow spike at $x = 0$ with area $1$:
+
+        $$\delta(x) = 0\quad(x\neq0),\qquad\int_{-\infty}^{\infty}\delta(x)\,dx = 1.$$
+
+        Think of it as the limit of rectangles of width $1/n$ and height $n$. It only makes sense inside an integral. Its units are 1/(units of $x$).
+
+        [[fig:spike]]
+
+        **Sifting.** $f(x)\,\delta(x-a)$ vanishes except at $x = a$, so you may replace $f(x)$ by $f(a)$:
+
+        $$\int f(x)\,\delta(x-a)\,dx = f(a)\quad\text{if }a\text{ lies inside the range of integration, and }0\text{ if it doesn't.}$$
+
+        **Scaling.** $\delta(kx) = \dfrac{1}{|k|}\,\delta(x)$. Substitute $u = kx$: the spike gets narrower by $|k|$, so its area is $1/|k|$ (the absolute value because a negative $k$ flips the limits). In particular $\delta(-x) = \delta(x)$. For something like $\delta(3x+1)$: find where the argument vanishes ($x = -\tfrac13$) and divide by the magnitude of its slope, $\delta(3x+1) = \tfrac13\delta\big(x+\tfrac13\big)$.
+      `, { spike: fSpike() }),
+
+      Q(md`Evaluate $\displaystyle\int_0^3x^2\,\delta(x-2)\,dx$. (The shaded band is the range of integration.)`,
+        [md`$4$`, md`$0$`, md`$9$`, md`$2$`], 0,
+        [null, md`The spike at $x = 2$ is inside $[0,3]$, so it counts.`,
+          md`$9 = 3^2$ evaluates at the upper limit; the delta function picks $x = 2$.`,
+          md`$2$ is where the spike sits; you still have to evaluate $x^2$ there.`],
+        md`The delta function picks out the value of $x^2$ at $x = 2$, which lies inside the range: $2^2 = 4$.`,
+        { figHtml: fSpikeRange(0, 3) }),
+
+      Q(md`Evaluate $\displaystyle\int_0^1x^2\,\delta(x-2)\,dx$. (The shaded band is the range of integration.)`,
+        [md`$4$`, md`$1$`, md`$0$`, md`$\tfrac13$`], 2,
+        [md`The spike at $x = 2$ lies outside $[0,1]$.`,
+          md`$1 = 1^2$ evaluates at the upper limit, where there is no spike.`, null,
+          md`$\tfrac13 = \int_0^1x^2\,dx$ ignores the delta function altogether.`],
+        md`The integrand is zero everywhere on $[0,1]$, because the spike sits at $x = 2$. Always check that the spike is inside the range before sifting.`,
+        { figHtml: fSpikeRange(0, 1) }),
+
+      Q(md`Evaluate $\displaystyle\int_{-2}^{2}(2x+3)\,\delta(3x)\,dx$. (The shaded band is the range of integration.)`,
+        [md`$3$`, md`$9$`, md`$0$`, md`$1$`], 3,
+        [md`That forgets the scaling: $\delta(3x) = \tfrac13\delta(x)$.`, md`Scaling divides by $3$; it doesn't multiply.`,
+          md`The spike at $x = 0$ is inside $[-2,2]$.`, null],
+        md`$\delta(3x) = \tfrac13\delta(x)$, so the integral is $\tfrac13(2\cdot0+3) = 1$. Squeezing the spike by a factor $3$ leaves a third of the area.`,
+        { figHtml: fSpikeRange(-2, 2, { x0: -2, x1: 2, at: 0, lab: '\\delta(3x)' }) }),
+
+      Q(md`If $x$ is measured in metres, what are the units of $\delta(x)$?`,
+        [md`Dimensionless`, md`m`, md`$\text{m}^{-1}$`, md`$\text{m}^{-3}$`], 2,
+        [md`$\int\delta(x)\,dx = 1$ is a pure number, and $dx$ carries metres, so $\delta$ must carry the inverse.`,
+          md`Backwards: $\delta(x)\,dx$ is dimensionless.`, null, md`That is $\delta^3(\vb r)$: three factors of $\text{m}^{-1}$.`],
+        md`$\int\delta(x)\,dx = 1$, so $\delta(x)$ has the inverse units of $x$: $\text{m}^{-1}$. Likewise $\delta^3(\vb r)$ has units $\text{m}^{-3}$, which is why $q\,\delta^3(\vb r)$ is a charge density.`,
+        { nofig: 'units' }),
+
+      Q(md`Evaluate $\displaystyle\int_0^2x^3\,\delta(2x-2)\,dx$.`,
+        [md`$1$`, md`$\tfrac12$`, md`$8$`, md`$4$`], 1,
+        [md`$\delta(2x-2) = \delta\big(2(x-1)\big) = \tfrac12\delta(x-1)$: the $\tfrac12$ is missing.`, null,
+          md`$8 = 2^3$ evaluates at $x = 2$, but the argument $2x-2$ vanishes at $x = 1$.`, md`$4 = 8/2$ uses the wrong point.`],
+        md`The argument vanishes at $x = 1$ (inside the range) and has slope $2$, so $\delta(2x-2) = \tfrac12\delta(x-1)$ and the integral is $\tfrac12\cdot1^3 = \tfrac12$.`,
+        { nofig: 'pure 1-D integral' }),
+
+      RF(md`
+        ### The three-dimensional delta function, and $\nabla\cdot(\uv r/r^2) = 4\pi\delta^3$
+
+        $$\delta^3(\vb r) = \delta(x)\,\delta(y)\,\delta(z),\qquad\int_{\text{all space}}\delta^3(\vb r)\,d\tau = 1,\qquad\int f(\vb r)\,\delta^3(\vb r-\vb a)\,d\tau = f(\vb a).$$
+
+        It has units of 1/volume. The charge density of a point charge $q$ at $\vb r'$ is $\rho(\vb r) = q\,\delta^3(\vb r-\vb r')$: zero everywhere except at the charge, with total $\int\rho\,d\tau = q$. ("Point charges are a useful tool but make no sense in real life", Lecture 2.)
+
+        Now the paradox has a name. $\nabla\cdot(\uv r/r^2)$ is zero for $r\neq0$, and its integral over any volume containing the origin is $4\pi$. That is exactly $4\pi\delta^3(\vb r)$:
+
+        $$\nabla\cdot\Big(\frac{\uv r}{r^2}\Big) = 4\pi\,\delta^3(\vb r),\qquad\qquad\nabla\cdot\Big(\frac{\srh}{\srm^2}\Big) = 4\pi\,\delta^3(\sr).$$
+
+        In the second form $\sr = \vb r-\vb r'$, and $\nabla$ acts on $\vb r$ with $\vb r'$ held fixed (Lecture 2). Since $\nabla(1/\srm) = -\srh/\srm^2$, the same fact reads $\nabla^2\dfrac1\srm = -4\pi\,\delta^3(\sr)$.
+
+        **The payoff (Lectures 2–3).** For a point charge at the origin, $\rho = \varepsilon_0\nabla\cdot\vb E = \varepsilon_0\cdot\dfrac{q}{4\pi\varepsilon_0}\cdot4\pi\delta^3(\vb r) = q\,\delta^3(\vb r)$. For any distribution, take the divergence inside Coulomb's integral:
+
+        $$\nabla\cdot\vb E = \kq\int\rho(\vb r')\,\nabla\cdot\Big(\frac{\srh}{\srm^2}\Big)d\tau' = \kq\int\rho(\vb r')\,4\pi\delta^3(\vb r-\vb r')\,d\tau' = \frac{\rho(\vb r)}{\varepsilon_0}.$$
+
+        That is Gauss's law in differential form, derived from Coulomb's law. (The notes write this step as $\nabla\cdot(\sr/\srm^2)$, without the hat; it should be $\srh/\srm^2 = \sr/\srm^3$.)
+      `),
+
+      Q(md`What is the charge density of a point charge $q$ at $(0,0,d)$ (figure)?`,
+        [md`$q\,\delta(z-d)$`, md`$q\,\delta^3(\vb r-d\,\uv z)$`, md`$q\,\delta^3(\vb r)$`, md`$\dfrac{q}{4\pi d^2}\,\delta(r-d)$`], 1,
+        [md`$\delta(z-d)$ alone is spread over the whole plane $z = d$ and has units $1/\text{m}$: a sheet, not a point.`, null,
+          md`That puts the charge at the origin.`, md`That is a thin spherical shell of radius $d$ carrying total charge $q$.`],
+        md`$\rho(\vb r) = q\,\delta^3(\vb r-d\,\uv z) = q\,\delta(x)\,\delta(y)\,\delta(z-d)$. It vanishes except at $(0,0,d)$, has units of charge per volume, and integrates to $q$.`,
+        { figHtml: fPointZd() }),
+
+      Q(md`What is $\nabla\cdot(\uv r/r^2)$ at the point $(1,2,2)$?`,
+        [md`$0$`, md`$4\pi$`, md`$4\pi/9$`, md`Infinite`], 0,
+        [null, md`$4\pi$ is the integral over a volume containing the origin, not the value at a point.`,
+          md`No $1/r^2$ survives in the divergence away from the origin.`, md`It is infinite only at the origin.`],
+        md`Away from the origin the divergence is zero: $\frac1{r^2}\frac{d}{dr}(r^2\cdot r^{-2}) = 0$. Equivalently, $4\pi\delta^3(\vb r)$ vanishes at $(1,2,2)$.`,
+        { nofig: 'evaluation at a point' }),
+
+      Q(md`In $\nabla\cdot(\uv r/r^2) = 4\pi\delta^3(\vb r)$, where does the $4\pi$ come from?`,
+        [md`From the $4\pi$ in $4\pi\varepsilon_0$`, md`From the volume $\tfrac43\pi r^3$`, md`It is the flux of $\uv r/r^2$ through any sphere around the origin: the full solid angle`, md`It is a convention that could be set to $1$`], 2,
+        [md`No $\varepsilon_0$ appears in this purely mathematical identity.`, md`No volume enters; the flux doesn't depend on $R$.`, null,
+          md`It is forced by the divergence theorem, not chosen.`],
+        md`Integrate both sides over a ball: the left side becomes the flux $\oint\frac{\uv r}{R^2}\cdot d\vb a = 4\pi$, and the right side $4\pi\int\delta^3\,d\tau = 4\pi$. The $4\pi$ in $4\pi\varepsilon_0$ is put into Coulomb's law precisely to cancel this one, so that $\nabla\cdot\vb E = \rho/\varepsilon_0$ comes out clean.`,
+        { nofig: 'conceptual' }),
+
+      Q(md`What is $\displaystyle\int_V\nabla^2\Big(\frac1r\Big)\,d\tau$ over a ball of radius $R$ centred on the origin?`,
+        [md`$0$`, md`$-4\pi$`, md`$4\pi$`, md`$-4\pi/R$`], 1,
+        [md`That is the naive answer from $r\neq0$; the origin contributes everything.`, null,
+          md`$\nabla(1/r) = -\uv r/r^2$ carries a minus sign.`, md`The result doesn't depend on $R$.`],
+        md`$\nabla^2\frac1r = \nabla\cdot\nabla\frac1r = -\nabla\cdot\frac{\uv r}{r^2} = -4\pi\delta^3(\vb r)$, so the integral is $-4\pi$. This is why $V = \dfrac{q}{4\pi\varepsilon_0r}$ satisfies $\nabla^2V = -\rho/\varepsilon_0$ with $\rho = q\,\delta^3(\vb r)$.`,
+        { nofig: 'operator identity' }),
+
+      Q(md`For $\uv s/s$ (the shape of a line charge's field), $\nabla\cdot(\uv s/s) = 0$ for $s\neq0$. What is the outward flux through the coaxial cylinder of radius $R$ and length $L$ shown, ends included?`,
+        [md`$2\pi L$`, md`$2\pi RL$`, md`$0$`, md`$4\pi$`], 0,
+        [null, md`On the side $v_s = 1/R$, which cancels the $R$ in the area $2\pi RL$.`,
+          md`The axis, where the source sits, is inside the cylinder.`, md`$4\pi$ is the spherical (point-charge) version.`],
+        md`Side: $\frac1R\cdot2\pi RL = 2\pi L$; ends: $\vb v\perp\uv z$, so zero. The flux doesn't depend on $R$, so all the divergence sits on the axis: $\nabla\cdot(\uv s/s) = 2\pi\,\delta(x)\,\delta(y)$. Multiply by $\lambda/2\pi\varepsilon_0$ and you have Gauss's law for a line charge, $\Phi = \lambda L/\varepsilon_0$ (Lecture 2).`,
+        { figHtml: fLineCyl() }),
+
+      RF(md`
+        ### Worked example: a delta-function integral (Griffiths Ex. 1.16)
+
+        Evaluate $J = \displaystyle\int_V(r^2+2)\,\nabla\cdot\Big(\frac{\uv r}{r^2}\Big)\,d\tau$, where $V$ is the ball of radius $R$ centred on the origin.
+
+        [[fig:ball]]
+
+        **With the delta function.** Replace the divergence by $4\pi\delta^3(\vb r)$ and sift:
+
+        $$J = \int_V(r^2+2)\,4\pi\delta^3(\vb r)\,d\tau = 4\pi(0^2+2) = 8\pi.$$
+
+        Only the value of $r^2+2$ at the origin matters, so the answer doesn't depend on $R$. If $V$ did *not* contain the origin, $J$ would be $0$.
+
+        **Check by integration by parts.** $\int f\,\nabla\cdot\vb A\,d\tau = -\int\vb A\cdot\nabla f\,d\tau+\oint f\,\vb A\cdot d\vb a$ with $f = r^2+2$ and $\vb A = \uv r/r^2$:
+
+        - $\nabla f = 2r\,\uv r$, so $-\int\dfrac{\uv r}{r^2}\cdot2r\,\uv r\,d\tau = -\int_0^R\dfrac2r\,4\pi r^2\,dr = -4\pi R^2$.
+        - On the surface $f = R^2+2$ and $\oint\dfrac{\uv r}{R^2}\cdot d\vb a = 4\pi$, giving $4\pi(R^2+2)$.
+
+        Total $-4\pi R^2+4\pi(R^2+2) = 8\pi$. Same answer, much more work. The naive route, "the divergence is zero, so $J = 0$", is wrong.
+      `, { ball: { svg: fBallR(), cap: 'The ball of radius $R$ contains the origin, where the delta function sits.' } }),
+
+      P({
+        title: 'Delta function inside and outside',
+        q: md`Evaluate $\displaystyle\int_V(r^3+5)\,\nabla\cdot\Big(\frac{\uv r}{r^2}\Big)\,d\tau$ for each of the three spheres shown ($r$ is the distance from the origin $O$).`,
+        figHtml: fThreeSpheres(),
+        hints: [
+          md`Replace $\nabla\cdot(\uv r/r^2)$ by $4\pi\delta^3(\vb r)$. The integral is $4\pi f(\vb 0)$ if the origin is inside $V$, and $0$ if not.`,
+          md`$f(\vb 0) = 0^3+5 = 5$, wherever the sphere is centred, because $r$ is measured from the origin.`,
+          md`For (c): the centre is $1$ from the origin and the radius is $2$. Is the origin inside?`,
+        ],
+        parts: [
+          { lbl: md`(a)`, ans: 20 * Math.PI },
+          { lbl: md`(b)`, ans: 0 },
+          { lbl: md`(c)`, ans: 20 * Math.PI },
+        ],
+        sol: md`
+          With $\nabla\cdot(\uv r/r^2) = 4\pi\delta^3(\vb r)$, each integral is $4\pi\,(r^3+5)\big|_{\vb r = \vb 0} = 4\pi\cdot5 = 20\pi$ if $V$ contains the origin, and $0$ otherwise.
+
+          - (a) Centred on $O$: contains it. $20\pi\approx62.8$.
+          - (b) Centre $(0,0,4)$, radius $1$: the nearest point to $O$ is at $z = 3$. Doesn't contain it. $0$.
+          - (c) Centre $(0,0,1)$, radius $2$: $O$ is $1<2$ from the centre, so it is inside. $20\pi$.
+
+          **Trap.** In (c) the sphere is not centred on the origin, but that changes nothing: the delta function sits at $\vb r = \vb 0$ and $f$ is evaluated there. Never evaluate $f$ at the sphere's centre.
+
+          **What to remember.** A delta-function integral reduces to "is the spike inside the region? If so, evaluate the rest of the integrand at the spike."
+        `,
+      }),
+
+      P({
+        title: 'One-dimensional delta integrals',
+        q: md`Evaluate:
+
+        (a) $\displaystyle\int_{-1}^{3}(x^3-2x)\,\delta(x-2)\,dx$ (b) $\displaystyle\int_0^{\pi}\cos x\,\delta\big(x-\tfrac\pi3\big)\,dx$ (c) $\displaystyle\int_{-2}^{2}x^2\,\delta(4x-2)\,dx$ (d) $\displaystyle\int_{-\infty}^{0}\delta(x-1)\,dx$`,
+        nofig: 'pure 1-D integrals; the spike picture is in the lesson above',
+        hints: [
+          md`For each one: where does the argument of $\delta$ vanish, and is that point inside the range?`,
+          md`If the argument is $kx-b$, write $\delta(kx-b) = \frac1{|k|}\delta(x-b/k)$ before sifting.`,
+        ],
+        parts: [
+          { lbl: md`(a)`, ans: 4 },
+          { lbl: md`(b)`, ans: 0.5 },
+          { lbl: md`(c)`, ans: 1 / 16 },
+          { lbl: md`(d)`, ans: 0 },
+        ],
+        sol: md`
+          (a) Spike at $x = 2\in[-1,3]$: $2^3-2\cdot2 = 4$.
+
+          (b) Spike at $\pi/3\in[0,\pi]$: $\cos(\pi/3) = \tfrac12$.
+
+          (c) $\delta(4x-2) = \tfrac14\delta\big(x-\tfrac12\big)$, spike at $\tfrac12\in[-2,2]$: $\tfrac14\cdot\big(\tfrac12\big)^2 = \tfrac1{16}$.
+
+          (d) The spike is at $x = 1$, outside $(-\infty,0]$: $0$.
+
+          **What to remember.** Locate the zero of the argument, check it is in range, divide by the magnitude of the slope, evaluate.
+        `,
+      }),
+
+      P({
+        title: 'Three-dimensional delta integrals',
+        q: md`With $\vb a = (3,0,1)$, $\vb b = (1,2,2)$ and $\vb c = (1,2,2)$, evaluate:
+
+        (a) $\displaystyle\int(r^2+\vb r\cdot\vb a)\,\delta^3(\vb r-\vb b)\,d\tau$ over all space;
+
+        (b) the same integral over the cube of side $2$ centred on the origin (figure);
+
+        (c) $\displaystyle\int|\vb r-\vb c|^2\,\delta^3(2\vb r)\,d\tau$ over all space.`,
+        figHtml: fCubeB(),
+        hints: [
+          md`Sifting in 3-D: $\int f(\vb r)\,\delta^3(\vb r-\vb b)\,d\tau = f(\vb b)$, provided $\vb b$ is inside the region.`,
+          md`(b): the cube spans $-1\le x,y,z\le1$. Is $\vb b = (1,2,2)$ inside it?`,
+          md`(c): $\delta^3(2\vb r) = \delta(2x)\,\delta(2y)\,\delta(2z)$, and each factor brings a $\tfrac12$.`,
+        ],
+        parts: [
+          { lbl: md`(a)`, ans: 14 },
+          { lbl: md`(b)`, ans: 0 },
+          { lbl: md`(c)`, ans: 9 / 8 },
+        ],
+        sol: md`
+          (a) Evaluate at $\vb r = \vb b$: $b^2 = 1+4+4 = 9$ and $\vb b\cdot\vb a = 3+0+2 = 5$. Total $14$.
+
+          (b) $\vb b$ has $y = 2>1$, so it lies outside the cube (figure). The integral is $0$.
+
+          (c) $\delta^3(2\vb r) = \tfrac18\delta^3(\vb r)$, a spike at the origin. $|\vb 0-\vb c|^2 = c^2 = 9$, so the result is $\tfrac98$.
+
+          **What to remember.** In 3-D the scaling rule applies to each of the three factors: $\delta^3(k\vb r) = \delta^3(\vb r)/|k|^3$.
+        `,
+      }),
+
+      RF(md`
+        !!key Patterns to remember
+          - $\nabla\cdot(\uv r/r^2) = 4\pi\delta^3(\vb r)$; $\nabla\cdot(\srh/\srm^2) = 4\pi\delta^3(\sr)$ with $\nabla$ on $\vb r$. The naive calculation gives $0$ because it is only valid for $r\neq0$.
+          - The $4\pi$ is the flux of $\uv r/r^2$ through any closed surface around the origin; surfaces not enclosing it get $0$.
+          - Sifting: $\int f\,\delta(x-a)\,dx = f(a)$ if $a$ is in range, else $0$. $\delta(kx) = \delta(x)/|k|$. Units: 1/(units of the argument).
+          - Point charge: $\rho = q\,\delta^3(\vb r-\vb r')$.
+          - Delta integrals: is the spike inside the region? Then evaluate the rest at the spike, with $f$ evaluated at the spike, not at the region's centre.
+
+        !!key The whole unit on one card
+          - On the formula sheet: the curvilinear line elements, unit vectors, gradient, divergence, curl and Laplacian, and the three fundamental theorems. Know how to *use* them: factors inside the derivative ($r^2v_r$, $\sin\theta\,v_\theta$, $s\,v_s$, $s\,v_\phi$), distance factors on angle derivatives, every term added.
+          - Not on the sheet, so carry it yourself: $\sr = \vb r-\vb r'$ (source to field point); $d\tau = r^2\sin\theta\,dr\,d\theta\,d\phi$ and the area elements; outward normals for closed surfaces and the right-hand rule for Stokes; $\nabla\cdot(r^n\uv r) = (n+2)r^{n-1}$; curl-free ⇔ conservative ⇔ $\vb E = -\nabla V$; $\nabla\cdot(\uv r/r^2) = 4\pi\delta^3(\vb r)$ and how to sift.
+          - When in doubt, convert to Cartesian components: unit vectors stop moving and everything becomes ordinary partial derivatives.
+      `),
+    ],
+  };
+
   C.unit({
     id: 'u0', num: 'Unit 0', title: 'Vector calculus toolkit',
     blurb: 'Vectors and the separation vector, curvilinear coordinates, gradient, divergence, curl, the three fundamental theorems, potentials, and the Dirac delta.',
-    lessons: [L1, L2, L3, L4, L5, L6],
+    lessons: [L1, L2, L3, L4, L5, L6, L7],
   });
 })();

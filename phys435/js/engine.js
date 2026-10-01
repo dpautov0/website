@@ -26,22 +26,34 @@
 
   function escMath(s) { return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
 
-  function inlineSeg(s) {
-    return s.split(/(\$\$[\s\S]*?\$\$|\$[^$]*\$)/g).map((seg, i) => {
-      if (i % 2) return escMath(seg);
-      return seg
-        .replace(/`([^`]+)`/g, '<code>$1</code>')
-        .replace(/(^|[^*\w])\*([^*\n]+)\*(?!\w)/g, '$1<em>$2</em>')
-        .replace(/\[([^\]]+)\]\((#[^)]+)\)/g, '<a href="$2">$1</a>');
+  // straight double quotes in prose become curly ones (the serif font draws " as a closing quote).
+  // Open or close is decided by the character before it, tracked across math pieces; tags are left alone.
+  function smartQuotes(t, prev) {
+    return t.split(/(<[^>]*>)/g).map((p, i) => {
+      if (i % 2) return p;
+      let out = '';
+      for (const ch of p) {
+        if (ch === '"') out += (/^$|[\s([{—–-]/.test(prev) ? '“' : '”');
+        else out += ch;
+        prev = ch;
+      }
+      return out;
     }).join('');
   }
 
-  // Bold is split out first so it can wrap math (**$V_1$:**); an unpaired ** is left as text.
+  // Math is swapped for placeholders first, so bold, italics and quotes can wrap it (*find $V$ outside.*),
+  // then restored untouched. An unpaired ** or * is left as text.
   function inline(s) {
-    const parts = s.split('**');
-    if (parts.length < 3 || parts.length % 2 === 0) return inlineSeg(s);
-    return parts.map((p, i) => (i % 2 ? `<b>${inlineSeg(p)}</b>` : inlineSeg(p))).join('');
+    const math = [];
+    let t = String(s).replace(/\$\$[\s\S]*?\$\$|\$[^$]*\$/g, (m) => { math.push(m); return `\u0001${math.length - 1}\u0002`; });
+    t = smartQuotes(t, '')
+      .replace(/`([^`]+)`/g, '<code>$1</code>')
+      .replace(/\*\*([^*]+?)\*\*/g, '<b>$1</b>')
+      .replace(/(^|[^*\w])\*([^*\n]+?)\*(?!\w)/g, '$1<em>$2</em>')
+      .replace(/\[([^\]]+)\]\((#[^)]+)\)/g, '<a href="$2">$1</a>');
+    return t.replace(/\u0001(\d+)\u0002/g, (_, i) => escMath(math[+i]));
   }
+  const inlineSeg = inline;
 
   function mdToHtml(src) {
     if (!src) return '';

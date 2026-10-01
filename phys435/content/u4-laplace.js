@@ -88,12 +88,12 @@
     region(f, pts, 'thick');
     f.label(170, 82, '\\nabla^2 V = 0', 'c');
     f.text(170, 108, 'no charge in here', 'c');
-    f.charge(30, 28, { q: '+', lab: 'q_1', at: 'r' });
-    f.charge(322, 178, { q: '-', lab: 'q_2', at: 'l' });
-    f.charge(318, 22, { q: '+', lab: 'q_3', at: 'l' });
+    f.charge(40, 30, { q: '+', lab: 'q_1', at: 'r' });
+    f.charge(304, 178, { q: '-', lab: 'q_2', at: 'l' });
+    f.charge(300, 24, { q: '+', lab: 'q_3', at: 'l' });
     const b = pts[60];
-    f.arrow(b[0] - 44, b[1] + 40, b[0] - 3, b[1] + 3, { cls: 'dim' });
-    f.text(b[0] - 48, b[1] + 44, md`boundary: $V$ known here`, 'tr');
+    f.arrow(b[0] - 34, b[1] + 30, b[0] - 3, b[1] + 3, { cls: 'dim' });
+    f.text(20, b[1] + 34, md`boundary: $V$ known here`, 'tl');
     return f.svg();
   };
   const fPoints = () => {
@@ -256,7 +256,7 @@
           md`That's exactly what adjusts itself to $q$. It's an output of the calculation, not an input.`,
           null,
           md`The field at a conductor's surface is $\sigma/\varepsilon_0$, and $\sigma$ is unknown.`],
-        md`"Grounded" means held at $V = 0$: that is the boundary condition on the sphere. Had the sphere been **isolated** instead, you'd know its total charge and not its potential. Either way you know one number about the conductor and never the distribution. Lesson 5 shows that either number is enough.`,
+        md`"Grounded" means held at $V = 0$: that is the boundary condition on the sphere. Had the sphere been **isolated** instead, you'd know its total charge and not its potential. Either way you know one number about the conductor and never the distribution. Lessons 4 and 5 show that either number is enough.`,
         { figHtml: fUnknown(true) }),
 
       Q(md`Start from Gauss's law $\nabla\cdot\vb E = \rho/\varepsilon_0$ and $\vb E = -\nabla V$. Which equation follows?`,
@@ -793,7 +793,7 @@
 
       Q(md`A thin square metal plate has its four edges held at $60$, $40$, $20$ and $30$ °C, and there are no heat sources inside. In steady state the temperature also obeys Laplace's equation. Where is the hottest point of the plate?`,
         [md`Near the center`, md`At the corner between the $60$ °C and $40$ °C edges`, md`At an interior point where the gradient vanishes`, md`On the $60$ °C edge`], 3,
-        [md`The center is close to the average of the four edges (about $37.5$ °C), not a maximum.`,
+        [md`The center sits at exactly the average of the four edge values, $37.5$ °C (rotate the plate four ways and add, as in the relaxation questions below), far below $60$ °C.`,
           md`Nothing in the plate is hotter than $60$ °C, and that value is reached along the whole $60$ °C edge, not just at a corner.`,
           md`Interior points with zero gradient can exist, but they are saddles, not maxima.`, null],
         md`A harmonic function takes its extremes on the boundary. The maximum, $60$ °C, is reached along that edge; every interior point is cooler. Steady-state temperature with no sources, soap films, and electrostatic potential in a charge-free region all share this averaging property.`,
@@ -861,7 +861,12 @@
 
         ### The lecture's example
 
-        Top row held at $100$; the ends of the middle row and the whole bottom row at $0$. Two unknowns, $A$ and $B$. Initial guess $A_0 = B_0 = 0$.
+        Boundary values:
+        1. Top row: $100$.
+        2. Both ends of the middle row: $0$.
+        3. Bottom row: $0$.
+
+        Two unknowns, $A$ and $B$. Initial guess $A_0 = B_0 = 0$.
 
         [[fig:grid]]
 
@@ -967,10 +972,10 @@
 
       Q(md`Your initial guess has one interior cell at $1000$ and every other interior cell at $0$ (the boundary is at $0$). What does one pass do to the spike?`,
         [md`It moves it one cell to the right.`, md`It doubles it.`, md`Nothing, until the boundary values reach it.`, md`It spreads it out: the spike drops sharply and its neighbours rise. The error gets smoother and smaller.`], 3,
-        [md`Averaging is symmetric; it doesn't carry the spike in one direction (the sweep order only changes which neighbours update first).`,
+        [md`Averaging doesn't carry the spike one cell over; the spike's own cell drops while all its neighbours pick up a share. (The sweep order only decides which neighbours pick up more.)`,
           md`An average of values between $0$ and $1000$ can't exceed $1000$.`,
           md`Every interior cell is updated each pass; the spike's own neighbours change immediately.`, null],
-        md`The spike cell is replaced by the average of its neighbours ($0$), and each neighbour, when it's updated, picks up a quarter of the spike. Averaging is smoothing: sharp errors die fastest, smooth long-wavelength errors die slowly, which is why big grids need many passes.`,
+        md`With the 4-neighbour rule in reading order: the cells above and to the left of the spike are updated first and pick up a quarter of it ($250$ each); then the spike cell becomes the average of its neighbours, $125$; the cells after it get about $47$. After one pass the peak has dropped from $1000$ to $250$ and spread over several cells. Averaging is smoothing: sharp errors die fastest, smooth long-wavelength errors die slowly, which is why big grids need many passes.`,
         { figHtml: fSpike() }),
 
       P({
@@ -1240,7 +1245,7 @@
 
       Q(md`Which of these is harmonic for $s > 0$ (cylindrical coordinates, depending on $s$ only)?`,
         [md`$1/s$`, md`$\ln s$`, md`$s^2$`, md`$s$`], 1,
-        [md`$s\,\tfrac{d}{ds}(1/s) = -1/s$, whose derivative over $s$ gives $1/s^3 \ne 0$. $1/s$ is not the 2-D analogue of $1/r$.`, null,
+        [md`$s\,\tfrac{d}{ds}(1/s) = -1/s$, and then $\tfrac1s\tfrac{d}{ds}(-1/s) = 1/s^3 \ne 0$. $1/s$ is not the 2-D analogue of $1/r$.`, null,
           md`$\tfrac1s\tfrac{d}{ds}(s\cdot 2s) = 4$.`, md`$\tfrac1s\tfrac{d}{ds}(s\cdot 1) = 1/s \ne 0$.`],
         md`$s\,\tfrac{d}{ds}\ln s = 1$, a constant, so $\nabla^2\ln s = 0$. $\ln s$ is the potential of an infinite line charge: in 2-D, $\ln s$ plays the role that $1/r$ plays in 3-D.`,
         { nofig: 'testing formulas' }),
@@ -1264,8 +1269,8 @@
           { lbl: md`V_{\text{ave}}\ (\text{one charge } q \text{ inside, at distance } z<R)`, expr: 'q/(4*pi*eps0*R)', vars: { q: [1, 3], eps0: [0.5, 2], R: [1.2, 2], z: [0.1, 1] } },
           { lbl: md`In the general formula, each charge **outside** the sphere contributes to $V_{\text{ave}}$:`, mc: [md`$q_i/(4\pi\varepsilon_0 R)$`, md`nothing`, md`its potential at the center of the sphere`, md`its potential at the nearest point of the sphere`], a: 2,
             why: [md`That's the contribution of a charge **inside**.`, md`Outside charges do change $V$ on the sphere; they contribute their center value.`, null, md`The average over the whole sphere is the center value, not the nearest-point value.`] },
-          { lbl: md`A charge $q$ **inside** contributes the same to $V_{\text{ave}}$ as:`, mc: [md`the same charge moved to the center`, md`the same charge moved to the nearest point of the sphere`, md`nothing`, md`a charge $qz/R$ at the center`], a: 0,
-            why: [null, md`A charge on the sphere would give a different (larger at nearby points) potential; the average comes out $q/(4\pi\varepsilon_0 R)$ only for a charge anywhere inside.`, md`It contributes $q/(4\pi\varepsilon_0 R)$, which isn't zero.`, md`The result doesn't depend on $z$ at all.`] },
+          { lbl: md`A charge $q$ **inside** contributes the same to $V_{\text{ave}}$ as:`, mc: [md`the same charge moved to the center`, md`the same charge moved outside, to a distance $2R$ from the center`, md`nothing`, md`a charge $qz/R$ at the center`], a: 0,
+            why: [null, md`Outside, it would contribute its potential at the center, $q/(4\pi\varepsilon_0\,2R)$: only half as much.`, md`It contributes $q/(4\pi\varepsilon_0 R)$, which isn't zero.`, md`The result doesn't depend on $z$ at all.`] },
         ],
         sol: md`
           No boundary conditions here: the potential of each charge is known, and you average it directly.
@@ -1338,7 +1343,7 @@
           { lbl: md`(a)\ \langle V\rangle_{1,2}`, ans: 83.9, unit: 'V' },
           { lbl: md`(b)\ \langle V\rangle_{1,2,3}`, ans: 173.8, unit: 'V' },
           { lbl: md`(c) If $q_3$ moved to $8$ cm from $O$ (still inside), the answer to (b) would:`, mc: [md`increase`, md`decrease`, md`stay the same`, md`double`], a: 2,
-            why: [md`Inside charges contribute $q/(4\pi\varepsilon_0R)$ wherever they are.`, md`Inside charges contribute $q/(4\pi\varepsilon_0R)$ wherever they are.`, null, md`Nothing in $q_3/(4\pi\varepsilon_0 R)$ changes.`] },
+            why: [md`Moving closer to the surface raises $V$ on the near side and lowers it on the far side by the same total: the contribution stays $q_3/(4\pi\varepsilon_0R)$.`, md`Moving away from the center doesn't reduce it either; $z$ cancels out of the inside result.`, null, md`Nothing in $q_3/(4\pi\varepsilon_0 R)$ changes.`] },
         ],
         sol: md`
           No boundary conditions: the charges are all given, so use $V_{\text{ave}} = V_{\text{center}} + \Qenc/(4\pi\varepsilon_0R)$.
@@ -1439,8 +1444,8 @@
     f.text(cx, cy - 12, o.in1 || 'we want V in the volume', 'c');
     if (o.in2) f.label(cx, cy + 16, o.in2, 'c');
     const b = pts[62];
-    f.arrow(b[0] - 40, b[1] + 36, b[0] - 3, b[1] + 3, { cls: 'dim' });
-    f.text(b[0] - 44, b[1] + 40, o.out || 'V given on the surface', 'tr');
+    f.arrow(b[0] - 34, b[1] + 30, b[0] - 3, b[1] + 3, { cls: 'dim' });
+    f.text(40, b[1] + 34, o.out || 'V given on the surface', 'tl');
     return f.svg();
   };
   const fIslands = () => {
@@ -1802,19 +1807,17 @@
   // ================================================================== Lesson 5 figures
   const fCond4 = () => {
     const f = PF.fig();
-    const cx = 200, cy = 110;
+    const cx = 176, cy = 110;
     const sh = [0.04, 0.03, 0.02], sp = [0.3, 1.0, 2.0];
-    f.poly(potato(cx, cy, 180, 96, sh, sp), { cls: 'thick' });
-    f.poly(potato(cx, cy, 166, 84, sh, sp), { cls: 'dash' });
-    [[86, 100, 'Q_a', 'b'], [196, 62, 'Q_b', 'b'], [296, 84, 'Q_c', 'b'], [150, 152, 'Q_d', 'r']].forEach(([x, y, lab, at], k) => {
+    f.poly(potato(cx, cy, 160, 96, sh, sp), { cls: 'thick' });
+    f.poly(potato(cx, cy, 147, 84, sh, sp), { cls: 'dash' });
+    [[74, 100, 'Q_a', 'b'], [174, 62, 'Q_b', 'b'], [264, 88, 'Q_c', 'b'], [134, 152, 'Q_d', 'r']].forEach(([x, y, lab, at], k) => {
       const ph = [0.3 + k, 1.1 + k, 2.2 + k];
       metal(f, potato(x, y, 19, 13, [0.12, 0.08, 0.05], ph));
       f.poly(potato(x, y, 30, 23, [0.08, 0.05, 0.03], ph), { cls: 'dash dim' });
       if (at === 'b') f.label(x, y + 30, lab, 't', 'small'); else f.label(x + 36, y, lab, 'l', 'small');
     });
-    f.label(262, 140, '\\rho(\\vb r)', 'c');
-    f.arrow(372, 214, 344, 186, { cls: 'dim' }); f.text(376, 218, 'outer boundary', 'tl');
-    f.arrow(338, 18, 314, 62, { cls: 'dim' }); f.text(342, 14, 'Gaussian surface', 'bl');
+    f.label(236, 146, '\\rho(\\vb r)', 'c');
     return f.svg();
   };
   const fPurcell = (mode) => {
@@ -1870,7 +1873,7 @@
 
         !!key What the second theorem fixes
           $\vb E$, and so $V$ up to one additive constant. If $V$ is pinned anywhere ($V\to 0$ at infinity, or a grounded conductor), $V$ is fixed too, and with it each conductor's potential and surface charge $\sigma = \varepsilon_0E_n$.
-      `, { cond: { svg: fCond4(), cap: md`Lecture 9's picture: conductors with total charges $Q_a,\dots,Q_d$, a given $\rho$ between them, and Gaussian surfaces (dashed) around each conductor and just inside the outer boundary.` } }),
+      `, { cond: { svg: fCond4(), cap: md`Lecture 9's picture: conductors (hatched) with total charges $Q_a,\dots,Q_d$ and a given $\rho$ between them. Thick line: the outer boundary. Dashed: Gaussian surfaces around each conductor and just inside the outer boundary.` } }),
 
       Q(md`Conductors with given total charges $Q_a, \dots, Q_d$, a given $\rho$ between them, and $V\to 0$ at infinity. What does the second uniqueness theorem guarantee?`,
         [md`The charge distribution on each conductor, but not the field`, md`The field $\vb E$ everywhere in the region (and so $V$, given $V\to0$ at infinity)`, md`Only the potential of each conductor`, md`Nothing, unless the conductors' potentials are given too`], 1,
@@ -1943,7 +1946,7 @@
 
       P({
         id: 'u4-p-shell', title: 'A charged sphere inside a grounded shell',
-        q: md`A metal sphere of radius $a = 5$ cm carries charge $Q = 2$ nC. It sits at the center of a thin metal shell of radius $b = 15$ cm, which is grounded. Find the potential of the inner sphere and the total charge on the shell, then answer the two questions about the field. Use $1/(4\pi\varepsilon_0) = 8.99\times10^9\ \text{N m}^2/\text{C}^2$.`,
+        q: md`A metal sphere of radius $a = 5$ cm carries charge $Q = 2$ nC. It sits at the center of a thin metal shell of radius $b = 15$ cm, which is grounded. Find the potential of the inner sphere and the total charge on the shell, then answer the two questions below. Use $1/(4\pi\varepsilon_0) = 8.99\times10^9\ \text{N m}^2/\text{C}^2$.`,
         figHtml: fConc({ inner: 'Q', outer: 'V=0' }),
         hints: [
           md`List the conditions, one per conductor: the sphere is isolated with total charge $Q$; the shell is grounded, $V = 0$; and $V\to0$ far away.`,
@@ -2131,7 +2134,6 @@
     g.charge(qx, qy, { q: '+', lab: 'q', at: 'r' });
     g.label(qx - 8, qy + 30, 'd', 'r', 'small');
     g.label(c[2][0] + 6, c[2][1] + 8, 'V = 0', 'tl', 'small');
-    g.text(qx + 70, qy - 6, 'charge at (0, 0, d)', 'l');
     return g.svg();
   };
   const fImgSide = () => {
@@ -2250,7 +2252,11 @@
         [null, md`That would be a second condition on the same conductor, which over-determines it. The sphere's potential comes out of the solution.`,
           md`$\sigma$ is part of the answer. The total charge plus "the sphere is an equipotential" is enough.`,
           md`The box is grounded: its potential is its condition, and its charge is an output.`],
-        md`Boundary conditions: 1. $V = 0$ on the walls. 2. The sphere is an equipotential with total charge $Q$. No source in the region. One condition per conductor, so the field is unique (second theorem), and the grounded box pins $V$.`,
+        md`Boundary conditions:
+        1. $V = 0$ on the walls.
+        2. The sphere: an equipotential with total charge $Q$.
+
+        No source in the region. One condition per conductor, so the field is unique (second theorem), and the grounded box pins $V$.`,
         { figHtml: fBoxSphere('Q') }),
 
       Q(md`Same grounded box and metal sphere, but nothing at all is said about the sphere: not its charge, not its potential. Is $V$ inside determined?`,
@@ -2298,7 +2304,11 @@
         [md`The sphere is grounded: $V = 0$ is its condition, and its charge is an output.`,
           md`One condition per surface; the sphere already has $V = 0$.`,
           md`The region is unbounded, and infinity is a boundary that needs its own condition.`, null],
-        md`Boundary conditions: 1. $V = 0$ on the sphere. 2. $V\to0$ far away. Source: $q$. Without 2 you could add, for instance, $c\,(1 - R/r)$ for any $c$: it's harmonic outside and zero on the sphere. (Unit 5 solves this problem with an image charge.)`,
+        md`Boundary conditions:
+        1. $V = 0$ on the sphere.
+        2. $V\to0$ far away.
+
+        Source: $q$. Without condition 2 you could add, for instance, $c\,(1 - R/r)$ for any $c$: it's harmonic outside the sphere and zero on it. (Unit 5 solves this problem with an image charge.)`,
         { figHtml: fSphereOutQ() }),
 
       Q(md`Two grounded semi-infinite plates sit at $y = 0$ and $y = a$; the strip at $x = 0$ joining them is held at $V_0(y)$, and the slot runs off to $x\to\infty$. Besides $V = 0$ on both plates and $V = V_0(y)$ at $x = 0$, which condition is needed?`,
@@ -2306,7 +2316,13 @@
         [md`The plates already have a condition ($V = 0$); a second one would over-determine them.`, null,
           md`Far from the strip its influence dies away; nothing holds the far end at $V_0$.`,
           md`The open end is a boundary too. Without a condition there, solutions growing like $e^{kx}$ would be allowed.`],
-        md`Boundary conditions for this slot (Griffiths Ex. 3.3, Unit 6): 1. $V = 0$ at $y = 0$. 2. $V = 0$ at $y = a$. 3. $V = V_0(y)$ at $x = 0$. 4. $V\to 0$ as $x\to\infty$. Number 4 is the one people forget; in separation of variables it is what kills the $e^{+kx}$ terms.`,
+        md`Boundary conditions for this slot (Griffiths Ex. 3.3, Unit 6):
+        1. $V = 0$ at $y = 0$.
+        2. $V = 0$ at $y = a$.
+        3. $V = V_0(y)$ at $x = 0$.
+        4. $V\to 0$ as $x\to\infty$.
+
+        Number 4 is the one people forget; in separation of variables it is what kills the $e^{+kx}$ terms.`,
         { figHtml: fSlot() }),
 
       Q(md`A grounded plane at $z = 0$ and a plate at $z = d$ held at $V_0$, no charge between. Which function satisfies Laplace's equation **and** both boundary conditions?`,

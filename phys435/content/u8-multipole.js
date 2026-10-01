@@ -537,7 +537,7 @@
     f.line(-h + 7, 0, h - 7, 0, { cls: 'thin dim' }); f.line(0, -h + 7, 0, h - 7, { cls: 'thin dim' });
     f.charge(-h, 0, { q: '-', lab: '-q', at: 'l' }); f.charge(h, 0, { q: '+', lab: '+q', at: 'r' });
     f.charge(0, -h, { q: '+', lab: '+q', at: 't' }); f.charge(0, h, { q: '-', lab: '-q', at: 'b' });
-    f.dim(-h, 52, h, 52, 'd', { at: 'b' });
+    f.dim(-h, 72, h, 72, 'd', { at: 'b' });
     f.arrow(-96, 40, -66, 40, { cls: 'dim', hs: 5 }); f.label(-62, 40, 'y', 'l', 'small accent');
     f.arrow(-96, 40, -96, 10, { cls: 'dim', hs: 5 }); f.label(-96, 6, 'z', 'b', 'small accent');
     return f.svg();
@@ -1045,6 +1045,500 @@
     ],
   };
 
+  // ================================================================ Lesson 3 figures
+  // pure dipole at the origin, field point at polar angle th, with the unit vectors r-hat and theta-hat
+  const fDipField = () => {
+    const f = PF.fig(), th = 40 * D2R, R = 130;
+    f.line(0, 60, 0, -170, { cls: 'dim', arrow: 'end', hs: 6 }); f.label(4, -172, 'z', 'bl', 'small accent');
+    pArrow(f, 0, 0, 90, 30, '\\vb p', 'l');
+    const px = R * Math.sin(th), py = -R * Math.cos(th), L = 36;
+    dl(f, 0, 0, px, py, { cls: 'dim dash thin' });
+    f.dot(px, py, 3); f.tag(px, py, 'P', 'l', 8);
+    da(f, px, py, px + L * Math.sin(th), py - L * Math.cos(th), { hs: 6 }); f.tag(px + L * Math.sin(th), py - L * Math.cos(th), '\\uv r', 'tr', 6);
+    da(f, px, py, px + L * Math.cos(th), py + L * Math.sin(th), { hs: 6 }); f.tag(px + L * Math.cos(th), py + L * Math.sin(th), '\\boldsymbol{\\hat\\theta}', 'r', 6);
+    f.angle(0, 0, 26, 50, 90, '\\theta');
+    f.label(50, -50, 'r', 'l', 'small');
+    return f.svg();
+  };
+  // dipole with test points A (axis above), B (equator), C (axis below), D (cos^2 theta = 1/3); sol: draw E there
+  const TH54 = Math.acos(1 / Math.sqrt(3));
+  const fPts = (sol) => {
+    const f = PF.fig(), u = 74, s = 13;
+    f.line(0, u + 34, 0, -u - 40, { cls: 'dim', arrow: 'end', hs: 6 }); f.label(4, -u - 42, 'z', 'bl', 'small accent');
+    pArrow(f, 0, 0, 90, 30, '\\vb p', 'l');
+    const D = [u * Math.sin(TH54), -u * Math.cos(TH54)];
+    dl(f, 0, 0, D[0], D[1], { cls: 'dim dash thin' });
+    f.arc(0, 0, 40, 90 - TH54 / D2R, 90, { cls: 'dim' }); f.label(16, -50, '\\theta_D', 'c', 'small');
+    const pts = [['A', 0, -u, 'r'], ['B', u, 0, 'tr'], ['C', 0, u, 'r'], ['D', D[0], D[1], 't']];
+    for (const [n, x, y, at] of pts) { f.dot(x, y, 3); f.tag(x, y, n, at, 8); }
+    if (sol) {
+      f.line(0, -u, 0, -u - 2 * s, { cls: 'thick', arrow: 'end', hs: 7 });
+      f.line(u, 0, u, s, { cls: 'thick', arrow: 'end', hs: 7 });
+      f.line(0, u, 0, u - 2 * s, { cls: 'thick', arrow: 'end', hs: 7 });
+      f.line(D[0], D[1], D[0] + Math.SQRT2 * s, D[1], { cls: 'thick', arrow: 'end', hs: 7 });
+    }
+    return f.svg();
+  };
+  // field lines: pure dipole r = C sin^2(theta), physical dipole traced numerically (both with p up)
+  const clipPolys = (pts, h) => { const out = []; let cur = []; for (const p of pts) { if (Math.abs(p[0]) <= h && Math.abs(p[1]) <= h) cur.push(p); else { if (cur.length > 1) out.push(cur); cur = []; } } if (cur.length > 1) out.push(cur); return out; };
+  const fPureLines = () => {
+    const f = PF.fig(), h = 112;
+    f.line(0, h, 0, -h, { cls: 'dim thin dash' });
+    for (const Cc of [24, 44, 72, 110, 170, 260]) for (const sgn of [1, -1]) {
+      const pts = [];
+      for (let k = 1; k < 180; k++) { const t = k * D2R, r = Cc * Math.sin(t) ** 2; pts.push([sgn * r * Math.sin(t), -r * Math.cos(t)]); }
+      clipPolys(pts, h).forEach((seg) => f.pl(seg, { cls: 'thin' }));
+      const ta = Cc <= h ? 90 : 34, t = ta * D2R, r = Cc * Math.sin(t) ** 2, dr = 2 * Cc * Math.sin(t) * Math.cos(t);
+      const x = sgn * r * Math.sin(t), y = -r * Math.cos(t), dx = sgn * (dr * Math.sin(t) + r * Math.cos(t)), dy = -(dr * Math.cos(t) - r * Math.sin(t));
+      f.head(x, y, dx, dy, { hs: 6 });
+    }
+    pArrow(f, 0, 0, 90, 18, '', 'r');
+    return f.svg();
+  };
+  const fPhysLines = () => {
+    const f = PF.fig(), h = 112, d2 = 20;
+    const qs = [[1, 0, -d2], [-1, 0, d2]];
+    const E = (x, y) => { let ex = 0, ey = 0; for (const [q, cx, cy] of qs) { const dx = x - cx, dy = y - cy, r3 = Math.pow(dx * dx + dy * dy, 1.5); ex += q * dx / r3; ey += q * dy / r3; } return [ex, ey]; };
+    f.line(0, h, 0, -h, { cls: 'dim thin dash' });
+    for (const a0 of [10, 24, 40, 58, 80, 108, 140]) for (const sgn of [1, -1]) {
+      let x = sgn * 8 * Math.sin(a0 * D2R), y = -d2 - 8 * Math.cos(a0 * D2R);
+      const pts = [[x, y]];
+      let hit = false;
+      for (let i = 0; i < 2000; i++) {
+        let [ex, ey] = E(x, y), m = Math.hypot(ex, ey);
+        const mx = x + ex / m * 0.75, my = y + ey / m * 0.75;
+        [ex, ey] = E(mx, my); m = Math.hypot(ex, ey);
+        x += ex / m * 1.5; y += ey / m * 1.5;
+        if (Math.abs(x) > h || Math.abs(y) > h) break;
+        if (Math.hypot(x, y - d2) < 8) { hit = true; break; }
+        pts.push([x, y]);
+      }
+      const k = hit ? pts.reduce((b, p, i) => (Math.abs(p[0]) > Math.abs(pts[b][0]) ? i : b), 0) : Math.floor(pts.length * 0.45);
+      f.pl(pts, { cls: 'thin' });
+      const kk = Math.min(k, pts.length - 2);
+      f.head(pts[kk + 1][0], pts[kk + 1][1], pts[kk + 1][0] - pts[kk][0], pts[kk + 1][1] - pts[kk][1], { hs: 6 });
+      if (!hit) {                                           // the mirror image is the part that returns to -q from below
+        const mp = pts.map((p) => [p[0], -p[1]]);
+        f.pl(mp, { cls: 'thin' });
+        f.head(mp[kk][0], mp[kk][1], mp[kk][0] - mp[kk + 1][0], mp[kk][1] - mp[kk + 1][1], { hs: 6 });
+      }
+    }
+    f.charge(0, -d2, { q: '+', r: 6 }); f.charge(0, d2, { q: '-', r: 6 });
+    return f.svg();
+  };
+  const fLines = () => PF.row([{ svg: fPureLines(), cap: '(a) pure dipole' }, { svg: fPhysLines(), cap: '(b) physical dipole' }]);
+  // physical dipole with a point M between the charges and a point F above them
+  const fBetween = () => {
+    const f = PF.fig();
+    f.line(0, 90, 0, -150, { cls: 'dim', arrow: 'end', hs: 6 }); f.label(4, -152, 'z', 'bl', 'small accent');
+    f.charge(0, -40, { q: '+', lab: '+q', at: 'l' }); f.charge(0, 40, { q: '-', lab: '-q', at: 'l' });
+    f.dot(0, 0, 3); f.tag(0, 0, 'M', 'r', 8);
+    f.dot(0, -120, 3); f.tag(0, -120, 'F', 'r', 8);
+    return f.svg();
+  };
+  // Griffiths 4th ed. 3.33: dipole at the origin, points (a,0,0) and (0,0,a); oblique 3-D
+  const fL3W = (sol) => {
+    const g = PF.fig({ proj: { ox: 0, oy: 0, s: 1 } }), A = 80;
+    g.line(-24, 0, 120, 0, { cls: 'dim', arrow: 'end', hs: 6 }); g.label(124, 2, 'y', 'l', 'small accent');
+    g.line(0, 40, 0, -130, { cls: 'dim', arrow: 'end', hs: 6 }); g.label(3, -133, 'z', 'bl', 'small accent');
+    const x0 = g.p3(-30, 0, 0), x1 = g.p3(150, 0, 0);
+    da(g, x0[0], x0[1], x1[0], x1[1], { cls: 'dim', hs: 6 }); g.tag(x1[0], x1[1], 'x', 'bl', 6, 'small accent');
+    pArrow(g, 0, 0, 90, 28, '\\vb p', 'r');
+    const X1 = g.p3(A, 0, 0), Z1 = g.p3(0, 0, A);
+    g.dot(X1[0], X1[1], 3); g.tag(X1[0], X1[1], '(a,0,0)', 'tl', 8, 'small');
+    g.dot(Z1[0], Z1[1], 3); g.tag(Z1[0], Z1[1], '(0,0,a)', 'r', 8, 'small');
+    if (sol) {
+      g.line(X1[0], X1[1], X1[0], X1[1] + 20, { cls: 'thick', arrow: 'end', hs: 7 }); g.tag(X1[0], X1[1] + 20, '\\vb F', 'r', 8, 'small');
+      g.line(Z1[0], Z1[1], Z1[0], Z1[1] - 40, { cls: 'thick', arrow: 'end', hs: 7 }); g.tag(Z1[0], Z1[1] - 40, '\\vb F', 'r', 8, 'small');
+    }
+    return g.svg();
+  };
+  const fL3P1 = (sol) => yz([], { u: 46, ext: [1.2, 2.6, 2.3, 1.4],
+    pre: (f) => pArrow(f, 0, 0, 90, 28, '\\vb p', 'l'),
+    post: (f, X, Y) => {
+      const B = [X(1.6), Y(0)], Cc = [X(0), Y(-1.6)];
+      f.dot(B[0], B[1], 3); f.tag(B[0], B[1], '(0,b,0)', 'tr', 7, 'small');
+      f.dot(Cc[0], Cc[1], 3); f.tag(Cc[0], Cc[1], '(0,0,-b)', 'r', 8, 'small');
+      if (sol) {
+        f.line(B[0], B[1], B[0], B[1] + 20, { cls: 'thick', arrow: 'end', hs: 7 }); f.tag(B[0], B[1] + 20, '\\vb F', 'r', 8, 'small');
+        f.line(Cc[0] - 14, Cc[1], Cc[0] - 14, Cc[1] - 40, { cls: 'thick', arrow: 'end', hs: 7 }); f.tag(Cc[0] - 14, Cc[1] - 40, '\\vb F', 'l', 8, 'small');
+      }
+    } });
+  const fDip45 = () => yz([], { pre: (f) => pArrow(f, 0, 0, 90, 30, '\\vb p', 'l'), P: [2.5, 45], Prat: 'br', ext: [1.2, 2.6, 1.0, 2.6] });
+  const fL3P2 = (sol) => yz([], { pre: (f) => pArrow(f, 0, 0, 90, 30, '\\vb p', 'l'), P: [2.6, 60], Prat: 'br', ext: [1.2, 2.8, 1.0, 2.2],
+    post: sol ? (f, X, Y) => {
+      const t = 60 * D2R, px = X(2.6 * Math.sin(t)), py = Y(2.6 * Math.cos(t)), s = 24;
+      const er = 1, et = Math.sqrt(3) / 2;
+      const ex = er * Math.sin(t) + et * Math.cos(t), ez = er * Math.cos(t) - et * Math.sin(t);
+      da(f, px, py, px + s * ex, py - s * ez, { cls: 'thick', hs: 7 }); f.tag(px + s * ex, py - s * ez, '\\vb E', 'r', 7, 'small');
+    } : null });
+  // HW 5 Prob. 3.36 (Griffiths Fig. 3.38): q at (0,0,a), -q at (0,±a,0); x toward the viewer
+  const f338 = () => {
+    const g = PF.fig({ proj: { ox: 0, oy: 0, s: 1 } }), A = 58;
+    g.line(-1.75 * A, 0, 1.75 * A, 0, { cls: 'dim', arrow: 'end', hs: 6 }); g.label(1.75 * A + 4, 2, 'y', 'l', 'small accent');
+    g.line(0, 1.3 * A, 0, -1.75 * A, { cls: 'dim', arrow: 'end', hs: 6 }); g.label(3, -1.75 * A - 3, 'z', 'bl', 'small accent');
+    const x0 = g.p3(-0.6 * A, 0, 0), x1 = g.p3(2.1 * A, 0, 0);
+    da(g, x0[0], x0[1], x1[0], x1[1], { cls: 'dim', hs: 6 }); g.tag(x1[0], x1[1], 'x', 'bl', 6, 'small accent');
+    g.charge(0, -A, { q: '+', lab: 'q', at: 'r' });
+    g.charge(-A, 0, { q: '-', lab: '-q', at: 'b' }); g.charge(A, 0, { q: '-', lab: '-q', at: 'b' });
+    g.label(-6, -A / 2, 'a', 'r', 'small'); g.label(-A / 2, -6, 'a', 'b', 'small'); g.label(A / 2, -6, 'a', 'b', 'small');
+    return g.svg();
+  };
+  const f338sol = () => {
+    const a = yz([[1, 0, 1, 'q', 'r'], [-1, -1, 0, '-q', 'b'], [-1, 1, 0, '-q', 'b']], { ext: [1.5, 1.5, 0.8, 1.6], pre: (f) => pArrow(f, 0, 0, 90, 26, '\\vb p', 'tl') });
+    const f = PF.fig(), R = 96, sc = 17;
+    f.circle(0, 0, R, { cls: 'dim dash thin' });
+    f.charge(0, -14, { q: '+', r: 5 }); f.charge(-14, 0, { q: '-', r: 5 }); f.charge(14, 0, { q: '-', r: 5 });
+    for (let k = 0; k < 12; k++) {
+      const t = k * 30 * D2R, sy = Math.sin(t), cz = Math.cos(t);
+      const Er = -1 + 0.5 * cz, Et = 0.25 * sy;                // two-term field at r = 4a, units q/(4 pi eps0 r^2)
+      const ey = Er * sy + Et * cz, ez = Er * cz - Et * sy;      // components along y (right) and z (up)
+      const x = R * sy, y = -R * cz;
+      da(f, x, y, x + sc * ey, y - sc * ez, { hs: 6 });
+    }
+    f.label(R * 0.74 + 8, -R * 0.74 - 8, 'r = 4a', 'bl', 'small');
+    return PF.row([{ svg: a, cap: 'the $-q$ pair cancels; $\\vb p = qa\\,\\uv z$' }, { svg: f.svg(), cap: 'two-term $\\vb E$ on a circle $r = 4a$' }]);
+  };
+
+  // ================================================================ Lesson 3
+  const L3 = {
+    id: 'u8-dipole-field', title: 'The field of a dipole',
+    steps: [
+      RF(md`
+        ### From $V$ to $\vb E$
+
+        Put a pure dipole at the origin, pointing along $z$:
+
+        $$V_{\rm dip}(r,\theta) = \frac{p\cos\theta}{4\pi\varepsilon_0 r^2}.$$
+
+        Take $\vb E = -\nabla V$ with the spherical gradient from the formula sheet:
+
+        $$E_r = -\frac{\partial V}{\partial r} = \frac{2p\cos\theta}{4\pi\varepsilon_0 r^3},\qquad E_\theta = -\frac1r\frac{\partial V}{\partial\theta} = \frac{p\sin\theta}{4\pi\varepsilon_0 r^3},\qquad E_\phi = 0.$$
+
+        $$\boxed{\vb E_{\rm dip}(r,\theta) = \frac{p}{4\pi\varepsilon_0 r^3}\left(2\cos\theta\,\uv r + \sin\theta\,\boldsymbol{\hat\theta}\right)}$$
+
+        [[fig:geo]]
+
+        - The field falls as $1/r^3$, one power faster than $V$: each derivative costs a power of $r$. Quadrupole fields go as $1/r^4$, and so on.
+        - Magnitude: $|\vb E| = \dfrac{p}{4\pi\varepsilon_0 r^3}\sqrt{4\cos^2\theta + \sin^2\theta} = \dfrac{p}{4\pi\varepsilon_0 r^3}\sqrt{1 + 3\cos^2\theta}$. On the axis it is twice as strong as on the equator at the same $r$.
+
+        !!trap The sign of $E_\theta$
+          $\dfrac{\partial}{\partial\theta}\cos\theta = -\sin\theta$, so $E_\theta = +\dfrac{p\sin\theta}{4\pi\varepsilon_0 r^3} \ge 0$. $\boldsymbol{\hat\theta}$ points toward increasing $\theta$ ("south"). On the equator, $\boldsymbol{\hat\theta} = -\uv z$, so the field there points opposite to $\vb p$.
+      `, { geo: { svg: fDipField(), cap: 'Pure dipole $\\vb p = p\\,\\uv z$ at the origin; at the field point $P$, $\\uv r$ points away from the origin and $\\boldsymbol{\\hat\\theta}$ toward increasing $\\theta$.' } }),
+
+      Q(md`For $V_{\rm dip} = \dfrac{p\cos\theta}{4\pi\varepsilon_0 r^2}$, what is $E_\theta$?`,
+        [md`$-\dfrac{p\sin\theta}{4\pi\varepsilon_0 r^3}$`, md`$\dfrac{p\sin\theta}{4\pi\varepsilon_0 r^2}$`, md`$\dfrac{2p\sin\theta}{4\pi\varepsilon_0 r^3}$`, md`$\dfrac{p\sin\theta}{4\pi\varepsilon_0 r^3}$`], 3,
+        [md`Two minus signs: $E_\theta = -\tfrac1r\,\partial_\theta V$ and $\partial_\theta\cos\theta = -\sin\theta$. They cancel.`,
+          md`You dropped the $\tfrac1r$ in the $\theta$-component of the gradient.`,
+          md`The factor 2 belongs to $E_r$ (from $\partial_r r^{-2} = -2r^{-3}$), not to $E_\theta$.`,
+          null],
+        md`$E_\theta = -\dfrac1r\dfrac{\partial}{\partial\theta}\left(\dfrac{p\cos\theta}{4\pi\varepsilon_0 r^2}\right) = -\dfrac1r\cdot\dfrac{-p\sin\theta}{4\pi\varepsilon_0 r^2} = \dfrac{p\sin\theta}{4\pi\varepsilon_0 r^3}$. It is never negative for $0 \le \theta \le \pi$.`,
+        { figHtml: fDipField() }),
+
+      Q(md`A dipole $\vb p = p\,\uv z$ sits at the origin. What is $\vb E$ at point $A$, on the $+z$ axis a distance $r$ away?`,
+        [md`$\dfrac{2p}{4\pi\varepsilon_0 r^3}$, along $-\uv z$`, md`$\dfrac{p}{4\pi\varepsilon_0 r^3}$, along $+\uv z$`, md`$\dfrac{p}{4\pi\varepsilon_0 r^2}$, along $+\uv z$`, md`$\dfrac{2p}{4\pi\varepsilon_0 r^3}$, along $+\uv z$`], 3,
+        [md`At $\theta = 0$, $E_r = \dfrac{2p}{4\pi\varepsilon_0 r^3} > 0$: outward, and outward is $+\uv z$ there.`,
+          md`On the axis $E_r = \dfrac{2p\cos 0}{4\pi\varepsilon_0 r^3}$: the factor 2 is there.`,
+          md`$1/r^2$ is how the potential falls off. The dipole field goes as $1/r^3$.`,
+          null],
+        md`$\theta = 0$: $E_\theta = 0$ and $E_r = \dfrac{2p}{4\pi\varepsilon_0 r^3}$ along $\uv r = \uv z$. On the axis the field is parallel to $\vb p$.`,
+        { figHtml: fPts(false) }),
+
+      Q(md`Same dipole. What is $\vb E$ at point $B$, on the equatorial plane a distance $r$ away?`,
+        [md`$\dfrac{p}{4\pi\varepsilon_0 r^3}$, opposite to $\vb p$`, md`$\dfrac{p}{4\pi\varepsilon_0 r^3}$, parallel to $\vb p$`, md`Zero, since $V = 0$ there`, md`$\dfrac{2p}{4\pi\varepsilon_0 r^3}$, radially outward`], 0,
+        [null,
+          md`At $\theta = 90^\circ$ the field is $E_\theta\,\boldsymbol{\hat\theta}$, and $\boldsymbol{\hat\theta} = -\uv z$ there.`,
+          md`$V = 0$ on the whole plane, but $\vb E = -\nabla V$ depends on how $V$ changes *off* the plane: above it $V > 0$, below it $V < 0$, so $\vb E$ points down.`,
+          md`$E_r \propto \cos 90^\circ = 0$: there is no radial part on the equator.`],
+        md`$\theta = 90^\circ$: $E_r = 0$, $E_\theta = \dfrac{p}{4\pi\varepsilon_0 r^3}$, and $\boldsymbol{\hat\theta} = -\uv z$. So $\vb E = -\dfrac{\vb p}{4\pi\varepsilon_0 r^3}$: half the axial strength, pointing back along $-\vb p$. A standard example of $V = 0$ with $\vb E \neq 0$.`,
+        { figHtml: fPts(false) }),
+
+      Q(md`Same dipole. What is $\vb E$ at point $C$, on the axis *below* the dipole ($\theta = 180^\circ$), a distance $r$ away?`,
+        [md`$\dfrac{2p}{4\pi\varepsilon_0 r^3}$, along $-\uv z$, away from the dipole`, md`Zero`, md`$\dfrac{2p}{4\pi\varepsilon_0 r^3}$, along $+\uv z$, parallel to $\vb p$`, md`$\dfrac{p}{4\pi\varepsilon_0 r^3}$, along $+\uv z$`], 2,
+        [md`$E_r = \dfrac{2p\cos 180^\circ}{4\pi\varepsilon_0 r^3} < 0$ means *inward*, and inward at the bottom of the axis is $+\uv z$. Below the dipole you are nearer its negative end, and field lines end on negative charge.`,
+          md`Only the sign of $V$ flips below the dipole. The field is as strong as above it.`,
+          null,
+          md`On the axis $|E_r| = \dfrac{2p}{4\pi\varepsilon_0 r^3}$, with the factor 2.`],
+        md`$\theta = \pi$: $E_\theta = 0$, $E_r = -\dfrac{2p}{4\pi\varepsilon_0 r^3}$, and $\uv r = -\uv z$, so $\vb E = +\dfrac{2p}{4\pi\varepsilon_0 r^3}\,\uv z$. On the whole axis, above and below, $\vb E$ is parallel to $\vb p$: lines leave the top, loop around, and come back in at the bottom heading up.`,
+        { figHtml: fPts(false) }),
+
+      Q(md`You double the distance from a dipole, keeping the direction fixed. The field changes by a factor of`,
+        [md`$\tfrac14$`, md`$\tfrac18$`, md`$\tfrac12$`, md`$\tfrac1{16}$`], 1,
+        [md`$1/r^2$ is the dipole *potential*. The field has one more power of $1/r$.`, null, md`That is how the potential of a point charge scales.`, md`$1/r^4$ is a quadrupole field.`],
+        md`$E_{\rm dip} \propto 1/r^3$, so the field drops to $\tfrac18$.`,
+        { figHtml: fDipField() }),
+
+      RF(md`
+        ### Coordinate-free form
+
+        With $\uv z = \cos\theta\,\uv r - \sin\theta\,\boldsymbol{\hat\theta}$ (formula sheet), $\vb p = p\cos\theta\,\uv r - p\sin\theta\,\boldsymbol{\hat\theta}$ and $\vb p\cdot\uv r = p\cos\theta$. Then
+
+        $$2p\cos\theta\,\uv r + p\sin\theta\,\boldsymbol{\hat\theta} = 3p\cos\theta\,\uv r - \left(p\cos\theta\,\uv r - p\sin\theta\,\boldsymbol{\hat\theta}\right) = 3(\vb p\cdot\uv r)\,\uv r - \vb p,$$
+
+        $$\vb E_{\rm dip}(\vb r) = \kq\,\frac{3(\vb p\cdot\uv r)\,\uv r - \vb p}{r^3}.$$
+
+        This form works for any direction of $\vb p$, with $\vb r$ measured from the dipole. Read it as a radial part of strength $3\,\vb p\cdot\uv r$ minus a copy of $\vb p$.
+
+        The $z$-component is $E_z = E_r\cos\theta - E_\theta\sin\theta = \dfrac{p}{4\pi\varepsilon_0 r^3}(3\cos^2\theta - 1)$. Directions worth knowing:
+
+        | where | direction of $\vb E$ | size, in units of $\dfrac{p}{4\pi\varepsilon_0 r^3}$ |
+        |---|---|---|
+        | on the axis, above or below | parallel to $\vb p$ | $2$ |
+        | on the equatorial plane | antiparallel to $\vb p$ | $1$ |
+        | $\cos^2\theta = \tfrac13$ ($\theta = 54.7^\circ$ or $125.3^\circ$) | perpendicular to $\vb p$: away from the axis at $54.7^\circ$, toward it at $125.3^\circ$ | $\sqrt2$ |
+
+        [[fig:dirs]]
+
+        ### Field lines
+
+        Along a field line, $\dfrac{dr}{r\,d\theta} = \dfrac{E_r}{E_\theta} = \dfrac{2\cos\theta}{\sin\theta}$, which integrates to $r = C\sin^2\theta$. Each line leaves the dipole along $+z$, swings out to its largest distance $C$ at the equator (crossing it pointing along $-\vb p$), and comes back in from below.
+
+        [[fig:lines]]
+
+        A physical dipole has the same picture far away. Close in it differs: its lines start on $+q$ and end on $-q$, and between the two charges the field points from $+q$ to $-q$, opposite to $\vb p$. Blot out the middle of the two pictures and they look alike; the pure-dipole formula is valid for a physical dipole only where $r \gg d$.
+      `, { dirs: { svg: fPts(true), cap: '$\\vb E$ at $A$ (axis, above), $B$ (equator), $C$ (axis, below) and $D$ ($\\cos^2\\theta_D = \\tfrac13$). Arrow lengths are proportional to $|\\vb E|$: $2 : 1 : 2 : \\sqrt2$.' }, lines: { svg: fLines().svg, cap: 'Field lines with $\\vb p$ pointing up (Griffiths Fig. 3.37). Dashed: the dipole axis.' } }),
+
+      Q(md`At the same distance $r$ from a dipole, how does $|\vb E|$ on the axis compare with $|\vb E|$ on the equatorial plane?`,
+        [md`They are equal`, md`Half as big`, md`Three times as big`, md`Twice as big`], 3,
+        [md`$|\vb E| \propto \sqrt{1 + 3\cos^2\theta}$ depends on direction.`,
+          md`Backwards: the axis has the stronger field.`,
+          md`$\sqrt{1 + 3\cos^2\theta} = 2$ on the axis, not 3. The 3 in $3(\vb p\cdot\uv r)\uv r$ is partly cancelled by the $-\vb p$.`,
+          null],
+        md`$|\vb E| = \dfrac{p}{4\pi\varepsilon_0 r^3}\sqrt{1 + 3\cos^2\theta}$: $2$ on the axis and $1$ on the equator. From the coordinate-free form: on the axis $3\vb p - \vb p = 2\vb p$; on the equator $0 - \vb p$.`,
+        { figHtml: fPts(false) }),
+
+      Q(md`At point $D$, where $\cos^2\theta_D = \tfrac13$ ($\theta_D \approx 54.7^\circ$), which way does $\vb E$ point?`,
+        [md`Along $\vb p$`, md`Radially away from the dipole`, md`Along $-\vb p$`, md`Perpendicular to $\vb p$, away from the axis`], 3,
+        [md`$E_z \propto 3\cos^2\theta - 1 = 0$ here: there is no component along $\vb p$.`,
+          md`$E_\theta \neq 0$ at $54.7^\circ$, so $\vb E$ is not radial. It is radial only on the axis.`,
+          md`$E_z = 0$ at this angle.`,
+          null],
+        md`$E_z = \dfrac{p}{4\pi\varepsilon_0 r^3}(3\cos^2\theta - 1) = 0$. The component away from the axis is $E_r\sin\theta + E_\theta\cos\theta = \dfrac{3p\sin\theta\cos\theta}{4\pi\varepsilon_0 r^3} > 0$. So $\vb E$ points straight away from the axis, with size $\sqrt2\,\dfrac{p}{4\pi\varepsilon_0 r^3}$. Closer to the axis than $54.7^\circ$ the field tilts up; beyond it, down.`,
+        { figHtml: fPts(false) }),
+
+      Q(md`$\vb p = p\,\uv z$ at the origin. Use $\vb E = \kq\dfrac{3(\vb p\cdot\uv r)\uv r - \vb p}{r^3}$ at the point $P$ in the $yz$-plane at $\theta = 45^\circ$.`,
+        [md`$\dfrac{p}{4\pi\varepsilon_0 r^3}\left(\tfrac32\,\uv y + \tfrac32\,\uv z\right)$`, md`$\dfrac{p}{4\pi\varepsilon_0 r^3}\left(\tfrac32\,\uv y - \tfrac12\,\uv z\right)$`, md`$\dfrac{\sqrt2\,p}{4\pi\varepsilon_0 r^3}\,\uv r$`, md`$\dfrac{p}{4\pi\varepsilon_0 r^3}\left(\tfrac32\,\uv y + \tfrac12\,\uv z\right)$`], 3,
+        [md`You forgot the $-\vb p$: $3(\vb p\cdot\uv r)\uv r = \tfrac32p(\uv y + \uv z)$, then subtract $p\,\uv z$.`,
+          md`Sign slip in the $z$-part: $\tfrac32 - 1 = +\tfrac12$.`,
+          md`The dipole field is radial only on the axis. Here $E_\theta \neq 0$.`,
+          null],
+        md`$\uv r = \dfrac{\uv y + \uv z}{\sqrt2}$, so $\vb p\cdot\uv r = p/\sqrt2$ and $3(\vb p\cdot\uv r)\,\uv r = \tfrac32p(\uv y + \uv z)$. Subtract $\vb p = p\,\uv z$: $\vb E = \dfrac{p}{4\pi\varepsilon_0 r^3}\left(\tfrac32\,\uv y + \tfrac12\,\uv z\right)$. Check against the spherical form: $|\vb E|^2 = \tfrac94 + \tfrac14 = \tfrac52$ and $1 + 3\cos^2 45^\circ = \tfrac52$.`,
+        { figHtml: fDip45() }),
+
+      Q(md`Compare a physical dipole ($\pm q$, separation $d$) with a pure dipole of the same $p = qd$. Their field lines`,
+        [md`differ everywhere, because the physical dipole has higher multipoles`, md`look the same far away ($r \gg d$) and differ near the charges`, md`look the same near the charges and differ far away`, md`are identical everywhere`], 1,
+        [md`The higher multipoles fall off faster ($1/r^5$ and up for this field), so far away they are negligible.`,
+          null,
+          md`Backwards: the finite separation matters most near the charges.`,
+          md`Between the charges of a physical dipole the field is strong and points from $+q$ to $-q$; a pure dipole has nothing like that except at the single point $r = 0$.`],
+        md`Far away the dipole term dominates both, so the pictures match. Close in, the physical dipole's lines start and end on its two charges, and between them $\vb E$ points opposite to $\vb p$.`,
+        { figHtml: fLines().svg }),
+
+      Q(md`On the axis *between* the two charges of a physical dipole (point $M$), which way does $\vb E$ point? Compare point $F$ on the axis above both charges.`,
+        [md`Along $\vb p$ at both $M$ and $F$`, md`Zero at $M$, by symmetry`, md`Perpendicular to the axis at $M$`, md`Opposite to $\vb p$ at $M$ (from $+q$ toward $-q$), along $\vb p$ at $F$`], 3,
+        [md`That holds only on the axis *outside* the charges. Between them, both charges push a positive test charge from $+q$ toward $-q$.`,
+          md`At $M$ both contributions point the same way (away from $+q$, toward $-q$), so they add.`,
+          md`On the axis there is no sideways component, by symmetry.`,
+          null],
+        md`At $M$, $+q$ pushes a positive test charge away from itself (toward $-q$) and $-q$ pulls it the same way, so $\vb E$ runs from $+q$ to $-q$, opposite to $\vb p = q\vb d$. At $F$, $+q$ is closer and wins, so $\vb E$ points up, along $\vb p$, as the dipole formula says. The pure-dipole formula does not describe the region between the charges; it needs $r \gg d$.`,
+        { figHtml: fBetween() }),
+
+      RF(md`
+        ### Worked example: a charge near a dipole (Griffiths 4th ed. Prob. 3.33)
+
+        A pure dipole $\vb p = p\,\uv z$ sits at the origin. Find the force on a point charge $q$ at $(a, 0, 0)$ and at $(0, 0, a)$, and the work needed to move $q$ from the first point to the second.
+
+        [[fig:w]]
+
+        At $(a,0,0)$: $\theta = 90^\circ$ and $\boldsymbol{\hat\theta} = -\uv z$, so $\vb E = \dfrac{p}{4\pi\varepsilon_0 a^3}\boldsymbol{\hat\theta} = -\dfrac{p}{4\pi\varepsilon_0 a^3}\,\uv z$ and
+
+        $$\vb F = q\vb E = -\frac{qp}{4\pi\varepsilon_0 a^3}\,\uv z.$$
+
+        The force is parallel to the dipole's axis, not toward the dipole.
+
+        At $(0,0,a)$: $\theta = 0$, $\vb E = \dfrac{2p}{4\pi\varepsilon_0 a^3}\,\uv z$, so $\vb F = \dfrac{2qp}{4\pi\varepsilon_0 a^3}\,\uv z$: pushed away from the dipole's positive end.
+
+        Work: $\vb E$ is conservative, so $W = q\,[V(\text{end}) - V(\text{start})]$. $V(a,0,0) = 0$ (equator) and $V(0,0,a) = \dfrac{p}{4\pi\varepsilon_0 a^2}$, so
+
+        $$W = \frac{qp}{4\pi\varepsilon_0 a^2}.$$
+
+        Positive for $q, p > 0$: you push the charge toward the dipole's positive end.
+
+        !!method The field of a dipole at a given point
+          1. Find $r$ and $\theta$, measured from the dipole and from the direction of $\vb p$.
+          2. $E_r = \dfrac{2p\cos\theta}{4\pi\varepsilon_0 r^3}$, $E_\theta = \dfrac{p\sin\theta}{4\pi\varepsilon_0 r^3}$.
+          3. Convert $\uv r$ and $\boldsymbol{\hat\theta}$ to Cartesian at that point, or use $3(\vb p\cdot\uv r)\uv r - \vb p$ directly.
+          For work and energy use $V$; it is simpler than integrating $\vb E$.
+      `, { w: { svg: fL3W(false), cap: 'Pure dipole at the origin; the charge $q$ is first at $(a,0,0)$, then at $(0,0,a)$. The $x$ axis points toward you.' } }),
+
+      P({
+        id: 'u8-p-force', title: 'Force and work near a dipole',
+        q: md`A pure dipole $\vb p = p\,\uv z$ sits at the origin. A point charge $q$ starts at $(0, b, 0)$ and is moved to $(0, 0, -b)$. Find the $z$-component of the force on $q$ at each point, and the work you do moving it.`,
+        figHtml: fL3P1(false),
+        hints: [
+          md`Find $\theta$ for each point: $(0,b,0)$ is on the equator; $(0,0,-b)$ is on the axis below the dipole, $\theta = \pi$.`,
+          md`At $\theta = \pi$: $E_r = \dfrac{2p\cos\pi}{4\pi\varepsilon_0 b^3} < 0$ and $\uv r = -\uv z$. Two minus signs.`,
+          md`The work you do is $q\,[V(\text{end}) - V(\text{start})]$ with $V = \dfrac{p\cos\theta}{4\pi\varepsilon_0 r^2}$.`,
+        ],
+        parts: [
+          { lbl: md`$F_z$ at $(0,b,0)$`, expr: '-q*p/(4*pi*eps0*b^3)', vars: { q: [1, 3], p: [1, 3], b: [0.5, 2], eps0: [0.5, 2] } },
+          { lbl: md`$F_z$ at $(0,0,-b)$`, expr: '2*q*p/(4*pi*eps0*b^3)', vars: { q: [1, 3], p: [1, 3], b: [0.5, 2], eps0: [0.5, 2] }, accepts: ['q*p/(2*pi*eps0*b^3)'] },
+          { lbl: 'W', expr: '-q*p/(4*pi*eps0*b^2)', vars: { q: [1, 3], p: [1, 3], b: [0.5, 2], eps0: [0.5, 2] } },
+          { lbl: md`The sign of $W$ means`, mc: [md`the field does the work: $+q$ is attracted toward the dipole's negative end`, md`you must push the charge against the field`, md`no net work, since both points are the same distance from the dipole`], a: 0,
+            why: [null, md`$W < 0$ means the field does the work for you. Below the dipole is its negative end, which attracts $+q$.`, md`Same distance does not mean same potential: $V$ depends on $\theta$ too.`] },
+        ],
+        sol: md`
+          At $(0,b,0)$: $\theta = 90^\circ$, so $\vb E = \dfrac{p}{4\pi\varepsilon_0 b^3}\boldsymbol{\hat\theta}$ with $\boldsymbol{\hat\theta} = -\uv z$. $F_z = -\dfrac{qp}{4\pi\varepsilon_0 b^3}$.
+
+          At $(0,0,-b)$: $\theta = \pi$, $E_\theta = 0$, $E_r = -\dfrac{2p}{4\pi\varepsilon_0 b^3}$ and $\uv r = -\uv z$, so $\vb E = +\dfrac{2p}{4\pi\varepsilon_0 b^3}\,\uv z$ and $F_z = \dfrac{2qp}{4\pi\varepsilon_0 b^3}$: the charge is pulled up, toward the dipole.
+
+          [[fig:s]]
+
+          Work: $V(0,b,0) = 0$ and $V(0,0,-b) = \dfrac{p\cos\pi}{4\pi\varepsilon_0 b^2} = -\dfrac{p}{4\pi\varepsilon_0 b^2}$, so
+
+          $$W = q\,[V(0,0,-b) - V(0,b,0)] = -\frac{qp}{4\pi\varepsilon_0 b^2}.$$
+
+          Negative: the field does the work, pulling $+q$ toward the dipole's negative end.
+
+          !!key What to remember
+            On the axis, above or below, $\vb E$ is parallel to $\vb p$; on the equator it is antiparallel. For work, use $V$.
+        `,
+        figs: { s: { svg: fL3P1(true), cap: 'Forces on $q$ ($q > 0$): along $-\\uv z$ on the equator, along $+\\uv z$ below the dipole (twice as large).' } },
+      }),
+
+      P({
+        id: 'u8-p-60', title: 'Dipole field at 60°',
+        q: md`A pure dipole $\vb p = p\,\uv z$ sits at the origin. At a point a distance $r$ away at $\theta = 60^\circ$, find $|\vb E|$ and $E_z$ in units of $\dfrac{p}{4\pi\varepsilon_0 r^3}$, and the angle between $\vb E$ and $\uv r$.`,
+        figHtml: fL3P2(false),
+        hints: [
+          md`In these units, $E_r = 2\cos\theta$ and $E_\theta = \sin\theta$.`,
+          md`$|\vb E| = \sqrt{E_r^2 + E_\theta^2}$, and $E_z = E_r\cos\theta - E_\theta\sin\theta$ (from $\uv r\cdot\uv z = \cos\theta$, $\boldsymbol{\hat\theta}\cdot\uv z = -\sin\theta$).`,
+          md`The angle between $\vb E$ and $\uv r$ is $\arctan(E_\theta/E_r)$.`,
+        ],
+        parts: [
+          { lbl: md`$|\vb E|$`, ans: 1.3229, unit: '' },
+          { lbl: md`$E_z$`, ans: -0.25, unit: '' },
+          { lbl: md`angle between $\vb E$ and $\uv r$, in degrees`, ans: 40.89, unit: '' },
+        ],
+        sol: md`
+          At $60^\circ$: $E_r = 2\cos 60^\circ = 1$ and $E_\theta = \sin 60^\circ = \tfrac{\sqrt3}{2}$.
+
+          - $|\vb E| = \sqrt{1 + \tfrac34} = \tfrac{\sqrt7}{2} \approx 1.323$. Check: $\sqrt{1 + 3\cos^2 60^\circ} = \sqrt{1.75}$.
+          - $E_z = E_r\cos\theta - E_\theta\sin\theta = \tfrac12 - \tfrac34 = -\tfrac14$. Negative: past $54.7^\circ$ the field already tilts down.
+          - Angle from $\uv r$: $\arctan\dfrac{E_\theta}{E_r} = \arctan\dfrac{\sqrt3}{2} \approx 40.9^\circ$, tilted toward $\boldsymbol{\hat\theta}$.
+
+          [[fig:s]]
+
+          !!key What to remember
+            Work in $(E_r, E_\theta)$ first, then project. $|\vb E| = \dfrac{p}{4\pi\varepsilon_0 r^3}\sqrt{1 + 3\cos^2\theta}$ is a quick check.
+        `,
+        figs: { s: { svg: fL3P2(true), cap: 'At $\\theta = 60^\\circ$ the field points away from the axis and slightly down.' } },
+      }),
+
+      RF(md`
+        ### Charged objects: monopole plus dipole
+
+        If $Q \neq 0$, the far field is the monopole field with the dipole field as its first correction. With $\vb p$ along $z$,
+
+        $$\vb E \approx \kq\frac{Q}{r^2}\,\uv r + \frac{p}{4\pi\varepsilon_0 r^3}\left(2\cos\theta\,\uv r + \sin\theta\,\boldsymbol{\hat\theta}\right).$$
+
+        "The two lowest orders in the multipole expansion" means exactly these two terms: $1/r^2$ and $1/r^3$ in the field ($1/r$ and $1/r^2$ in $V$).
+
+        !!method Two lowest orders of the far field
+          1. $Q = \sum q_i$ and $\vb p = \sum q_i\vb r_i'$ about the stated origin.
+          2. If you can, point $z$ along $\vb p$. Then $V \approx \kq\left(\dfrac Qr + \dfrac{p\cos\theta}{r^2}\right)$.
+          3. $\vb E = -\nabla V$ in spherical coordinates: the monopole part is along $\uv r$, the dipole part is the standard one.
+          4. Check units, the direction far out (sign of $Q$), and the $\phi$-dependence (none when $\vb p \parallel \uv z$).
+      `),
+
+      Q(md`An object of size $a$ has $Q \neq 0$ and $\vb p = p\,\uv z$ about the origin. Which expression gives "the two lowest orders" of its far field?`,
+        [md`$\kq\dfrac{Q}{r^2}\,\uv r + \dfrac{p}{4\pi\varepsilon_0 r^3}\left(2\cos\theta\,\uv r + \sin\theta\,\boldsymbol{\hat\theta}\right)$`, md`$\kq\dfrac{Q}{r^2}\,\uv r$ only`, md`$\kq\left(\dfrac Qr + \dfrac{p\cos\theta}{r^2}\right)$`, md`$\dfrac{p}{4\pi\varepsilon_0 r^3}\left(2\cos\theta\,\uv r + \sin\theta\,\boldsymbol{\hat\theta}\right)$ only`], 0,
+        [null,
+          md`That is one order. The next one, the dipole field, falls as $1/r^3$.`,
+          md`That is the potential, not the field.`,
+          md`With $Q \neq 0$ the monopole field is the *leading* term; it can't be dropped.`],
+        md`Monopole field ($1/r^2$) plus dipole field ($1/r^3$). The quadrupole field ($1/r^4$) is the next order, which the problem lets you drop.`,
+        { figHtml: fBlob() }),
+
+      Q(md`For a charged object ($Q \neq 0$), does the two-term far-field answer depend on where you put the origin?`,
+        [md`No: the field is physical, so its expansion can't depend on the origin`, md`Only the monopole term changes`, md`Both terms change their form`, md`Yes: the dipole term changes, since $\bar{\vb p} = \vb p - Q\vb a$`], 3,
+        [md`The *exact* field doesn't depend on the origin, but its split into terms does: $r$ and $\theta$ are measured from the origin.`,
+          md`$Q$ is the same about every origin.`,
+          md`The monopole term keeps the form $\kq\dfrac{Q}{r^2}\,\uv r$, with $r$ measured from the new origin.`,
+          null],
+        md`$Q$ is origin-independent, but $\vb p$ shifts by $-Q\vb a$. So truncated expansions about different origins differ at the dipole order; they agree once all orders are kept. Use the origin the problem gives.`,
+        { figHtml: fShift() }),
+
+      P({
+        id: 'HW5-3.36', src: 'HW 5 · Griffiths 3.36', title: 'Three charges: monopole plus dipole field', big: true,
+        q: md`Three point charges are located as shown in Fig. 3.38, each a distance $a$ from the origin. Find the approximate electric field at points far from the origin. Express your answer in spherical coordinates, and include the two lowest orders in the multipole expansion.`,
+        figHtml: f338(),
+        hints: [
+          md`"Far from the origin" and "two lowest orders": find the monopole and dipole moments, write the two-term $V$, and take $-\nabla V$.`,
+          md`$Q = \sum q_i$. For $\vb p = \sum q_i\vb r_i'$ read the positions off the figure: $q$ at $(0,0,a)$, $-q$ at $(0,a,0)$ and $(0,-a,0)$.`,
+          md`The two $-q$'s sit symmetrically about the origin, so their dipole contributions cancel. With $\vb p$ along $z$, $V \approx \kq\left(\dfrac Qr + \dfrac{p\cos\theta}{r^2}\right)$.`,
+          md`$E_r = -\partial_r V$ and $E_\theta = -\tfrac1r\,\partial_\theta V$. The dipole part is the standard $\dfrac{p}{4\pi\varepsilon_0 r^3}\left(2\cos\theta\,\uv r + \sin\theta\,\boldsymbol{\hat\theta}\right)$.`,
+        ],
+        parts: [
+          { lbl: 'Q', expr: '-q', vars: { q: [1, 3] } },
+          { lbl: 'p_z', expr: 'q*a', vars: { q: [1, 3], a: [0.5, 2] } },
+          { lbl: 'E_r', expr: 'q*(2*a*cos(theta)-r)/(4*pi*eps0*r^3)', vars: { q: [1, 3], a: [0.5, 2], r: [5, 20], theta: [0.2, 2.9], eps0: [0.5, 2] }, accepts: ['-q/(4*pi*eps0*r^2) + 2*q*a*cos(theta)/(4*pi*eps0*r^3)', '(q/(4*pi*eps0*r^2))*(-1+2*a*cos(theta)/r)'] },
+          { lbl: 'E_\\theta', expr: 'q*a*sin(theta)/(4*pi*eps0*r^3)', vars: { q: [1, 3], a: [0.5, 2], r: [5, 20], theta: [0.2, 2.9], eps0: [0.5, 2] } },
+          { lbl: md`Far out on the $+z$ axis ($r \gg a$), $\vb E$ points`, mc: [md`toward the origin`, md`away from the origin`, md`along $\boldsymbol{\hat\theta}$`, md`nowhere: it is zero`], a: 0,
+            why: [null, md`$E_r = \dfrac{q}{4\pi\varepsilon_0 r^2}\left(-1 + \dfrac{2a}{r}\right) < 0$ once $r > 2a$: the net $-q$ wins far away.`, md`$E_\theta \propto \sin\theta = 0$ on the axis.`, md`The two-term formula gives zero on the axis only at $r = 2a$, too close for the approximation to be trusted.`] },
+        ],
+        sol: md`
+          **Setup.** From the figure: $q$ at $(0,0,a)$, $-q$ at $(0,a,0)$, $-q$ at $(0,-a,0)$. "Two lowest orders" means monopole plus dipole.
+
+          **Monopole.** $Q = q - q - q = -q$. It is nonzero, so it leads.
+
+          **Dipole**, about the given origin (the origin matters here because $Q \neq 0$):
+
+          $$\vb p = \sum q_i\vb r_i' = q\,(a\,\uv z) + (-q)(a\,\uv y) + (-q)(-a\,\uv y) = qa\,\uv z.$$
+
+          The two $-q$'s are mirror images through the origin, so their contributions cancel. Only the $q$ on the $z$ axis contributes.
+
+          **Potential**, with $z$ already along $\vb p$:
+
+          $$V(r,\theta) \approx \kq\left[-\frac qr + \frac{qa\cos\theta}{r^2}\right].$$
+
+          **Field**, $\vb E = -\nabla V$:
+
+          - monopole: $-\dfrac{\partial}{\partial r}\left(-\dfrac qr\right) = -\dfrac{q}{r^2}$, so $\vb E_{\rm mon} = -\kq\dfrac{q}{r^2}\,\uv r$ (inward, as for a net negative charge);
+          - dipole: $\vb E_{\rm dip} = \kq\dfrac{qa}{r^3}\left(2\cos\theta\,\uv r + \sin\theta\,\boldsymbol{\hat\theta}\right)$.
+
+          $$\vb E(r,\theta) \approx \frac{q}{4\pi\varepsilon_0}\left[-\frac{1}{r^2}\,\uv r + \frac{a}{r^3}\left(2\cos\theta\,\uv r + \sin\theta\,\boldsymbol{\hat\theta}\right)\right].$$
+
+          In components: $E_r = \dfrac{q}{4\pi\varepsilon_0 r^2}\left(-1 + \dfrac{2a\cos\theta}{r}\right)$, $E_\theta = \dfrac{qa\sin\theta}{4\pi\varepsilon_0 r^3}$, $E_\phi = 0$.
+
+          [[fig:s]]
+
+          **Checks.**
+          - Units: $\dfrac{q}{4\pi\varepsilon_0 r^2}$ is a field and $a/r$ is a pure number.
+          - Far out, $E_r < 0$ in every direction: the net charge $-q$ wins.
+          - Above ($\theta = 0$) the dipole term weakens the inward field ($-1 + 2a/r$); below ($\theta = \pi$) it strengthens it ($-1 - 2a/r$). That fits: the positive charge is on top.
+          - No $\phi$-dependence, although the charges are not symmetric about $z$. The asymmetry first shows up at the next order (quadrupole, $1/r^4$ in $\vb E$).
+
+          !!trap Origin dependence
+            Because $Q \neq 0$, $\vb p$ depends on the origin. About the charge $q$ at $(0,0,a)$, for instance, $\bar{\vb p} = \vb p - Q\,(a\,\uv z) = 2qa\,\uv z$. The problem fixes the origin ("each a distance $a$ from the origin"), so use it.
+
+          !!key What to remember
+            Monopole and dipole moments first, then one gradient. The dipole field formula is worth knowing by heart: $\dfrac{p}{4\pi\varepsilon_0 r^3}\left(2\cos\theta\,\uv r + \sin\theta\,\boldsymbol{\hat\theta}\right)$.
+        `,
+        figs: { s: { svg: f338sol().svg, cap: 'Left: the $-q$ pair contributes no dipole moment, so $\\vb p = qa\\,\\uv z$. Right: the two-term field on a circle of radius $4a$ points inward everywhere (net $-q$), weaker above and stronger below.' } },
+      }),
+
+      RF(md`
+        !!key Patterns to remember
+          - $\vb E_{\rm dip} = \dfrac{p}{4\pi\varepsilon_0 r^3}\left(2\cos\theta\,\uv r + \sin\theta\,\boldsymbol{\hat\theta}\right) = \kq\dfrac{3(\vb p\cdot\uv r)\,\uv r - \vb p}{r^3}$. It falls as $1/r^3$.
+          - On the axis (above and below) $\vb E \parallel \vb p$ with strength 2; on the equator $\vb E$ is antiparallel with strength 1; $E_z = 0$ at $54.7^\circ$.
+          - $E_\theta \ge 0$: off the axis the field always has a "southward" component.
+          - Charged object: monopole field plus dipole field are "the two lowest orders"; the dipole part depends on the origin.
+          - Pure and physical dipoles agree far away and differ near the charges.
+      `),
+    ],
+  };
+
   // @@NEXT@@
-  C.unit({ id: 'u8', num: 'Unit 8', title: 'Multipole expansion', blurb: 'tmp', lessons: [L1, L2] });
+  C.unit({ id: 'u8', num: 'Unit 8', title: 'Multipole expansion', blurb: 'tmp', lessons: [L1, L2, L3] });
 })();

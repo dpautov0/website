@@ -776,9 +776,9 @@
         { figHtml: FIG.p2plot }),
 
       Q(md`Two bands of the same angular width $d\theta$ are drawn on a sphere: one at $\theta = 10^\circ$, one at $\theta = 90^\circ$. In a surface average such as $\frac{1}{4\pi R^2}\oint V\,da$, how do their weights compare?`,
-        [md`They count equally, since $d\theta$ is the same.`, md`The polar band counts more, because it is closer to the axis.`, md`The equatorial band counts about $\sin90^\circ/\sin10^\circ \approx 5.8$ times more.`, md`The equatorial band counts $9$ times more ($90^\circ/10^\circ$).`], 2,
+        [md`They count equally, since $d\theta$ is the same.`, md`The polar band counts more, because it is closer to the axis.`, md`The equatorial band counts about $\dfrac{\sin90^\circ}{\sin10^\circ} \approx 5.8$ times more.`, md`The equatorial band counts $9$ times more ($90^\circ/10^\circ$).`], 2,
         [md`Equal $d\theta$ does not mean equal area. The ring at $10^\circ$ has a much smaller circumference.`, md`Closer to the axis means a *smaller* ring, so less area.`, null, md`Area goes as $\sin\theta$, not as $\theta$.`],
-        md`$da = 2\pi R^2\sin\theta\,d\theta$, so the weight ratio is $\sin 90^\circ/\sin10^\circ = 1/0.174 \approx 5.8$. This is the $\sin\theta$ in every orthogonality integral and every coefficient formula.`,
+        md`$da = 2\pi R^2\sin\theta\,d\theta$, so the weight ratio is $\dfrac{\sin 90^\circ}{\sin10^\circ} = \dfrac{1}{0.174} \approx 5.8$. This is the $\sin\theta$ in every orthogonality integral and every coefficient formula.`,
         { figHtml: FIG.band }),
 
       Q(md`What is $\displaystyle\int_0^\pi \left[P_3(\cos\theta)\right]^2\sin\theta\,d\theta$?`,
@@ -1241,8 +1241,8 @@
         { figHtml: FIG.metalField }),
 
       Q(md`A thin insulating shell carries a glued surface charge $\sigma_0(\theta)$, and there is no other charge anywhere. You need $V$ everywhere. Which list is right?`,
-        [md`(1) $V_{\text{in}}$ finite at $0$; (2) $V_{\text{out}} \to 0$; (3) $V(R,\theta) = \sigma_0(\theta)R/\varepsilon_0$`, md`(1) $V_{\text{in}}$ finite at $0$; (2) $V_{\text{out}} \to 0$; (3) $V_{\text{in}} = V_{\text{out}}$ at $r = R$`, md`(1) $V_{\text{in}} = V_{\text{out}}$ at $R$; (2) $\dfrac{\partial V_{\text{out}}}{\partial r} - \dfrac{\partial V_{\text{in}}}{\partial r} = -\dfrac{\sigma_0}{\varepsilon_0}$ at $R$`, md`(1) $V_{\text{in}}$ finite at $0$; (2) $V_{\text{out}} \to 0$; (3) $V_{\text{in}} = V_{\text{out}}$ at $R$; (4) $\dfrac{\partial V_{\text{out}}}{\partial r} - \dfrac{\partial V_{\text{in}}}{\partial r} = -\dfrac{\sigma_0}{\varepsilon_0}$ at $R$`], 3,
-        [md`The surface potential is not given and is not $\sigma_0R/\varepsilon_0$ in general (that is only the uniform, $\ell = 0$, case). You must let the equations find it.`, md`Nothing in this list involves $\sigma_0$, so the answer would be $V = 0$.`, md`Without the two regularity conditions each region keeps both $A_\ell$ and $B_\ell$: four unknowns per $\ell$, two equations.`, null],
+        [md`(1) $V_{\text{in}}$ finite at $0$; (2) $V_{\text{out}} \to 0$; (3) $V(R,\theta) = \dfrac{\sigma_0(\theta)R}{\varepsilon_0}$`, md`(1) $V_{\text{in}}$ finite at $0$; (2) $V_{\text{out}} \to 0$; (3) $V_{\text{in}} = V_{\text{out}}$ at $r = R$`, md`(1) $V_{\text{in}} = V_{\text{out}}$ at $R$; (2) $\dfrac{\partial V_{\text{out}}}{\partial r} - \dfrac{\partial V_{\text{in}}}{\partial r} = -\dfrac{\sigma_0}{\varepsilon_0}$ at $R$`, md`(1) $V_{\text{in}}$ finite at $0$; (2) $V_{\text{out}} \to 0$; (3) $V_{\text{in}} = V_{\text{out}}$ at $R$; (4) $\dfrac{\partial V_{\text{out}}}{\partial r} - \dfrac{\partial V_{\text{in}}}{\partial r} = -\dfrac{\sigma_0}{\varepsilon_0}$ at $R$`], 3,
+        [md`The surface potential is not given and is not $\tfrac{\sigma_0R}{\varepsilon_0}$ in general (that is only the uniform, $\ell = 0$, case). You must let the equations find it.`, md`Nothing in this list involves $\sigma_0$, so the answer would be $V = 0$.`, md`Without the two regularity conditions each region keeps both $A_\ell$ and $B_\ell$: four unknowns per $\ell$, two equations.`, null],
         md`Two regions, so two copies of the general solution.
 
         1. $V_{\text{in}}$ finite at $r = 0$: kills the $B$'s inside.
@@ -1304,7 +1304,7 @@
       Q(md`For the inside of a shell held at $k\sin^2(\theta/2)$, a student proposes $V = \dfrac k2\left(1 - \dfrac{R^2}{r^2}\cos\theta\right)$. It satisfies Laplace's equation and equals $k\sin^2(\theta/2)$ at $r = R$. Which condition does it break?`,
         [md`$V$ finite at $r = 0$`, md`$V(R,\theta) = V_0(\theta)$`, md`Laplace's equation`, md`$V \to 0$ as $r \to \infty$`], 0,
         [null, md`At $r = R$ it gives $\frac k2(1 - \cos\theta) = k\sin^2(\theta/2)$. That one is fine.`, md`$\cos\theta/r^2$ is the $\ell = 1$ decaying solution, so it is harmonic (away from $r = 0$).`, md`Infinity is not in the inside region, so this condition does not apply.`],
-        md`It used the outside-type term $R^2\cos\theta/r^2$ inside, which blows up at the center. The inside version is $\frac{r}{R}\cos\theta$: $V = \frac k2\left(1 - \frac rR\cos\theta\right)$. When a candidate answer passes some checks, run through **every** numbered condition.`,
+        md`It used the outside-type term $\dfrac{R^2\cos\theta}{r^2}$ inside, which blows up at the center. The inside version is $\frac{r}{R}\cos\theta$: $V = \frac k2\left(1 - \frac rR\cos\theta\right)$. When a candidate answer passes some checks, run through **every** numbered condition.`,
         { figHtml: sph({ lab: 'V_0=k\\sin^2(\\theta/2)', inLab: 'V(r,\\theta)' }) }),
 
       Q(md`For the outside of a sphere held at $V_0\cos\theta$, a student proposes $V = V_0\dfrac{r}{R}\cos\theta$. Which statement is true?`,
@@ -1324,8 +1324,8 @@
 
         **Outside** (only $B_\ell$):
         - $\ell = 0$: $B_0/r$, the potential of a point charge at the center: the **monopole**. Gauss's law on a big sphere gives total charge $Q = 4\pi\varepsilon_0B_0$.
-        - $\ell = 1$: $B_1\cos\theta/r^2$, a **dipole** $p = 4\pi\varepsilon_0B_1$ pointing along $+z$ (compare $\frac{p\cos\theta}{4\pi\varepsilon_0r^2}$).
-        - $\ell = 2$: $B_2P_2(\cos\theta)/r^3$, a **quadrupole**; each higher $\ell$ falls one power faster. Far away, the lowest $\ell$ with $B_\ell \ne 0$ dominates. (Unit 8 develops this into the multipole expansion.)
+        - $\ell = 1$: $\dfrac{B_1\cos\theta}{r^2}$, a **dipole** $p = 4\pi\varepsilon_0B_1$ pointing along $+z$ (compare $\frac{p\cos\theta}{4\pi\varepsilon_0r^2}$).
+        - $\ell = 2$: $\dfrac{B_2P_2(\cos\theta)}{r^3}$, a **quadrupole**; each higher $\ell$ falls one power faster. Far away, the lowest $\ell$ with $B_\ell \ne 0$ dominates. (Unit 8 develops this into the multipole expansion.)
 
         **Inside** (only $A_\ell$):
         - $\ell = 0$: the constant $A_0$, which is the potential at the center. It equals the average of $V$ over the sphere (the mean-value property of Unit 4).
@@ -1429,6 +1429,13 @@
   FIG.lecPlot = PF.plot({ w: 340, h: 200, x: [-3, 3], y: [0, 1.1], xl: 'z', yl: 'V/k',
     xt: [[-1, '-R'], [1, 'R'], [2, '2R']], yt: [[1, '1'], [0.5, '\\tfrac12']], curves: [{ f: lecAxis, n: 600 }] });
   FIG.capSph = hemis({ cap: 60, top: 'V_0', bot: 'V=0', botThin: true, topTh: 30 });
+  const ax13 = (u) => (Math.abs(u) <= 1 ? 1 + 3 * u : u > 0 ? 1 / u + 3 / (u * u) : -1 / u - 3 / (u * u));
+  FIG.ax13 = PF.plot({ w: 340, h: 210, x: [-4, 4], y: [-2.4, 4.4], zero: true, xl: 'z/R', yl: 'V/V_0',
+    xt: [[-3, '-3'], [-1, '-1'], [1, '1']], yt: [[4, '4'], [1, '1'], [-2, '-2']], curves: [{ f: ax13, n: 800 }] });
+  const hemExact = (u) => (Math.abs(u) < 1e-6 ? 1.5 * u : (1 / u) * (1 - (1 - u * u) / Math.sqrt(1 + u * u)));
+  FIG.hemAxis = PF.plot({ w: 330, h: 200, x: [-1, 1], y: [-1.15, 1.15], zero: true, xl: 'z/R', yl: 'V/V_0',
+    xt: [[-1, '-1'], [0.5, '\\tfrac12'], [1, '1']], yt: [[1, '1'], [-1, '-1']],
+    curves: [{ f: hemExact }, { f: (u) => 1.5 * u - 0.875 * u ** 3, cls: 'dash' }] });
 
   const L5 = {
     id: 'u7-shell-V', title: 'A sphere with a given potential (inside and outside)',
@@ -1588,7 +1595,7 @@
           { lbl: md`(b) $V_{\text{out}}(r,\theta)$`, expr: 'V0*R^2*cos(theta)/r^2', vars: { V0: [1, 3], r: [2, 4], R: [1, 2], theta: [0, 3] } },
           { lbl: md`(c) $E_z$ inside`, expr: '-V0/R', vars: { V0: [1, 3], R: [1, 2] } },
           { lbl: md`(d) The field inside points`, mc: [md`along $-\hat{\mathbf z}$, from the north pole ($+V_0$) to the south pole ($-V_0$)`, md`along $+\hat{\mathbf z}$`, md`radially outward`, md`nowhere: it is zero`], a: 0,
-            why: [null, md`$\vb E$ points from high to low potential; the north pole is at $+V_0$.`, md`$V_{\text{in}} = V_0z/R$ depends on $z$ only, so the field is uniform, not radial.`, md`The potential varies inside ($V_0z/R$), so the field is not zero. Only a sphere at constant potential has zero field inside.`] },
+            why: [null, md`$\vb E$ points from high to low potential; the north pole is at $+V_0$.`, md`$V_{\text{in}} = \frac{V_0z}{R}$ depends on $z$ only, so the field is uniform, not radial.`, md`The potential varies inside ($\frac{V_0z}{R}$), so the field is not zero. Only a sphere at constant potential has zero field inside.`] },
         ],
         sol: md`
           **Inside.** Region $r \le R$.
@@ -1632,13 +1639,17 @@
         sol: md`
           **Expand the data:** $V_0\cos^2\theta = \frac{V_0}{3}P_0 + \frac{2V_0}{3}P_2$, so $c_0 = \frac{V_0}{3}$, $c_2 = \frac{2V_0}{3}$.
 
-          **Inside** (BCs: finite at $0$; equals the data at $R$):
+          **Inside**, region $r \le R$. Boundary conditions:
+          1. $V$ finite at $r = 0$: kills every $B_\ell$.
+          2. $V(R,\theta) = V_0\cos^2\theta$: $A_\ell R^\ell = c_\ell$.
 
           $$V_{\text{in}} = \frac{V_0}{3} + \frac{2V_0}{3}\frac{r^2}{R^2}P_2(\cos\theta)$$
 
           Center: $\frac{V_0}{3}$ (the area average of $\cos^2\theta$ is $\frac13$). At $r = R/2$ on the $+z$ axis ($P_2 = 1$): $\frac{V_0}{3} + \frac{2V_0}{3}\cdot\frac14 = \frac{V_0}{2}$.
 
-          **Outside** (BCs: $V \to 0$; equals the data at $R$):
+          **Outside**, region $r \ge R$. Boundary conditions:
+          1. $V \to 0$ as $r \to \infty$: kills every $A_\ell$.
+          2. $V(R,\theta) = V_0\cos^2\theta$: $B_\ell/R^{\ell+1} = c_\ell$.
 
           $$V_{\text{out}} = \frac{V_0}{3}\frac Rr + \frac{2V_0}{3}\frac{R^3}{r^3}P_2(\cos\theta) = \frac{V_0R}{3r} + \frac{V_0R^3}{3r^3}\left(3\cos^2\theta - 1\right)$$
 
@@ -1665,18 +1676,21 @@
           { lbl: md`(d) $V(2R, \pi)/V_0$`, ans: -0.25 },
         ],
         sol: md`
-          $c_0 = V_0$, $c_1 = 3V_0$; nothing else.
+          The data are already a Legendre sum: $c_0 = V_0$, $c_1 = 3V_0$; nothing else.
 
-          **Inside:** $V_{\text{in}} = V_0 + 3V_0\frac rR\cos\theta$. Center: $V_0$.
+          **Inside** ($r \le R$). BCs: (1) $V$ finite at $r = 0$, so no $B_\ell$; (2) $V(R,\theta) = V_0(1 + 3\cos\theta)$, so $A_0 = V_0$, $A_1R = 3V_0$. Then $V_{\text{in}} = V_0 + 3V_0\frac rR\cos\theta$. Center: $V_0$.
 
-          **Outside:** $V_{\text{out}} = V_0\frac Rr + 3V_0\frac{R^2}{r^2}\cos\theta$. The $1/r$ term gives $B_0 = V_0R$, so $Q = 4\pi\varepsilon_0RV_0$.
+          **Outside** ($r \ge R$). BCs: (1) $V \to 0$ at infinity, so no $A_\ell$; (2) the same surface values, so $B_0 = V_0R$, $B_1 = 3V_0R^2$. Then $V_{\text{out}} = V_0\frac Rr + 3V_0\frac{R^2}{r^2}\cos\theta$, and the total charge is $Q = 4\pi\varepsilon_0B_0 = 4\pi\varepsilon_0RV_0$.
 
           At $r = 2R$: $+z$ axis ($\cos\theta = 1$): $\frac{V_0}{2} + \frac{3V_0}{4} = \frac54V_0$. $-z$ axis ($\cos\theta = -1$): $\frac{V_0}{2} - \frac{3V_0}{4} = -\frac14V_0$.
 
-          **Checks.** At $r = R$: $V_0(1 + 3\cos\theta)$ for both. The south pole of the shell is at $-2V_0$, so a negative potential just below it is reasonable; far away the positive monopole wins on every side.
+          [[fig:axis]]
+
+          **Checks.** At $r = R$: $V_0(1 + 3\cos\theta)$ for both. The south pole of the shell is at $-2V_0$, so a negative potential just below it is reasonable; on the $-z$ axis $V$ crosses zero at $r = 3R$, and farther out the positive monopole wins on every side.
 
           **What to remember:** the center gives you $c_0$, the far field gives you $Q = 4\pi\varepsilon_0Rc_0$; both come for free once the data are expanded.
         `,
+        figs: { axis: { svg: FIG.ax13, cap: '$V$ along the $z$ axis (units of $V_0$). Inside it is linear, from $-2V_0$ at the south pole to $4V_0$ at the north pole. Below the sphere it stays negative out to $z = -3R$.' } },
       }),
 
       P({
@@ -1704,12 +1718,15 @@
 
           At $z = R/2$ on the axis: $V_0\left[\frac32\cdot\frac12 - \frac78\cdot\frac18\right] = V_0\left[\frac34 - \frac{7}{64}\right] = \frac{41}{64}V_0 \approx 0.641V_0$.
 
-          **How good is that?** On the axis the exact potential can be found by direct integration (Poisson's formula for the sphere): $V(z) = \frac{V_0}{z}\left[R - \frac{R^2 - z^2}{\sqrt{R^2 + z^2}}\right]$, which gives $0.658V_0$ at $z = R/2$. Two terms are within 3%; four terms ($+\frac{11}{16}\cdot\frac{1}{32} - \frac{75}{128}\cdot\frac{1}{128}$) give $0.6575V_0$.
+          **How good is that?** On the axis the exact potential can be found by direct integration (Poisson's formula for the sphere): $V(z) = \frac{V_0}{z}\left[R - \frac{R^2 - z^2}{\sqrt{R^2 + z^2}}\right]$, which gives $0.658V_0$ at $z = R/2$. (That formula comes from Poisson's integral for a sphere, beyond this course; it is here only as a check.) Two terms are within 3%; four terms ($+\frac{11}{16}\cdot\frac{1}{32} - \frac{75}{128}\cdot\frac{1}{128}$) give $0.6575V_0$.
+
+          [[fig:hax]]
 
           **Outside:** $V_{\text{out}} = V_0\left[\frac32\frac{R^2}{r^2}\cos\theta - \frac78\frac{R^4}{r^4}P_3 + \dots\right]$. No $1/r$ term (zero net charge). $B_1 = \frac32V_0R^2$, so $p = 4\pi\varepsilon_0B_1 = 6\pi\varepsilon_0V_0R^2$ along $+z$.
 
           **What to remember:** for data with a jump, a couple of terms already give the potential to a few percent away from the surface, because $(r/R)^\ell$ suppresses the high $\ell$. Exams ask for "the first two nonzero terms".
         `,
+        figs: { hax: { svg: FIG.hemAxis, cap: 'Inside, on the $z$ axis: exact potential (solid) and the two-term series $\\tfrac32u - \\tfrac78u^3$ (dashed), $u = z/R$. They agree well except right next to the poles, where the jump is.' } },
       }),
 
       P({
@@ -1766,6 +1783,9 @@
   FIG.fieldSigma = PF.plot({ w: 320, h: 190, x: [0, Math.PI], y: [-3.4, 3.4], zero: true, xl: '\\theta', yl: '\\sigma/(\\varepsilon_0E_0)',
     xt: [[Math.PI / 2, '\\tfrac{\\pi}{2}'], [Math.PI, '\\pi']], yt: [[3, '3'], [-3, '-3']], curves: [{ f: (t) => 3 * Math.cos(t) }] });
   FIG.fieldP = fieldSetup({ P: { f: 1.0, th: 0.01, lab: 'P', at: 'tr' } });
+  FIG.sigQ = PF.plot({ w: 330, h: 200, x: [0, Math.PI], y: [-3.4, 4.8], zero: true, xl: '\\theta', yl: '\\sigma/(\\varepsilon_0E_0)',
+    xt: [[Math.PI / 2, '\\tfrac{\\pi}{2}'], [2 * Math.PI / 3, '120^\\circ'], [Math.PI, '\\pi']], yt: [[4.5, '4.5'], [-1.5, '-1.5']],
+    curves: [{ f: (t) => 3 * Math.cos(t), cls: 'dim dash' }, { f: (t) => 1.5 + 3 * Math.cos(t) }] });
 
   const L6 = {
     id: 'u7-field', title: 'Metal sphere in a uniform field (Griffiths Ex. 3.8)',
@@ -1960,10 +1980,13 @@
 
           (d) With $Q = 6\pi\varepsilon_0R^2E_0$: $\frac{Q}{4\pi R^2} = \frac32\varepsilon_0E_0$, so $\sigma = 0$ when $\cos\theta = -\frac12$: $\theta = 120^\circ$. Positive charge covers the sphere down to $120^\circ$; only a cap around the south pole stays negative.
 
+          [[fig:sq]]
+
           **Battery version:** the same algebra with $V_s$ given gives $B_0 = RV_s$, so $Q = 4\pi\varepsilon_0RV_s$, the isolated-sphere capacitance.
 
           **What to remember:** charge, field and potential all superpose. A charged sphere in a field = the neutral answer + a point charge at the center.
         `,
+        figs: { sq: { svg: FIG.sigQ, cap: '$\\sigma(\\theta)$ for $Q = 6\\pi\\varepsilon_0R^2E_0$ (units of $\\varepsilon_0E_0$): the uniform $\\tfrac32$ shifts $3\\cos\\theta$ up, so the zero moves from $90^\\circ$ to $120^\\circ$. Dashed: the neutral sphere.' } },
       }),
 
       RF(md`
@@ -2019,7 +2042,7 @@
 
       Q(md`Which form of the jump condition at a charged shell is correct?`,
         [md`$\dfrac{\partial V_{\text{out}}}{\partial r} - \dfrac{\partial V_{\text{in}}}{\partial r} = +\dfrac{\sigma_0}{\varepsilon_0}$`, md`$\dfrac{\partial V_{\text{out}}}{\partial r} - \dfrac{\partial V_{\text{in}}}{\partial r} = -\dfrac{\sigma_0}{2\varepsilon_0}$`, md`$\dfrac{\partial V_{\text{out}}}{\partial r} = -\dfrac{\sigma_0}{\varepsilon_0}$`, md`$\dfrac{\partial V_{\text{out}}}{\partial r} - \dfrac{\partial V_{\text{in}}}{\partial r} = -\dfrac{\sigma_0}{\varepsilon_0}$`], 3,
-        [md`Sign: $E_r = -\partial V/\partial r$. For positive $\sigma_0$, $E_r$ increases outward, so $\partial V/\partial r$ *decreases*.`, md`$\sigma/2\varepsilon_0$ is the field of a sheet on *one* side. The *jump* across it is $\sigma/\varepsilon_0$.`, md`That would assume no field inside, true only for a conductor (where $\sigma = -\varepsilon_0\partial V/\partial n$).`, null],
+        [md`Sign: $E_r = -\partial V/\partial r$. For positive $\sigma_0$, $E_r$ increases outward, so $\partial V/\partial r$ *decreases*.`, md`$\tfrac{\sigma}{2\varepsilon_0}$ is the field of a sheet on *one* side. The *jump* across it is $\sigma/\varepsilon_0$.`, md`That would assume no field inside, true only for a conductor (where $\sigma = -\varepsilon_0\partial V/\partial n$).`, null],
         md`Gauss with a pillbox: $E_r^{\text{out}} - E_r^{\text{in}} = \sigma_0/\varepsilon_0$, and $E_r = -\partial V/\partial r$. For a conductor the inside field is zero and this reduces to $\sigma = -\varepsilon_0\,\partial V/\partial r$ just outside, which you used in the last lesson.`,
         { figHtml: FIG.pill }),
 
@@ -2086,7 +2109,7 @@
         { figHtml: FIG.sigP2 }),
 
       Q(md`Across the charged shell, what happens to the **tangential** field $E_\theta$?`,
-        [md`It is continuous, which matches $V$ being continuous for every $\theta$.`, md`It jumps by $\sigma_0/\varepsilon_0$.`, md`It is zero on both sides.`, md`It jumps by $\sigma_0/2\varepsilon_0$.`], 0,
+        [md`It is continuous, which matches $V$ being continuous for every $\theta$.`, md`It jumps by $\sigma_0/\varepsilon_0$.`, md`It is zero on both sides.`, md`It jumps by $\tfrac{\sigma_0}{2\varepsilon_0}$.`], 0,
         [null, md`Only the normal component jumps.`, md`Inside $\sigma_0 = k\cos\theta$, for instance, $E_\theta = \frac{k}{3\varepsilon_0}\sin\theta \ne 0$.`, md`Only the normal component jumps, and by $\sigma_0/\varepsilon_0$.`],
         md`$E_\theta = -\frac1r\frac{\partial V}{\partial\theta}$. If $V_{\text{in}}(R,\theta) = V_{\text{out}}(R,\theta)$ for all $\theta$, their $\theta$-derivatives agree too, so $E_\theta$ is continuous. That is the "$E^\parallel$ continuous" boundary condition from Unit 4, built into condition 3.`,
         { figHtml: FIG.sigCos }),
@@ -2220,7 +2243,13 @@
           { lbl: md`(d) total charge`, expr: '4*pi*R^2*k', vars: { R: [1, 2], k: [1, 3] } },
         ],
         sol: md`
-          **Boundary conditions** as in Ex. 3.9 (finite at $0$, zero at infinity, continuity, jump). Superpose the two harmonics:
+          **Regions:** inside and outside the shell. **Boundary conditions:**
+          1. $V_{\text{in}}$ finite at $r = 0$: no $B$'s inside.
+          2. $V_{\text{out}} \to 0$ at infinity: no $A$'s outside.
+          3. $V_{\text{in}} = V_{\text{out}}$ at $r = R$: $B_\ell = A_\ell R^{2\ell+1}$.
+          4. $\frac{\partial V_{\text{out}}}{\partial r} - \frac{\partial V_{\text{in}}}{\partial r} = -\frac{\sigma_0}{\varepsilon_0}$ at $r = R$: $A_\ell = \frac{s_\ell}{(2\ell+1)\varepsilon_0R^{\ell-1}}$.
+
+          Superpose the two harmonics:
 
           - $\ell = 0$ ($s_0 = k$): $A_0 = \frac{kR}{\varepsilon_0}$, $B_0 = \frac{kR^2}{\varepsilon_0}$.
           - $\ell = 1$ ($s_1 = k$): $A_1 = \frac{k}{3\varepsilon_0}$, $B_1 = \frac{kR^3}{3\varepsilon_0}$.
@@ -2249,9 +2278,17 @@
           { lbl: md`$p$`, expr: '2*pi*sigma*R^3', vars: { sigma: [1, 3], R: [1, 2] } },
         ],
         sol: md`
+          **Boundary conditions** (two regions, as in Ex. 3.9):
+          1. $V_{\text{in}}$ finite at $r = 0$.
+          2. $V_{\text{out}} \to 0$ at infinity.
+          3. $V$ continuous at $r = R$.
+          4. $\frac{\partial V_{\text{out}}}{\partial r} - \frac{\partial V_{\text{in}}}{\partial r} = -\frac{\sigma_0(\theta)}{\varepsilon_0}$ at $r = R$, with $\sigma_0(\theta) = \pm\sigma_0$.
+
+          1 and 2 fix the forms; 3 and 4 give, per harmonic, $A_\ell = \frac{s_\ell}{(2\ell+1)\varepsilon_0R^{\ell-1}}$ and $B_\ell = A_\ell R^{2\ell+1}$.
+
           **Charge harmonics.** Odd data, so odd $\ell$: $s_1 = 3\sigma_0\cdot\frac12 = \frac32\sigma_0$, $s_3 = 7\sigma_0\cdot\left(-\frac18\right) = -\frac78\sigma_0$.
 
-          **Coefficients** (Ex. 3.9 formulas):
+          **Coefficients:**
 
           $$A_1 = \frac{s_1}{3\varepsilon_0} = \frac{\sigma_0}{2\varepsilon_0}, \qquad A_3 = \frac{s_3}{7\varepsilon_0R^2} = -\frac{\sigma_0}{8\varepsilon_0R^2}$$
 
@@ -2277,7 +2314,7 @@
             why: [null, md`A grounded conductor can carry either sign, depending on what is nearby.`, md`$\sigma$ and $V$ need not share a sign; $\sigma$ depends on how $V$ varies around the sphere, not only on its local value.`] },
         ],
         sol: md`
-          $c_0 = \frac k2$, $c_1 = -\frac k2$:
+          **Boundary conditions.** Inside: (1) finite at $r = 0$, (2) $V(R,\theta) = k\sin^2(\theta/2)$. Outside: (1) $V \to 0$, (2) the same surface values. These give $V_{\text{in}} = \frac k2\left(1 - \frac rR\cos\theta\right)$ and $V_{\text{out}} = \frac k2\left(\frac Rr - \frac{R^2}{r^2}\cos\theta\right)$ (Lesson 5). The charge is the jump: $\sigma = -\varepsilon_0\left[\frac{\partial V_{\text{out}}}{\partial r} - \frac{\partial V_{\text{in}}}{\partial r}\right]_R$, which is the HW 3.22 formula with $c_0 = \frac k2$, $c_1 = -\frac k2$:
 
           $$\sigma = \frac{\varepsilon_0}{R}\left[1\cdot\frac k2 + 3\cdot\left(-\frac k2\right)\cos\theta\right] = \frac{\varepsilon_0k}{2R}\left(1 - 3\cos\theta\right)$$
 
@@ -2304,6 +2341,9 @@
   FIG.shGround = shells({ labA: 'V=0', labB: 'V_0\\cos\\theta' });
   FIG.shPrac = shells({ labA: 'V_0', labB: 'V_0\\cos\\theta' });
   FIG.shCap = shells({ labA: 'V_0', labB: 'V=0' });
+  const twoV = (r, c) => (3 - r) / (r * 2) + 9 * (r ** 3 - 1) * c / (r * r * 26);   // a = 1, b = 3, units of V0
+  FIG.twoAx = PF.plot({ w: 330, h: 200, x: [1, 3], y: [-1.2, 1.4], zero: true, xl: 'r/a', yl: 'V/V_0',
+    xt: [[2, '2'], [3, '3']], yt: [[1, '1'], [-1, '-1']], curves: [{ f: (r) => twoV(r, 1) }, { f: (r) => twoV(r, -1), cls: 'dash' }] });
   FIG.axisQ = (() => {
     const f = PF.fig();
     zAxis(f, 0, 30, -132);
@@ -2384,7 +2424,11 @@
           { lbl: md`(b) charge on the inner sphere`, expr: '4*pi*eps0*V0*a*b/(b - a)', vars: { eps0: [0.5, 2], V0: [1, 3], a: [1, 1.8], b: [3, 4] } },
         ],
         sol: md`
-          **Region** $a \le r \le b$; keep both $A_\ell$ and $B_\ell$. **BCs:** (1) $V(a,\theta) = V_0$; (2) $V(b,\theta) = V_0\cos\theta$. Every $\ell \ge 2$ gets zero from both, so it vanishes.
+          **Region** $a \le r \le b$; neither $r = 0$ nor $r = \infty$ is in it, so keep both $A_\ell$ and $B_\ell$. **Boundary conditions:**
+          1. $V(a,\theta) = V_0$: pure $\ell = 0$.
+          2. $V(b,\theta) = V_0\cos\theta$: pure $\ell = 1$.
+
+          Every $\ell \ge 2$ gets zero from both conditions, so it vanishes.
 
           **$\ell = 0$:** $A_0 + \frac{B_0}{a} = V_0$, $A_0 + \frac{B_0}{b} = 0$. Subtract: $B_0\left(\frac1a - \frac1b\right) = V_0$, so $B_0 = \frac{V_0ab}{b - a}$ and $A_0 = -\frac{V_0a}{b - a}$. Together: $V_0\frac{a(b - r)}{r(b - a)}$.
 
@@ -2394,10 +2438,13 @@
 
           **Check:** $r = a$: $V_0 + 0$. $r = b$: $0 + V_0\cos\theta$.
 
+          [[fig:twoax]]
+
           **(b)** By Gauss's law on a sphere just outside $r = a$, only the $1/r$ term carries flux: $Q_a = 4\pi\varepsilon_0B_0 = \frac{4\pi\varepsilon_0V_0ab}{b - a}$. (The $\cos\theta$ part of $\sigma_a$ integrates to zero.) This is $CV_0$ for the spherical capacitor: the $\ell = 1$ part of the outer potential moves charge around on the inner sphere but does not change its total.
 
           **What to remember:** superposition by $\ell$. Each harmonic is its own $2\times2$ problem.
         `,
+        figs: { twoax: { svg: FIG.twoAx, cap: 'For $b = 3a$: $V$ between the spheres along the $+z$ axis (solid) and the $-z$ axis (dashed). Both start at $V_0$ on the inner sphere and end at $\\pm V_0$ on the outer one.' } },
       }),
 
       RF(md`
@@ -2669,14 +2716,16 @@
           { lbl: md`(a) $V(\text{center})/V_0$`, ans: -1 / 3 },
           { lbl: md`(b) $\beta$`, ans: -1 / 3 },
           { lbl: md`(c) $V_{\text{in}}(r,\theta)$`, expr: '-V0/3 + 2*V0*r^2*(3*cos(theta)^2 - 1)/(3*R^2)', vars: { V0: [1, 3], r: [0.2, 1], R: [1, 2], theta: [0, 3] } },
-          { lbl: md`(d) $\sigma$ at the north pole, in units of $\varepsilon_0V_0/R$`, ans: 19 / 3 },
+          { lbl: md`(d) $\sigma$ at the north pole, in units of $\tfrac{\varepsilon_0V_0}{R}$`, ans: 19 / 3 },
         ],
         sol: md`
-          **Expand:** $c_0 = -\frac{V_0}{3}$, $c_2 = \frac{4V_0}{3}$.
+          **Boundary conditions.** Inside ($r \le R$): (1) $V$ finite at $r = 0$, so no $B_\ell$; (2) $V(R,\theta) = V_0\cos2\theta$. Outside ($r \ge R$): (1) $V \to 0$, so no $A_\ell$; (2) the same surface values. The charge on the shell is the jump in $E_r$ (HW 3.22).
 
-          **Inside** (finite at 0; equals the data at $R$): $V_{\text{in}} = -\frac{V_0}{3} + \frac{4V_0}{3}\frac{r^2}{R^2}P_2(\cos\theta) = -\frac{V_0}{3} + \frac{2V_0r^2}{3R^2}\left(3\cos^2\theta - 1\right)$. Center: $-\frac{V_0}{3}$.
+          **Expand:** $\cos2\theta = \frac43P_2 - \frac13P_0$, so $c_0 = -\frac{V_0}{3}$, $c_2 = \frac{4V_0}{3}$.
 
-          **Outside** ($\to 0$; equals the data at $R$): $V_{\text{out}} = -\frac{V_0R}{3r} + \frac{4V_0}{3}\frac{R^3}{r^3}P_2(\cos\theta)$, so $\beta = -\frac13$: the sphere carries net charge $-\frac43\pi\varepsilon_0RV_0$.
+          **Inside:** $V_{\text{in}} = -\frac{V_0}{3} + \frac{4V_0}{3}\frac{r^2}{R^2}P_2(\cos\theta) = -\frac{V_0}{3} + \frac{2V_0r^2}{3R^2}\left(3\cos^2\theta - 1\right)$. Center: $-\frac{V_0}{3}$.
+
+          **Outside:** $V_{\text{out}} = -\frac{V_0R}{3r} + \frac{4V_0}{3}\frac{R^3}{r^3}P_2(\cos\theta)$, so $\beta = -\frac13$: the sphere carries net charge $-\frac43\pi\varepsilon_0RV_0$.
 
           **Charge:** $\sigma = \frac{\varepsilon_0}{R}\left[1\cdot\left(-\frac{V_0}{3}\right) + 5\cdot\frac{4V_0}{3}P_2\right] = \frac{\varepsilon_0V_0}{3R}\left(30\cos^2\theta - 11\right)$. North pole: $\frac{19}{3}\frac{\varepsilon_0V_0}{R}$.
 
@@ -2698,6 +2747,8 @@
           { lbl: md`(c) $E_z$ at the center`, expr: '-9*V0/(16*R)', vars: { V0: [1, 3], R: [1, 2] } },
         ],
         sol: md`
+          **Boundary conditions.** Inside ($r \le R$): (1) $V$ finite at $r = 0$, which kills every $B_\ell$; (2) $V(R,\theta) = V_0$ for $\theta \lt 60^\circ$ and $0$ otherwise, which gives $A_\ell R^\ell = c_\ell$. Outside: (1) $V \to 0$, (2) the same surface values, so $B_\ell = c_\ell R^{\ell+1}$.
+
           **Coefficients** (data $V_0$ for $\frac12 \lt x \le 1$, else $0$):
 
           $$c_0 = \frac12V_0\left(1 - \frac12\right) = \frac{V_0}{4}, \qquad c_1 = \frac32V_0\int_{1/2}^1x\,dx = \frac32V_0\cdot\frac38 = \frac{9V_0}{16}$$
@@ -2727,7 +2778,7 @@
   // =====================================================================================
   C.unit({
     id: 'u7', num: 'Unit 7', title: 'Separation of variables: spherical',
-    blurb: 'Laplace\'s equation for spheres: Legendre polynomials, reading coefficients by eye, which terms survive where, the sphere with a given potential, the metal sphere in a uniform field, charged shells, two-sphere problems and the axis trick.',
-    lessons: (typeof LESSONS_U7 !== 'undefined' ? LESSONS_U7 : []),
+    blurb: 'Laplace\'s equation for spheres: Legendre polynomials, reading coefficients by eye, boundary conditions and which terms survive, the sphere with a given potential, the metal sphere in a uniform field, charged shells (HW 3.22), two-sphere problems and the axis trick (HW 3.24).',
+    lessons: LESSONS_U7,
   });
 })();
