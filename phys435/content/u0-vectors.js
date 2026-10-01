@@ -435,7 +435,7 @@
         [md`Only the element at $x' = 0$ is straight below $P$. Every other element's $\srh$ tilts sideways.`,
           md`That is $(\vb r'-\vb r)/\srm$: it points from $P$ to the charge, the wrong way.`, null,
           md`Dividing by $\srm^2$ doesn't give a unit vector. It gives $\sr/\srm^2$, which has length $1/\srm$.`],
-        md`$\sr = z\,\uv z-x'\,\uv x$ and $\srm = \sqrt{x'^2+z^2}$, so $\srh = (-x'\uv x+z\uv z)/\sqrt{x'^2+z^2}$. Its $z$-component $z/\srm$ is the $\cos\theta$ that Lecture 1 keeps after the $x$-components from $\pm x'$ cancel.`,
+        md`$\sr = z\,\uv z-x'\,\uv x$ and $\srm = \sqrt{x'^2+z^2}$, so $\srh = \dfrac{-x'\uv x+z\uv z}{\sqrt{x'^2+z^2}}$. Its $z$-component $z/\srm$ is the $\cos\theta$ that Lecture 1 keeps after the $x$-components from $\pm x'$ cancel.`,
         { figHtml: fSegment() }),
 
       Q(md`In $\vb E(\vb r) = \kq\displaystyle\int\rho(\vb r')\,\frac{\srh}{\srm^2}\,d\tau'$, which statement is right?`,
@@ -721,6 +721,18 @@
     f.text(R + 8, -R * 0.75, 'cap θ ≤ 60°', 'l');
     return f.svg();
   };
+  // Lecture 2's flux question: a point charge at the centre of a sphere of radius r
+  const fGaussSph = () => {
+    const f = PF.fig(), R = 80, a = 35 * DEG;
+    f.circle(0, 0, R, {});
+    f.ellipse(0, 0, R, R * 0.28, { half: 'back', cls: 'dash dim' });
+    f.ellipse(0, 0, R, R * 0.28, { half: 'front', cls: 'dim' });
+    f.line(9 * Math.cos(a), -9 * Math.sin(a), R * Math.cos(a), -R * Math.sin(a), { cls: 'dim' });
+    f.label(R * 0.5 * Math.cos(a) - 4, -R * 0.5 * Math.sin(a) - 6, 'r', 'br', 'small');
+    f.charge(0, 0, { q: '+', r: 6 });
+    f.label(-11, 0, 'q', 'r', 'small');
+    return f.svg();
+  };
 
   // ======================================================================
   // Lesson 2: curvilinear coordinates and integrals
@@ -768,7 +780,7 @@
         [md`So that $\sin\theta\ge0$ and the volume element stays positive`, md`Because $\phi$ already sweeps all the way around; $\theta$ from $0$ to $\pi$ then reaches every direction exactly once`, md`Because $\theta>\pi$ would only repeat points on the equator`, md`No reason; $0$ to $2\pi$ works too if you add a factor $\tfrac12$`], 1,
         [md`That is a pleasant consequence, not the reason. The range is set by covering each direction once.`, null,
           md`Every direction with $\theta>\pi$ repeats a direction already reached with a different $\phi$, not just equator points.`,
-          md`Coordinates must label each point once. The factor-$\tfrac12$ patch happens to work only for integrands with special symmetry.`],
+          md`Coordinates must label each point once. The patch doesn't work either: past $\theta = \pi$, $\sin\theta$ turns negative, so $\int_0^{2\pi}\sin\theta\,d\theta = 0$ and the "halved" full-sphere integral comes out $0$, not $4\pi$.`],
         md`A half-turn of $\theta$ (north pole to south pole) combined with a full turn of $\phi$ covers every direction once. That is why the full-sphere integral is $\int_0^{2\pi}d\phi\int_0^\pi\sin\theta\,d\theta = 2\pi\cdot2 = 4\pi$.`,
         { nofig: 'definition of the coordinate ranges' }),
 
@@ -891,6 +903,15 @@
 
         the same for every $R$. With $\vb E = \dfrac{q}{4\pi\varepsilon_0}\dfrac{\uv r}{r^2}$ this is Lecture 2's $\Phi_E = q/\varepsilon_0$. It is also the seed of the Dirac delta function (last lesson).
       `, { paths: { svg: fPaths3(), cap: 'Paths from $\\vb a = (1,0)$ to $\\vb b = (0,1)$: (1) quarter circle, (2) straight segment, (3) via the corner $(1,1)$.' } }),
+
+      Q(md`Lecture 2 finds the flux of a point charge's field $\vb E = \dfrac{q}{4\pi\varepsilon_0}\dfrac{\uv r}{r^2}$ through a sphere of radius $r$ centred on the charge (figure), and first asks: "What coordinate system should we use?" Which setup is right?`,
+        [md`Cartesian, with $d\vb a = dx\,dy\;\uv z$`, md`Spherical, with $d\vb a = r^2\sin\theta\,d\theta\,d\phi\;\uv r$ at fixed $r$`, md`Cylindrical, with $d\vb a = s\,d\phi\,dz\;\uv s$`, md`Spherical, with $d\vb a = r^2\,d\theta\,d\phi\;\uv r$`], 1,
+        [md`On a sphere the normal is $\uv r$, which changes from point to point; $dx\,dy\;\uv z$ is the area element of a horizontal plane.`,
+          null,
+          md`$s\,d\phi\,dz\;\uv s$ belongs to the side of a cylinder ($s$ fixed). The sphere is the surface $r$ = const.`,
+          md`The $\sin\theta$ is missing. Without it the angular integral gives $2\pi^2$ instead of $4\pi$.`],
+        md`Choose the coordinates in which the surface is "one coordinate = constant". The sphere is $r$ = const, so $d\vb a = r^2\sin\theta\,d\theta\,d\phi\;\uv r$, and $\vb E$ points along $\uv r$ with the same size everywhere on it. Then $\vb E\cdot d\vb a = \dfrac{q}{4\pi\varepsilon_0}\sin\theta\,d\theta\,d\phi$ (the $r^2$ cancels), and the angular integral is $4\pi$: $\Phi_E = q/\varepsilon_0$ for every $r$.`,
+        { figHtml: fGaussSph() }),
 
       Q(md`A uniform field $\vb v = v_0\,\uv y$ passes through a closed cube of side $a$ (figure). What is the total outward flux $\oint\vb v\cdot d\vb a$?`,
         [md`$v_0a^2$`, md`$2v_0a^2$`, md`$0$`, md`$6v_0a^2$`], 2,
@@ -1263,7 +1284,7 @@
 
         $$\int_{\vb a}^{\vb b}\vb E\cdot d\vb l = -\big[V(\vb b)-V(\vb a)\big],\qquad V(\vb r) = -\int_{\mathcal O}^{\vb r}\vb E\cdot d\vb l$$
 
-        (both on the formula sheet). The path doesn't matter, which is why "the potential at a point" makes sense. Unit 2 builds on this.
+        The second is on the formula sheet; the first is the gradient theorem with $T = V$ and $\nabla V = -\vb E$. The path doesn't matter, which is why "the potential at a point" makes sense. Unit 2 builds on this.
       `, { paths: { svg: fTwoPaths(), cap: 'Two routes from $\\vb a$ to $\\vb b$. For a gradient, both give $T(\\vb b)-T(\\vb a)$.' } }),
 
       Q(md`For some function $T$, $\int\nabla T\cdot d\vb l$ along path 1 from $\vb a$ to $\vb b$ is $7$ (figure). What is it along path 2?`,
@@ -1542,7 +1563,7 @@
 
         $$\nabla\cdot\vb E = \frac{\rho}{\varepsilon_0}.$$
 
-        Read it as: lines of $\vb E$ begin on positive charge and end on negative charge, and nowhere else. Because it is local, you can run it backwards: given $\vb E$, the charge that made it is $\rho = \varepsilon_0\nabla\cdot\vb E$. (In the middle step of that derivation Lecture 2 writes $\int\rho\,d\tau$ where $\int\rho\,d\tau/\varepsilon_0$ is meant; the next line restores the $\varepsilon_0$.) Unit 1 does the physics; here, practise the derivative.
+        Read it as: lines of $\vb E$ begin on positive charge and end on negative charge (or run off to infinity); in empty space they never begin or end. Because it is local, you can run it backwards: given $\vb E$, the charge that made it is $\rho = \varepsilon_0\nabla\cdot\vb E$. (In the middle step of that derivation Lecture 2 writes $\int\rho\,d\tau$ where $\int\rho\,d\tau/\varepsilon_0$ is meant; the next line restores the $\varepsilon_0$.) Unit 1 does the physics; here, practise the derivative.
       `),
 
       Q(md`In some region $\vb E = k\,(x\,\uv x+y\,\uv y+z\,\uv z)$ with $k$ constant. What is the charge density there?`,
@@ -1550,7 +1571,7 @@
         [md`All three terms count: $\nabla\cdot\vb E = k+k+k$.`, null,
           md`$\rho = \varepsilon_0\nabla\cdot\vb E$: multiply by $\varepsilon_0$, don't divide.`,
           md`The divergence of $k\vb r$ is the constant $3k$; no $r$ survives.`],
-        md`$\nabla\cdot\vb E = 3k$, so $\rho = 3\varepsilon_0k$, uniform. This is Lecture 3's field inside a uniformly charged ball, $\vb E = \rho\vb r/3\varepsilon_0$, read backwards.`,
+        md`$\nabla\cdot\vb E = 3k$, so $\rho = 3\varepsilon_0k$, uniform. This is Lecture 3's field inside a uniformly charged ball, $\vb E = \dfrac{\rho}{3\varepsilon_0}\vb r$, read backwards.`,
         { nofig: 'one-line derivative' }),
 
       RF(md`
@@ -1984,6 +2005,24 @@
         md`In $x\,\uv x$ the only component depends only on its own coordinate, so every cross-derivative vanishes. It is $\nabla(x^2/2)$, a gradient, and gradients never curl. (It does have divergence $1$.)`,
         { nofig: 'quick component check' }),
 
+      Q(md`Lecture 3 asks: "What is $\nabla\times\vb E$ of a point charge?" In the spherical curl from the formula sheet, the $\hat{\boldsymbol\theta}$ component is $\dfrac1r\Big[\dfrac{1}{\sin\theta}\dfrac{\partial E_r}{\partial\phi}-\dfrac{\partial}{\partial r}\big(rE_\phi\big)\Big]$. Why is it zero for $\vb E = \dfrac{q}{4\pi\varepsilon_0r^2}\,\uv r$?`,
+        [md`Because $E_r$ falls off as $1/r^2$`, md`Because $\dfrac{1}{\sin\theta}$ vanishes`, md`Because $E_r$ depends only on $r$, so $\partial E_r/\partial\phi = 0$, and $E_\phi = 0$`, md`It isn't zero: it equals $-\dfrac1r\dfrac{\partial E_r}{\partial r}$`], 2,
+        [md`The power law plays no role: any $E_r = f(r)$ gives zero. What matters is that $E_r$ has no angle dependence.`,
+          md`$1/\sin\theta$ never vanishes; it blows up at the poles. The bracket is zero because both terms inside it are.`,
+          null,
+          md`No $\partial E_r/\partial r$ appears in the $\hat{\boldsymbol\theta}$ component; only $\partial E_r/\partial\phi$ and $\partial(rE_\phi)/\partial r$ do.`],
+        md`Read off the components first: $E_r = \dfrac{q}{4\pi\varepsilon_0r^2}$, $E_\theta = E_\phi = 0$. Every term of the spherical curl is then a derivative of $E_\theta$ or $E_\phi$ (zero) or an *angle* derivative of $E_r$ (zero, since $E_r$ depends on $r$ alone). All three components vanish: $\nabla\times\vb E = 0$, for the point charge and for any radial $f(r)\,\uv r$.`,
+        { nofig: 'reading the formula-sheet curl' }),
+
+      Q(md`Lecture 3's follow-up: "What does this tell us about the curl of the electric field for any static charge distribution? And tell me how to prove it." Which answer and proof are right?`,
+        [md`Nothing general; each distribution needs its own calculation`, md`It is zero, by Gauss's law $\nabla\cdot\vb E = \rho/\varepsilon_0$`, md`It is zero only for spherically symmetric distributions, whose fields are radial`, md`It is zero: by superposition $\vb E = \sum_i\vb E_{q_i}$; the curl of a sum is the sum of the curls, and each point-charge field is curl-free`], 3,
+        [md`Superposition settles every distribution at once; no new calculation is needed.`,
+          md`Gauss's law fixes the divergence, not the curl. A field can have any divergence and still swirl.`,
+          md`A dipole's field is not radial about any single point, yet it is curl-free. Each point charge's field is radial about its *own* charge, and that is all the proof needs.`,
+          null],
+        md`Break any static distribution into point charges (or elements $\rho\,d\tau'$). Each one's field is radial about its own position, so its curl is zero. The curl is linear, so $\nabla\times\vb E = \nabla\times\vb E_{q_1}+\nabla\times\vb E_{q_2}+\dots = 0$. Stokes then gives $\oint\vb E\cdot d\vb l = 0$ around every loop. This needs *static* charges: a changing magnetic field adds $-\partial\vb B/\partial t$ (Lecture 3's warning).`,
+        { nofig: 'proof strategy; no particular configuration' }),
+
       RF(md`
         ### Stokes' theorem
 
@@ -2115,6 +2154,10 @@
           md`On $x = 0$ only $v_y = 2yz$ survives. On the two legs along the axes either $y = 0$ or $z = 0$. On the slanted edge $z = 2-y$, with $y$ running from $2$ to $0$.`,
         ],
         parts: [
+          { lbl: md`The boundary runs origin $\to(0,2,0)\to(0,0,2)\to$ origin. Which way must $d\vb a$ point on the triangle?`, mc: [md`$-\uv x$`, md`$+\uv x$`, md`Either way; Stokes' theorem holds for both`, md`Along the slanted edge`], a: 1,
+            why: [md`$-\uv x$ goes with the opposite route, origin $\to(0,0,2)\to(0,2,0)\to$ origin. Seen from $+x$ (with $y$ to the right and $z$ up) the given route is counter-clockwise, so the right-hand thumb points along $+\uv x$.`, null,
+              md`Flipping $d\vb a$ flips the sign of the surface integral but not of the line integral. The theorem holds only when $d\vb a$ and the direction around the rim match by the right-hand rule.`,
+              md`$d\vb a$ is normal to the surface. The triangle lies in the $yz$-plane, so its normal is along $\pm\uv x$.`] },
           { lbl: md`$x$-component of $\nabla\times\vb v$`, expr: '-2*y', vars: { y: [0.5, 2] } },
           { lbl: md`$\int_S(\nabla\times\vb v)\cdot d\vb a$`, ans: -8 / 3 },
           { lbl: md`$\int\vb v\cdot d\vb l$ along the slanted edge, $(0,2,0)\to(0,0,2)$`, ans: -8 / 3 },
@@ -2174,7 +2217,7 @@
           { lbl: md`(b) Why do the bottom and the two flat sides contribute nothing?`, mc: [md`Bottom: $v_z = 0$ at $z = 0$. Flat sides: $v_\phi = s\sin\phi\cos\phi = 0$ at $\phi = 0$ and $\phi = \pi/2$.`, md`Their outward normals are all along $\uv s$, perpendicular to $\vb v$.`, md`Their fluxes cancel in pairs.`, md`They have zero area.`], a: 0,
             why: [null, md`The flat sides have normals $\mp\hat{\boldsymbol\phi}$ and the bottom $-\uv z$, not $\uv s$.`, md`Each one is zero on its own, not by cancellation.`, md`The flat sides are $2\times5$ rectangles and the bottom is a quarter disk.`] },
           { lbl: md`(c) $\nabla\times\vb v = $`, mc: [md`$\vb 0$`, md`$4\sin\phi\cos\phi\,\uv z$`, md`$2\sin\phi\cos\phi\,\uv z$`, md`$3\,\uv z$`], a: 0,
-            why: [null, md`That adds the two terms of the $\uv z$ component instead of subtracting them.`, md`$\frac{\partial}{\partial s}(s^2\sin\phi\cos\phi) = 2s\sin\phi\cos\phi$, and $\frac{\partial v_s}{\partial\phi} = 2s\sin\phi\cos\phi$ too. They cancel.`, md`$v_z = 3z$ depends only on $z$, which gives no curl.`] },
+            why: [null, md`That adds the two terms of the $\uv z$ component instead of subtracting them.`, md`That keeps only $\frac1s\frac{\partial}{\partial s}(s\,v_\phi) = 2\sin\phi\cos\phi$ and drops $-\frac1s\frac{\partial v_s}{\partial\phi}$, which is $-2\sin\phi\cos\phi$ (from the $\sin^2\phi$ in $v_s$). The two cancel.`, md`$v_z = 3z$ depends only on $z$, which gives no curl.`] },
         ],
         sol: md`
           **(a) Divergence.** With $v_s = s(2+\sin^2\phi)$, $v_\phi = s\sin\phi\cos\phi$, $v_z = 3z$:
@@ -2248,9 +2291,10 @@
     box(190, 0, `\\oint ${B('F')}\\cdot d${B('l')} = 0`, '(3)', 'r');
     box(190, 110, `\\int_{${B('a')}}^{${B('b')}}${B('F')}\\cdot d${B('l')}`, '(2)', 'r');
     box(0, 110, `${B('F')} = -\\nabla V`, '(4)', 'l');
-    f.arrow(124, 17, 186, 17, { hs: 6 }); f.label(155, 9, 'Stokes', 'b', 'small');
-    f.line(250, 38, 250, 106, { arrow: 'both', hs: 6 }); f.label(258, 72, 'two paths', 'l', 'small');
-    f.arrow(186, 127, 124, 127, { hs: 6 }); f.label(155, 150, 'define V', 't', 'small');
+    // plain words go through f.text: in a TeX label KaTeX would set them in math italic and drop the spaces
+    f.arrow(124, 17, 186, 17, { hs: 6 }); f.text(155, 9, 'Stokes', 'b');
+    f.line(250, 38, 250, 106, { arrow: 'both', hs: 6 }); f.text(258, 72, 'two paths', 'l');
+    f.arrow(186, 127, 124, 127, { hs: 6 }); f.text(155, 150, 'define V', 't');
     f.arrow(60, 106, 60, 38, { hs: 6 }); f.label(52, 72, `\\nabla\\times\\nabla V = 0`, 'r', 'small');
     return f.svg();
   };
@@ -2477,7 +2521,7 @@
     return f.svg();
   };
   const fSphOff = () => {
-    const f = PF.fig(), u = 40;
+    const f = PF.fig(), u = 48;
     f.arrow(0, 15, 0, -4.6 * u, { cls: 'dim', hs: 6 }); f.label(4, -4.6 * u - 3, 'z', 'bl', 'small accent');
     f.circle(0, -3 * u, u, { cls: 'thick' });
     f.dot(0, -3 * u, 2.4); f.label(6, -3 * u, 'z=3', 'l', 'small');
@@ -2731,7 +2775,7 @@
         [md`$2\pi L$`, md`$2\pi RL$`, md`$0$`, md`$4\pi$`], 0,
         [null, md`On the side $v_s = 1/R$, which cancels the $R$ in the area $2\pi RL$.`,
           md`The axis, where the source sits, is inside the cylinder.`, md`$4\pi$ is the spherical (point-charge) version.`],
-        md`Side: $\frac1R\cdot2\pi RL = 2\pi L$; ends: $\vb v\perp\uv z$, so zero. The flux doesn't depend on $R$, so all the divergence sits on the axis: $\nabla\cdot(\uv s/s) = 2\pi\,\delta(x)\,\delta(y)$. Multiply by $\lambda/2\pi\varepsilon_0$ and you have Gauss's law for a line charge, $\Phi = \lambda L/\varepsilon_0$ (Lecture 2).`,
+        md`Side: $\frac1R\cdot2\pi RL = 2\pi L$; ends: $\vb v\perp\uv z$, so zero. The flux doesn't depend on $R$, so all the divergence sits on the axis: $\nabla\cdot(\uv s/s) = 2\pi\,\delta(x)\,\delta(y)$. Multiply by $\dfrac{\lambda}{2\pi\varepsilon_0}$ and you have Gauss's law for a line charge, $\Phi = \lambda L/\varepsilon_0$ (Lecture 2).`,
         { figHtml: fLineCyl() }),
 
       RF(md`
@@ -2813,7 +2857,7 @@
 
       P({
         title: 'Three-dimensional delta integrals',
-        q: md`With $\vb a = (3,0,1)$, $\vb b = (1,2,2)$ and $\vb c = (1,2,2)$, evaluate:
+        q: md`With $\vb a = (3,0,1)$, $\vb b = (1,2,2)$ and $\vb c = (2,-2,1)$, evaluate:
 
         (a) $\displaystyle\int(r^2+\vb r\cdot\vb a)\,\delta^3(\vb r-\vb b)\,d\tau$ over all space;
 
@@ -2836,7 +2880,7 @@
 
           (b) $\vb b$ has $y = 2>1$, so it lies outside the cube (figure). The integral is $0$.
 
-          (c) $\delta^3(2\vb r) = \tfrac18\delta^3(\vb r)$, a spike at the origin. $|\vb 0-\vb c|^2 = c^2 = 9$, so the result is $\tfrac98$.
+          (c) $\delta^3(2\vb r) = \tfrac18\delta^3(\vb r)$, a spike at the origin (not at $\vb c$). $|\vb 0-\vb c|^2 = c^2 = 4+4+1 = 9$, so the result is $\tfrac98$.
 
           **What to remember.** In 3-D the scaling rule applies to each of the three factors: $\delta^3(k\vb r) = \delta^3(\vb r)/|k|^3$.
         `,
