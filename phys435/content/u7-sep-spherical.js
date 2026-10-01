@@ -66,7 +66,8 @@
   // ---------------------------------------------------------------- the sphere figure
   // o: rr, lab (surface condition, TeX), labTh (polar deg of the leader), metal, inLab, outLab,
   //    Pin: {f, th} field point inside, Pout: {f, th} outside (th < 0 = left side), R: false, Rth, Rlab, axis: false,
-  //    sig: (th) -> sign of a surface charge (glyphs), charge: 'center' | {x,y,lab}, lab2/lab2Th (second leader)
+  //    sig: (th) -> sign of a surface charge (glyphs), charge: 'center' | {x,y,lab}, lab2/lab2Th (second leader),
+  //    mark: {th, lab} dashed ray to the surface at polar angle th with its angle marked from the +z axis
   function sph(o = {}) {
     const f = PF.fig();
     const rr = o.rr || 62;
@@ -107,6 +108,7 @@
     }
     if (o.charge === 'center') f.charge(0, 0, { q: o.chargeSign || '+', lab: o.chargeLab || 'q', at: 'bl' });
     else if (o.charge) f.charge(o.charge.x, o.charge.y, { q: o.charge.q || '+', lab: o.charge.lab || 'q', at: o.charge.at || 'r' });
+    if (o.mark) { const e = at(0, 0, rr, o.mark.th); f.line(0, 0, e[0], e[1], { cls: 'dim dash thin' }); thetaMark(f, 0, 0, o.mark.th, o.mark.r || 18, o.mark.lab || '\\theta'); }
     if (o.inLab) f.label(o.inX ?? -10, o.inY ?? rr * 0.5, o.inLab, 'c', 'small');
     if (o.outLab) f.label(o.outX ?? -rr * 0.95, o.outY ?? rr * 1.05, o.outLab, 'r', 'small');
     if (o.note) f.text(o.noteX ?? 0, o.noteY ?? rr + 22, o.note, 't');
@@ -114,10 +116,10 @@
   }
 
   // ---------------------------------------------------------------- other setups
-  // two concentric spheres; o: a, b (screen radii), labA (TeX, placed in the gap), labB (outer, leader), shade
+  // two concentric spheres; o: ra, rb (screen radii), labA (inner, leader into the gap), labB (outer, leader), shade
   function shells(o = {}) {
     const f = PF.fig();
-    const ra = o.ra || 36, rb = o.rb || 82;
+    const ra = o.ra || 32, rb = o.rb || 90;
     if (o.shade !== false) annulus(f, 0, 0, ra, rb);
     if (o.metalIn) f.hatchBand(f.arcPts(0, 0, ra, ra, 0, 360));
     f.circle(0, 0, ra, { cls: 'thick' });
@@ -127,7 +129,7 @@
     if (!o.metalIn) { f.line(0, 0, ea[0], ea[1], { cls: 'dim', arrow: 'end', hs: 5 }); labLine(f, [0, 0], ea, 'a', -1, 3, 0.5); }
     f.line(0, 0, eb[0], eb[1], { cls: 'dim', arrow: 'end', hs: 6 });
     labLine(f, [0, 0], eb, 'b', 1, 4, 0.78);
-    if (o.labA) f.label(...at(0, 0, (ra + rb) / 2 - 4, 128), o.labA, 'c', 'small');
+    if (o.labA) leader(f, 0, 0, ra, 128, o.labA, 10);
     if (o.labB) leader(f, 0, 0, rb, 40, o.labB, 14);
     if (o.Pin) { const p = at(0, 0, o.Pin.r, o.Pin.th); f.dot(p[0], p[1], 2.8); f.tag(p[0], p[1], 'P', 'r', 7, 'small'); }
     return f.svg();
@@ -139,7 +141,7 @@
     return sph({
       arcs: [[-cap + g, cap - g, 'thick'], [cap + g, 360 - cap - g, o.botThin ? '' : 'thick']],
       lab: o.top || '+V_0', labTh: o.topTh ?? 34, lab2: o.bot || '-V_0', lab2Th: o.botTh ?? 146, Rth: 300, R: o.R,
-      inLab: o.inLab, outLab: o.outLab, Pin: o.Pin, Pout: o.Pout,
+      inLab: o.inLab, outLab: o.outLab, Pin: o.Pin, Pout: o.Pout, mark: o.mark,
     });
   }
 
@@ -356,14 +358,14 @@
   // sign pattern of P_l(cos theta) on a sphere: nodal latitudes and +/- zones
   function nodal(l) {
     const f = PF.fig();
-    const rr = 42;
+    const rr = 56;     // large enough that the sign glyph fits in the thin polar caps of P3
     f.circle(0, 0, rr, { cls: 'thick' });
     const zs = { 1: [0], 2: [1 / Math.sqrt(3), -1 / Math.sqrt(3)], 3: [Math.sqrt(0.6), 0, -Math.sqrt(0.6)], 4: [0.8611, 0.34, -0.34, -0.8611] }[l];
     for (const z of zs) { const y = -rr * z, w = rr * Math.sqrt(1 - z * z); f.line(-w, y, w, y, { cls: 'dash dim' }); }
     const edges = [1, ...zs, -1];
     for (let i = 0; i < edges.length - 1; i++) {
       const zm = (edges[i] + edges[i + 1]) / 2;
-      sgn(f, 0, -rr * zm, Pl(l, zm) > 0 ? 1 : -1, 3.2);
+      sgn(f, 0, -rr * zm, Pl(l, zm) > 0 ? 1 : -1, 2.8);
     }
     return f.svg();
   }
@@ -494,7 +496,7 @@
         [[fig:radial]]
 
         !!trap $r^{-(\ell+1)}$, not $r^{-\ell}$
-          The decaying solution is one power steeper than you might guess: $1/r$ for $\ell = 0$, $1/r^2$ for $\ell = 1$, $1/r^3$ for $\ell = 2$. Writing $r^{-\ell}$ is the most common mistake in this unit. For $\ell = 0$ it would give a constant instead of the point-charge $1/r$, and it does not satisfy the radial equation.
+          The decaying solution is one power steeper than you might guess: $1/r$ for $\ell = 0$, $1/r^2$ for $\ell = 1$, $1/r^3$ for $\ell = 2$. Writing $r^{-\ell}$ is the most common mistake in this unit. For $\ell \ge 1$ it does not satisfy the radial equation at all ($n = -\ell$ gives $n(n+1) = \ell(\ell-1)$, not $\ell(\ell+1)$). For $\ell = 0$ it just repeats the constant $r^0$, so you would lose the point-charge solution $1/r$.
 
         !!intuition Which one lives where
           $r^\ell$ is fine at the origin and blows up at infinity. $r^{-(\ell+1)}$ is fine at infinity and blows up at the origin. A region that contains $r = 0$ (and no charge there) can only use $r^\ell$. A region that reaches $r \to \infty$ with $V \to 0$ can only use $r^{-(\ell+1)}$. A shell region $a \lt r \lt b$ contains neither point and keeps both.
@@ -555,7 +557,7 @@
 
         [[fig:q0]]
 
-        The $z$ axis is inside every region in this course, so the second solutions are always thrown out. (Griffiths notes they matter only in rare problems where the axis is excluded, such as a cone.)
+        The $z$ axis is inside every region in this course, so the second solutions are always thrown out. (Griffiths' footnote: only in rare problems where the $z$ axis is excluded from the region do they have to be kept.)
 
         !!intuition Same logic as the slot
           In the Cartesian slot, $\sin ky$ had to vanish on both plates, $y = 0$ and $y = a$, and that quantized $k = n\pi/a$. Here $\theta$ runs between two "walls" as well, the poles $\theta = 0$ and $\theta = \pi$, and demanding a finite potential there quantizes $\ell$. The angular direction plays the role of the oscillating direction ($P_\ell$ has $\ell$ zeros, like a sine), and $r$ plays the role of the growing or decaying direction ($r^\ell$ and $r^{-(\ell+1)}$ instead of $e^{\pm kx}$).
@@ -569,7 +571,7 @@
 
       Q(md`The angular solutions are Legendre polynomials. Of what?`,
         [md`$\theta$: $P_\ell(\theta)$`, md`$\cos\theta$: $P_\ell(\cos\theta)$`, md`$\sin\theta$: $P_\ell(\sin\theta)$`, md`$r\cos\theta$: $P_\ell(z)$`], 1,
-        [md`A common slip. $P_2(\theta) = \tfrac12(3\theta^2 - 1)$ does not satisfy Legendre's equation; the variable is $x = \cos\theta$.`, null, md`The substitution that turns Legendre's equation into a polynomial equation is $x = \cos\theta$, not $\sin\theta$.`, md`$P_\ell$ is a function of the angle only. The $r$ dependence is a separate factor ($r^\ell$ or $r^{-(\ell+1)}$); $r^\ell P_\ell(\cos\theta)$ happens to be a polynomial in $x, y, z$, but $P_\ell(z)$ is not a solution.`],
+        [md`A common slip. $P_2(\theta) = \tfrac12(3\theta^2 - 1)$ does not satisfy Legendre's equation; the variable is $x = \cos\theta$.`, null, md`The substitution that turns Legendre's equation into a polynomial equation is $x = \cos\theta$, not $\sin\theta$.`, md`$P_\ell$ is a function of the angle only; the $r$ dependence is a separate factor ($r^\ell$ or $r^{-(\ell+1)}$). $r^\ell P_\ell(\cos\theta)$ is a polynomial in $x, y, z$, but it is not $P_\ell(z)$: $r^2P_2(\cos\theta) = z^2 - \tfrac12(x^2 + y^2)$ is harmonic, while $P_2(z) = \tfrac12(3z^2 - 1)$ has $\nabla^2 = 3$.`],
         md`Always write $P_\ell(\cos\theta)$. For example $P_2(\cos\theta) = \tfrac12(3\cos^2\theta - 1)$, which is $1$ at the north pole, $-\tfrac12$ on the equator and $1$ again at the south pole.`,
         { nofig: 'notation question, a figure would give it away' }),
 
@@ -1214,7 +1216,7 @@
         | neutral (uncharged) | total charge zero | that sphere adds no $1/r$ term |
         | surface charge $\sigma_0(\theta)$ glued on a shell | $V_{\text{in}} = V_{\text{out}}$ at $r = R$, and $\dfrac{\partial V_{\text{out}}}{\partial r} - \dfrac{\partial V_{\text{in}}}{\partial r} = -\dfrac{\sigma_0(\theta)}{\varepsilon_0}$ at $r = R$ | two equations per $\ell$ link the inside $A_\ell$ to the outside $B_\ell$ |
 
-        The last line is the general boundary condition at a charged surface (Unit 4): $V$ is continuous, and $E^\perp = -\partial V/\partial r$ jumps by $\sigma/\varepsilon_0$.
+        The last line is the general boundary condition at a charged surface (Unit 2): $V$ is continuous, and $E^\perp = -\partial V/\partial r$ jumps by $\sigma/\varepsilon_0$.
 
         [[fig:regions]]
 
@@ -1431,7 +1433,7 @@
   const lecAxis = (u) => (Math.abs(u) <= 1 ? 0.5 * (1 - u) : u > 0 ? 0.5 * (1 / u - 1 / (u * u)) : 0.5 * (-1 / u + 1 / (u * u)));
   FIG.lecPlot = PF.plot({ w: 340, h: 200, x: [-3, 3], y: [0, 1.1], xl: 'z', yl: 'V/k',
     xt: [[-1, '-R'], [1, 'R'], [2, '2R']], yt: [[1, '1'], [0.5, '\\tfrac12']], curves: [{ f: lecAxis, n: 600 }] });
-  FIG.capSph = hemis({ cap: 60, top: 'V_0', bot: 'V=0', botThin: true, topTh: 30 });
+  FIG.capSph = hemis({ cap: 60, top: 'V_0', bot: 'V=0', botThin: true, topTh: 30, mark: { th: 60, lab: '60^\\circ' } });
   const ax13 = (u) => (Math.abs(u) <= 1 ? 1 + 3 * u : u > 0 ? 1 / u + 3 / (u * u) : -1 / u - 3 / (u * u));
   FIG.ax13 = PF.plot({ w: 340, h: 210, x: [-4, 4], y: [-2.4, 4.4], zero: true, xl: 'z/R', yl: 'V/V_0',
     xt: [[-3, '-3'], [-1, '-1'], [1, '1']], yt: [[4, '4'], [1, '1'], [-2, '-2']], curves: [{ f: ax13, n: 800 }] });
@@ -1483,7 +1485,7 @@
 
       Q(md`For the lecture's sphere, $V_0(\theta) = k\sin^2(\theta/2)$, what is the potential at the center?`,
         [md`$0$`, md`$k$`, md`$\dfrac k2$`, md`$\dfrac{k}{4}$`], 2,
-        [md`$0$ is the north-pole value. The center sees the whole sphere.`, md`$k$ is the south-pole value.`, null, md`$\frac k4$ would be the average over $\theta$ of something else. The area average of $\frac k2(1 - \cos\theta)$ is $\frac k2$, since $\cos\theta$ averages to zero over the surface.`],
+        [md`$0$ is the north-pole value. The center sees the whole sphere.`, md`$k$ is the south-pole value.`, null, md`That is half the right value, as if an extra $\tfrac12$ slipped into $A_0 = \tfrac12\int_0^\pi V_0\sin\theta\,d\theta$. The area average of $\frac k2(1 - \cos\theta)$ is $\frac k2$, since $\cos\theta$ averages to zero over the surface.`],
         md`$V(0) = A_0 = \frac k2$. Physically, the potential at the center of a charge-free sphere is the average of the potential over its surface (mean-value theorem). Here the $\cos\theta$ part averages to zero, leaving $\frac k2$.`,
         { figHtml: FIG.lecIn }),
 
@@ -1558,7 +1560,7 @@
         [md`$\tfrac14$`, md`$\tfrac12$`, md`$\tfrac18$`, md`$1$`], 2,
         [md`$(1/2)^2$ is the *inside* factor at $r = R/2$: $(r/R)^\ell$. Outside the power is $\ell + 1$.`, md`That would be a $1/r$ fall-off, which is the $\ell = 0$ term.`, null, md`Every $\ell \ge 0$ term decays outside.`],
         md`Outside, the $\ell$ term goes as $c_\ell(R/r)^{\ell+1}$. For $\ell = 2$ at $r = 2R$: $(1/2)^3 = \frac18$. Higher $\ell$ fade faster: from far away the sphere's fine angular structure is invisible, and only the lowest $\ell$ terms matter.`,
-        { figHtml: sph({ lab: 'V_0(\\theta)', Pout: { f: 1.55, th: -50 } }) }),
+        { figHtml: sph({ lab: 'V_0(\\theta)', Pout: { f: 2, th: -50, lab: 'r=2R' } }) }),
 
       Q(md`For a sphere held at $V_0(\theta)$, how are the outside coefficients $B_\ell$ related to the inside coefficients $A_\ell$?`,
         [md`$B_\ell = A_\ell$`, md`$B_\ell = A_\ell R^{2\ell+1}$`, md`$B_\ell = -A_\ell R^{2\ell+1}$`, md`$B_\ell = A_\ell/R^{2\ell+1}$`], 1,
@@ -1569,7 +1571,7 @@
       Q(md`A sphere is held at a **constant** potential $V_0$ (a conducting sphere at $V_0$). What do the formulas give?`,
         [md`$V_{\text{in}} = V_0$ and $V_{\text{out}} = \dfrac{V_0R}{r}$`, md`$V_{\text{in}} = \dfrac{V_0r}{R}$ and $V_{\text{out}} = \dfrac{V_0R}{r}$`, md`$V_{\text{in}} = V_0$ and $V_{\text{out}} = V_0$`, md`$V_{\text{in}} = 0$ and $V_{\text{out}} = \dfrac{V_0R}{r}$`], 0,
         [null, md`$\frac{V_0r}{R}$ would be an $\ell = 1$-type radial factor without a $P_1$; for constant data only $\ell = 0$ appears, and $r^0 = 1$.`, md`Outside, $V$ must vanish at infinity.`, md`Inside a conductor at $V_0$ (or inside any sphere held at constant $V_0$ with no charge in it) $V = V_0$.`],
-        md`Only $c_0 = V_0$. Inside: $V_0(r/R)^0 = V_0$, constant (no field inside a conductor). Outside: $V_0\frac Rr$, a point charge $Q = 4\pi\varepsilon_0RV_0$, the capacitance $C = 4\pi\varepsilon_0R$ of an isolated sphere. The method reproduces what you already knew, which is the point of this check (Griffiths Prob. 3.18a).`,
+        md`Only $c_0 = V_0$. Inside: $V_0(r/R)^0 = V_0$, constant (no field inside a conductor). Outside: $V_0\frac Rr$, a point charge $Q = 4\pi\varepsilon_0RV_0$, the capacitance $C = 4\pi\varepsilon_0R$ of an isolated sphere. The method reproduces what you already knew, which is the point of this check (Griffiths Prob. 3.18a, 4th ed.).`,
         { figHtml: sph({ lab: 'V_0\\ (\\text{constant})', inLab: 'V_{\\text{in}}', inX: -14, outLab: 'V_{\\text{out}}', outX: -64, outY: 70 }) }),
 
       Q(md`The cap $\theta \lt 60^\circ$ of a sphere is held at $V_0$ and the rest of the sphere is grounded. What is $V$ at the center?`,
@@ -1725,11 +1727,11 @@
 
           [[fig:hax]]
 
-          **Outside:** $V_{\text{out}} = V_0\left[\frac32\frac{R^2}{r^2}\cos\theta - \frac78\frac{R^4}{r^4}P_3 + \dots\right]$. No $1/r$ term (zero net charge). $B_1 = \frac32V_0R^2$, so $p = 4\pi\varepsilon_0B_1 = 6\pi\varepsilon_0V_0R^2$ along $+z$.
+          **Outside.** Region $r \ge R$. BCs: (1) $V \to 0$ at infinity, so no $A_\ell$; (2) the same $\pm V_0$ data at $r = R$, so $B_\ell = c_\ell R^{\ell+1}$. Then $V_{\text{out}} = V_0\left[\frac32\frac{R^2}{r^2}\cos\theta - \frac78\frac{R^4}{r^4}P_3 + \dots\right]$. No $1/r$ term (zero net charge). $B_1 = \frac32V_0R^2$, so $p = 4\pi\varepsilon_0B_1 = 6\pi\varepsilon_0V_0R^2$ along $+z$.
 
           **What to remember:** for data with a jump, a couple of terms already give the potential to a few percent away from the surface, because $(r/R)^\ell$ suppresses the high $\ell$. Exams ask for "the first two nonzero terms".
         `,
-        figs: { hax: { svg: FIG.hemAxis, cap: 'Inside, on the $z$ axis: exact potential (solid) and the two-term series $\\tfrac32u - \\tfrac78u^3$ (dashed), $u = z/R$. They agree well except right next to the poles, where the jump is.' } },
+        figs: { hax: { svg: FIG.hemAxis, cap: 'Inside, on the $z$ axis: exact potential (solid) and the two-term series $\\tfrac32u - \\tfrac78u^3$ (dashed), $u = z/R$. They agree well near the center. Close to the poles ($|u| \\to 1$) the factors $u^\\ell$ no longer suppress the higher terms, so two terms fall short of $\\pm V_0$ there.' } },
       }),
 
       P({
@@ -1758,6 +1760,8 @@
           { lbl: md`(iii) $V(\text{center})/V_0$`, ans: 0.5 },
         ],
         sol: md`
+          **Boundary conditions** (inside each sphere, region $r \le R$): (1) $V$ finite at $r = 0$, which kills every $B_\ell$; (2) $V(R,\theta)$ = the given data, which gives $A_\ell R^\ell = c_\ell$. At the center every $r^\ell$ with $\ell \ge 1$ vanishes, so $V(0) = A_0 = c_0$.
+
           **(i)** $\sin^2\theta = \frac23P_0 - \frac23P_2$: $\ell = 0, 2$. Center $= c_0 = \frac23V_0$.
 
           **(ii)** $\cos^3\theta = \frac35P_1 + \frac25P_3$: $\ell = 1, 3$. Center $= 0$ (odd data average to zero).
@@ -2034,7 +2038,7 @@
 
         [[fig:pill]]
 
-        **Where 3 and 4 come from** (Unit 4). A tiny pillbox straddling the surface encloses charge $\sigma_0A$, so Gauss's law gives $E^\perp_{\text{out}} - E^\perp_{\text{in}} = \sigma_0/\varepsilon_0$. Here $E^\perp = E_r = -\partial V/\partial r$, which gives condition 4. And $\vb E$ stays finite next to a surface charge, so $\Delta V = -\int\vb E\cdot d\vb l$ across a path of vanishing length is zero: condition 3.
+        **Where 3 and 4 come from** (Unit 2). A tiny pillbox straddling the surface encloses charge $\sigma_0A$, so Gauss's law gives $E^\perp_{\text{out}} - E^\perp_{\text{in}} = \sigma_0/\varepsilon_0$. Here $E^\perp = E_r = -\partial V/\partial r$, which gives condition 4. And $\vb E$ stays finite next to a surface charge, so $\Delta V = -\int\vb E\cdot d\vb l$ across a path of vanishing length is zero: condition 3.
       `, { pill: { svg: FIG.pill, cap: 'A pillbox straddling the charged shell. Gauss: $E^{\\perp}_{\\text{out}} - E^{\\perp}_{\\text{in}} = \\sigma_0/\\varepsilon_0$.' } }),
 
       Q(md`Why is the potential continuous across a sheet of surface charge (condition 3)?`,
@@ -2084,13 +2088,13 @@
       Q(md`A shell carries a **uniform** surface charge $\sigma_0$. What does the method give?`,
         [md`$V_{\text{in}} = \dfrac{\sigma_0R}{\varepsilon_0}$ and $V_{\text{out}} = \dfrac{\sigma_0R^2}{\varepsilon_0r}$`, md`$V_{\text{in}} = 0$ and $V_{\text{out}} = \dfrac{\sigma_0R^2}{\varepsilon_0r}$`, md`$V_{\text{in}} = \dfrac{\sigma_0r}{\varepsilon_0}$ and $V_{\text{out}} = \dfrac{\sigma_0R^2}{\varepsilon_0r}$`, md`$V_{\text{in}} = \dfrac{\sigma_0R}{3\varepsilon_0}$ and $V_{\text{out}} = \dfrac{\sigma_0R^3}{3\varepsilon_0r^2}$`], 0,
         [null, md`The *field* inside is zero, but the potential is the constant surface value, not zero.`, md`$r$ to the first power belongs to $\ell = 1$, which is absent for uniform charge.`, md`Those are the $\ell = 1$ formulas; uniform charge is $\ell = 0$, with factor $\frac{1}{2\ell+1} = 1$.`],
-        md`Only $\sigma_0 = \sigma_0P_0$: $A_0 = \frac{\sigma_0R}{\varepsilon_0}$, $B_0 = \frac{\sigma_0R^2}{\varepsilon_0}$. Outside, $\frac{\sigma_0R^2}{\varepsilon_0r} = \frac{Q}{4\pi\varepsilon_0r}$ with $Q = 4\pi R^2\sigma_0$, the familiar shell result. Inside, constant: no field (Griffiths Prob. 3.18b).`,
+        md`Only $\sigma_0 = \sigma_0P_0$: $A_0 = \frac{\sigma_0R}{\varepsilon_0}$, $B_0 = \frac{\sigma_0R^2}{\varepsilon_0}$. Outside, $\frac{\sigma_0R^2}{\varepsilon_0r} = \frac{Q}{4\pi\varepsilon_0r}$ with $Q = 4\pi R^2\sigma_0$, the familiar shell result. Inside, constant: no field (Griffiths Prob. 3.18b, 4th ed.).`,
         { figHtml: FIG.sigUni }),
 
       Q(md`For $\sigma_0 = k\cos\theta$, which way does the field inside point, and how big is it?`,
         [md`Radially outward, growing like $r$`, md`Zero, like inside any closed charged shell`, md`$+\dfrac{k}{3\varepsilon_0}\uv z$`, md`$-\dfrac{k}{3\varepsilon_0}\uv z$, uniform`], 3,
         [md`$V_{\text{in}} = \frac{k}{3\varepsilon_0}z$ depends only on $z$; the field has no radial pattern.`, md`Zero field inside holds only for **uniform** charge on a shell (or for a conductor). Here the charge is lopsided.`, md`Sign: $\vb E = -\nabla V$, and $V$ increases with $z$, so $\vb E$ points toward $-z$, from the positive northern cap to the negative southern cap.`, null],
-        md`$V_{\text{in}} = \frac{k}{3\varepsilon_0}z$, so $\vb E = -\frac{k}{3\varepsilon_0}\uv z$: uniform, pointing from $+$ to $-$ charge. Remember the number $\frac13$: it reappears for a uniformly polarized sphere in Unit 8 and later chapters.`,
+        md`$V_{\text{in}} = \frac{k}{3\varepsilon_0}z$, so $\vb E = -\frac{k}{3\varepsilon_0}\uv z$: uniform, pointing from $+$ to $-$ charge. Remember the number $\frac13$: it comes back for a uniformly polarized sphere (Griffiths Ch. 4, after this exam).`,
         { figHtml: FIG.sigCos }),
 
       Q(md`For $\sigma_0 = k\cos\theta$, what does the shell look like from outside?`,
@@ -2114,7 +2118,7 @@
       Q(md`Across the charged shell, what happens to the **tangential** field $E_\theta$?`,
         [md`It is continuous, which matches $V$ being continuous for every $\theta$.`, md`It jumps by $\sigma_0/\varepsilon_0$.`, md`It is zero on both sides.`, md`It jumps by $\tfrac{\sigma_0}{2\varepsilon_0}$.`], 0,
         [null, md`Only the normal component jumps.`, md`Inside $\sigma_0 = k\cos\theta$, for instance, $E_\theta = \frac{k}{3\varepsilon_0}\sin\theta \ne 0$.`, md`Only the normal component jumps, and by $\sigma_0/\varepsilon_0$.`],
-        md`$E_\theta = -\frac1r\frac{\partial V}{\partial\theta}$. If $V_{\text{in}}(R,\theta) = V_{\text{out}}(R,\theta)$ for all $\theta$, their $\theta$-derivatives agree too, so $E_\theta$ is continuous. That is the "$E^\parallel$ continuous" boundary condition from Unit 4, built into condition 3.`,
+        md`$E_\theta = -\frac1r\frac{\partial V}{\partial\theta}$. If $V_{\text{in}}(R,\theta) = V_{\text{out}}(R,\theta)$ for all $\theta$, their $\theta$-derivatives agree too, so $E_\theta$ is continuous. That is the "$E^\parallel$ continuous" boundary condition from Unit 2, built into condition 3.`,
         { figHtml: FIG.sigCos }),
 
       Q(md`On the shell, the $\ell$-th term of the potential is $\dfrac{s_\ell R}{(2\ell+1)\varepsilon_0}$, where $s_\ell$ is the $\ell$-th Legendre coefficient of the charge. To hold a shell at a surface potential with a given amplitude in the $\ell$-th harmonic, how does the needed charge depend on $\ell$?`,
@@ -2365,7 +2369,7 @@
   FIG.disk = diskFig({ P: { f: 1.5, th: 50 } });
   FIG.diskHalves = diskFig({ halves: ['A_\\ell', "A'_\\ell"] });
   FIG.cos2 = sph({ lab: 'V_0(\\theta)=V_0\\cos2\\theta', inLab: 'V_{\\text{in}}', inX: -14, outLab: 'V_{\\text{out}}', outX: -64, outY: 70 });
-  FIG.capQ = hemis({ cap: 60, top: 'V_0', bot: 'V=0', botThin: true, topTh: 30 });
+  FIG.capQ = hemis({ cap: 60, top: 'V_0', bot: 'V=0', botThin: true, topTh: 30, mark: { th: 60, lab: '60^\\circ' } });
 
   const L8 = {
     id: 'u7-two-axis', title: 'Two spheres, a charge inside, and the axis trick (HW 3.24)',

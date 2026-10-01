@@ -78,7 +78,7 @@
     [-40, -20, 0, 20, 40].forEach((a) => f.label(cx + (R + 12) * Math.cos(a * D2R), cy - (R + 12) * Math.sin(a * D2R), '-', 'c', 'small'));
     if (!grounded) [145, 180, 215].forEach((a) => f.label(cx + (R + 12) * Math.cos(a * D2R), cy - (R + 12) * Math.sin(a * D2R), '+', 'c', 'small'));
     f.charge(cx + R + 92, cy, { q: '+', lab: 'q', at: 'r' });
-    if (grounded) { f.line(cx, cy + R, cx, cy + R + 12); f.ground(cx, cy + R + 12); f.text(cx + 16, cy + R + 22, 'grounded', 'l'); }
+    if (grounded) { f.line(cx, cy + R, cx, cy + R + 12); f.ground(cx, cy + R + 12); f.text(cx - 16, cy + R + 22, 'grounded', 'r'); }
     f.text(cx + R + 92, cy + 62, md`$\sigma$ on the sphere = ?`, 'c');
     return f.svg();
   };
@@ -1906,7 +1906,7 @@
         { figHtml: fCond4() }),
 
       Q(md`The proof also needs $\oint\vb E_3\cdot d\vb a = 0$ over the **outer** boundary. Why does that hold?`,
-        [md`Both fields enclose the same total charge $Q_{\text{tot}} = \sum_n Q_n + \int\rho\,d\tau$, because every $Q_n$ and $\rho$ are given; so both fluxes are $Q_{\text{tot}}/\varepsilon_0$`, md`$\vb E = 0$ on the outer boundary`, md`The total charge inside the outer boundary is always zero`, md`$V_3$ is constant on the outer boundary`], 0,
+        [md`Both fields enclose the same total charge $Q_{\text{tot}} = \sum_n Q_n + \int\rho\,d\tau$, because all the $Q_n$ and $\rho$ are given; so both fluxes are $Q_{\text{tot}}/\varepsilon_0$`, md`$\vb E = 0$ on the outer boundary`, md`The total charge inside the outer boundary is always zero`, md`$V_3$ is constant on the outer boundary`], 0,
         [null, md`Nothing makes the field vanish there. Only the two fluxes have to agree.`,
           md`$Q_{\text{tot}}$ can be anything. What matters is that it is the same for both solutions.`,
           md`That's what lets $V_3$ come out of the surface integral. It says nothing about the flux.`],
@@ -2331,7 +2331,7 @@
         1. $V = 0$ on the sphere.
         2. $V\to0$ far away.
 
-        Source: $q$. Without condition 2 you could add, for instance, $c\,(1 - R/r)$ for any $c$: it's harmonic outside the sphere and zero on it. (Unit 5 solves this problem with an image charge.)`,
+        Source: $q$. Without condition 2 you could add, for instance, $c\,(1 - R/r)$ for any $c$ ($R$ the sphere's radius, $r$ measured from its center): it's harmonic outside the sphere and zero on it. (Unit 5 solves this problem with an image charge.)`,
         { figHtml: fSphereOutQ() }),
 
       Q(md`Two grounded semi-infinite plates sit at $y = 0$ and $y = a$; the strip at $x = 0$ joining them is held at $V_0(y)$, and the slot runs off to $x\to\infty$. Besides $V = 0$ on both plates and $V = V_0(y)$ at $x = 0$, which condition is needed?`,
@@ -2350,7 +2350,7 @@
 
       Q(md`A grounded plane at $z = 0$ and a plate at $z = d$ held at $V_0$, no charge between. Which function satisfies Laplace's equation **and** both boundary conditions?`,
         [md`$V_0 z/d$`, md`$V_0\sin\left(\dfrac{\pi z}{2d}\right)$`, md`$V_0 z^2/d^2$`, md`$V_0(1 - z/d)$`], 0,
-        [null, md`Right boundary values ($0$ at $z = 0$, $V_0$ at $z = d$), but $\nabla^2 V = -(\pi/2d)^2 V \ne 0$: it implies charge between the plates.`,
+        [null, md`Right boundary values ($0$ at $z = 0$, $V_0$ at $z = d$), but $\nabla^2 V = -\left(\dfrac{\pi}{2d}\right)^2 V \ne 0$: it implies charge between the plates.`,
           md`Right boundary values, but $\nabla^2 V = 2V_0/d^2\ne 0$.`,
           md`Laplace is fine, but the boundary values are swapped: it gives $V_0$ on the grounded plane.`],
         md`Check both requirements every time: the equation in the region and every boundary value. Only $V_0z/d$ passes both, so by uniqueness it is the answer. The sine and the parabola fail the equation; the last one fails the boundary values.`,
@@ -2445,7 +2445,7 @@
 
       RF(md`
         !!method Patterns from this unit's boundary-condition work
-          - Translate every phrase into one condition on one surface: grounded $\to V = 0$; held at $V_0 \to V = V_0$; isolated with charge $Q\to$ equipotential with $\oint\sigma\,da = Q$; neutral $\to Q = 0$; surface charge on a conductor $\to \partial V/\partial n = -\sigma/\varepsilon_0$; far away $\to V\to 0$ (or $V\to -E_0z$ in a uniform field).
+          - Translate every phrase into one condition on one surface: grounded $\to V = 0$; held at $V_0 \to V = V_0$ (also when "insulated from the others": the gap just lets it differ from its neighbours); isolated with charge $Q\to$ equipotential with $\oint\sigma\,da = Q$; neutral $\to Q = 0$; surface charge on a conductor $\to \partial V/\partial n = -\sigma/\varepsilon_0$; far away $\to V\to 0$ (or $V\to -E_0z$ in a uniform field).
           - Enough = one condition on every piece of boundary, infinity included, plus $\rho$ in the region. Mixed kinds are fine.
           - Missing: a surface with no condition, no condition at infinity, only a total charge on an insulator, unknown $\rho$.
           - Too much: $V$ and $Q$ on one conductor, or $V$ and $\partial V/\partial n$ on one surface.

@@ -2543,9 +2543,9 @@
         md`It's the outside solution for an **isolated** sphere ($V\to0$ at infinity). With a grounded shell at $b$ you need the $r\cos\theta$ term too, so that the two together vanish at $r=b$. Always plug the final answer into each BC.`,
         { figHtml: figConc({ inner: md`V_0\cos\theta`, outer: 'V=0', outerMetal: true }) }),
 
-      Q(md`For the slot with both plates at $V_1$ and the end at $V_0$, someone writes $V=\dfrac{4(V_0-V_1)}{\pi}\displaystyle\sum_{\text{odd }n}\dfrac1ne^{-n\pi x/a}\sin\dfrac{n\pi y}{a}$. Which BC fails?`,
-        [md`$V=V_1$ on the plates (this gives $0$ there)`, md`$V\to0$ far away`, md`Laplace's equation`, md`$V(0,y)=V_0$ only`], 0,
-        [null, md`The correct far condition is $V\to V_1$, and this answer gives $0$, so it fails that too; but the first failure is on the plates.`, md`Each term solves Laplace's equation.`, md`At $x=0$ it gives $V_0-V_1$, so this fails as well, but because the constant $V_1$ was dropped everywhere.`],
+      Q(md`For the slot with both plates at $V_1$ and the end at $V_0$, someone writes $V=\dfrac{4(V_0-V_1)}{\pi}\displaystyle\sum_{\text{odd }n}\dfrac1ne^{-n\pi x/a}\sin\dfrac{n\pi y}{a}$. Which statement is right?`,
+        [md`It fails every boundary value: it is $V-V_1$, not $V$`, md`It is correct`, md`It fails only the end condition $V(0,y)=V_0$`, md`It fails only Laplace's equation`], 0,
+        [null, md`On the plates it gives $0$, not $V_1$.`, md`It also gives $0$ on the plates and $0$ far away, where $V$ should be $V_1$.`, md`Each term solves Laplace's equation; the trouble is entirely in the boundary values.`],
         md`The series is $\tilde V=V-V_1$. Forgetting to add back $V_1$ breaks every boundary value: plates ($0$ instead of $V_1$), end ($V_0-V_1$ instead of $V_0$), far end ($0$ instead of $V_1$). The fix is one term: $V=V_1+\tilde V$.`,
         { figHtml: figSlot({ top: 'V_1', bot: 'V_1', end: 'V_0' }) }),
 
