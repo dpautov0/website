@@ -690,7 +690,7 @@
           |---|---|
           | grounded | $V = 0$ |
           | held at potential $V_0$ | $V = V_0$ |
-          | isolated, total charge $Q$ | $V$ = some constant (unknown), and $\oint\sigma\,da = Q$ |
+          | isolated (insulated), total charge $Q$ | $V$ = some constant (unknown), and $\oint\sigma\,da = Q$ |
           | isolated and neutral | the same, with $Q = 0$ |
 
           Add $V\to0$ far away when the given charges sit in a finite region and every conductor that reaches infinity is grounded. (A conductor that reaches infinity at $V_0$ makes $V\to V_0$ along it instead; see the plane held at $V_0$ in a later lesson.)`,
@@ -1913,7 +1913,7 @@
           { figHtml: fDipole('tilt'), figs: { img: { svg: fDipole('tilt', { img: true }), cap: md`The tilted dipole and its image: horizontal part reversed, vertical part kept.` } } }),
 
         P({
-          title: 'A physical dipole standing on the plane',
+          title: 'A vertical physical dipole above the plane',
           q: md`
             A charge $-q$ is held a height $a$ above a grounded conducting plane, and a charge $+q$ a height $2a$, directly above it.
 
@@ -2000,6 +2000,15 @@
             md`Nothing doubles; the field is exactly the grounded-plane field.`],
           md`$V = V_0 + V_{\text{grounded}}$. Constants drop out of $\vb E = -\nabla V$ and of $\partial V/\partial n$. For an infinite plane, holding it at $V_0$ just moves the zero of potential.`,
           { figHtml: fPlane({ planeLab: 'V=V_0' }) }),
+
+        Q(md`A grounded plane $z=0$ sits in a uniform applied field: far above it the field is $E_0\uv z$, and there are no charges in $z>0$. Which boundary conditions describe the region $z\ge0$?`,
+          [md`$V=0$ on $z=0$, and $V\to0$ far away`, md`$V=0$ on $z=0$, and $V\to-E_0z$ far away`, md`$V=0$ on $z=0$, and $V\to+E_0z$ far away`, md`$\vb E = E_0\uv z$ on $z=0$, and $V\to0$ far away`], 1,
+          [md`In a uniform field $V$ keeps changing with height, by $E_0$ per unit length. It can't settle to $0$ far away.`,
+            null,
+            md`With $V\to+E_0z$, $\vb E = -\nabla V = -E_0\uv z$: the field would point down, toward the plane.`,
+            md`"Grounded" gives $V=0$ on the plane, not the field there: the field at the surface is $\sigma/\varepsilon_0$, set by the induced charge, which you don't know in advance. (Here it turns out to be $E_0$, but only after solving.) And $V\to0$ is impossible in a uniform field.`],
+          md`"Uniform field $E_0\uv z$ far away" translates to $V\to-E_0z$ (plus a constant, which $V=0$ on the plane fixes at zero), because $\vb E = -\nabla V$. Here the solution is just $V = -E_0z$: no charge in the region, $V=0$ on the plane, the right behaviour far away, so by uniqueness it is the answer. The induced charge is uniform, $\sigma = -\varepsilon_0\,\partial V/\partial z = \varepsilon_0E_0$. Put a charge $q$ above the plane as well and you add the image-pair potential to $-E_0z$; each piece takes care of its own condition.`,
+          { figHtml: fPlaneField() }),
 
         RF(md`
           ### A charge between two grounded planes: an infinite series

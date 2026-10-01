@@ -1965,7 +1965,7 @@
 
           Q(md`In the HW 3.17 answer each term carries $\dfrac{\sinh(n\pi x/a)}{\sinh(n\pi b/a)}$. Why divide by $\sinh(n\pi b/a)$?`,
             [md`To make the series converge.`, md`It comes from the orthogonality integral.`, md`It normalizes the sines.`, md`So the $x$-factor equals $1$ on the live side, where the coefficients are fitted.`], 3,
-            [md`It does help convergence, but that's a side effect.`, md`Orthogonality gives $\tfrac{a}{2}$, not a $\sinh$.`, md`The sines are untouched.`, null],
+            [md`The division is forced by the boundary condition at $x = b$. That the ratio then behaves like $e^{-n\pi(b - x)/a}$ inside, so the series converges fast there, is a consequence, not the reason.`, md`Orthogonality gives $\tfrac{a}{2}$, not a $\sinh$.`, md`The sines are untouched.`, null],
             md`Fit the data at $x = b$: there the term is $C_n\sinh(n\pi b/a)\sin(n\pi y/a)$, so Fourier's trick determines the product $C_n\sinh(n\pi b/a)$. Writing the answer with the ratio makes every term equal to its boundary value on the live side and zero on the grounded one.`,
             { figHtml: G_HW }),
 
@@ -2160,7 +2160,7 @@
 
             $$\frac{X''}{X} + \frac{Y''}{Y} + \frac{Z''}{Z} = 0 .$$
 
-            Three pieces, each a function of one variable, so each is a constant, and the three constants add to zero. Now **two** directions can have pairs of zero faces, so two constants are negative and the third is their positive sum:
+            Three pieces, each a function of one variable, so each is a constant, and the three constants add to zero. Now **two** directions can have pairs of zero faces, so two constants are negative, $-k^2$ and $-l^2$, and the third must cancel both, $+(k^2 + l^2)$:
 
             $$\frac{Y''}{Y} = -k^2, \qquad \frac{Z''}{Z} = -l^2, \qquad \frac{X''}{X} = k^2 + l^2 .$$
 
@@ -2236,7 +2236,7 @@
               { lbl: md`Which $z$-dependence goes with $\sin\frac{n\pi x}{a}\sin\frac{m\pi y}{a}$?`, mc: [md`$\sinh\big(\pi\sqrt{n^2 + m^2}\,z/a\big)$`, md`$\sinh\big(\pi(n + m)z/a\big)$`, md`$e^{-\pi\sqrt{n^2 + m^2}\,z/a}$`, md`$\cosh\big(\pi\sqrt{n^2 + m^2}\,z/a\big)$`], a: 0, why: [null, md`The constants add in quadrature: $\gamma^2 = k^2 + l^2$.`, md`The box is finite and the bottom $z = 0$ is grounded: you need a function that vanishes there.`, md`$\cosh 0 = 1$: the bottom wouldn't be grounded.`] },
               { lbl: md`What should $V$ be at the center, in units of $V_0$? (no series needed)`, ans: 1 / 6, unit: '' },
               { lbl: md`The $(n, m) = (1, 1)$ term alone at the center, in units of $V_0$`, ans: 0.17377, unit: '' },
-              { lbl: md`Including all odd $n, m \le 3$ (four terms), the center value is`, mc: [md`$0.1738V_0$`, md`$0.1665V_0$`, md`$0.2500V_0$`, md`$0.1580V_0$`], a: 1, why: [md`That's the $(1,1)$ term alone. The three new terms are negative at the center.`, null, md`$1/4$ belongs to a square with one live side, not a cube.`, md`Too low: the corrections total only $-0.0073V_0$.`] },
+              { lbl: md`Including all odd $n, m \le 3$ (four terms), the center value is`, mc: [md`$0.1738V_0$`, md`$0.1665V_0$`, md`$0.2500V_0$`, md`$0.1580V_0$`], a: 1, why: [md`That's the $(1,1)$ term alone. Of the three new terms, $(1,3)$ and $(3,1)$ are negative at the center and $(3,3)$ is slightly positive; together they lower the sum.`, null, md`$1/4$ belongs to a square with one live side, not a cube.`, md`Too low: the corrections total only $-0.0073V_0$.`] },
             ],
             sol: md`
               **Translate the words.** "Five metal plates welded together and grounded": $V = 0$ on five faces. "The top... insulated from the others, and held at a constant potential $V_0$": $V = V_0$ on $z = a$. Nothing inside: Laplace.
@@ -2275,7 +2275,7 @@
               | $n, m \le 7$ | $0.1666665$ |
               | $n, m \le 21$ | $0.1666667$ |
 
-              (computed in Python; the $(1,1)$ term is $\tfrac{8}{\pi^2}\cdot\tfrac{1}{\cosh(\pi/\sqrt2)} = 0.8106 \times 0.2144$). The series converges to $1/6$ within a few terms, because $\cosh$ grows so fast.
+              The $(1,1)$ term is $\tfrac{8}{\pi^2}\cdot\tfrac{1}{\cosh(\pi/\sqrt2)} = 0.8106 \times 0.2144 = 0.1738$. The $(1,3)$ and $(3,1)$ terms are each $-\tfrac{8}{\pi^2}\cdot\tfrac{1}{3\cosh(\pi\sqrt{10}/2)} = -0.0038$, and $(3,3)$ is $+0.0002$: that is the $0.16648$ row, already within about 0.1% of $1/6$. The series converges this fast because $\cosh$ grows so fast.
 
               [[fig:slice]]
 
@@ -2684,7 +2684,7 @@
             { figHtml: SLOT }),
 
           Q(md`Your coefficients come out as $C_n = \dfrac{4V_0a}{n\pi}$. What does the units check tell you?`,
-            [md`Nothing; $a$ is just a length.`, md`$C_n$ must be in volts; an extra length means the $\tfrac{2}{a}$ (or a $\tfrac{1}{a}$ from integrating) was dropped.`, md`The answer is right for a wide slot.`, md`You should have used $\tfrac{1}{a}$.`], 1,
+            [md`Nothing; $a$ is just a length.`, md`$C_n$ must be in volts; an extra length means a factor $\tfrac{1}{a}$ went missing (here $2$ was used in place of $\tfrac{2}{a}$).`, md`The answer is right for a wide slot.`, md`You should have used $\tfrac{1}{a}$.`], 1,
             [md`$V = \sum C_n\times(\text{dimensionless})$, so $C_n$ must be volts.`, null, md`The width only appears through $x/a$ and $y/a$ in a correct answer.`, md`$\tfrac{1}{a}$ would fix the units but be off by a factor of 2.`],
             md`The exponentials and sines are dimensionless, so $[C_n] = [V]$. The notes' own slip on L12-3 (the missing $\tfrac{a}{m\pi}$) would break units mid-calculation; a units check catches it.`,
             { nofig: 'units' }),

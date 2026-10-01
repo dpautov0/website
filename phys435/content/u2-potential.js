@@ -1543,7 +1543,7 @@
     f.dot(cx, zP, 3.4); f.tag(cx, zP, 'P', 'l', 10);
     const p = [cx + 67 * Math.cos(-30 * DEG), cy - 20.5 * Math.sin(-30 * DEG)];
     f.line(p[0], p[1], cx, zP, { cls: 'dash' });
-    f.label(181, 105, md`\srm`, 'l', 'small');      // no \sqrt in figure labels: KaTeX draws it as an inner svg
+    f.label(176, 104, md`\srm`, 'l', 'small');      // no \sqrt in figure labels: KaTeX draws it as an inner svg
     callout(f, cx + 67 * Math.cos(200 * DEG), cy - 20.5 * Math.sin(200 * DEG), 28, 232, md`\text{ring } r',\ dr'`, 'tr');
     f.dim(cx, cy, cx + rx, cy, '', { off: 0 });
     f.label(cx + rx + 6, cy, 'R', 'l', 'small');
@@ -2645,7 +2645,7 @@
 
         $$\oint\vb E\cdot d\vb l=E^\parallel_{\text{above}}\,l-E^\parallel_{\text{below}}\,l=0\quad\Longrightarrow\quad\boxed{E^\parallel_{\text{above}}=E^\parallel_{\text{below}}}$$
 
-        (minus because the loop runs the opposite way along the lower side). Turn the loop to face any tangent direction and the same holds: **every** tangential component is continuous. Surface charge only pushes perpendicular to itself, on net.
+        (minus because the loop runs the opposite way along the lower side). Turn the loop to face any tangent direction and the same holds: **every** tangential component is continuous. Physically: up close, a patch of surface charge pushes straight away from itself, along $\pm\uv n$, so it can change only the normal component.
       `, { loop: { svg: figLoopBC(), cap: 'Side view of the thin loop (Lecture 5, blue in the notes). Its height $\\epsilon$ shrinks to zero.' } }),
       Q(md`Which law gives the continuity of $E^\parallel$ across a surface charge?`,
         [md`$\oint\vb E\cdot d\vb l=0$, i.e. $\curl\vb E=0$`, md`Gauss's law`, md`the superposition principle`, md`Poisson's equation`], 0,
