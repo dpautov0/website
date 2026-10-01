@@ -280,7 +280,7 @@
 
               **(d)** Neutral and isolated: add $q'' = +q/3$ at the center. It keeps the sphere an equipotential (it adds a constant on the sphere) and restores zero net charge.
               $$F = \frac{q}{4\pi\varepsilon_0}\left[\frac{-q/3}{(8R/3)^2} + \frac{q/3}{(3R)^2}\right] = \frac{q^2}{4\pi\varepsilon_0R^2}\left(-\frac{3}{64} + \frac{1}{27}\right) = -\frac{17}{1728}\frac{q^2}{4\pi\varepsilon_0R^2}$$
-              Still attractive: the near image is closer than the far one. A neutral conductor always attracts a charge.
+              Still attractive: the near image is closer than the far one. A neutral sphere attracts a point charge at any distance.
 
               **(e)** The sphere is one equipotential, so its potential equals $V$ at its center. There, the real charge contributes $\dfrac{q}{4\pi\varepsilon_0\,3R}$, and the induced charge (net zero, all at distance $R$) contributes $0$. So $V = \dfrac{q}{12\pi\varepsilon_0R}$. Same from the images: on the sphere $q$ and $q'$ together give $0$ (that's how $q'$ was built), so only $q''$ contributes, $\dfrac{q/3}{4\pi\varepsilon_0R}$.
             `,

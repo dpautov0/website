@@ -70,11 +70,13 @@
     if (o.top) f.label(xl, yT - 14, o.top, 'b');
     if (o.bot) f.label(xl, yB + 14, o.bot, 't');
     if (o.end) f.label(left ? xE + 16 : xE - 16, ym, o.end, left ? 'l' : 'r');
-    if (o.far !== false) f.label(left ? xF - 10 : xF + 10, ym, o.far || (left ? md`x\to-\infty` : md`x\to\infty`), left ? 'r' : 'l', 'small accent');
-    const kx = x1 + 16, ky = yB - 14;
+    // (the space in "\to \infty" keeps PF's width estimate honest, so the view box does not clip the label)
+    if (o.far !== false) f.label(left ? xF - 10 : xF + 10, ym, o.far || (left ? md`x\to -\infty` : md`x\to \infty`), left ? 'r' : 'l', 'small accent');
+    // axes glyph and the origin mark sit at the end strip (x = 0), whichever way the slot runs
+    const kx = left ? xE - 64 : x1 + 16, ky = yB - 14;
     f.arrow(kx, ky, kx + 34, ky, { cls: 'dim thin', hs: 5 }); f.label(kx + 38, ky, 'x', 'l', 'small accent');
     f.arrow(kx, ky, kx, ky - 34, { cls: 'dim thin', hs: 5 }); f.label(kx, ky - 38, 'y', 'b', 'small accent');
-    if (!left) f.label(xE - 12, yB + 14, '0', 'tr', 'small accent');
+    f.label(left ? xE + 12 : xE - 12, yB + 14, '0', left ? 'tl' : 'tr', 'small accent');
     if (o.a !== false) f.dim(left ? x1 + 70 : x2 - 18, yB, left ? x1 + 70 : x2 - 18, yT, 'a', { at: 'l' });
     if (o.pt) { const [px, py] = [left ? xE - (xE - xF) * o.pt[0] : xE + (xF - xE) * o.pt[0], yB - (yB - yT) * o.pt[1]]; f.dot(px, py, 3); f.tag(px, py, o.ptLab || 'P', 'r', 7, 'small'); }
     return f.svg();
@@ -261,16 +263,17 @@
   }
 
   // ---------------------------------------------------------------- sheet with sigma(x) = sigma0 sin kx in the plane y = 0 (edge on); optional grounded plane at y = -d
+  // o.yl: name of the vertical axis (default y)
   function figSheet(o = {}) {
     const f = fig();
     const y0 = 100, xa = 30, xb = 330, lam = 120, x0 = 70;
     f.line(xa, y0, xb, y0, { cls: 'thick' });
     for (let x = xa + 6; x < xb - 4; x += 11) {
       const s = Math.sin(2 * Math.PI * (x - x0) / lam) * (o.cos ? 0 : 1) + Math.cos(2 * Math.PI * (x - x0) / lam) * (o.cos ? 1 : 0);
-      if (Math.abs(s) < 0.4) continue;
+      if (Math.abs(s) < 0.4 || Math.abs(x - x0) < 6) continue;
       if (s > 0) plus(f, x, y0 - 8); else minus(f, x, y0 - 8);
     }
-    f.arrow(x0, y0, x0, y0 - 74, { cls: 'dim', hs: 6 }); f.label(x0 + 5, y0 - 78, 'y', 'bl', 'small accent');
+    f.arrow(x0, y0, x0, y0 - 74, { cls: 'dim', hs: 6 }); f.label(x0 + 5, y0 - 78, o.yl || 'y', 'bl', 'small accent');
     f.label(xb + 6, y0, 'x', 'l', 'small accent');
     f.label(xb - 4, y0 - 44, o.lab || md`\sigma(x)=\sigma_0\sin kx`, 'r');
     if (o.plane) {
@@ -324,17 +327,23 @@
   }
 
   // ---------------------------------------------------------------- Gaussian pillbox and Amperian-style loop straddling a charged sheet (edge on)
-  function figPill() {
+  // o.bare: no field arrows (question figures, so the picture does not answer "which component jumps")
+  function figPill(o = {}) {
     const f = fig();
     const y0 = 110;
     f.line(20, y0, 330, y0, { cls: 'thick' }); f.label(326, y0 + 6, md`\sigma`, 'tr');
     f.rect(50, y0 - 24, 62, 48, { cls: 'dash' });
-    f.arrow(81, y0 - 24, 81, y0 - 50, { hs: 6 }); f.label(87, y0 - 48, md`E^\perp_{\text{above}}`, 'l', 'small');
-    f.arrow(81, y0 + 24, 81, y0 + 50, { hs: 6 }); f.label(87, y0 + 48, md`E^\perp_{\text{below}}`, 'l', 'small');
+    if (!o.bare) {
+      f.arrow(81, y0 - 24, 81, y0 - 50, { hs: 6 }); f.label(87, y0 - 48, md`E^\perp_{\text{above}}`, 'l', 'small');
+      f.arrow(81, y0 + 24, 81, y0 + 50, { hs: 6 }); f.label(87, y0 + 48, md`E^\perp_{\text{below}}`, 'l', 'small');
+    }
     f.text(30, y0 - 32, 'pillbox', 'br');
+    // the loop, with the tangential field just above and just below it: the same arrow on both sides (continuous)
     f.rect(214, y0 - 16, 78, 32, { cls: 'thin' });
-    f.arrow(268, y0 - 16, 240, y0 - 16, { hs: 6 }); f.arrow(238, y0 + 16, 266, y0 + 16, { hs: 6 });
-    f.label(253, y0 - 22, md`E^\parallel_{\text{above}}`, 'b', 'small'); f.label(253, y0 + 22, md`E^\parallel_{\text{below}}`, 't', 'small');
+    if (!o.bare) {
+      f.arrow(226, y0 - 24, 280, y0 - 24, { hs: 6 }); f.arrow(226, y0 + 24, 280, y0 + 24, { hs: 6 });
+      f.label(253, y0 - 30, md`E^\parallel_{\text{above}}`, 'b', 'small'); f.label(253, y0 + 30, md`E^\parallel_{\text{below}}`, 't', 'small');
+    }
     f.text(306, y0 - 30, 'loop', 'bl');
     f.arrow(160, y0, 160, y0 - 44, { hs: 7 }); f.label(166, y0 - 40, md`\hat{\mathbf n}`, 'l');
     return f.svg();
@@ -431,7 +440,7 @@
 
         [[fig:plates]]
 
-        Lecture 8's one-dimensional case: two large plates with no charge between them. $d^2V/dx^2=0$ gives $V=ax+b$: two unknown constants, so you need two conditions. With $V(0)=0$ and $V(d)=V_0$ you get $b=0$, $a=V_0/d$, so $V=V_0x/d$, and nothing else is possible.
+        Lecture 8's one-dimensional case, pictured as two large plates with no charge between them: $d^2V/dx^2=0$ gives $V=ax+b$: two unknown constants, so you need two conditions. With $V(0)=0$ and $V(d)=V_0$ you get $b=0$, $a=V_0/d$, so $V=V_0x/d$, and nothing else is possible.
 
         !!key Uniqueness: why the BCs are everything (Lecture 9)
           **First uniqueness theorem:** if $\rho$ is given in a region and $V$ is given on its entire boundary, there is exactly one $V$. Proof: two solutions differ by $V_3=V_1-V_2$, which obeys Laplace's equation and is zero on the boundary. Laplace allows no interior maxima or minima, so $V_3\equiv0$.
@@ -525,7 +534,7 @@
       Q(md`Now the charges are $q$ at $x=-d$ and $-q$ at $x=+d$. Which condition holds on the plane $x=0$?`,
         [md`$\partial V/\partial x=0$`, md`$\vb E=0$`, md`$V=\dfrac{q}{4\pi\varepsilon_0 d}$`, md`$V=0$`], 3,
         [md`The field runs from $q$ to $-q$, straight through the plane: $E_x\neq0$ there.`,
-          md`$E_x$ is largest on the plane between the charges. It is $V$ that vanishes.`,
+          md`The field crosses the plane at every point, normal to it (strongest at the midpoint between the charges). It is $V$ that vanishes.`,
           md`That is the potential of one charge at distance $d$. Every point of the plane is equally far from $q$ and $-q$, so the two terms cancel.`, null],
         md`Antisymmetry: $V(-x,y,z)=-V(x,y,z)$, so $V(0,y,z)=0$. Read backwards, this is the method of images: the left half sees exactly what it would see next to a grounded plane at $x=0$, with $-q$ as the image of $q$.`,
         { figHtml: figPair({ anti: true }) }),
@@ -560,7 +569,7 @@
         [md`The applied field never dies out, so $V$ grows like $-E_0z$. Imposing $V\to0$ would kill the very term that drives the problem.`,
           md`Sign: $\vb E=-\nabla V$, so $V=+E_0z$ would give a field $-E_0\hat{\mathbf z}$.`,
           md`$\partial V/\partial r\to-E_0\cos\theta$, not $0$.`, null],
-        md`Far away the sphere's influence fades and only the applied field remains: $V\to-E_0z+C=-E_0r\cos\theta+C$. In the Legendre series this **supplies** the term $A_1=-E_0$ instead of killing the $A_\ell$. (By symmetry you can choose $C=0$; then the neutral sphere is at $V=0$.)`,
+        md`Far away the sphere's influence fades and only the applied field remains: $V\to-E_0z+C=-E_0r\cos\theta+C$. In the Legendre series this **supplies** the term $A_1=-E_0$ instead of killing the $A_\ell$. ($C$ is a free reference constant: choose $C=0$. By symmetry the plane $z=0$ is then at $V=0$, and so is the neutral sphere, which touches that plane.)`,
         { figHtml: figField({ note: 'uncharged metal sphere' }) }),
 
       RF(md`
@@ -579,11 +588,11 @@
         [[fig:slotq]]
 
         **Neumann everywhere** (Griffiths 3.1.5; HW 4 Prob. 3.5): $\partial V/\partial n$ on every boundary fixes $\vb E$ but $V$ only up to an additive constant, and the data must be consistent with Gauss's law, $\oint\partial V/\partial n\,da=-Q_{\text{enc}}/\varepsilon_0$. In 1-D (Griffiths): giving $V'$ at both ends is either redundant (if the two slopes agree) or inconsistent (if they don't).
-      `, { slotq: { svg: figSlot({ top: 'V=0', bot: 'V=0', end: 'V_0', far: md`x\to\infty:\ ?` }), cap: md`Forget the condition at $x\to\infty$ and the answer is no longer unique.` } }),
+      `, { slotq: { svg: figSlot({ top: 'V=0', bot: 'V=0', end: 'V_0', far: md`x\to \infty:\ ?` }), cap: md`Forget the condition at $x\to\infty$ and the answer is no longer unique.` } }),
 
       Q(md`Which pair of conditions does **not** determine $V(x)$ in the gap between two plates (no charge in the gap)?`,
         [md`$V(0)$ and $V(d)$`, md`$V(0)$ and $V'(d)$`, md`$V'(0)$ and $V'(d)$`, md`$V(0)$ and $V'(0)$`], 2,
-        [md`The standard pair: two values, two constants.`, md`A value at one end fixes $b$, a slope at the other fixes $a$. Fine.`, null, md`Value and slope at the same end fix $b$ and $a$. Fine in 1-D (in 2-D/3-D this "Cauchy" data on one face is not allowed).`],
+        [md`The standard pair: two values, two constants.`, md`A value at one end fixes $b$, a slope at the other fixes $a$. Fine.`, null, md`Value and slope at the same end fix $b$ and $a$. Fine in 1-D. (In 2-D and 3-D, value **and** slope on one face is not a well-posed boundary-value problem.)`],
         md`$V=ax+b$ has $V'=a$ everywhere. Two slopes either agree (then they say the same thing and $b$ is never fixed) or disagree (then no line fits). This is Griffiths' 1-D illustration of Neumann data: it fixes $\vb E=-V'\hat{\mathbf x}$ but not the additive constant.`,
         { figHtml: figPlates({ L: '?', R: '?' }) }),
 
@@ -596,7 +605,7 @@
           md`Fourier's trick still works on the end face. The trouble is that $e^{+kx}$ terms are no longer excluded, so the split between $e^{kx}$ and $e^{-kx}$ is undetermined.`,
           md`$k=n\pi/a$ comes from the two plates, which are still there.`],
         md`Without BC #4, each $n$ allows $Ae^{n\pi x/a}+Be^{-n\pi x/a}$ with only $A+B$ fixed by the end. The difference is a $\sinh$, which vanishes on all three given faces. Physically: something far down the slot would have to be specified. "$V\to0$ as $x\to\infty$" says there is nothing there.`,
-        { figHtml: figSlot({ top: 'V=0', bot: 'V=0', end: 'V_0', far: md`x\to\infty:\ ?` }) }),
+        { figHtml: figSlot({ top: 'V=0', bot: 'V=0', end: 'V_0', far: md`x\to \infty:\ ?` }) }),
 
       Q(md`A cubical box has $V$ specified on each face. How many boundary conditions does the separation-of-variables solution use?`,
         [md`Six: three separated equations, two conditions each, one per face`, md`Three: one per coordinate`, md`One: the live face`, md`Eight: one per corner`], 0,
@@ -703,7 +712,7 @@
             why: [md`The two $-\rho/\varepsilon_0$ terms cancel in the difference.`, null, md`Subtract, don't add.`, md`Both solutions obey Poisson's equation with the same $\rho$, so the difference obeys Laplace's.`] },
           { lbl: md`(b) On a boundary piece where $V$ is specified, and on one where $\partial V/\partial n$ is specified:`, mc: [md`$V_3=0$ on both`, md`$\partial V_3/\partial n=0$ on both`, md`$V_3=0$ on the first, $\partial V_3/\partial n=0$ on the second`, md`$V_3$ is constant on each`], a: 2,
             why: [md`Where only $\partial V/\partial n$ is given, $V_1$ and $V_2$ may differ.`, md`Where only $V$ is given, the normal derivatives may differ.`, null, md`That's the conductor case (second uniqueness theorem). Here the boundaries are not equipotentials.`] },
-          { lbl: md`(c) Then $\displaystyle\oint_S V_3\frac{\partial V_3}{\partial n}\,da$ over all the boundaries equals`, mc: [md`$Q_{\text{enc}}/\varepsilon_0$`, md`$\int|\nabla V_3|^2d\tau$, which is $0$ because every piece has $V_3=0$ or $\partial V_3/\partial n=0$`, md`$-\int\rho V_3\,d\tau/\varepsilon_0$`, md`$\int|\nabla V_3|^2d\tau$, which is positive`], a: 1,
+          { lbl: md`(c) Then $\displaystyle\oint_S V_3\frac{\partial V_3}{\partial n}\,da$ over all the boundaries equals`, mc: [md`$Q_{\text{enc}}/\varepsilon_0$`, md`$\int|\nabla V_3|^2d\tau$, which is $0$ because every piece has $V_3=0$ or $\partial V_3/\partial n=0$`, md`$-\dfrac{1}{\varepsilon_0}\displaystyle\int\rho V_3\,d\tau$`, md`$\int|\nabla V_3|^2d\tau$, which is positive`], a: 1,
             why: [md`$V_3$ has no sources; the charge cancelled in (a).`, null, md`$\nabla^2V_3=0$, so there is no volume source term.`, md`The integrand $V_3\,\partial V_3/\partial n$ vanishes piece by piece, so the integral is zero.`] },
           { lbl: md`(d) Conclusion:`, mc: [md`$V_1=V_2$ everywhere, always`, md`$\vb E_1=\vb E_2$; $V$ is unique up to a constant, and fully unique if $V$ is given on at least one piece`, md`Only the boundary values agree`, md`Nothing follows`], a: 1,
             why: [md`If only $\partial V/\partial n$ is given everywhere, $V+\text{const}$ fits the same data.`, null, md`$\nabla V_3=0$ holds throughout the volume.`, md`$\int|\nabla V_3|^2d\tau=0$ with a non-negative integrand forces $\nabla V_3=0$.`] },
@@ -772,7 +781,7 @@
         | metal, conductor | $V$ constant over it; $\vb E=0$ inside | charges move until $E_\parallel=0$ on the surface |
         | isolated | its total charge can't change; $V$ floats | no wire for charge to flow along |
         | neutral, uncharged | $V=V_c$ unknown, and $\oint\sigma\,da=0$ | isolated with $Q=0$ |
-        | carries charge $Q$ | $V=V_c$ unknown, and $-\varepsilon_0\oint\dfrac{\partial V}{\partial n}\,da=Q$ | the second uniqueness theorem's data |
+        | carries charge $Q$ | $V=V_c$ unknown, and $-\varepsilon_0\oint\dfrac{\partial V}{\partial n}\,da=Q$ ($\hat{\mathbf n}$ out of the metal) | the second uniqueness theorem's data |
 
         [[fig:three]]
 
@@ -790,7 +799,7 @@
         md`Without the gap the strip and plates would be one conductor at one potential. The thin insulating layer lets the boundary value jump from $0$ to $V_0$ at the corners $(0,0)$ and $(0,a)$. That discontinuity is why the Fourier series of $V_0$ on $0<y<a$ overshoots near the ends (Lecture 12).`,
         { figHtml: figSlot({ top: GR, bot: GR, end: 'V_0' }) }),
 
-      Q(md`"A cubical box consists of five metal plates, welded together and grounded. The top is a separate sheet of metal, insulated from the others, held at $V_0$" (Griffiths 3.16). What does "welded together and grounded" say about the five plates?`,
+      Q(md`"A cubical box consists of five metal plates, welded together and grounded. The top is a separate sheet of metal, insulated from the others, held at $V_0$" (Griffiths 3.18). What does "welded together and grounded" say about the five plates?`,
         [md`All five are at $V=0$`, md`All five are at one common potential, which you must find`, md`Each of the five has its own potential`, md`The five plates carry zero total charge`], 0,
         [null, md`"Welded" alone would say that. "Grounded" also fixes the common value at $0$.`, md`That is what "insulated from each other" would mean.`, md`They carry induced charge (negative, if $V_0>0$). Grounding fixes $V$, not $Q$.`],
         md`Welded makes them one conductor; grounded puts that conductor at $V=0$. So $V=0$ on $x=0$, $x=a$, $y=0$, $y=a$, $z=0$, and $V=V_0$ on $z=a$. Six faces, six conditions.`,
@@ -833,7 +842,7 @@
           md`The four conditions in A, plus $V\to0$ as $x\to\infty$`,
           md`$V(x,0)=V(x,a)=0$, $V(0,y)=0$, $\dfrac{\partial V}{\partial x}(b,y)=V_0(y)$`,
           md`$V(x,0)=V(x,a)=0$, $V(b,y)=V_0(y)$, $V$ finite as $z\to\pm\infty$`], 0,
-        [null, md`The region stops at $x=b$; infinity isn't part of its boundary. A fifth condition over-specifies.`,
+        [null, md`The region stops at $x=b$, so a condition at $x\to\infty$ has nothing to act on. The BC list is the region's own boundary: four faces.`,
           md`"Held at $V_0(y)$" is a potential, not a slope.`,
           md`Infinitely long in $z$ means no $z$-dependence at all, and this set has dropped the grounded face $x=0$.`],
         md`Four faces, four conditions; the region is finite in $x$ and $y$ and uniform in $z$. Compared with the slot, the open end has been replaced by a grounded face at $x=0$, which will select $\sinh(n\pi x/a)$ instead of $e^{-n\pi x/a}$.`,
@@ -973,11 +982,11 @@
           md`$\dfrac{\partial V}{\partial r}(R,\theta)=0$; $V\to-E_0r\cos\theta$`], 2,
         [md`$V\to0$ kills the applied field, which is the whole problem.`,
           md`Metal is an equipotential. $-E_0R\cos\theta$ is the applied potential with the sphere absent.`, null,
-          md`That describes an insulating sphere that no field line enters (Neumann), not metal.`],
+          md`That is a Neumann condition: no field line would cross the surface. Field lines end on metal at right angles; what is constant on a conductor is $V$.`],
         md`Equipotential sphere, zero net charge, uniform field far away. By the antisymmetry of the setup the plane $z=0$ is at the same potential as the sphere, so choosing $C=0$ puts the sphere at $V=0$. Result: $V=-E_0(r-R^3/r^2)\cos\theta$.`,
         { figHtml: figField({ note: 'uncharged metal sphere' }) }),
 
-      Q(md`An isolated metal sphere carrying charge $Q$ sits in a field that is uniform, $E_0\hat{\mathbf z}$, far away (Griffiths 3.21). Which set?`,
+      Q(md`An isolated metal sphere carrying charge $Q$ sits in a field that is uniform, $E_0\hat{\mathbf z}$, far away (Griffiths 3.21, 4th ed.). Which set?`,
         [md`$V(R,\theta)=0$; $V\to-E_0r\cos\theta$`,
           md`$V(R,\theta)=V_c$, unknown; $-\varepsilon_0\oint\dfrac{\partial V}{\partial r}\,da=Q$ at $r=R$; $V\to-E_0r\cos\theta+C$`,
           md`$\sigma=\tfrac{Q}{4\pi R^2}$ on the sphere; $V\to-E_0r\cos\theta$`,
@@ -1034,9 +1043,9 @@
 
       Q(md`A sheet in the plane $y=0$ carries $\sigma(x)=\sigma_0\sin kx$. There are no conductors anywhere. Which set?`,
         [md`$V(x,0)=0$; $V\to0$ as $|y|\to\infty$`,
-          md`$V(x,0)=\sigma_0\sin kx/\varepsilon_0$; $V\to0$ as $|y|\to\infty$`,
+          md`$V(x,0)=\dfrac{\sigma_0\sin kx}{\varepsilon_0}$; $V\to0$ as $|y|\to\infty$`,
           md`$V\to0$ as $|y|\to\infty$; $V$ and $\partial V/\partial y$ continuous at $y=0$`,
-          md`$V\to0$ as $y\to\pm\infty$; $V$ continuous at $y=0$; $\partial_yV\big|_{0^+}-\partial_yV\big|_{0^-}=-\sigma_0\sin kx/\varepsilon_0$`], 3,
+          md`$V\to0$ as $y\to\pm\infty$; $V$ continuous at $y=0$; $\partial_yV\big|_{0^+}-\partial_yV\big|_{0^-}=-\dfrac{\sigma_0\sin kx}{\varepsilon_0}$`], 3,
         [md`The sheet isn't grounded metal. $V$ on it is part of the answer.`,
           md`$\sigma/\varepsilon_0$ is a field (a jump in slope), not a potential. Units don't match.`,
           md`A continuous slope would mean no charge on the sheet.`, null],
@@ -1125,7 +1134,7 @@
           md`$\tfrac{\sigma}{2\varepsilon_0}$ is the field of the local patch on one side. The tangential part doesn't jump at all.`,
           md`$V$ is continuous across a surface charge (finite field, zero path length). Its normal derivative jumps.`],
         md`Pillbox: the flux through the lids changes by $(E^\perp_{\text{above}}-E^\perp_{\text{below}})A=\sigma A/\varepsilon_0$. Thin loop: the two long sides give $(E^\parallel_{\text{above}}-E^\parallel_{\text{below}})l=0$. Only the normal component jumps.`,
-        { figHtml: figPill() }),
+        { figHtml: figPill({ bare: true }) }),
 
       Q(md`Near a sheet in the plane $y=0$, with no other charges around, the potential is $V=V_0\cos(x/L)\,e^{-|y|/L}$. What is the surface charge on the sheet?`,
         [md`$0$, because $V$ is continuous at $y=0$`, md`$\dfrac{\varepsilon_0V_0}{L}\cos(x/L)$`, md`$-\dfrac{2\varepsilon_0V_0}{L}\cos(x/L)$`, md`$\dfrac{2\varepsilon_0V_0}{L}\cos(x/L)$`], 3,
@@ -1143,7 +1152,7 @@
         [md`Both $\partial V/\partial n$ terms change sign **and** swap places, so their difference keeps its sign.`,
           md`The size of the jump doesn't depend on a naming convention.`, md`Which component jumps is geometry (normal versus along the surface), not naming.`, null],
         md`$\dfrac{\partial V_{\text{above}}}{\partial n}-\dfrac{\partial V_{\text{below}}}{\partial n}$ with the new names is $\left(-\partial_yV\big|_{0^-}\right)-\left(-\partial_yV\big|_{0^+}\right)$, the same number as before. Griffiths' footnote: it doesn't matter which side you call above. What matters is using $\hat{\mathbf n}$ consistently from below to above.`,
-        { figHtml: figPill() }),
+        { figHtml: figPill({ bare: true }) }),
 
       Q(md`Solving for the sinusoidal sheet, a student imposes (1) $V$ continuous at $y=0$ and (2) the jump in $\partial V/\partial y$. She worries she forgot "$E^\parallel$ continuous". Did she?`,
         [md`No: $V(x,0^+)=V(x,0^-)$ for every $x$ already makes $\partial V/\partial x$, hence $E_x$, the same on both sides`,
@@ -1262,7 +1271,7 @@
           (a) Find $V(x,z)$ for $z>0$.
           (b) Find $E_z$ just above the sheet at $x=0$.
           (c) At what height has the amplitude of $V$ dropped to 1% of its value on the sheet? Give it in units of $\lambda$.`,
-        figHtml: figSheet({ cos: true, lab: md`\sigma_0\cos(2\pi x/\lambda)` }),
+        figHtml: figSheet({ cos: true, yl: 'z', lab: md`\sigma_0\cos(2\pi x/\lambda)` }),
         hints: [
           md`Same structure as the worked example with $k=2\pi/\lambda$ and $\cos$ instead of $\sin$. Write the four BCs first: $V\to0$ above and below, $V$ continuous at $z=0$, jump in $\partial V/\partial z$.`,
           md`$V=Ce^{-k|z|}\cos kx$ by symmetry and the far-field conditions. The jump condition gives $-2kC=-\sigma_0/\varepsilon_0$.`,
@@ -1292,7 +1301,7 @@
 
           **What to remember:** the source's own $x$-dependence picks the separated mode, the far-field conditions pick the decaying exponential on each side, continuity equalizes the amplitudes, and the jump fixes the size.
         `,
-        figs: { bcs: { svg: figSheet({ cos: true, lab: md`\#3,\ \#4\ \text{at}\ z=0` }), cap: 'BC #1 and #2 act far above and far below; #3 and #4 act on the sheet.' } },
+        figs: { bcs: { svg: figSheet({ cos: true, yl: 'z', lab: md`\#3,\ \#4\ \text{at}\ z=0` }), cap: 'BC #1 and #2 act far above and far below; #3 and #4 act on the sheet.' } },
       }),
 
       RF(md`
@@ -1380,7 +1389,7 @@
           (b) Use Gauss's law to find the field inside and outside a long hollow cylindrical tube, which carries a uniform surface charge $\sigma$. Check that your result is consistent with Eq. 2.33.
           (c) Check that the result of Ex. 2.8 is consistent with boundary conditions 2.34 ($V$ continuous) and 2.36 (jump in $\partial V/\partial n$).
 
-          (Ex. 2.5: infinite plane, $\tfrac{\sigma}{2\varepsilon_0}$ on each side. Ex. 2.6: two infinite planes $\pm\sigma$. Prob. 2.11: spherical shell, $\vb E=0$ inside and $\tfrac{\sigma R^2}{\varepsilon_0r^2}$ outside. Ex. 2.8: spherical shell of total charge $q$; find $V$.)`,
+          (Ex. 2.5: infinite plane, $\tfrac{\sigma}{2\varepsilon_0}$ on each side. Ex. 2.6: two infinite planes $\pm\sigma$. Prob. 2.11: spherical shell by Gauss's law (the shell you did as HW 1 Prob. 2.12), $\vb E=0$ inside and $\tfrac{\sigma R^2}{\varepsilon_0r^2}$ outside. Ex. 2.8: spherical shell of total charge $q$; find $V$.)`,
         figHtml: figTube(),
         hints: [
           md`For each surface, write $\vb E$ just above and just below with the same $\hat{\mathbf n}$, and subtract.`,
@@ -1487,10 +1496,10 @@
       Q(md`A student uses a **positive** image, $+q$ at $(0,0,-d)$. Which BC fails, and what problem does this system actually solve?`,
         [md`BC #2 fails; it solves a grounded sphere`,
           md`Nothing fails; the sign of the image doesn't matter`,
-          md`BC #1 fails ($V=2\tfrac{q}{4\pi\varepsilon_0}\srm\neq0$ on the plane); it solves the problem with a mirror plane, $\partial V/\partial z=0$ at $z=0$`,
+          md`BC #1 fails ($V=\dfrac{2q}{4\pi\varepsilon_0\srm}\neq0$ on the plane); it solves the problem with a mirror plane, $\partial V/\partial z=0$ at $z=0$`,
           md`BC #1 fails; it solves a plane held at $V_0$`], 2,
         [md`Both terms still vanish at infinity. The plane is where it fails.`, md`On the plane the two terms add instead of cancel.`, null,
-          md`$V$ on the plane would be $2\tfrac{q}{4\pi\varepsilon_0}\sqrt{x^2+y^2+d^2}$, which varies along the plane; a conductor needs a constant.`],
+          md`$V$ on the plane would be $\dfrac{2q}{4\pi\varepsilon_0\sqrt{x^2+y^2+d^2}}$, which varies along the plane; a conductor held at $V_0$ needs a constant.`],
         md`Same-sign mirror charges give $V$ even in $z$, so $\partial V/\partial z=0$ on the plane: the Neumann condition of a symmetry plane, not the Dirichlet condition of a grounded conductor. The grounded plane needs the odd combination.`,
         { figHtml: figPlaneQ({ img: true, qi: '+q', lab: 'z=0' }) }),
 
@@ -1499,7 +1508,7 @@
           md`Because the field below the plane is the same in both systems`,
           md`Because in $z>0$ it satisfies Poisson's equation with only $q$, and it meets BC #1 and #2; by uniqueness it is the solution there`,
           md`Because the two systems have the same energy`], 2,
-        [md`The induced charge is spread over the surface, $\sigma=-qd/2\pi(x^2+y^2+d^2)^{3/2}$. The image is fictitious.`,
+        [md`The induced charge is spread over the surface, $\sigma=-\dfrac{qd}{2\pi(x^2+y^2+d^2)^{3/2}}$. The image is fictitious.`,
           md`Below the plane the real field is zero (metal), while the image system has a field there. The systems agree only in $z\ge0$.`, null,
           md`They don't: the real system has half the energy of the two-charge system ($-q^2/16\pi\varepsilon_0d$ versus $-q^2/8\pi\varepsilon_0d$).`],
         md`Lecture 10: "This function solves Poisson's equation since the charge density for $z>0$ is the same as in the original problem. It also fits the boundary conditions. By the uniqueness theorem, this solution is the correct one." Nothing about $z<0$ is claimed.`,
@@ -2462,7 +2471,7 @@
         md`1. In each half-space $V=(Ae^{ky}+Be^{-ky})\sin kx$.
           2. $V\to0$ far away keeps $e^{-ky}$ in both half-spaces.
           3. Continuity at $y=0$: the two amplitudes are equal.
-          4. Jump: $\partial_yV\big|_{0^+}-\partial_yV\big|_{0^-}=-\sigma_0\sin kx/\varepsilon_0$.`,
+          4. Jump: $\partial_yV\big|_{0^+}-\partial_yV\big|_{0^-}=-\dfrac{\sigma_0\sin kx}{\varepsilon_0}$.`,
         ['separated form', 'far-field', 'continuity', 'jump'], 1,
         [md`Right: the source picks $\sin kx$.`, null, md`Right.`, md`Right, but with step 2's functions both slopes are equal and the jump comes out $0$, a contradiction.`],
         md`Below the sheet, $y\to-\infty$, and $e^{-ky}$ blows up there. Keep $e^{+ky}$ below: $V=Ce^{-k|y|}\sin kx$ with $C=\tfrac{\sigma_0}{2\varepsilon_0k}$. With $e^{-ky}$ on both sides there is no kink, hence no charge, and the jump condition can't be met.`),
