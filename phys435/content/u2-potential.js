@@ -678,7 +678,7 @@
           md`$\dfrac{2V_0}{a}\left(-\uv x+\uv y\right)$`], 3,
         [md`$\vb E$ depends on how $V$ changes, not on its value. The dashed lines in the figure have $V=0$ all along them, yet the contours around them are not flat.`,
           md`That is $+\nabla V$. You need the minus sign: $\vb E=-\nabla V$.`,
-          md`Check $\partial V/\partial y=-2V_0y/a^2$: the $y$ derivative carries a minus sign from the $-y^2$.`,
+          md`The $x$ component has the wrong sign: $E_x=-\partial V/\partial x=-2V_0x/a^2<0$ at $P$. (This option is $\nabla V$ with the minus sign from the $-y^2$ dropped: two slips at once.)`,
           null],
         md`$\nabla V=\dfrac{V_0}{a^2}\left(2x\,\uv x-2y\,\uv y\right)$, so $\vb E=-\nabla V=\dfrac{2V_0}{a^2}\left(-x\,\uv x+y\,\uv y\right)$. At $(a,a,0)$: $\vb E=\dfrac{2V_0}{a}(-\uv x+\uv y)$, of magnitude $2\sqrt2\,V_0/a$, pointing from the $V>0$ region toward the $V<0$ region, across the contour lines. The value of $V$ at a point is set by the reference; only its changes matter.`,
         { figHtml: figSaddle() }),
@@ -935,9 +935,9 @@
         figHtml: figPointQ('+', true, { q: '2.0\\text{ nC}', p1: 'P_1', p2: 'P_2', r1: '10\\text{ cm}', r2: '30\\text{ cm}' }),
         hints: [md`$V=\dfrac{1}{4\pi\ep}\dfrac{q}{r}$ with $r$ in metres and $q$ in coulombs.`, md`$V(P_1)-V(P_2)=\dfrac{q}{4\pi\ep}\left(\dfrac1{0.10}-\dfrac1{0.30}\right)$.`],
         parts: [
-          { lbl: 'V(P_1)', ans: 179.75, unit: 'V' },
-          { lbl: 'V(P_2)', ans: 59.92, unit: 'V' },
-          { lbl: 'V(P_1)-V(P_2)', ans: 119.83, unit: 'V' },
+          { lbl: 'V(P_1)', ans: 179.8, unit: 'V' },
+          { lbl: 'V(P_2)', ans: 59.93, unit: 'V' },
+          { lbl: 'V(P_1)-V(P_2)', ans: 119.87, unit: 'V' },
         ],
         sol: md`
           $\dfrac{q}{4\pi\ep}=(8.99\times10^9)(2.0\times10^{-9})=17.98$ V·m.
@@ -1018,7 +1018,7 @@
 
           [[fig:tent]]
 
-          The kink at $z=0$ is no accident. The slope jumps from $+\tfrac{\sigma}{2\ep}$ to $-\tfrac{\sigma}{2\ep}$, a change of $\sigma/\ep$: this is the boundary condition of Lesson 6. With $V(\infty)=0$ you would have $V=-\infty$ everywhere, which is why the reference had to be finite.
+          The kink at $z=0$ is no accident. Going up through the plane, the slope $dV/dz$ drops from $+\tfrac{\sigma}{2\ep}$ to $-\tfrac{\sigma}{2\ep}$, a change of $-\sigma/\ep$. That is the boundary condition $\dfrac{\partial V_{\text{above}}}{\partial n}-\dfrac{\partial V_{\text{below}}}{\partial n}=-\dfrac{\sigma}{\ep}$ of Lesson 7. With $V(\infty)=0$ you would have $V=-\infty$ everywhere, which is why the reference had to be finite.
         `,
         figs: { tent: { svg: gplot({ w: 280, h: 170, x: [-3, 3], y: [-1.6, 0.4], xl: 'z', yl: 'V', xt: [[0, '0']], yt: [], curves: [{ f: (z) => -0.5 * Math.abs(z) }] }), cap: md`$V(z)=-\sigma|z|/(2\ep)$: a tent peaked on the plane.` } },
       }),
@@ -1027,7 +1027,7 @@
         q: md`A long straight wire carries $\lambda=3.0$ nC/m. Find $V(P_1)-V(P_2)$, where $P_1$ is 2.0 cm and $P_2$ is 5.0 cm from the wire. Use $\ep=8.85\times10^{-12}$ C²/(N·m²).`,
         figHtml: figLine({ ref: false, pts: [[50, md`2\un{cm}`, 'P_1'], [125, md`5\un{cm}`, 'P_2']] }),
         hints: [md`You do not need a reference point for a difference: $V(P_1)-V(P_2)=-\int_{P_2}^{P_1}\vb E\cdot d\vb l=\int_{s_1}^{s_2}E\,ds$.`, md`$\displaystyle\int_{s_1}^{s_2}\frac{\lambda}{2\pi\ep s}\,ds=\frac{\lambda}{2\pi\ep}\ln\frac{s_2}{s_1}$.`],
-        parts: [{ lbl: 'V(P_1)-V(P_2)', ans: 49.41, unit: 'V' }],
+        parts: [{ lbl: 'V(P_1)-V(P_2)', ans: 49.43, unit: 'V' }],
         sol: md`
           $V(P_1)-V(P_2)=\dfrac{\lambda}{2\pi\ep}\ln\dfrac{s_2}{s_1}=\dfrac{3.0\times10^{-9}}{2\pi(8.85\times10^{-12})}\ln\dfrac{5.0}{2.0}=(53.9\text{ V})(0.916)=49.4$ V.
 
@@ -1243,7 +1243,7 @@
       `, { sv: { svg: figSlabV(), cap: 'The given potential inside the slab.' } }),
       P({
         title: 'Charge density from a potential',
-        q: md`Inside a sphere of radius $R$, the potential is $V(r)=V_0\left(\dfrac{r}{R}\right)^3$. Find the charge density $\rho(r)$ for $r<R$, and the direction of $\vb E$ inside.`,
+        q: md`Inside a sphere of radius $R$, the potential is $V(r)=V_0\left(\dfrac{r}{R}\right)^3$, with $V_0>0$. Find the charge density $\rho(r)$ for $r<R$, and the direction of $\vb E$ inside.`,
         figHtml: figSphereR(),
         hints: [
           md`$\rho=-\ep\lap V$. $V$ depends only on $r$, so use $\lap V=\dfrac{1}{r^2}\dfrac{d}{dr}\left(r^2\dfrac{dV}{dr}\right)$.`,
@@ -1314,7 +1314,9 @@
 
           $$V(\vb r)=A\frac{e^{-\lambda r}}{r},$$
 
-          where $A$ and $\lambda$ are constants. Find the electric field $\vb E(\vb r)$, the charge density $\rho(r)$, and the total charge $Q$. [*Answer:* $\rho=\ep A\left(4\pi\delta^3(\vb r)-\lambda^2e^{-\lambda r}/r\right)$]`,
+          where $A$ and $\lambda$ are constants. Find the electric field $\vb E(\vb r)$, the charge density $\rho(r)$, and the total charge $Q$. [*Answer:* $\rho=\ep A\left(4\pi\delta^3(\vb r)-\lambda^2e^{-\lambda r}/r\right)$]
+
+          (The graph shows the given $V(r)$, solid, for $A>0$, with $r$ in units of $1/\lambda$. The dashed curve is $A/r$, for comparison.)`,
         figHtml: figYukawaV(),
         hints: [
           md`$V$ depends only on $r$, so $\vb E=-\dfrac{dV}{dr}\,\uv r$. Use the product rule on $e^{-\lambda r}\cdot r^{-1}$.`,

@@ -394,8 +394,8 @@
     { svg: xfun((x) => chr(PI, x, 1), { x: [-1, 1], xt: [[-1, '-b'], [1, 'b']] }), cap: '$\\cosh kx$: even in $x$' },
   ]);
   const G_HW = box({ L: '0', R: 'V_0(y)', T: '0', B: '0', xt: [[170, 'b']], yt: [[110, 'a']] });
-  const G_EX34 = box({ center: true, L: 'V_0', R: 'V_0', T: '0', B: '0', w: 190 });
-  const G_ANTI = box({ center: true, L: '-V_0', R: '+V_0', T: '0', B: '0', w: 190 });
+  const G_EX34 = box({ center: true, L: 'V_0', R: 'V_0', T: '0', B: '0', w: 190, yt: [[110, 'a']] });
+  const G_ANTI = box({ center: true, L: '-V_0', R: '+V_0', T: '0', B: '0', w: 190, yt: [[110, 'a']] });
   const G_LEFT = box({ L: 'V_0(y)', R: '0', T: '0', B: '0', xt: [[170, 'b']], yt: [[110, 'a']] });
   const G_TOP = box({ T: 'V_0(x)', L: '0', R: '0', B: '0', w: 130, xt: [[130, 'a']], yt: [[110, 'b']] });
   const G_ADJ = box({ L: 'V_1', B: 'V_2', T: '0', R: '0', xt: [[170, 'b']], yt: [[110, 'a']] });
@@ -409,7 +409,7 @@
   // ---------------------------------------------------------------- Lesson 6 figures
   const ex34V = (b) => (x, y) => { let s = 0; for (let n = 1; n < 200; n += 2) s += 4 / (n * PI) * chr(n * PI, x, b) * Math.sin(n * PI * y); return s; };
   const hwV = (b) => (x, y) => { let s = 0; for (let n = 1; n < 200; n += 2) s += 4 / (n * PI) * shr(n * PI, x, b) * Math.sin(n * PI * y); return s; };
-  const EX34_MAP = box({ center: true, L: 'V_0', R: 'V_0', T: '0', B: '0', w: 220, h: 110, map: { fn: ex34V(1), box: [-1, 1, 0, 1], S: 110, levels: LEVELS } });
+  const EX34_MAP = box({ center: true, L: 'V_0', R: 'V_0', T: '0', B: '0', w: 220, h: 110, yt: [[110, 'a']], map: { fn: ex34V(1), box: [-1, 1, 0, 1], S: 110, levels: LEVELS } });
   const HW_MAP = box({ L: '0', R: 'V_0', T: '0', B: '0', w: 165, h: 110, xt: [[165, 'b']], yt: [[110, 'a']], map: { fn: hwV(1.5), box: [0, 1.5, 0, 1], S: 110, levels: LEVELS } });
   const SUPER = PF.row([
     { svg: box({ w: 110, h: 80, T: 'V_1', R: 'V_2', L: '0', B: '0', axes: false }), cap: '$V$' },
@@ -426,7 +426,7 @@
   const BOX_TOP = box({ T: 'V_0', L: '0', R: '0', B: '0', w: 150, h: 110, xt: [[150, 'a']], yt: [[110, 'b']] });
   const SQ_OPP = box({ L: 'V_0', R: 'V_0', T: '0', B: '0', w: 110, h: 110, xt: [[110, 'a']], yt: [[110, 'a']], pts: [[27.5, 55, 'P', 'tr']] });
   const SQ_4V = box({ T: '30\\,\\text{V}', R: '20\\,\\text{V}', B: '10\\,\\text{V}', L: '40\\,\\text{V}', w: 110, h: 110, axes: false, pts: [[55, 55, 'C', 'tr']] });
-  const EX34_BA = box({ center: true, L: 'V_0', R: 'V_0', T: '0', B: '0', w: 220, h: 110, pts: [[110, 55, 'C', 'tr']] });
+  const EX34_BA = box({ center: true, L: 'V_0', R: 'V_0', T: '0', B: '0', w: 220, h: 110, yt: [[110, 'a']], pts: [[110, 55, 'C', 'tr']] });
   const RECT21 = box({ T: 'V_0', L: '0', R: '0', B: '0', w: 220, h: 110, xt: [[220, '2a']], yt: [[110, 'a']], pts: [[110, 55, 'C', 'tr']] });
   const ADJ2 = box({ T: 'V_0', R: 'V_0', B: '0', L: '0', w: 110, h: 110, xt: [[110, 'a']], yt: [[110, 'a']], pts: [[55, 55, 'C', 'tr']] });
 
@@ -1893,7 +1893,7 @@
             [md`$V_0/4$`, md`$V_0/2$`, md`$V_0/\sqrt2$`, md`$\dfrac{4V_0}{\pi}$`], 1,
             [md`That's a square with *one* live side. Here two sides are live.`, null, md`No square roots arise; it's a superposition argument.`, md`That exceeds $V_0$, impossible inside (no maxima in a charge-free region).`],
             md`Rotate the problem by $90°$: now the plates are live and the strips grounded. Add the two: all four sides at $V_0$, so $V = V_0$ everywhere. The center is the same point in both, so each gives $V_0/2$. The series agrees: $\tfrac{4V_0}{\pi}\sum_{\text{odd}}\tfrac{(-1)^{(n-1)/2}}{n\cosh(n\pi/2)} = 0.500V_0$.`,
-            { figHtml: box({ center: true, L: 'V_0', R: 'V_0', T: '0', B: '0', w: 110, h: 110 }) }),
+            { figHtml: box({ center: true, L: 'V_0', R: 'V_0', T: '0', B: '0', w: 110, h: 110, yt: [[110, 'a']] }) }),
 
           Q(md`Make Ex. 3.4 very long ($b \gg a$). Near the face $x = b$, the potential looks like:`,
             [md`The lecture's slot, measured inward from the face: $\dfrac{\cosh(n\pi x/a)}{\cosh(n\pi b/a)} \approx e^{-n\pi(b - x)/a}$.`, md`A constant $V_0$ everywhere.`, md`A linear function of $x$.`, md`Half the slot solution, because two faces share the potential.`], 0,
@@ -2518,8 +2518,8 @@
             { figHtml: CUBE }),
 
           Q(md`For Ex. 3.4, a student writes BC #4 as "$V \to 0$ as $x \to \infty$". What's wrong?`,
-            [md`Nothing.`, md`It should be $V \to V_0$ as $x \to \infty$.`, md`The region is $-b < x < b$; the condition is $V = V_0$ at $x = -b$.`, md`It should be $\partial V/\partial x = 0$ at $x = 0$.`], 2,
-            [md`The region doesn't reach infinity.`, md`Still the wrong place: there is no infinity in this region.`, null, md`That's true by symmetry, but it's a consequence, not the given BC; the given one is on the face $x = -b$.`],
+            [md`Nothing.`, md`It should be $V \to V_0$ as $x \to \infty$.`, md`The region is $-b < x < b$; the condition is $V = V_0$ at $x = -b$.`, md`It should be $V = 0$ at $x = 0$.`], 2,
+            [md`The region doesn't reach infinity.`, md`Still the wrong place: there is no infinity in this region.`, null, md`$x = 0$ is the middle of the pipe, not a face, and $V$ there is positive: it is fed by both live strips ($0.11V_0$ on the axis when $b = a$).`],
             md`Habits from the slot leak into closed boxes. Read the region first; then every BC sits on an actual face of it.`,
             { figHtml: G_EX34 }),
 
@@ -2636,7 +2636,7 @@
             - Write the $x$-factor as a ratio, e.g. $\dfrac{\sinh(n\pi x/a)}{\sinh(n\pi b/a)}$, so the coefficients are the plain Fourier ones.
             - Center of a square: the average of the four sides. Center of a cube: the average of the six faces.
             - $\dfrac{\sinh u}{\sinh 2u} = \dfrac{1}{2\cosh u}$: center values in one line.
-            - Far from a live face keep one term: decay length $a/\pi$ in a slot, $a/(\sqrt2\,\pi)$ in a square pipe.
+            - Far from a live face keep one term: decay length $a/\pi$ in a slot, $\tfrac{a}{\sqrt2\,\pi}$ in a square pipe.
 
             ### Know these cold (they are not on the formula sheet)
 
@@ -2673,9 +2673,9 @@
             md`Superpose the four rotations: all sides at $V_0$ gives $V_0$ everywhere, so each piece gives $V_0/4$ at the center. Common culprits: $\cosh$ instead of $\sinh$, a missing $\tfrac{1}{\sinh}$ normalization, even $n$ kept.`,
             { figHtml: SQ1 }),
 
-          Q(md`Your answer gives $V = 1.2V_0$ at a point inside a slot whose boundary values are $0$ and $V_0$. What do you conclude?`,
+          Q(md`Your answer gives $V = 1.4V_0$ at a point inside a slot whose boundary values are $0$ and $V_0$. What do you conclude?`,
             [md`Possible near the corners (Gibbs).`, md`Possible if the plates are close together.`, md`Possible in 3-D but not 2-D.`, md`Impossible: Laplace's equation allows no maximum inside, so $V$ must lie between $0$ and $V_0$.`], 3,
-            [md`Gibbs overshoot belongs to truncated sums *on the boundary*; the true potential inside never exceeds $V_0$.`, md`Geometry doesn't change the maximum principle.`, md`It holds in any dimension.`, null],
+            [md`Gibbs overshoot is a property of truncated sums near the jumps on the strip, and even there it tops out near $1.18V_0$ ($1.27V_0$ for a single term). The true potential inside never exceeds $V_0$.`, md`Geometry doesn't change the maximum principle.`, md`It holds in any dimension.`, null],
             md`A harmonic function is the average of its neighbours, so it can't have a local maximum or minimum inside. Any interior value outside the boundary range signals an error (often a wrong sign or a $\cosh$ where a $\sinh$ belongs).`,
             { figHtml: SLOT }),
 
@@ -2751,7 +2751,7 @@
           P({
             title: 'A pipe with opposite live sides',
             q: md`A long pipe has cross-section $-b < x < b$, $0 < y < a$, with $b = a$. The plates at $y = 0$ and $y = a$ are grounded; the side at $x = +b$ is at $+V_0$ and the side at $x = -b$ is at $-V_0$. (a) Write $V$. (b) What is $V$ on the plane $x = 0$? (c) Find $V$ at P $= (b/2, a/2)$.`,
-            figHtml: box({ center: true, L: '-V_0', R: '+V_0', T: '0', B: '0', w: 220, h: 110, pts: [[165, 55, 'P', 'tr']] }),
+            figHtml: box({ center: true, L: '-V_0', R: '+V_0', T: '0', B: '0', w: 220, h: 110, yt: [[110, 'a']], pts: [[165, 55, 'P', 'tr']] }),
             hints: [
               md`Sines in $y$ as in Ex. 3.4. In $x$ the data is *odd*: $V(-x, y) = -V(x, y)$.`,
               md`Odd in $x$ means $\sinh(n\pi x/a)$.`,

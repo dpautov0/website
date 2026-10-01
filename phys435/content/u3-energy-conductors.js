@@ -101,7 +101,7 @@
       uniformRows(f, [8, 92], [0, 92, 184]);
       f.label(248, 8, md`\vb E = E_0\uv x`, 'l');
       f.charge(50, 50, { q: '+', lab: '+q', at: 't' });
-      f.tag(50, 50, 'a', 'l', 10);
+      f.tag(50, 50, 'a', 'l', 16);
       f.dot(200, 50, 3.2); f.tag(200, 50, 'b', 't', 7);
       f.dim(50, 62, 200, 62, 'd', { at: 'b' });
       return f.svg();
@@ -181,7 +181,7 @@
       const pts = [];
       for (let i = 0; i <= 90; i++) { const t = i / 90, ang = (200 + 210 * t) * DEG, r = 96 - 62 * t + 9 * Math.sin(3 * Math.PI * t); pts.push([cx + r * Math.cos(ang), cy - r * Math.sin(ang)]); }
       f.pl(pts, { cls: 'thick' }); headOn(f, pts, 0.45);
-      f.charge(A[0], A[1], { q: '+', lab: 'q', at: 'l' }); f.tag(A[0], A[1], 'a', 'tl', 10);
+      f.charge(A[0], A[1], { q: '+', lab: 'q', at: 'l' }); f.tag(A[0], A[1], 'a', 't', 10);
       f.dot(B[0], B[1], 3.2); f.tag(B[0], B[1], 'b', 'tr', 7);
       return f.svg();
     };
@@ -459,12 +459,12 @@
       for (const x of [30, 110, 190]) f.charge(x, 120, { q: '+', lab: '+q', at: 't' });
       f.dim(30, 132, 110, 132, 'a', { off: 6, at: 'b' });
       f.dim(110, 132, 190, 132, 'a', { off: 6, at: 'b' });
-      f.label(110, 170, '\\text{(1) line}', 'c', 'small');
+      f.label(110, 178, '\\text{(1) line}', 'c', 'small');
       const s = 80, A = [260, 128], B = [260 + s, 128], Cc = [260 + s / 2, 128 - s * Math.sqrt(3) / 2];
       f.poly([A, B, Cc], { cls: 'dim dash thin' });
       f.charge(...A, { q: '+', lab: '+q', at: 'l' }); f.charge(...B, { q: '+', lab: '+q', at: 'r' }); f.charge(...Cc, { q: '+', lab: '+q', at: 'r' });
       f.dim(A[0], 140, B[0], 140, 'a', { at: 'b' });
-      f.label(300, 170, '\\text{(2) triangle}', 'c', 'small');
+      f.label(300, 178, '\\text{(2) triangle}', 'c', 'small');
       return f.svg();
     };
     const fCube = () => {
@@ -908,7 +908,7 @@
       { svg: PF.plot({ w: 230, h: 160, x: [0, 4], y: [0, 1.3], xl: 'r', yl: 'E', xt: [[1, 'R']], curves: [{ f: () => 0, from: 0, to: 0.995 }, { f: (r) => 1 / (r * r), from: 1, to: 4 }] }), cap: '$E$: zero inside, $\\dfrac{q}{4\\pi\\varepsilon_0 r^2}$ outside' },
       { svg: PF.plot({ w: 230, h: 160, x: [0, 4], y: [0, 1.3], xl: 'r', yl: 'V', xt: [[1, 'R']], curves: [{ f: () => 1, from: 0, to: 1 }, { f: (r) => 1 / r, from: 1, to: 4 }] }), cap: '$V$: constant inside, $\\dfrac{q}{4\\pi\\varepsilon_0 r}$ outside' },
     ]);
-    const plotFrac = () => PF.plot({ w: 330, h: 190, x: [0, 10], y: [0, 1.1], xl: 'r', yl: '\\text{fraction of } W \\text{ inside } r', xt: [[1, 'R'], [2, '2R'], [5, '5R'], [10, '10R']], yt: [[0.5, '0.5'], [0.9, '0.9']],
+    const plotFrac = () => PF.plot({ w: 330, h: 190, x: [0, 11], y: [0, 1.1], xl: 'r', yl: '\\text{fraction of } W \\text{ inside } r', xt: [[1, 'R'], [2, '2R'], [5, '5R'], [10, '10R']], yt: [[0.5, '0.5'], [0.9, '0.9']],
       curves: [{ f: (r) => (r < 1 ? 0 : 1 - 1 / r), n: 400 }], pts: [{ x: 2, y: 0.5 }, { x: 10, y: 0.9 }] });
     const plotBall = () => PF.row([
       { svg: PF.plot({ w: 230, h: 160, x: [0, 3], y: [0, 1.25], xl: 'r', yl: 'E', xt: [[1, 'R']], curves: [{ f: (r) => (r < 1 ? r : 1 / (r * r)), n: 300 }] }), cap: '$E$ grows like $r$ inside, falls like $1/r^2$ outside' },
@@ -1197,7 +1197,7 @@
       f.charge(...B, { q: '-', lab: '-q', at: 't' });
       f.dot(...Pp, 3); f.tag(Pp[0], Pp[1], 'P', 't', 8);
       f.arrow(Pp[0] - 10, Pp[1] + 18, Pp[0] + 34, Pp[1] + 18); f.tag(Pp[0] + 34, Pp[1] + 18, md`\vb E_1`, 'r', 5);
-      f.arrow(Pp[0] - 10, Pp[1] + 38, Pp[0] + 34, Pp[1] + 38, { cls: 'dash' }); f.tag(Pp[0] + 34, Pp[1] + 38, md`\vb E_2`, 'r', 5);
+      f.arrow(Pp[0] - 10, Pp[1] + 44, Pp[0] + 34, Pp[1] + 44, { cls: 'dash' }); f.tag(Pp[0] + 34, Pp[1] + 44, md`\vb E_2`, 'r', 5);
       return f.svg();
     };
     const fShells = (s2) => {
@@ -1618,7 +1618,7 @@
       f.charge(cx, cy, { q: '+' });
       f.line(cx - 7, cy - 5, cx - 92, cy - 62, { cls: 'dim thin' });
       f.label(cx - 96, cy - 62, 'Q', 'r');
-      f.text(cx - 96, cy - 42, 'just injected', 'r');
+      f.text(cx - 96, cy - 36, 'just injected', 'r');
       return f.svg();
     };
     const plotSph = () => PF.row([
