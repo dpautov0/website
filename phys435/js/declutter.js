@@ -42,7 +42,20 @@
     const ctm = svg.getScreenCTM();
     if (!ctm || !ctm.a) return;
     const toUser = (r) => ({ l: (r.left - ctm.e) / ctm.a, r: (r.right - ctm.e) / ctm.a, t: (r.top - ctm.f) / ctm.d, b: (r.bottom - ctm.f) / ctm.d });
-    const seg = ([x1, y1, x2, y2]) => ({ l: Math.min(x1, x2) - 1.2, r: Math.max(x1, x2) + 1.2, t: Math.min(y1, y2) - 1.2, b: Math.max(y1, y2) + 1.2 });
+    // A line is kept as a true segment (a slanted edge's bounding box would cover a triangle's whole inside).
+    const seg = ([x1, y1, x2, y2]) => ({ seg: [x1, y1, x2, y2] });
+    const segHits = (s, b) => {                    // does segment s cross box b (grown by 1.2)? Liang-Barsky clip
+      const B = { l: b.l - 1.2, r: b.r + 1.2, t: b.t - 1.2, b: b.b + 1.2 };
+      const [x1, y1, x2, y2] = s, dx = x2 - x1, dy = y2 - y1;
+      const P = [-dx, dx, -dy, dy], Q = [x1 - B.l, B.r - x1, y1 - B.t, B.b - y1];
+      let t0 = 0, t1 = 1;
+      for (let k = 0; k < 4; k++) {
+        if (Math.abs(P[k]) < 1e-12) { if (Q[k] < 0) return false; continue; }
+        const t = Q[k] / P[k];
+        if (P[k] < 0) { if (t > t1) return false; if (t > t0) t0 = t; } else { if (t < t0) return false; if (t < t1) t1 = t; }
+      }
+      return t1 - t0 > 1e-9;
+    };
     const obs = [];
     const addEl = (el) => {
       const tag = el.tagName.toLowerCase();
@@ -67,7 +80,7 @@
     for (const L of labs) {
       const r0 = toUser(L.sp.getBoundingClientRect());
       const at = (dx, dy) => ({ l: r0.l + dx, r: r0.r + dx, t: r0.t + dy, b: r0.b + dy });
-      const free = (b) => !obs.some((o) => hit(b, o)) && !placed.some((p) => hit(b, p, 0.5));
+      const free = (b) => !obs.some((o) => (o.seg ? segHits(o.seg, b) : hit(b, o))) && !placed.some((p) => hit(b, p, 0.5));
       let best = null;
       if (free(at(0, 0))) best = [0, 0];
       else for (const c of CANDS) if (free(at(c[0], c[1]))) { best = c; break; }

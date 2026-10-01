@@ -505,7 +505,7 @@
           Exact check in that plane: $V = \kq\left(\dfrac{2q}{\sqrt{r^2 + d^2}} - \dfrac{2q}{r}\right)$. With $\dfrac{1}{\sqrt{r^2+d^2}} \approx \dfrac1r - \dfrac{d^2}{2r^3}$ this is $-\kq\dfrac{qd^2}{r^3}$, matching.
 
           !!key What to remember
-            This is two opposite physical dipoles placed tip to tip ($+q,-q$ above and $-q,+q$ below). Charge and dipole moment both cancel, so $V$ falls as $1/r^3$, with the angular shape $P_2(\cos\theta)$: positive along the axis, negative around the equator.
+            This is two opposite physical dipoles placed tail to tail: $+q$ over $-q$ (pointing up) and $-q$ over $+q$ (pointing down), with the two $-q$'s merged into the $-2q$ at the origin. Charge and dipole moment both cancel, so $V$ falls as $1/r^3$, with the angular shape $P_2(\cos\theta)$: positive along the axis, negative around the equator.
         `,
       }),
 
@@ -691,7 +691,7 @@
       const curves = [{ f: (x) => lg(V(Math.pow(10, x))), n: 400, cls: 'dim' }];
       // the leading term alone is drawn as dots, so it stays visible where it lies on top of the exact curve
       const dots = [];
-      if (lead >= 0) for (let i = 0; i <= 20; i++) { const x = X0 + (X1 - X0) * i / 20, y = lg(cs[lead]) - (lead + 1) * x; if (y >= Y0 && y <= Y1) dots.push({ x, y }); }
+      if (lead >= 0) for (let i = 0; i <= 20; i++) { const x = X0 + (X1 - X0) * i / 20, y = lg(cs[lead]) - (lead + 1) * x; if (y >= Y0 + 0.2 && y <= Y1 - 0.1) dots.push({ x, y }); }
       $('.p1').innerHTML = PF.plot({ w: 330, h: 250, x: [X0, X1], y: [Y0, Y1], xl: 'r', yl: '|V|', ml: 52,
         xt: [[0, 'a'], [1, '10a'], [2, '100a']], yt: [[0, '1'], [-2, '10^{-2}'], [-4, '10^{-4}'], [-6, '10^{-6}'], [-8, '10^{-8}']], curves, pts: dots });
       let txt = `<p>$Q = ${fm(Q)}\\,q$, $\\ \\vb p = (p_y, p_z) = (${fm(py)}, ${fm(pz)})\\,qa$ about the origin. Units: $V$ in $\\dfrac{q}{4\\pi\\varepsilon_0 a}$, $r$ in $a$.</p>`;
@@ -1245,6 +1245,20 @@
         md`$E_\theta = -\dfrac1r\dfrac{\partial}{\partial\theta}\left(\dfrac{p\cos\theta}{4\pi\varepsilon_0 r^2}\right) = -\dfrac1r\cdot\dfrac{-p\sin\theta}{4\pi\varepsilon_0 r^2} = \dfrac{p\sin\theta}{4\pi\varepsilon_0 r^3}$. It is never negative for $0 \le \theta \le \pi$.`,
         { figHtml: fDipField() }),
 
+      Q(md`Lecture 4 asked which fields could be electrostatic. Which of these could be? $\vb E_1 = \dfrac{k}{r^3}\left(2\cos\theta\,\uv r + \sin\theta\,\boldsymbol{\hat\theta}\right)$ and $\vb E_2 = \dfrac{k}{r^3}\left(2\cos\theta\,\uv r - \sin\theta\,\boldsymbol{\hat\theta}\right)$, with $k$ a constant.`,
+        [md`Neither: a field that changes direction from point to point has a curl`, md`Both: they differ only in the sign of one component`, md`Only $\vb E_1$`, md`Only $\vb E_2$`], 2,
+        [md`Changing direction is allowed; the test is $\nabla\times\vb E = 0$. $\vb E_1$ passes: it is the dipole field, $\vb E_1 = -\nabla\left(\dfrac{k\cos\theta}{r^2}\right)$.`,
+          md`The curl is not blind to that sign. In $(\nabla\times\vb E)_\phi = \dfrac1r\left[\dfrac{\partial}{\partial r}(rE_\theta) - \dfrac{\partial E_r}{\partial\theta}\right]$ the two terms cancel for $\vb E_1$ and add for $\vb E_2$.`,
+          null,
+          md`$\vb E_2$ is the dipole field with the sign of $E_\theta$ flipped, and that sign is what makes the curl vanish. For $\vb E_2$, $(\nabla\times\vb E)_\phi = \dfrac{4k\sin\theta}{r^4} \neq 0$.`],
+        md`Neither field has a $\phi$ component or depends on $\phi$, so only $(\nabla\times\vb E)_\phi = \dfrac1r\left[\dfrac{\partial}{\partial r}(rE_\theta) - \dfrac{\partial E_r}{\partial\theta}\right]$ can be nonzero (curl from the formula sheet).
+
+        - $\vb E_1$: $\dfrac{\partial}{\partial r}\left(\dfrac{k\sin\theta}{r^2}\right) = -\dfrac{2k\sin\theta}{r^3}$ and $\dfrac{\partial}{\partial\theta}\left(\dfrac{2k\cos\theta}{r^3}\right) = -\dfrac{2k\sin\theta}{r^3}$. They cancel, so $\nabla\times\vb E_1 = 0$. This is the Lecture 4 calculation: $\vb E_1$ is the dipole field with $k = \dfrac{p}{4\pi\varepsilon_0}$.
+        - $\vb E_2$: now $\dfrac{\partial}{\partial r}(rE_\theta) = +\dfrac{2k\sin\theta}{r^3}$, so $(\nabla\times\vb E_2)_\phi = \dfrac{4k\sin\theta}{r^4} \neq 0$. No arrangement of static charges produces it.
+
+        A sign slip in $E_\theta$ is not harmless: it turns the dipole field into an impossible one. Checking $\nabla\times\vb E = 0$ catches it.`,
+        { figHtml: fDipField() }),
+
       Q(md`A dipole $\vb p = p\,\uv z$ sits at the origin. What is $\vb E$ at point $A$, on the $+z$ axis a distance $r$ away?`,
         [md`$\dfrac{2p}{4\pi\varepsilon_0 r^3}$, along $-\uv z$`, md`$\dfrac{p}{4\pi\varepsilon_0 r^3}$, along $+\uv z$`, md`$\dfrac{p}{4\pi\varepsilon_0 r^2}$, along $+\uv z$`, md`$\dfrac{2p}{4\pi\varepsilon_0 r^3}$, along $+\uv z$`], 3,
         [md`At $\theta = 0$, $E_r = \dfrac{2p}{4\pi\varepsilon_0 r^3} > 0$: outward, and outward is $+\uv z$ there.`,
@@ -1323,7 +1337,7 @@
           md`$E_\theta \neq 0$ at $54.7^\circ$, so $\vb E$ is not radial. It is radial only on the axis.`,
           md`$E_z = 0$ at this angle.`,
           null],
-        md`$E_z = \dfrac{p}{4\pi\varepsilon_0 r^3}(3\cos^2\theta - 1) = 0$. The component away from the axis is $E_r\sin\theta + E_\theta\cos\theta = \dfrac{3p\sin\theta\cos\theta}{4\pi\varepsilon_0 r^3} > 0$. So $\vb E$ points straight away from the axis, with size $\sqrt2\,\dfrac{p}{4\pi\varepsilon_0 r^3}$. Closer to the axis than $54.7^\circ$ the field tilts up; beyond it, down.`,
+        md`$E_z = \dfrac{p}{4\pi\varepsilon_0 r^3}(3\cos^2\theta - 1) = 0$. The component away from the axis is $E_r\sin\theta + E_\theta\cos\theta = \dfrac{3p\sin\theta\cos\theta}{4\pi\varepsilon_0 r^3} > 0$. So $\vb E$ points straight away from the axis, with size $\sqrt2\,\dfrac{p}{4\pi\varepsilon_0 r^3}$. For $\theta < 54.7^\circ$ (and for $\theta > 125.3^\circ$) $E_z > 0$ and the field tilts up; between $54.7^\circ$ and $125.3^\circ$ it tilts down.`,
         { figHtml: fPts(false) }),
 
       Q(md`$\vb p = p\,\uv z$ at the origin. Use $\vb E = \kq\dfrac{3(\vb p\cdot\uv r)\uv r - \vb p}{r^3}$ at the point $P$ in the $yz$-plane at $\theta = 45^\circ$.`,
@@ -1342,6 +1356,15 @@
           md`Backwards: the finite separation matters most near the charges.`,
           md`Between the charges of a physical dipole the field is strong and points from $+q$ to $-q$; a pure dipole has nothing like that except at the single point $r = 0$.`],
         md`Far away the dipole term dominates both, so the pictures match. Close in, the physical dipole's lines start and end on its two charges, and between them $\vb E$ points opposite to $\vb p$.`,
+        { figHtml: fLines().svg }),
+
+      Q(md`The pure-dipole field lines in figure (a) look like closed loops. Lecture 4 stressed that electrostatic field lines never close on themselves. How do the two fit together?`,
+        [md`They don't: near the dipole the field has a nonzero curl`, md`The loops close only far away, where the dipole formula is an approximation anyway`, md`Field lines are allowed to close when the total charge is zero`, md`Every line starts and ends on the dipole itself: on $+q$ and $-q$ for a physical dipole, at the point $r = 0$ for a pure one. No line circulates through charge-free space.`], 3,
+        [md`$\nabla\times\vb E = 0$ everywhere except at the dipole itself. Lecture 4 checked the curl of exactly this field.`,
+          md`Far away the dipole formula is excellent. What matters is what happens at the center, where all the lines meet.`,
+          md`$\oint\vb E\cdot d\vb l = 0$ for every loop in a charge-free region, whatever the total charge. A neutral object gets no exemption.`,
+          null],
+        md`Along a closed field line $\vb E$ is parallel to $d\vb l$ the whole way, so $\oint\vb E\cdot d\vb l > 0$. That is forbidden for a loop through charge-free space, where $\nabla\times\vb E = 0$ (Stokes). The dipole's lines are not such loops. In figure (b) each one leaves $+q$ and ends on $-q$; between the charges $\vb E$ points from $+q$ to $-q$, so no line runs back from $-q$ to $+q$. A pure dipole squeezes both charges into the point $r = 0$, where $\vb E$ blows up, and every line passes through that point.`,
         { figHtml: fLines().svg }),
 
       Q(md`On the axis *between* the two charges of a physical dipole (point $M$), which way does $\vb E$ point? Compare point $F$ on the axis above both charges.`,
@@ -1541,8 +1564,9 @@
       RF(md`
         !!key Patterns to remember
           - $\vb E_{\rm dip} = \dfrac{p}{4\pi\varepsilon_0 r^3}\left(2\cos\theta\,\uv r + \sin\theta\,\boldsymbol{\hat\theta}\right) = \kq\dfrac{3(\vb p\cdot\uv r)\,\uv r - \vb p}{r^3}$. It falls as $1/r^3$.
-          - On the axis (above and below) $\vb E \parallel \vb p$ with strength 2; on the equator $\vb E$ is antiparallel with strength 1; $E_z = 0$ at $54.7^\circ$.
-          - $E_\theta \ge 0$: off the axis the field always has a "southward" component.
+          - On the axis (above and below) $\vb E \parallel \vb p$ with strength 2; on the equator $\vb E$ is antiparallel with strength 1; $E_z = 0$ at $54.7^\circ$ and $125.3^\circ$.
+          - $E_\theta \ge 0$: off the axis the field always has a "southward" component. Flip that sign and the field gets a curl (Lecture 4's test), so it could not be electrostatic.
+          - Field lines start on $+q$ and end on $-q$; a dipole's lines only look like loops because they all pass through the dipole.
           - Charged object: monopole field plus dipole field are "the two lowest orders"; the dipole part depends on the origin.
           - Pure and physical dipoles agree far away and differ near the charges.
       `),
@@ -1705,7 +1729,11 @@
 
         Compare with the on-axis multipole formula: $c_n = \kq\displaystyle\int (r')^nP_n(\cos\theta')\,\rho\,d\tau'$. The expansion coefficients **are** the multipole moments.
 
-        If the source is symmetric about the $z$ axis (no $\phi$-dependence), you get the potential everywhere outside for free. Outside the source $V$ obeys Laplace's equation with azimuthal symmetry and goes to zero at infinity, so (Unit 7) $V(r,\theta) = \displaystyle\sum_n\frac{B_n}{r^{n+1}}P_n(\cos\theta)$. On the $+z$ axis $\theta = 0$ and $P_n(1) = 1$, so $V(z) = \displaystyle\sum_n\frac{B_n}{z^{n+1}}$, and matching gives $B_n = c_n$.
+        If the source is symmetric about the $z$ axis (no $\phi$-dependence), you get the potential everywhere outside for free. The region of interest is outside a sphere, centered on the origin, that encloses all the charge. The conditions there, Unit 7 style:
+
+        1. No charge in the region and no $\phi$-dependence, so $\lap V = 0$ gives $V = \displaystyle\sum_n\left(A_nr^n + \frac{B_n}{r^{n+1}}\right)P_n(\cos\theta)$.
+        2. $V \to 0$ as $r \to \infty$. This kills every $A_n$.
+        3. On the $+z$ axis $V$ must equal the known $V(z)$. There $\theta = 0$ and $P_n(1) = 1$, so $V(z) = \displaystyle\sum_n\frac{B_n}{z^{n+1}}$. Matching powers of $1/z$ fixes $B_n = c_n$.
 
         !!method Off-axis from on-axis (azimuthal symmetry)
           1. Find $V$ on the $+z$ axis exactly.
