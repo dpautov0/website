@@ -203,6 +203,27 @@
     return f.svg();
   }
 
+  // Lecture 12's slot: grounded plates at y = 0 and y = a, the end x = 0 held at V0(y)
+  function slotFig() {
+    const f = PF.fig();
+    const a = 90, L = 200;
+    f.plane(4, L, 0, { side: 'below' });
+    f.plane(4, L, -a, { side: 'above' });
+    f.line(L, 0, L + 22, 0, { cls: 'dim dash' });
+    f.line(L, -a, L + 22, -a, { cls: 'dim dash' });
+    f.label(L * 0.6, 16, 'V=0', 't', 'small');
+    f.label(L * 0.6, -a - 16, 'V=0', 'b', 'small');
+    f.wall(0, -a + 3, -3, { side: 'left' });
+    f.label(-16, -a / 2, 'V_0(y)', 'r');
+    f.line(0, -a - 14, 0, -a - 36, { cls: 'dim', arrow: 'end', hs: 6 });
+    f.label(5, -a - 34, 'y', 'l', 'small accent');
+    f.line(L + 26, 0, L + 46, 0, { cls: 'dim', arrow: 'end', hs: 6 });
+    f.label(L + 48, 0, 'x', 'l', 'small accent');
+    f.label(-15, 9, '0', 'r', 'small accent');
+    f.label(-15, -a - 7, 'a', 'r', 'small accent');
+    return f.svg();
+  }
+
   // partial sums
   const stepCoef = (l) => { if (l % 2 === 0) return 0; let I = 0; const n = 2000; for (let i = 0; i < n; i++) I += Pl(l, (i + 0.5) / n) / n; return (2 * l + 1) * I; };
   const STEPC = Array.from({ length: 42 }, (_, l) => stepCoef(l));
@@ -360,7 +381,7 @@
 
       Q(md`At $x = \tfrac12$ you have $P_1 = \tfrac12$ and $P_2 = -\tfrac18$. What is $P_3(\tfrac12)$?`,
         [md`$\tfrac{7}{16}$`, md`$-\tfrac{1}{16}$`, md`$-\tfrac{7}{16}$`, md`$\tfrac{5}{16}$`], 2,
-        [md`Sign: both pieces of $5x P_2 - 2P_1$ are negative here.`, md`The factor 3 on the left was applied to only one term. $3P_3 = 5\cdot\tfrac12\cdot\left(-\tfrac18\right) - 2\cdot\tfrac12 = -\tfrac{21}{16}$.`, null, md`That is $\tfrac{5}{2}x^3$ at $x = \tfrac12$ plus a sign slip. Use the recurrence or the full polynomial.`],
+        [md`Sign: both pieces of $5x P_2 - 2P_1$ are negative here.`, md`The two pieces are $5\cdot\tfrac12\cdot\left(-\tfrac18\right) = -\tfrac{5}{16}$ and $-2\cdot\tfrac12 = -1$. Their sum is $3P_3 = -\tfrac{21}{16}$; divide by 3 only at the end.`, null, md`That is $\tfrac{5}{2}x^3$ at $x = \tfrac12$ plus a sign slip. Use the recurrence or the full polynomial.`],
         md`$3P_3 = 5\cdot\tfrac12\cdot\left(-\tfrac18\right) - 2\cdot\tfrac12 = -\tfrac{5}{16} - 1 = -\tfrac{21}{16}$, so $P_3(\tfrac12) = -\tfrac{7}{16}$. Check with the polynomial: $\tfrac12\left(\tfrac58 - \tfrac32\right) = -\tfrac{7}{16}$. That is $P_3(\cos60^\circ)$.`,
         { figHtml: XMAP }),
 
@@ -425,7 +446,7 @@
       Q(md`The plot shows $P_\ell(\cos\theta)$ against $\theta$ (not against $x$). Which $\ell$?`,
         [md`$2$`, md`$3$`, md`$4$`, md`$1$`], 1,
         [md`$P_2$ is $+1$ at both poles. This curve ends at $-1$.`, null, md`$P_4$ is $+1$ at both poles.`, md`$P_1 = \cos\theta$ has one zero. This curve has three.`],
-        md`$+1$ at $\theta = 0$, $-1$ at $\theta = 180^\circ$ (odd $\ell$), three zeros (at $39^\circ$, $90^\circ$, $141^\circ$). That is $P_3$. Plotted against $\theta$ the curve looks squeezed near the poles compared with the $x$ plot, because $x = \cos\theta$ changes slowly there.`,
+        md`$+1$ at $\theta = 0$, $-1$ at $\theta = 180^\circ$ (odd $\ell$), three zeros (at $39^\circ$, $90^\circ$, $141^\circ$). That is $P_3$. Plotted against $\theta$ the curve is flat at the poles and its zeros are spread almost evenly, because $x = \cos\theta$ changes slowly near the poles. Against $x$ the wiggles crowd toward $x = \pm1$ instead.`,
         { figHtml: FIG.p3theta }),
 
       RF(md`
@@ -586,6 +607,7 @@
   FIG.saddle = saddleFig();
   FIG.coords = sph({ arcs: [], R: false, Pout: { f: 1.45, th: 40, lab: 'P\\,(r,\\theta)' }, axisLen: 50 });
   FIG.p3x = plotP([3]);
+  FIG.slot = slotFig();
   FIG.q0 = PF.plot({ w: 320, h: 190, x: [-1, 1], y: [-2.6, 2.6], zero: true, xl: 'x',
     xt: [[-1, '-1'], [1, '1']], yt: [[1, '1'], [-1, '-1'], [2, '2'], [-2, '-2']],
     curves: [{ f: () => 1, cls: 'dim dash' }, { f: (x) => 0.5 * Math.log((1 + x) / (1 - x)), from: -0.995, to: 0.995, n: 300 }] });
@@ -617,7 +639,7 @@
 
       Q(md`With $x = \cos\theta$, what does $\dfrac{d}{d\theta}$ become?`,
         [md`$-\sin\theta\,\dfrac{d}{dx}$`, md`$\sin\theta\,\dfrac{d}{dx}$`, md`$-\dfrac{1}{\sin\theta}\,\dfrac{d}{dx}$`, md`$-\cos\theta\,\dfrac{d}{dx}$`], 0,
-        [null, md`Sign: $x = \cos\theta$ decreases as $\theta$ increases, so $dx/d\theta \lt 0$.`, md`That is $\frac{d\theta}{dx}\frac{d}{d\theta}$ inverted. The chain rule is $\frac{d}{d\theta} = \frac{dx}{d\theta}\frac{d}{dx}$.`, md`The derivative of $\cos\theta$ is $-\sin\theta$, not $-\cos\theta$.`],
+        [null, md`Sign: $x = \cos\theta$ decreases as $\theta$ increases, so $dx/d\theta \lt 0$.`, md`That puts $\frac{d\theta}{dx} = -\frac{1}{\sin\theta}$ where $\frac{dx}{d\theta}$ belongs. The chain rule is $\frac{d}{d\theta} = \frac{dx}{d\theta}\frac{d}{dx}$.`, md`The derivative of $\cos\theta$ is $-\sin\theta$, not $-\cos\theta$.`],
         md`$\dfrac{d}{d\theta} = \dfrac{dx}{d\theta}\dfrac{d}{dx} = -\sin\theta\dfrac{d}{dx}$. Applied twice, each $\sin\theta$ pairs with another into $\sin^2\theta = 1 - x^2$, which is why the $x$ form has no trig functions left.`,
         { figHtml: XMAP }),
 
@@ -702,20 +724,20 @@
         !!key This is a boundary condition
           The requirement is physical: **$V$ is finite on the $z$ axis, at $\theta = 0$ and $\theta = \pi$.** It throws out every solution except the polynomials and forces $\ell = 0, 1, 2, \dots$ It plays the role that $V = 0$ on both plates played in the slot (Lecture 12), where it quantized $k = n\pi/a$. Negative $\ell$ adds nothing: $\ell$ and $-(\ell+1)$ give the same $\ell(\ell+1)$.
 
-        (If a region excluded part of the axis, say the inside of a cone $\theta \lt \alpha$, the condition at $\theta = \pi$ would be gone and non-integer $\ell$ would appear. That never happens in this course.)
+        (If the region did not contain the whole axis, for example the space inside a cone $\theta \lt \alpha$, the condition at $\theta = \pi$ would be gone and non-integer $\ell$ would appear. That never happens in this course.)
       `, { q0: { svg: FIG.q0, cap: 'Both $\\ell = 0$ solutions of Legendre\'s equation. Dashed: $P_0 = 1$. Solid: $Q_0 = \\tfrac12\\ln\\frac{1+x}{1-x}$, infinite at both poles.' } }),
 
       Q(md`Which condition forces $\ell$ to be a non-negative integer?`,
         [md`$V$ finite on the $z$ axis, at $\theta = 0$ and $\theta = \pi$`, md`$V \to 0$ as $r \to \infty$`, md`$V$ finite at $r = 0$`, md`$V(R,\theta) = V_0(\theta)$ on the sphere`], 0,
         [null, md`That condition acts on the radial part: it removes $r^\ell$ outside. It says nothing about $\ell$.`, md`That removes $r^{-(\ell+1)}$ inside; it is also radial.`, md`That fixes the coefficients after $\ell$ is already quantized.`],
         md`Only the angular equation knows about $\ell$, and only regularity at the poles cuts its solutions down to the polynomials $P_\ell$. Every other condition acts on the radial part or on the coefficients.`,
-        { figHtml: FIG.q0 }),
+        { figHtml: FIG.coords }),
 
       Q(md`In the slot of Lecture 12, which boundary condition played the same role as "finite at $\theta = 0, \pi$"?`,
         [md`$V \to 0$ as $x \to \infty$`, md`$V = V_0(y)$ at $x = 0$`, md`Continuity of $V$ across $y = a/2$`, md`$V = 0$ at $y = 0$ and $y = a$, which quantized $k = n\pi/a$`], 3,
         [md`That killed the growing exponential, like $V \to 0$ at infinity kills $r^\ell$ outside.`, md`That fixed the Fourier coefficients, like $V_0(\theta)$ fixes $A_\ell$.`, md`There is no such condition in the slot.`, null],
         md`In both cases two conditions on the "angular" variable select a discrete set of eigenfunctions: $\sin(n\pi y/a)$ with integer $n$, or $P_\ell(\cos\theta)$ with integer $\ell$. Then the other variable carries the matching radial (or $x$) dependence.`,
-        { figHtml: FIG.q0 }),
+        { figHtml: FIG.slot }),
 
       Q(md`For $\lambda = 12$, which starting values make the series $c_{k+2} = \frac{k(k+1) - 12}{(k+1)(k+2)}c_k$ a polynomial?`,
         [md`$c_0 = 1$, $c_1 = 0$`, md`$c_0 = 0$, $c_1 = 1$`, md`Any starting values`, md`None; $\lambda = 12$ never terminates`], 1,
@@ -727,7 +749,7 @@
         [md`It is not a polynomial, so it cannot match $V_0(\theta)$.`, md`It violates $V \to 0$ at infinity.`, md`It is infinite at $\theta = 0$ and $\theta = \pi$, and the $z$ axis is inside the region.`, md`It is an odd function of $x$.`], 2,
         [md`Non-polynomial functions can match boundary data fine (step functions do). The problem is the infinity.`, md`$Q_0$ is angular; the radial factor decides behavior at infinity.`, null, md`Odd functions are fine ($P_1$, $P_3$ are odd).`],
         md`$Q_0 \to \pm\infty$ as $x \to \pm1$. A potential with charge-free space around the axis can't be infinite there, so the coefficient of $Q_0$ (and of every $Q_\ell$) must be zero.`,
-        { figHtml: FIG.q0 }),
+        { figHtml: FIG.coords }),
 
       Q(md`Why don't negative values like $\ell = -3$ appear in the general solution?`,
         [md`$r^{-3}$ blows up at the origin.`, md`Legendre polynomials of negative degree are not finite at the poles.`, md`They are allowed and give new solutions that are usually dropped.`, md`$\ell(\ell+1) = 6$ for $\ell = -3$, the same as $\ell = 2$, so they repeat solutions already counted.`], 3,
@@ -762,7 +784,7 @@
         [md`$z^2$`, md`$\tfrac12\left(3z^2 - 1\right)$`, md`$z^2 - x^2 - y^2$`, md`$z^2 - \tfrac12\left(x^2 + y^2\right)$`], 3,
         [md`That is $r^2\cos^2\theta$, which is not harmonic.`, md`This replaced $\cos\theta$ by $z$ without the factor $r^2$ on the $-1$. Units don't match: $z^2$ and $1$.`, md`$\nabla^2 = 2 - 2 - 2 = -2 \ne 0$. The coefficients must be $1, -\tfrac12, -\tfrac12$.`, null],
         md`$r^2P_2 = \tfrac12(3z^2 - r^2) = \tfrac12(2z^2 - x^2 - y^2)$. Its Laplacian is $2 - 1 - 1 = 0$, and it has azimuthal symmetry (only $x^2 + y^2$ appears).`,
-        { figHtml: FIG.saddle }),
+        { figHtml: FIG.coords }),
 
       Q(md`For which powers $n$ is $r^nP_3(\cos\theta)$ harmonic?`,
         [md`$n = 3$ and $n = -4$`, md`$n = 3$ and $n = -3$`, md`$n = 3$ only`, md`$n = -3$ and $n = 4$`], 0,
@@ -926,8 +948,8 @@
         { figHtml: XMAP }),
 
       Q(md`Why is the prefactor in $a_\ell = \frac{2\ell+1}{2}\int_{-1}^1 fP_\ell\,dx$ equal to $\frac{2\ell+1}{2}$ and not $1$?`,
-        [md`Because $\int_{-1}^1P_\ell^2\,dx = \frac{2}{2\ell+1}$, and the formula divides by that norm.`, md`Because the interval $[-1, 1]$ has length 2, and nothing else.`, md`Because $P_\ell(1) = 1$.`, md`It is a convention; you may use $1$ if you also rescale $P_\ell$.`], 0,
-        [null, md`The length explains the 2 in the numerator of $\frac{2}{2\ell+1}$, but the $2\ell + 1$ depends on $\ell$.`, md`$P_\ell(1) = 1$ fixes the size of $P_\ell$, and so its norm, but the factor itself is the inverse norm.`, md`Rescaling $P_\ell$ would break $P_\ell(1) = 1$ and every formula in the lectures. With the standard $P_\ell$, the factor is fixed.`],
+        [md`Because $\int_{-1}^1P_\ell^2\,dx = \frac{2}{2\ell+1}$, and the formula divides by that norm.`, md`Because the interval $[-1, 1]$ has length 2, and nothing else.`, md`Because $P_\ell(1) = 1$.`, md`It is a convention: with the standard $P_\ell$ you may use either $1$ or $\frac{2\ell+1}{2}$.`], 0,
+        [null, md`The length explains the 2 in the numerator of $\frac{2}{2\ell+1}$, but the $2\ell + 1$ depends on $\ell$.`, md`$P_\ell(1) = 1$ fixes the size of $P_\ell$, and so its norm, but the factor itself is the inverse norm.`, md`With the standard $P_\ell$ (fixed by $P_\ell(1) = 1$) the factor is forced. Using $1$ makes every $a_\ell$ too small by $\frac{2}{2\ell+1}$: for $f = P_2$ you would get $a_2 = \tfrac25$ instead of $1$.`],
         md`From $\int fP_m = a_m\frac{2}{2m+1}$. Sanity check with $f = P_2$: $a_2 = \tfrac52\cdot\tfrac25 = 1$.`,
         { nofig: 'about a formula' }),
 
@@ -1161,6 +1183,10 @@
     xt: [[-1, '-1'], [1, '1']], yt: [[1, '1'], [-1, '-1']],
     curves: [{ f: () => -1, cls: 'dim dash', from: -1, to: -0.004 }, { f: () => 1, cls: 'dim dash', from: 0.004, to: 1 },
       { f: (x) => stepSum(x, 3), cls: 'dash' }, { f: (x) => stepSum(x, 21), n: 600 }] });
+  FIG.step5 = PF.plot({ w: 340, h: 210, x: [-1, 1], y: [-1.35, 1.35], zero: true, xl: 'x',
+    xt: [[-1, '-1'], [1, '1']], yt: [[1, '1'], [-1, '-1']],
+    curves: [{ f: () => -1, cls: 'dim dash', from: -1, to: -0.004 }, { f: () => 1, cls: 'dim dash', from: 0.004, to: 1 },
+      { f: (x) => stepSum(x, 5), n: 300 }] });
   FIG.absPlot = PF.plot({ w: 320, h: 190, x: [-1, 1], y: [-0.1, 1.15], xl: 'x',
     xt: [[-1, '-1'], [1, '1']], yt: [[1, '1'], [0.5, '\\tfrac12']],
     curves: [{ f: (x) => Math.abs(x), cls: 'dim dash' }, { f: (x) => absSum(x, 2), cls: 'dash' }, { f: (x) => absSum(x, 4) }] });
@@ -1325,7 +1351,7 @@
         sol: md`
           **(a)** $\int_0^1P_5\,dx = \tfrac18\left(\tfrac{63}{6} - \tfrac{70}{4} + \tfrac{15}{2}\right) = \tfrac18\left(10.5 - 17.5 + 7.5\right) = \tfrac{1}{16}$. So $a_5 = 11\cdot\tfrac{1}{16} = \tfrac{11}{16}$.
 
-          **(b)** $\tfrac32 - \tfrac78 + \tfrac{11}{16} = \tfrac{24 - 14 + 11}{16} = \tfrac{21}{16} \approx 1.31$. The partial sums at the pole go $1.5, 0.625, 1.31, 0.73, \dots$ and close in on $1$ slowly. The coefficients only shrink like $\ell^{-1/2}$, because the data jump.
+          **(b)** $\tfrac32 - \tfrac78 + \tfrac{11}{16} = \tfrac{24 - 14 + 11}{16} = \tfrac{21}{16} \approx 1.31$. The partial sums at the pole go $1.5, 0.625, 1.31, 0.73, \dots$ and close in on $1$ slowly. Because the data jump, $\lvert a_\ell\rvert$ only shrinks like $\ell^{-1/2}$, and at the pole every $P_\ell = 1$, so nothing else damps the terms.
 
           **(c)** Every odd $P_\ell(0) = 0$, so every term vanishes on the equator: the series gives $0$, the average of $+V_0$ and $-V_0$.
 
@@ -1384,9 +1410,9 @@
         md`$V(0) = a_0V_0 = \frac{1 - \cos120^\circ}{2}V_0 = \frac{1 + \frac12}{2}V_0 = \tfrac34V_0$. The center sees the area average of the surface potential.`,
         { figHtml: hemis({ cap: 120, top: 'V_0', bot: 'V=0', botThin: true, topTh: 22, botTh: 170, extra: { mark: { th: 120, lab: '120^\\circ', r: 20 } } }) }),
 
-      Q(md`Why is $a_1$ the same ($\tfrac{9}{16}$) for the cap $\theta \lt 60^\circ$ and the cap $\theta \lt 120^\circ$?`,
+      Q(md`$a_1 = \tfrac{9}{16}$ for both the cap $\theta \lt 60^\circ$ and the cap $\theta \lt 120^\circ$. Which argument explains this **and** predicts that every odd $a_\ell$ agrees for the two caps?`,
         [md`Coincidence of these angles.`, md`Because $\sin^260^\circ = \sin^2120^\circ$ and nothing deeper.`, md`Because $a_1$ only depends on the cap's area.`, md`The $120^\circ$ cap is the whole sphere minus a $60^\circ$ cap at the south pole. The whole sphere has $a_1 = 0$ and the south cap has $a_1 = -\tfrac{9}{16}$.`], 3,
-        [md`It holds for every pair $\alpha$ and $180^\circ - \alpha$.`, md`That is the formula, but the reason is superposition, and it generalises: for odd $\ell$ the two caps always agree.`, md`The areas are $\tfrac14$ and $\tfrac34$, different, yet $a_1$ agrees.`, null],
+        [md`It holds for every pair $\alpha$ and $180^\circ - \alpha$.`, md`True for $a_1 = \tfrac34\sin^2\alpha$, but it says nothing about $a_3, a_5, \dots$ The superposition argument covers every odd $\ell$.`, md`The areas are $\tfrac14$ and $\tfrac34$, different, yet $a_1$ agrees.`, null],
         md`Superposition: $f_{120^\circ} = 1 - f_{\text{south }60^\circ}$. The constant contributes only to $a_0$. Reflecting a north cap to the south flips the sign of odd $a_\ell$. So odd $a_\ell$ agree and even ones (beyond $a_0$) flip: $a_2 = \pm\tfrac{15}{32}$.`,
         { figHtml: FIG.capA }),
 
@@ -1426,12 +1452,14 @@
 
         The smoothness of the data sets how fast the coefficients shrink:
 
-        | data | example | $a_\ell$ for large $\ell$ |
+        | data | example | $\lvert a_\ell\rvert$ for large $\ell$ |
         |---|---|---|
         | polynomial in $\cos\theta$ | $\sin^4\theta$ | exactly $0$ beyond the degree |
         | smooth | $e^{\cos\theta}$ | faster than any power of $\ell$ |
-        | kink | $\lvert\cos\theta\rvert$ | like $\ell^{-3/2}$ |
-        | jump | $\pm V_0$ hemispheres | like $\ell^{-1/2}$ |
+        | kink (jump in slope) | $\lvert\cos\theta\rvert$ | like $\ell^{-3/2}$ (about $1.6\,\ell^{-3/2}$) |
+        | jump | $\pm V_0$ hemispheres | like $\ell^{-1/2}$ (about $1.6\,\ell^{-1/2}$) |
+
+        Read the last two rows with care. They hold for a kink or jump strictly between the poles. When it is not on the equator (a cap edge), $\lvert a_\ell\rvert$ oscillates with $\ell$ under an envelope of the same power. The rates look slower than a sine series ($1/n$ for a jump, $1/n^2$ for a kink) only because $P_\ell$ is normalised by $P_\ell(1) = 1$, not to unit norm. Away from the poles $\lvert P_\ell(x)\rvert$ itself shrinks like $\ell^{-1/2}$, so the terms $a_\ell P_\ell(x)$ fall like $\ell^{-1}$ and $\ell^{-2}$, as for sines. At the poles $P_\ell = 1$, so nothing helps there: the step's pole partial sums $1.5, 0.63, 1.31, 0.73, \dots$ close in on $1$ only like $\ell^{-1/2}$.
 
         At a jump the series converges to the **midpoint**: $0$ on the equator for $\pm V_0$, $\tfrac12V_0$ at the edge of a cap held at $V_0$. Next to the jump the partial sums overshoot. This is the Gibbs phenomenon from Lecture 12, the same as for sines: for the $\pm1$ step the peak tends to about $1.18$ (about 9% of the jump of 2), and adding terms squeezes the ringing toward the jump without lowering the peak.
 
@@ -1444,19 +1472,19 @@
         [md`$V_0$`, md`$0$`, md`$-V_0$`, md`It diverges there`], 1,
         [md`$V_0$ is the value just north of the equator.`, null, md`$-V_0$ is the value just south.`, md`Every term is $a_\ell P_\ell(0)$ with odd $\ell$, which is zero. The sum is $0$.`],
         md`At a jump the series converges to the midpoint of the two sides. Here every odd $P_\ell(0) = 0$, so the sum is exactly $0$ term by term.`,
-        { figHtml: FIG.gibbs }),
+        { figHtml: FIG.hemPM }),
 
       Q(md`For which boundary data do the Legendre coefficients shrink fastest with $\ell$?`,
         [md`$V_0\sin^4\theta$`, md`$V_0\lvert\cos\theta\rvert$`, md`$\pm V_0$ hemispheres`, md`A cap $\theta \lt 60^\circ$ at $V_0$`], 0,
         [null, md`A kink: coefficients fall like $\ell^{-3/2}$, forever.`, md`A jump: coefficients fall only like $\ell^{-1/2}$.`, md`The cap edge is a jump too.`],
         md`$\sin^4\theta$ is a degree-4 polynomial in $\cos\theta$: every $a_\ell$ with $\ell \gt 4$ is exactly zero. Smoothness buys fast decay; a polynomial is the extreme case.`,
-        { figHtml: sphL('V_0\\sin^4\\theta') }),
+        { figHtml: sphL('V_0(\\theta)') }),
 
       Q(md`You add more and more terms to the $\pm1$ step series. What happens to the Gibbs overshoot next to the equator?`,
         [md`It disappears.`, md`It grows without bound.`, md`It moves away from the jump.`, md`It is squeezed toward the jump, but its height stays about 9% of the jump.`], 3,
         [md`The series converges at every point away from the jump, but the maximum of the partial sums does not come down.`, md`It stays bounded near $1.18$.`, md`It moves toward the jump: the peak sits at a distance that shrinks like $1/N$.`, null],
-        md`From the numbers: the peak of the partial sum is $1.20$ through $\ell = 5$, $1.18$ through $\ell = 21$, $1.179$ through $\ell = 41$, at $x \approx 0.47, 0.14, 0.07$. Same as Lecture 12's sine series.`,
-        { figHtml: FIG.gibbs }),
+        md`From the numbers: the first peak next to the jump is $1.20$ through $\ell = 5$, $1.18$ through $\ell = 21$, $1.179$ through $\ell = 41$, at $x \approx 0.47, 0.14, 0.07$. Same as Lecture 12's sine series. (The pole values also wander, $1.31$ through $\ell = 5$ and $1.17$ through $\ell = 21$, but that is the slow convergence at the poles, not Gibbs.)`,
+        { figHtml: FIG.step5 }),
 
       Q(md`You want $V$ at $r = R/2$ inside the $\pm V_0$ sphere to three digits. Why can you ignore the Gibbs ringing?`,
         [md`The ringing cancels by symmetry inside.`, md`The ringing only exists for the outside solution.`, md`Each term carries $(r/R)^\ell = 2^{-\ell}$, so the high-$\ell$ terms that make the ringing are crushed.`, md`Gibbs ringing only happens for sine series.`], 2,
@@ -1520,7 +1548,7 @@
         | dipole moment | $p = 4\pi\varepsilon_0R^2V_0\,a_1$ | $\ell = 1$ term is $\dfrac{p\cos\theta}{4\pi\varepsilon_0r^2}$ |
         | far field | the lowest $\ell$ with $a_\ell \ne 0$ | higher $\ell$ fall faster |
 
-        **Where $\sigma$ comes from.** $\sigma = \varepsilon_0\left(E_r^{\text{out}} - E_r^{\text{in}}\right) = -\varepsilon_0\left[\partial_rV_{\text{out}} - \partial_rV_{\text{in}}\right]_{r=R}$. At $r = R$, $\partial_r\left(\frac Rr\right)^{\ell+1} = -\frac{\ell+1}{R}$ and $\partial_r\left(\frac rR\right)^\ell = \frac{\ell}{R}$; the difference is $-\frac{2\ell+1}{R}$. (Unit 7 did this for HW 3.22.)
+        **Where $\sigma$ comes from.** $\sigma = \varepsilon_0\left(E_r^{\text{out}} - E_r^{\text{in}}\right) = -\varepsilon_0\left[\partial_rV_{\text{out}} - \partial_rV_{\text{in}}\right]_{r=R}$. At $r = R$, $\partial_r\left(\frac Rr\right)^{\ell+1} = -\frac{\ell+1}{R}$ and $\partial_r\left(\frac rR\right)^\ell = \frac{\ell}{R}$; the difference is $-\frac{2\ell+1}{R}$. (Unit 7 did this for HW 3.22.) For polynomial data the $\sigma$ sum is finite. For data with a jump it does not converge on the surface (the factor $2\ell + 1$ beats $\lvert a_\ell\rvert \sim \ell^{-1/2}$); then only its first terms, or a closed form, mean anything.
 
         ### Worked: a sphere held at $V_0\cos^3\theta$
 
@@ -1555,6 +1583,12 @@
         md`$B_\ell/r^{\ell+1}$ blows up at the origin, and there is no charge there. Inside: keep $r^\ell$. Outside: keep $r^{-(\ell+1)}$. Mixing these up is the most common error in the whole topic.`,
         { figHtml: FIG.cos3 }),
 
+      Q(md`Lecture 13's sphere is held at $V_0(\theta) = k\sin^2(\theta/2) = \tfrac k2\left(P_0 - P_1\right)$, and inside $V = \tfrac k2\left(1 - \tfrac rR\cos\theta\right)$. What is $V$ outside?`,
+        [md`$\dfrac k2\left(1 - \dfrac Rr\cos\theta\right)$`, md`$\dfrac k2\left(\dfrac Rr - \dfrac Rr\cos\theta\right)$`, md`$\dfrac k2\left(\dfrac Rr - \dfrac{R^2}{r^2}\cos\theta\right)$`, md`$\dfrac k2\left(1 - \dfrac rR\cos\theta\right)$, the same as inside`], 2,
+        [md`The constant must fall off too: $\ell = 0$ goes with $R/r$ outside, or $V$ would not vanish at infinity.`, md`$\ell = 1$ goes with $(R/r)^{\ell+1} = R^2/r^2$, not $R/r$.`, null, md`$r/R$ grows without bound. $V \to 0$ as $r \to \infty$ forbids every $A_\ell$ outside.`],
+        md`BCs outside: 1. $V \to 0$ as $r \to \infty$ (the lecture's in-class answer), so every $A_\ell = 0$. 2. $V(R,\theta) = \tfrac k2(P_0 - P_1)$, so $B_0 = \tfrac{kR}{2}$ and $B_1 = -\tfrac{kR^2}{2}$. Each $P_\ell$ keeps its coefficient and trades $(r/R)^\ell$ for $(R/r)^{\ell+1}$. At $r = R$ both forms give $\tfrac k2(1 - \cos\theta)$. Far away $V \approx \dfrac{kR}{2r}$: a net charge $Q = 2\pi\varepsilon_0kR$.`,
+        { figHtml: sphL('k\\sin^2(\\theta/2)') }),
+
       Q(md`A sphere's data have $a_0 = 0$, $a_1 = 0.4$, $a_2 = 0.3$ (in units of $V_0$). What is $\vb E$ at the center?`,
         [md`$-\dfrac{0.4V_0}{R}\,\uv z$`, md`$-\dfrac{0.7V_0}{R}\,\uv z$`, md`$0$, because $a_0 = 0$`, md`$-\dfrac{0.3V_0}{R}\,\uv z$`], 0,
         [null, md`The $\ell = 2$ term goes like $r^2$; its gradient vanishes at the center.`, md`$a_0$ is the potential at the center. The field there comes from the slope, the $\ell = 1$ term.`, md`$\ell = 2$ contributes nothing at $r = 0$.`],
@@ -1587,7 +1621,7 @@
 
       Q(md`For the sphere at $V_0\cos^3\theta$, at $r = 3R$ on the axis, how big is the $\ell = 3$ term compared with the $\ell = 1$ term?`,
         [md`$\tfrac{2}{27}$`, md`$\tfrac23$`, md`$\tfrac29$`, md`$\tfrac19$`], 0,
-        [null, md`That is the ratio of the coefficients alone, $\tfrac{2/5}{3/5}$. The radial factors differ.`, md`That uses the inside factors $(r/R)^\ell$ by mistake.`, md`That is only the radial ratio $(R/r)^4/(R/r)^2$; multiply by the coefficient ratio $\tfrac23$.`],
+        [null, md`That is the ratio of the coefficients alone, $\tfrac{2/5}{3/5}$. The radial factors differ.`, md`That is $\tfrac23\cdot\tfrac13$: one factor of $\tfrac13$ where the radial ratio $(R/r)^4/(R/r)^2$ gives two.`, md`That is only the radial ratio $(R/r)^4/(R/r)^2$; multiply by the coefficient ratio $\tfrac23$.`],
         md`$\dfrac{\tfrac25(1/3)^4}{\tfrac35(1/3)^2} = \tfrac23\cdot\tfrac19 = \tfrac{2}{27} \approx 0.07$. Outside, higher $\ell$ fade fast: from a few radii away the sphere looks like a pure dipole.`,
         { figHtml: sph({ lab: 'V_0\\cos^3\\theta', Pout: { f: 1.9, th: 0, lab: 'r=3R' } }) }),
 
@@ -1595,7 +1629,7 @@
         [md`Yes. Positive potential means positive charge.`, md`Yes, because $\sigma$ is proportional to $V_0(\theta)$.`, md`No, but only exactly at the equator.`, md`No. $\sigma \propto 35\cos^3\theta - 12\cos\theta$ is negative for $54^\circ \lt \theta \lt 90^\circ$.`], 3,
         [md`$\sigma$ is set by the jump in $\partial V/\partial r$, not by $V$ itself.`, md`$\sigma \propto \sum(2\ell+1)a_\ell P_\ell$, which weights each $\ell$ differently from $V_0 = \sum a_\ell P_\ell$. Only a single-$\ell$ boundary makes them proportional.`, md`At the equator $\sigma = 0$; the negative band is the whole range $54^\circ$ to $90^\circ$.`, null],
         md`The weights $(2\ell+1)$ boost the $\ell = 3$ term (factor 7) relative to $\ell = 1$ (factor 3), and $P_3$ is negative between its zero at $39^\circ$ and the equator. The sign of $\sigma$ flips at $\cos^2\theta = \tfrac{12}{35}$, $\theta = 54.2^\circ$.`,
-        { figHtml: FIG.cos3sig }),
+        { figHtml: FIG.cos3 }),
 
       Q(md`Why does $V$ at the center depend only on $a_0$?`,
         [md`Because every other term carries $r^\ell$ with $\ell \ge 1$, which is zero at $r = 0$.`, md`Because $P_\ell(\cos\theta) = 0$ at the center.`, md`Because the center is on the equator.`, md`Because higher $a_\ell$ are always small.`], 0,
@@ -1697,7 +1731,7 @@
 
           [[fig:ax]]
 
-          **(d)** $\sigma \approx \frac{\varepsilon_0V_0}{R}\left[\tfrac92P_1 - \tfrac{49}{8}P_3\right]$. Be careful with it: $\sigma$ weights $a_\ell$ by $2\ell + 1$, and $a_\ell$ falls only like $\ell^{-1/2}$, so the $\sigma$ series converges badly. The two-term form even has the wrong sign at the pole: $\tfrac92 - \tfrac{49}{8} = -\tfrac{13}{8}$, while the exact value (from the closed-form axis potential) is $\left(2\sqrt2 - 1\right)\frac{\varepsilon_0V_0}{R} \approx 1.83\,\frac{\varepsilon_0V_0}{R}$. Near the equator the true $\sigma$ diverges, because the potential jumps across the thin gap. Use the two-term $\sigma$ only as the form the question asks for, not as numbers.
+          **(d)** $\sigma \approx \frac{\varepsilon_0V_0}{R}\left[\tfrac92P_1 - \tfrac{49}{8}P_3\right]$. Be careful with it: $\sigma$ weights $a_\ell$ by $2\ell + 1$, and $\lvert a_\ell\rvert$ falls only like $\ell^{-1/2}$, so the $\sigma$ series does not converge at all on the surface (at the pole its terms grow like $\ell^{1/2}$). $\sigma$ itself is finite away from the equator; you get it from the fields just inside and outside ($r \to R^\pm$), where the factors $(r/R)^\ell$ and $(R/r)^{\ell+1}$ make every series converge. The two-term form even has the wrong sign at the pole: $\tfrac92 - \tfrac{49}{8} = -\tfrac{13}{8}$, while the exact value (from the closed-form axis potential) is $\left(2\sqrt2 - 1\right)\frac{\varepsilon_0V_0}{R} \approx 1.83\,\frac{\varepsilon_0V_0}{R}$. Near the equator the true $\sigma$ diverges, because the potential jumps across the thin gap. Use the two-term $\sigma$ only as the form the question asks for, not as numbers.
 
           **What to remember:** potentials and fields off the surface converge fast; quantities on the surface ($\sigma$) need many terms when the data jump.
         `,
@@ -2001,7 +2035,7 @@
 
           **(c)** With $r/d = \tfrac12$: $1 + 0 + \tfrac14\left(-\tfrac12\right) = \tfrac78 = 0.875$. Adding $\ell = 4$: $+\tfrac{1}{16}\cdot\tfrac38$ gives $\tfrac{115}{128} = 0.898$. Exact: $\frac{1}{\sqrt{1 + 1/4}} = \frac{2}{\sqrt5} = 0.894$. The partial sums straddle it and close in.
 
-          **What to remember:** $r_<$ on top, $r_>$ at the bottom, so every term is small. The inside form ($r^\ell$) and outside form ($r^{-(\ell+1)}$) are exactly the two halves of the general solution, which is why this expansion plugs straight into sphere problems (Unit 7 used it for a charge near a grounded sphere).
+          **What to remember:** $r_<$ on top, $r_>$ at the bottom, so every term is small. The inside form ($r^\ell$) and outside form ($r^{-(\ell+1)}$) are exactly the two halves of the general solution, which is why this expansion plugs straight into sphere problems with a charge on the axis.
         `,
       }),
 
@@ -2028,9 +2062,15 @@
 
           **(b)** $a_0 = \tfrac12\left[\tfrac12 + \tfrac12\right] = \tfrac12$: each cap covers $\frac{1 - \cos60^\circ}{2} = \tfrac14$ of the sphere. $\;a_2 = \tfrac52\cdot2\int_{1/2}^1P_2\,dx = 5\cdot\tfrac{3}{16} = \tfrac{15}{16}$. (Check with the cap formula: one cap has $a_2 = \tfrac54\sin^260^\circ\cos60^\circ = \tfrac{15}{32}$, and the mirror cap adds the same for even $\ell$.)
 
-          **(c) BCs inside:** finite at $r = 0$ (no $B_\ell$) and the data at $r = R$. So $V(0) = a_0V_0 = \tfrac12V_0$, and $\vb E(0) = -\frac{a_1V_0}{R}\uv z = 0$ since $a_1 = 0$.
+          **BCs.**
+          1. $V$ finite at $r = 0$: no $B_\ell$ inside.
+          2. $V \to 0$ as $r \to \infty$: no $A_\ell$ outside.
+          3. $V(R^-,\theta)$ = the cap data: $A_\ell R^\ell = a_\ell V_0$.
+          4. $V(R^+,\theta)$ = the cap data: $B_\ell/R^{\ell+1} = a_\ell V_0$.
 
-          **(d)** $Q = 4\pi\varepsilon_0RV_0a_0 = 2\pi\varepsilon_0RV_0$.
+          **(c)** BCs 1 and 3: $V(0) = a_0V_0 = \tfrac12V_0$, and $\vb E(0) = -\frac{a_1V_0}{R}\uv z = 0$ since $a_1 = 0$.
+
+          **(d)** BCs 2 and 4: far away $V \approx a_0V_0R/r$, which is $\dfrac{Q}{4\pi\varepsilon_0r}$, so $Q = 4\pi\varepsilon_0RV_0a_0 = 2\pi\varepsilon_0RV_0$.
 
           **What to remember:** decide the parity from the picture before computing. Half the coefficients vanish, and the center field is zero for any north–south symmetric data.
         `,
@@ -2055,11 +2095,17 @@
         sol: md`
           **(a)** $a_0 = \tfrac12\int_{-1}^1\frac{(1 + x)^3}{8}\,dx = \tfrac{1}{16}\left[\frac{(1 + x)^4}{4}\right]_{-1}^1 = \tfrac{1}{16}\cdot4 = \tfrac14$. The full expansion is $\tfrac14P_0 + \tfrac{9}{20}P_1 + \tfrac14P_2 + \tfrac{1}{20}P_3$, but nothing below needs the rest.
 
-          **(b)** BCs inside (finite at $r = 0$, data at $r = R$) give $V_{\text{in}} = V_0\sum a_\ell(r/R)^\ell P_\ell$, so $V(0) = a_0V_0 = \tfrac14V_0$.
+          **BCs.**
+          1. $V$ finite at $r = 0$: no $B_\ell$ inside.
+          2. $V \to 0$ as $r \to \infty$: no $A_\ell$ outside.
+          3. $V(R^-,\theta) = V_0\cos^6(\theta/2)$: $A_\ell R^\ell = a_\ell V_0$.
+          4. $V(R^+,\theta) = V_0\cos^6(\theta/2)$: $B_\ell/R^{\ell+1} = a_\ell V_0$.
+
+          **(b)** BCs 1 and 3 give $V_{\text{in}} = V_0\sum a_\ell(r/R)^\ell P_\ell$, so $V(0) = a_0V_0 = \tfrac14V_0$.
 
           **(c)** Over the sphere of radius $r$: $\tfrac12\int_0^\pi V_{\text{in}}\sin\theta\,d\theta = V_0\sum a_\ell(r/R)^\ell\cdot\tfrac12\int_{-1}^1P_\ell\,dx = a_0V_0$, because $\int P_\ell\,dx = 0$ for $\ell \ge 1$. So $\tfrac14V_0$ for every $r \lt R$.
 
-          **(d)** Outside (BCs: $V \to 0$ at infinity, data at $R$): $V_{\text{out}} = V_0\sum a_\ell(R/r)^{\ell+1}P_\ell$, and the average is $a_0V_0R/r = \tfrac14\cdot\tfrac13V_0 = \tfrac{1}{12}V_0$.
+          **(d)** Outside, BCs 2 and 4 give $V_{\text{out}} = V_0\sum a_\ell(R/r)^{\ell+1}P_\ell$, and the average is $a_0V_0R/r = \tfrac14\cdot\tfrac13V_0 = \tfrac{1}{12}V_0$.
 
           **(e)** $Q = 4\pi\varepsilon_0RV_0a_0 = \pi\varepsilon_0RV_0$. Consistent with (d): the average of $V$ over a sphere outside is $\frac{Q}{4\pi\varepsilon_0r}$ (Gauss's law in averaged form).
 
@@ -2082,6 +2128,12 @@
           { lbl: md`(d) $V(z = -2R)/V_0$`, ans: 0.625 },
         ],
         sol: md`
+          **BCs.**
+          1. $V \to 0$ as $r \to \infty$: no $A_\ell$ outside.
+          2. $V(R^+,\theta) = V_0(\theta)$, unknown here; the axis data take its place.
+          3. $V$ finite at $r = 0$: no $B_\ell$ inside.
+          4. $V(R^-,\theta) = V_0(\theta)$: the inside matches the same data.
+
           **(a)** Axis trick, outside version. $\frac{V_0R}{z} \to \frac{V_0R}{r}P_0$ and $\frac{V_0R^3}{z^3} \to \frac{V_0R^3}{r^3}P_2(\cos\theta)$:
 
           $$V_{\text{out}} = V_0\left[\frac Rr + \frac{R^3}{r^3}P_2(\cos\theta)\right]$$
@@ -2090,7 +2142,7 @@
 
           **(b)** At $r = R$: $V_0(\theta) = V_0\left[1 + P_2(\cos\theta)\right] = \tfrac12V_0\left(1 + 3\cos^2\theta\right)$. So $a_0 = 1$, $a_2 = 1$.
 
-          **(c)** BCs inside give $V_{\text{in}} = V_0\left[1 + \frac{r^2}{R^2}P_2(\cos\theta)\right]$; at the center, $V_0$.
+          **(c)** BCs 3 and 4 give $V_{\text{in}} = V_0\left[1 + \frac{r^2}{R^2}P_2(\cos\theta)\right]$; at the center, $V_0$.
 
           **(d)** On the negative axis $P_\ell(-1) = (-1)^\ell$; both terms are even: $V_0\left[\tfrac12 + \tfrac18\right] = \tfrac58V_0$. Same as at $z = +2R$, as north–south symmetry requires.
 
@@ -2128,7 +2180,13 @@
 
           **(b)** Split $f = \tfrac12x^2 + \tfrac12x\lvert x\rvert$. The even part is the polynomial $\tfrac12x^2 = \tfrac16P_0 + \tfrac13P_2$: that gives exactly $a_0$ and $a_2$, and every even $\ell \ge 4$ is zero. The odd part $\tfrac12x\lvert x\rvert$ is not a polynomial and gives all the odd terms ($a_5 = -\tfrac{11}{384}$, ...).
 
-          **(c) BCs:** finite at $r = 0$ inside; $V \to 0$ outside; data at $r = R$. Then $V(0) = \tfrac16V_0$, $\;E_z(0) = -\tfrac38\frac{V_0}{R}$ (pointing south, away from the hot north), $\;Q = 4\pi\varepsilon_0RV_0\cdot\tfrac16 = \tfrac23\pi\varepsilon_0RV_0$.
+          **(c) BCs.**
+          1. $V$ finite at $r = 0$: no $B_\ell$ inside.
+          2. $V \to 0$ as $r \to \infty$: no $A_\ell$ outside.
+          3. $V(R^-,\theta)$ = the hemisphere data: $A_\ell R^\ell = a_\ell V_0$.
+          4. $V(R^+,\theta)$ = the hemisphere data: $B_\ell/R^{\ell+1} = a_\ell V_0$.
+
+          Then $V(0) = \tfrac16V_0$, $\;E_z(0) = -\tfrac38\frac{V_0}{R}$ (pointing south, away from the hot north), $\;Q = 4\pi\varepsilon_0RV_0\cdot\tfrac16 = \tfrac23\pi\varepsilon_0RV_0$.
 
           **What to remember:** a hemisphere problem with a polynomial on one side is half polynomial (even part) and half series (odd part). The split tells you which coefficients stop.
         `,
