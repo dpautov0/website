@@ -600,7 +600,7 @@
           RF(md`
             ### Which variable oscillates?
 
-            The sign of the separation constant is a choice, and the boundary conditions make it for you (the lecture: "the sign is chosen with the boundary conditions in mind").
+            The sign of the separation constant is a choice, and the boundary conditions make it for you. The lecture simply writes $+k^2$ for $X$ and $-k^2$ for $Y$; here is why that is the right assignment (Griffiths explains it right after Eq. 3.29).
 
             - $Y$ must vanish at **both** $y = 0$ and $y = a$. A sine can do that. An exponential combination $Ce^{ky} + De^{-ky}$ crosses zero at most once, so it cannot. So $Y$ gets the **negative** constant: $Y'' = -k^2Y$, sines and cosines.
             - $X$ must die as $x \to \infty$. A sine never dies; $e^{-kx}$ does. So $X$ gets the **positive** constant: $X'' = +k^2X$, exponentials.
@@ -635,8 +635,8 @@
             { nofig: 'a property of a function', figs: { z: { svg: plt({ w: 300, h: 170, x: [0, 1], y: [-1.3, 1.6], zero: true, xl: 'y/a', xt: [[1, '1']], yt: [[1, '1']], curves: [{ f: (y) => Math.sinh(PI * y) / Math.sinh(PI), lab: '\\sinh', labAt: 0.86, dy: 10 }, { f: (y) => Math.cosh(PI * y) / Math.cosh(PI), cls: 'dim', lab: '\\cosh', labAt: 0.62, dy: -10 }, { f: (y) => Math.exp(-PI * y) - 0.3 * Math.exp(PI * y) / 7, cls: 'dash', lab: 'e^{-ky}-c\\,e^{ky}', labAt: 0.62, dy: 14 }] }), cap: 'Combinations of $e^{\\pm ky}$ cross zero at most once.' } } }),
 
           Q(md`More wiggles across means faster decay along. The term with $\sin(3\pi y/a)$ in the slot comes with which $x$-dependence?`,
-            [md`$e^{-\pi x/a}$`, md`$e^{-\pi x/3a}$`, md`$e^{-3\pi x/a}$`, md`$\sin(3\pi x/a)$`], 2,
-            [md`The decay rate is the same $k$ that appears in the sine. Here $k = 3\pi/a$, not $\pi/a$.`, md`Inverted: a larger $k$ means *faster* decay, so the length scale is $a/3\pi$, not $3a/\pi$.`, null, md`Along the slot the function must decay, not oscillate.`],
+            [md`$e^{-\pi x/a}$`, md`$e^{-\pi x/(3a)}$`, md`$e^{-3\pi x/a}$`, md`$\sin(3\pi x/a)$`], 2,
+            [md`The decay rate is the same $k$ that appears in the sine. Here $k = 3\pi/a$, not $\pi/a$.`, md`Inverted: a larger $k$ means *faster* decay, so the length scale is $\tfrac{a}{3\pi}$, not $\tfrac{3a}{\pi}$.`, null, md`Along the slot the function must decay, not oscillate.`],
             md`The same $k$ appears in both factors: $X'' = k^2X$, $Y'' = -k^2Y$. With $Y = \sin(3\pi y/a)$, $k = 3\pi/a$, so $X = e^{-3\pi x/a}$. High harmonics die fast: by $x = a$ the $n = 3$ term is down by $e^{-3\pi} \approx 8\times10^{-5}$.`,
             { figHtml: SLOT }),
 
@@ -939,7 +939,7 @@
             parts: [
               { lbl: 'V(x,y)', expr: 'V0*exp(-3*pi*x/a)*sin(3*pi*y/a)', vars: { V0: [1, 3], x: [0, 2], y: [0.1, 0.9], a: [1, 2] }, accepts: ['V0*sin(3*pi*y/a)*exp(-3*pi*x/a)', 'V0*sin(3*pi*y/a)/exp(3*pi*x/a)'] },
               { lbl: md`$V(a/6,\,a/6)/V_0$ (a number)`, ans: Math.exp(-PI / 2), unit: '' },
-              { lbl: md`Apart from the plates, where inside the slot is $V = 0$?`, mc: [md`Nowhere.`, md`On the lines $y = a/3$ and $y = 2a/3$, at every $x$.`, md`On the line $y = a/2$.`, md`On the line $x = a/3$.`], a: 1, why: [md`$\sin(3\pi y/a)$ has zeros inside $(0, a)$.`, null, md`$\sin(3\pi/2) = -1$: the midline is where $|V|$ is largest.`, md`The $x$-dependence is a decaying exponential, which never vanishes.`] },
+              { lbl: md`Apart from the plates, where inside the slot is $V = 0$?`, mc: [md`Nowhere.`, md`On the lines $y = a/3$ and $y = 2a/3$, at every $x$.`, md`On the line $y = a/2$.`, md`On the line $x = a/3$.`], a: 1, why: [md`$\sin(3\pi y/a)$ has zeros inside $(0, a)$.`, null, md`$\sin(3\pi/2) = -1$: the midline is one of the three lines ($y = a/6$, $a/2$, $5a/6$) where $|V|$ is largest at each $x$.`, md`The $x$-dependence is a decaying exponential, which never vanishes.`] },
             ],
             sol: md`
               **Boundary conditions** (region $x > 0$, $0 < y < a$):
@@ -961,7 +961,7 @@
 
               [[fig:m]]
 
-              Zero lines: $\sin(3\pi y/a) = 0$ at $y = a/3$ and $y = 2a/3$. The potential is positive in the bottom and top thirds, negative in the middle third, at every $x$; the pattern only fades with distance, on the length scale $a/3\pi$.
+              Zero lines: $\sin(3\pi y/a) = 0$ at $y = a/3$ and $y = 2a/3$. The potential is positive in the bottom and top thirds, negative in the middle third, at every $x$; the pattern only fades with distance, on the length scale $\tfrac{a}{3\pi}$.
 
               **Checks.** Each BC holds by inspection. $\nabla^2V = \left(\tfrac{3\pi}{a}\right)^2V - \left(\tfrac{3\pi}{a}\right)^2V = 0$.
 
@@ -982,9 +982,9 @@
               md`The coefficients come from Fourier's trick over the new width $2a$. Then evaluate the series at $x = a$, $y = a$; the first term or two are plenty.`,
             ],
             parts: [
-              { lbl: md`(a) Allowed $k$:`, mc: [md`$k = n\pi/a$`, md`$k = n\pi/(2a)$`, md`$k = 2n\pi/a$`, md`$k = n\pi/a$, odd $n$ only`], a: 1, why: [md`That fits $n$ half-waves into width $a$, not $2a$.`, null, md`Backwards: a wider slot allows *smaller* $k$.`, md`Which $n$ survive is decided by the coefficients, later. BC #2 alone gives $\sin(2ka) = 0$.`] },
+              { lbl: md`(a) Allowed $k$:`, mc: [md`$k = \dfrac{n\pi}{a}$`, md`$k = \dfrac{n\pi}{2a}$`, md`$k = \dfrac{2n\pi}{a}$`, md`$k = \dfrac{n\pi}{a}$, odd $n$ only`], a: 1, why: [md`That fits $n$ half-waves into width $a$, not $2a$.`, null, md`Backwards: a wider slot allows *smaller* $k$.`, md`Which $n$ survive is decided by the coefficients, later. BC #2 alone gives $\sin(2ka) = 0$.`] },
               { lbl: md`(b) $V(\text{P})/V_0$ (a number)`, ans: 0.26096, unit: '' },
-              { lbl: md`(c) Compared with the width-$a$ slot, the potential along the midline is:`, mc: [md`The same function of $x$.`, md`The same function of $x$ divided by the width: a wider slot lets the potential reach proportionally farther.`, md`Twice as large at every $x$.`, md`Half as large at every $x$.`], a: 1, why: [md`The decay rate is $\pi/\text{width}$, which halves when the width doubles.`, null, md`The boundary values ($0$ and $V_0$) are the same, so the size can't double.`, md`At the strip it is still $V_0$; only the length scale changes.`] },
+              { lbl: md`(c) Compared with the width-$a$ slot, the potential along the midline is:`, mc: [md`The same function of $x$.`, md`The same function of $x/w$, where $w$ is the plate separation: a wider slot lets the potential reach proportionally farther.`, md`Twice as large at every $x$.`, md`Half as large at every $x$.`], a: 1, why: [md`The decay rate is $\pi/w$, which halves when the width $w$ doubles.`, null, md`The boundary values ($0$ and $V_0$) are the same, so the size can't double.`, md`At the strip it is still $V_0$; only the length scale changes.`] },
             ],
             sol: md`
               **Boundary conditions** (region $x > 0$, $0 < y < 2a$):
@@ -994,7 +994,7 @@
               3. $V(0, y) = V_0$ (live) $\Rightarrow C_n$
               4. $V \to 0$ as $x \to \infty$ (homogeneous) $\Rightarrow A = 0$
 
-              $$V = \sum_n C_n\,e^{-n\pi x/2a}\sin\!\left(\frac{n\pi y}{2a}\right), \qquad C_n = \frac{2}{2a}\int_0^{2a}V_0\sin\!\left(\frac{n\pi y}{2a}\right)dy = \frac{2V_0}{n\pi}(1 - \cos n\pi).$$
+              $$V = \sum_n C_n\,e^{-n\pi x/(2a)}\sin\!\left(\frac{n\pi y}{2a}\right), \qquad C_n = \frac{2}{2a}\int_0^{2a}V_0\sin\!\left(\frac{n\pi y}{2a}\right)dy = \frac{2V_0}{n\pi}(1 - \cos n\pi).$$
 
               So $C_n = \tfrac{4V_0}{n\pi}$ for odd $n$, as before: the coefficients don't depend on the width.
 
@@ -1065,12 +1065,12 @@
             [[fig:gibbs]]
 
             !!key Gibbs in numbers
-              For the constant strip the partial sums peak at about $1.18\,V_0$ near each corner however many terms you keep: an overshoot of $0.18\,V_0$, about 9% of the full jump $2V_0$ of the odd extension. More terms squeeze the ringing toward the corner; they don't shrink it. At any fixed interior point the series still converges to $V_0$.
-          `, { gibbs: { svg: GIBBS, cap: 'Partial sums of $V(0, y)$ for the constant strip: $n = 1$ only, $n \\le 5$, $n \\le 21$ (odd $n$). The dashed line is $V_0$.' } }),
+              For the constant strip, once you keep more than a couple of terms, the partial sums peak at about $1.18\,V_0$ just inside each corner, and adding terms never brings that peak down ($1.200V_0$ with two terms, $1.188V_0$ with three, $1.179V_0$ in the limit). The overshoot, $0.18\,V_0$, is about 9% of the jump $2V_0$ of the odd extension (18% of the physical step from $0$ to $V_0$). More terms make the ringing narrower and push it toward the corner; its height stays. At any fixed interior point the series still converges to $V_0$.
+          `, { gibbs: { svg: GIBBS, cap: 'Partial sums of $V(0, y)$ for the constant strip: $n = 1$ only (grey), $n \\le 5$ (dashed), $n \\le 21$ (solid black), odd $n$. The horizontal line marks $V_0$.' } }),
 
           Q(md`On the strip, at its midpoint $(0, a/2)$, the full series for the constant strip converges to:`,
             [md`$\dfrac{4V_0}{\pi}$`, md`$V_0/2$`, md`$0$`, md`$V_0$`], 3,
-            [md`That's the first term alone. The other terms alternate in sign there and bring the sum down.`, md`$V_0/2$ is what a sine series gives at a *jump*. The midpoint of the strip is not a jump.`, md`$0$ is the value at the corners, where every sine vanishes.`, null],
+            [md`That's the first term alone. The other terms alternate in sign there and bring the sum down.`, md`A sine series gives the middle of a jump only where the data jumps (e.g. $V_0/2$ at $y = a/2$ for a strip live on its lower half only). The constant strip is continuous at its midpoint.`, md`$0$ is the value at the corners, where every sine vanishes.`, null],
             md`At $y = a/2$: $\tfrac{4V_0}{\pi}\left(1 - \tfrac13 + \tfrac15 - \tfrac17 + \dots\right) = \tfrac{4V_0}{\pi}\cdot\tfrac{\pi}{4} = V_0$ (Leibniz series). The series reproduces BC #3 at every point where $V_0(y)$ is continuous.`,
             { figHtml: SLOT }),
 
@@ -1081,7 +1081,7 @@
             { figHtml: SLOT }),
 
           Q(md`You keep more and more terms of the constant-strip series and plot $V(0, y)$. Near the corner $y \to 0$ the overshoot:`,
-            [md`Disappears once you keep about 20 terms.`, md`Grows without bound.`, md`Stays at about 9% of the jump (peak $\approx 1.18V_0$), but moves closer to the corner and gets narrower.`, md`Moves to the middle of the strip.`], 2,
+            [md`Disappears once you keep about 20 terms.`, md`Grows without bound.`, md`Keeps its height (peak $\approx 1.18V_0$), but moves closer to the corner and gets narrower.`, md`Moves to the middle of the strip.`], 2,
             [md`It never disappears for finite $N$; it only gets narrower.`, md`It saturates near $1.179V_0$.`, null, md`The middle converges nicely; the trouble is at the jumps.`],
             md`Numerically the peak of the partial sum is $1.200V_0$ with 2 terms, $1.188V_0$ with 3, $1.181V_0$ with 6, $1.1797V_0$ with 11 and $1.1790V_0$ with 51, always just inside the corner, at about $y = a/(n_{\max} + 1)$. This is a property of truncated Fourier series at a jump, not of the real potential.`,
             { figHtml: SLOT }),
@@ -1089,7 +1089,7 @@
           Q(md`At which point do you need the **most** terms of the series to get $V$ to 1%?`,
             [md`$(0.02a,\; 0.02a)$, right next to the corner.`, md`$(a,\; a/2)$`, md`$(2a,\; a/4)$`, md`All points need the same number.`], 0,
             [null, md`At $x = a$ the $n = 3$ term is down by $e^{-2\pi}/3 \approx 6\times10^{-4}$ relative to $n = 1$. One term is enough.`, md`Even farther out; one term is plenty.`, md`The factor $e^{-n\pi x/a}$ makes convergence much faster away from the strip.`],
-            md`Close to the live face the higher harmonics haven't decayed ($e^{-n\pi x/a} \approx 1$ when $x \ll a/n\pi$), and close to the corner $V$ changes fast. Far down the slot one term does it.`,
+            md`Close to the live face the higher harmonics haven't decayed ($e^{-n\pi x/a} \approx 1$ when $x \ll \tfrac{a}{n\pi}$), and close to the corner $V$ changes fast. Far down the slot one term does it.`,
             { figHtml: SLOT_BC }),
 
           RF(md`
@@ -1126,7 +1126,7 @@
             [md`$a$`, md`$\pi a$`, md`$a/2$`, md`$a/\pi$`], 3,
             [md`Over $a$ it falls by $e^{\pi} \approx 23$.`, md`Inverted: the exponent is $\pi x/a$.`, md`That's not where the exponent equals 1.`, null],
             md`$e^{-\pi x/a} = e^{-1}$ at $x = a/\pi \approx 0.32a$. The decay length is the slot width over $\pi$, set by the longest half-wave that fits across.`,
-            { figHtml: FAR }),
+            { figHtml: SLOT }),
 
           Q(md`At $(a/2, a/2)$ in the constant-strip slot, how big is the $n = 3$ term compared with the $n = 1$ term?`,
             [md`About $\tfrac13$.`, md`About $\tfrac{1}{27}$.`, md`About $1.4\%$, and of opposite sign.`, md`About $e^{-3\pi/2} \approx 0.9\%$, same sign.`], 2,
@@ -1169,7 +1169,7 @@
               { lbl: md`(c) $E_x$ in V/m`, ans: 157.08, unit: 'V/m' },
             ],
             sol: md`
-              **Boundary conditions** (region $x > 0$, $0 < y < a$, $a = 2\ \text{cm}$): #1 $V = 0$ at $y = 0$; #2 $V = 0$ at $y = a$; #3 $V = 100\ \text{V}$ at $x = 0$ (live); #4 $V \to 0$ as $x \to \infty$. This is the lecture's slot, so
+              **Boundary conditions** (region $x > 0$, $0 < y < a$, $a = 2\ \text{cm}$): #1 $V = 0$ at $y = 0$ (kills $\cos ky$); #2 $V = 0$ at $y = a$ (gives $k = n\pi/a$); #3 $V = 100\ \text{V}$ at $x = 0$ (live: $C_n = \tfrac{4V_0}{n\pi}$, odd $n$); #4 $V \to 0$ as $x \to \infty$ (kills $e^{+kx}$). This is the lecture's slot, so
 
               $$V = \frac{4V_0}{\pi}\sum_{\text{odd } n}\frac1n e^{-n\pi x/a}\sin\frac{n\pi y}{a} \approx \frac{4V_0}{\pi}e^{-\pi x/a}\sin\frac{\pi y}{a}.$$
 
@@ -1200,6 +1200,8 @@
               { lbl: md`(c) One term is worse at Q because:`, mc: [md`Q is closer to the strip, so the higher harmonics have decayed less: the $n = 3$ term is $\tfrac13e^{-\pi/2} \approx 7\%$ of $n = 1$ there.`, md`Q is off the midline, where the series doesn't converge.`, md`The coefficients are different at Q.`, md`It isn't worse; both are equally good.`], a: 0, why: [null, md`The series converges at every interior point.`, md`The $C_n$ are numbers; they don't depend on the point.`, md`At $(a/2, a/2)$ the error is 1.4%; at Q it's about 6%.`] },
             ],
             sol: md`
+              **Boundary conditions:** the lecture's slot, #1 $V(x, 0) = 0$, #2 $V(x, a) = 0$, #4 $V \to 0$ as $x \to \infty$ (homogeneous), #3 $V(0, y) = V_0$ (live). So $V = \tfrac{4V_0}{\pi}\sum_{\text{odd}}\tfrac1n e^{-n\pi x/a}\sin\tfrac{n\pi y}{a}$, and the only question is how many terms to keep.
+
               **Terms at Q** ($x = y = a/4$), with $\tfrac{4}{\pi} = 1.2732$:
 
               | $n$ | $\tfrac1n e^{-n\pi/4}$ | $\sin(n\pi/4)$ | term$/V_0$ |
@@ -1220,7 +1222,7 @@
             !!key Patterns to remember
               - Linearity + completeness let a sum of products match any boundary data; uniqueness certifies the result.
               - A partial sum solves Laplace exactly and meets the zero BCs exactly; only the live face is approximate.
-              - At jumps in $V_0(y)$ the series converges to the middle of the jump and partial sums overshoot by about 9% of the jump (Gibbs). Interior points converge fine.
+              - At jumps in $V_0(y)$ the series converges to the middle of the jump and partial sums overshoot by about 9% of the jump (Gibbs). At a corner with a grounded plate the jump that counts is the odd extension's, $2V_0$, so the peak is $\approx 1.18V_0$. Interior points converge fine.
               - Far field: the lowest mode, $\tfrac{4V_0}{\pi}e^{-\pi x/a}\sin\tfrac{\pi y}{a}$. Decay length $a/\pi$; factor $e^{-\pi} \approx 1/23$ per width.
               - Near the live face, keep several terms.
           `),
@@ -1281,7 +1283,7 @@
             Why: the integral over $[0, a]$ of a symmetric function times an antisymmetric one is zero; the two halves cancel.
 
             A corollary: on the midline every even-$n$ term vanishes ($\sin(n\pi/2) = 0$ for even $n$), so the potential on the midline depends only on the **symmetric part** of $V_0(y)$.
-          `, { symm: { svg: SYMM, cap: 'Odd $n$: symmetric about $y = a/2$ (dashed line). Even $n$: antisymmetric.' } }),
+          `, { symm: { svg: SYMM, cap: 'Odd $n$ ($n = 1$ solid black, $n = 3$ dashed): symmetric about the midline $y = a/2$ (vertical dashed line). Even $n$ ($n = 2$, grey): antisymmetric.' } }),
 
           Q(md`Which boundary potential $V_0(y)$ has **only odd** $n$ in its sine series?`,
             [md`$V_0\,y/a$`, md`$+V_0$ for $y < a/2$, $-V_0$ for $y > a/2$`, md`$V_0$ for $a/4 < y < 3a/4$, zero elsewhere`, md`$V_0\sin(2\pi y/a)$`], 2,
@@ -1320,7 +1322,7 @@
             Read the catalog with the symmetry rule: (1), (5) and (6) are symmetric, so odd $n$ only; (2) is antisymmetric, so even $n$ only; (3) and (4) are neither, so both. Row (3) is half of row (1) plus half of row (2). Boundary data add, so coefficients add.
 
             !!intuition How fast the coefficients fall
-              A jump in $V_0(y)$, including a jump to the grounded plate at $y = 0$ or $y = a$, gives $C_n \sim 1/n$. A continuous $V_0(y)$ that is zero at both ends but has a kink (a triangle) gives $1/n^2$. Smooth and zero at the ends, like the parabola, gives $1/n^3$. Smoother boundary data, faster convergence, less Gibbs.
+              A jump in $V_0(y)$, including a jump to the grounded plate at $y = 0$ or $y = a$, gives $C_n \sim 1/n$. A continuous $V_0(y)$ that is zero at both ends but has a kink (a triangle) gives $1/n^2$. Smooth and zero at the ends, like the parabola, gives $1/n^3$ (or faster: a pure sine has a single term). Smoother boundary data, faster convergence, less Gibbs.
           `, { shapes: { svg: SHAPES.svg, cap: 'The six boundary potentials of the catalog, plotted across the live face.' }, bars: { svg: BARS.svg, cap: 'Their coefficients $C_n/V_0$ for $n = 1$ to $8$.' } }),
 
           Q(md`For the $\pm V_0$ strips (row 2), why is $C_4 = 0$ even though $n = 4$ is even?`,
@@ -1344,7 +1346,7 @@
           Q(md`Which boundary potential gives coefficients that fall off like $1/n^3$?`,
             [md`$V_0$ (constant)`, md`$V_0\,y/a$`, md`$\dfrac{4V_0}{a^2}\,y(a-y)$`, md`$\pm V_0$ strips`], 2,
             [md`A constant jumps to $0$ at the plates: $1/n$.`, md`The ramp jumps from $V_0$ to $0$ at $y = a$: $1/n$.`, null, md`Jumps (at both plates and in the middle): $1/n$.`],
-            md`The parabola is continuous, vanishes at both plates, and is smooth inside: $C_n = \tfrac{32V_0}{(n\pi)^3}$ for odd $n$. Its series converges so fast that the single term $1.032V_0\sin(\pi y/a)$ is within $0.043V_0$ of the parabola everywhere on the face. Rule: jumps give $1/n$, kinks give $1/n^2$, smooth data that vanishes at the ends gives $1/n^3$.`,
+            md`The parabola is continuous, vanishes at both plates, and is smooth inside: $C_n = \tfrac{32V_0}{(n\pi)^3}$ for odd $n$. Its series converges so fast that the single term $1.032V_0\sin(\pi y/a)$ is within $0.043V_0$ of the parabola everywhere on the face. Rule: jumps give $1/n$, kinks give $1/n^2$, smooth data that vanishes at the ends gives $1/n^3$ or faster.`,
             { figHtml: SHAPES.svg }),
 
           Q(md`The ramp $V_0y/a$ ends at $V_0$ next to the grounded top plate. At $(x, y) = (0, a)$, what does its sine series give?`,
@@ -1560,7 +1562,7 @@
               - Symmetric about $a/2$: odd $n$. Antisymmetric: even $n$. The midline sees only the symmetric part.
               - $\pm V_0$ strips: $\tfrac{8V_0}{n\pi}$, $n = 2, 6, 10$; it's two stacked half-width slots.
               - Boundary data add, so coefficients add (half-strip = half constant + half strips).
-              - Jumps: $1/n$. Kinks: $1/n^2$. Smooth and zero at the ends: $1/n^3$.
+              - Jumps: $1/n$. Kinks: $1/n^2$. Smooth and zero at the ends: $1/n^3$ or faster.
           `),
         ],
       },
@@ -1676,7 +1678,7 @@
           Q(md`In Ex. 3.4 the $n$-th term is $C_n\cosh(n\pi x/a)\sin(n\pi y/a)$ with $C_n\cosh(n\pi b/a)$ fixed by the faces. At the center $x = 0$, relative to its size on the faces, the $n$-th term is:`,
             [md`Unchanged, since $\cosh 0 = 1$.`, md`Reduced by $e^{-n\pi}$.`, md`Reduced by $1/\sinh(n\pi b/a)$.`, md`Reduced by $1/\cosh(n\pi b/a)$, tiny for large $n$.`], 3,
             [md`$\cosh 0 = 1$, but the face value carries $\cosh(n\pi b/a)$, which is large.`, md`Only if $b = a$, and even then it's $1/\cosh(n\pi)$, about $2e^{-n\pi}$.`, md`$\sinh$ belongs to problems with a grounded face at $x = 0$.`, null],
-            md`Each term is $\tfrac{4V_0}{n\pi}\tfrac{\cosh(n\pi x/a)}{\cosh(n\pi b/a)}\sin\tfrac{n\pi y}{a}$ (odd $n$). The ratio $\cosh(n\pi x/a)/\cosh(n\pi b/a)$ is $1$ on the faces and $1/\cosh(n\pi b/a)$ at the center. High harmonics don't penetrate: the middle of a long box sees only $n = 1$.`,
+            md`Each term is $\tfrac{4V_0}{n\pi}\tfrac{\cosh(n\pi x/a)}{\cosh(n\pi b/a)}\sin\tfrac{n\pi y}{a}$ (odd $n$). The ratio $\dfrac{\cosh(n\pi x/a)}{\cosh(n\pi b/a)}$ is $1$ on the faces and $\dfrac{1}{\cosh(n\pi b/a)}$ at the center. High harmonics don't penetrate: the middle of a long box sees only $n = 1$.`,
             { figHtml: G_EX34 }),
 
           RF(md`
@@ -1872,7 +1874,7 @@
 
             [[fig:map]]
 
-            Each term is the boundary term times $\cosh(n\pi x/a)/\cosh(n\pi b/a)$: exactly $1$ on the live faces and smallest at the center. Two live faces in one problem are fine here because they are *opposite* each other; the $y$ direction still has its two zero faces.
+            Each term is the boundary term times $\dfrac{\cosh(n\pi x/a)}{\cosh(n\pi b/a)}$: exactly $1$ on the live faces and smallest at the center. Two live faces in one problem are fine here because they are *opposite* each other; the $y$ direction still has its two zero faces.
           `, { setup: { svg: G_EX34, cap: 'Griffiths Fig. 3.20 seen down the pipe ($z$ out of the page).' }, map: { svg: EX34_MAP, cap: 'Equipotentials $0.1V_0, \\dots, 0.9V_0$ for $b = a$. The center sits at only $0.11V_0$.' } }),
 
           Q(md`In Ex. 3.4, why can't you set $A = 0$ (drop $e^{kx}$) as in the slot?`,
@@ -1894,9 +1896,9 @@
             { figHtml: box({ center: true, L: 'V_0', R: 'V_0', T: '0', B: '0', w: 110, h: 110 }) }),
 
           Q(md`Make Ex. 3.4 very long ($b \gg a$). Near the face $x = b$, the potential looks like:`,
-            [md`The lecture's slot, measured inward from the face: $\cosh(n\pi x/a)/\cosh(n\pi b/a) \approx e^{-n\pi(b - x)/a}$.`, md`A constant $V_0$ everywhere.`, md`A linear function of $x$.`, md`Half the slot solution, because two faces share the potential.`], 0,
+            [md`The lecture's slot, measured inward from the face: $\dfrac{\cosh(n\pi x/a)}{\cosh(n\pi b/a)} \approx e^{-n\pi(b - x)/a}$.`, md`A constant $V_0$ everywhere.`, md`A linear function of $x$.`, md`Half the slot solution, because two faces share the potential.`], 0,
             [null, md`It still vanishes on the plates.`, md`Linear pieces would need plates at different potentials.`, md`Far from the other face, that face has no influence: you get the full slot, not half.`],
-            md`For $b \gg a$, $\cosh(n\pi x/a)/\cosh(n\pi b/a) \to e^{n\pi(x - b)/a}$ near $x = b$: the slot with the strip at $x = b$. Limits like this are a quick way to check a closed-box answer.`,
+            md`For $b \gg a$, $\dfrac{\cosh(n\pi x/a)}{\cosh(n\pi b/a)} \to e^{n\pi(x - b)/a}$ near $x = b$: the slot with the strip at $x = b$. Limits like this are a quick way to check a closed-box answer.`,
             { figHtml: G_EX34 }),
 
           P({
@@ -2042,7 +2044,7 @@
             hints: [
               md`Which direction has two grounded sides? That one gets the sines, with $k = n\pi/a$.`,
               md`In $y$: zero at $y = 0$, so $\sinh(n\pi y/a)$. Divide by its value at the live side.`,
-              md`For (b) use the rotation argument. For (c) one or two terms of the series are enough; $\sinh u/\sinh 2u = 1/(2\cosh u)$.`,
+              md`For (b) use the rotation argument. For (c) one or two terms of the series are enough; $\dfrac{\sinh u}{\sinh 2u} = \dfrac{1}{2\cosh u}$.`,
             ],
             parts: [
               { lbl: md`(a) $V = \frac{4V_0}{\pi}\sum_{\text{odd}}\frac1n\,F_n$, where $F_n$ is`, mc: [md`$\sin\frac{n\pi y}{b}\,\frac{\sinh(n\pi x/b)}{\sinh(n\pi a/b)}$`, md`$\sin\frac{n\pi x}{a}\,\frac{\cosh(n\pi y/a)}{\cosh(n\pi b/a)}$`, md`$\sin\frac{n\pi x}{a}\,\frac{\sinh(n\pi y/a)}{\sinh(n\pi b/a)}$`, md`$\sin\frac{n\pi x}{a}\,e^{-n\pi(b - y)/a}$`], a: 2, why: [md`The two grounded sides facing each other are $x = 0$ and $x = a$: the sines go in $x$.`, md`$\cosh$ isn't zero at the grounded bottom $y = 0$.`, null, md`That isn't zero at $y = 0$ (only approximately, for $b \gg a$).`] },
@@ -2093,9 +2095,9 @@
 
               $$V = \frac{4V_0}{\pi}\sum_{n\ \text{odd}}\frac1n\,\frac{\cosh\big(n\pi(x - a/2)/a\big)}{\cosh(n\pi/2)}\,\sin\frac{n\pi y}{a}.$$
 
-              At P: $\cosh(n\pi/4)/\cosh(n\pi/2)$ and $\sin(n\pi/2) = 1, -1, 1$:
+              At P the $x$-factor is $\dfrac{\cosh(n\pi/4)}{\cosh(n\pi/2)}$ and $\sin(n\pi/2) = 1, -1, 1$:
 
-              $$V = \frac{4V_0}{\pi}\left(\frac{1.3246}{2.5092} - \frac13\cdot\frac{5.3228}{55.663} + \frac15\cdot\frac{25.387}{1287.98}\right) = \frac{4V_0}{\pi}(0.5279 - 0.0319 + 0.0039) = 0.636V_0 .$$
+              $$V = \frac{4V_0}{\pi}\left(\frac{1.3246}{2.5092} - \frac13\cdot\frac{5.3228}{55.663} + \frac15\cdot\frac{25.387}{1287.98} - \dots\right) = \frac{4V_0}{\pi}(0.5279 - 0.0319 + 0.0039 - 0.0006 + \dots) = 0.636V_0 .$$
 
               **Check:** P is closer to a live side than the center is, and $0.636V_0 > 0.5V_0$. Good.
             `,
@@ -2140,7 +2142,7 @@
           RF(md`
             !!key Patterns to remember
               - Finite in $x$: no condition at infinity; keep both exponentials and let a zero face ($\sinh$) or a symmetry ($\cosh$) pick the combination.
-              - Write the $x$-factor as a ratio, $\sinh(n\pi x/a)/\sinh(n\pi b/a)$ or $\cosh(n\pi x/a)/\cosh(n\pi b/a)$: it is $1$ on the live face, so the coefficients are the plain Fourier ones.
+              - Write the $x$-factor as a ratio, $\dfrac{\sinh(n\pi x/a)}{\sinh(n\pi b/a)}$ or $\dfrac{\cosh(n\pi x/a)}{\cosh(n\pi b/a)}$: it is $1$ on the live face, so the coefficients are the plain Fourier ones.
               - Several live faces: one subproblem per live face, every other face grounded; add.
               - Center checks: square $=$ average of the four sides ($V_0/4$ for one live side); cube $=$ average of six faces ($V_0/6$). Not valid for non-square rectangles.
               - Limit checks: $b \gg a$ turns a closed pipe into the slot.
@@ -2321,7 +2323,7 @@
             hints: [
               md`Same BCs #1–#5 as Prob. 3.18, so the same product functions. Only the lid changed.`,
               md`The lid already is the $(1, 1)$ mode: no Fourier integral needed.`,
-              md`$\sinh(u)/\sinh(2u) = 1/(2\cosh u)$ with $u = \pi/\sqrt2$.`,
+              md`$\dfrac{\sinh u}{\sinh 2u} = \dfrac{1}{2\cosh u}$ with $u = \pi/\sqrt2$.`,
             ],
             parts: [
               { lbl: 'V(x,y,z)', expr: 'V0*sin(pi*x/a)*sin(pi*y/a)*sinh(sqrt(2)*pi*z/a)/sinh(sqrt(2)*pi)', vars: { V0: [1, 3], x: [0.1, 0.9], y: [0.1, 0.9], z: [0.1, 0.9], a: [1, 1.5] }, accepts: ['V0*sin(pi*x/a)*sin(pi*y/a)*sinh(pi*sqrt(2)*z/a)/sinh(pi*sqrt(2))'] },
@@ -2497,10 +2499,10 @@
             md`At $x = 0$, $\cosh 0 = 1$, so $V(0, y) = \tfrac{4V_0}{\pi}\sum\tfrac{1}{n\cosh(n\pi b/a)}\sin\tfrac{n\pi y}{a} \ne 0$. This is Ex. 3.4's function used in the wrong geometry; the grounded side needs $\sinh$.`,
             { figHtml: G_HW }),
 
-          Q(md`For the slot, a student writes $V = \dfrac{4V_0}{\pi}\sum_{\text{odd}}\dfrac1n e^{-n\pi x/2a}\sin\dfrac{n\pi y}{2a}$. Which BC fails?`,
+          Q(md`For the slot, a student writes $V = \dfrac{4V_0}{\pi}\sum_{\text{odd}}\dfrac1n e^{-n\pi x/(2a)}\sin\dfrac{n\pi y}{2a}$. Which BC fails?`,
             [md`BC #1, $V(x, 0) = 0$`, md`BC #2, $V(x, a) = 0$`, md`BC #4, $V \to 0$ far away`, md`None; it's a valid alternative.`], 1,
             [md`$\sin 0 = 0$: fine.`, null, md`Each term decays: fine.`, md`At $y = a$: $\sin(n\pi/2) = \pm1$ for odd $n$, so $V \ne 0$ on the top plate.`],
-            md`$k = n\pi/2a$ fits half-waves into $2a$, not $a$. BC #2 is the one that sets $k = n\pi/a$; the wrong $k$ shows up as a non-zero top plate.`,
+            md`$k = \tfrac{n\pi}{2a}$ fits half-waves into $2a$, not $a$. BC #2 is the one that sets $k = n\pi/a$; the wrong $k$ shows up as a non-zero top plate. (BC #3 actually holds: on $0 < y < a$ this is the constant-strip series of a slot of width $2a$, which equals $V_0$ there.)`,
             { figHtml: SLOT_BC }),
 
           Q(md`For the slot with a constant strip, a student gets $V = \dfrac{2V_0}{\pi}\sum_{\text{odd}}\dfrac1n e^{-n\pi x/a}\sin\dfrac{n\pi y}{a}$. Which BC fails?`,
@@ -2631,7 +2633,7 @@
             - Boundary data already a sum of $\sin(n\pi y/a)$: read off the coefficients.
             - Symmetric about the midline: odd $n$ only. Antisymmetric: even $n$ only.
             - Several live faces: one subproblem each. Boundary data that is a sum: coefficients add.
-            - Write the $x$-factor as a ratio, e.g. $\sinh(n\pi x/a)/\sinh(n\pi b/a)$, so the coefficients are the plain Fourier ones.
+            - Write the $x$-factor as a ratio, e.g. $\dfrac{\sinh(n\pi x/a)}{\sinh(n\pi b/a)}$, so the coefficients are the plain Fourier ones.
             - Center of a square: the average of the four sides. Center of a cube: the average of the six faces.
             - $\dfrac{\sinh u}{\sinh 2u} = \dfrac{1}{2\cosh u}$: center values in one line.
             - Far from a live face keep one term: decay length $a/\pi$ in a slot, $a/(\sqrt2\,\pi)$ in a square pipe.

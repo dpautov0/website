@@ -77,6 +77,7 @@
     if (o.arcs) o.arcs.forEach(([a0, a1, cls]) => f.pl(f.arcPts(0, 0, rr, rr, 90 - a0, 90 - a1), { cls }));
     else f.circle(0, 0, rr, { cls: o.thin ? '' : 'thick' });
     if (o.axis !== false) zAxis(f, 0, o.charge === 'center' ? -10 : (o.metal ? -rr - 4 : 0), -rr - 34);
+    if (o.xAxis) { f.line(0, 0, o.xAxis, 0, { cls: 'dim', arrow: 'end', hs: 6 }); f.label(o.xAxis + 5, 0, 'x', 'l', 'small accent'); }
     if (o.R !== false) {
       const th = o.Rth ?? 120;
       const e = at(0, 0, rr, th);
@@ -129,7 +130,7 @@
     if (!o.metalIn) { f.line(0, 0, ea[0], ea[1], { cls: 'dim', arrow: 'end', hs: 5 }); labLine(f, [0, 0], ea, 'a', -1, 3, 0.5); }
     f.line(0, 0, eb[0], eb[1], { cls: 'dim', arrow: 'end', hs: 6 });
     labLine(f, [0, 0], eb, 'b', 1, 4, 0.78);
-    if (o.labA) leader(f, 0, 0, ra, 128, o.labA, 10);
+    if (o.labA) leader(f, 0, 0, ra, 150, o.labA, 10);
     if (o.labB) leader(f, 0, 0, rb, 40, o.labB, 14);
     if (o.Pin) { const p = at(0, 0, o.Pin.r, o.Pin.th); f.dot(p[0], p[1], 2.8); f.tag(p[0], p[1], 'P', 'r', 7, 'small'); }
     return f.svg();
@@ -358,14 +359,14 @@
   // sign pattern of P_l(cos theta) on a sphere: nodal latitudes and +/- zones
   function nodal(l) {
     const f = PF.fig();
-    const rr = 56;     // large enough that the sign glyph fits in the thin polar caps of P3
+    const rr = 64;     // large enough that the sign glyph fits in the thin polar caps of P3
     f.circle(0, 0, rr, { cls: 'thick' });
     const zs = { 1: [0], 2: [1 / Math.sqrt(3), -1 / Math.sqrt(3)], 3: [Math.sqrt(0.6), 0, -Math.sqrt(0.6)], 4: [0.8611, 0.34, -0.34, -0.8611] }[l];
     for (const z of zs) { const y = -rr * z, w = rr * Math.sqrt(1 - z * z); f.line(-w, y, w, y, { cls: 'dash dim' }); }
     const edges = [1, ...zs, -1];
     for (let i = 0; i < edges.length - 1; i++) {
       const zm = (edges[i] + edges[i + 1]) / 2;
-      sgn(f, 0, -rr * zm, Pl(l, zm) > 0 ? 1 : -1, 2.8);
+      sgn(f, 0, -rr * zm, Pl(l, zm) > 0 ? 1 : -1, 2.6);
     }
     return f.svg();
   }
@@ -397,7 +398,7 @@
   // =====================================================================================
   FIG.coords = coordsFig();
   FIG.axisCharge = sph({ charge: { x: 0, y: -122, lab: 'q', at: 'r' }, lab: 'V=0\\ (\\text{grounded})', R: true });
-  FIG.offCharge = sph({ charge: { x: 128, y: 0, lab: 'q', at: 't' }, lab: 'V=0\\ (\\text{grounded})', labTh: 36 });
+  FIG.offCharge = sph({ charge: { x: 128, y: 0, lab: 'q', at: 't' }, lab: 'V=0\\ (\\text{grounded})', labTh: 36, xAxis: 160, Rth: 220 });
   FIG.inRegion = sph({ lab: 'V_0(\\theta)', inLab: 'V(r,\\theta)=?' });
   FIG.outRegion = sph({ lab: 'V_0(\\theta)', outLab: 'V(r,\\theta)=?', outX: -70, outY: 70 });
 
@@ -2694,7 +2695,7 @@
           { lbl: md`(b) $A_1$ in the upper hemisphere`, expr: '-sigma/(2*eps0)', vars: { sigma: [1, 3], eps0: [0.5, 2] } },
           { lbl: md`(b) $A_1$ in the lower hemisphere`, expr: 'sigma/(2*eps0)', vars: { sigma: [1, 3], eps0: [0.5, 2] } },
           { lbl: md`(b) $A_2$ (both hemispheres)`, expr: 'sigma/(4*eps0*R)', vars: { sigma: [1, 3], R: [1, 2], eps0: [0.5, 2] } },
-          { lbl: md`$V$ at $r = 2R$, $\theta = 60^\circ$ from the three outside terms, in units of $\frac{\sigma R}{2\varepsilon_0}$`, ans: 0.25139 },
+          { lbl: md`$V$ in the plane of the disk at $r = 1.2R$ ($\theta = 90^\circ$), from the three outside terms, in units of $\frac{\sigma R}{2\varepsilon_0}$`, ans: 0.46225 },
         ],
         sol: md`
           **(a) Outside, $r \gt R$.** Region charge-free; **BC:** $V \to 0$ at infinity, so $V = \sum_\ell B_\ell r^{-(\ell+1)}P_\ell(\cos\theta)$. On the $+z$ axis, $P_\ell(1) = 1$:
@@ -2731,12 +2732,19 @@
 
           **Why splitting is legitimate.** $W = V + \frac{\sigma}{2\varepsilon_0}|z|$ has no kink at the disk ($|z|$ has the opposite jump in slope), so $W$ is harmonic in the whole ball, even in $z$, and has an ordinary series of even $\ell$ found from the axis: $W(r,0) = \frac{\sigma}{2\varepsilon_0}\sqrt{r^2 + R^2}$. Subtracting $\frac{\sigma}{2\varepsilon_0}|z|$ gives exactly the result above.
 
-          **Checks.** Center: $V = \frac{\sigma R}{2\varepsilon_0}$, the axis formula at $r = 0$. Slope across the disk near the center: $\partial V/\partial z = -\frac{\sigma}{2\varepsilon_0}$ above and $+\frac{\sigma}{2\varepsilon_0}$ below, a jump of $\sigma/\varepsilon_0$ in $E_z$, as Gauss requires. At $r = 2R$, $\theta = 60^\circ$ ($P_2 = -\frac18$, $P_4 = -\frac{37}{128}$) the three outside terms give $\frac{\sigma R}{2\varepsilon_0}\left[\frac14 + \frac{1}{512} - \frac{37}{65536}\right] = 0.25139\,\frac{\sigma R}{2\varepsilon_0}$.
+          **Checks.** Center: $V = \frac{\sigma R}{2\varepsilon_0}$, the axis formula at $r = 0$. Slope across the disk near the center: $\partial V/\partial z = -\frac{\sigma}{2\varepsilon_0}$ above and $+\frac{\sigma}{2\varepsilon_0}$ below, a jump of $\sigma/\varepsilon_0$ in $E_z$, as Gauss requires.
+
+          **A number.** In the plane of the disk at $r = 1.2R$: $\theta = 90^\circ$, so $P_2 = -\frac12$ and $P_4 = \frac38$. With $\frac Rr = \frac56$ the three outside terms are
+
+          $$\frac{\sigma R}{2\varepsilon_0}\left[\frac12\cdot\frac56 - \frac18\left(\frac56\right)^3\left(-\frac12\right) + \frac{1}{16}\left(\frac56\right)^5\cdot\frac38\right] = \frac{\sigma R}{2\varepsilon_0}\left[0.41667 + 0.03617 + 0.00942\right] = 0.46225\,\frac{\sigma R}{2\varepsilon_0}$$
+
+          The monopole term alone would be $0.41667$, 10% low: this close to the rim the $\ell = 2$ term matters.
 
           **Numerical check** (direct integration of $\frac{\sigma}{4\pi\varepsilon_0}\int\frac{da}{\srm}$ over the disk with scipy, in units of $\frac{\sigma R}{2\varepsilon_0}$):
 
           | point | exact | series |
           |---|---|---|
+          | $r = 1.2R$, $\theta = 90^\circ$ | $0.46853$ | $0.46225$ (through $P_4$), $0.46711$ (through $P_8$): slow next to the rim |
           | $r = 2R$, $\theta = 60^\circ$ | $0.25129$ | $0.25139$ (through $P_4$) |
           | $r = 1.5R$, $\theta = 30^\circ$ | $0.31101$ | $0.31038$ (through $P_4$), $0.31099$ (through $P_8$) |
           | $r = 0.5R$, $\theta = 30^\circ$ | $0.64461$ | $0.64493$ (through $P_4$), $0.64462$ (through $P_8$) |

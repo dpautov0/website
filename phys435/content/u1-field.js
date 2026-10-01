@@ -760,7 +760,7 @@
   }
 
   // infinite plane (in perspective) with an optional Gaussian pillbox
-  function figPlane(sol) {
+  function figPlane(sol, o = {}) {
     const f = fig();
     const S = [[20, 160], [250, 160], [320, 100], [90, 100]];
     tint(f, S); f.poly(S, { cls: 'thin' });
@@ -770,6 +770,7 @@
     f.ellipse(cx, top, rx, ry, { cls: 'dash' }); f.ellipse(cx, bot, rx, ry, { half: 'front', cls: 'dash' });
     f.line(cx - rx, top, cx - rx, bot, { cls: 'dash' }); f.line(cx + rx, top, cx + rx, bot, { cls: 'dash' });
     f.label(cx + rx + 4, top - 4, 'A', 'bl', 'small');
+    if (o.noE) return f.svg();
     f.arrow(cx, top - 6, cx, top - 46, { cls: 'thick', hs: 8 }); f.label(cx + 5, top - 40, md`\mathbf{E}`, 'l', 'small');
     f.arrow(cx, bot + 10, cx, bot + 50, { cls: 'thick', hs: 8 }); f.label(cx + 5, bot + 44, md`\mathbf{E}`, 'l', 'small');
     return f.svg();
@@ -949,7 +950,6 @@
     // thin rectangular loop straddling the surface, traversed counterclockwise
     f.rect(130, y - 12, 70, 24, { cls: 'dash' });
     headAt(f, [[130, y + 12], [200, y + 12]], 0.5, { hs: 6 }); headAt(f, [[200, y - 12], [130, y - 12]], 0.5, { hs: 6 });
-    f.label(165, y - 16, md`\ell`, 'b', 'small');
     return f.svg();
   }
 
@@ -1028,7 +1028,7 @@
 
         !!method Field of a few point charges
           1. Draw each separation vector from its charge to $P$.
-          2. Write each magnitude $kq_i/\srm_i^2$ (with $k=1/4\pi\ep$) and draw each field arrow (away from $+$, toward $-$).
+          2. Write each magnitude $kq_i/\srm_i^2$ (with $k=1/(4\pi\ep)$) and draw each field arrow (away from $+$, toward $-$).
           3. Decide which components cancel by symmetry.
           4. Add the surviving components. Check a limit: far away, the set should look like a single charge equal to the net charge.
 
@@ -1107,7 +1107,7 @@
             why: [null, md`All three charges are positive, so every field points away from its charge; the sum points away from the square.`, md`The two near charges give equal components along the two sides, so the sum lies on the diagonal.`, md`By the mirror symmetry about the diagonal through $P$ and the opposite corner, the field must lie along that diagonal.`] },
         ],
         sol: md`
-          Put $P$ at the origin with $C$ on the $+x$ axis and $A$ on the $+y$ axis, so the square fills the first quadrant. Let $k=1/4\pi\ep$.
+          Put $P$ at the origin with $C$ on the $+x$ axis and $A$ on the $+y$ axis, so the square fills the first quadrant. Let $k=1/(4\pi\ep)$.
 
           [[fig:s]]
 
@@ -1348,7 +1348,7 @@ for n in (4, 5):
         [md`That is the far limit. Close to the segment, the far ends hardly matter and $L$ must drop out.`,
           md`Units: $\lambda/z^2$ is charge per volume (C/m³), but a field times $4\pi\ep$ is charge per area (C/m², like $q/z^2$). A line field must go as $\lambda/z$.`,
           null,
-          md`$\lambda/2\ep$ has the wrong units (it would need $\sigma$). That is the shape of the sheet answer.`],
+          md`$\tfrac{\lambda}{2\ep}$ has the wrong units (it would need $\sigma$). That is the shape of the sheet answer.`],
         md`Close to a long segment you cannot see its ends, so it looks infinite and $L$ drops out: $\vb E\approx\kq\dfrac{2\lambda}{z}\uv z=\dfrac{\lambda}{2\pi\ep z}\uv z$, the field of an infinite straight wire. (The notes write both limits as $\vb E=$ a scalar; multiply by $\uv z$.)`,
         { figHtml: figSegBis() }),
 
@@ -1380,7 +1380,7 @@ for n in (4, 5):
       `, { th: { svg: figSegBis('theory'), cap: md`The pieces at $\pm x$ give $d\vb E$ arrows that are mirror images; only their $z$ parts survive.` },
         plot: { svg: plotLineSeg(), cap: md`The segment field (solid) follows the infinite wire ($2/z$, dashed) close in and the point charge $2\lambda L$ ($2/z^2$, thin) far away.` } }),
 
-      Q(md`At the height $z=L$ above the midpoint, what fraction of the infinite-wire field ($\lambda/2\pi\ep z$) does the segment produce?`,
+      Q(md`At the height $z=L$ above the midpoint, what fraction of the infinite-wire field ($\tfrac{\lambda}{2\pi\ep z}$) does the segment produce?`,
         [md`$1/2$`, md`$1/4$`, md`$1$`, md`$1/\sqrt2$`], 3,
         [md`The ratio is $L/\sqrt{z^2+L^2}$, which at $z=L$ is $1/\sqrt2$, not $1/2$.`, md`That would be a $1/z^2$ comparison. The ratio is $L/\sqrt{z^2+L^2}$.`, md`Equal only in the limit $L\gg z$. A finite segment always gives less.`, null],
         md`Divide: $\dfrac{2\lambda L/(z\sqrt{z^2+L^2})}{2\lambda/z}=\dfrac{L}{\sqrt{z^2+L^2}}$. At $z=L$ that is $1/\sqrt2\approx0.71$. The segment from $-L$ to $L$ subtends $\pm45^\circ$ at $P$, so it captures a fraction $\sin45^\circ$ of what an infinite line would.`,
@@ -1405,7 +1405,7 @@ for n in (4, 5):
 
       Q(md`Which of these could be the field of a line charge $\lambda$ at distance $z$ from it? (Use units only.)`,
         [md`$\dfrac{\lambda}{4\pi\ep z^2}$`, md`$\dfrac{\lambda}{2\pi\ep z}$`, md`$\dfrac{\lambda z}{4\pi\ep}$`, md`$\dfrac{\lambda}{2\ep}$`], 1,
-        [md`$\dfrac{q}{4\pi\ep z^2}$ is a field; with $\lambda=q/\text{length}$ in place of $q$ this is a field divided by a length.`, null, md`That is a field times a length squared.`, md`$\sigma/2\ep$ is a field; $\lambda/2\ep$ is a field times a length.`],
+        [md`$\dfrac{q}{4\pi\ep z^2}$ is a field; with $\lambda=q/\text{length}$ in place of $q$ this is a field divided by a length.`, null, md`That is a field times a length squared.`, md`$\tfrac{\sigma}{2\ep}$ is a field; $\tfrac{\lambda}{2\ep}$ is a field times a length.`],
         md`$\dfrac{q}{4\pi\ep z^2}$ is a field, so $\dfrac{\lambda}{4\pi\ep}$ is a field times a length, and a line-charge field must be $\dfrac{\lambda}{4\pi\ep}\times\dfrac{1}{\text{length}}$. Only $\dfrac{\lambda}{2\pi\ep z}$ qualifies. Likewise a surface-charge field is $\sigma/\ep$ times a pure number. A units check like this catches most slips in a final answer.`,
         { nofig: 'units only' }),
 
@@ -1466,7 +1466,7 @@ for n in (4, 5):
         hints: [md`No cancellation this time: both components survive. Integrate $\phi$ from $0$ to $\pi/2$.`, md`$E_x=-\kq\dfrac{\lambda}{R}\int_0^{\pi/2}\cos\phi\,d\phi$ and $E_y=-\kq\dfrac{\lambda}{R}\int_0^{\pi/2}\sin\phi\,d\phi$.`],
         parts: [
           { lbl: '|E|', expr: 'sqrt(2)*lambda/(4*pi*eps0*R)', vars: { lambda: [1, 3], R: [0.5, 3], eps0: [0.5, 2] } },
-          { lbl: md`Direction:`, mc: [md`Along $+\uv x$`, md`Along $-\uv y$`, md`Toward the middle of the arc, at $45^\circ$`, md`Away from the middle of the arc, at $45^\circ$ below the $-x$ axis`], a: 3,
+          { lbl: md`Direction (for $\lambda>0$):`, mc: [md`Along $+\uv x$`, md`Along $-\uv y$`, md`Toward the middle of the arc, at $45^\circ$`, md`Away from the middle of the arc, at $45^\circ$ below the $-x$ axis`], a: 3,
             why: [md`Every piece pushes $P$ away from itself, and all pieces are in the first quadrant, so the field points into the third quadrant.`, md`Both components are equal by the mirror symmetry about the $45^\circ$ line.`, md`For positive charge the field points away from the charge.`, null] },
         ],
         sol: md`
@@ -1496,7 +1496,7 @@ for n in (4, 5):
           { lbl: 'E_z', expr: 'lambda*L/(4*pi*eps0*z*sqrt(z^2+L^2))', vars: { lambda: [1, 3], L: [0.5, 3], z: [0.5, 3], eps0: [0.5, 2] } },
           { lbl: 'E_x', expr: '(lambda/(4*pi*eps0))*(1/sqrt(z^2+L^2) - 1/z)', vars: { lambda: [1, 3], L: [0.5, 3], z: [0.5, 3], eps0: [0.5, 2] }, accepts: ['-(lambda/(4*pi*eps0*z))*(1 - z/sqrt(z^2+L^2))'] },
           { lbl: md`For $z\gg L$:`, mc: [md`$E_x$ and $E_z$ both fall as $1/z^2$ and stay comparable`, md`$\vb E\to0$ faster than $1/z^2$`, md`$E_z\to\kq\dfrac{\lambda L}{z^2}$ and $E_x$ becomes negligible (it falls as $1/z^3$)`, md`$E_z\to\kq\dfrac{2\lambda L}{z^2}$`], a: 2,
-            why: [md`Expand: $E_x\approx-\kq\dfrac{\lambda L^2}{2z^3}$, smaller than $E_z$ by a factor $L/2z$.`, md`The segment carries net charge $\lambda L$, so the field falls as $1/z^2$, not faster.`, null, md`That is the far field of the length-$2L$ segment. This one has length $L$ and charge $\lambda L$.`] },
+            why: [md`Expand: $E_x\approx-\kq\dfrac{\lambda L^2}{2z^3}$, smaller than $E_z$ by a factor $L/(2z)$.`, md`The segment carries net charge $\lambda L$, so the field falls as $1/z^2$, not faster.`, null, md`That is the far field of the length-$2L$ segment. This one has length $L$ and charge $\lambda L$.`] },
         ],
         sol: md`
           **Setup.** Segment from $x=0$ to $x=L$; $P=(0,0,z)$. A piece $dq=\lambda\,dx$ at $(x,0,0)$:
@@ -1515,7 +1515,7 @@ for n in (4, 5):
           $E_x<0$: the field leans away from the segment, toward $-x$. Together:
           $$\vb E=\kq\,\dfrac{\lambda}{z}\left[\left(\dfrac{z}{\sqrt{z^2+L^2}}-1\right)\uv x+\dfrac{L}{\sqrt{z^2+L^2}}\,\uv z\right].$$
 
-          **Check $z\gg L$.** $\dfrac{1}{\sqrt{z^2+L^2}}=\dfrac1z\left(1+\dfrac{L^2}{z^2}\right)^{-1/2}\approx\dfrac1z\left(1-\dfrac{L^2}{2z^2}\right)$. Then $E_z\approx\kq\dfrac{\lambda L}{z^2}$, a point charge $q=\lambda L$, and $E_x\approx-\kq\dfrac{\lambda L^2}{2z^3}$, smaller by $L/2z$. From far away you see a point charge, as you should.
+          **Check $z\gg L$.** $\dfrac{1}{\sqrt{z^2+L^2}}=\dfrac1z\left(1+\dfrac{L^2}{z^2}\right)^{-1/2}\approx\dfrac1z\left(1-\dfrac{L^2}{2z^2}\right)$. Then $E_z\approx\kq\dfrac{\lambda L}{z^2}$, a point charge $q=\lambda L$, and $E_x\approx-\kq\dfrac{\lambda L^2}{2z^3}$, smaller by $L/(2z)$. From far away you see a point charge, as you should.
 
           **Second check.** Two of these segments back to back make the lecture's segment from $-L$ to $L$. Their $x$ parts cancel and their $z$ parts add to $\kq\dfrac{2\lambda L}{z\sqrt{z^2+L^2}}$, the lecture result.
         `,
@@ -1648,7 +1648,7 @@ for n in (4, 5):
           { lbl: 'E_z', expr: '(sigma/(2*eps0))*(1 - z/sqrt(z^2+R^2))', vars: { sigma: [1, 3], R: [0.5, 3], z: [0.2, 3], eps0: [0.5, 2] }, accepts: ['sigma*z/(2*eps0)*(1/z - 1/sqrt(z^2+R^2))'] },
           { lbl: md`$E_z$ in the limit $R\to\infty$`, expr: 'sigma/(2*eps0)', vars: { sigma: [1, 3], eps0: [0.5, 2] } },
           { lbl: md`For $z\gg R$:`, mc: [md`$E_z\approx\dfrac{\sigma}{2\ep}$`, md`$E_z\approx\dfrac{\sigma R}{2\ep z}$`, md`$E_z\approx\kq\,\dfrac{\pi R^2\sigma}{z^2}$`, md`$E_z\approx0$ at every order`], a: 2,
-            why: [md`That is the opposite limit, close to the disk.`, md`Expand correctly: $1-z/\sqrt{z^2+R^2}\approx R^2/2z^2$, so the field falls as $1/z^2$.`, null, md`The first terms cancel, but the next term does not. Far away the disk looks like a point charge $\pi R^2\sigma$.`] },
+            why: [md`That is the opposite limit, close to the disk.`, md`Expand correctly: $1-z/\sqrt{z^2+R^2}\approx R^2/(2z^2)$, so the field falls as $1/z^2$.`, null, md`The first terms cancel, but the next term does not. Far away the disk looks like a point charge $\pi R^2\sigma$.`] },
         ],
         sol: md`
           **Method.** Superpose rings. The ring of radius $r'$ and width $dr'$ carries $dq=\sigma\,2\pi r'\,dr'$, and by Problem 2.5 its field on the axis is along $\uv z$:
@@ -1676,12 +1676,12 @@ for n in (4, 5):
       WG.disk(),
 
       Q(md`Move the slider in the widget to a large $R$ and look near the disk ($z\ll R$). What does the disk field look like there, and why?`,
-        [md`Like a point charge, because the disk is small compared with $z$`, md`It is zero near the disk, because the field is only outside`, md`It grows without bound as $z\to0$, like a point charge`, md`Like an infinite sheet: $E\approx\sigma/2\ep$, nearly independent of $z$, because from close up you cannot see the edge`], 3,
-        [md`Near the disk $z\ll R$, so it is the disk that is large, not small.`, md`Above the centre of a charged disk the field is not zero.`, md`The charge is spread out, so the field stays finite: it tends to $\sigma/2\ep$.`, null],
-        md`For $z\ll R$, $z/\sqrt{z^2+R^2}\to0$ and $E_z\to\sigma/2\ep$. From close up, the disk fills your whole view like an infinite plane. Far away ($z\gg R$) it shrinks to a point charge $\pi R^2\sigma$.`,
+        [md`Like a point charge, because the disk is small compared with $z$`, md`It is zero near the disk, because the field is only outside`, md`It grows without bound as $z\to0$, like a point charge`, md`Like an infinite sheet: $E\approx\tfrac{\sigma}{2\ep}$, nearly independent of $z$, because from close up you cannot see the edge`], 3,
+        [md`Near the disk $z\ll R$, so it is the disk that is large, not small.`, md`Above the centre of a charged disk the field is not zero.`, md`The charge is spread out, so the field stays finite: it tends to $\tfrac{\sigma}{2\ep}$.`, null],
+        md`For $z\ll R$, $z/\sqrt{z^2+R^2}\to0$ and $E_z\to\tfrac{\sigma}{2\ep}$. From close up, the disk fills your whole view like an infinite plane. Far away ($z\gg R$) it shrinks to a point charge $\pi R^2\sigma$.`,
         { figHtml: figDisk() }),
 
-      Q(md`At the height $z=R$ above the centre of the disk, what fraction of the infinite-sheet value $\sigma/2\ep$ does the disk produce?`,
+      Q(md`At the height $z=R$ above the centre of the disk, what fraction of the infinite-sheet value $\tfrac{\sigma}{2\ep}$ does the disk produce?`,
         [md`$1/2$`, md`$1-1/\sqrt2\approx0.29$`, md`$1/\sqrt2\approx0.71$`, md`$1/4$`], 1,
         [md`That is what the far-field (point-charge) formula gives at $z=R$: $\dfrac{\sigma R^2}{4\ep z^2}=\dfrac{1}{2}\cdot\dfrac{\sigma}{2\ep}$. But $z=R$ is not far away. Put $z=R$ in the exact bracket: $1-\dfrac{R}{\sqrt{2R^2}}=1-\dfrac{1}{\sqrt2}\approx0.29$.`, null, md`$1/\sqrt2$ is the part you subtract, not what is left.`, md`Close in size, but not it: the exact bracket at $z=R$ is $1-\dfrac{1}{\sqrt2}\approx0.29$. No limit formula holds at $z=R$ (the far-field one would give $1/2$).`],
         md`$E_z=\dfrac{\sigma}{2\ep}\left(1-\dfrac{z}{\sqrt{z^2+R^2}}\right)$ at $z=R$ is $\dfrac{\sigma}{2\ep}\left(1-\dfrac{1}{\sqrt2}\right)\approx0.29\,\dfrac{\sigma}{2\ep}$. At a height equal to its radius, the disk already gives less than a third of the sheet value: the sheet approximation needs $z\ll R$.`,
@@ -1690,18 +1690,18 @@ for n in (4, 5):
       Q(md`Why is the field of an infinite plane independent of the distance from it, even though each piece obeys $1/\srm^2$?`,
         [md`The plane's field lines are straight and parallel, and that is enough`, md`As you move away, each piece's field weakens, but more of the plane comes into view at a comparable angle; the two effects cancel exactly`, md`The plane carries infinite charge, so its field is infinite and the distance does not matter`, md`It is an approximation that fails far away`], 1,
         [md`Parallel field lines are the result, not the reason. The reason is in how the contributions add up.`, null,
-          md`The field is finite ($\sigma/2\ep$) even though the total charge is infinite: the far pieces contribute less and less.`,
+          md`The field is finite ($\tfrac{\sigma}{2\ep}$) even though the total charge is infinite: the far pieces contribute less and less.`,
           md`For a truly infinite plane it is exact at every distance. For a finite disk it fails once $z$ is comparable to $R$.`],
         md`Griffiths' picture: think of the cone you look through. Moving away, each piece is farther ($1/\srm^2$ weaker), but the patch of plane inside a fixed viewing cone grows as $\srm^2$. Field of a point $\sim1/r^2$, of a line $\sim1/r$, of a plane $\sim$ constant: each extra dimension of charge removes one power of $r$.`,
         { figHtml: figPlane() }),
 
-      Q(md`Just above the centre of the disk, $E_z\approx+\sigma/2\ep$. What is $E_z$ just **below** the centre, and what does that say?`,
-        [md`$+\sigma/2\ep$: the field is continuous through the disk`, md`$0$: the field exists only on the side where you computed it`, md`$-\sigma/2\ep$: the field points away from the disk on both sides, so $E_z$ jumps by $\sigma/\ep$ across the charged surface`, md`$-\sigma/\ep$`], 2,
-        [md`The formula is odd in $z$: below the disk, a positive disk pushes downward.`, md`The disk's field exists on both sides; by symmetry it points away from the disk on each side.`, null, md`Each side gets half: $\pm\sigma/2\ep$. The difference between them is $\sigma/\ep$.`],
-        md`The exact on-axis result is $E_z=\dfrac{\sigma}{2\ep}\left(\dfrac{z}{|z|}-\dfrac{z}{\sqrt{z^2+R^2}}\right)$, so just above $+\sigma/2\ep$ and just below $-\sigma/2\ep$. The normal component of $\vb E$ jumps by $\sigma/\ep$ across a surface charge. This is a general **boundary condition**:
+      Q(md`Just above the centre of the disk, $E_z\approx+\tfrac{\sigma}{2\ep}$. What is $E_z$ just **below** the centre, and what does that say?`,
+        [md`$+\tfrac{\sigma}{2\ep}$: the field is continuous through the disk`, md`$0$: the field exists only on the side where you computed it`, md`$-\tfrac{\sigma}{2\ep}$: the field points away from the disk on both sides, so $E_z$ jumps by $\sigma/\ep$ across the charged surface`, md`$-\sigma/\ep$`], 2,
+        [md`The formula is odd in $z$: below the disk, a positive disk pushes downward.`, md`The disk's field exists on both sides; by symmetry it points away from the disk on each side.`, null, md`Each side gets half: $\pm\tfrac{\sigma}{2\ep}$. The difference between them is $\sigma/\ep$.`],
+        md`The exact on-axis result is $E_z=\dfrac{\sigma}{2\ep}\left(\dfrac{z}{|z|}-\dfrac{z}{\sqrt{z^2+R^2}}\right)$, so just above $+\tfrac{\sigma}{2\ep}$ and just below $-\tfrac{\sigma}{2\ep}$. The normal component of $\vb E$ jumps by $\sigma/\ep$ across a surface charge. This is a general **boundary condition**:
         $$E^\perp_{\text{above}}-E^\perp_{\text{below}}=\dfrac{\sigma}{\ep},$$
         which you will prove with a pillbox in the Gauss's-law lessons and use all through the boundary-value problems later.`,
-        { figHtml: figSheetBC({ below: 0, la: md`E_z=+\sigma/2\varepsilon_0`, lb: md`E_z=\ ?` }) }),
+        { figHtml: figSheetBC({ below: 0, la: md`E_z=+\tfrac{\sigma}{2\varepsilon_0}`, lb: md`E_z=\ ?` }) }),
 
       Q(md`In the $z\gg R$ check you expanded $\dfrac{z}{\sqrt{z^2+R^2}}\approx1-\dfrac{R^2}{2z^2}$. Why is it wrong to stop at the first term ($\approx1$)?`,
         [md`Because the first term is not accurate when $z\gg R$`, md`Because then $E_z\approx\dfrac{\sigma}{2\ep}(1-1)=0$: the leading terms cancel, so the physics is in the next term`, md`Because you must always keep two terms of a binomial series`, md`It is not wrong: the far field of a disk is zero`], 1,
@@ -1722,7 +1722,7 @@ for n in (4, 5):
         hints: [md`Same ring decomposition as the disk; only the limits of the $r'$ integral change.`, md`$\displaystyle\int_a^b\dfrac{r'\,dr'}{(r'^2+z^2)^{3/2}}=\dfrac{1}{\sqrt{z^2+a^2}}-\dfrac{1}{\sqrt{z^2+b^2}}$.`],
         parts: [
           { lbl: 'E_z', expr: '(sigma*z/(2*eps0))*(1/sqrt(z^2+a^2) - 1/sqrt(z^2+b^2))', vars: { sigma: [1, 3], a: [0.3, 1], b: [1.5, 3], z: [0.2, 3], eps0: [0.5, 2] } },
-          { lbl: md`What is $E_z$ at the centre of the hole ($z=0$)?`, mc: [md`$\sigma/2\ep$`, md`$\sigma/\ep$`, md`It is undefined`, md`$0$`], a: 3,
+          { lbl: md`What is $E_z$ at the centre of the hole ($z=0$)?`, mc: [md`$\tfrac{\sigma}{2\ep}$`, md`$\sigma/\ep$`, md`It is undefined`, md`$0$`], a: 3,
             why: [md`That is the value just above a full disk. The hole removes the charge right under you.`, md`Too big even for a full disk.`, md`At $z=0$ the formula is perfectly finite: the prefactor $z$ makes it vanish.`, null] },
         ],
         sol: md`
@@ -1740,17 +1740,17 @@ for n in (4, 5):
         title: 'An infinite sheet with a hole',
         q: md`An infinite plane carries uniform surface charge $\sigma$, except for a circular hole of radius $R$ cut out of it. Find $E_z$ on the axis of the hole, a height $z$ above its centre.`,
         figHtml: figHole(),
-        hints: [md`Superposition: sheet with hole $=$ full sheet $+$ a disk of charge density $-\sigma$ filling the hole.`, md`Full sheet: $\sigma/2\ep$. Disk of $-\sigma$: minus the disk formula from Problem 2.6.`],
+        hints: [md`Superposition: sheet with hole $=$ full sheet $+$ a disk of charge density $-\sigma$ filling the hole.`, md`Full sheet: $\tfrac{\sigma}{2\ep}$. Disk of $-\sigma$: minus the disk formula from Problem 2.6.`],
         parts: [
           { lbl: 'E_z', expr: '(sigma/(2*eps0))*z/sqrt(z^2+R^2)', vars: { sigma: [1, 3], R: [0.5, 3], z: [0.2, 3], eps0: [0.5, 2] } },
           { lbl: md`Far from the sheet ($z\gg R$), $E_z$ approaches`, mc: [md`$0$`, md`$\dfrac{\sigma}{2\ep}$`, md`$\kq\dfrac{\pi R^2\sigma}{z^2}$`, md`$\dfrac{\sigma}{\ep}$`], a: 1,
-            why: [md`The hole is a small missing piece of an infinite sheet; far away the sheet still dominates.`, null, md`That is the size of the missing piece's contribution, which becomes negligible next to $\sigma/2\ep$.`, md`One sheet gives $\sigma/2\ep$, not $\sigma/\ep$.`] },
+            why: [md`The hole is a small missing piece of an infinite sheet; far away the sheet still dominates.`, null, md`That is the size of the missing piece's contribution, which becomes negligible next to $\tfrac{\sigma}{2\ep}$.`, md`One sheet gives $\tfrac{\sigma}{2\ep}$, not $\sigma/\ep$.`] },
         ],
         sol: md`
           **Method: fill the hole and subtract.** The sheet with a hole is the full sheet plus a disk of charge density $-\sigma$ in the hole. Fields add:
           $$E_z=\dfrac{\sigma}{2\ep}-\dfrac{\sigma}{2\ep}\left(1-\dfrac{z}{\sqrt{z^2+R^2}}\right)=\dfrac{\sigma}{2\ep}\,\dfrac{z}{\sqrt{z^2+R^2}} .$$
 
-          **Checks.** At $z=0$ (the centre of the hole) $E_z=0$, as at the centre of a ring. For $z\gg R$, $E_z\to\sigma/2\ep$: far away the hole does not matter. You can also get the result directly by integrating rings from $r'=R$ to $\infty$.
+          **Checks.** At $z=0$ (the centre of the hole) $E_z=0$, as at the centre of a ring. For $z\gg R$, $E_z\to\tfrac{\sigma}{2\ep}$: far away the hole does not matter. You can also get the result directly by integrating rings from $r'=R$ to $\infty$.
 
           **What to remember.** “Hole $=$ object $+$ negative patch” is the same superposition trick as the clock with a missing charge. It will come back with a cavity in a charged sphere.
         `,
@@ -1760,8 +1760,8 @@ for n in (4, 5):
         !!key Patterns to remember
           - On the axis of a ring, $\srm$ and $\cos\theta$ are the same for every piece: $E_z=\kq\dfrac{Qz}{(r^2+z^2)^{3/2}}$. Zero at the centre, maximum at $z=r/\sqrt2$.
           - Disk $=$ rings: $dq=2\pi\sigma r'\,dr'$. On the axis $E_z=\dfrac{\sigma}{2\ep}\left(1-\dfrac{z}{\sqrt{z^2+R^2}}\right)$.
-          - Close to a charged surface it looks infinite ($\sigma/2\ep$); far away it looks like a point charge.
-          - Across a surface charge, $E^\perp$ jumps by $\sigma/\ep$ ($+\sigma/2\ep$ above, $-\sigma/2\ep$ below for a sheet).
+          - Close to a charged surface it looks infinite ($\tfrac{\sigma}{2\ep}$); far away it looks like a point charge.
+          - Across a surface charge, $E^\perp$ jumps by $\sigma/\ep$ ($+\tfrac{\sigma}{2\ep}$ above, $-\tfrac{\sigma}{2\ep}$ below for a sheet).
           - Holes and missing pieces: add the full object and a negative patch.
           - In a far-field expansion, keep terms until something survives the cancellation.
       `),
@@ -1803,7 +1803,7 @@ for n in (4, 5):
         [md`8`, md`4`, md`2`, md`16`], 3,
         [md`The line count must be proportional to the charge. Twice the charge, twice the lines.`, md`Fewer lines would mean a weaker charge.`, md`The number of lines is not the number of charges.`, null],
         md`The number of lines is proportional to the magnitude of the charge, the same proportion for every charge in a drawing. $|{-2q}|=2q$ gets $2\times8=16$ lines, arriving instead of leaving.`,
-        { figHtml: figRadial('-') }),
+        { figHtml: figRadial('+') }),
 
       RF(md`
         ### Flux
@@ -1826,13 +1826,13 @@ for n in (4, 5):
         md`$\Phi=\vb E\cdot\vb A=EA\cos\theta$. Face-on ($\theta=0$) the surface catches the most lines; edge-on ($\theta=90^\circ$) it catches none.`,
         { figHtml: figFluxPatch() }),
 
-      Q(md`A hemispherical bowl of radius $R$ sits in a uniform field $\vb E$ parallel to its axis. What is the flux through the curved surface, with the normal pointing out of the dome (upward)?`,
-        [md`$\pi R^2E$`, md`$2\pi R^2E$`, md`$4\pi R^2E$`, md`Zero, because the bowl is curved`], 0,
+      Q(md`A hemispherical dome (an open half-sphere shell) of radius $R$ sits in a uniform field $\vb E$ parallel to its axis, as drawn. What is the flux through the curved surface, with the normal pointing out of the dome (upward)?`,
+        [md`$\pi R^2E$`, md`$2\pi R^2E$`, md`$4\pi R^2E$`, md`Zero, because the dome is curved`], 0,
         [null, md`$2\pi R^2$ is the dome's area, but the field is not normal to most of it. Count the lines instead.`, md`$4\pi R^2$ is a whole sphere's area.`, md`A curved surface can catch flux; here every line that crosses the flat base also crosses the dome.`],
-        md`Close the bowl with its flat base. The closed surface (dome + base) contains no charge, so its total flux is zero. The base has outward normal $-\uv z$ and flux $-\pi R^2E$, so the dome has $+\pi R^2E$. Every field line that enters through the base leaves through the dome.`,
+        md`Close the dome with its flat base. The closed surface (dome + base) contains no charge, so its total flux is zero. The base has outward normal $-\uv z$ and flux $-\pi R^2E$, so the dome has $+\pi R^2E$. Every field line that enters through the base leaves through the dome.`,
         { figHtml: figHemi() }),
 
-      Q(md`What is the flux of a uniform field through the **closed** surface made of the bowl and its flat base?`,
+      Q(md`What is the flux of a uniform field through the **closed** surface made of the dome and its flat base?`,
         [md`$\pi R^2E$`, md`$2\pi R^2E$`, md`Zero`, md`$-\pi R^2E$`], 2,
         [md`That is the dome alone. The base contributes $-\pi R^2E$.`, md`The flux through the two pieces cancels; it does not add.`, null, md`That is the base alone.`],
         md`Each line of a uniform field enters through the base and leaves through the dome: $-\pi R^2E+\pi R^2E=0$. In general, the net flux through any closed surface that encloses no charge is zero.`,
@@ -1934,13 +1934,13 @@ for n in (4, 5):
         ],
         parts: [
           { lbl: md`$\Phi_{\text{shaded}}$ in units of $q/\ep$`, ans: 1 / 24 },
-          { lbl: md`Flux through one of the three faces that touch the charge:`, mc: [md`$q/24\ep$`, md`$q/8\ep$`, md`$q/6\ep$`, md`$0$`], a: 3,
-            why: [md`Those three faces contain the charge's corner; the field there lies in the face.`, md`$q/8\ep$ is the flux through the whole small cube.`, md`That is the centre-charge answer.`, null] },
+          { lbl: md`Flux through one of the three faces that touch the charge:`, mc: [md`$\tfrac{q}{24\ep}$`, md`$\tfrac{q}{8\ep}$`, md`$\tfrac{q}{6\ep}$`, md`$0$`], a: 3,
+            why: [md`Those three faces contain the charge's corner; the field there lies in the face.`, md`$\tfrac{q}{8\ep}$ is the flux through the whole small cube.`, md`That is the centre-charge answer.`, null] },
         ],
         sol: md`
-          **Build a symmetric closed surface.** Stack eight copies of the cube around the corner: they form a cube of twice the size with $q$ at its centre. The flux through the big cube is $q/\ep$, and the eight small cubes share it equally, so the small cube gets $q/8\ep$.
+          **Build a symmetric closed surface.** Stack eight copies of the cube around the corner: they form a cube of twice the size with $q$ at its centre. The flux through the big cube is $q/\ep$, and the eight small cubes share it equally, so the small cube gets $\tfrac{q}{8\ep}$.
 
-          **Split among the faces.** Three faces of the small cube contain the corner where $q$ sits. On those faces $\vb E$ points along the face (radially out from the corner, lying in the face plane), so $\vb E\cdot d\vb a=0$: no flux. The other three faces are equivalent by symmetry and share $q/8\ep$:
+          **Split among the faces.** Three faces of the small cube contain the corner where $q$ sits. On those faces $\vb E$ points along the face (radially out from the corner, lying in the face plane), so $\vb E\cdot d\vb a=0$: no flux. The other three faces are equivalent by symmetry and share $\tfrac{q}{8\ep}$:
           $$\Phi_{\text{shaded}}=\dfrac{1}{3}\cdot\dfrac{q}{8\ep}=\dfrac{q}{24\ep}.$$
 
           **What to remember.** If a charge sits on a surface, extend the surface (copies, mirror images) until the charge is inside a symmetric closed surface, then divide.
@@ -1948,7 +1948,7 @@ for n in (4, 5):
       }),
 
       Q(md`A charge $q$ sits at the centre of one face of a cube. What is the total flux through the cube?`,
-        [md`$q/\ep$`, md`$q/6\ep$`, md`$q/2\ep$`, md`$0$, because the charge is not inside`], 2,
+        [md`$q/\ep$`, md`$\tfrac{q}{6\ep}$`, md`$\tfrac{q}{2\ep}$`, md`$0$, because the charge is not inside`], 2,
         [md`The charge is on the surface, not inside. Half of its lines go outward away from the cube.`, md`$\tfrac{q}{6\ep}$ is one face's share when the charge is at the centre.`, null, md`On a flat face the charge is half in, half out: half its lines enter the cube and leave through the other faces. That is not zero.`],
         md`Put a second cube against the face: the two cubes form a box with $q$ at its centre, total flux $\tfrac{q}{\ep}$, shared equally by the two halves. Each cube gets $\tfrac{q}{2\ep}$.
 
@@ -1956,7 +1956,7 @@ for n in (4, 5):
         { figHtml: figCube('face') }),
 
       Q(md`A charge $q$ sits at the midpoint of an edge of a cube. What is the total flux through the cube?`,
-        [md`$q/4\ep$`, md`$q/2\ep$`, md`$q/8\ep$`, md`$q/12\ep$`], 0,
+        [md`$\tfrac{q}{4\ep}$`, md`$\tfrac{q}{2\ep}$`, md`$\tfrac{q}{8\ep}$`, md`$\tfrac{q}{12\ep}$`], 0,
         [null, md`An edge is shared by four cubes, not two.`, md`A corner is shared by eight cubes; an edge by four.`, md`The flux through the cube is the share of one cube among those that meet at the edge.`],
         md`Four cubes meet at an edge. Together they surround the charge (total $\tfrac{q}{\ep}$), so each gets $\tfrac{q}{4\ep}$. Nothing here uses the midpoint: anywhere on an edge (not at a corner) the cube still gets a quarter. The “half the flux” rule is only for a smooth part of the surface.`,
         { figHtml: figCube('edge') }),
@@ -2060,7 +2060,7 @@ for n in (4, 5):
           { lbl: md`Inside ($r<R$), $|\vb E|$ is`, mc: [md`$\dfrac{\sigma}{\ep}$`, md`$\dfrac{\sigma}{2\ep}$`, md`$0$`, md`$\dfrac{\sigma r}{\ep R}$`], a: 2,
             why: [md`That is the value just outside. Inside, the Gaussian sphere encloses nothing.`, md`That is the sheet result. Here $\Qenc=0$ inside.`, null, md`A linear rise is what you get inside a **solid** sphere. A shell has no charge inside.`] },
           { lbl: md`Outside ($r>R$), $E_r$`, expr: 'sigma*R^2/(eps0*r^2)', vars: { sigma: [1, 3], R: [0.5, 2], r: [2, 5], eps0: [0.5, 2] }, accepts: ['4*pi*R^2*sigma/(4*pi*eps0*r^2)'] },
-          { lbl: md`Across the shell, $E_r$ jumps from $0$ to its outside value. The size of the jump is`, mc: [md`$\sigma/\ep$`, md`$\sigma/2\ep$`, md`$0$: fields are continuous`, md`$2\sigma/\ep$`], a: 0,
+          { lbl: md`Across the shell, $E_r$ jumps from $0$ to its outside value. The size of the jump is`, mc: [md`$\sigma/\ep$`, md`$\tfrac{\sigma}{2\ep}$`, md`$0$: fields are continuous`, md`$2\sigma/\ep$`], a: 0,
             why: [null, md`Inside is $0$ and just outside is $\sigma R^2/(\ep R^2)=\sigma/\ep$.`, md`The normal component is discontinuous where there is surface charge.`, md`Just outside the field is $\sigma/\ep$, and inside it is $0$.`] },
         ],
         sol: md`
@@ -2079,7 +2079,7 @@ for n in (4, 5):
 
           **Boundary condition check.** Just outside, $E_r=\sigma/\ep$; just inside, $0$. The normal component jumps by exactly $\sigma/\ep$, the general rule $E^\perp_{\text{out}}-E^\perp_{\text{in}}=\sigma/\ep$ at a charged surface.
 
-          **Compare with Prob. 2.7** (Griffiths): the same result by direct integration over the shell takes a page of law-of-cosines algebra. Gauss's law plus symmetry takes two lines.
+          **Compare with Prob. 2.7** (Griffiths 4th ed.): the same result by direct integration over the shell takes a page of law-of-cosines algebra. Gauss's law plus symmetry takes two lines.
 
           **What to remember.** A uniform spherical shell produces no field inside it, at **any** inside point, not only the centre. This is why only $\Qenc(r)$ matters in every spherically symmetric problem.
         `,
@@ -2088,7 +2088,7 @@ for n in (4, 5):
       }),
 
       Q(md`A field point is inside the uniformly charged shell but far from its centre, close to the shell on one side. What is $\vb E$ there?`,
-        [md`Zero, as at the centre`, md`It points away from the nearby part of the shell`, md`It points toward the nearby part of the shell`, md`It is $\sigma/2\ep$, as near a sheet`], 0,
+        [md`Zero, as at the centre`, md`It points away from the nearby part of the shell`, md`It points toward the nearby part of the shell`, md`It is $\tfrac{\sigma}{2\ep}$, as near a sheet`], 0,
         [null, md`The nearby charge is closer, but the far side has more charge in view; the two balance exactly for a $1/r^2$ law.`, md`For a positive shell the nearby charge would push, not pull; and in any case the contributions cancel.`, md`The sheet result needs the far side to be absent. Here the rest of the shell cancels it.`],
         md`The Gaussian sphere through that point encloses no charge, and symmetry says $\vb E$ is radial with the same size on the sphere, so $\vb E=0$ at every point inside. In terms of pieces: the near patch is closer ($1/r^2$ stronger), but the far side subtends the same solid angle with more area; they cancel exactly.`,
         { figHtml: figShell() }),
@@ -2107,7 +2107,7 @@ for n in (4, 5):
 
         [[fig:s]]
 
-        Write it as a **vector**, $\vb E=\dfrac{\rho}{3\ep}\vb r$, where $\vb r$ is the vector from the centre to the field point. (The notes write $E(r)=\rho\vb r/3\ep$, a scalar equal to a vector; the vector form is what you want, and you will need it for the next example.) Outside, $\Qenc=\tfrac43\pi R^3\rho=q$:
+        Write it as a **vector**, $\vb E=\dfrac{\rho}{3\ep}\vb r$, where $\vb r$ is the vector from the centre to the field point. (The notes write $E(r)=\tfrac{\rho\vb r}{3\ep}$, a scalar equal to a vector; the vector form is what you want, and you will need it for the next example.) Outside, $\Qenc=\tfrac43\pi R^3\rho=q$:
 
         $$\vb E=\dfrac{\rho R^3}{3\ep r^2}\,\uv r=\dfrac{1}{4\pi\ep}\dfrac{q}{r^2}\,\uv r\qquad(r\ge R).$$
 
@@ -2118,20 +2118,22 @@ for n in (4, 5):
         p: { svg: plotSolid(), cap: md`$|\vb E|(r)$ for a uniform ball: linear inside, $1/r^2$ outside, continuous at $R$.` } }),
 
       Q(md`A student says: “Inside a charged solid sphere the field is zero, just like inside a shell.” What is the correct statement?`,
-        [md`It is right for any charged sphere`, md`It is right only at the surface`, md`It is right only for a ball made of conductor, or a shell; inside a uniformly charged insulating ball $E=\rho r/3\ep$`, md`It is wrong: inside the ball the field grows as $1/r^2$ toward the centre`], 2,
-        [md`A Gaussian sphere inside a solid ball encloses charge, so $E\ne0$.`, md`At the surface the field is at its largest, $\rho R/3\ep$.`, null, md`The field goes to zero at the centre; it grows linearly with $r$.`],
+        [md`It is right for any charged sphere`, md`It is right only at the surface`, md`It is right only for a ball made of conductor, or a shell; inside a uniformly charged insulating ball $E=\tfrac{\rho r}{3\ep}$`, md`It is wrong: inside the ball the field grows as $1/r^2$ toward the centre`], 2,
+        [md`A Gaussian sphere inside a solid ball encloses charge, so $E\ne0$.`, md`At the surface the field is at its largest, $\tfrac{\rho R}{3\ep}$.`, null, md`The field goes to zero at the centre; it grows linearly with $r$.`],
         md`Zero field inside needs zero enclosed charge (a shell) or a conductor (whose charges rearrange; later in the course). A uniformly charged insulating ball has $\Qenc\propto r^3$, so $E\propto r^3/r^2=r$.`,
         { figHtml: figSolid(true) }),
 
       Q(md`For the uniform ball, what is $E(R/2)/E(R)$, and what is $E(2R)/E(R)$?`,
         [md`$1/2$ and $1/4$`, md`$1/4$ and $1/4$`, md`$1/2$ and $1/2$`, md`$1/8$ and $1/4$`], 0,
         [null, md`Inside, $E\propto r$, not $r^2$.`, md`Outside, $E\propto1/r^2$.`, md`$1/8$ is the enclosed-charge ratio $(1/2)^3$; divide by $(1/2)^2$ for the area: $1/2$.`],
-        md`Inside $E\propto r$: half the radius, half the field. Outside $E\propto1/r^2$: twice the radius, a quarter of the field.`,
-        { figHtml: plotSolid() }),
+        md`Inside $E\propto r$: half the radius, half the field. Outside $E\propto1/r^2$: twice the radius, a quarter of the field.
+
+        [[fig:p]]`,
+        { figHtml: figSolid(false), figs: { p: { svg: plotSolid(), cap: md`Linear inside, $1/r^2$ outside.` } } }),
 
       Q(md`Why is the field of the uniform ball continuous at $r=R$, while the shell's field jumps there?`,
         [md`The ball is a conductor and the shell is not`, md`Both are continuous; the jump in the shell plot is a drawing artefact`, md`The ball's field is not continuous either`, md`The normal component of $\vb E$ jumps by $\sigma/\ep$ at a surface charge. The shell has $\sigma$ at $r=R$; the ball has only volume charge, so $\sigma=0$ there`], 3,
-        [md`Both are insulators with fixed charge in this problem.`, md`The shell's jump is real: $0$ inside, $\sigma/\ep$ just outside.`, md`Both formulas give $\rho R/3\ep$ at $r=R$.`, null],
+        [md`Both are insulators with fixed charge in this problem.`, md`The shell's jump is real: $0$ inside, $\sigma/\ep$ just outside.`, md`Both formulas give $\tfrac{\rho R}{3\ep}$ at $r=R$.`, null],
         md`Boundary condition: $E^\perp_{\text{out}}-E^\perp_{\text{in}}=\sigma/\ep$. Volume charge alone never produces a jump (a thin layer of a finite $\rho$ holds a vanishing amount of charge per area). Jumps in $E^\perp$ signal surface charge.`,
         { figHtml: PF.row([{ svg: plotShell(), cap: 'shell' }, { svg: plotSolid(), cap: 'ball' }]).svg }),
 
@@ -2155,7 +2157,7 @@ for n in (4, 5):
 
           [[fig:p]]
 
-          **Checks.** Continuous at $r=R$ (both give $kR^2/4\ep$). Near the centre $E\propto r^2$, rising more slowly than in a uniform ball, because there is little charge near the centre.
+          **Checks.** Continuous at $r=R$ (both give $\tfrac{kR^2}{4\ep}$). Near the centre $E\propto r^2$, rising more slowly than in a uniform ball, because there is little charge near the centre.
 
           **What to remember.** Non-uniform density: integrate $\rho$ over thin shells, $dq=\rho\,4\pi r'^2\,dr'$, before using Gauss's law.
         `,
@@ -2192,7 +2194,7 @@ for n in (4, 5):
       Q(md`In-class question: how should you approach the overlapping spheres?`,
         [md`Gauss's law with a sphere around the overlap region`, md`Find the field of each sphere separately with Gauss's law, then add them (superposition)`, md`The overlap is neutral, so $\vb E=0$ there; no calculation needed`, md`Integrate Coulomb's law over the lens-shaped overlap`], 1,
         [md`The whole arrangement has no spherical symmetry, so no Gaussian surface makes $|\vb E|$ constant.`, null, md`Neutral charge density does not mean zero field: the field at a point depends on all the charge, not only the charge at that point.`, md`Possible in principle, but a hard integral. Each sphere separately is easy.`],
-        md`The combination has no symmetry, but each sphere alone does. Use Gauss's law on each sphere (inside: $\vb E=\rho\vb r/3\ep$), then superpose. This “break it into symmetric pieces” idea is the main way to stretch Gauss's law beyond the three symmetric cases.`,
+        md`The combination has no symmetry, but each sphere alone does. Use Gauss's law on each sphere (inside: $\vb E=\tfrac{\rho\vb r}{3\ep}$), then superpose. This “break it into symmetric pieces” idea is the main way to stretch Gauss's law beyond the three symmetric cases.`,
         { figHtml: figOverlap() }),
 
       RF(md`
@@ -2211,7 +2213,7 @@ for n in (4, 5):
 
       Q(md`Which way does the field in the overlap point?`,
         [md`From the $-$ centre toward the $+$ centre`, md`Radially away from the middle of the overlap`, md`Perpendicular to $\vb d$`, md`Along $\vb d$, from the $+$ centre toward the $-$ centre`], 3,
-        [md`The field runs from positive to negative charge, and $\vb E=\rho\vb d/3\ep$ with $\vb d$ from $+$ to $-$.`, md`It is uniform; it has no radial pattern.`, md`$\vb E$ is a positive multiple of $\vb d$.`, null],
+        [md`The field runs from positive to negative charge, and $\vb E=\tfrac{\rho\vb d}{3\ep}$ with $\vb d$ from $+$ to $-$.`, md`It is uniform; it has no radial pattern.`, md`$\vb E$ is a positive multiple of $\vb d$.`, null],
         md`$\vb E=\dfrac{\rho}{3\ep}\vb d$ and $\vb d$ points from the $+$ centre to the $-$ centre. Field lines run from the positive sphere to the negative one, as you would guess.`,
         { figHtml: figOverlap() }),
 
@@ -2225,7 +2227,7 @@ for n in (4, 5):
         title: 'Field inside an off-centre cavity',
         q: md`A ball of radius $R$ carries uniform charge density $\rho$, except inside a spherical cavity of radius $b$ that is empty. The centre of the cavity is displaced from the centre of the ball by the vector $\vb a$. Find the field inside the cavity.`,
         figHtml: figCavity(),
-        hints: [md`Fill the hole: ball with cavity $=$ full ball of $+\rho$ $+$ small ball of $-\rho$ in the cavity.`, md`At a point in the cavity, use the inside formula $\rho\vb r/3\ep$ for both balls, with each $\vb r$ measured from that ball's own centre.`, md`If $\vb r$ is measured from the big centre, the vector from the cavity centre is $\vb r-\vb a$.`],
+        hints: [md`Fill the hole: ball with cavity $=$ full ball of $+\rho$ $+$ small ball of $-\rho$ in the cavity.`, md`At a point in the cavity, use the inside formula $\tfrac{\rho\vb r}{3\ep}$ for both balls, with each $\vb r$ measured from that ball's own centre.`, md`If $\vb r$ is measured from the big centre, the vector from the cavity centre is $\vb r-\vb a$.`],
         parts: [
           { lbl: md`The field in the cavity is`, mc: [md`zero, because there is no charge in the cavity`, md`uniform, parallel to $\vb a$`, md`radial from the cavity centre`, md`radial from the ball's centre`], a: 1,
             why: [md`An empty region inside charge is not field-free unless the surroundings are symmetric about it.`, null, md`The small negative ball alone would give that; adding the big ball's field cancels the position dependence.`, md`The big ball alone would give that; adding the negative ball cancels the position dependence.`] },
@@ -2247,7 +2249,7 @@ for n in (4, 5):
       RF(md`
         !!key Patterns to remember
           - Spherical symmetry: $\vb E=\dfrac{\Qenc(r)}{4\pi\ep r^2}\uv r$. Outside: point charge. Charge at larger $r$ does nothing.
-          - Shell: $0$ inside, $q/4\pi\ep r^2$ outside; $E_r$ jumps by $\sigma/\ep$ at the shell.
+          - Shell: $0$ inside, $\tfrac{q}{4\pi\ep r^2}$ outside; $E_r$ jumps by $\sigma/\ep$ at the shell.
           - Uniform ball: $\vb E=\dfrac{\rho}{3\ep}\vb r$ inside (vector form), continuous at $R$.
           - Non-uniform $\rho(r)$: $\Qenc=\int_0^r\rho\,4\pi r'^2\,dr'$.
           - No symmetry overall but symmetric pieces: Gauss on each piece, then superpose. Overlap of $\pm\rho$ balls, or a cavity: uniform field $\dfrac{\rho}{3\ep}\vb d$.
@@ -2389,7 +2391,7 @@ for n in (4, 5):
 
           **The outer surface charge.** Neutrality per length $l$: $\rho\pi a^2l+\sigma\,2\pi bl=0$, so $\sigma=-\dfrac{\rho a^2}{2b}$.
 
-          **Boundary checks.** At $s=a$: both (i) and (ii) give $\rho a/2\ep$, continuous (no surface charge at $s=a$). At $s=b$: the field drops from $\dfrac{\rho a^2}{2\ep b}$ to $0$. The jump, $-\dfrac{\rho a^2}{2\ep b}$, equals $\sigma/\ep$, exactly the surface-charge boundary condition $E^\perp_{\text{out}}-E^\perp_{\text{in}}=\sigma/\ep$.
+          **Boundary checks.** At $s=a$: both (i) and (ii) give $\tfrac{\rho a}{2\ep}$, continuous (no surface charge at $s=a$). At $s=b$: the field drops from $\dfrac{\rho a^2}{2\ep b}$ to $0$. The jump, $-\dfrac{\rho a^2}{2\ep b}$, equals $\sigma/\ep$, exactly the surface-charge boundary condition $E^\perp_{\text{out}}-E^\perp_{\text{in}}=\sigma/\ep$.
 
           [[fig:p]]
 
@@ -2428,31 +2430,37 @@ for n in (4, 5):
 
       Q(md`An infinite charged plane: how does the field at $1\ \text{m}$ from it compare with the field at $100\ \text{m}$?`,
         [md`They are equal`, md`The field at $100\ \text{m}$ is $10^4$ times weaker`, md`The field at $100\ \text{m}$ is $100$ times weaker`, md`The field at $100\ \text{m}$ is zero`], 0,
-        [null, md`That is the point-charge law. For an infinite plane the pillbox gives $\sigma/2\ep$ at any distance.`, md`That is the line-charge law.`, md`An infinite plane's field never dies off.`],
-        md`$E=\sigma/2\ep$, independent of distance: the pillbox calculation never involved the height of the lids. For a real finite sheet this holds only at distances small compared with its size.`,
+        [null, md`That is the point-charge law. For an infinite plane the pillbox gives $\tfrac{\sigma}{2\ep}$ at any distance.`, md`That is the line-charge law.`, md`An infinite plane's field never dies off.`],
+        md`$E=\tfrac{\sigma}{2\ep}$, independent of distance: the pillbox calculation never involved the height of the lids. For a real finite sheet this holds only at distances small compared with its size.`,
         { figHtml: figPlane() }),
 
       Q(md`Just above a thin charged surface the field is $5E_0$, pointing away from the surface (along $\uv n$). Just below, the field is $2E_0$, also along $\uv n$ (it points toward the surface from below). What is the surface charge density there?`,
-        [md`$7\ep E_0$`, md`$3\ep E_0/2$`, md`$-3\ep E_0$`, md`$3\ep E_0$`], 3,
+        [md`$7\ep E_0$`, md`$\tfrac32\ep E_0$`, md`$-3\ep E_0$`, md`$3\ep E_0$`], 3,
         [md`$E^\perp_{\text{below}}$ is $+2E_0$ (it points along $+\uv n$), so you subtract it.`, md`No factor of $1/2$: the jump itself is $\sigma/\ep$.`, md`The field above is larger in the $+\uv n$ direction, so $\sigma$ is positive.`, null],
-        md`$\sigma=\ep\left(E^\perp_{\text{above}}-E^\perp_{\text{below}}\right)=\ep(5E_0-2E_0)=3\ep E_0$. Of the fields, $\pm\tfrac32E_0$ is the surface's own contribution; the remaining $\tfrac72E_0$ (the same on both sides) comes from other charges.`,
-        { figHtml: figSheetBC({ above: 1.25, below: 0.5, la: md`5E_0`, lb: md`2E_0` }) }),
+        md`Pillbox straddling the surface: flux out of the top lid $+5E_0A$, out of the bottom lid $-2E_0A$ (the field there points into the box), so
+        $$\sigma=\ep\left(E^\perp_{\text{above}}-E^\perp_{\text{below}}\right)=\ep(5E_0-2E_0)=3\ep E_0 .$$
+        Of the fields, $\pm\tfrac32E_0$ is the surface's own contribution; the remaining $\tfrac72E_0$ (the same on both sides) comes from other charges.
 
-      Q(md`A charged sheet ($\sigma>0$) sits in an external uniform field $E_0$ along its normal $\uv n$. Just above, the total normal field is $E_0+\sigma/2\ep$. What is it just below?`,
-        [md`$E_0+\sigma/2\ep$`, md`$E_0-\sigma/2\ep$`, md`$-E_0-\sigma/2\ep$`, md`$E_0$`], 1,
-        [md`The sheet's own field reverses across it: $+\sigma/2\ep$ above, $-\sigma/2\ep$ below.`, null, md`The external field does not reverse; only the sheet's own contribution does.`, md`The sheet still contributes below it.`],
-        md`Superpose: the external field is $E_0$ on both sides; the sheet adds $+\sigma/2\ep$ above and $-\sigma/2\ep$ below. The difference is still $\sigma/\ep$: the jump in $E^\perp$ depends only on the local surface charge, never on outside sources.`,
-        { figHtml: figSheetBC({ above: 1.4, below: 0, la: md`E_0+\sigma/2\varepsilon_0`, lb: md`?` }) }),
+        [[fig:s]]`,
+        { figHtml: figSheetBC({ above: 1.25, below: 0.5, la: md`5E_0`, lb: md`2E_0` }), figs: { s: { svg: figSheetBC({ above: 1.25, below: 0.5, la: md`5E_0`, lb: md`2E_0`, box: true }), cap: md`The pillbox: $5E_0$ leaves through the top lid, $2E_0$ enters through the bottom lid.` } } }),
+
+      Q(md`A charged sheet ($\sigma>0$) sits in an external uniform field $E_0$ along its normal $\uv n$. Just above, the total normal field is $E_0+\tfrac{\sigma}{2\ep}$. What is it just below?`,
+        [md`$E_0+\tfrac{\sigma}{2\ep}$`, md`$E_0-\tfrac{\sigma}{2\ep}$`, md`$-E_0-\tfrac{\sigma}{2\ep}$`, md`$E_0$`], 1,
+        [md`The sheet's own field reverses across it: $+\tfrac{\sigma}{2\ep}$ above, $-\tfrac{\sigma}{2\ep}$ below.`, null, md`The external field does not reverse; only the sheet's own contribution does.`, md`The sheet still contributes below it.`],
+        md`Superpose: the external field is $E_0$ on both sides; the sheet adds $+\tfrac{\sigma}{2\ep}$ above and $-\tfrac{\sigma}{2\ep}$ below. The difference is still $\sigma/\ep$: the jump in $E^\perp$ depends only on the local surface charge, never on outside sources.`,
+        { figHtml: figSheetBC({ above: 1.4, below: 0, la: md`E_0+\tfrac{\sigma}{2\varepsilon_0}`, lb: md`?` }) }),
 
       Q(md`On a pillbox that straddles a charged plane, why is it safe to say the curved side carries no flux?`,
         [md`Because the side is short`, md`Because $\vb E$ is perpendicular to the plane, so it is parallel to the side: $\vb E\cdot d\vb a=0$ there`, md`Because there is no field at the plane`, md`Because the flux through the side cancels the lids`], 1,
         [md`Shortness matters for the boundary-condition argument with a general field. For the infinite plane the side flux is exactly zero at any height.`, null, md`There is a field on both sides of the plane.`, md`The side carries exactly zero; it cancels nothing.`],
-        md`By symmetry $\vb E$ is normal to an infinite plane, so it runs along the side wall of the pillbox and $\vb E\cdot d\vb a=0$ on it. Only the lids carry flux, each $EA$, and both are outward.`,
-        { figHtml: figPlane(true) }),
+        md`By symmetry $\vb E$ is normal to an infinite plane, so it runs along the side wall of the pillbox and $\vb E\cdot d\vb a=0$ on it. Only the lids carry flux, each $EA$, and both are outward.
+
+        [[fig:s]]`,
+        { figHtml: figPlane(true, { noE: true }), figs: { s: { svg: figPlane(true), cap: md`$\vb E$ is normal to the plane: along $d\vb a$ on the lids, parallel to the side wall.` } } }),
 
       RF(md`
         ### Two parallel planes (Griffiths Ex. 2.6)
-        Superpose two infinite planes. Each one contributes $\sigma/2\ep$ pointing away from it (if positive) or toward it (if negative), in **every** region.
+        Superpose two infinite planes. Each one contributes $\tfrac{\sigma}{2\ep}$ pointing away from it (if positive) or toward it (if negative), in **every** region.
 
         [[fig:s]]
 
@@ -2462,11 +2470,11 @@ for n in (4, 5):
       Q(md`Both planes carry $+\sigma$. What is the field in each region?`,
         [md`$\sigma/\ep$ between, $0$ outside`, md`$\sigma/\ep$ in all three regions`, md`$0$ everywhere`, md`$0$ between; $\sigma/\ep$ outside, pointing away from the pair`], 3,
         [md`That is the $\pm\sigma$ arrangement. With equal signs the inner fields oppose each other.`, md`Between the planes the two fields point in opposite directions.`, md`Outside, both fields point the same way (away from both planes).`, null],
-        md`Between them, each plane pushes away from itself: opposite directions, they cancel. Outside, both push outward the same way: $\sigma/2\ep+\sigma/2\ep=\sigma/\ep$.`,
+        md`Between them, each plane pushes away from itself: opposite directions, they cancel. Outside, both push outward the same way: $\tfrac{\sigma}{2\ep}+\tfrac{\sigma}{2\ep}=\sigma/\ep$.`,
         { figHtml: figTwoPlanes(md`+\sigma`, md`+\sigma`) }),
 
       Q(md`The left plane carries $+3\sigma$ and the right plane $-\sigma$. What is the field between them?`,
-        [md`$\sigma/\ep$`, md`$2\sigma/\ep$, pointing toward the right plane`, md`$3\sigma/2\ep$`, md`$4\sigma/\ep$`], 1,
+        [md`$\sigma/\ep$`, md`$2\sigma/\ep$, pointing toward the right plane`, md`$\tfrac{3\sigma}{2\ep}$`, md`$4\sigma/\ep$`], 1,
         [md`That is the outside field. Between them both contributions point right and add: $\tfrac{3\sigma}{2\ep}+\tfrac{\sigma}{2\ep}$.`, null, md`That is only the left plane's contribution.`, md`Each plane contributes half its density over $\ep$, not the full density.`],
         md`Between: $\dfrac{3\sigma}{2\ep}$ (away from the left plane, so rightward) $+\dfrac{\sigma}{2\ep}$ (toward the negative right plane, also rightward) $=\dfrac{2\sigma}{\ep}$. Outside on either side: $\dfrac{3\sigma}{2\ep}-\dfrac{\sigma}{2\ep}=\dfrac{\sigma}{\ep}$, pointing away from the pair. Check the boundary condition at the left plane: $2\sigma/\ep-(-\sigma/\ep)=3\sigma/\ep$. Good.`,
         { figHtml: figTwoPlanes(md`+3\sigma`, md`-\sigma`) }),
@@ -2504,7 +2512,7 @@ for n in (4, 5):
 
           [[fig:p]]
 
-          **Checks.** Continuous at $y=\pm d$ (no surface charge). Outside, the slab looks like a sheet with $\sigma=2\rho d$: $\sigma/2\ep=\rho d/\ep$. Good.
+          **Checks.** Continuous at $y=\pm d$ (no surface charge). Outside, the slab looks like a sheet with $\sigma=2\rho d$: $\tfrac{\sigma}{2\ep}=\rho d/\ep$. Good.
 
           **What to remember.** For planar problems, centre the pillbox on the symmetry plane so both faces have the same $|E|$. A pillbox with one face at $y=0$ would need $E(0)$, which you know only from symmetry.
         `,
@@ -2527,14 +2535,14 @@ for n in (4, 5):
           $$2AE_y=\dfrac{A}{\ep}\int_{-y}^{y}\rho_0\dfrac{y'^2}{d^2}\,dy'=\dfrac{A}{\ep}\cdot\dfrac{2\rho_0y^3}{3d^2}\qquad\Longrightarrow\qquad E_y=\dfrac{\rho_0y^3}{3\ep d^2}\quad(0<y<d).$$
           Outside, $\Qenc$ stops growing at $y=d$: $E_y=\dfrac{\rho_0d}{3\ep}$.
 
-          **Check.** Continuous at $y=d$. The total charge per area is $\int_{-d}^{d}\rho\,dy=\tfrac23\rho_0d$, so outside it acts like a sheet with $\sigma=\tfrac23\rho_0d$: $\sigma/2\ep=\rho_0d/3\ep$. Good.
+          **Check.** Continuous at $y=d$. The total charge per area is $\int_{-d}^{d}\rho\,dy=\tfrac23\rho_0d$, so outside it acts like a sheet with $\sigma=\tfrac23\rho_0d$: $\tfrac{\sigma}{2\ep}=\tfrac{\rho_0d}{3\ep}$. Good.
         `,
       }),
 
       RF(md`
         !!key Patterns to remember
           - Line or cylinder: coaxial Gaussian cylinder; ends carry no flux; $E\cdot2\pi sl=\Qenc/\ep$. Line: $\dfrac{\lambda}{2\pi\ep s}$.
-          - Plane: pillbox straddling it; sides carry no flux; $\sigma/2\ep$, independent of distance.
+          - Plane: pillbox straddling it; sides carry no flux; $\tfrac{\sigma}{2\ep}$, independent of distance.
           - Superpose planes region by region. $\pm\sigma$: $\sigma/\ep$ between, $0$ outside.
           - Slab: box symmetric about the mid-plane; linear inside, constant outside.
           - Several regions: one Gaussian surface per region; only $\Qenc$ changes.
@@ -2732,7 +2740,7 @@ for n in (4, 5):
 
         $$\divg\vb E=\divg\left(\dfrac{\sigma}{\ep}\,\uv z\right)=0\quad\Longrightarrow\quad\text{no charge density in the region between the plates.}$$
 
-        (The notes write $\divg\dfrac{\sigma}{\ep}$, the divergence of a scalar; it means the divergence of the uniform field $\dfrac{\sigma}{\ep}\uv z$.) A nonzero field does not need charge at that point; it needs charge somewhere. At a plate the field jumps from $0$ to $\sigma/\ep$ over zero distance, so $\divg\vb E\neq0$ there: “telling me that there is a charged object”. In fact $E_z$ jumps by $\sigma/\ep$, so $\partial E_z/\partial z=(\sigma/\ep)\,\delta(z-z_0)$ and $\rho=\sigma\,\delta(z-z_0)$: a sheet of charge, written as a volume density. That is the boundary condition $E^\perp_{\text{above}}-E^\perp_{\text{below}}=\sigma/\ep$ again, in differential form.
+        (The notes write $\divg\dfrac{\sigma}{\ep}$, the divergence of a scalar; it means the divergence of the uniform field $\dfrac{\sigma}{\ep}\uv z$.) A nonzero field does not need charge at that point; it needs charge somewhere. At a plate the field jumps over zero distance, so $\divg\vb E\neq0$ there: “telling me that there is a charged object”. In fact at the $+Q$ plate (at $z=z_0$) $E_z$ jumps from $0$ up to $\sigma/\ep$, so $\partial E_z/\partial z=(\sigma/\ep)\,\delta(z-z_0)$ and $\rho=\sigma\,\delta(z-z_0)$: a sheet of charge, written as a volume density. At the $-Q$ plate $E_z$ drops back to $0$ and the same step gives $\rho=-\sigma\,\delta(z-z_1)$. That is the boundary condition $E^\perp_{\text{above}}-E^\perp_{\text{below}}=\sigma/\ep$ again, in differential form.
       `, { s: { svg: figCapacitor({ box: true }), cap: md`Parallel plates with $\pm Q$. Between them $\vb E$ is uniform; a small box there has as much flux in as out.` } }),
 
       Q(md`Between the capacitor plates $\vb E\ne0$. Is there charge between the plates?`,
@@ -2853,6 +2861,12 @@ for n in (4, 5):
           A curl-free field is the gradient of a scalar: the line integral of $\vb E$ is path independent, so $V(\vb r)=-\int_{\mathcal O}^{\vb r}\vb E\cdot d\vb l$ is well defined and $\vb E=-\nabla V$. That is the next unit. Also a boundary condition: around a thin rectangular loop straddling a surface, $\oint\vb E\cdot d\vb l=0$ forces the **tangential** component of $\vb E$ to be continuous across any surface, charged or not.
       `),
 
+      Q(md`In-class question: you have shown $\curl\vb E=0$ for one point charge. How do you prove it for an arbitrary static charge distribution?`,
+        [md`Use Gauss's law: $\divg\vb E=\rho/\ep$ fixes the field, so its curl must vanish`, md`Use Stokes' theorem on a loop around the whole distribution`, md`Break the distribution into point charges: by superposition $\vb E=\sum_i\vb E_{q_i}$, the curl of a sum is the sum of the curls, and each term is zero`, md`Compute the spherical curl of the total field about the distribution's centre`], 2,
+        [md`The divergence says nothing about the curl. A field can have any divergence and still circulate (the swirl $k(-y,x,0)$ has zero divergence and nonzero curl).`, md`Stokes' theorem turns $\curl\vb E=0$ into $\oint\vb E\cdot d\vb l=0$, but you need one of them first. Using it here is circular.`, null, md`A general distribution has no centre about which its field is radial, so the spherical-curl shortcut ($E_\theta=E_\varphi=0$, $E_r(r)$ only) does not apply.`],
+        md`The lecture's proof: superposition. Any static distribution is a sum of point charges (an integral of $dq$'s), each with a curl-free field. The curl is linear, so $\curl\vb E=\curl\vb E_{q_1}+\curl\vb E_{q_2}+\dots=0$. Then Stokes gives $\oint\vb E\cdot d\vb l=0$ for every loop. The proof needs the charges to be static: it uses the Coulomb field of each one.`,
+        { nofig: 'logic of the proof, no geometry' }),
+
       Q(md`A closed path is made of two radial segments (1 and 3) and two arcs centred on a point charge $q$ (2 and 4). What is $\oint\vb E\cdot d\vb l$ around it, and why?`,
         [md`Positive, because the path goes out along 1`, md`Zero: $\vb E\perp d\vb l$ on the arcs, and the two radial pieces cover the same range of $r$ in opposite directions`, md`It depends on the angle between the radial segments`, md`$q/\ep$, because the path is near the charge`], 1,
         [md`Going out along 1 gives a positive contribution, but coming in along 3 gives exactly the opposite.`, null, md`The angle only changes the arc lengths, and the arcs contribute nothing.`, md`$q/\ep$ is a flux through a closed surface enclosing $q$. This is a line integral, and it vanishes.`],
@@ -2860,12 +2874,12 @@ for n in (4, 5):
         { figHtml: figWedge() }),
 
       Q(md`The closed loop $C$ now goes **around** the point charge. What is $\oint_C\vb E\cdot d\vb l$?`,
-        [md`$q/\ep$, since the loop encloses the charge`, md`$q/2\ep$`, md`It depends on the shape of the loop`, md`Zero, as for every closed loop in an electrostatic field`], 3,
+        [md`$q/\ep$, since the loop encloses the charge`, md`$\tfrac{q}{2\ep}$`, md`It depends on the shape of the loop`, md`Zero, as for every closed loop in an electrostatic field`], 3,
         [md`That is the flux through a closed surface. “Enclosing” a charge matters for Gauss's law, not for line integrals.`, md`No; line integrals of an electrostatic field around closed loops vanish.`, md`$\oint\vb E\cdot d\vb l=0$ for every loop, whatever its shape.`, null],
         md`$\int_a^b\vb E\cdot d\vb l=\dfrac{q}{4\pi\ep}\left(\dfrac{1}{r_a}-\dfrac{1}{r_b}\right)$ depends only on the endpoints; for a closed loop they coincide. Do not mix up the two laws: Gauss's law counts flux through a closed **surface**; $\oint\vb E\cdot d\vb l$ is around a closed **curve**.`,
         { figHtml: figLoopQ(true) }),
 
-      Q(md`(Griffiths 2.20.) One of these is an impossible electrostatic field ($k$ is a constant). Which one?`,
+      Q(md`(Griffiths 2.20 in the 4th edition.) One of these is an impossible electrostatic field ($k$ is a constant). Which one?`,
         [md`$\vb E=k\left[y^2\,\uv x+(2xy+z^2)\,\uv y+2yz\,\uv z\right]$`, md`$\vb E=k\left[xy\,\uv x+2yz\,\uv y+3xz\,\uv z\right]$`, md`Both are possible`, md`Both are impossible`], 1,
         [md`Its curl is zero: $\partial_yE_z-\partial_zE_y=2z-2z=0$, $\partial_zE_x-\partial_xE_z=0-0=0$, $\partial_xE_y-\partial_yE_x=2y-2y=0$.`, null, md`Compute the curl of the second one: $\partial_yE_z-\partial_zE_y=0-2y\ne0$.`, md`The first one has zero curl, so it can be electrostatic.`],
         md`For $k(xy,\,2yz,\,3xz)$: $\curl\vb E=k\left(-2y,\,-3z,\,-x\right)\ne0$, impossible. For $k(y^2,\,2xy+z^2,\,2yz)$ the curl is zero, so it is a possible electrostatic field; in fact it is $-\nabla V$ with $V=-k(xy^2+yz^2)$.`,
@@ -2880,8 +2894,10 @@ for n in (4, 5):
       Q(md`Just above a charged surface the tangential component of $\vb E$ is $3E_0$ (pointing east). What is the tangential component just below?`,
         [md`$3E_0$, pointing east: the tangential component is continuous`, md`$-3E_0$`, md`$3E_0+\sigma/\ep$`, md`It cannot be known without $\sigma$`], 0,
         [null, md`Reversal happens to the **normal** component of a sheet's own field, not the tangential one.`, md`$\sigma/\ep$ is the jump of the normal component.`, md`The tangential component does not depend on $\sigma$ at all.`],
-        md`Take a thin rectangular loop straddling the surface, long sides parallel to it. $\oint\vb E\cdot d\vb l=0$ and the short sides shrink to nothing, so $E_\parallel^{\text{above}}\,\ell-E_\parallel^{\text{below}}\,\ell=0$. Together with the Gauss pillbox: $E^\perp$ jumps by $\sigma/\ep$, $E^\parallel$ is continuous.`,
-        { figHtml: figTanBC() }),
+        md`Take a thin rectangular loop straddling the surface, long sides (length $\ell$) parallel to it. $\oint\vb E\cdot d\vb l=0$ and the short sides shrink to nothing, so $E_\parallel^{\text{above}}\,\ell-E_\parallel^{\text{below}}\,\ell=0$. Together with the Gauss pillbox: $E^\perp$ jumps by $\sigma/\ep$, $E^\parallel$ is continuous.
+
+        [[fig:s]]`,
+        { figHtml: figTanBC(), figs: { s: { svg: figTanBC(true), cap: md`A thin loop straddling the surface. Its short sides vanish, so the two long sides must cancel: $E_\parallel$ is the same above and below.` } } }),
 
       Q(md`The field $\vb E=\dfrac{k}{s}\,\uv\varphi$ circles a line (seen end on in the figure). Its curl is zero everywhere except on the line itself. Could it be an electrostatic field in the region around the line?`,
         [md`Yes, because its curl is zero there`, md`Yes, if there is charge on the line`, md`No: around a loop that circles the line, $\oint\vb E\cdot d\vb l=2\pi k\ne0$`, md`It depends on the value of $k$`], 2,
