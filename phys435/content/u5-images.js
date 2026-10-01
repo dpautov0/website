@@ -1137,7 +1137,7 @@
           [md`Use $1 - \dfrac{d}{\sqrt{r^2+d^2}}$ with $r = \sqrt3\,d$: $\sqrt{3d^2+d^2} = 2d$.`,
             null,
             md`$\tfrac34$ would need $\sqrt{r^2+d^2} = 4d$, i.e. $r = \sqrt{15}\,d$.`,
-            md`The fraction is $1 - d/\sqrt{r^2+d^2}$, not $d/r$.`],
+            md`The fraction is $1 - \dfrac{d}{\sqrt{r^2+d^2}}$, not $d/r$.`],
           md`The charge within $r$ is $-q\left(1 - \dfrac{d}{\sqrt{r^2+d^2}}\right)$. At $r=\sqrt3\,d$, $\sqrt{r^2+d^2} = 2d$, so the fraction is $1-\tfrac12 = \tfrac12$. The other half is a long tail: even beyond $r=10d$ there is still about $10\%$.`,
           { figHtml: FP }),
 
@@ -1665,8 +1665,10 @@
           sol: md`
             **Region and boundary conditions.** Region $z\ge0$, above the plane.
 
-            1. $V=0$ on $z=0$ (grounded).
-            2. $V\to0$ far away.
+            1. $V=0$ on $z=0$ (grounded). This is the condition that **places the images**: each real charge needs a partner of opposite sign at its mirror point.
+            2. $V\to0$ far away. Any finite set of point charges satisfies it, so it costs nothing.
+
+            The images must also stay below the plane (outside the region), so the charge in $z>0$ is unchanged.
 
             **Images.** Mirror each real charge and flip its sign:
 
@@ -2220,7 +2222,7 @@
 
           [[fig:forces]]
 
-          Each bracket is negative (the far repulsion is weaker than the matching attraction), so $q$ is pulled toward the corner, but less than the two planes would pull if each acted alone.
+          Each bracket is negative (the far repulsion is weaker than the matching attraction, since $a^3<(a^2+b^2)^{3/2}$). So each component pulls $q$ toward its wall, into the corner, but less than that plane would pull if it acted alone. The net force points straight at the corner line only when $a=b$; otherwise it leans toward the nearer wall.
 
           **Energy (the work to bring $q$ in from infinity).** Use the half rule, $W = \tfrac12\,q\,V_{\text{images}}(a,b)$:
 
@@ -2650,7 +2652,7 @@
             md`$R/a$ is a pure number, not a length. $b$ must be a length: $R^2/a$.`,
             md`Check $V$ at the near point: distances $a-R$ and $R-\dfrac{R^2}{a} = \dfrac{R(a-R)}{a}$; cancellation needs $q'/q = -R/a$, not $-R^2/a^2$.`,
             md`$a^2/R > a$: that would put the image outside the sphere, beyond $q$, in the region of interest.`],
-          md`$b = R^2/a$ (a length, less than $R$) and $q'/q = -R/a$ (a pure number, less than 1 in size). Quick test at the near point $\theta=0$: $\dfrac{q}{a-R} + \dfrac{q'}{R - R^2/a} = \dfrac{q}{a-R} - \dfrac{(R/a)q}{R(a-R)/a} = 0$.`,
+          md`$b = R^2/a$ (a length, less than $R$) and $q'/q = -R/a$ (a pure number, less than 1 in size). Quick test at the near point $\theta=0$: the distances are $a-R$ to $q$ and $R - \dfrac{R^2}{a} = \dfrac{R(a-R)}{a}$ to $q'$, so $\dfrac{q}{a-R} - \dfrac Ra\,q\cdot\dfrac{a}{R(a-R)} = 0$.`,
           { figHtml: FS }),
 
         RF(md`
@@ -2679,7 +2681,7 @@
           - $a\to R^+$ (the charge nearly touching): $b\to R$ and $q'\to-q$. The image approaches the surface from inside, like a mirror image. Up close the sphere looks flat, and the plane result comes back.
           - $a\to\infty$ (the charge far away): $q'\to0$ and $b\to0$. A distant charge induces almost nothing.
 
-          Unlike the plane, the image's size **and** position both depend on where $q$ is.
+          Unlike the plane, where the image is always $-q$, here the image's **size** depends on where $q$ is, not just its position.
         `, { equiv: fEquiv() }),
 
         Q(md`Where is the image formula $V = \dfrac{1}{4\pi\varepsilon_0}\left(\dfrac{q}{\srm} + \dfrac{q'}{\srm'}\right)$ the true potential?`,
@@ -2715,7 +2717,7 @@
             null,
             md`The far point and $q'$ are on opposite sides of the center, so their distances add: $R + b$.`,
             md`Neither charge is at the center or on the surface.`],
-          md`$\srm = a+R$ and $\srm' = R + \dfrac{R^2}{a} = \dfrac{R(a+R)}{a}$. Then $\dfrac{q}{a+R} + \dfrac{-(R/a)q}{R(a+R)/a} = \dfrac{q}{a+R} - \dfrac{q}{a+R} = 0$. Checking two points like this takes a few seconds and catches most algebra slips.`,
+          md`$\srm = a+R$ and $\srm' = R + \dfrac{R^2}{a} = \dfrac{R(a+R)}{a}$. Then $\dfrac{q}{a+R} - \dfrac Ra\,q\cdot\dfrac{a}{R(a+R)} = \dfrac{q}{a+R} - \dfrac{q}{a+R} = 0$. Checking two points like this takes a few seconds and catches most algebra slips.`,
           { figHtml: FSNF }),
 
         RF(md`
@@ -2800,16 +2802,16 @@
             md`The image isn't at the center (that is where a neutral sphere's second image goes).`,
             null,
             md`The image is on the same side of the center as $q$, so you subtract.`],
-          md`$F = \dfrac{1}{4\pi\varepsilon_0}\dfrac{q\cdot(-qR/a)}{\left((a^2-R^2)/a\right)^2} = -\dfrac{1}{4\pi\varepsilon_0}\dfrac{q^2Ra}{(a^2-R^2)^2}$.`,
+          md`$F = \dfrac{1}{4\pi\varepsilon_0}\,q\left(-\dfrac Raq\right)\left(\dfrac{a}{a^2-R^2}\right)^2 = -\dfrac{1}{4\pi\varepsilon_0}\dfrac{q^2Ra}{(a^2-R^2)^2}$.`,
           { figHtml: FS }),
 
         Q(md`Which is the energy of the charge + grounded sphere system?`,
           [md`$W = -\dfrac{q^2R}{8\pi\varepsilon_0(a^2-R^2)}$`, md`$W = -\dfrac{q^2R}{4\pi\varepsilon_0(a^2-R^2)}$`, md`$W = -\dfrac{q^2}{8\pi\varepsilon_0(a-R)}$`, md`$W = -\dfrac{q^2R}{8\pi\varepsilon_0a^2}$`], 0,
           [null,
             md`That is $q\,V_{q'}(a)$, the energy of $q$ and $q'$ as two real charges. The real energy is half.`,
-            md`That treats the sphere like a plane at distance $a-R$; it is only the near-surface limit (and even then the plane gives $-\dfrac{q^2}{16\pi\varepsilon_0d}$).`,
+            md`That is the **two-charge** energy for a plane a distance $a-R$ away, $-\dfrac{q^2}{4\pi\varepsilon_0\cdot2(a-R)}$, with no half. Even close to the surface the right limit is half of it, $-\dfrac{q^2}{16\pi\varepsilon_0(a-R)}$, and farther out the sphere isn't a plane at all.`,
             md`That is only the far-away limit of the right answer.`],
-          md`$W = \tfrac12\,qV_{q'}(a) = \tfrac12\,q\cdot\dfrac{-qR/a}{4\pi\varepsilon_0(a^2-R^2)/a}$. Check: $-dW/da = -\dfrac{q^2Ra}{4\pi\varepsilon_0(a^2-R^2)^2}$, the force.`,
+          md`The image's potential at $q$ is $V_{q'}(a) = \dfrac{q'}{4\pi\varepsilon_0(a-b)}$ with $q' = -\dfrac Raq$ and $a-b = \dfrac{a^2-R^2}{a}$, so $V_{q'}(a) = -\dfrac{qR}{4\pi\varepsilon_0(a^2-R^2)}$ and $W = \tfrac12\,qV_{q'}(a) = -\dfrac{q^2R}{8\pi\varepsilon_0(a^2-R^2)}$. Check: $-dW/da = -\dfrac{q^2Ra}{4\pi\varepsilon_0(a^2-R^2)^2}$, the force.`,
           { figHtml: FS }),
 
         RF(md`
@@ -2837,7 +2839,7 @@
           sig: { svg: fSigSphere(2), cap: md`$\sigma(\theta)$ for $a=2R$, in units of $q/R^2$.` } }),
 
         P({
-          title: 'Grounded sphere, charge at three radii',
+          title: 'Grounded sphere, charge at a = 3R',
           q: md`
             A charge $q$ is a distance $a = 3R$ from the center of a grounded conducting sphere of radius $R$.
 
@@ -2919,10 +2921,10 @@
           sol: md`
             **Region and boundary conditions.** Region $r\ge R$ (outside the sphere), where the only charge is $q$.
 
-            1. $V(R,\theta)=0$ for all $\theta$ (grounded sphere).
-            2. $V\to0$ as $r\to\infty$.
+            1. $V(R,\theta)=0$ for all $\theta$ (grounded sphere). This is the condition that **fixes the image**: matching its constant and $\cos\theta$ parts gives the two equations for $b$ and $q'$.
+            2. $V\to0$ as $r\to\infty$. Both point charges satisfy it automatically.
 
-            The image $q' = -\dfrac Raq$ at $b = \dfrac{R^2}{a}$ is inside the sphere, outside the region.
+            The image $q' = -\dfrac Raq$ at $b = \dfrac{R^2}{a}$ is inside the sphere, outside the region (the other root, $b=a$, would put it on top of $q$ and is rejected).
 
             [[fig:img]]
 
@@ -2952,7 +2954,7 @@
 
             It should be $q'$: a Gaussian surface hugging the sphere (excluding $q$) sees the same field in both problems.
 
-            **(c)** The induced charge sits at $V=0$, so $W = \tfrac12\,q\,V_{q'}(a)$ with $V_{q'}(a) = \dfrac{q'}{4\pi\varepsilon_0(a-b)} = -\dfrac{qR/a}{4\pi\varepsilon_0(a^2-R^2)/a}$:
+            **(c)** The induced charge sits at $V=0$, so $W = \tfrac12\,q\,V_{q'}(a)$, where $V_{q'}(a) = \dfrac{q'}{4\pi\varepsilon_0(a-b)}$ with $q' = -\dfrac Raq$ and $a - b = \dfrac{a^2-R^2}{a}$, that is $V_{q'}(a) = -\dfrac{qR}{4\pi\varepsilon_0(a^2-R^2)}$:
 
             $$W(a) = -\frac{q^2R}{8\pi\varepsilon_0\,(a^2-R^2)} = -\frac{q^2}{4\pi\varepsilon_0R}\cdot\frac{1}{2\left[(a/R)^2-1\right]}.$$
 
@@ -2995,7 +2997,7 @@
 
           The grounded solution gives the sphere $V=0$ and total charge $q' = -\dfrac Raq$. Other conditions on the sphere need one more image. Add a point charge $q''$ **at the center**:
 
-          - It is constant on the sphere ($q''/4\pi\varepsilon_0R$), so the sphere stays an equipotential.
+          - Its potential is the same at every point of the sphere, $\dfrac{q''}{4\pi\varepsilon_0R}$, so the sphere stays an equipotential.
           - It is inside the sphere, outside the region of interest.
           - It adds $q''$ to the sphere's total charge (Gauss's law around the sphere).
 
@@ -3114,7 +3116,7 @@
 
           (Combine the brackets: $\dfrac{-a^4 + (a^2-R^2)^2}{a^3(a^2-R^2)^2} = \dfrac{-R^2(2a^2-R^2)}{a^3(a^2-R^2)^2}$.)
 
-          Since $2a^2>R^2$, the force is **always attractive**: the nearer, negative image wins. A neutral conductor always attracts a charge.
+          Since $2a^2>R^2$, the force is **always attractive**: the nearer, negative image wins. A neutral sphere attracts a point charge at every distance.
 
           Far away ($a\gg R$), $F\approx-\dfrac{2q^2R^3}{4\pi\varepsilon_0a^5}$. The two images form a small dipole of moment $p = |q'|\,b = \dfrac{qR^3}{a^2}$, induced by $q$, and its pull falls off like $1/a^5$, much faster than the grounded sphere's $1/a^3$.
 
@@ -3127,7 +3129,7 @@
             md`Net charge zero doesn't mean no force: $q$ separates charge on the sphere, pulling opposite charge to the near side.`,
             md`The force is proportional to $q^2$; flipping $q$ flips all the induced charges too.`,
             null],
-          md`$F = -\dfrac{q^2}{4\pi\varepsilon_0}\left(\dfrac Ra\right)^3\dfrac{2a^2-R^2}{(a^2-R^2)^2}<0$ for all $a>R$. Neutral conductors attract charges, just as a rubbed comb picks up bits of paper.`,
+          md`$F = -\dfrac{q^2}{4\pi\varepsilon_0}\left(\dfrac Ra\right)^3\dfrac{2a^2-R^2}{(a^2-R^2)^2}<0$ for all $a>R$. The charge separates charge on the sphere, opposite charge on the near side, and the near side wins. It is the same effect as a rubbed comb picking up bits of paper.`,
           { figHtml: FSN }),
 
         Q(md`Far from a neutral sphere ($a\gg R$), how does the force on $q$ fall off?`,
@@ -3189,7 +3191,7 @@
 
           **Force.** In units of $\dfrac{q^2}{4\pi\varepsilon_0R^2}$: from $q'$ at distance $\tfrac83R$, $-\dfrac13\cdot\dfrac{9}{64} = -\dfrac{3}{64}$; from $q''$ at distance $3R$, $+\dfrac13\cdot\dfrac19 = \dfrac{1}{27}$. Total $-\dfrac{3}{64}+\dfrac1{27} = -\dfrac{17}{1728}\approx-0.0098$. The formula $-\left(\tfrac13\right)^3\dfrac{17}{64}$ agrees.
 
-          Compare: a grounded sphere at the same distance pulls with $\dfrac3{64}\approx0.047$, five times harder.
+          Compare: a grounded sphere at the same distance pulls with $\dfrac3{64}\approx0.047$, almost five times harder.
         `, { img: { svg: fSphereImg({ A: 3, Rp: 46, center: "q''" }), cap: md`Neutral sphere, $a = 3R$: $q' = -q/3$ at $R/3$ and $q'' = +q/3$ at the center.` } }),
 
         P({
@@ -3294,7 +3296,7 @@
 
           [[fig:shellimg]]
 
-          **Check.** At the nearest point of the wall ($\theta=0$) the distances are $R-a$ to $q$ and $b-R = \dfrac{R(R-a)}{a}$ to $q'$: $\dfrac{q}{R-a} - \dfrac{(R/a)q}{R(R-a)/a} = 0$. The same works at every $\theta$. The image is outside the cavity.
+          **Check.** At the nearest point of the wall ($\theta=0$) the distances are $R-a$ to $q$ and $b-R = \dfrac{R(R-a)}{a}$ to $q'$: $\dfrac{q}{R-a} - \dfrac Ra\,q\cdot\dfrac{a}{R(R-a)} = 0$. The same works at every $\theta$. The image is outside the cavity.
 
           For $r\le R$, $V$ is the same two-term formula as for the outside problem. In the metal (and beyond it, for a grounded shell) $V=0$.
 
@@ -3451,7 +3453,7 @@
           |---|---|---|---|
           | grounded plane, $q$ at height $d$ | $-q$ at the mirror point | $-q$ | $\dfrac{q^2}{4\pi\varepsilon_0(2d)^2}$, attractive |
           | line $\lambda$ at height $d$ | $-\lambda$ at the mirror line | $-\lambda$ per length | $\dfrac{\lambda^2}{4\pi\varepsilon_0d}$ per length |
-          | grounded $90^\circ$ corner, $q$ at $(a,b)$ | $-q$, $-q$, $+q$ (checkerboard) | $-q$ | vector sum, toward the corner |
+          | grounded $90^\circ$ corner, $q$ at $(a,b)$ | $-q$, $-q$, $+q$ (checkerboard) | $-q$ | vector sum; each component toward its wall |
           | grounded wedge of angle $\pi/n$ | $2n-1$, alternating in sign | $-q$ | vector sum |
           | two parallel grounded planes | an infinite row | $-q\left(1-\tfrac dL\right)$ and $-q\,\tfrac dL$ | a converging series |
           | grounded sphere, $q$ outside at $a$ | $-\dfrac Raq$ at $\dfrac{R^2}{a}$ | $-\dfrac Raq$ | $\dfrac{q^2Ra}{4\pi\varepsilon_0(a^2-R^2)^2}$, attractive |
@@ -3459,7 +3461,7 @@
           | sphere held at $V_0$ | add $4\pi\varepsilon_0RV_0$ at the center | $4\pi\varepsilon_0RV_0 - \dfrac Raq$ | sum over both images |
           | grounded shell, $q$ inside at $a$ | $-\dfrac Raq$ at $\dfrac{R^2}{a}$, outside | $-q$ on the inner surface | $\dfrac{q^2Ra}{4\pi\varepsilon_0(R^2-a^2)^2}$, toward the wall |
 
-          **Sanity checks that catch most mistakes:** $V=0$ at two points of each grounded conductor; images outside the region; units ($\dfrac{q^2}{4\pi\varepsilon_0\cdot\text{length}^2}$ for a force); limits ($a\to R$ gives the plane; $a\to\infty$ gives nothing); signs (a charge is always attracted to a grounded or neutral conductor); the factor $\tfrac12$ in the energy.
+          **Sanity checks that catch most mistakes:** $V=0$ at two points of each grounded conductor; images outside the region; units ($\dfrac{q^2}{4\pi\varepsilon_0\cdot\text{length}^2}$ for a force); limits ($a\to R$ gives the plane; $a\to\infty$ gives nothing); signs (a charge is attracted to a grounded conductor, and to a neutral sphere); the factor $\tfrac12$ in the energy.
         `),
 
         Q(md`Which of these setups can **not** be solved exactly with image charges? (All conductors grounded or at the potential shown.)
@@ -3470,7 +3472,7 @@
             md`The sphere works: $q' = -\dfrac Raq$ at $\dfrac{R^2}{a}$.`,
             md`$45^\circ = 180^\circ/4$, so 7 images do it.`,
             md`Add the constant $V_0$ to the grounded-plane solution.`],
-          md`Images work only for special shapes: planes, wedges of angle $\pi/n$, spheres (and combinations built from them, like a hemisphere on a plane). A cube has edges and corners that no finite set of point images can make into an equipotential. For a cube you'd need numerical methods or separation of variables (next unit).`,
+          md`Images work only for special shapes: planes, wedges of angle $\pi/n$, spheres, cylinders with line charges parallel to them (and combinations built from these, like a hemisphere on a plane). A cube has edges and corners that no finite set of point images can make into an equipotential. For a cube you'd need numerical methods or separation of variables (next unit).`,
           { figs: { four: { svg: fFourSetups(), cap: md`Four grounded setups.` } } }),
 
         Q(md`A charge $q$ is a distance $4R$ from the center of a grounded sphere of radius $R$. What is the total charge on the sphere?`,
@@ -3546,17 +3548,17 @@
           { figHtml: fCorner() }),
 
         Q(md`Which quantity is the **same** in the real problem and in the image problem?`,
-          [md`The energy`, md`The force on $q$`, md`The potential inside the metal`, md`The total charge in all of space`], 1,
+          [md`The energy`, md`The force on $q$`, md`The potential inside the metal`, md`The charge density at the image point $(0,0,-d)$`], 1,
           [md`The energy is half (plane, sphere) or a quarter (corner) of the image system's.`,
             null,
             md`Inside the metal the real $V$ is the conductor's potential, not the image formula.`,
-            md`The image problem has extra charges that don't exist in the real one (though the induced charge mimics them outside the metal).`],
+            md`The image point is inside the metal, where the real charge density is zero. The point charge $-q$ there exists only in the image problem; the real induced charge sits on the surface.`],
           md`Everything that is determined by the field **in the region of interest** is the same: $V$ there, $\vb E$ there, the force on $q$, and $\sigma$ (from the field just outside the metal). Things that involve the rest of space, like the energy, are not.`,
           { figHtml: FP }),
 
         Q(md`Which of these **can't** be the size of the force between $q$ and a grounded sphere, just from its units?`,
           [md`$\dfrac{q^2Ra}{4\pi\varepsilon_0(a^2-R^2)^2}$`, md`$\dfrac{q^2}{4\pi\varepsilon_0(a-R)^2}$`, md`$\dfrac{q^2R}{4\pi\varepsilon_0(a^2-R^2)}$`, md`$\dfrac{q^2R^3}{4\pi\varepsilon_0a^5}$`], 2,
-          [md`$Ra/(\text{length}^4) = 1/\text{length}^2$: a force. (It is in fact the right answer.)`,
+          [md`$\dfrac{Ra}{\text{length}^4} = \dfrac{1}{\text{length}^2}$: a force. (It is in fact the right answer.)`,
             md`$1/\text{length}^2$: dimensionally a force (it's wrong, but units can't tell).`,
             null,
             md`$R^3/a^5 = 1/\text{length}^2$: a force. (It is the neutral sphere's far-away force, up to a factor 2.)`],

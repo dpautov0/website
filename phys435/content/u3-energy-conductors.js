@@ -981,8 +981,8 @@
           { nofig: 'Vector identity; no geometry.' }),
 
         Q(md`For a uniformly charged solid ball, $W = \tfrac12\int\rho V\,d\tau$. Over what region do you integrate?`,
-          [md`Over all space, since $V$ is not zero anywhere`, md`Only outside the ball, where the field lines go`, md`Only over the surface of the ball`, md`Over the ball, where $\rho\neq0$; a bigger region adds nothing`], 3,
-          [md`You may, but outside the ball $\rho=0$, so those regions add nothing even though $V\neq0$ there.`, md`That region matters for $\int E^2$ (along with the inside). For $\int\rho V$, the outside has $\rho = 0$.`, md`That would be a surface charge ($\tfrac12\int\sigma V\,da$). Here the charge fills the volume.`, null],
+          [md`Over all space, and the region outside the ball adds to $W$ because $V\neq0$ there`, md`Only outside the ball, where the field lines go`, md`Only over the surface of the ball`, md`Over the ball, where $\rho\neq0$; a bigger region adds nothing`], 3,
+          [md`Outside the ball $\rho=0$, so $\rho V = 0$ there even though $V\neq0$: the outside adds nothing. (Integrating over all space is allowed; it just adds zeros.)`, md`That region matters for $\int E^2$ (along with the inside). For $\int\rho V$, the outside has $\rho = 0$.`, md`That would be a surface charge ($\tfrac12\int\sigma V\,da$). Here the charge fills the volume.`, null],
           md`The integrand $\rho V$ vanishes wherever $\rho = 0$, so only the charged region contributes. Compare: $\int E^2$ must run over all of space, because the field extends far beyond the charge. Two formulas, two very different regions, same total.`,
           { figHtml: fBall() }),
 
@@ -1029,7 +1029,7 @@
           { figHtml: fBall() }),
 
         Q(md`Dry air breaks down at about $E = 3\times10^6$ V/m. Roughly how much energy per cubic metre does a field that strong store?`,
-          [md`About $80$ J/m$^3$`, md`About $4\times10^{12}$ J/m$^3$`, md`About $40$ J/m$^3$`, md`About $3\times10^{-5}$ J/m$^3$`], 2,
+          [md`About $80$ J/m$^3$`, md`About $4.5\times10^{12}$ J/m$^3$`, md`About $40$ J/m$^3$`, md`About $3\times10^{-5}$ J/m$^3$`], 2,
           [md`That's $\varepsilon_0E^2$: the $\tfrac12$ is missing.`, md`That's $E^2/2$ without the factor $\varepsilon_0 = 8.85\times10^{-12}$ F/m.`, null, md`That's $\varepsilon_0E$, with $E$ not squared.`],
           md`$u = \tfrac12\varepsilon_0E^2 = \tfrac12(8.85\times10^{-12})(3\times10^6)^2\approx40$ J/m$^3$. A litre of such field holds only $0.04$ J, which is why practical capacitors use very thin gaps filled with materials that tolerate larger fields.`,
           { nofig: 'A numbers question; no geometry.' }),
@@ -1978,10 +1978,11 @@
       if (ground) { f.line(cx, cy + b, cx, cy + b + 20); f.ground(cx, cy + b + 20); }
       return f.svg();
     };
-    const fHW39 = (sol) => {
+    const fHW39 = (sol, ground = false) => {
       const f = PF.fig(), cx = 130, cy = 125, R = 30, a = 58, b = 90;
       metal(f, [circ(cx, cy, R)]);
       ringMetal(f, cx, cy, a, b);
+      if (ground) { f.line(cx, cy + b, cx, cy + b + 22); f.ground(cx, cy + b + 22); }
       const P = (r, deg) => [cx + r * Math.cos(deg * DEG), cy - r * Math.sin(deg * DEG)];
       f.line(cx, cy, ...P(R, 150), { cls: 'dim thin' }); f.tag(...P(R, 150), 'R', 'tl', 6);
       f.line(cx, cy, ...P(a, 30), { cls: 'dim thin' });
@@ -2258,6 +2259,12 @@
           figs: { charges: { svg: fHW39(true), cap: 'Charges: $+q$ on the sphere, $-q$ on the shell\'s inner surface, $+q$ on its outer surface (before grounding). The dashed sphere in the metal is the Gaussian surface.' },
             V: { svg: plotHW39(), cap: '$V(r)$ with $a = 2R$, $b = 3R$. Solid: isolated shell. Dashed: grounded shell. Flat where there is metal.' } },
         }),
+
+        Q(md`A student argues that in part (c) of Problem 2.39 the field in the gap $R<r<a$ must vanish, "because the shell is grounded, so everything inside it is at $V = 0$". Which condition does that answer break?`,
+          [md`$V = 0$ on the shell`, md`$\vb E = 0$ in the shell's metal`, md`The sphere is isolated with charge $q$: Gauss on a sphere in the gap encloses $q$, so $E\neq0$ there`, md`$V\to0$ far away`], 2,
+          [md`The student's answer keeps the shell at $V = 0$, so this one is satisfied.`, md`The student's field is zero in the metal too, so this one is satisfied.`, null, md`Outside the grounded shell the student has $V = 0$, which also satisfies this.`],
+          md`Grounding fixes the **shell's** potential, not the sphere's charge. The sphere never touches the ground wire, so it keeps $q$, and Gauss in the gap gives $E = \dfrac{q}{4\pi\varepsilon_0 r^2}$. The sphere then sits **above** the shell, at $V(R) = \dfrac{q}{4\pi\varepsilon_0}\left(\dfrac1R - \dfrac1a\right)$. A grounded conductor is at $V = 0$ throughout its **metal**; the space it encloses is at $V = 0$ only if that space holds no charge.`,
+          { figHtml: fHW39(false, true) }),
 
         P({
           id: 'HW3-2.40', src: 'HW 3 · Hybrid 2.40', title: 'Two cavities with charges', big: true,

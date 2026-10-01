@@ -1937,7 +1937,7 @@
           md`The square root should be expanded first; done correctly, $V$ stays finite.`,
           md`$V$ blows up only at $z=0$.`], 0,
         [null,
-          md`The field of an infinite plane is the finite $\sigma/(2\ep)$ (Gauss). Only the potential, referenced to infinity, misbehaves.`,
+          md`The field of an infinite plane is the finite $\tfrac{\sigma}{2\ep}$ (Gauss). Only the potential, referenced to infinity, misbehaves.`,
           md`For fixed $z$, $\sqrt{R^2+z^2}\approx R\to\infty$. No expansion rescues it.`,
           md`The divergence is at every $z$: each value carries the same infinite constant $\tfrac{\sigma R}{2\ep}$.`],
         md`$V(z)=\dfrac{\sigma}{2\ep}\left(\sqrt{R^2+z^2}-z\right)\approx\dfrac{\sigma R}{2\ep}-\dfrac{\sigma z}{2\ep}$ for $R\gg z$. The huge constant $\dfrac{\sigma R}{2\ep}$ is an artifact of the reference at infinity. Drop it (move the reference to the plane) and you get $V=-\dfrac{\sigma z}{2\ep}$, the result from Lesson 2.`,
@@ -2559,11 +2559,11 @@
       `, { jump: { svg: figShellEjump(), cap: 'Lecture 5: the shell\'s field jumps by $\\sigma/\\varepsilon_0$ at $r=R$.' } }),
       Q(md`From the graph, by how much does $E$ jump at the shell?`,
         [md`$\dfrac{\sigma}{2\ep}$`, md`$\dfrac{\sigma}{\ep}$`, md`$\dfrac{\sigma R}{\ep}$`, md`$\dfrac{4\pi R^2\sigma}{\ep}$`], 1,
-        [md`$\sigma/(2\ep)$ is the field on **one** side of an isolated flat sheet. The jump from one side to the other is twice that.`,
+        [md`$\tfrac{\sigma}{2\ep}$ is the field on **one** side of an isolated flat sheet. The jump from one side to the other is twice that.`,
           null,
           md`Units: $\sigma R/\ep$ is a potential (V), not a field. It is in fact the shell's potential $V(R)$.`,
           md`That is $q/\ep$, the total flux through a sphere around the shell, not a field.`],
-        md`Just outside, $E=\dfrac{\sigma R^2}{\ep R^2}=\dfrac{\sigma}{\ep}$; just inside, $E=0$. The jump is $\sigma/\ep$. Watch the classic slip: $\sigma/(2\ep)$ is the isolated-sheet field on each side, and the jump across that sheet is again $\tfrac{\sigma}{2\ep}-\left(-\tfrac{\sigma}{2\ep}\right)=\tfrac{\sigma}{\ep}$.`,
+        md`Just outside, $E=\dfrac{\sigma R^2}{\ep R^2}=\dfrac{\sigma}{\ep}$; just inside, $E=0$. The jump is $\sigma/\ep$. Watch the classic slip: $\tfrac{\sigma}{2\ep}$ is the isolated-sheet field on each side, and the jump across that sheet is again $\tfrac{\sigma}{2\ep}-\left(-\tfrac{\sigma}{2\ep}\right)=\tfrac{\sigma}{\ep}$.`,
         { figHtml: figShellEjump() }),
       P({
         title: 'Read σ off an E(r) graph',
@@ -2787,19 +2787,19 @@
       `, { svc: { svg: figSheetVsConductor(), cap: md`Same $\sigma$, same jump $\sigma/\ep$, different split between the two sides.` } }),
       Q(md`An isolated flat sheet and the flat face of a conductor carry the same $\sigma>0$. Which statement is correct?`,
         [md`The conductor's field outside is half the sheet's.`,
-          md`The jump in $E^\perp$ is $\sigma/\ep$ for the conductor but $\sigma/(2\ep)$ for the sheet.`,
+          md`The jump in $E^\perp$ is $\sigma/\ep$ for the conductor but $\tfrac{\sigma}{2\ep}$ for the sheet.`,
           md`The jump is $\sigma/\ep$ for both; the sheet has $\tfrac{\sigma}{2\ep}$ on each side, the conductor $\tfrac{\sigma}{\ep}$ outside and $0$ inside.`,
           md`Both have $\tfrac{\sigma}{2\ep}$ on each side, since only the local $\sigma$ matters.`], 2,
-        [md`Backwards: the conductor's outside field is $\sigma/\ep$, twice the sheet's $\sigma/(2\ep)$.`,
+        [md`Backwards: the conductor's outside field is $\sigma/\ep$, twice the sheet's $\tfrac{\sigma}{2\ep}$.`,
           md`The jump is fixed by the local $\sigma$ alone: $\sigma/\ep$ for both. Only the split differs.`,
           null,
           md`The jump depends only on the local $\sigma$, but the individual fields depend on all the other charges. Inside a conductor the field is zero.`],
         md`The boundary condition fixes the difference, $\sigma/\ep$, not the individual values. The isolated sheet splits it symmetrically; the conductor puts all of it outside, because the conductor's other charges arrange themselves to cancel the field inside.`,
         { figHtml: figSheetVsConductor() }),
       Q(md`Just outside a conductor, $E=3.0$ kV/m pointing away from the surface. What is $\sigma$ there?`,
-        [md`$+26.6$ nC/m²`, md`$+13.3$ nC/m²`, md`$-26.6$ nC/m²`, md`$0$, since $\vb E=0$ inside`], 0,
+        [md`$+26.6$ nC/m²`, md`$+53.1$ nC/m²`, md`$-26.6$ nC/m²`, md`$0$, since $\vb E=0$ inside`], 0,
         [null,
-          md`That uses the isolated-sheet formula $E=\sigma/(2\ep)$. At a conductor $E_{\text{out}}=\sigma/\ep$.`,
+          md`That uses the isolated-sheet formula $E=\tfrac{\sigma}{2\ep}$, so $\sigma=2\ep E$. At a conductor the field inside is zero and the whole jump is outside: $E_{\text{out}}=\sigma/\ep$.`,
           md`Field pointing away from the surface means positive charge.`,
           md`$\vb E=0$ inside is exactly why the jump, $3.0$ kV/m, is all on the outside. The surface is charged.`],
         md`$\sigma=\ep E_{\text{outside}}\cdot\uv n=(8.85\times10^{-12})(3000)=2.66\times10^{-8}$ C/m². The boundary condition with $\vb E_{\text{inside}}=0$.`,
@@ -2821,7 +2821,7 @@
         figHtml: figEtwoJumps(),
         hints: [md`At each shell: $E_{\text{just out}}-E_{\text{just in}}=\sigma/\ep$ ("above" = outside).`, md`Inside the inner shell $E=0$.`],
         parts: [
-          { lbl: '\\sigma_1', ans: 79.69, unit: 'nC/m²' },
+          { lbl: '\\sigma_1', ans: 79.65, unit: 'nC/m²' },
           { lbl: '\\sigma_2', ans: -13.28, unit: 'nC/m²' },
           { lbl: md`The total charge of the two shells together is`, mc: [md`positive`, md`negative`, md`zero`], a: 0, why: [null, md`Outside both shells $E>0$ (outward), so by Gauss the total enclosed charge is positive.`, md`$E\neq0$ outside both shells, so the total is not zero.`] },
         ],
@@ -2846,7 +2846,7 @@
         !!key Patterns to remember
           - $\vb E_{\text{above}}-\vb E_{\text{below}}=\dfrac{\sigma}{\ep}\uv n$, $\uv n$ from below to above. Only the normal component jumps; every tangential component is continuous.
           - Pillbox (Gauss) gives the $E^\perp$ condition; thin loop ($\oint\vb E\cdot d\vb l=0$) gives the $E^\parallel$ condition. Shrink the thickness to zero in both.
-          - The jump is $\sigma/\ep$, never $\sigma/(2\ep)$. The split depends on other charges: isolated sheet $\pm\tfrac{\sigma}{2\ep}$; conductor $\tfrac{\sigma}{\ep}$ outside, 0 inside.
+          - The jump is $\sigma/\ep$, never $\tfrac{\sigma}{2\ep}$. The split depends on other charges: isolated sheet $\pm\tfrac{\sigma}{2\ep}$; conductor $\tfrac{\sigma}{\ep}$ outside, 0 inside.
           - Reading graphs: a jump in $E$ means surface charge; a corner in $E$ means volume charge starting or stopping.
           - Field into a surface means negative $\sigma$; field out of it, positive.
           - Data with a tangential mismatch across a surface are impossible.
@@ -2947,6 +2947,37 @@
   });
   // V(r) for positive shells at R and 2R, normalized
   const V2pos = (r) => (r < 1 ? 1 : r < 2 ? (1 / r + 0.5) / 1.5 : 2 / (1.5 * r));
+  // thin spherical shell with regions I (inside) and II (outside) and the normal n = r-hat
+  const figShellRegions = () => {
+    const f = PF.fig();
+    const cx = 120, cy = 115, R = 70;
+    f.circle(cx, cy, R, { cls: 'thick' });
+    f.dot(cx, cy, 2.2);
+    f.line(cx, cy, cx + R * Math.cos(150 * DEG), cy - R * Math.sin(150 * DEG), { cls: 'dim' });
+    f.label(95, 88, 'R', 'c', 'small');
+    f.label(128, 142, md`\text{I}`, 'c');
+    f.label(222, 62, md`\text{II}`, 'c');
+    f.label(50, 42, md`\sigma`, 'c', 'small');
+    const a = -30 * DEG, s0 = [cx + R * Math.cos(a), cy - R * Math.sin(a)], s1 = [cx + (R + 34) * Math.cos(a), cy - (R + 34) * Math.sin(a)];
+    f.arrow(s0[0], s0[1], s1[0], s1[1], { hs: 7 });
+    f.tag(s1[0], s1[1], md`\uv n=\uv r`, 'r', 5);
+    return f.svg();
+  };
+  // end view of a long charged tube, regions I and II, reference V = 0 on the tube
+  const figTubeRegions = () => {
+    const f = PF.fig();
+    const cx = 110, cy = 110, R = 60;
+    f.circle(cx, cy, R, { cls: 'thick' });
+    for (let k = 0; k < 12; k++) plus(f, cx + (R + 9) * Math.cos((k * 30 + 15) * DEG), cy - (R + 9) * Math.sin((k * 30 + 15) * DEG), 3);
+    f.dot(cx, cy, 2.2);
+    f.line(cx, cy, cx + R * Math.cos(-40 * DEG), cy - R * Math.sin(-40 * DEG), { cls: 'dim' });
+    f.label(143, 118, 'R', 'c', 'small');
+    f.label(92, 96, md`\text{I}`, 'c');
+    f.label(222, 40, md`\text{II}`, 'c');
+    f.label(28, 40, md`\sigma`, 'c', 'small');
+    f.text(cx, cy + R + 26, 'V = 0 on the tube (reference)', 't');
+    return f.svg();
+  };
 
   // ================================================================== Lesson 7
   const L7 = {
@@ -3063,8 +3094,8 @@
         hints: [md`First check $V$ is continuous at both radii. Then at each shell use $\dfrac{\partial V_{\text{out}}}{\partial r}-\dfrac{\partial V_{\text{in}}}{\partial r}=-\dfrac{\sigma}{\ep}$.`, md`Slopes: between the shells $dV/dr=-60/r^2$; outside $dV/dr=-30/r^2$; inside $0$.`],
         parts: [
           { lbl: md`Is $V$ continuous at both shells?`, mc: [md`yes`, md`no, it jumps at 0.10 m`, md`no, it jumps at 0.30 m`], a: 0, why: [null, md`At 0.10 m: $60/0.10-100=500$ V, equal to the inside value.`, md`At 0.30 m: $60/0.30-100=100$ V and $30/0.30=100$ V.`] },
-          { lbl: '\\sigma_1', ans: 53.13, unit: 'nC/m²' },
-          { lbl: '\\sigma_2', ans: -2.951, unit: 'nC/m²' },
+          { lbl: '\\sigma_1', ans: 53.10, unit: 'nC/m²' },
+          { lbl: '\\sigma_2', ans: -2.950, unit: 'nC/m²' },
         ],
         sol: md`
           **Conditions at each shell** ("above" = outside): $V$ continuous; $\partial_rV_{\text{out}}-\partial_rV_{\text{in}}=-\sigma/\ep$.
@@ -3075,7 +3106,7 @@
 
           **Outer shell:** just inside $-60/(0.30)^2=-666.7$ V/m, just outside $-30/(0.30)^2=-333.3$ V/m. Difference $+333.3$ V/m, so $\sigma_2=-333.3\,\ep=-2.95$ nC/m².
 
-          Check with charges: $q_1=4\pi(0.10)^2\sigma_1=6.68$ nC gives $\kq q_1=60$ V·m, the coefficient between the shells; $q_2=4\pi(0.30)^2\sigma_2=-3.34$ nC, and $\kq(q_1+q_2)=30$ V·m, the coefficient outside. The outer shell's corner is gentle because its $\sigma$ is small.
+          Check with charges: $q_1=4\pi(0.10)^2\sigma_1=6.67$ nC gives $\kq q_1=60$ V·m, the coefficient between the shells; $q_2=4\pi(0.30)^2\sigma_2=-3.34$ nC, and $\kq(q_1+q_2)=30$ V·m, the coefficient outside. The outer shell's corner is gentle because its $\sigma$ is small.
         `,
       }),
       RF(md`
@@ -3092,8 +3123,8 @@
         The surface is an equipotential, so $\vb E$ just outside is perpendicular to it (no tangential component, by continuity of $E^\parallel$ with the zero field inside). The method of images and separation of variables use $\sigma=-\ep\,\partial V/\partial n$ constantly: find $V$ outside a conductor, then differentiate at the surface to get the induced charge.
       `, { cond: { svg: figConductorPt({ field: true }), cap: md`At a conductor the whole jump $\sigma/\ep$ is on the outside, and the field leaves perpendicular to the surface.` } }),
       Q(md`Just outside a conductor, $V$ falls by 20 V over the first 1.0 mm out from the surface (a uniform field there). What is $\sigma$ at that spot?`,
-        [md`$+88.5$ nC/m²`, md`$-177$ nC/m²`, md`$0$, since $V$ is constant on a conductor`, md`$+177$ nC/m²`], 3,
-        [md`That is the isolated-sheet formula $\sigma/(2\ep)$. At a conductor, $\sigma=\ep E_{\text{out}}$ with no factor of 2.`,
+        [md`$+354$ nC/m²`, md`$-177$ nC/m²`, md`$0$, since $V$ is constant on a conductor`, md`$+177$ nC/m²`], 3,
+        [md`That uses the isolated-sheet formula $E=\tfrac{\sigma}{2\ep}$, i.e. $\sigma=2\ep E$. At a conductor the field inside is zero, so the whole jump is outside: $\sigma=\ep E_{\text{out}}$, with no factor of 2.`,
           md`Sign: $\partial V/\partial n=-2.0\times10^4$ V/m, and $\sigma=-\ep\,\partial V/\partial n>0$.`,
           md`$V$ is constant on and inside the conductor, but it changes outside; the outside slope gives $\sigma$.`,
           null],
@@ -3124,8 +3155,8 @@
         figHtml: figConductorSphere(),
         hints: [md`Inside the conductor $V=V_0$, so $\partial V/\partial r=0$ there.`, md`Just outside, $\dfrac{\partial V}{\partial r}=-\dfrac{V_0R}{r^2}\Big|_R=-\dfrac{V_0}{R}$. Then $\sigma=-\ep\left(\dfrac{\partial V_{\text{out}}}{\partial r}-\dfrac{\partial V_{\text{in}}}{\partial r}\right)$.`],
         parts: [
-          { lbl: '\\sigma', ans: 88.54, unit: 'nC/m²' },
-          { lbl: 'q', ans: 11.13, unit: 'nC' },
+          { lbl: '\\sigma', ans: 88.50, unit: 'nC/m²' },
+          { lbl: 'q', ans: 11.12, unit: 'nC' },
         ],
         sol: md`
           **Conditions at $r=R$** ("above" = outside): $V$ continuous ($V_0R/R=V_0$, consistent); $\partial_rV_{\text{out}}-\partial_rV_{\text{in}}=-\sigma/\ep$.
@@ -3146,7 +3177,7 @@
 
           (c) Check that the result of Ex. 2.8 is consistent with boundary conditions 2.34 and 2.36.
 
-          (Ex. 2.5: infinite plane, $\tfrac{\sigma}{2\ep}$ away from it on each side. Ex. 2.6: planes $+\sigma$ and $-\sigma$. Prob. 2.11: spherical shell by Gauss's law. Ex. 2.8: potential of a spherical shell, $V=R\sigma/\ep$ inside and $R^2\sigma/(\ep r)$ outside. Eq. 2.33: $\vb E_{\text{above}}-\vb E_{\text{below}}=\tfrac{\sigma}{\ep}\uv n$; 2.34: $V_{\text{above}}=V_{\text{below}}$; 2.36: $\tfrac{\partial V_{\text{above}}}{\partial n}-\tfrac{\partial V_{\text{below}}}{\partial n}=-\tfrac{\sigma}{\ep}$.)
+          (Ex. 2.5: infinite plane, $\tfrac{\sigma}{2\ep}$ away from it on each side. Ex. 2.6: planes $+\sigma$ and $-\sigma$. Prob. 2.11: spherical shell by Gauss's law. Ex. 2.8: potential of a spherical shell, $V=R\sigma/\ep$ inside and $\tfrac{R^2\sigma}{\ep r}$ outside. Eq. 2.33: $\vb E_{\text{above}}-\vb E_{\text{below}}=\tfrac{\sigma}{\ep}\uv n$; 2.34: $V_{\text{above}}=V_{\text{below}}$; 2.36: $\tfrac{\partial V_{\text{above}}}{\partial n}-\tfrac{\partial V_{\text{below}}}{\partial n}=-\tfrac{\sigma}{\ep}$.)
         `,
         figHtml: fig231(),
         hints: [
@@ -3157,7 +3188,7 @@
         ],
         parts: [
           { lbl: md`(a) For the infinite plane, $\vb E_{\text{above}}-\vb E_{\text{below}}$ is`, mc: [md`$\vb 0$, since the two fields have equal size`, md`$\dfrac{\sigma}{2\ep}\uv n$`, md`$\dfrac{\sigma}{\ep}\uv n$`, md`$\dfrac{2\sigma}{\ep}\uv n$`], a: 2, why: [md`Equal size but opposite directions: $\tfrac{\sigma}{2\ep}\uv n-\left(-\tfrac{\sigma}{2\ep}\uv n\right)$.`, md`That is the field on one side, not the difference.`, null, md`Each side contributes $\tfrac{\sigma}{2\ep}$, so the difference is $\tfrac{\sigma}{\ep}$.`] },
-          { lbl: md`(a) Two planes, at the right plate ($-\sigma$), with $\uv n=+\uv x$ pointing out of the gap: $\vb E_{\text{above}}-\vb E_{\text{below}}=$`, mc: [md`$+\dfrac{\sigma}{\ep}\uv x$`, md`$\vb 0$`, md`$-\dfrac{\sigma}{2\ep}\uv x$`, md`$-\dfrac{\sigma}{\ep}\uv x$`], a: 3, why: [md`Above (outside) the field is 0 and below (in the gap) it is $+\tfrac{\sigma}{\ep}\uv x$: the difference is negative, matching the plate's $-\sigma$.`, md`The field is $\sigma/\ep$ in the gap and 0 outside: there is a jump.`, md`The field in the gap is $\sigma/\ep$ (both plates add), not $\sigma/(2\ep)$.`, null] },
+          { lbl: md`(a) Two planes, at the right plate ($-\sigma$), with $\uv n=+\uv x$ pointing out of the gap: $\vb E_{\text{above}}-\vb E_{\text{below}}=$`, mc: [md`$+\dfrac{\sigma}{\ep}\uv x$`, md`$\vb 0$`, md`$-\dfrac{\sigma}{2\ep}\uv x$`, md`$-\dfrac{\sigma}{\ep}\uv x$`], a: 3, why: [md`Above (outside) the field is 0 and below (in the gap) it is $+\tfrac{\sigma}{\ep}\uv x$: the difference is negative, matching the plate's $-\sigma$.`, md`The field is $\sigma/\ep$ in the gap and 0 outside: there is a jump.`, md`The field in the gap is $\sigma/\ep$ (both plates add), not $\tfrac{\sigma}{2\ep}$.`, null] },
           { lbl: 'E\\ \\text{outside the tube}\\ (s>R)', expr: 'sigma*R/(eps0*s)', vars: { sigma: [0.5, 2], R: [0.5, 1.2], eps0: [0.5, 2], s: [1.5, 3] } },
           { lbl: md`(b) Jump in $E_s$ at $s=R$, in units of $\sigma/\ep$`, ans: 1, unit: '' },
           { lbl: md`(c) At $r=R$, Ex. 2.8 gives $V_{\text{in}}$ and $V_{\text{out}}$ equal to`, mc: [md`$\dfrac{R\sigma}{\ep}$ on both sides`, md`$\dfrac{R\sigma}{\ep}$ inside and $0$ outside`, md`$\dfrac{R\sigma}{\ep}$ inside and $\dfrac{R\sigma}{2\ep}$ outside`, md`$0$ inside and $\dfrac{R\sigma}{\ep}$ outside`], a: 0, why: [null, md`Outside, $V=\tfrac{R^2\sigma}{\ep r}$, which at $r=R$ is $\tfrac{R\sigma}{\ep}$.`, md`$\tfrac{R^2\sigma}{\ep R}=\tfrac{R\sigma}{\ep}$; no factor of 1/2.`, md`Inside, $V=\tfrac{R\sigma}{\ep}$, constant but not zero.`] },
@@ -3241,10 +3272,10 @@
         figHtml: figVplates(),
         hints: [md`Slopes: $0$, $+500$ V/m, $0$, $-500$ V/m, $0$ (10 V over 2 cm is 500 V/m).`, md`At each plane, with $\uv n=+\uv x$: $\sigma=-\ep\left(\dfrac{dV}{dx}\Big|_{\text{right}}-\dfrac{dV}{dx}\Big|_{\text{left}}\right)$.`],
         parts: [
-          { lbl: '\\sigma(x=0)', ans: -4.427, unit: 'nC/m²' },
-          { lbl: '\\sigma(x=2\\text{ cm})', ans: 4.427, unit: 'nC/m²' },
-          { lbl: '\\sigma(x=4\\text{ cm})', ans: 4.427, unit: 'nC/m²' },
-          { lbl: '\\sigma(x=6\\text{ cm})', ans: -4.427, unit: 'nC/m²' },
+          { lbl: '\\sigma(x=0)', ans: -4.425, unit: 'nC/m²' },
+          { lbl: '\\sigma(x=2\\text{ cm})', ans: 4.425, unit: 'nC/m²' },
+          { lbl: '\\sigma(x=4\\text{ cm})', ans: 4.425, unit: 'nC/m²' },
+          { lbl: '\\sigma(x=6\\text{ cm})', ans: -4.425, unit: 'nC/m²' },
           { lbl: 'E_x\\ (0<x<2\\text{ cm})', ans: -500, unit: 'V/m' },
           { lbl: md`What could the region $2<x<4$ cm be?`, mc: [md`the inside of a conducting slab`, md`a slab of uniform positive charge`, md`empty space with a uniform field`], a: 0, why: [null, md`Uniform volume charge would curve $V$ (Poisson). Here $V$ is flat.`, md`A flat $V$ means zero field, not a uniform nonzero one.`] },
         ],

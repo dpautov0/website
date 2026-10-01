@@ -503,7 +503,7 @@
         box.classList.toggle('bad', !r.ok);
         if (!r.ok) {
           allOk = false;
-          const lbl = parts.length > 1 && pt.lbl && !pt.mc ? `${pt.lbl.includes('$') ? pt.lbl : `$${pt.lbl}$`}: ` : '';
+          const lbl = parts.length > 1 && pt.lbl && !pt.mc ? `${lblTex(pt.lbl)}: ` : '';
           if (r.msg || r.err) msgs.push(lbl + (r.err || r.msg));
         }
       });
@@ -560,8 +560,11 @@
     return s + (c > need ? `<em>+${c - need}</em>` : '');
   }
 
+  // answer-box label: TeX unless it is plain words (no TeX characters, a space, a 4+ letter word)
+  const lblTex = (l) => (l.includes('$') || (!/[\_^{}]/.test(l) && /\s/.test(l) && /[A-Za-z]{4,}/.test(l)) ? l : `$${l}$`);
+
   function partHtml(pt, i) {
-    const lbl = pt.lbl ? `<span class="pl">${pt.lbl.includes('$') ? pt.lbl : `$${pt.lbl}$`}${pt.mc ? '' : ' ='}</span>` : '';
+    const lbl = pt.lbl ? `<span class="pl">${inline(lblTex(pt.lbl))}${pt.mc ? '' : ' ='}</span>` : '';
     if (pt.mc) {
       return `<div class="part mc" data-part="${i}">${pt.lbl ? `<div class="mc-q">${inline(pt.lbl)}</div>` : ''}<div class="opts">${pt.mc.map((o, j) => `<button type="button" class="opt" data-j="${j}">${inline(o)}</button>`).join('')}</div><span class="mark"></span></div>`;
     }

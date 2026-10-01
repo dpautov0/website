@@ -352,7 +352,7 @@
   }
   const SYMM = across([
     { f: (y) => Math.sin(PI * y), lab: 'n=1', labAt: 0.5, sides: ['t', 'tr', 'tl'] },
-    { f: (y) => Math.sin(2 * PI * y), cls: 'dim', lab: 'n=2', labAt: 0.25 },
+    { f: (y) => Math.sin(2 * PI * y), cls: 'dim', lab: 'n=2', labAt: 0.75, sides: ['b', 'br', 'bl'] },
     { f: (y) => Math.sin(3 * PI * y), cls: 'dash', lab: 'n=3', labAt: 0.85 },
   ], { yl: '\\sin(n\\pi y/a)', vlines: [[0.5, '']] });
   const shape = (fn, o = {}) => plt(Object.assign({ w: 150, h: 104, x: [0, 1], y: [-1.25, 1.25], zero: true, ml: 26, mr: 16, mt: 10, mb: 22, xt: [[1, 'a']], yt: [[1, 'V_0']], curves: [{ f: fn, n: 400 }] }, o));
@@ -1879,7 +1879,7 @@
 
           Q(md`In Ex. 3.4, why can't you set $A = 0$ (drop $e^{kx}$) as in the slot?`,
             [md`The region is finite in $x$; there is no condition at infinity, and $e^{kx}$ stays bounded for $|x| < b$.`, md`Because the faces at $\pm b$ are live.`, md`Because $\cosh$ is required by Laplace's equation.`, md`You can; the answer is the same.`], 0,
-            [null, md`Live faces fix coefficients; they don't remove functions. The reason is that nothing blows up in a finite region.`, md`Laplace's equation allows $e^{kx}$, $e^{-kx}$ or any combination. $\cosh$ comes from the symmetry.`, md`Then $V(-b, y)$ would be tiny for large $n$ and BC #4 would fail.`],
+            [null, md`Live faces fix coefficients; they don't remove functions. The reason is that nothing blows up in a finite region.`, md`Laplace's equation allows $e^{kx}$, $e^{-kx}$ or any combination. $\cosh$ comes from the symmetry.`, md`Keep only $e^{-kx}$ and fit $V_0$ at $x = b$: each term is then larger at $x = -b$ by the factor $e^{2n\pi b/a}$, so BC #4, $V(-b, y) = V_0$, fails badly.`],
             md`$A = 0$ in the slot came from BC #4, "$V \to 0$ as $x \to \infty$". In a closed pipe that condition doesn't exist, so both exponentials stay and the symmetry decides the combination.`,
             { figHtml: G_EX34 }),
 
@@ -2192,7 +2192,7 @@
             The slowest mode is $(1, 1)$, with $\gamma_{11} = \pi\sqrt{1/a^2 + 1/b^2}$: a 3-D pipe screens its live end faster than the 2-D slot of the same width ($\sqrt2\,\pi/a$ instead of $\pi/a$ for a square pipe).
           `, { pipe: { svg: PIPE3D, cap: 'Griffiths Fig. 3.22: the pipe runs along $x$ to infinity; its end at $x = 0$ (thick, shaded) is held at $V_0(y,z)$.' } }),
 
-          Q(md`In a 3-D separation problem, how many of the three separation constants can you choose independently?`,
+          Q(md`In a 3-D separation problem, how many of the three separation constants are independent?`,
             [md`One`, md`Two`, md`Three`, md`None; they are fixed by Laplace's equation.`], 1,
             [md`In 2-D there is one ($k^2$, $-k^2$). In 3-D one more is free.`, null, md`They must add to zero, which removes one.`, md`Laplace's equation fixes only their sum.`],
             md`$X''/X + Y''/Y + Z''/Z = 0$: three constants, one constraint. The two oscillating directions each get their own quantized constant ($k = n\pi/a$, $l = m\pi/b$), and the third is $k^2 + l^2$.`,
@@ -2434,7 +2434,7 @@
           Q(md`A student lists the slot's boundary conditions as: $V = 0$ at $y = 0$; $V = 0$ at $y = a$; $V = V_0(y)$ at $x = 0$. What is missing, and what goes wrong without it?`,
             [md`Nothing; three conditions are enough in 2-D.`, md`$V \to 0$ as $x \to \infty$. Without it, $Ae^{+kx}$ terms are allowed and the solution is not unique.`, md`$\partial V/\partial z = 0$. Without it the problem is 3-D.`, md`$V = 0$ at $x = a$.`], 1,
             [md`Two per variable: four in 2-D. With three, a constant per mode is left undetermined.`, null, md`That's a statement about the dimension, not a boundary condition on the 2-D region.`, md`The slot has no wall at $x = a$; it runs to infinity.`],
-            md`The fourth condition sits at infinity. It is the one that kills $e^{+kx}$; without it you could add $C\,e^{+kx}\sin ky$ with any $C$ and still satisfy the other three.`,
+            md`The fourth condition sits at infinity. It is the one that kills $e^{+kx}$. Without it you could add $C\sinh\tfrac{n\pi x}{a}\sin\tfrac{n\pi y}{a}$ with any $C$: it vanishes on both plates and on the strip ($\sinh 0 = 0$), so the other three conditions still hold, and the answer is not unique.`,
             { figHtml: SLOT }),
 
           Q(md`"The top is made of a separate sheet of metal, insulated from the others, and held at a constant potential $V_0$." Which condition does this sentence give?`,
@@ -2752,7 +2752,15 @@
 
               (c) $V > 0$ inside and $V = 0$ on the plate, so $V$ grows going up; $\vb E = -\nabla V$ points down into the plate, ending on negative induced charge.
 
-              **Checks:** units $\varepsilon_0V_0/a$ = C/m². The charge piles up near the strip ($\sigma \propto 1/x$ for $x \ll a$, the corner singularity) and dies exponentially far away.
+              (d) On the strip the normal out of the metal is $\hat{\mathbf n} = +\hat{\mathbf x}$, so $\sigma_s = -\varepsilon_0\,\partial V/\partial x$ at $x = 0$. With $u = \dfrac{\sin(\pi y/a)}{\sinh(\pi x/a)}$:
+
+              $$\frac{\partial V}{\partial x} = \frac{2V_0}{\pi}\,\frac{1}{1 + u^2}\,\frac{\partial u}{\partial x} = -\frac{2V_0}{a}\,\frac{\sin(\pi y/a)\cosh(\pi x/a)}{\sinh^2(\pi x/a) + \sin^2(\pi y/a)} \;\xrightarrow{\;x = 0\;}\; -\frac{2V_0}{a\,\sin(\pi y/a)},$$
+
+              $$\sigma_s(y) = \frac{2\varepsilon_0V_0}{a\,\sin(\pi y/a)} > 0 .$$
+
+              Positive on the strip, where field lines start; negative on the plates, where they end. Both densities blow up at the corners, where $V$ jumps from $V_0$ to $0$ across the insulating gap. (Differentiating the series term by term here gives $\tfrac{4\varepsilon_0V_0}{a}\sum_{\text{odd}}\sin\tfrac{n\pi y}{a}$, which does not converge in the ordinary sense. That is why the closed form is used.)
+
+              **Checks:** units $\varepsilon_0V_0/a$ = C/m². The plate charge piles up near the strip ($\sigma \propto 1/x$ for $x \ll a$, the corner singularity) and dies exponentially far away. The strip's density is smallest at its middle, $2\varepsilon_0V_0/a$.
             `,
           }),
 
@@ -2821,7 +2829,7 @@
             ],
             parts: [
               { lbl: md`(a) $C_2/V_0$`, ans: 8 / (3 * PI), unit: '' },
-              { lbl: md`(b) $V(a/2, a/4)/V_0$`, ans: 0.036664, unit: '' },
+              { lbl: md`(b) $V(a/2, a/4)/V_0$, one term`, ans: 0.036681, unit: '' },
             ],
             sol: md`
               **BCs:** (1), (2) $V = 0$ on the plates; (4) $V \to 0$ far away (homogeneous: the lecture's functions); (3) $V(0, y) = V_0\cos(\pi y/a)$ (live).
