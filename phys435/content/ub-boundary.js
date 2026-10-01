@@ -503,6 +503,8 @@
         | symmetry | on a mirror plane: $\partial V/\partial n=0$ (symmetric) or $V=0$ (antisymmetric) | equal or opposite charges at mirror points |
         | interface (matching) | $V$ continuous and $\dfrac{\partial V_{\text{above}}}{\partial n}-\dfrac{\partial V_{\text{below}}}{\partial n}=-\dfrac{\sigma}{\varepsilon_0}$ | surface charge glued on; a region split in two |
 
+        Signs: at a conductor $\hat{\mathbf n}$ points **out of the metal**, into the region where you want $V$; at an interface it points from "below" to "above".
+
         What each one does to a solution:
         - A $V$ or $\partial V/\partial n$ condition on a face fixes coefficients. When it is a **zero** condition on two opposite faces it also quantizes $k$.
         - Regularity and $V\to0$ throw away whole families: $B_\ell/r^{\ell+1}$ when the region contains the origin, $e^{kx}$ as $x\to\infty$, $A_\ell r^\ell$ as $r\to\infty$.
@@ -1489,7 +1491,7 @@
 
       Q(md`Checking BC #1 for the plane: at a point $(x,y,0)$, how do the distances to $q$ at $(0,0,d)$ and to $-q$ at $(0,0,-d)$ compare?`,
         [md`They differ by $2d$`, md`They are equal only at the origin`, md`The distance to the image is always larger`, md`They are equal, both $\sqrt{x^2+y^2+d^2}$, so $\dfrac{q}{\srm_+}-\dfrac{q}{\srm_-}=0$`], 3,
-        [md`They differ by $2d$ only along the $z$-axis **off** the plane. On the plane they're equal.`, md`Every point of the plane is equidistant from the two mirror points.`, md`Only for points with $z>0$.`, null],
+        [md`They differ by $2d$ only on the $z$-axis beyond the charges ($|z|\ge d$). On the plane they're equal.`, md`Every point of the plane is equidistant from the two mirror points.`, md`Only for points with $z>0$.`, null],
         md`The plane $z=0$ is the perpendicular bisector of the segment joining $q$ and its image. Every point on it is equidistant from both, so the potentials cancel. That is what "mirror image" buys you.`,
         { figHtml: figPlaneQ({ img: true, lab: 'z=0' }) }),
 
@@ -1510,8 +1512,20 @@
           md`Because the two systems have the same energy`], 2,
         [md`The induced charge is spread over the surface, $\sigma=-\dfrac{qd}{2\pi(x^2+y^2+d^2)^{3/2}}$. The image is fictitious.`,
           md`Below the plane the real field is zero (metal), while the image system has a field there. The systems agree only in $z\ge0$.`, null,
-          md`They don't: the real system has half the energy of the two-charge system ($-q^2/16\pi\varepsilon_0d$ versus $-q^2/8\pi\varepsilon_0d$).`],
-        md`Lecture 10: "This function solves Poisson's equation since the charge density for $z>0$ is the same as in the original problem. It also fits the boundary conditions. By the uniqueness theorem, this solution is the correct one." Nothing about $z<0$ is claimed.`,
+          md`They don't: the real system has half the energy of the two-charge system, $-\dfrac{q^2}{16\pi\varepsilon_0d}$ versus $-\dfrac{q^2}{8\pi\varepsilon_0d}$.`],
+        md`Lecture 10: "This function solves Poisson's equation since the charge density for $z>0$ is the same as in the original problem. It also fits the boundary conditions, $V(x,y,0)=0$ and $V(\vb r\to\infty)=0$. By the uniqueness theorem, this solution is the correct one for the original problem." Nothing about $z<0$ is claimed.`,
+        { figHtml: figPlaneQ({ lab: 'V=0' }) }),
+
+      Q(md`Lecture 10's in-class question: from $\sigma=-\varepsilon_0\,\partial V/\partial z\big|_{z=0}$ you get $\sigma(x,y)=-\dfrac{qd}{2\pi(x^2+y^2+d^2)^{3/2}}$ on the grounded plane. How should you check that it makes sense?`,
+        [md`Integrate it over the whole plane: the total must be $-q$`,
+          md`Check that $\sigma$ is positive everywhere`,
+          md`Check that $\sigma$ is the same at every point, since the plane is an equipotential`,
+          md`Check that $\sigma/\varepsilon_0$ equals the field of $q$ alone at the plane`], 0,
+        [null,
+          md`For $q>0$ the plane's charge is attracted toward $q$: $\sigma$ is negative everywhere.`,
+          md`Equipotential means constant $V$, not constant $\sigma$. The charge piles up under $q$ and falls off like $(x^2+y^2)^{-3/2}$ far out.`,
+          md`Just above the metal the field is the **total** field. At the plane $q$ alone supplies only half of the normal component (the image supplies the other half), and it also has a tangential part.`],
+        md`$\displaystyle\int\sigma\,da=\int_0^\infty\frac{-qd}{2\pi(s^2+d^2)^{3/2}}\,2\pi s\,ds=-q$, the image charge. Why it must be: a closed surface made of a disk just inside the metal and a huge hemisphere above encloses $q$ plus the induced charge, and its flux is zero (no field in the metal, a dipole field far away). For a grounded sphere the same check gives $-Rq/a$.`,
         { figHtml: figPlaneQ({ lab: 'V=0' }) }),
 
       RF(md`
@@ -1557,7 +1571,7 @@
           md`It violates $V\to0$`,
           md`It makes $V$ discontinuous at the sphere`], 1,
         [md`It's rejected before any charge is computed: it isn't allowed at all.`, null, md`$V\equiv0$ satisfies $V\to0$ trivially.`, md`It gives $V\equiv0$, which is continuous.`],
-        md`Lecture 11: $(a-b)(R^2-ab)=0$ has two roots. $b=a$ is in the region $r>R$, so it changes the source there; the total potential would be zero everywhere, the solution of a problem with no charge at all. Images belong outside the region of interest.`,
+        md`Lecture 11's two equations combine to $(a-b)(R^2-ab)=0$, which has two roots. $b=a$ is in the region $r>R$, so it changes the source there; the total potential would be zero everywhere, the solution of a problem with no charge at all. Images belong outside the region of interest.`,
         { figHtml: figSphereQ({ cond: 'V=0', wire: 'ground' }) }),
 
       Q(md`For the $90^\circ$ corner, a student keeps the two $-q$ images but drops the $+q$ at $(-a,-b)$. What happens?`,
@@ -1568,14 +1582,14 @@
 
       Q(md`For which wedge angles does the method of images work with a finite number of images?`,
         [md`Any angle`, md`Only $90^\circ$`, md`$180^\circ/n$ ($90^\circ$, $60^\circ$, $45^\circ$, ...); the $60^\circ$ wedge needs $5$ images`, md`Any angle that divides $360^\circ$, such as $120^\circ$`], 2,
-        [md`For most angles the reflected images land back inside the region, which is forbidden.`, md`$90^\circ$ is the simplest, not the only one.`, null, md`$120^\circ$ fails: reflecting $q$ across one plane and then the other puts an image inside the wedge.`],
+        [md`For most angles the reflected images land back inside the region, which is forbidden.`, md`$90^\circ$ is the simplest, not the only one.`, null, md`$120^\circ$ fails. Keep reflecting across the two planes and an image lands back inside the wedge: for a charge at angle $\varphi$, at $120^\circ-\varphi$.`],
         md`Repeated reflections in two mirrors at angle $\alpha$ generate $2\pi/\alpha$ copies on a circle. They close up without entering the region only if $\alpha=\pi/n$, giving $2n-1$ images ($n=2$: three images; $n=3$: five). This is the last part of Griffiths 3.11.`,
         { figHtml: figWedge(60) }),
 
       RF(md`
         ### Conductors that are not grounded
 
-        The grounded sphere's images already make the sphere an equipotential at $V=0$, carrying total charge $q'$. To change its potential or its charge **without** spoiling the equipotential, add a point charge at the **center**: it adds the same $q_c/4\pi\varepsilon_0R$ at every point of the sphere.
+        The grounded sphere's images already make the sphere an equipotential at $V=0$, carrying total charge $q'$. To change its potential or its charge **without** spoiling the equipotential, add a point charge at the **center**: it adds the same $\dfrac{q_c}{4\pi\varepsilon_0R}$ at every point of the sphere.
 
         | Sphere | BCs | Images |
         |---|---|---|
@@ -1602,18 +1616,18 @@
           md`Anywhere inside the sphere would do`,
           md`Because $V\to0$ requires it`], 0,
         [null, md`Charge on a conductor lives on its surface. The center charge is another fictitious image.`, md`Off-center, it's closer to some surface points than others, so $V$ would vary over the sphere.`, md`Any finite charge satisfies $V\to0$; that's not what fixes the position.`],
-        md`The grounded solution already has $V=0$ on the sphere. Adding $q_c$ at the center adds $q_c/4\pi\varepsilon_0R$, the same everywhere on the surface: still an equipotential, now at a new value, and the total charge changes by $q_c$. Choose $q_c=-q'$ to make it neutral.`,
+        md`The grounded solution already has $V=0$ on the sphere. Adding $q_c$ at the center adds $\dfrac{q_c}{4\pi\varepsilon_0R}$, the same everywhere on the surface: still an equipotential, now at a new value, and the total charge changes by $q_c$. Choose $q_c=-q'$ to make it neutral.`,
         { figHtml: figSphereQ({ cond: md`Q=0` }) }),
 
       Q(md`A battery holds the sphere at $V_0$ while $q$ sits outside. What must you add to the grounded image system?`,
         [md`$-q'$ at the center`, md`A charge $V_0R$ at the center`, md`A second image at $b$`, md`$4\pi\varepsilon_0RV_0$ at the center`], 3,
         [md`That makes the sphere neutral, not $V_0$.`, md`Units: charge needs the $4\pi\varepsilon_0$; $V_0R$ is not a charge.`, md`A second charge at $b$ just changes $q'$ and spoils $V=0$ there; the potential shift has to be uniform on the sphere.`, null],
-        md`A center charge $q_c$ shifts the sphere's potential by $q_c/4\pi\varepsilon_0R$. Set this equal to $V_0$: $q_c=4\pi\varepsilon_0RV_0$. Total charge on the sphere: $4\pi\varepsilon_0RV_0-Rq/a$, supplied by the battery.`,
+        md`A center charge $q_c$ shifts the sphere's potential by $\dfrac{q_c}{4\pi\varepsilon_0R}$. Set this equal to $V_0$: $q_c=4\pi\varepsilon_0RV_0$. Total charge on the sphere: $4\pi\varepsilon_0RV_0-Rq/a$, supplied by the battery.`,
         { figHtml: figSphereQ({ wire: 'battery', bat: 'V_0' }) }),
 
       Q(md`An isolated neutral metal sphere sits a distance $a$ from a charge $q$. What is the potential of the sphere?`,
         [md`$0$`, md`$-\dfrac{q}{4\pi\varepsilon_0a}\dfrac{R}{a}$`, md`$\dfrac{q}{4\pi\varepsilon_0a}$`, md`$\dfrac{q}{4\pi\varepsilon_0(a-R)}$`], 2,
-        [md`That's the grounded sphere. Isolated and neutral, it floats to a positive potential (for $q>0$).`, md`That's the potential the image $q'$ would make at its own distance, not the sphere's potential.`, null, md`That's $q$'s potential at the nearest point of the sphere. The sphere's potential is an average, not the extreme.`],
+        [md`That's the grounded sphere. Isolated and neutral, it floats to a positive potential (for $q>0$).`, md`That is $\dfrac{q'}{4\pi\varepsilon_0a}$, the image charge over the real charge's distance: it means nothing here. On the sphere the grounded pair gives $0$; the center image sets the potential.`, null, md`That's $q$'s potential at the nearest point of the sphere. The sphere's potential is an average, not the extreme.`],
         md`The center image $+Rq/a$ gives $\dfrac{Rq/a}{4\pi\varepsilon_0R}=\dfrac{q}{4\pi\varepsilon_0a}$ on the sphere (the grounded pair contributes $0$). Mean-value property check: the potential of $q$ averaged over the sphere equals its value at the center, $\tfrac{q}{4\pi\varepsilon_0a}$, and the induced charge (total zero, a dipole-like layer) averages to zero.`,
         { figHtml: figSphereQ({ cond: md`Q=0` }) }),
 
@@ -1873,7 +1887,7 @@
 
       Q(md`A slot of width $2a$ has both plates grounded and an end strip whose potential is symmetric about the midplane. You solve only the lower half, $0<y<a$, with $V=0$ at $y=0$ and $\partial V/\partial y=0$ at $y=a$. What are the allowed $k$?`,
         [md`$k=n\pi/a$`, md`$k=(n-\tfrac12)\pi/a$`, md`$k=\tfrac{n\pi}{2a}$ for all $n$`, md`$k=2n\pi/a$`], 1,
-        [md`$\sin ka=0$ is for a zero **value** at $y=a$. Here the **slope** vanishes: $\cos ka=0$.`, null, md`Only the odd ones survive: $k=\tfrac{(2n-1)\pi}{2a}=(n-\tfrac12)\pi/a$. The even ones are antisymmetric about the midplane.`, md`Those would have zero slope nowhere special; and they skip the lowest mode.`],
+        [md`$\sin ka=0$ is for a zero **value** at $y=a$. Here the **slope** vanishes: $\cos ka=0$.`, null, md`Only the odd ones survive: $k=\tfrac{(2n-1)\pi}{2a}=(n-\tfrac12)\pi/a$. The even ones are antisymmetric about the midplane.`, md`$\sin(2n\pi y/a)$ vanishes at $y=a$ with a nonzero slope: the wrong condition for a mirror plane. It also skips the lowest mode.`],
         md`$Y=\sin ky$ (from $V=0$ at $y=0$), and $Y'(a)=k\cos ka=0$ gives $ka=(n-\tfrac12)\pi$. Check against the full slot of width $2a$: modes $\sin\tfrac{m\pi y}{2a}$, of which the symmetric ones are odd $m$, i.e. $k=\tfrac{(2n-1)\pi}{2a}$. Same set.`,
         { figHtml: figSlot({ top: md`\partial V/\partial y=0`, topMirror: true, bot: 'V=0', end: md`V_0(y)` }) }),
 
@@ -2013,7 +2027,7 @@
 
           **What to remember:** shift away a common constant before separating; then the symmetry shortcut gives centers for free and the series gives everything else.
         `,
-        figs: { bc: { svg: figBox({ w: 130, h: 130, left: md`\#1\ -V_0`, right: md`\#2\ 0`, top: md`\#4\ 0`, bot: md`\#3\ 0`, c1: '(a,a)' }), cap: 'Boundary values of $W=V-V_0$: one live face.' } },
+        figs: { bc: { svg: figBox({ w: 130, h: 130, left: md`\#1\ {-V_0}`, right: md`\#2\ 0`, top: md`\#4\ 0`, bot: md`\#3\ 0`, c1: '(a,a)' }), cap: 'Boundary values of $W=V-V_0$: one live face.' } },
       }),
 
       RF(md`
@@ -2163,7 +2177,7 @@
 
           **What to remember:** each BC acts on its own $\ell$: the far field on $\ell=1$ (through $A_1$), the sphere's potential on $\ell=0$ and $\ell=1$, and the charge only on $\ell=0$.
         `,
-        figs: { bc: { svg: figField({ note: '#1: V = V₀ on the sphere;  #2: V → −E₀z' }), cap: 'BC #1 on the sphere, BC #2 far away.' } },
+        figs: { bc: { svg: figField({ note: '#1 on the sphere,  #2 far away' }), cap: 'BC #1 ($V=V_0$) on the sphere, BC #2 ($V\\to-E_0z$) far away.' } },
       }),
 
       RF(md`
@@ -2233,7 +2247,7 @@
       Q(md`The inner sphere ($r=a$) is held at $V_0$, the outer ($r=b$) is grounded. Which terms appear in $V$ between them?`,
         [md`$\ell=0$ only: $V=A_0+B_0/r$`, md`$\ell=0$ and $\ell=1$`, md`All $\ell$`, md`Only $B_0/r$`], 0,
         [null, md`Nothing in the BCs depends on $\theta$, so there's no $P_1$.`, md`Uniform boundary values project only onto $P_0$.`, md`Then $V(b)=0$ would force $B_0=0$. The constant $A_0$ is needed: $A_0=-B_0/b$.`],
-        md`$V(a)=V_0$, $V(b)=0$: $A_0+B_0/a=V_0$, $A_0+B_0/b=0$, so $V=\dfrac{V_0ab}{b-a}\left(\dfrac1r-\dfrac1b\right)$. The charge on the inner sphere is $4\pi\varepsilon_0B_0$, giving $C=4\pi\varepsilon_0ab/(b-a)$.`,
+        md`$V(a)=V_0$, $V(b)=0$: $A_0+B_0/a=V_0$, $A_0+B_0/b=0$, so $V=\dfrac{V_0ab}{b-a}\left(\dfrac1r-\dfrac1b\right)$. The charge on the inner sphere is $4\pi\varepsilon_0B_0$, giving $C=\dfrac{4\pi\varepsilon_0ab}{b-a}$.`,
         { figHtml: figConc({ inner: 'V_0', outer: 'V=0', outerMetal: true }) }),
 
       Q(md`$V_0(\theta)=k\cos^2\theta$ on a sphere. Which Legendre terms appear inside?`,
@@ -2315,7 +2329,7 @@
     id: 'ub-mistake', title: 'Find the mistake: boundary-condition errors in worked solutions',
     steps: [
       RF(md`
-        Each problem below shows a short worked solution with exactly one boundary-condition error. The rest of the steps are done correctly, given what came before, so an early mistake propagates. Find the step where the solution first goes wrong. These are the errors that cost the most points on boundary-value problems.
+        Each problem below shows a short worked solution in which exactly one step contains a boundary-condition error. Every other step is either correct or a correct consequence of the faulty one, so a mistake can propagate. Find the step where the solution first goes wrong. These are the errors that cost the most points on boundary-value problems.
 
         !!method How to audit a solution
           1. Is the region named, and is every boundary of it in the BC list? (No infinity unless the region reaches it; no origin unless it contains it.)
@@ -2372,7 +2386,7 @@
           2. Image $q'=-Rq/a$ at $b=R^2/a$, outside the region.
           3. $\sigma=-\varepsilon_0\,\partial V/\partial r$ at $r=R$.
           4. Evaluating it gives $\sigma>0$ everywhere on the wall.`,
-        ['region and BC', 'image', 'formula for sigma', 'result'], 2,
+        ['region and BC', 'image', 'formula for σ', 'result'], 2,
         [md`Right: bounded region, one condition.`, md`Right: Kelvin's construction, now with $b>R$.`, null, md`It follows from step 3; a positive induced charge near a positive $q$ is the giveaway.`],
         md`$\sigma=-\varepsilon_0\,\partial V/\partial n$ with $\hat{\mathbf n}$ pointing **out of the metal into the field region**: here $-\hat{\mathbf r}$. So $\sigma=+\varepsilon_0\,\partial V/\partial r\big|_R$, which is negative everywhere and integrates to $-q$.`),
 
@@ -2422,7 +2436,7 @@
           2. Far field: $A_1=-E_0$, all other $A_\ell=0$.
           3. Equipotential sphere: $B_1=E_0R^3$, $B_\ell=0$ for $\ell\ge2$.
           4. A constant potential on the sphere needs no $\ell=0$ term, so $B_0=0$: $V=-E_0\left(r-\dfrac{R^3}{r^2}\right)\cos\theta$.`,
-        ['BCs', 'far field', 'l ≥ 1 terms', 'l = 0 term'], 3,
+        ['BCs', 'far field', 'ℓ ≥ 1 terms', 'ℓ = 0 term'], 3,
         [md`Right: the full set, including the charge.`, md`Right.`, md`Right.`, null],
         md`Step 4 ignores BC "total charge $Q$". Gauss's law on any sphere around it gives $4\pi B_0=Q/\varepsilon_0$, so $B_0=\dfrac{Q}{4\pi\varepsilon_0}$. Correct: $V=-E_0\left(r-\dfrac{R^3}{r^2}\right)\cos\theta+\dfrac{Q}{4\pi\varepsilon_0r}$, with the sphere at $V_c=\dfrac{Q}{4\pi\varepsilon_0R}$.`),
 
@@ -2683,7 +2697,7 @@
           (c) What happens as $kd\to0$?`,
         figHtml: figSheet({ plane: true, cos: true, lab: md`\sigma_0\cos kx` }),
         hints: [
-          md`Two regions: $-d<y<0$ and $y>0$. Write five things: the plane, far above, continuity, jump (and the separated form in each region).`,
+          md`Two regions: $-d<y<0$ and $y>0$. Write the four BCs first: the grounded plane, far above, continuity at the sheet, the jump at the sheet. Then the separated form in each region.`,
           md`Above: $Be^{-ky}\cos kx$. Between: $A\sinh\big(k(y+d)\big)\cos kx$, which already vanishes on the plane.`,
           md`Continuity: $A\sinh kd=B$. Jump: $-kB-kA\cosh kd=-\sigma_0/\varepsilon_0$. Then $\sigma_{\text{ind}}=-\varepsilon_0\partial_yV$ at $y=-d$ with $\hat{\mathbf n}=+\hat{\mathbf y}$.`,
         ],
@@ -2812,18 +2826,18 @@
       }),
 
       P({
-        id: 'ub-d6', title: 'A charged sphere in a uniform field (Griffiths 3.21)', big: true,
+        id: 'ub-d6', title: 'A charged sphere in a uniform field (Griffiths 3.21, 4th ed.)', big: true,
         q: md`An isolated metal sphere of radius $R$ carries total charge $Q$ and sits in a field that is uniform far away, $E_0\hat{\mathbf z}$. Set the zero of potential so that $V\to-E_0z$ far away.
 
           (a) Find $V(r,\theta)$ outside.
           (b) Find $\sigma(\theta)$.
           (c) What is the potential of the sphere?
-          (d) For which $Q$ is there a line on the sphere where $\sigma=0$?`,
+          (d) For which $Q$ does $\sigma$ vanish somewhere on the sphere?`,
         figHtml: figField({ q: 'Q', note: 'isolated metal sphere, charge Q' }),
         hints: [
           md`BCs: $V(R,\theta)=V_c$ (unknown), total charge $Q$, $V\to-E_0r\cos\theta$. Three conditions, three kinds of coefficient.`,
           md`Far field: $A_1=-E_0$. Equipotential: $B_1=E_0R^3$, $B_{\ell\ge2}=0$. Charge: $B_0=Q/(4\pi\varepsilon_0)$.`,
-          md`$\sigma=-\varepsilon_0\partial_rV$ at $R$; it vanishes where $\cos\theta=-Q/(12\pi\varepsilon_0R^2E_0)$.`,
+          md`$\sigma=-\varepsilon_0\partial_rV$ at $R$; it vanishes where $\cos\theta=-\dfrac{Q}{12\pi\varepsilon_0R^2E_0}$.`,
         ],
         parts: [
           { lbl: md`V(r,\theta)`, expr: '-E0*(r - R^3/r^2)*cos(theta) + Q/(4*pi*eps0*r)', vars: { E0: [1, 2], R: [1, 2], r: [2.5, 4], theta: [0.2, 2.9], Q: [1, 3], eps0: [0.5, 2] } },
@@ -2854,7 +2868,7 @@
 
           **What to remember:** a charged conductor in a field is the neutral solution plus a point charge at the center, not plus a constant. The constant is the reference; the $1/r$ is the charge.
         `,
-        figs: { bc: { svg: figField({ q: 'Q', note: '#1: V const on sphere; #3: V → −E₀z' }), cap: 'BC #1 and BC #2 (total charge $Q$) act on the sphere; BC #3 far away.' } },
+        figs: { bc: { svg: figField({ q: 'Q', note: '#1, #2 on the sphere,  #3 far away' }), cap: 'BC #1 ($V$ constant) and BC #2 (total charge $Q$) act on the sphere; BC #3 ($V\\to-E_0z$) far away.' } },
       }),
 
       P({
@@ -2985,7 +2999,7 @@
 
           **(c)** The $+q$ images ($n=\pm1,\pm2,\dots$) cancel in pairs. The $-q$ images above $q$ ($n\ge1$, distance $2nL-2z_0$) pull up; those below ($n\le0$, distance $2z_0+2|n|L$) pull down. With $z_0=L/4$, in units of $\tfrac{q^2}{4\pi\varepsilon_0L^2}$:
           $$F_z=\frac14\left[\sum_{n\ge1}\frac{1}{(n-\frac14)^2}-\sum_{m\ge0}\frac{1}{(m+\frac14)^2}\right]=\frac14\left[-16+\sum_{n\ge1}\left(\frac{1}{(n-\frac14)^2}-\frac{1}{(n+\frac14)^2}\right)\right].$$
-          The bracketed terms are $1.1378,\ 0.1290,\ 0.0376,\ 0.0158,\ 0.0080,\dots$ (sum $\approx1.341$), so $F_z\approx\tfrac14(-16+1.341)=-3.664$. (Exactly $-4G$, Catalan's constant $G=0.9160$.) The force points toward the nearer plane, a bit weaker than the single-plane value $4$ because the far plane pulls back.
+          The bracketed terms are $1.1378,\ 0.1290,\ 0.0376,\ 0.0157,\ 0.0080,\dots$ (sum $\approx1.345$), so $F_z\approx\tfrac14(-16+1.345)=-3.664$. (Exactly $-4G$, Catalan's constant $G=0.9160$.) The force points toward the nearer plane, a bit weaker than the single-plane value $4$ because the far plane pulls back.
 
           **(d)** $-\tfrac34q$. Replace $q$ by a uniform sheet of charge at $z_0$ (sum over all horizontal positions: the induced charges add the same way). For a sheet $\sigma$ between grounded plates, the fields below and above satisfy $E_{\text{below}}z_0=E_{\text{above}}(L-z_0)$ (both plates at $0$) and $E_{\text{below}}+E_{\text{above}}=\sigma/\varepsilon_0$, so the lower plate gets $-\sigma\dfrac{L-z_0}{L}$. For $z_0=L/4$: $-\tfrac34$ of the charge, and $-\tfrac14$ on the upper plate.
 

@@ -29,9 +29,10 @@
     const w = Math.max(...lines.map((l) => l
       .replace(/<[^>]+>/g, '')
       .replace(/\\(dfrac|tfrac|frac)\{([^{}]*)\}\{([^{}]*)\}/g, (m, f, a, b) => (a.length > b.length ? a : b))
-      .replace(/\\(text|mathrm|mathbf|boldsymbol|hat|vec|bar|operatorname)/g, '')
-      .replace(/\\(sin|cos|tan|sinh|cosh|ln|exp|infty)/g, 'xxx')
-      .replace(/\\[a-zA-Z]+/g, 'x').replace(/\\[,;!]/g, ' ').replace(/[${}_^\\]/g, '').length)) * 8 + 8;
+      .replace(/\\(text|mathrm|mathbf|boldsymbol|hat|vec|bar|operatorname)(?![a-zA-Z])/g, '')
+      // placeholders are not letters, so a following command can't swallow them (\to\infty used to count as 1)
+      .replace(/\\(sinh|cosh|sin|cos|tan|ln|exp|infty)(?![a-zA-Z])/g, '###')
+      .replace(/\\[a-zA-Z]+/g, '#').replace(/\\[,;!]/g, ' ').replace(/[${}_^\\]/g, '').length)) * 8 + 8;
     const tall = /\\dfrac|\\frac/.test(s) ? 34 : 18;
     return { w, h: lines.length * tall };
   }
@@ -112,7 +113,7 @@
       const by = /t/.test(anchor) ? y : /b/.test(anchor) ? y - sz.h : y - sz.h / 2;
       this.track(bx, by, bx + sz.w, by + sz.h);
       this.labs.push({ x0: bx, y0: by, x1: bx + sz.w, y1: by + sz.h, t: String(t).replace(/<[^>]+>/g, '').slice(0, 40) });
-      const W = 220, H = 64;
+      const W = Math.max(220, Math.ceil(sz.w * 1.5) + 40), H = Math.max(64, sz.h + 30);   // room for long notes
       let fx = x - W / 2, fy = y - H / 2, jc = 'center', ai = 'center', ta = 'center';
       if (/l/.test(anchor)) { fx = x; jc = 'flex-start'; ta = 'left'; }
       if (/r/.test(anchor)) { fx = x - W; jc = 'flex-end'; ta = 'right'; }
