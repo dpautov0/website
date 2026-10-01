@@ -687,14 +687,17 @@
       for (const [q, y, z] of C) f.charge(y * u, -z * u, { q: q > 0 ? '+' : '-' });
       $('.cfgfig').innerHTML = f.svg();
       const lg = (x) => Math.log10(Math.max(Math.abs(x), 1e-14));
-      const curves = [{ f: (x) => lg(V(Math.pow(10, x))), n: 300 }];
-      if (lead >= 0) curves.push({ f: (x) => lg(cs[lead]) - (lead + 1) * x, cls: 'dash' });
-      $('.p1').innerHTML = PF.plot({ w: 330, h: 230, x: [0.15, 2], y: [-7, 1], xl: 'r', yl: '|V|', ml: 52,
-        xt: [[1, '10a'], [2, '100a']], yt: [[0, '1'], [-2, '10^{-2}'], [-4, '10^{-4}'], [-6, '10^{-6}']], curves });
+      const X0 = 0, X1 = 2, Y0 = -8, Y1 = 1;                  // log10 of r/a (from a to 100a) and of |V|
+      const curves = [{ f: (x) => lg(V(Math.pow(10, x))), n: 400, cls: 'dim' }];
+      // the leading term alone is drawn as dots, so it stays visible where it lies on top of the exact curve
+      const dots = [];
+      if (lead >= 0) for (let i = 0; i <= 20; i++) { const x = X0 + (X1 - X0) * i / 20, y = lg(cs[lead]) - (lead + 1) * x; if (y >= Y0 && y <= Y1) dots.push({ x, y }); }
+      $('.p1').innerHTML = PF.plot({ w: 330, h: 250, x: [X0, X1], y: [Y0, Y1], xl: 'r', yl: '|V|', ml: 52,
+        xt: [[0, 'a'], [1, '10a'], [2, '100a']], yt: [[0, '1'], [-2, '10^{-2}'], [-4, '10^{-4}'], [-6, '10^{-6}'], [-8, '10^{-8}']], curves, pts: dots });
       let txt = `<p>$Q = ${fm(Q)}\\,q$, $\\ \\vb p = (p_y, p_z) = (${fm(py)}, ${fm(pz)})\\,qa$ about the origin. Units: $V$ in $\\dfrac{q}{4\\pi\\varepsilon_0 a}$, $r$ in $a$.</p>`;
       if (lead < 0) txt += '<p>$V = 0$ at every point of this ray (each point is equidistant from charges that cancel), so there is nothing to plot. Change the angle.</p>';
       else {
-        txt += `<p>Along this ray the first nonzero term is $n = ${lead}$, the ${ORD[lead]}: far away $|V| \\propto 1/r^{${lead + 1}}$, a straight line of slope $-${lead + 1}$ here (dashed). The solid curve is the exact $|V|$.</p>`;
+        txt += `<p>Along this ray the first nonzero term is $n = ${lead}$, the ${ORD[lead]}: far away $|V| \\propto 1/r^{${lead + 1}}$, a straight line of slope $-${lead + 1}$ on these axes. The dots are that term alone; the gray curve is the exact $|V|$. Where the dots sit on the curve, one term is enough.</p>`;
         if (lead > gen) txt += `<p>The ${ORD[gen]} term is the leading one in most directions, but its angular factor is zero on this ray, so the next term takes over here.</p>`;
       }
       $('.out').innerHTML = txt;
@@ -808,7 +811,11 @@
 
           Symmetry can settle a step without computing. If $\rho(-\vb r) = \rho(\vb r)$ (inversion through the origin leaves the charges alone), every odd moment vanishes, $\vb p$ included. If $\rho(-\vb r) = -\rho(\vb r)$, every even moment vanishes, $Q$ included.
 
-        The widget plots $|V|$ along a ray on log–log axes. Far away the exact curve (solid) merges with the leading term (dashed), a straight line of slope $-(n+1)$. Try the dipole at $\theta = 90^\circ$, and the square quadrupole at $45^\circ$.
+        The widget plots $|V|$ along a ray from the origin on log–log axes. The gray curve is the exact $|V|$. The dots are the leading term alone, which lies on a straight line of slope $-(n+1)$. Far away the dots sit on the curve; near the charges they come off it. A sharp downward spike in the curve is a point where $V$ changes sign. Try these:
+
+        - $q$ at $z = a$: at $r = a$ the monopole term alone is off by $40\%$ or more; by $r = 10a$ the error is at most about $10\%$.
+        - The dipole at $\theta = 90^\circ$: $V = 0$ on the whole equatorial plane.
+        - The linear quadrupole at $55^\circ$, close to the zero of $P_2(\cos\theta)$ at $54.7^\circ$. The quadrupole term is tiny on this ray, so close in the $n = 4$ term ($1/r^5$) is bigger and the curve is steeper than the dots. It settles onto them only beyond about $r = 20a$.
       `),
 
       wMulti(),
