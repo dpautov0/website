@@ -140,8 +140,10 @@
             ### Everything
           `),
           G('concept', { need: 15 }),
-          R(md`### Method of images and separation of variables only (last year's exam focus)`),
-          G('concept', { need: 10, units: ['u5', 'u6', 'u7'] }),
+          R(md`### Images, separation of variables and boundary conditions (last year's exam focus)`),
+          G('concept', { need: 10, units: ['u5', 'u6', 'u7', 'ub'] }),
+          R(md`### Boundary conditions only`),
+          G('concept', { need: 8, units: ['ub'] }),
           R(md`### Fields, Gauss, potential`),
           G('concept', { need: 8, units: ['u0', 'u1', 'u2'] }),
           R(md`### Energy, conductors, Laplace and uniqueness`),

@@ -2471,6 +2471,522 @@
     ],
   });
 
+  // =====================================================================================
+  // Lesson 8. Boundary-value problem drill
+  // =====================================================================================
+  // charge on the axis above a grounded plane with a hemispherical bump: the image system
+  function figBumpImg() {
+    const f = fig();
+    const y0 = 170, cx = 160, R = 52, A = 104, b = R * R / A;
+    f.line(20, y0, 300, y0, { cls: 'dash dim' });
+    f.circle(cx, y0, R, { cls: 'dash dim' });
+    f.line(cx, y0 - A - 24, cx, y0 + A + 24, { cls: 'dim thin' });
+    f.charge(cx, y0 - A, { q: '+', lab: 'q', at: 'r' });
+    f.charge(cx, y0 - b, { q: '-', lab: md`-\tfrac{R}{a}q`, at: 'r', image: true, r: 6 });
+    f.charge(cx, y0 + b, { q: '+', lab: md`+\tfrac{R}{a}q`, at: 'r', image: true, r: 6 });
+    f.charge(cx, y0 + A, { q: '-', lab: '-q', at: 'r', image: true });
+    f.label(296, y0 - 4, 'z=0', 'br', 'small accent');
+    return f.svg();
+  }
+  // images of a charge between two grounded parallel planes (a few periods shown)
+  function figParImg() {
+    const f = fig();
+    const x = 150, Y = (h) => 210 - h, L = 60, z0 = 15;
+    for (const k of [-2, -1, 0, 1, 2]) f.line(40, Y(k * L), 270, Y(k * L), { cls: k === 0 || k === 1 ? 'dash' : 'dash dim' });
+    f.line(x, Y(-150), x, Y(165), { cls: 'dim thin' });
+    f.charge(x, Y(z0), { q: '+', lab: 'q', at: 'r' });
+    const im = [[-z0, '-'], [-2 * L + z0, '+'], [-2 * L - z0, '-'], [2 * L - z0, '-'], [2 * L + z0, '+']];
+    for (const [h, s] of im) f.charge(x, Y(h), { q: s, lab: s === '+' ? '+q' : '-q', at: 'r', image: true, r: 6 });
+    f.label(274, Y(0) - 3, 'z=0', 'bl', 'small accent'); f.label(274, Y(L) - 3, 'z=L', 'bl', 'small accent');
+    return f.svg();
+  }
+  const plotCubeZ = () => PF.plot({ w: 300, h: 180, x: [0, 1], y: [0, 1.15], xl: 'z/a', yl: md`V/V_0`, xt: [[0.5, '\\tfrac12'], [1, '1']], yt: [[1, '1'], [0.1072, '0.107']],
+    curves: [{ f: (z) => Math.sinh(Math.SQRT2 * Math.PI * z) / Math.sinh(Math.SQRT2 * Math.PI) }], ml: 50 });
+
+  LESSONS.push({
+    id: 'ub-drill', title: 'Boundary-value problem drill',
+    steps: [
+      RF(md`
+        Full exam-style problems. Every solution starts the way the lectures do: name the region, then a numbered BC list. Do the same on paper before you touch the algebra.
+
+        !!method The boundary-value recipe
+          1. Draw the region and name it.
+          2. Write the BC list: one line per boundary piece, plus infinity or the origin only if the region reaches them.
+          3. Pick the method: images (point charges near planes and spheres), Cartesian separation (flat faces), spherical separation (spheres, uniform fields), or recognise a solution you already have.
+          4. Say what each BC does: kills a term, quantizes $k$, fixes coefficients, places an image.
+          5. Solve.
+          6. Check the answer against **every** BC, and one limit.
+
+        | Words | Condition | What it usually does |
+        |---|---|---|
+        | grounded / held at $V_0$ | $V=0$ / $V=V_0$ on the surface | fixes coefficients; a zero face kills $\cos$ or $\cosh$ |
+        | neutral / charge $Q$ | $V=V_c$ unknown and $\oint\sigma\,da=Q$ | center image $Q-q'$; $B_0=Q/(4\pi\varepsilon_0)$ |
+        | far away | $V\to0$ | kills $e^{kx}$ or $A_\ell$ |
+        | uniform field far away | $V\to-E_0r\cos\theta+C$ | supplies $A_1=-E_0$ |
+        | contains the origin | finite at $r=0$ | kills $B_\ell$ |
+        | mirror plane | $V=0$ (odd) or $\partial V/\partial n=0$ (even) | halves the region |
+        | glued charge $\sigma$ | $V$ continuous; $\partial_nV$ jumps by $-\sigma/\varepsilon_0$ | links two regions |
+      `),
+
+      Q(md`A classmate's answer for $V$ between a sphere at $V_0\cos\theta$ (radius $a$) and a grounded shell (radius $b$) is $V=V_0\dfrac{a^2}{r^2}\cos\theta$. Which BC does it violate?`,
+        [md`$V(a,\theta)=V_0\cos\theta$`, md`$V(b,\theta)=0$`, md`Laplace's equation between the spheres`, md`None; it's correct`], 1,
+        [md`At $r=a$ it gives $V_0\cos\theta$: that one holds.`, null, md`$\cos\theta/r^2$ is a solution of Laplace's equation.`, md`At $r=b$ it gives $V_0(a/b)^2\cos\theta\neq0$.`],
+        md`It's the outside solution for an **isolated** sphere ($V\to0$ at infinity). With a grounded shell at $b$ you need the $r\cos\theta$ term too, so that the two together vanish at $r=b$. Always plug the final answer into each BC.`,
+        { figHtml: figConc({ inner: md`V_0\cos\theta`, outer: 'V=0', outerMetal: true }) }),
+
+      Q(md`For the slot with both plates at $V_1$ and the end at $V_0$, someone writes $V=\dfrac{4(V_0-V_1)}{\pi}\displaystyle\sum_{\text{odd }n}\dfrac1ne^{-n\pi x/a}\sin\dfrac{n\pi y}{a}$. Which BC fails?`,
+        [md`$V=V_1$ on the plates (this gives $0$ there)`, md`$V\to0$ far away`, md`Laplace's equation`, md`$V(0,y)=V_0$ only`], 0,
+        [null, md`The correct far condition is $V\to V_1$, and this answer gives $0$, so it fails that too; but the first failure is on the plates.`, md`Each term solves Laplace's equation.`, md`At $x=0$ it gives $V_0-V_1$, so this fails as well, but because the constant $V_1$ was dropped everywhere.`],
+        md`The series is $\tilde V=V-V_1$. Forgetting to add back $V_1$ breaks every boundary value: plates ($0$ instead of $V_1$), end ($V_0-V_1$ instead of $V_0$), far end ($0$ instead of $V_1$). The fix is one term: $V=V_1+\tilde V$.`,
+        { figHtml: figSlot({ top: 'V_1', bot: 'V_1', end: 'V_0' }) }),
+
+      Q(md`For the charge sheet $\sigma_0\cos kx$ at height $d$ above a grounded plane, an answer reads $V=\dfrac{\sigma_0}{2\varepsilon_0k}\cos kx\,e^{-k|y|}$ for all $y>-d$ (sheet at $y=0$, plane at $y=-d$). Which BC fails?`,
+        [md`$V\to0$ as $y\to\infty$`, md`continuity at the sheet`, md`$V=0$ on the grounded plane $y=-d$`, md`the jump at the sheet`], 2,
+        [md`$e^{-ky}$ does vanish far above.`, md`$e^{-k|y|}$ is continuous.`, null, md`The jump is right: it's the free-sheet solution.`],
+        md`At $y=-d$ it gives $\tfrac{\sigma_0}{2\varepsilon_0k}e^{-kd}\cos kx\neq0$. Below the sheet the function must be $\sinh k(y+d)$, which vanishes on the plane. The free-sheet answer ignores the conductor.`,
+        { figHtml: figSheet({ plane: true, cos: true, lab: md`\sigma_0\cos kx` }) }),
+
+      Q(md`For an isolated sphere with charge $Q$ in a uniform field, an answer reads $V=-E_0\left(r-\dfrac{R^3}{r^2}\right)\cos\theta+\dfrac{Q}{4\pi\varepsilon_0R}$. Which condition fails?`,
+        [md`$V\to-E_0r\cos\theta+C$`, md`The sphere is an equipotential`, md`Laplace's equation outside`, md`The total charge on the sphere is $Q$`], 3,
+        [md`It holds with $C=\tfrac{Q}{4\pi\varepsilon_0R}$.`, md`On $r=R$, $V=\tfrac{Q}{4\pi\varepsilon_0R}$ for all $\theta$: it holds.`, md`A constant solves Laplace's equation.`, null],
+        md`A constant carries no flux: $B_0=0$, so this sphere is neutral. The charge must appear as $\dfrac{Q}{4\pi\varepsilon_0r}$, which also takes the value $\dfrac{Q}{4\pi\varepsilon_0R}$ on the sphere but falls off outside. Constant versus $1/r$ is exactly the difference between "shift the zero" and "add charge".`,
+        { figHtml: figField({ q: 'Q', note: 'isolated metal sphere, charge Q' }) }),
+
+      Q(md`For the cube with five grounded faces and the top at $V_0\sin(\pi x/a)\sin(\pi y/a)$, an answer reads $V=V_0\sin\dfrac{\pi x}{a}\sin\dfrac{\pi y}{a}\dfrac{\cosh(\sqrt2\pi z/a)}{\cosh\sqrt2\pi}$. Which BC fails?`,
+        [md`The side faces $x=0,a$ and $y=0,a$`, md`The top face`, md`The bottom face $z=0$`, md`Laplace's equation`], 2,
+        [md`$\sin(\pi x/a)\sin(\pi y/a)$ vanishes on all four sides.`, md`At $z=a$ the $\cosh$ ratio is $1$: the top matches.`, null, md`$(-\pi^2/a^2-\pi^2/a^2+2\pi^2/a^2)V=0$: it solves Laplace's equation.`],
+        md`At $z=0$, $\cosh0=1$, so $V\neq0$ on the grounded bottom. A grounded face at $z=0$ needs $\sinh$: $V=V_0\sin\dfrac{\pi x}{a}\sin\dfrac{\pi y}{a}\dfrac{\sinh(\sqrt2\pi z/a)}{\sinh\sqrt2\pi}$.`,
+        { figHtml: figCube({ top: md`V_{\text{top}}`, note: 'five faces grounded' }) }),
+
+      Q(md`For a charge $q$ above a grounded plane with a hemispherical bump, a student uses the images $-\tfrac Raq$ at $R^2/a$ and $-q$ at $-a$ (on the axis) and stops. Which BCs fail?`,
+        [md`Only $V\to0$`, md`Only the plane`, md`Only the bump`, md`Both the plane and the bump`], 3,
+        [md`All terms decay at infinity.`, md`The bump fails too: $-q$ at $-a$ has no Kelvin partner for the sphere.`, md`The plane fails too: $-\tfrac Raq$ at $R^2/a$ has no mirror partner below the plane.`, null],
+        md`$q$ and $-\tfrac Raq$ (at $R^2/a$) cancel on the sphere; $q$ and $-q$ (at $-a$) cancel on the plane. Each of the two images is left unpaired on the other surface. The fourth charge $+\tfrac Raq$ at $-R^2/a$ is the mirror of the first image and the Kelvin image of the second, and fixes both.`,
+        { figHtml: figBump({ charge: true, plab: 'V=0' }) }),
+
+      P({
+        id: 'ub-d1', title: 'Slot with both plates at V₁', big: true,
+        q: md`Two parallel metal plates at $y=0$ and $y=a$, both held at $V_1$, extend to $x\to\infty$. The end strip at $x=0$, insulated from them, is held at $V_0$.
+
+          (a) Find $V(x,y)$: give the coefficient $C_n$ of $e^{-n\pi x/a}\sin(n\pi y/a)$ for odd $n$ in the series part.
+          (b) For $V_0=100$ V and $V_1=20$ V, find $V$ at $(a/2,\,a/2)$.
+          (c) What is $V$ far down the slot?`,
+        figHtml: figSlot({ top: 'V_1', bot: 'V_1', end: 'V_0', pt: [55 / 230, 0.5] }),
+        hints: [
+          md`BC list first. The far condition is not $V\to0$: far away you're between two plates at $V_1$.`,
+          md`Write $V=V_1+\tilde V$. Then $\tilde V$ satisfies the ordinary slot BCs with $V_0-V_1$ on the end.`,
+          md`For (b), sum a few terms of $\sin(n\pi/2)e^{-n\pi/2}/n$, or use Griffiths' closed form $\tilde V=\dfrac{2(V_0-V_1)}{\pi}\tan^{-1}\dfrac{\sin(\pi y/a)}{\sinh(\pi x/a)}$.`,
+        ],
+        parts: [
+          { lbl: md`C_n`, expr: '4*(V0-V1)/(n*pi)', vars: { V0: [3, 5], V1: [1, 2], n: [1, 7] } },
+          { lbl: md`V(a/2,a/2)`, ans: 40.877, unit: 'V' },
+          { lbl: md`(c) Far down the slot, $V\to$`, mc: [md`$0$`, md`$V_0$`, md`$V_1$`, md`$(V_0+V_1)/2$`], a: 2,
+            why: [md`The plates aren't at $0$.`, md`The end's influence dies like $e^{-\pi x/a}$.`, null, md`Nothing averages the two; far away only the plates matter.`] },
+        ],
+        sol: md`
+          **Region:** $0<y<a$, $x>0$. **BCs:**
+          1. $V(x,0)=V_1$
+          2. $V(x,a)=V_1$
+          3. $V(0,y)=V_0$
+          4. $V\to V_1$ as $x\to\infty$
+
+          **Shift.** $V=V_1+\tilde V$. Then 1. $\tilde V(x,0)=0$, 2. $\tilde V(x,a)=0$, 3. $\tilde V(0,y)=V_0-V_1$, 4. $\tilde V\to0$: Lecture 11–12's slot.
+
+          [[fig:bc]]
+
+          BC #1 kills $\cos ky$, BC #4 kills $e^{kx}$, BC #2 quantizes $k=n\pi/a$, BC #3 by Fourier's trick:
+          $$C_n=\frac2a\int_0^a(V_0-V_1)\sin\frac{n\pi y}{a}\,dy=\frac{2(V_0-V_1)}{n\pi}(1-\cos n\pi)=\begin{cases}\dfrac{4(V_0-V_1)}{n\pi}&n\text{ odd}\\0&n\text{ even}\end{cases}$$
+          $$V(x,y)=V_1+\frac{4(V_0-V_1)}{\pi}\sum_{n\text{ odd}}\frac1n\,e^{-n\pi x/a}\sin\frac{n\pi y}{a}.$$
+
+          **(b)** At $(a/2,a/2)$, $\sin(n\pi/2)=+1,-1,+1,\dots$ for $n=1,3,5$:
+          $$\tilde V=\frac{4(80)}{\pi}\left[e^{-\pi/2}-\tfrac13e^{-3\pi/2}+\tfrac15e^{-5\pi/2}-\cdots\right]=101.86\times[0.20788-0.00299+0.00008]=20.88\text{ V},$$
+          so $V=40.88$ V. (Closed form: $\tfrac{2(80)}{\pi}\tan^{-1}\tfrac{1}{\sinh(\pi/2)}=50.93\times0.4099=20.88$ V ✓.)
+
+          **(c)** $V_1$.
+
+          **Checks.** Plates: every sine vanishes, $V=V_1$ ✓. End: the series is the Fourier series of $V_0-V_1$, so $V=V_0$ ✓. Far: $V\to V_1$ ✓. Midpoint value lies between $V_1$ and $V_0$, as the no-extremum rule demands.
+
+          **What to remember:** a nonzero but common plate potential is a constant you subtract first. The far-field condition is "tends to the plates-only solution", which here is $V_1$.
+        `,
+        figs: { bc: { svg: figSlot({ top: md`\#2\ \tilde V=0`, bot: md`\#1\ \tilde V=0`, end: md`\#3\ V_0-V_1`, far: md`\#4\ \tilde V\to0` }), cap: 'BCs for $\\tilde V=V-V_1$: the ordinary slot.' } },
+      }),
+
+      P({
+        id: 'ub-d2', title: 'Square pipe with two adjacent live faces', big: true,
+        q: md`A long square pipe of side $a$. The face $x=0$ is held at $V_1$ and the face $y=0$ at $V_2$; the faces $x=a$ and $y=a$ are grounded (insulated corners).
+
+          (a) What is $V$ at the center?
+          (b) Take $V_1=V_2=V_0$. Find $V$ at $(a/2,\,a/4)$ in units of $V_0$.
+          (c) Take $V_2=-V_1$. Where inside is $V=0$?`,
+        figHtml: figBox({ w: 130, h: 130, left: 'V_1', bot: 'V_2', top: '0', right: '0', c1: '(a,a)', center: true, pts: [[0.5, 0.25, 'P', 'r']] }),
+        hints: [
+          md`Two live faces: split into two one-live-face problems and add.`,
+          md`Center: four faces at the same value would give that value everywhere, so each face contributes a quarter of its potential at the center.`,
+          md`For (b): the piece with $x=0$ live is $\sum_{\text{odd }n}\dfrac{4V_0}{n\pi}\dfrac{\sinh(n\pi(a-x)/a)}{\sinh n\pi}\sin\dfrac{n\pi y}{a}$; the other piece is the same with $x\leftrightarrow y$.`,
+        ],
+        parts: [
+          { lbl: md`V_{\text{center}}`, expr: '(V1+V2)/4', vars: { V1: [1, 3], V2: [1, 3] } },
+          { lbl: md`V(a/2,a/4)/V_0`, ans: 0.7226, unit: '' },
+          { lbl: md`(c) With $V_2=-V_1$, $V=0$ on`, mc: [md`the line $x=a/2$`, md`the diagonal $y=a-x$`, md`nowhere inside`, md`the diagonal $y=x$`], a: 3,
+            why: [md`Reflecting in $x=a/2$ doesn't map the setup onto itself (with or without a sign flip).`, md`Reflection in $y=a-x$ maps the live faces onto the grounded ones; it isn't a symmetry.`, md`$V$ takes both signs inside and is continuous, so it vanishes on some curve.`, null] },
+        ],
+        sol: md`
+          **Region:** $0<x<a$, $0<y<a$. **BCs:**
+          1. $V(0,y)=V_1$
+          2. $V(x,0)=V_2$
+          3. $V(a,y)=0$
+          4. $V(x,a)=0$
+
+          **Split:** $V=V_{(1)}+V_{(2)}$, where $V_{(1)}$ has $V_1$ on $x=0$ and $0$ on the other three faces, and $V_{(2)}$ has $V_2$ on $y=0$ and $0$ elsewhere. Each satisfies Laplace's equation; on every face their sum equals the given value.
+
+          [[fig:split]]
+
+          For $V_{(1)}$: two zero faces in $y$ give $\sin(n\pi y/a)$; zero at $x=a$ gives $\sinh(n\pi(a-x)/a)$; the face $x=0$ gives $C_n\sinh n\pi=\tfrac{4V_1}{n\pi}$ (odd $n$):
+          $$V_{(1)}=\frac{4V_1}{\pi}\sum_{n\text{ odd}}\frac{\sinh\big(n\pi(a-x)/a\big)}{n\sinh n\pi}\sin\frac{n\pi y}{a},$$
+          and $V_{(2)}$ is the same with $x\leftrightarrow y$ and $V_1\to V_2$.
+
+          **(a)** Each face contributes a quarter of its value at the center: $V=\dfrac{V_1+V_2}{4}$.
+
+          **(b)** With $V_1=V_2=V_0$: $V(a/2,a/4)=V_{(1)}(a/2,a/4)+V_{(2)}(a/2,a/4)$. Summing (odd $n$ to $n=7$): $V_{(1)}=0.1820V_0$, $V_{(2)}=0.5405V_0$ (it's $V_{(1)}$ evaluated at $(a/4,a/2)$), total $0.7226V_0$. Closer to the live bottom face, so bigger than the center's $0.5V_0$.
+
+          **(c)** Reflection in the diagonal $y=x$ swaps the two live faces and the two grounded faces. With $V_2=-V_1$ it maps $V$ to $-V$: $V(y,x)=-V(x,y)$, so $V=0$ on the diagonal (an antisymmetric mirror line, like an image plane).
+
+          **What to remember:** one live face per subproblem; symmetry gives centers and nodal lines for free.
+        `,
+        figs: { split: { svg: split3({ o: { left: 'V_1', bot: 'V_2', top: '0', right: '0' }, cap: 'the problem' }, { o: { left: 'V_1', bot: '0', top: '0', right: '0' }, cap: md`$V_{(1)}$` }, { o: { left: '0', bot: 'V_2', top: '0', right: '0' }, cap: md`$V_{(2)}$` }), cap: 'Split into one-live-face problems, then add.' } },
+      }),
+
+      P({
+        id: 'ub-d3', title: 'A charge pattern above a grounded plane', big: true,
+        q: md`The plane $y=0$ carries $\sigma(x)=\sigma_0\cos kx$. A grounded conducting plane lies at $y=-d$. There are no other charges.
+
+          (a) Find the amplitude of $V$ on the sheet, i.e. $V(0,0)$.
+          (b) Find the charge induced on the grounded plane, $\sigma_{\text{ind}}(x)$.
+          (c) What happens as $kd\to0$?`,
+        figHtml: figSheet({ plane: true, cos: true, lab: md`\sigma_0\cos kx` }),
+        hints: [
+          md`Two regions: $-d<y<0$ and $y>0$. Write five things: the plane, far above, continuity, jump (and the separated form in each region).`,
+          md`Above: $Be^{-ky}\cos kx$. Between: $A\sinh\big(k(y+d)\big)\cos kx$, which already vanishes on the plane.`,
+          md`Continuity: $A\sinh kd=B$. Jump: $-kB-kA\cosh kd=-\sigma_0/\varepsilon_0$. Then $\sigma_{\text{ind}}=-\varepsilon_0\partial_yV$ at $y=-d$ with $\hat{\mathbf n}=+\hat{\mathbf y}$.`,
+        ],
+        parts: [
+          { lbl: md`V(0,0)`, expr: 'sigma0/(2*eps0*k)*(1-exp(-2*k*d))', vars: { sigma0: [1, 2], eps0: [0.5, 2], k: [0.5, 2], d: [0.2, 1.5] }, accepts: ['sigma0*sinh(k*d)*exp(-k*d)/(eps0*k)', 'sigma0/(eps0*k*(1+cosh(k*d)/sinh(k*d)))'] },
+          { lbl: md`\sigma_{\text{ind}}(x)`, expr: '-sigma0*exp(-k*d)*cos(k*x)', vars: { sigma0: [1, 2], k: [0.5, 2], d: [0.2, 1.5], x: [0.1, 0.6] } },
+          { lbl: md`(c) As $kd\to0$:`, mc: [md`$V$ on the sheet doubles`, md`Nothing changes; the plane is irrelevant`, md`$V$ on the sheet $\to0$ and $\sigma_{\text{ind}}\to-\sigma_0\cos kx$: the plane cancels the sheet`, md`$\sigma_{\text{ind}}\to0$`], a: 2,
+            why: [md`$1-e^{-2kd}\to0$: it vanishes.`, md`A grounded plane right under the sheet pins $V$ near zero.`, null, md`That's the opposite limit, $kd\to\infty$.`] },
+        ],
+        sol: md`
+          **Regions:** I: $-d<y<0$; II: $y>0$. **BCs:**
+          1. $V(x,-d)=0$ (grounded plane)
+          2. $V\to0$ as $y\to\infty$
+          3. $V_{\text{I}}(x,0)=V_{\text{II}}(x,0)$
+          4. $\partial_yV_{\text{II}}-\partial_yV_{\text{I}}=-\dfrac{\sigma_0\cos kx}{\varepsilon_0}$ at $y=0$
+
+          [[fig:bc]]
+
+          The source picks $\cos kx$. BC #2: $V_{\text{II}}=Be^{-ky}\cos kx$. BC #1: $V_{\text{I}}=A\sinh\big(k(y+d)\big)\cos kx$ (the combination of $e^{\pm ky}$ that vanishes at $y=-d$).
+          - BC #3: $A\sinh kd=B$.
+          - BC #4: $-kB-kA\cosh kd=-\sigma_0/\varepsilon_0$, so $kB(1+\coth kd)=\sigma_0/\varepsilon_0$.
+
+          $$B=\frac{\sigma_0\sinh kd}{\varepsilon_0k(\sinh kd+\cosh kd)}=\frac{\sigma_0}{\varepsilon_0k}\sinh kd\,e^{-kd}=\frac{\sigma_0}{2\varepsilon_0k}\left(1-e^{-2kd}\right),\qquad A=\frac{\sigma_0}{\varepsilon_0k}e^{-kd}.$$
+
+          **(a)** $V(0,0)=B=\dfrac{\sigma_0}{2\varepsilon_0k}\left(1-e^{-2kd}\right)$.
+
+          **(b)** At the plane the field region is above it, $\hat{\mathbf n}=+\hat{\mathbf y}$: $\sigma_{\text{ind}}=-\varepsilon_0\partial_yV_{\text{I}}\big|_{-d}=-\varepsilon_0kA\cos kx=-\sigma_0e^{-kd}\cos kx$.
+
+          **(c)** $kd\to0$: $B\to0$ and $\sigma_{\text{ind}}\to-\sigma_0\cos kx$; the plane's charge cancels the sheet's. $kd\to\infty$: $B\to\tfrac{\sigma_0}{2\varepsilon_0k}$ (the free sheet) and $\sigma_{\text{ind}}\to0$.
+
+          **Image check.** The answer is the free sheet plus an image sheet $-\sigma_0\cos kx$ at $y=-2d$: on the sheet, $\tfrac{\sigma_0}{2\varepsilon_0k}(1-e^{-2kd})$ ✓. Images work for charge sheets too.
+
+          **What to remember:** a grounded face in a separated region selects $\sinh$ of the distance from it; the induced charge falls off like $e^{-kd}$, the same decay as the field.
+        `,
+        figs: { bc: { svg: figSheet({ plane: true, cos: true, lab: md`\#3,\ \#4\ \text{at}\ y=0`, plab: md`\#1\ V=0` }), cap: 'BC #1 on the plane, #3 and #4 at the sheet, #2 far above.' } },
+      }),
+
+      P({
+        id: 'ub-d4', title: 'Between two spheres', big: true,
+        q: md`The inner sphere (radius $a$) is held at $V_0\cos\theta$. The concentric outer shell (radius $b$) is grounded.
+
+          (a) Find $V(r,\theta)$ for $a<r<b$.
+          (b) Find the charge density induced on the outer shell (on its inner surface).
+          (c) Check: what does $V$ become as $b\to\infty$?`,
+        figHtml: figConc({ inner: md`V_0\cos\theta`, outer: 'V=0', outerMetal: true }),
+        hints: [
+          md`Region $a<r<b$: neither the origin nor infinity, so keep both $A_\ell r^\ell$ and $B_\ell r^{-(\ell+1)}$.`,
+          md`Both boundary values are pure $P_1$ (or zero), so only $\ell=1$: $V=(Ar+B/r^2)\cos\theta$.`,
+          md`$Aa+B/a^2=V_0$ and $Ab+B/b^2=0$. For $\sigma$ on the shell, $\hat{\mathbf n}=-\hat{\mathbf r}$.`,
+        ],
+        parts: [
+          { lbl: md`V(r,\theta)`, expr: 'V0*a^2*(b^3/r^2 - r)*cos(theta)/(b^3-a^3)', vars: { V0: [1, 2], a: [1, 1.5], b: [2.5, 3.5], r: [1.6, 2.4], theta: [0.2, 2.9] }, accepts: ['V0*a^2*(r - b^3/r^2)*cos(theta)/(a^3-b^3)'] },
+          { lbl: md`\sigma_b(\theta)`, expr: '-3*eps0*V0*a^2*cos(theta)/(b^3-a^3)', vars: { eps0: [0.5, 2], V0: [1, 2], a: [1, 1.5], b: [2.5, 3.5], theta: [0.2, 2.9] } },
+          { lbl: md`(c) As $b\to\infty$:`, mc: [md`$V\to V_0\dfrac{r}{a}\cos\theta$`, md`$V\to V_0\dfrac{a^2}{r^2}\cos\theta$, the outside solution for an isolated sphere`, md`$V\to0$`, md`$V\to V_0\cos\theta$`], a: 1,
+            why: [md`That's the inside solution; it grows with $r$.`, null, md`The inner sphere still drives a field.`, md`That would mean no $r$-dependence at all.`] },
+        ],
+        sol: md`
+          **Region:** $a<r<b$. **BCs:**
+          1. $V(a,\theta)=V_0\cos\theta$
+          2. $V(b,\theta)=0$
+
+          No regularity or far-field condition: the region contains neither $r=0$ nor $\infty$, so both families stay.
+
+          [[fig:bc]]
+
+          Both boundary values are multiples of $P_1$, so by orthogonality only $\ell=1$ survives: $V=\left(Ar+\dfrac{B}{r^2}\right)\cos\theta$.
+          - BC #2: $Ab+\dfrac{B}{b^2}=0$, so $B=-Ab^3$.
+          - BC #1: $A\left(a-\dfrac{b^3}{a^2}\right)=V_0$, so $A=-\dfrac{V_0a^2}{b^3-a^3}$, $B=\dfrac{V_0a^2b^3}{b^3-a^3}$.
+
+          **(a)** $V(r,\theta)=\dfrac{V_0a^2}{b^3-a^3}\left(\dfrac{b^3}{r^2}-r\right)\cos\theta$.
+
+          **(b)** The field region is inside the shell, so $\hat{\mathbf n}=-\hat{\mathbf r}$ and $\sigma=+\varepsilon_0\partial_rV\big|_b=\varepsilon_0\dfrac{V_0a^2}{b^3-a^3}\left(-2-1\right)\cos\theta=-\dfrac{3\varepsilon_0V_0a^2}{b^3-a^3}\cos\theta$. Negative on the north side, facing the positive part of the inner sphere ✓.
+
+          **(c)** $b\to\infty$: $\dfrac{a^2b^3}{b^3-a^3}\to a^2$ and the $-r$ term's coefficient $\to0$, so $V\to V_0\dfrac{a^2}{r^2}\cos\theta$ ✓.
+
+          **Checks.** $r=a$: $\dfrac{V_0a^2}{b^3-a^3}\cdot\dfrac{b^3-a^3}{a^2}\cos\theta=V_0\cos\theta$ ✓. $r=b$: $b-b=0$ ✓.
+
+          **What to remember:** a shell region keeps both radial powers; two surfaces, two equations per $\ell$.
+        `,
+        figs: { bc: { svg: figConc({ inner: md`\#1\ V_0\cos\theta`, outer: md`\#2\ V=0`, outerMetal: true }), cap: 'Two boundaries, two conditions per $\\ell$; nothing at $r=0$ or $\\infty$.' } },
+      }),
+
+      P({
+        id: 'ub-d5', title: 'The bump in a field: induced charge', big: true,
+        q: md`A grounded conducting plane has a hemispherical bump of radius $R$; far away the field is uniform, $E_0\hat{\mathbf z}$.
+
+          (a) Find $\sigma$ at the top of the bump.
+          (b) Find $\sigma$ on the plane far from the bump.
+          (c) Find the total charge on the bump.
+          (d) At what polar angle $\theta$ on the bump does $\sigma$ equal its value far out on the plane? Give it in degrees.`,
+        figHtml: figBump({ field: true, plab: 'V=0' }),
+        hints: [
+          md`BC list: $V=0$ on the plane, $V=0$ on the bump, $V\to-E_0z$. Which known solution meets all three?`,
+          md`$V=-E_0\left(r-\dfrac{R^3}{r^2}\right)\cos\theta$. On the bump $\hat{\mathbf n}=\hat{\mathbf r}$; on the plane $\hat{\mathbf n}=\hat{\mathbf z}$.`,
+          md`Total charge: $\int_0^{\pi/2}\sigma\,2\pi R^2\sin\theta\,d\theta$.`,
+        ],
+        parts: [
+          { lbl: md`\sigma_{\text{top}}`, expr: '3*eps0*E0', vars: { eps0: [0.5, 2], E0: [1, 3] } },
+          { lbl: md`\sigma_{\text{far}}`, expr: 'eps0*E0', vars: { eps0: [0.5, 2], E0: [1, 3] } },
+          { lbl: md`Q_{\text{bump}}`, expr: '3*pi*eps0*E0*R^2', vars: { eps0: [0.5, 2], E0: [1, 3], R: [1, 2] } },
+          { lbl: md`\theta`, ans: 70.53, unit: 'deg' },
+        ],
+        sol: md`
+          **Region:** above the plane and outside the bump. **BCs:**
+          1. $V=0$ on $z=0$ ($s>R$)
+          2. $V=0$ on $r=R$, $z>0$
+          3. $V\to-E_0z$ far away
+
+          [[fig:bc]]
+
+          The sphere-in-field potential $V=-E_0\left(r-\dfrac{R^3}{r^2}\right)\cos\theta$ satisfies Laplace's equation in the region, vanishes at $\theta=\pi/2$ (BC #1) and at $r=R$ (BC #2), and tends to $-E_0r\cos\theta=-E_0z$ (BC #3). By uniqueness it is the answer.
+
+          **(a)** On the bump: $\sigma=-\varepsilon_0\partial_rV\big|_R=\varepsilon_0E_0\left(1+\dfrac{2R^3}{R^3}\right)\cos\theta=3\varepsilon_0E_0\cos\theta$; at the top ($\theta=0$), $3\varepsilon_0E_0$.
+
+          **(b)** On the plane, with $s$ the distance from the axis: $V=-E_0z\left(1-\dfrac{R^3}{r^3}\right)$, so $\sigma=-\varepsilon_0\partial_zV\big|_{z=0}=\varepsilon_0E_0\left(1-\dfrac{R^3}{s^3}\right)\to\varepsilon_0E_0$.
+
+          **(c)** $Q=\displaystyle\int_0^{\pi/2}3\varepsilon_0E_0\cos\theta\,2\pi R^2\sin\theta\,d\theta=6\pi\varepsilon_0E_0R^2\cdot\tfrac12=3\pi\varepsilon_0E_0R^2$.
+
+          **(d)** $3\varepsilon_0E_0\cos\theta=\varepsilon_0E_0$ gives $\cos\theta=\tfrac13$, $\theta=70.5^\circ$.
+
+          **Checks.** At the rim $\sigma=0$ on both sides ($\cos\tfrac\pi2=0$ and $1-R^3/R^3=0$): continuous around the corner ✓. Bookkeeping: compared with a flat plane, the plane near the bump is short $\int_R^\infty\varepsilon_0E_0\tfrac{R^3}{s^3}2\pi s\,ds=2\pi\varepsilon_0E_0R^2$, and the flat disk the bump covers would have held $\pi R^2\varepsilon_0E_0$; the bump holds $3\pi\varepsilon_0E_0R^2=2\pi+\pi$ ✓.
+
+          **What to remember:** recognise a known solution that already satisfies the BCs; then $\sigma=-\varepsilon_0\partial V/\partial n$ on each piece with its own $\hat{\mathbf n}$.
+        `,
+        figs: { bc: { svg: figBump({ plab: md`\#1\ V=0`, blab: md`\#2\ V=0`, far: md`\#3\ V\to-E_0z` }), cap: 'The three BCs; the sphere-in-field potential satisfies all of them.' } },
+      }),
+
+      P({
+        id: 'ub-d6', title: 'A charged sphere in a uniform field (Griffiths 3.21)', big: true,
+        q: md`An isolated metal sphere of radius $R$ carries total charge $Q$ and sits in a field that is uniform far away, $E_0\hat{\mathbf z}$. Set the zero of potential so that $V\to-E_0z$ far away.
+
+          (a) Find $V(r,\theta)$ outside.
+          (b) Find $\sigma(\theta)$.
+          (c) What is the potential of the sphere?
+          (d) For which $Q$ is there a line on the sphere where $\sigma=0$?`,
+        figHtml: figField({ q: 'Q', note: 'isolated metal sphere, charge Q' }),
+        hints: [
+          md`BCs: $V(R,\theta)=V_c$ (unknown), total charge $Q$, $V\to-E_0r\cos\theta$. Three conditions, three kinds of coefficient.`,
+          md`Far field: $A_1=-E_0$. Equipotential: $B_1=E_0R^3$, $B_{\ell\ge2}=0$. Charge: $B_0=Q/(4\pi\varepsilon_0)$.`,
+          md`$\sigma=-\varepsilon_0\partial_rV$ at $R$; it vanishes where $\cos\theta=-Q/(12\pi\varepsilon_0R^2E_0)$.`,
+        ],
+        parts: [
+          { lbl: md`V(r,\theta)`, expr: '-E0*(r - R^3/r^2)*cos(theta) + Q/(4*pi*eps0*r)', vars: { E0: [1, 2], R: [1, 2], r: [2.5, 4], theta: [0.2, 2.9], Q: [1, 3], eps0: [0.5, 2] } },
+          { lbl: md`\sigma(\theta)`, expr: '3*eps0*E0*cos(theta) + Q/(4*pi*R^2)', vars: { E0: [1, 2], R: [1, 2], theta: [0.2, 2.9], Q: [1, 3], eps0: [0.5, 2] } },
+          { lbl: md`V_{\text{sphere}}`, expr: 'Q/(4*pi*eps0*R)', vars: { Q: [1, 3], eps0: [0.5, 2], R: [1, 2] } },
+          { lbl: md`(d) $\sigma$ vanishes somewhere on the sphere when`, mc: [md`always`, md`$|Q|\le12\pi\varepsilon_0R^2E_0$`, md`$|Q|\le4\pi\varepsilon_0R^2E_0$`, md`only for $Q=0$`], a: 1,
+            why: [md`A large enough $Q$ makes $\sigma$ one sign everywhere.`, null, md`The field-induced part has amplitude $3\varepsilon_0E_0$, not $\varepsilon_0E_0$.`, md`For $Q=0$ it vanishes on the equator, but small nonzero $Q$ just moves that line.`] },
+        ],
+        sol: md`
+          **Region:** $r>R$. **BCs:**
+          1. $V(R,\theta)=V_c$, an unknown constant
+          2. $-\varepsilon_0\oint\partial_rV\,da=Q$ (total charge)
+          3. $V\to-E_0r\cos\theta$ ($C=0$)
+
+          [[fig:bc]]
+
+          BC #3: $A_1=-E_0$, other $A_\ell=0$ (including $A_0$). BC #2: $B_0=Q/(4\pi\varepsilon_0)$. BC #1, $\ell\ge1$: $-E_0R+B_1/R^2=0\Rightarrow B_1=E_0R^3$; $B_{\ell\ge2}=0$. The $\ell=0$ part of BC #1 then just tells you $V_c=B_0/R$.
+
+          **(a)** $V=-E_0\left(r-\dfrac{R^3}{r^2}\right)\cos\theta+\dfrac{Q}{4\pi\varepsilon_0r}$.
+
+          **(b)** $\sigma=-\varepsilon_0\partial_rV\big|_R=3\varepsilon_0E_0\cos\theta+\dfrac{Q}{4\pi R^2}$.
+
+          **(c)** $V_c=\dfrac{Q}{4\pi\varepsilon_0R}$ (with this choice of zero).
+
+          **(d)** $\sigma=0$ where $\cos\theta=-\dfrac{Q}{12\pi\varepsilon_0R^2E_0}$, which has a solution only if $|Q|\le12\pi\varepsilon_0R^2E_0$.
+
+          **Checks.** $Q=0$: Griffiths Ex. 3.8 ✓. $E_0=0$: a charged sphere ✓. $\int\sigma\,da=Q$ (the $\cos\theta$ part integrates to zero) ✓.
+
+          **What to remember:** a charged conductor in a field is the neutral solution plus a point charge at the center, not plus a constant. The constant is the reference; the $1/r$ is the charge.
+        `,
+        figs: { bc: { svg: figField({ q: 'Q', note: '#1: V const on sphere; #3: V → −E₀z' }), cap: 'BC #1 and BC #2 (total charge $Q$) act on the sphere; BC #3 far away.' } },
+      }),
+
+      P({
+        id: 'ub-d7', title: 'A charge above a plane with a bump', big: true,
+        q: md`A grounded conducting plane has a hemispherical bump of radius $R$. A point charge $q$ sits on the bump's axis at height $a>R$ above the plane.
+
+          (a) Which image system works?
+          (b) Find the force on $q$ (positive = away from the plane).
+          (c) For $a=2R$, find the magnitude of the force in units of $\dfrac{q^2}{4\pi\varepsilon_0R^2}$.
+          (d) What is the total charge induced on the plane and bump?`,
+        figHtml: figBump({ charge: true, plab: 'V=0' }),
+        hints: [
+          md`BCs: $V=0$ on the plane, $V=0$ on the bump, $V\to0$. Satisfy the sphere with Kelvin's image, then the plane with mirror images of everything.`,
+          md`Images: $-\tfrac Raq$ at $R^2/a$; $-q$ at $-a$; and the mirror of the first image. Check each surface: which pairs cancel there?`,
+          md`Add the three forces along the axis, each $\dfrac{q\,q_i}{4\pi\varepsilon_0(a-z_i)^2}$ with the right direction.`,
+        ],
+        parts: [
+          { lbl: md`(a) Images:`, mc: [md`$-q$ at $-a$ only`, md`$-\tfrac Raq$ at $\tfrac{R^2}{a}$ only`, md`$-\tfrac Raq$ at $\tfrac{R^2}{a}$, $-q$ at $-a$, and $+\tfrac Raq$ at $-\tfrac{R^2}{a}$`, md`$-\tfrac Raq$ at $\tfrac{R^2}{a}$ and $-q$ at $-a$`], a: 2,
+            why: [md`That fixes the plane, not the bump.`, md`That fixes the sphere, not the plane.`, null, md`Each of these is unpaired on the other surface.`] },
+          { lbl: md`F_z`, expr: '-(q^2/(4*pi*eps0))*(R*a/(a^2-R^2)^2 + 1/(4*a^2) - R*a/(a^2+R^2)^2)', vars: { q: [1, 2], eps0: [0.5, 2], R: [1, 1.5], a: [2, 3] } },
+          { lbl: md`|F|\ (a=2R)`, ans: 0.2047, unit: '' },
+          { lbl: md`(d) Total induced charge:`, mc: [md`$-q$`, md`$-\tfrac Raq$`, md`$0$`, md`$-q\left(1+\tfrac Ra\right)$`], a: 0,
+            why: [null, md`That's only the sphere's Kelvin image; the plane takes the rest.`, md`The conductor is grounded and must end all of $q$'s field lines (it's an infinite plane).`, md`Add the images: $-\tfrac Raq-q+\tfrac Raq=-q$.`] },
+        ],
+        sol: md`
+          **Region:** above the plane, outside the bump. **BCs:**
+          1. $V=0$ on $z=0$ (for $s>R$)
+          2. $V=0$ on $r=R$, $z>0$
+          3. $V\to0$
+
+          **Images.** For the sphere: $q_1=-\tfrac Raq$ at $z=R^2/a$ (Kelvin). For the plane: mirror both: $-q$ at $z=-a$ and $+\tfrac Raq$ at $z=-R^2/a$.
+
+          [[fig:img]]
+
+          **Check every BC.** Plane: the set is antisymmetric under $z\to-z$ (each charge has its negative at the mirror point), so $V=0$ on $z=0$ ✓. Sphere: $\{q,\ q_1\}$ is a Kelvin pair, and so is $\{-q$ at $-a,\ +\tfrac Raq$ at $-R^2/a\}$, so each pair gives $V=0$ on the whole sphere ✓. Infinity ✓. All images lie below the plane or inside the bump, outside the region ✓.
+
+          **(b)** Forces on $q$ along $z$ (with $K=\tfrac{q^2}{4\pi\varepsilon_0}$):
+          - $q_1$, distance $a-\tfrac{R^2}{a}$, attractive: $-K\dfrac{Ra}{(a^2-R^2)^2}$
+          - $-q$ at $-a$, distance $2a$, attractive: $-\dfrac{K}{4a^2}$
+          - $+\tfrac Raq$ at $-\tfrac{R^2}{a}$, distance $a+\tfrac{R^2}{a}$, repulsive: $+K\dfrac{Ra}{(a^2+R^2)^2}$
+          $$F_z=-\frac{q^2}{4\pi\varepsilon_0}\left[\frac{Ra}{(a^2-R^2)^2}+\frac{1}{4a^2}-\frac{Ra}{(a^2+R^2)^2}\right].$$
+
+          **(c)** $a=2R$: $\tfrac29+\tfrac1{16}-\tfrac2{25}=0.2222+0.0625-0.0800=0.2047$. Without the bump it would be $0.0625$: the bump more than triples the pull.
+
+          **(d)** Total image charge: $-\tfrac Raq-q+\tfrac Raq=-q$, the same as for a flat plane (all field lines end on the conductor).
+
+          **What to remember:** with two surfaces, image each image until every BC closes. Here it closes after three, because the plane is a mirror of the sphere problem.
+        `,
+        figs: { img: { svg: figBumpImg(), cap: 'Images (dashed: no metal): $-\\tfrac{R}{a}q$ at $R^2/a$, $-q$ at $-a$, $+\\tfrac{R}{a}q$ at $-R^2/a$.' } },
+      }),
+
+      P({
+        id: 'ub-d8', title: 'A box with one live face in a single mode', big: true,
+        q: md`A cube $0\le x,y,z\le a$ has five faces grounded. The top face $z=a$, insulated from them, is held at $V_0\sin(\pi x/a)\sin(\pi y/a)$.
+
+          (a) Find $V(x,y,z)$.
+          (b) Find $V$ at the center, in units of $V_0$.
+          (c) Find the surface charge at the center of the bottom face.`,
+        figHtml: figCube({ top: md`V_{\text{top}}`, note: 'five faces grounded' }),
+        hints: [
+          md`Six faces, six BCs. Which two directions oscillate? Which function does the grounded bottom pick in $z$?`,
+          md`The top data is already a single mode, $n=m=1$: no Fourier sums needed. $Z''=(k^2+l^2)Z$ with $k=l=\pi/a$.`,
+          md`$\sigma=-\varepsilon_0\partial V/\partial n$ with $\hat{\mathbf n}=+\hat{\mathbf z}$ on the bottom face.`,
+        ],
+        parts: [
+          { lbl: md`V(x,y,z)`, expr: 'V0*sin(pi*x/a)*sin(pi*y/a)*sinh(sqrt(2)*pi*z/a)/sinh(sqrt(2)*pi)', vars: { V0: [1, 2], x: [0.2, 0.8], y: [0.2, 0.8], z: [0.2, 0.8], a: [1, 2] } },
+          { lbl: md`V_{\text{center}}/V_0`, ans: 0.1072, unit: '' },
+          { lbl: md`\sigma(a/2,a/2,0)`, expr: '-sqrt(2)*pi*eps0*V0/(a*sinh(sqrt(2)*pi))', vars: { eps0: [0.5, 2], V0: [1, 2], a: [1, 2] } },
+        ],
+        sol: md`
+          **Region:** inside the cube. **BCs:**
+          1. $V=0$ at $x=0$ and 2. at $x=a$
+          3. $V=0$ at $y=0$ and 4. at $y=a$
+          5. $V=0$ at $z=0$
+          6. $V=V_0\sin(\pi x/a)\sin(\pi y/a)$ at $z=a$
+
+          BC #1–#4: $\sin(n\pi x/a)\sin(m\pi y/a)$. Then $Z''=\pi^2\dfrac{n^2+m^2}{a^2}Z$; BC #5 picks $\sinh$. BC #6 is a single term, so by orthogonality only $n=m=1$ appears:
+
+          **(a)** $V=V_0\sin\dfrac{\pi x}{a}\sin\dfrac{\pi y}{a}\dfrac{\sinh(\sqrt2\pi z/a)}{\sinh\sqrt2\pi}$.
+
+          [[fig:z]]
+
+          **(b)** Center: $\dfrac{\sinh(\sqrt2\pi/2)}{\sinh\sqrt2\pi}=\dfrac{1}{2\cosh(\pi/\sqrt2)}=0.1072$. Compare $1/6=0.167$ for a uniform top: this top averages less ($\tfrac4{\pi^2}V_0=0.405V_0$ over the face).
+
+          **(c)** $\partial_zV\big|_{z=0}=V_0\cdot1\cdot1\cdot\dfrac{\sqrt2\pi/a}{\sinh\sqrt2\pi}$, so $\sigma=-\varepsilon_0\partial_zV=-\dfrac{\sqrt2\pi\varepsilon_0V_0}{a\sinh\sqrt2\pi}\approx-0.105\dfrac{\varepsilon_0V_0}{a}$. Negative: the field runs down from the live top into the grounded bottom.
+
+          **Checks.** Each face: sides vanish because of the sines ✓; bottom because $\sinh0=0$ ✓; top because the $\sinh$ ratio is $1$ ✓. Laplace: $\left(-\tfrac{\pi^2}{a^2}-\tfrac{\pi^2}{a^2}+\tfrac{2\pi^2}{a^2}\right)V=0$ ✓.
+
+          **What to remember:** when the live face is already one separated mode, the whole solution is one term, and its decay constant is $\pi\sqrt{n^2+m^2}/a$.
+        `,
+        figs: { z: { svg: plotCubeZ(), cap: 'Along the vertical center line: $V/V_0=\\sinh(\\sqrt2\\pi z/a)/\\sinh\\sqrt2\\pi$.' } },
+      }),
+
+      P({
+        id: 'ub-d9', title: 'A charge between two grounded planes', big: true,
+        q: md`A point charge $q$ sits between two grounded conducting planes, $z=0$ and $z=L$, at height $z_0=L/4$.
+
+          (a) How many image charges does the method need?
+          (b) What is the force on $q$ if it sits at the midpoint instead?
+          (c) At $z_0=L/4$, find the magnitude of the force in units of $\dfrac{q^2}{4\pi\varepsilon_0L^2}$.
+          (d) What total charge is induced on the lower plane?`,
+        figHtml: figPar({}),
+        hints: [
+          md`BCs: $V=0$ on $z=0$, $V=0$ on $z=L$, $V\to0$ far away sideways. Imaging in one plane breaks the other: keep reflecting.`,
+          md`Images: $+q$ at $2nL+z_0$ ($n\neq0$) and $-q$ at $2nL-z_0$ (all $n$). The $+q$ images come in pairs at equal distances above and below: their forces cancel.`,
+          md`$F_z=\dfrac{q^2}{4\pi\varepsilon_0}\left[\sum_{n\ge1}\dfrac{1}{(2nL-2z_0)^2}-\sum_{m\ge0}\dfrac{1}{(2z_0+2mL)^2}\right]$. Pair the terms to make the series converge fast.`,
+        ],
+        parts: [
+          { lbl: md`(a) Number of images:`, mc: [md`one`, md`two`, md`three`, md`infinitely many`], a: 3,
+            why: [md`One image fixes one plane only.`, md`Each image spoils the other plane.`, md`Three is the right-angle corner.`, null] },
+          { lbl: md`(b) Force at the midpoint:`, mc: [md`zero, by symmetry`, md`toward the lower plane`, md`$\dfrac{q^2}{4\pi\varepsilon_0L^2}$ upward`, md`infinite`], a: 0,
+            why: [null, md`Both planes pull equally at the midpoint.`, md`The setup is symmetric about $z=L/2$.`, md`$q$ is a finite distance from every image.`] },
+          { lbl: md`|F|`, ans: 3.664, unit: '' },
+          { lbl: md`(d) Induced charge on the lower plane:`, mc: [md`$-q$`, md`$-q/2$`, md`$-3q/4$`, md`$-q/4$`], a: 2,
+            why: [md`The two planes share the induced charge; together they carry $-q$.`, md`That's the midpoint case.`, null, md`That's the upper (farther) plane's share.`] },
+        ],
+        sol: md`
+          **Region:** $0<z<L$. **BCs:**
+          1. $V=0$ on $z=0$
+          2. $V=0$ on $z=L$
+          3. $V\to0$ far away (sideways)
+
+          **(a)** Reflect $q$ in $z=0$: $-q$ at $-z_0$; that breaks BC #2, so reflect it in $z=L$: $+q$ at $2L+z_0$... and so on forever: $+q$ at $2nL+z_0$, $-q$ at $2nL-z_0$. Infinitely many, all outside the region. Any pair of mirror images across either plane cancels on it, so BC #1 and #2 hold.
+
+          [[fig:img]]
+
+          **(b)** At $z_0=L/2$ the image set is symmetric about $q$: zero force.
+
+          **(c)** The $+q$ images ($n=\pm1,\pm2,\dots$) cancel in pairs. The $-q$ images above $q$ ($n\ge1$, distance $2nL-2z_0$) pull up; those below ($n\le0$, distance $2z_0+2|n|L$) pull down. With $z_0=L/4$, in units of $\tfrac{q^2}{4\pi\varepsilon_0L^2}$:
+          $$F_z=\frac14\left[\sum_{n\ge1}\frac{1}{(n-\frac14)^2}-\sum_{m\ge0}\frac{1}{(m+\frac14)^2}\right]=\frac14\left[-16+\sum_{n\ge1}\left(\frac{1}{(n-\frac14)^2}-\frac{1}{(n+\frac14)^2}\right)\right].$$
+          The bracketed terms are $1.1378,\ 0.1290,\ 0.0376,\ 0.0158,\ 0.0080,\dots$ (sum $\approx1.341$), so $F_z\approx\tfrac14(-16+1.341)=-3.664$. (Exactly $-4G$, Catalan's constant $G=0.9160$.) The force points toward the nearer plane, a bit weaker than the single-plane value $4$ because the far plane pulls back.
+
+          **(d)** $-\tfrac34q$. Replace $q$ by a uniform sheet of charge at $z_0$ (sum over all horizontal positions: the induced charges add the same way). For a sheet $\sigma$ between grounded plates, the fields below and above satisfy $E_{\text{below}}z_0=E_{\text{above}}(L-z_0)$ (both plates at $0$) and $E_{\text{below}}+E_{\text{above}}=\sigma/\varepsilon_0$, so the lower plate gets $-\sigma\dfrac{L-z_0}{L}$. For $z_0=L/4$: $-\tfrac34$ of the charge, and $-\tfrac14$ on the upper plate.
+
+          **What to remember:** two parallel conductors need an infinite image series; check that each reflection preserves both BCs, and use symmetry to cancel what you can before summing.
+        `,
+        figs: { img: { svg: figParImg(), cap: 'Some of the infinitely many images (planes $z=0$ and $z=L$ dashed: no metal in the image problem).' } },
+      }),
+
+      RF(md`
+        !!key Patterns to remember
+          - Start every problem with the region and a numbered BC list; end it by checking the answer against each one.
+          - The far-field condition is "tends to whatever the boundaries alone produce": $0$, $V_1$, a linear profile, or $-E_0z$.
+          - Constant offsets: subtract them first. Several live faces: split. Several conductors with images: keep reflecting until every BC closes.
+          - Charge on a conductor is a $1/r$ term (or a center image), never a constant.
+          - $\sigma=-\varepsilon_0\partial V/\partial n$ with $\hat{\mathbf n}$ out of the metal, on each piece separately.
+      `),
+    ],
+  });
+
 
   C.unit({
     id: 'ub', num: 'Unit B', title: 'Boundary conditions: the whole picture',

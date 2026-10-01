@@ -105,7 +105,7 @@
   // Solution: q and its image, no conductor. o.pt = [x, z, 'label'] shows the distances to a field point.
   function fPair(o = {}) {
     const f = PF.fig();
-    const s = o.s || 70, X0 = 170, Y0 = 150;
+    const s = o.s || 70, X0 = 170, Y0 = 150, neg = !!o.neg, dl = o.dLab || 'd';
     const Pp = (x, z) => [X0 + x * s, Y0 - z * s];
     f.line(20, Y0, 320, Y0, { cls: 'dash' });
     f.label(324, Y0, 'z=0', 'l', 'small');
@@ -114,14 +114,14 @@
     if (o.pt) {
       const [px, py] = Pp(o.pt[0], o.pt[1]);
       f.line(ax, ay, px, py, { cls: 'dim' }); f.line(bx, by, px, py, { cls: 'dim' });
-      f.dot(px, py, 3); f.tag(px, py, o.pt[2] || 'P', 'r');
+      f.dot(px, py, 3); f.tag(px, py, o.pt[2] || 'P', o.pt[3] || 'r');
       f.label((ax + px) / 2, Math.min(ay, py) - 10, '\\srm_+', 'b', 'small');
       f.label((bx + px) / 2 + 12, (by + py) / 2 + 8, '\\srm_-', 'tl', 'small');
     }
-    f.charge(ax, ay, { q: '+', lab: '+q', at: 'l' });
-    f.charge(bx, by, { q: '-', lab: '-q', at: 'l', image: true });
-    f.dim(X0 - 40, ay, X0 - 40, Y0, ''); f.label(X0 - 46, (ay + Y0) / 2, 'd', 'r', 'small');
-    f.dim(X0 - 40, Y0, X0 - 40, by, ''); f.label(X0 - 46, (by + Y0) / 2, 'd', 'r', 'small');
+    f.charge(ax, ay, { q: neg ? '-' : '+', lab: neg ? '-q' : '+q', at: 'l' });
+    f.charge(bx, by, { q: neg ? '+' : '-', lab: neg ? '+q' : '-q', at: 'l', image: true });
+    f.dim(X0 - 40, ay, X0 - 40, Y0, ''); f.label(X0 - 46, (ay + Y0) / 2, dl, 'r', 'small');
+    f.dim(X0 - 40, Y0, X0 - 40, by, ''); f.label(X0 - 46, (by + Y0) / 2, dl, 'r', 'small');
     return f.svg();
   }
 
@@ -660,7 +660,7 @@
           2. $V(\infty) = 0$: far from the charge ($x^2+y^2+z^2 \gg d^2$) the potential dies off.
 
           !!key The licence to guess: uniqueness (Unit 4)
-            If $\rho$ is given in a region and $V$ is given on every boundary of that region, Poisson's equation has exactly one solution there. So **any** function that has the right $\rho$ in the region and meets every boundary condition is *the* answer, however you found it.
+            If $\rho$ is given in a region and $V$ is given on every boundary of that region, Poisson's equation has exactly one solution there. So **any** function that has the right $\rho$ in the region and meets every boundary condition is *the* answer, however you found it. (See [the first uniqueness theorem](#/l/u4-unique1) in Unit 4.)
 
           (The recap at the top of the notes writes $\nabla^2 V = \rho/\varepsilon_0$. The minus sign is missing: Poisson's equation is $\nabla^2V = -\rho/\varepsilon_0$.)
         `, { setup: { svg: fPlane3D({ dim: true }), cap: md`The lecture's picture: $q$ a height $d$ above the grounded plane $z=0$.` } }),
@@ -734,7 +734,7 @@
           - **Condition 1, $V(x,y,0)=0$.** A point $(x,y,0)$ is the same distance $\sqrt{x^2+y^2+d^2}$ from both charges, so the two terms cancel.
           - **Condition 2, $V(\infty)=0$.** Each term goes to zero far away.
 
-          Every condition holds, so by uniqueness this **is** the potential of the real problem for $z\ge0$. The $-q$ is called the **image charge**: the conductor acts like a mirror for charge, with the sign flipped.
+          Every condition holds, so by uniqueness this **is** the potential of the real problem for $z\ge0$. The $-q$ is called the **image charge**: the conductor acts like a mirror for charge, with the sign flipped. (Page 2 of the notes calls it $-Q$ once; it is the same $-q$.)
 
           !!intuition Why a mirror charge works
             A grounded plane is an equipotential, so the field meets it at right angles. The field of a $\pm q$ pair crosses the plane halfway between them at right angles too, by symmetry. Above the plane the two field patterns are identical, so the two potentials are identical.
@@ -882,7 +882,7 @@
           [[fig:vz]]
 
           The last line is worth remembering. Far away, $q$ together with its induced charge has **zero net charge** and looks like a dipole of moment $p = q(2d)$. So $V$ falls off like $1/z^2$, not $1/z$.
-        `, { vz: { svg: fVaxis(), cap: md`$V$ on the axis in units of $q/(4\pi\varepsilon_0 d)$: zero on the plane, infinite at $q$, then the dipole tail $2d^2/z^2$ (dashed).` } }),
+        `, { vz: { svg: fVaxis(), cap: md`$V$ on the axis in units of $\tfrac{q}{4\pi\varepsilon_0 d}$: zero on the plane, infinite at $q$, then the dipole tail $2d^2/z^2$ (dashed).` } }),
 
         Q(md`Far above the plane ($z\gg d$, on the axis), how does $V$ fall off?`,
           [md`Like $1/z$, because the charge $q$ is still there`, md`Like $1/z^3$`, md`Exponentially, because the conductor screens $q$`, md`Like $1/z^2$: $q$ and its induced charge together are neutral and act like a dipole`], 3,
@@ -1034,7 +1034,7 @@
           - **Scaling with $d$:** bring $q$ closer and the charge piles up more tightly under it. The peak grows like $1/d^2$ and the width shrinks like $d$.
 
           [[fig:sig]]
-        `, { sig: { svg: fSigPlane(), cap: md`$\sigma$ along a line through the foot of the charge, in units of $q/d^2$. Peak $-1/(2\pi)$ under the charge.` } }),
+        `, { sig: { svg: fSigPlane(), cap: md`$\sigma$ along a line through the foot of the charge, in units of $q/d^2$. Peak $-\tfrac{1}{2\pi}$ under the charge.` } }),
 
         Q(md`At $z=0$, what happens to the two terms of $\partial V/\partial z$, one from $+q$ and one from the image?`,
           [md`They cancel, so $\sigma=0$, just as $V$ itself is zero`, md`They cancel everywhere except directly under $q$`, md`They add, giving $\dfrac{q}{4\pi\varepsilon_0}\,\dfrac{2z}{(x^2+y^2+d^2)^{3/2}}$, which is zero at $z=0$`, md`They add, giving $\dfrac{q}{4\pi\varepsilon_0}\,\dfrac{2d}{(x^2+y^2+d^2)^{3/2}}$`], 3,
@@ -1190,7 +1190,7 @@
 
           $$\sigma = \frac{-qd}{2\pi(2d^2)^{3/2}} = -\frac{q}{4\sqrt2\,\pi d^2} \approx -0.056\,\frac{q}{d^2},$$
 
-          which is $2^{-3/2}\approx0.35$ of the peak value $-q/(2\pi d^2)$.
+          which is $2^{-3/2}\approx0.35$ of the peak value $-\dfrac{q}{2\pi d^2}$.
 
           **Charge within $r=d$.** The same integral as before, stopped at $r$:
 
@@ -1218,7 +1218,7 @@
           ],
           parts: [
             { lbl: md`(a) $\sigma(P)$`, expr: '-q/(10*sqrt(5)*pi*d^2)', vars: { q: [1, 3], d: [1, 3] }, accepts: ['-q*d/(2*pi*(5*d^2)^(3/2))'] },
-            { lbl: md`(b) $Q(r<2d)$`, expr: '-q*(1 - 1/sqrt(5))', vars: { q: [1, 3] }, accepts: ['q/sqrt(5) - q'] },
+            { lbl: md`(b) $Q$ within $2d$`, expr: '-q*(1 - 1/sqrt(5))', vars: { q: [1, 3] }, accepts: ['q/sqrt(5) - q'] },
             { lbl: md`(c) $E_z$`, expr: '-q/(2*pi*eps0*d^2)', vars: { q: [1, 3], eps0: [0.5, 2], d: [1, 3] } },
           ],
           sol: md`
@@ -1231,11 +1231,13 @@
 
             **Image:** $-q$ at $(0,0,-d)$. **Check:** (1) points of the plane are equidistant from $\pm q$, so $V=0$ there; (2) both terms vanish far away; the image is outside the region. Then $\sigma = -\varepsilon_0\,\partial V/\partial z|_{z=0} = \dfrac{-qd}{2\pi(x^2+y^2+d^2)^{3/2}}$ (derived in the lesson).
 
+            [[fig:img]]
+
             **(a)** $x^2+y^2 = 4d^2$:
 
             $$\sigma(P) = \frac{-qd}{2\pi(5d^2)^{3/2}} = -\frac{q}{10\sqrt5\,\pi d^2}\approx -0.0142\,\frac{q}{d^2},$$
 
-            about $1/(5\sqrt5)\approx 9\%$ of the peak.
+            about $\dfrac{1}{5\sqrt5}\approx 9\%$ of the peak.
 
             **(b)** $Q(r) = -q\left(1 - \dfrac{d}{\sqrt{r^2+d^2}}\right)$, so $Q(2d) = -q\left(1 - \dfrac{1}{\sqrt5}\right)\approx -0.553\,q$.
 
@@ -1243,6 +1245,7 @@
 
             **Checks.** Units: $q/d^2$ for $\sigma$, a fraction of $q$ for (b). Limits: $Q(r)\to-q$ as $r\to\infty$ and $\to0$ as $r\to0$. Signs: negative charge under a positive $q$, field pointing into the plane.
           `,
+          figs: { img: { svg: fPair({ pt: [2, 0, 'P', 'tr'] }), cap: md`The image pair; $P$ is on the plane, $2d$ from the foot.` } },
         }),
 
         P({
@@ -1277,6 +1280,8 @@
 
             **Image:** $+q$ at $(0,0,-2a)$. **Check:** (1) on the plane the two terms are equal and opposite; (2) both vanish far away; the image is below the plane. Everything is the earlier result with $q\to-q$ and $d\to2a$.
 
+            [[fig:img]]
+
             **(a)**
             $$\sigma = \frac{+q(2a)}{2\pi(x^2+y^2+4a^2)^{3/2}},\qquad \sigma(0,0) = \frac{2qa}{2\pi\cdot8a^3} = \frac{q}{8\pi a^2}.$$
 
@@ -1286,6 +1291,7 @@
 
             **Check.** Flipping the sign of the real charge flips every induced quantity. The height enters as $1/h^2$ in the peak: $\dfrac{q}{2\pi(2a)^2} = \dfrac{q}{8\pi a^2}$.
           `,
+          figs: { img: { svg: fPair({ neg: true, dLab: '2a' }), cap: md`The image of $-q$ is $+q$ at the mirror point.` } },
         }),
 
         RF(md`
@@ -1352,7 +1358,7 @@
         Q(md`You move the charge from height $d$ to height $d/2$. The force on it becomes:`,
           [md`$4$ times as large`, md`$2$ times as large`, md`$\sqrt2$ times as large`, md`$8$ times as large`], 0,
           [null,
-            md`The force goes as $1/(2d)^2$, an inverse square, not $1/d$.`,
+            md`The force goes as $\dfrac{1}{(2d)^2}$, an inverse square, not $1/d$.`,
             md`No square roots: $F\propto1/d^2$.`,
             md`$1/d^3$ would be the falloff of a dipole's field, not of the charge-image force.`],
           md`$F = \dfrac{q^2}{4\pi\varepsilon_0(2d)^2}\propto\dfrac{1}{d^2}$: halve $d$ and $F$ quadruples. As $q$ approaches the plane the force grows without bound, just as the image approaches it.`,
@@ -1560,6 +1566,8 @@
 
             **Image:** $-q$ at depth $d$. **Check:** the plate bisects the pair, so (1) holds; both terms die far away, so (2) holds.
 
+            [[fig:img]]
+
             **Force.** $F = \dfrac{1}{4\pi\varepsilon_0}\dfrac{q^2}{(2d)^2} = \dfrac{(8.99\times10^9)(2.0\times10^{-9})^2}{(0.030)^2} = 4.0\times10^{-5}\ \text{N} = 39.9\ \mu\text{N}$, toward the plate.
 
             **Energy.** $W = -\dfrac{1}{4\pi\varepsilon_0}\dfrac{q^2}{4d} = -\dfrac{(8.99\times10^9)(4.0\times10^{-18})}{0.060} = -6.0\times10^{-7}\ \text{J} = -0.599\ \mu\text{J}$.
@@ -1568,6 +1576,7 @@
 
             **Check.** Here $|W| = F\,d$ exactly, since $|W| = \dfrac{q^2}{16\pi\varepsilon_0 d}$ and $F = \dfrac{q^2}{16\pi\varepsilon_0d^2}$: $39.9\ \mu\text{N}\times0.015\ \text{m} = 0.599\ \mu\text{J}$.
           `,
+          figs: { img: { svg: fForcePlane(), cap: md`The force on $q$ is the pull of its image, $2d = 3.0$ cm away.` } },
         }),
 
         RF(md`
@@ -1710,7 +1719,7 @@
 
             - left real $+q$, distance $2a$, repels along $+x$: $\left(+\tfrac14,\,0\right)$
             - own image $-q$, distance $2a$ straight down, attracts: $\left(0,\,-\tfrac14\right)$
-            - left image $-q$, displacement $(2a,0,2a)$, distance $2\sqrt2\,a$, attracts along $-(1,0,1)/\sqrt2$: size $\dfrac{1}{8}$, components $\left(-\dfrac{1}{8\sqrt2},\,-\dfrac{1}{8\sqrt2}\right)$
+            - left image $-q$, displacement $(2a,0,2a)$, distance $2\sqrt2\,a$, attracts along $-\tfrac{1}{\sqrt2}(1,0,1)$: size $\dfrac{1}{8}$, components $\left(-\dfrac{1}{8\sqrt2},\,-\dfrac{1}{8\sqrt2}\right)$
 
             $$F_x = \frac14 - \frac{1}{8\sqrt2} \approx 0.162,\qquad F_z = -\frac14 - \frac{1}{8\sqrt2}\approx -0.338.$$
 
@@ -1824,11 +1833,11 @@
 
             $$E_z = -\frac{\lambda}{2\pi\varepsilon_0d} - \frac{\lambda}{2\pi\varepsilon_0d} = -\frac{\lambda}{\pi\varepsilon_0d}.$$
 
-            **(b)** $\sigma(y) = -\dfrac{\lambda d}{\pi(y^2+d^2)}$ with $y = d$: $\sigma = -\dfrac{\lambda}{2\pi d}$, half the value under the wire (where $\sigma = \varepsilon_0E_z = -\lambda/(\pi d)$, consistent with (a)).
+            **(b)** $\sigma(y) = -\dfrac{\lambda d}{\pi(y^2+d^2)}$ with $y = d$: $\sigma = -\dfrac{\lambda}{2\pi d}$, half the value under the wire (where $\sigma = \varepsilon_0E_z = -\dfrac{\lambda}{\pi d}$, consistent with (a)).
 
             **(c)** $F/L = \lambda\cdot\dfrac{\lambda}{2\pi\varepsilon_0(2d)} = \dfrac{\lambda^2}{4\pi\varepsilon_0d}$, toward the plane.
 
-            **Checks.** Units: $\lambda/(\varepsilon_0d)$ is a field; $\lambda/d$ is a surface density; $\lambda^2/(\varepsilon_0d)$ is a force per length. (b) at $y=0$ equals $\varepsilon_0$ times (a).
+            **Checks.** Units: $\dfrac{\lambda}{\varepsilon_0d}$ is a field; $\dfrac{\lambda}{d}$ is a surface density; $\dfrac{\lambda^2}{\varepsilon_0d}$ is a force per length. (b) at $y=0$ equals $\varepsilon_0$ times (a).
           `,
           figs: { img: { svg: fLineSide({ img: true }), cap: md`The wire and its image line, end-on.` } },
         }),
@@ -2177,7 +2186,7 @@
           { figHtml: FC }),
 
         Q(md`What is the electric field at the corner line itself, where the two planes meet?`,
-          [md`Infinite, as at any sharp edge of a conductor`, md`$\dfrac{q}{4\pi\varepsilon_0(a^2+b^2)}$, pointing away from $q$`, md`$\sigma/\varepsilon_0$ with $\sigma = -q/(4\pi(a^2+b^2))$`, md`Zero`], 3,
+          [md`Infinite, as at any sharp edge of a conductor`, md`$\dfrac{q}{4\pi\varepsilon_0(a^2+b^2)}$, pointing away from $q$`, md`$\sigma/\varepsilon_0$ with $\sigma = -\dfrac{q}{4\pi(a^2+b^2)}$`, md`Zero`], 3,
           [md`Fields blow up at sharp **convex** edges that stick out. This corner is concave (the field region is inside the angle), and the field there vanishes.`,
             md`That is $q$'s field alone. The three images are at the same distance from the corner, and their fields cancel $q$'s.`,
             md`The induced charge density goes to zero at the corner, so this isn't right either.`,
@@ -2260,7 +2269,7 @@
 
           - $-q$ at $(-a,a)$, distance $2a$: $\left(-\tfrac14,\;0\right)$
           - $-q$ at $(a,-a)$, distance $2a$: $\left(0,\;-\tfrac14\right)$
-          - $+q$ at $(-a,-a)$, distance $2\sqrt2\,a$, pushing along $(1,1)/\sqrt2$: size $\tfrac18$, components $\left(\tfrac{1}{8\sqrt2},\;\tfrac{1}{8\sqrt2}\right)$
+          - $+q$ at $(-a,-a)$, distance $2\sqrt2\,a$, pushing along $\tfrac{1}{\sqrt2}(1,1)$: size $\tfrac18$, components $\left(\tfrac{1}{8\sqrt2},\;\tfrac{1}{8\sqrt2}\right)$
 
           $$F_x = F_y = -\frac14 + \frac{1}{8\sqrt2}\approx-0.162,\qquad |\vb F| = \sqrt2\,|F_x| = \frac{2\sqrt2-1}{8}\approx0.229.$$
 
@@ -2281,7 +2290,7 @@
           figHtml: fCorner({ a: 1, b: 2, s: 70, aLab: 'd', bLab: '2d' }),
           hints: [
             md`Region: the quadrant. Conditions: $V=0$ on both planes, $V\to0$ far away. Images: $-q$ at $(-d,2d)$, $-q$ at $(d,-2d)$, $+q$ at $(-d,-2d)$.`,
-            md`Distances from $q$: $2d$ to the first, $4d$ to the second, $2\sqrt5\,d$ to the third. The third pushes along $(1,2)/\sqrt5$.`,
+            md`Distances from $q$: $2d$ to the first, $4d$ to the second, $2\sqrt5\,d$ to the third. The third pushes along $\tfrac{1}{\sqrt5}(1,2)$.`,
             md`Energy: $W = \tfrac12\,q\,V_{\text{images}}(q)$, not the four-charge energy.`,
           ],
           parts: [
@@ -2306,7 +2315,7 @@
 
             - $-q$ at $(-d,2d)$, distance $2d$: $\left(-\tfrac14,\;0\right)$
             - $-q$ at $(d,-2d)$, distance $4d$: $\left(0,\;-\tfrac1{16}\right)$
-            - $+q$ at $(-d,-2d)$, distance $2\sqrt5\,d$, size $\dfrac{1}{20}$, along $(1,2)/\sqrt5$: $\left(\dfrac{1}{20\sqrt5},\;\dfrac{2}{20\sqrt5}\right) = (0.0224,\;0.0447)$
+            - $+q$ at $(-d,-2d)$, distance $2\sqrt5\,d$, size $\dfrac{1}{20}$, along $\tfrac{1}{\sqrt5}(1,2)$: $\left(\dfrac{1}{20\sqrt5},\;\dfrac{2}{20\sqrt5}\right) = (0.0224,\;0.0447)$
 
             $$F_x = -\frac14 + \frac{\sqrt5}{100}\approx-0.228,\qquad F_y = -\frac1{16} + \frac{\sqrt5}{50}\approx-0.0178.$$
 
@@ -2330,7 +2339,7 @@
 
           [[fig:w120]]
 
-          For $70^\circ$, $360^\circ/70^\circ$ isn't even an integer; the reflections land at angles spaced by $10^\circ$ all around the circle, several of them inside the wedge.
+          For $70^\circ$, $180^\circ/70^\circ$ isn't a whole number. The reflections do eventually repeat, but only after scattering images every $20^\circ$ around the circle (in two interleaved sets), and several of them fall inside the wedge.
 
           The test: **the wedge angle must divide $180^\circ$ a whole number of times.**
         `, { w60: { svg: fWedgeImg(3), cap: md`A $60^\circ$ wedge: $q$ plus 5 images around a circle, alternating in sign. The dashed lines are the walls and their reflections.` },
@@ -2364,7 +2373,7 @@
           { figHtml: fWedge(36, { rq: 150 }) }),
 
         Q(md`Why can't you solve a $70^\circ$ grounded wedge with images?`,
-          [md`Because the walls are not perpendicular`, md`Repeated reflections never close up properly, and some images land inside the wedge, which would change $\rho$ in the region`, md`Because the images would have to be larger than $q$`, md`You can; it needs $2\cdot70/180$ images`], 1,
+          [md`Because the walls are not perpendicular`, md`Repeated reflections put some images inside the wedge, which would change $\rho$ in the region`, md`Because the images would have to be larger than $q$`, md`You can; it needs $2\cdot70/180$ images`], 1,
           [md`Perpendicular walls aren't required: $60^\circ$ and $45^\circ$ work too.`,
             null,
             md`Plane images always have the same size as what they reflect. The size isn't the problem.`,
@@ -2597,7 +2606,7 @@
           $$a\left(R^2+b^2\right) = b\left(R^2+a^2\right)\;\Rightarrow\;aR^2 - bR^2 + ab^2 - a^2b = 0\;\Rightarrow\;(a-b)\left(R^2-ab\right) = 0.$$
 
           - **$b=a$, $q'=-q$:** the "image" sits right on top of $q$ and cancels it, giving $V=0$ everywhere. It is in the region of interest, and it deletes the real charge: rejected by the starred rule.
-          - **$b = R^2/a$:** then $q'^2 = q^2R^2/a^2$, and opposite sign gives
+          - **$b = R^2/a$:** then $q'^2 = \dfrac{q^2R^2}{a^2}$, and opposite sign gives
 
           $$b = \frac{R^2}{a},\qquad q' = -\frac{R}{a}\,q.$$
 
@@ -2626,8 +2635,8 @@
           [md`$b = \dfrac{R^2}{a}$, $q' = -\dfrac{R}{a}\,q$`, md`$b = \dfrac{R}{a}$, $q' = -\dfrac{R}{a}\,q$`, md`$b = \dfrac{R^2}{a}$, $q' = -\dfrac{R^2}{a^2}\,q$`, md`$b = \dfrac{a^2}{R}$, $q' = -\dfrac{a}{R}\,q$`], 0,
           [null,
             md`$R/a$ is a pure number, not a length. $b$ must be a length: $R^2/a$.`,
-            md`Check $V$ at the near point: distances $a-R$ and $R-R^2/a = R(a-R)/a$; cancellation needs $q'/q = -R/a$, not $-R^2/a^2$.`,
-            md`$a^2/R > a$: that puts the image outside the sphere, beyond $q$ (it is the formula for a charge **inside** a shell, with $a$ and $R$ swapped).`],
+            md`Check $V$ at the near point: distances $a-R$ and $R-\dfrac{R^2}{a} = \dfrac{R(a-R)}{a}$; cancellation needs $q'/q = -R/a$, not $-R^2/a^2$.`,
+            md`$a^2/R > a$: that would put the image outside the sphere, beyond $q$, in the region of interest.`],
           md`$b = R^2/a$ (a length, less than $R$) and $q'/q = -R/a$ (a pure number, less than 1 in size). Quick test at the near point $\theta=0$: $\dfrac{q}{a-R} + \dfrac{q'}{R - R^2/a} = \dfrac{q}{a-R} - \dfrac{(R/a)q}{R(a-R)/a} = 0$.`,
           { figHtml: FS }),
 
@@ -2644,13 +2653,11 @@
 
           The two pictures are equivalent **only for $r\ge R$**. Inside the sphere the real $V$ is $0$.
 
-          **Check the boundary conditions explicitly.**
-
-          - **Condition 1, $V(R)=0$.** Put $b=R^2/a$ in the second root and multiply it by $a/R$: $\dfrac aR\sqrt{r^2+\dfrac{R^4}{a^2}-\dfrac{2rR^2}{a}\cos\theta} = \sqrt{\left(\dfrac{ra}{R}\right)^2 + R^2 - 2ra\cos\theta}$. So
+          **Check the boundary conditions explicitly.** First a handier form: put $b=R^2/a$ in the second root and multiply it by $a/R$, $\dfrac aR\sqrt{r^2+\dfrac{R^4}{a^2}-\dfrac{2rR^2}{a}\cos\theta} = \sqrt{\left(\dfrac{ra}{R}\right)^2 + R^2 - 2ra\cos\theta}$. So
 
           $$V(r,\theta) = \frac{q}{4\pi\varepsilon_0}\left[\frac{1}{\sqrt{r^2+a^2-2ra\cos\theta}} - \frac{1}{\sqrt{R^2+(ra/R)^2-2ra\cos\theta}}\right].$$
 
-            At $r=R$ the two square roots are identical, so $V=0$ for every $\theta$.
+          - **Condition 1, $V(R)=0$.** At $r=R$ the two square roots are identical, so $V=0$ for every $\theta$.
           - **Condition 2, $V(\infty)=0$.** Both terms die as $r\to\infty$.
           - **Charge in the region.** $b = R^2/a < R$, so the image is inside the sphere, outside the region of interest.
 
@@ -2751,7 +2758,7 @@
             md`The ground wire supplies whatever charge keeps $V=0$; the result is $-qR/a$.`,
             md`Distance from the image isn't what sets the induced charge.`,
             null],
-          md`Far from everything, the image system looks like a point charge $q + q' = q(1 - R/a) > 0$, so flux $q(1-R/a)/\varepsilon_0$ escapes to infinity. The plane intercepts all of $q$'s flux; a sphere only a fraction $R/a$.`,
+          md`Far from everything, the image system looks like a point charge $q + q' = q(1 - R/a) > 0$, so flux $\dfrac{q(1-R/a)}{\varepsilon_0}$ escapes to infinity. The plane intercepts all of $q$'s flux; a sphere only a fraction $R/a$.`,
           { figHtml: FS }),
 
         RF(md`
@@ -2920,7 +2927,7 @@
 
             $$\frac{\partial V}{\partial r} = \frac{q}{4\pi\varepsilon_0}\left[-\frac{r-a\cos\theta}{(r^2+a^2-2ra\cos\theta)^{3/2}} + \frac{(a^2/R^2)\,r - a\cos\theta}{(R^2+(ra/R)^2-2ra\cos\theta)^{3/2}}\right].$$
 
-            At $r=R$ both denominators are $(R^2+a^2-2Ra\cos\theta)^{3/2}$, and the numerators combine to $-R + a\cos\theta + a^2/R - a\cos\theta = (a^2-R^2)/R$:
+            At $r=R$ both denominators are $(R^2+a^2-2Ra\cos\theta)^{3/2}$, and the numerators combine to $-R + a\cos\theta + \dfrac{a^2}{R} - a\cos\theta = \dfrac{a^2-R^2}{R}$:
 
             $$\sigma(\theta) = -\varepsilon_0\left.\frac{\partial V}{\partial r}\right|_{R} = -\frac{q\,(a^2-R^2)}{4\pi R\,(R^2+a^2-2aR\cos\theta)^{3/2}}.$$
 
@@ -2946,7 +2953,7 @@
           `,
           figs: { img: { svg: fSphereImg(), cap: md`The image system: $q' = -\tfrac Raq$ at $b = R^2/a$; the dashed circle is where the pair's $V$ is zero.` },
             sig: { svg: fSigSphere23(), cap: md`$\sigma(\theta)$ in units of $q/R^2$: solid $a=2R$, dashed $a=3R$. The charge gathers on the side facing $q$.` },
-            W: { svg: fWplot(), cap: md`$W$ in units of $q^2/(4\pi\varepsilon_0R)$ against $a/R$ (solid), with the near-surface plane limit $-\tfrac14\big/(a/R-1)$ (dashed).` } },
+            W: { svg: fWplot(), cap: md`$W$ in units of $\tfrac{q^2}{4\pi\varepsilon_0R}$ against $a/R$ (solid), with the near-surface plane limit $-\tfrac{1}{4(a/R-1)}$ (dashed).` } },
         }),
 
         RF(md`
@@ -2990,7 +2997,7 @@
 
           [[fig:img]]
 
-          For an isolated sphere the potential is not given; it comes out of the solution. The second uniqueness theorem (Unit 4) says that fixing the **total charge** on each conductor is enough to make the solution unique.
+          For an isolated sphere the potential is not given; it comes out of the solution. The [second uniqueness theorem](#/l/u4-unique2) (Unit 4) says that fixing the **total charge** on each conductor is enough to make the solution unique.
 
           **Where the neutral sphere's potential comes from.** The center is inside the metal, so it is at the sphere's potential. Every induced charge is a distance $R$ from the center, so together they contribute $\dfrac{Q_{\text{total}}}{4\pi\varepsilon_0R}$ there, which is $0$ for a neutral sphere. What remains is $q$'s potential at the center: $V_{\text{sphere}} = \dfrac{q}{4\pi\varepsilon_0a}$. (The same argument for the grounded sphere, $0 = \dfrac{q}{4\pi\varepsilon_0a} + \dfrac{Q}{4\pi\varepsilon_0R}$, gives its induced charge $-\dfrac Raq$ in one line.)
         `, { img: { svg: fSphereImg({ center: "q''" }), cap: md`The grounded image $q'$ plus a second image $q''$ at the center. The dashed circle is an equipotential of this system.` } }),
@@ -3010,7 +3017,7 @@
             md`Images work for spheres because this particular guess meets the conditions. The guarantee comes from the uniqueness theorem, not from the shape.`,
             md`It doesn't: the image formula is not $0$ inside the sphere. Inside is not part of the region, so it doesn't matter.`,
             md`That is a consequence of the solution being right, not the reason it is right.`],
-          md`Uniqueness (Unit 4): two functions with the same $\rho$ in a region and the same boundary values must be equal there. The real potential and the image potential share both, so they agree for $r\ge R$. That is the whole logic of the method.`,
+          md`Uniqueness ([Unit 4](#/l/u4-unique1)): two functions with the same $\rho$ in a region and the same boundary values must be equal there. The real potential and the image potential share both, so they agree for $r\ge R$. That is the whole logic of the method.`,
           { figHtml: fSphere() }),
 
         Q(md`You switch from a **grounded** sphere to an **isolated, neutral** one, with $q$ in the same place. Which boundary condition changes, and what does that do to the images?`,
@@ -3135,7 +3142,7 @@
 
           $$F = \frac{q}{4\pi\varepsilon_0}\left[\frac{q''}{a^2} - \frac{qRa}{(a^2-R^2)^2}\right].$$
 
-          If $q''$ has the same sign as $q$, the center image repels. Far away the $1/a^2$ repulsion wins. Close to the surface the image $q'$ wins, since its pull grows like $1/(a-R)^2$. So a charge and a like-charged sphere **repel at long range but attract at short range**. In between there is a distance where the force is zero (an unstable balance point).
+          If $q''$ has the same sign as $q$, the center image repels. Far away the $1/a^2$ repulsion wins. Close to the surface the image $q'$ wins, since its pull grows like $\dfrac{1}{(a-R)^2}$. So a charge and a like-charged sphere **repel at long range but attract at short range**. In between there is a distance where the force is zero (an unstable balance point).
         `),
 
         Q(md`A positive charge $q$ approaches an isolated sphere that carries a **positive** charge $Q$. What happens to the force?`,
@@ -3279,13 +3286,15 @@
           For $r\le R$, $V$ is the same two-term formula as for the outside problem. In the metal (and beyond it, for a grounded shell) $V=0$.
 
           - **Induced charge.** Take a Gaussian surface inside the metal of the shell. $\vb E=0$ there, so the enclosed charge is zero: the inner surface carries exactly $-q$, **not** $q'$. (This Gaussian surface encloses $q$; the image is outside it.)
-          - **$\sigma$ on the inner surface.** $\uv n$ points out of the metal, into the cavity: $\uv n = -\uv r$, so $\sigma = +\varepsilon_0\,\partial V/\partial r$ at $r=R$. The result is
-
-          $$\sigma(\theta) = -\frac{q\left(R^2-a^2\right)}{4\pi R\left(R^2+a^2-2aR\cos\theta\right)^{3/2}},$$
-
-            piled up on the side nearest $q$, and it integrates to $-q$.
+          - **$\sigma$ on the inner surface.** $\uv n$ points out of the metal, into the cavity: $\uv n = -\uv r$, so $\sigma = +\varepsilon_0\,\partial V/\partial r$ at $r=R$. The result (below) piles up on the side nearest $q$ and integrates to $-q$.
           - **Force.** Toward the image, that is, toward the nearest part of the wall: $|F| = \dfrac{1}{4\pi\varepsilon_0}\dfrac{q^2Ra}{(R^2-a^2)^2}$. At the center ($a\to0$) it vanishes: the image runs off to infinity, and its field at the center, $\dfrac{|q'|}{4\pi\varepsilon_0b^2} = \dfrac{qa}{4\pi\varepsilon_0R^3}$, goes to zero.
           - **Isolated, neutral shell instead.** The inner surface still carries $-q$, and the outer surface carries $+q$, spread uniformly. Inside, $V$ shifts by a constant; the field in the cavity is unchanged.
+
+          The surface charge on the inner wall:
+
+          $$\sigma(\theta) = -\frac{q\left(R^2-a^2\right)}{4\pi R\left(R^2+a^2-2aR\cos\theta\right)^{3/2}}.$$
+
+          It is the outside formula with $a^2-R^2$ replaced by $R^2-a^2$, so that it stays negative.
         `, { shell: { svg: FSH, cap: md`A charge inside a grounded spherical shell.` }, shellimg: { svg: fShellImg(), cap: md`The image is outside: $q' = -\tfrac Raq$ at $b = R^2/a>R$. The dashed circle (the inner wall) is at $V=0$.` } }),
 
         Q(md`A charge $q$ is inside a grounded spherical shell. What are the region of interest and its boundary condition?`,
@@ -3723,6 +3732,8 @@
 
             Image $q' = -\dfrac{R}{4R}q = -\dfrac q4$ at $\dfrac R4$ (check at the near point: $\dfrac{q}{3R} - \dfrac{q/4}{3R/4} = 0$), so the sphere carries $Q = -\dfrac q4$.
 
+            [[fig:img]]
+
             **(b)** After the cut the boundary conditions are:
 
             1. the sphere is an equipotential (value not given);
@@ -3737,6 +3748,7 @@
 
             **What to remember.** Grounded fixes $V$ and lets $Q$ adjust; isolated fixes $Q$ and lets $V$ adjust. When conditions change, ask what is held fixed.
           `,
+          figs: { img: { svg: fSphereImg({ A: 4, Rp: 44 }), cap: md`While grounded: image $-q/4$ at $R/4$.` } },
         }),
 
         RF(md`
