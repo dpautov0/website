@@ -102,6 +102,17 @@
     return f.svg();
   }
 
+  // Grounded plane in a uniform applied field (setup): field arrows far above the plane, no charges.
+  function fPlaneField() {
+    const f = PF.fig();
+    const Y0 = 170;
+    f.plane(20, 320, Y0, { lab: 'V=0' });
+    for (const x of [70, 150, 230]) f.arrow(x, 74, x, 34, { cls: 'thick' });
+    f.tag(230, 50, 'E_0\\,\\uv z', 'r', 10);
+    f.text(70, 92, 'uniform field far above the plane', 'tl');
+    return f.svg();
+  }
+
   // Solution: q and its image, no conductor. o.pt = [x, z, 'label'] shows the distances to a field point.
   function fPair(o = {}) {
     const f = PF.fig();

@@ -561,7 +561,7 @@
   }
 
   // answer-box label: TeX unless it is plain words (no TeX characters, a space, a 4+ letter word)
-  const lblTex = (l) => (l.includes('$') || (!/[\_^{}]/.test(l) && /\s/.test(l) && /[A-Za-z]{4,}/.test(l)) ? l : `$${l}$`);
+  const lblTex = (l) => (l.includes('$') || (!/[\\_^{}]/.test(l) && /\s/.test(l) && /[A-Za-z]{4,}/.test(l)) ? l : `$${l}$`);
 
   function partHtml(pt, i) {
     const lbl = pt.lbl ? `<span class="pl">${inline(lblTex(pt.lbl))}${pt.mc ? '' : ' ='}</span>` : '';

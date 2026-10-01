@@ -3295,6 +3295,103 @@
         `,
       }),
       RF(md`
+        ### Building $V$ from the conditions (a preview of Unit 4)
+
+        So far you have used the conditions to **check** a potential or to **read off** $\sigma$. They can also **determine** $V$, which is how Unit 4 uses them. Take the uniformly charged thin shell (radius $R$, density $\sigma$, no other charge) and pretend you have never seen Ex. 2.8.
+
+        [[fig:reg]]
+
+        **Regions.** I: $r<R$. II: $r>R$. In each one $\rho=0$ and $V$ depends only on $r$, so Laplace's equation $\dfrac{1}{r^2}\dfrac{d}{dr}\left(r^2\dfrac{dV}{dr}\right)=0$ says $r^2\,dV/dr$ is constant, and
+
+        $$V_{\text{I}}=A+\frac{A'}{r},\qquad V_{\text{II}}=B+\frac{B'}{r}.$$
+
+        Four constants, so you need four conditions.
+
+        **Boundary conditions** ("above" = outside, $\uv n=\uv r$):
+
+        1. $V_{\text{I}}$ finite at $r=0$. This **kills** $A'$: there is no point charge at the center.
+        2. $V_{\text{II}}\to0$ as $r\to\infty$. This **kills** $B$.
+        3. $V$ continuous at $r=R$: $A=\dfrac{B'}{R}$. This **ties** the inside constant to the outside solution.
+        4. $\dfrac{\partial V_{\text{II}}}{\partial r}-\dfrac{\partial V_{\text{I}}}{\partial r}=-\dfrac{\sigma}{\ep}$ at $r=R$: $-\dfrac{B'}{R^2}-0=-\dfrac{\sigma}{\ep}$. This **fixes the size**: $B'=\dfrac{\sigma R^2}{\ep}$.
+
+        **Result:** $V_{\text{I}}=\dfrac{\sigma R}{\ep}$ and $V_{\text{II}}=\dfrac{\sigma R^2}{\ep r}$, Ex. 2.8 with no integral. **Check:** with $q=4\pi R^2\sigma$, $V_{\text{II}}=\dfrac{q}{4\pi\ep r}$, and all four conditions hold.
+
+        !!method Solving with boundary conditions
+          1. Cut space into regions at every charged surface, and write the general solution in each region.
+          2. Count the constants. You need exactly that many conditions.
+          3. Conditions at the ends of the range (finite at the center, $V\to0$ far away, or a chosen reference) **kill** terms.
+          4. At each charged surface, continuity of $V$ and the jump in $\partial V/\partial n$ **fix** the rest.
+          5. At the end, check every condition, including the jump.
+      `, { reg: { svg: figShellRegions(), cap: md`Thin shell with surface charge $\sigma$: region I inside, region II outside, $\uv n$ pointing from I into II.` } }),
+      Q(md`In the shell problem above, $V_{\text{I}}=A+A'/r$ and $V_{\text{II}}=B+B'/r$. Which condition removes the $A'/r$ term?`,
+        [md`$V\to0$ as $r\to\infty$`,
+          md`$V$ continuous at $r=R$`,
+          md`$V$ finite at $r=0$`,
+          md`the jump in $\partial V/\partial r$ at $r=R$`], 2,
+        [md`That condition belongs to region II, which reaches infinity. It removes $B$, not $A'$.`,
+          md`Continuity only links $A+A'/R$ to $B'/R$. On its own it cannot make $A'$ vanish.`,
+          null,
+          md`The jump fixes $B'$, the size of the outside $1/r$ term. It says nothing about the center.`],
+        md`$A'/r$ blows up at $r=0$. It would be the potential of a point charge $4\pi\ep A'$ sitting at the center, and there is none. "Finite at the origin" counts as a boundary condition even though no surface is there.`,
+        { figHtml: figShellRegions() }),
+      Q(md`A classmate's answer for the same shell is $V_{\text{I}}=\dfrac{\sigma R}{2\ep}$ and $V_{\text{II}}=\dfrac{\sigma R^2}{2\ep r}$. Which condition does it violate?`,
+        [md`$V$ finite at $r=0$`,
+          md`$V\to0$ as $r\to\infty$`,
+          md`$V$ continuous at $r=R$`,
+          md`$\dfrac{\partial V_{\text{II}}}{\partial r}-\dfrac{\partial V_{\text{I}}}{\partial r}=-\dfrac{\sigma}{\ep}$ at $r=R$`], 3,
+        [md`$V_{\text{I}}$ is a finite constant.`,
+          md`$\dfrac{\sigma R^2}{2\ep r}\to0$ as $r\to\infty$.`,
+          md`Both give $\dfrac{\sigma R}{2\ep}$ at $r=R$.`,
+          null],
+        md`At $r=R$: $\dfrac{\partial V_{\text{II}}}{\partial r}=-\dfrac{\sigma}{2\ep}$ and $\dfrac{\partial V_{\text{I}}}{\partial r}=0$, so the jump is $-\dfrac{\sigma}{2\ep}$, half of what condition 4 demands. This is the $\tfrac{\sigma}{2\ep}$ slip in disguise: the answer describes a shell carrying $\sigma/2$. Three of the four conditions hold, which is why you check all of them at the end.`,
+        { figHtml: figShellRegions() }),
+      Q(md`You are matching solutions on the two sides of a surface that carries charge density $\sigma$, with $\uv n$ pointing from side 1 into side 2. Which pair of conditions holds on the surface?`,
+        [md`$V_2=V_1$ and $\dfrac{\partial V_2}{\partial n}=\dfrac{\partial V_1}{\partial n}$`,
+          md`$V_2=V_1$ and $\dfrac{\partial V_2}{\partial n}-\dfrac{\partial V_1}{\partial n}=-\dfrac{\sigma}{\ep}$`,
+          md`$V_2-V_1=\dfrac{\sigma}{\ep}$ and $\dfrac{\partial V_2}{\partial n}=\dfrac{\partial V_1}{\partial n}$`,
+          md`$V_2=V_1=0$ and $\dfrac{\partial V_2}{\partial n}-\dfrac{\partial V_1}{\partial n}=\dfrac{\sigma}{\ep}$`], 1,
+        [md`That pair holds where $\sigma=0$, for example at an imaginary boundary between two regions of empty space.`,
+          null,
+          md`$V$ never jumps at a surface charge; only its normal slope does. ($\sigma/\ep$ is not even a potential: it has units of field.)`,
+          md`Nothing forces $V=0$ on a charged surface; that would be a grounded conductor or a chosen reference. The sign is also wrong: $\vb E=-\nabla V$ turns the $+\sigma/\ep$ jump in $E^\perp$ into $-\sigma/\ep$ for $\partial V/\partial n$.`],
+        md`$V$ is continuous (a path of zero length) and its normal derivative jumps by $-\sigma/\ep$ (the pillbox, written for $V$). These two are the matching conditions you will use at every charged surface in separation of variables. With $\sigma=0$ the second becomes plain continuity of $\partial V/\partial n$.`,
+        { figHtml: figNormal() }),
+      P({
+        title: 'A charged tube from the boundary conditions',
+        q: md`A long thin cylindrical tube of radius $R$ carries uniform surface charge $\sigma$; there is no other charge. Because the tube is infinitely long, take the reference $V=0$ on the tube itself. In each region $\rho=0$ and $V=V(s)$, so Laplace's equation $\dfrac1s\dfrac{d}{ds}\left(s\dfrac{dV}{ds}\right)=0$ gives
+
+          $$V_{\text{I}}=A+A'\ln s\quad(s<R),\qquad V_{\text{II}}=B+B'\ln s\quad(s>R).$$
+
+          List the four conditions that fix $A$, $A'$, $B$, $B'$, and find $V$ in both regions.`,
+        figHtml: figTubeRegions(),
+        hints: [
+          md`Same plan as the shell: the ends of the range kill terms, the surface fixes the rest. The four conditions are (1) $V_{\text{I}}$ finite on the axis, (2) the reference $V=0$ at $s=R$, (3) $V$ continuous at $s=R$, (4) the jump in $\partial V/\partial s$ at $s=R$. Why can you not use $V\to0$ as $s\to\infty$? (Lesson 2.)`,
+          md`$\ln s\to-\infty$ on the axis, so (1) kills $A'$. Then (2) gives $A=0$, and (3) gives $B+B'\ln R=0$.`,
+          md`(4): $\dfrac{B'}{R}-0=-\dfrac{\sigma}{\ep}$.`,
+        ],
+        parts: [
+          { lbl: md`Which condition removes the $A'\ln s$ term?`, mc: [md`$V$ finite on the axis`, md`$V=0$ at $s=R$`, md`$V\to0$ as $s\to\infty$`, md`the jump in $\partial V/\partial s$ at $s=R$`], a: 0, why: [null, md`The reference fixes an additive constant. It cannot remove a term that blows up on the axis.`, md`Not available here: for an infinitely long charged tube $V$ grows without bound far away (the log divergence of Lesson 2). That is why the reference sits on the tube.`, md`The jump fixes $B'$, the outside slope (the charge per length).`] },
+          { lbl: 'V_{\\text{II}}(s)\\ (s>R)', expr: '-sigma*R/eps0*ln(s/R)', vars: { sigma: [0.5, 2], R: [0.5, 1], eps0: [0.5, 2], s: [1.2, 3] }, accepts: ['sigma*R/eps0*(ln(R) - ln(s))'] },
+          { lbl: md`Inside the tube ($s<R$), $V$ is`, mc: [md`$-\dfrac{\sigma R}{\ep}\ln\dfrac sR$, the same formula`, md`$\dfrac{\sigma R}{\ep}$`, md`$0$ everywhere`, md`undefined, because $\ln s\to-\infty$ on the axis`], a: 2, why: [md`That is region II. Inside, condition 1 removed the $\ln s$ term, so $V$ is constant there.`, md`$\sigma R/\ep$ is the inside value for a spherical shell with $V(\infty)=0$. Here the reference is on the tube, and the inside constant equals the tube's value, 0.`, null, md`Condition 1 removed the $\ln s$ term inside, so nothing blows up on the axis.`] },
+        ],
+        sol: md`
+          **Regions and constants.** Inside (I) and outside (II), two constants each, so four conditions.
+
+          **Boundary conditions** ("above" = outside, $\uv n=\uv s$):
+
+          1. $V_{\text{I}}$ finite at $s=0$. Since $\ln s\to-\infty$ on the axis, this **kills** $A'$: $V_{\text{I}}=A$.
+          2. Reference: $V=0$ at $s=R$. ($V(\infty)=0$ is unusable: the charge reaches infinity.) From inside: $A=0$.
+          3. $V$ continuous at $s=R$: $B+B'\ln R=0$, so $V_{\text{II}}=B'\ln\dfrac sR$.
+          4. Jump at $s=R$: $\dfrac{B'}{R}-0=-\dfrac{\sigma}{\ep}$, so $B'=-\dfrac{\sigma R}{\ep}$.
+
+          $$V_{\text{I}}=0,\qquad V_{\text{II}}=-\frac{\sigma R}{\ep}\ln\frac{s}{R}.$$
+
+          **Verify.** Finite on the axis. Zero on the tube from both sides. Slopes: $0$ just inside and $-\dfrac{\sigma}{\ep}$ just outside, a jump of $-\sigma/\ep$. The field outside is $E_s=-\dfrac{dV}{ds}=\dfrac{\sigma R}{\ep s}$, exactly what Gauss's law gives in HW 2.31(b). With $\lambda=2\pi R\sigma$ it is $\dfrac{\lambda}{2\pi\ep s}$: from outside, the tube looks like a line charge on its axis.
+
+          **What to remember.** Same four moves as the sphere. Only the far-field condition changes: for charge that reaches infinity, a finite reference point replaces $V(\infty)=0$. The graph is the Lesson 5 one: flat inside, a corner at $R$, then a logarithmic fall.
+        `,
+      }),
+      RF(md`
         ### Summary: every boundary condition
 
         At a surface with charge density $\sigma$, $\uv n$ pointing from "below" into "above":
@@ -3314,7 +3411,7 @@
           - $\sigma$ from fields: $\ep(\vb E_{\text{above}}-\vb E_{\text{below}})\cdot\uv n$. From potentials: $-\ep$ times the change in normal slope.
           - Graph reading: $V$ never jumps; a corner in $V$ (a jump in $E$) is surface charge; a ridge is positive, a valley negative. Curvature without a corner is volume charge.
           - Conductor: zero field inside, so the whole jump is outside: $E=\sigma/\ep$, perpendicular to the surface.
-          - These conditions are what Unit 4 uses to fix the constants in solutions of Laplace's equation.
+          - Building $V$: one general solution per region, one condition per constant. Finite at the center and the far-field (or reference) condition kill terms; continuity of $V$ and the jump in $\partial V/\partial n$ fix the rest. Unit 4 uses exactly this.
 
         Below: a drill that serves every multiple-choice question in this unit at random.
       `),
