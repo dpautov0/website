@@ -327,3 +327,19 @@ svg.schem > path, svg.schem > circle, svg.schem > rect, svg.schem > g > path { f
 .plan ol { margin: 0; padding-left: 22px; font-size: 14.5px; color: var(--dim); }
 .plan li { margin-bottom: 4px; }
 .plan b { color: var(--fg); font-weight: 700; }
+
+/* ---------- Desmos-style answer boxes (MathLive) ---------- */
+.mf-shadow { display: none !important; }
+math-field.mf {
+  display: inline-block; min-width: 150px; max-width: 100%; padding: 3px 8px; border-radius: 3px;
+  border: 1px solid var(--line-2); background: transparent; color: var(--fg); font-size: 17px;
+  --caret-color: var(--fg); --selection-background-color: var(--line-2); --selection-color: var(--fg);
+  --contains-highlight-background-color: transparent; --placeholder-color: var(--dim);
+  --smart-fence-color: var(--dim); --primary: var(--fg);
+}
+.part.expr math-field.mf { min-width: min(320px, 100%); }
+math-field.mf:focus-within { border-color: var(--fg); outline: none; }
+.part.good math-field.mf { border-color: var(--good); }
+.part.bad math-field.mf { border-color: var(--bad); }
+math-field.mf::part(menu-toggle) { display: none; }
+math-field.mf::part(virtual-keyboard-toggle) { color: var(--dim); }

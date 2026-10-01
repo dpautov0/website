@@ -278,7 +278,7 @@
             <div class="meter"><span style="width:${pct}%"></span></div></a>`;
         }).join('')}</div>
         <section class="howto">
-          <p>Answers: type numbers or expressions (<code>-q*R/a</code>, <code>q/(4 pi eps0 d^2)</code>, <code>sqrt(2)/3</code>). Symbols are case-sensitive, so <code>r</code> and <code>R</code> differ. Greek letters can be typed as <code>lambda</code>, <code>sigma</code>, <code>rho</code>, <code>theta</code>, <code>eps0</code>. Multiple choice explains every wrong option. A drill doesn't count once you open its solution. Progress is saved in this browser.</p>
+          <p>Answers: the boxes work like Desmos. Type <code>/</code> for a fraction, <code>^</code> for a power, <code>sqrt</code> for a root, <code>pi</code>, <code>theta</code>, <code>lambda</code>, <code>sigma</code>, <code>epsilon</code> for Greek, <code>_</code> for a subscript (<code>V_0</code>), and use the arrow keys to leave a fraction or power. Symbols are case-sensitive, so <code>r</code> and <code>R</code> differ. Greek letters can be typed as <code>lambda</code>, <code>sigma</code>, <code>rho</code>, <code>theta</code>, <code>eps0</code>. Multiple choice explains every wrong option. A drill doesn't count once you open its solution. Progress is saved in this browser.</p>
         </section>
         <p class="reset-row"><button class="btn subtle" id="reset">Reset progress</button></p>
       </section>`;
@@ -462,6 +462,7 @@
       <div class="p-hints"></div>
       <div class="p-sol" hidden>${p.sol ? `<div class="sol-h">Worked solution</div>${rich(p.sol, p.figs)}` : ''}</div>`;
     if (ctx.solved) host.querySelector('.p-status').innerHTML = '<span class="ok-badge">Solved</span>';
+    if (window.MathInput) window.MathInput.upgrade(host);          // Desmos-style math boxes over the text inputs
 
     let hintIx = 0, viewedSol = false, attempts = 0;
     const fb = host.querySelector('.p-fb');
@@ -470,7 +471,7 @@
     // expression previews
     parts.forEach((pt, i) => {
       if (pt.expr === undefined) return;
-      const inp = host.querySelector(`[data-part="${i}"] input`);
+      const inp = host.querySelector(`[data-part="${i}"] input.ans`);
       const pv = host.querySelector(`[data-part="${i}"] .preview`);
       const upd = () => {
         const v = inp.value.trim();
@@ -488,7 +489,7 @@
       grp.classList.remove('bad', 'good');
     }));
 
-    host.querySelectorAll('input').forEach((inp) => inp.addEventListener('keydown', (e) => {
+    host.querySelectorAll('input.ans').forEach((inp) => inp.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') { e.preventDefault(); chk && chk.click(); }
     }));
 
@@ -570,9 +571,9 @@
     }
     if (pt.expr !== undefined) {
       const vars = Object.keys(pt.vars).map((v) => `<code>${v}</code>`).join(' ');
-      return `<div class="part expr" data-part="${i}">${lbl}<input type="text" autocomplete="off" spellcheck="false" aria-label="${U.esc(pt.lbl || 'answer')}"><span class="mark"></span><div class="expr-meta"><span class="vars">Variables: ${vars}</span><span class="preview"></span></div></div>`;
+      return `<div class="part expr" data-part="${i}">${lbl}<input class="ans" type="text" autocomplete="off" spellcheck="false" aria-label="${U.esc(pt.lbl || 'answer')}"><span class="mark"></span><div class="expr-meta"><span class="vars">Variables: ${vars}</span><span class="preview"></span></div></div>`;
     }
-    return `<div class="part num" data-part="${i}">${lbl}<input type="text" inputmode="decimal" autocomplete="off" spellcheck="false" aria-label="${U.esc(pt.lbl || 'answer')}">${pt.unit ? `<span class="unit">$${unitTeX(pt.unit)}$</span>` : ''}<span class="mark"></span></div>`;
+    return `<div class="part num" data-part="${i}">${lbl}<input class="ans" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" aria-label="${U.esc(pt.lbl || 'answer')}">${pt.unit ? `<span class="unit">$${unitTeX(pt.unit)}$</span>` : ''}<span class="mark"></span></div>`;
   }
 
   function checkPart(pt, box) {
@@ -582,7 +583,9 @@
       const j = +sel.dataset.j;
       return j === pt.a ? { ok: true } : { ok: false, msg: pt.why && pt.why[j] ? pt.why[j] : 'Not that one.' };
     }
-    const v = box.querySelector('input').value;
+    const ansEl = box.querySelector('input.ans');
+    if (ansEl._mf && window.MathInput) ansEl.value = window.MathInput.latexToExpr(ansEl._mf.value);   // read the math box itself
+    const v = ansEl.value;
     if (!v.trim()) return { ok: false, msg: 'Enter an answer.' };
     if (pt.expr !== undefined) return Expr.checkExpr(v, pt.expr, pt);
     let u;
