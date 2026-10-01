@@ -2776,7 +2776,7 @@
         [[fig:svc]]
 
         - **Isolated flat sheet:** by symmetry the field is $\tfrac{\sigma}{2\ep}$ pointing away on both sides. Jump: $\tfrac{\sigma}{2\ep}-\left(-\tfrac{\sigma}{2\ep}\right)=\tfrac{\sigma}{\ep}$.
-        - **Surface of a conductor:** in electrostatics $\vb E=0$ inside a conductor (the conductors unit shows why). With "below" = inside, $\vb E_{\text{below}}=0$, so just outside
+        - **Surface of a conductor:** in electrostatics $\vb E=0$ inside a conductor (Unit 3 shows why). With "below" = inside, $\vb E_{\text{below}}=0$, so just outside
           $$\vb E_{\text{outside}}=\frac{\sigma}{\ep}\,\uv n,\qquad \sigma=\ep\,\vb E_{\text{outside}}\cdot\uv n,$$
           with $\uv n$ pointing out of the conductor. That is twice the isolated sheet's field: the rest of the conductor's charge cancels the patch's field inside and doubles it outside.
         - **Parallel plates** (Griffiths Ex. 2.6): $\pm\sigma$ give $\sigma/\ep$ between the plates and $0$ outside. At each plate the jump is again $\pm\sigma/\ep$, with $\vb E=0$ on the outer side, just like a conductor surface.
@@ -3087,7 +3087,7 @@
 
         [[fig:cond]]
 
-        The surface is an equipotential, so $\vb E$ just outside is perpendicular to it (no tangential component, by continuity of $E^\parallel$ with the zero field inside). Unit 4 uses $\sigma=-\ep\,\partial V/\partial n$ constantly: solve Laplace's equation for $V$ outside a conductor, then differentiate at the surface to get the induced charge.
+        The surface is an equipotential, so $\vb E$ just outside is perpendicular to it (no tangential component, by continuity of $E^\parallel$ with the zero field inside). The method of images and separation of variables use $\sigma=-\ep\,\partial V/\partial n$ constantly: find $V$ outside a conductor, then differentiate at the surface to get the induced charge.
       `, { cond: { svg: figConductorPt({ field: true }), cap: md`At a conductor the whole jump $\sigma/\ep$ is on the outside, and the field leaves perpendicular to the surface.` } }),
       Q(md`Just outside a conductor, $V$ falls by 20 V over the first 1.0 mm out from the surface (a uniform field there). What is $\sigma$ at that spot?`,
         [md`$+88.5$ nC/m²`, md`$-177$ nC/m²`, md`$0$, since $V$ is constant on a conductor`, md`$+177$ nC/m²`], 3,

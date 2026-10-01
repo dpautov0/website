@@ -498,7 +498,7 @@
         - A $V$ or $\partial V/\partial n$ condition on a face fixes coefficients. When it is a **zero** condition on two opposite faces it also quantizes $k$.
         - Regularity and $V\to0$ throw away whole families: $B_\ell/r^{\ell+1}$ when the region contains the origin, $e^{kx}$ as $x\to\infty$, $A_\ell r^\ell$ as $r\to\infty$.
         - A uniform field far away does the opposite: it **supplies** a term, $A_1=-E_0$.
-        - A conductor with given charge brings one unknown ($V_c$) and one extra equation ($\oint\sigma\,da=Q$, which in spherical problems reads $B_0=Q/4\pi\varepsilon_0$).
+        - A conductor with given charge brings one unknown ($V_c$) and one extra equation ($\oint\sigma\,da=Q$, which in spherical problems reads $B_0=\tfrac{Q}{4\pi\varepsilon_0}$).
         - Symmetry halves the work: solve one side, with $V=0$ or $\partial V/\partial n=0$ on the mirror plane.
         - Matching conditions glue the solutions of two regions together.
 
@@ -506,9 +506,9 @@
       `),
 
       Q(md`You know the surface charge $\sigma$ at every point of a conductor's surface, but not its potential. What boundary condition is that, in terms of $V$?`,
-        [md`$V=\sigma/\varepsilon_0$ on the surface`, md`$\partial V/\partial n=-\sigma/2\varepsilon_0$ on the surface`, md`$\partial V/\partial n=-\sigma/\varepsilon_0$ on the surface, with $\hat{\mathbf n}$ pointing out of the metal (a Neumann condition)`, md`None: $\sigma$ is a result, never a boundary condition`], 2,
+        [md`$V=\sigma/\varepsilon_0$ on the surface`, md`$\partial V/\partial n=-\tfrac{\sigma}{2\varepsilon_0}$ on the surface`, md`$\partial V/\partial n=-\sigma/\varepsilon_0$ on the surface, with $\hat{\mathbf n}$ pointing out of the metal (a Neumann condition)`, md`None: $\sigma$ is a result, never a boundary condition`], 2,
         [md`$\sigma$ fixes the **field** just outside, $E=\sigma/\varepsilon_0$, which is a derivative of $V$, not $V$ itself. Units don't even match.`,
-          md`$\sigma/2\varepsilon_0$ is the field of an isolated flat sheet on one side. At a conductor the field inside is zero, so all of the jump $\sigma/\varepsilon_0$ appears outside.`,
+          md`$\tfrac{\sigma}{2\varepsilon_0}$ is the field of an isolated flat sheet on one side. At a conductor the field inside is zero, so all of the jump $\sigma/\varepsilon_0$ appears outside.`,
           null,
           md`It is usually a result, but if it is given it is a perfectly good (Neumann) condition, the kind in HW 4 Prob. 3.5.`],
         md`Just outside a conductor $\vb E=(\sigma/\varepsilon_0)\hat{\mathbf n}$ (Lecture 7), and $E_n=-\partial V/\partial n$, so $\partial V/\partial n=-\sigma/\varepsilon_0$. Given $\sigma$ means given normal derivative: Neumann. Given potential would be Dirichlet.`,
@@ -680,7 +680,7 @@
           $$V(x)=\frac{\rho}{2\varepsilon_0}\left(2dx-x^2\right),\qquad V_{\max}=V(d)=\frac{\rho d^2}{2\varepsilon_0}.$$
           Induced charge at $x=0$ ($\hat{\mathbf n}=+\hat{\mathbf x}$): $\sigma=-\varepsilon_0V'(0)=-\varepsilon_0\dfrac{\rho d}{\varepsilon_0}=-\rho d$.
 
-          **Checks.** The full-gap solution is $\dfrac{\rho}{2\varepsilon_0}x(2d-x)$, the same function: the half-problem with the Neumann condition reproduces it. The plate at $x=0$ receives the field lines of the left half of the slab, charge $\rho d$ per area, so $\sigma=-\rho d$. Compared with the worked example (gap $d$, $V_{\max}=\rho d^2/8\varepsilon_0$), doubling the gap quadruples $V_{\max}$: $V$ scales like $(\text{gap})^2$.
+          **Checks.** The full-gap solution is $\dfrac{\rho}{2\varepsilon_0}x(2d-x)$, the same function: the half-problem with the Neumann condition reproduces it. The plate at $x=0$ receives the field lines of the left half of the slab, charge $\rho d$ per area, so $\sigma=-\rho d$. Compared with the worked example (gap $d$, $V_{\max}=\tfrac{\rho d^2}{8\varepsilon_0}$), doubling the gap quadruples $V_{\max}$: $V$ scales like $(\text{gap})^2$.
 
           **What to remember:** a mirror plane is a free boundary condition. Symmetric setup: $\partial V/\partial n=0$ on the plane. Antisymmetric setup: $V=0$ on it.
         `,
@@ -932,7 +932,7 @@
         [md`That's the grounded sphere, which ends up with charge $-qR/a$, not $0$.`,
           md`Over-specified: with $V(R)=0$ the charge is forced to be $-qR/a\neq0$.`, null,
           md`Zero **total** charge, not zero everywhere. $q$ pulls negative charge to the near side and leaves positive on the far side.`],
-        md`Metal: equipotential at an unknown $V_c$. Isolated and neutral: total charge zero. The images are $q'=-qR/a$ at $R^2/a$ plus $+qR/a$ at the center, which makes $V_c=q/4\pi\varepsilon_0a$ (lesson 4).`,
+        md`Metal: equipotential at an unknown $V_c$. Isolated and neutral: total charge zero. The images are $q'=-qR/a$ at $R^2/a$ plus $+qR/a$ at the center, which makes $V_c=\tfrac{q}{4\pi\varepsilon_0a}$ (lesson 4).`,
         { figHtml: figSphereQ({ cond: md`Q=0` }) }),
 
       Q(md`Now a battery holds the sphere at $V_0$ (relative to infinity). Which set?`,
@@ -980,12 +980,12 @@
       Q(md`An isolated metal sphere carrying charge $Q$ sits in a field that is uniform, $E_0\hat{\mathbf z}$, far away (Griffiths 3.21). Which set?`,
         [md`$V(R,\theta)=0$; $V\to-E_0r\cos\theta$`,
           md`$V(R,\theta)=V_c$, unknown; $-\varepsilon_0\oint\dfrac{\partial V}{\partial r}\,da=Q$ at $r=R$; $V\to-E_0r\cos\theta+C$`,
-          md`$\sigma=Q/4\pi R^2$ on the sphere; $V\to-E_0r\cos\theta$`,
+          md`$\sigma=\tfrac{Q}{4\pi R^2}$ on the sphere; $V\to-E_0r\cos\theta$`,
           md`$V(R,\theta)=V_c$; $V\to\dfrac{Q}{4\pi\varepsilon_0r}$ as $r\to\infty$`], 1,
         [md`Grounding would drain the charge: with $C=0$ the sphere would end up neutral.`, null,
           md`The field also induces $3\varepsilon_0E_0\cos\theta$; $\sigma$ is not uniform.`,
           md`Far away the applied field dominates; the $Q/r$ part decays.`],
-        md`Equipotential (unknown value), total charge $Q$, uniform field far away. In the Legendre series the charge condition reads $B_0=Q/4\pi\varepsilon_0$, and the result is $V=-E_0\left(r-\dfrac{R^3}{r^2}\right)\cos\theta+\dfrac{Q}{4\pi\varepsilon_0r}$ (lesson 8).`,
+        md`Equipotential (unknown value), total charge $Q$, uniform field far away. In the Legendre series the charge condition reads $B_0=\tfrac{Q}{4\pi\varepsilon_0}$, and the result is $V=-E_0\left(r-\dfrac{R^3}{r^2}\right)\cos\theta+\dfrac{Q}{4\pi\varepsilon_0r}$ (lesson 8).`,
         { figHtml: figField({ q: 'Q', note: 'isolated metal sphere, charge Q' }) }),
 
       Q(md`A thin plastic shell of radius $R$ has surface charge $\sigma_0(\theta)$ glued on; there are no other charges and no metal. Which set (Griffiths Ex. 3.9)?`,
@@ -1051,7 +1051,7 @@
         [null, md`That's the isolated sphere's potential. With a grounded shell around it, $V(a)=\dfrac{Q}{4\pi\varepsilon_0}\left(\dfrac1a-\dfrac1b\right)$.`,
           md`Infinity isn't in the region $a<r<b$, and the grounded shell is missing.`,
           md`Both at zero would force zero charge; $V(a)$ is what you're solving for.`],
-        md`Only $\ell=0$ appears: $V=A+B/r$. $V(b)=0$ and the charge condition ($-\varepsilon_0\,4\pi a^2\,\partial_rV=Q$, i.e. $B=Q/4\pi\varepsilon_0$) give $V=\dfrac{Q}{4\pi\varepsilon_0}\left(\dfrac1r-\dfrac1b\right)$, and $C=Q/V(a)=4\pi\varepsilon_0\dfrac{ab}{b-a}$.`,
+        md`Only $\ell=0$ appears: $V=A+B/r$. $V(b)=0$ and the charge condition ($-\varepsilon_0\,4\pi a^2\,\partial_rV=Q$, i.e. $B=\tfrac{Q}{4\pi\varepsilon_0}$) give $V=\dfrac{Q}{4\pi\varepsilon_0}\left(\dfrac1r-\dfrac1b\right)$, and $C=Q/V(a)=4\pi\varepsilon_0\dfrac{ab}{b-a}$.`,
         { figHtml: figConc({ innerMetal: true, outerMetal: true, inner: 'Q', outer: GR }) }),
 
       Q(md`A closed metal box is held at $V_0$, and its interior is empty. What is $V$ inside?`,
@@ -1115,14 +1115,14 @@
 
         Condition 1 already contains the $E^\parallel$ condition: if $V$ agrees on both sides all along the surface, its derivatives **along** the surface agree too.
 
-        !!trap The jump is $\sigma/\varepsilon_0$, not $\sigma/2\varepsilon_0$
-          A lone flat sheet gives $\sigma/2\varepsilon_0$ on each side, pointing away, and the **jump** is $\sigma/\varepsilon_0$. The jump is always $\sigma/\varepsilon_0$; how it splits between the two sides depends on the other charges around.
+        !!trap The jump is $\sigma/\varepsilon_0$, not $\tfrac{\sigma}{2\varepsilon_0}$
+          A lone flat sheet gives $\tfrac{\sigma}{2\varepsilon_0}$ on each side, pointing away, and the **jump** is $\sigma/\varepsilon_0$. The jump is always $\sigma/\varepsilon_0$; how it splits between the two sides depends on the other charges around.
       `, { pill: { svg: figPill(), cap: 'Pillbox (left) for the normal component, thin loop (right) for the tangential one.' } }),
 
       Q(md`Across a surface carrying charge density $\sigma$, which statement is right?`,
-        [md`$E^\perp$ jumps by $\sigma/\varepsilon_0$; $E^\parallel$ is continuous`, md`$E^\parallel$ jumps by $\sigma/\varepsilon_0$; $E^\perp$ is continuous`, md`Both components jump by $\sigma/2\varepsilon_0$`, md`Both components are continuous; only $V$ jumps`], 0,
+        [md`$E^\perp$ jumps by $\sigma/\varepsilon_0$; $E^\parallel$ is continuous`, md`$E^\parallel$ jumps by $\sigma/\varepsilon_0$; $E^\perp$ is continuous`, md`Both components jump by $\tfrac{\sigma}{2\varepsilon_0}$`, md`Both components are continuous; only $V$ jumps`], 0,
         [null, md`Backwards. The loop argument ($\oint\vb E\cdot d\vb l=0$) makes the tangential part continuous; the pillbox gives the normal jump.`,
-          md`$\sigma/2\varepsilon_0$ is the field of the local patch on one side. The tangential part doesn't jump at all.`,
+          md`$\tfrac{\sigma}{2\varepsilon_0}$ is the field of the local patch on one side. The tangential part doesn't jump at all.`,
           md`$V$ is continuous across a surface charge (finite field, zero path length). Its normal derivative jumps.`],
         md`Pillbox: the flux through the lids changes by $(E^\perp_{\text{above}}-E^\perp_{\text{below}})A=\sigma A/\varepsilon_0$. Thin loop: the two long sides give $(E^\parallel_{\text{above}}-E^\parallel_{\text{below}})l=0$. Only the normal component jumps.`,
         { figHtml: figPill() }),
@@ -1137,7 +1137,7 @@
 
       Q(md`In the jump condition you decide to call the region **below** the sheet "above", so $\hat{\mathbf n}$ now points down. What changes?`,
         [md`$\sigma$ comes out with the opposite sign`,
-          md`The jump becomes $\sigma/2\varepsilon_0$`,
+          md`The jump becomes $\tfrac{\sigma}{2\varepsilon_0}$`,
           md`$E^\parallel$ now jumps instead of $E^\perp$`,
           md`Nothing physical: $\hat{\mathbf n}$, both normal derivatives and the labels all flip together, and you get the same $\sigma$`], 3,
         [md`Both $\partial V/\partial n$ terms change sign **and** swap places, so their difference keeps its sign.`,
@@ -1171,7 +1171,7 @@
         | inner wall of a shell (cavity) | $r<R$ | $-\hat{\mathbf r}$ | $+\varepsilon_0\,\partial V/\partial r$ |
         | plate at $x=d$ | $x<d$ | $-\hat{\mathbf x}$ | $+\varepsilon_0\,\partial V/\partial x$ |
 
-        A thin metal shell has two surfaces; each gets its own $\sigma$ from the field on its own side. The field just outside a conductor is $\sigma/\varepsilon_0$, not $\sigma/2\varepsilon_0$: the other charges cancel the patch's field inside the metal and double it outside.
+        A thin metal shell has two surfaces; each gets its own $\sigma$ from the field on its own side. The field just outside a conductor is $\sigma/\varepsilon_0$, not $\tfrac{\sigma}{2\varepsilon_0}$: the other charges cancel the patch's field inside the metal and double it outside.
       `, { cond: { svg: figCond(), cap: 'Just outside a conductor the field is normal, $\\sigma/\\varepsilon_0$; inside it is zero.' } }),
 
       Q(md`A conductor carries surface charge $\sigma$ at some point of its surface. What is the field just outside, at that point?`,
@@ -1190,7 +1190,7 @@
         { figHtml: figInside({}) }),
 
       Q(md`Between two plates, $V(x)=V_0x/d$ (left plate grounded at $x=0$, right plate at $V_0$ at $x=d$). What is the surface charge on the inner face of the **right** plate?`,
-        [md`$-\varepsilon_0V_0/d$`, md`$\varepsilon_0V_0/2d$`, md`$0$`, md`$+\varepsilon_0V_0/d$`], 3,
+        [md`$-\varepsilon_0V_0/d$`, md`$\tfrac{\varepsilon_0V_0}{2d}$`, md`$0$`, md`$+\varepsilon_0V_0/d$`], 3,
         [md`That's the left plate. Using $\hat{\mathbf n}=+\hat{\mathbf x}$ at the right plate gives this wrong sign.`, md`No factor of $\tfrac12$ at a conductor.`, md`The plates have equal and opposite charges; neither is zero.`, null],
         md`At $x=d$ the field region is to the left, so $\hat{\mathbf n}=-\hat{\mathbf x}$ and $\sigma=-\varepsilon_0\,\partial V/\partial n=+\varepsilon_0V'(d)=\varepsilon_0V_0/d$. Left plate: $\hat{\mathbf n}=+\hat{\mathbf x}$, $\sigma=-\varepsilon_0V_0/d$. The higher-potential plate is the positive one, as it should be.`,
         { figHtml: figPlates({ L: 'V=0', R: 'V_0' }) }),
@@ -1198,7 +1198,7 @@
       Q(md`A thin metal shell of radius $R$ carries total charge $Q$, with a point charge $q$ at its center. What are the surface charge densities on its inner and outer faces?`,
         [md`$\sigma_{\text{in}}=0$, $\sigma_{\text{out}}=\dfrac{Q}{4\pi R^2}$`, md`$\sigma_{\text{in}}=\sigma_{\text{out}}=\dfrac{Q}{8\pi R^2}$`, md`$\sigma_{\text{in}}=-\dfrac{q}{4\pi R^2}$, $\sigma_{\text{out}}=\dfrac{Q+q}{4\pi R^2}$`, md`$\sigma_{\text{in}}=\dfrac{q}{4\pi R^2}$, $\sigma_{\text{out}}=\dfrac{Q-q}{4\pi R^2}$`], 2,
         [md`The field of $q$ ends on the inner face: a Gaussian surface inside the metal encloses zero charge.`, md`The two faces see different fields, so they carry different charge.`, null, md`Signs: the inner face must cancel $q$'s flux, so it carries $-q$.`],
-        md`Each face of a thin shell is its own boundary. Inner face: field region is the cavity, field $q/4\pi\varepsilon_0R^2$ pointing **into** the metal ($\hat{\mathbf n}=-\hat{\mathbf r}$), so $\sigma_{\text{in}}=-q/4\pi R^2$. The rest of the shell's charge, $Q+q$, goes to the outer face; outside, the field is that of $Q+q$ at the center.`,
+        md`Each face of a thin shell is its own boundary. Inner face: field region is the cavity, field $\tfrac{q}{4\pi\varepsilon_0R^2}$ pointing **into** the metal ($\hat{\mathbf n}=-\hat{\mathbf r}$), so $\sigma_{\text{in}}=-\tfrac{q}{4\pi R^2}$. The rest of the shell's charge, $Q+q$, goes to the outer face; outside, the field is that of $Q+q$ at the center.`,
         { figHtml: figHollow({ lab: 'Q' }) }),
 
       RF(md`
@@ -1225,28 +1225,28 @@
 
         [[fig:decay]]
 
-        **Checks.** $\nabla^2V=(-k^2+k^2)V=0$ off the sheet. Just above, $E_y=-\partial_yV=\dfrac{\sigma_0\sin kx}{2\varepsilon_0}=\dfrac{\sigma(x)}{2\varepsilon_0}$: exactly the field of a uniform sheet with the local $\sigma$, as Griffiths' footnote on the local patch says. Below, $E_y=-\sigma/2\varepsilon_0$. $E_x=-\partial_xV$ is the same on both sides.
+        **Checks.** $\nabla^2V=(-k^2+k^2)V=0$ off the sheet. Just above, $E_y=-\partial_yV=\dfrac{\sigma_0\sin kx}{2\varepsilon_0}=\dfrac{\sigma(x)}{2\varepsilon_0}$: exactly the field of a uniform sheet with the local $\sigma$, as Griffiths' footnote on the local patch says. Below, $E_y=-\tfrac{\sigma}{2\varepsilon_0}$. $E_x=-\partial_xV$ is the same on both sides.
 
         !!intuition A periodic charge pattern is invisible from far away
-          The field dies off as $e^{-k|y|}$: within a distance $1/k=\lambda/2\pi$ of the sheet. Far away the $+$ and $-$ stripes cancel. A finer pattern (larger $k$) is both weaker ($C\propto1/k$) and shorter-ranged. The same $e^{-n\pi x/a}$ decay is why only the lowest Fourier term of the slot survives far from its end.
+          The field dies off as $e^{-k|y|}$: within a distance $1/k=\tfrac{\lambda}{2\pi}$ of the sheet. Far away the $+$ and $-$ stripes cancel. A finer pattern (larger $k$) is both weaker ($C\propto1/k$) and shorter-ranged. The same $e^{-n\pi x/a}$ decay is why only the lowest Fourier term of the slot survives far from its end.
       `, { sheet: { svg: figSheet({}), cap: 'Edge-on view of the sheet; $+$ and $-$ mark the sign of $\\sigma$.' }, decay: { svg: plotDecay(), cap: 'The potential along a vertical line where $\\sin kx=1$: a cusp at the sheet (the charge), decaying over $1/k$.' } }),
 
       Q(md`For the sheet $\sigma_0\sin kx$, how far from the sheet does the potential fall to $1/e$ of its value on the sheet?`,
-        [md`One wavelength, $\lambda=2\pi/k$`, md`$1/k=\lambda/2\pi$`, md`$1/2k$`, md`It never decays: the sheet is infinite`], 1,
-        [md`$e^{-k|y|}$ at $|y|=\lambda$ is $e^{-2\pi}\approx0.002$, far below $1/e$.`, null, md`$e^{-k\cdot1/2k}=e^{-1/2}$.`, md`An infinite **uniform** sheet has a field that never decays. A sheet whose charge alternates in sign has zero average, and its field dies off.`],
-        md`$V\propto e^{-k|y|}$, which is $1/e$ at $|y|=1/k=\lambda/2\pi$. So the field reaches out only about a sixth of a wavelength.`,
+        [md`One wavelength, $\lambda=2\pi/k$`, md`$1/k=\tfrac{\lambda}{2\pi}$`, md`$\tfrac{1}{2k}$`, md`It never decays: the sheet is infinite`], 1,
+        [md`$e^{-k|y|}$ at $|y|=\lambda$ is $e^{-2\pi}\approx0.002$, far below $1/e$.`, null, md`$e^{-k/(2k)}=e^{-1/2}$.`, md`An infinite **uniform** sheet has a field that never decays. A sheet whose charge alternates in sign has zero average, and its field dies off.`],
+        md`$V\propto e^{-k|y|}$, which is $1/e$ at $|y|=1/k=\tfrac{\lambda}{2\pi}$. So the field reaches out only about a sixth of a wavelength.`,
         { figHtml: figSheet({}) }),
 
       Q(md`The pattern's wavelength is halved ($k\to2k$) with $\sigma_0$ unchanged. What happens to $V$?`,
         [md`The amplitude on the sheet halves, and it decays twice as fast`, md`The amplitude doubles, and it decays twice as fast`, md`The amplitude is unchanged; only the decay is faster`, md`Nothing changes except the stripes are narrower`], 0,
-        [null, md`$C=\sigma_0/2\varepsilon_0k$ goes **down** as $k$ goes up: narrower stripes of opposite sign cancel each other better.`, md`$C\propto1/k$, so the amplitude changes too.`, md`Both the amplitude and the range scale with $1/k$.`],
-        md`$V=\dfrac{\sigma_0}{2\varepsilon_0k}\sin kx\,e^{-k|y|}$: doubling $k$ halves the prefactor and halves the decay length. (The field just above the sheet, $\sigma/2\varepsilon_0$, doesn't depend on $k$.)`,
+        [null, md`$C=\tfrac{\sigma_0}{2\varepsilon_0k}$ goes **down** as $k$ goes up: narrower stripes of opposite sign cancel each other better.`, md`$C\propto1/k$, so the amplitude changes too.`, md`Both the amplitude and the range scale with $1/k$.`],
+        md`$V=\dfrac{\sigma_0}{2\varepsilon_0k}\sin kx\,e^{-k|y|}$: doubling $k$ halves the prefactor and halves the decay length. (The field just above the sheet, $\tfrac{\sigma}{2\varepsilon_0}$, doesn't depend on $k$.)`,
         { figHtml: figSheet({}) }),
 
       Q(md`Check the long-wavelength limit. As $k\to0$ the sheet looks locally uniform. What is $E_y$ just above it?`,
-        [md`It diverges like $1/k$`, md`$\sigma(x)/\varepsilon_0$`, md`$0$`, md`$\sigma(x)/2\varepsilon_0$, for every $k$, matching a uniform sheet with the local $\sigma$`], 3,
-        [md`$V$'s amplitude $\propto1/k$ does grow, but $E_y=-\partial_yV$ brings down a factor $k$.`, md`That would be the field just outside a **conductor**. A lone sheet splits the jump evenly.`, md`$E_y$ just above is $\sigma/2\varepsilon_0$, not zero.`, null],
-        md`$E_y(0^+)=-\partial_yV=k\cdot\dfrac{\sigma_0}{2\varepsilon_0k}\sin kx=\dfrac{\sigma(x)}{2\varepsilon_0}$. Close to the sheet only the local patch matters, and a patch looks like an infinite plane: $\sigma/2\varepsilon_0$ on each side. (The growing amplitude of $V$ as $k\to0$ is just the uniform sheet's $V=-\sigma|y|/2\varepsilon_0+\text{const}$ with the constant going to infinity.)`,
+        [md`It diverges like $1/k$`, md`$\sigma(x)/\varepsilon_0$`, md`$0$`, md`$\tfrac{\sigma(x)}{2\varepsilon_0}$, for every $k$, matching a uniform sheet with the local $\sigma$`], 3,
+        [md`$V$'s amplitude $\propto1/k$ does grow, but $E_y=-\partial_yV$ brings down a factor $k$.`, md`That would be the field just outside a **conductor**. A lone sheet splits the jump evenly.`, md`$E_y$ just above is $\tfrac{\sigma}{2\varepsilon_0}$, not zero.`, null],
+        md`$E_y(0^+)=-\partial_yV=k\cdot\dfrac{\sigma_0}{2\varepsilon_0k}\sin kx=\dfrac{\sigma(x)}{2\varepsilon_0}$. Close to the sheet only the local patch matters, and a patch looks like an infinite plane: $\tfrac{\sigma}{2\varepsilon_0}$ on each side. (The growing amplitude of $V$ as $k\to0$ is just the uniform sheet's $V=-\tfrac{\sigma|y|}{2\varepsilon_0}+\text{const}$ with the constant going to infinity.)`,
         { figHtml: plotDecay() }),
 
       Q(md`For the sheet, compare the field components just above and just below $y=0$.`,
@@ -1328,7 +1328,7 @@
       Q(md`If instead $\sigma_0$ is uniform, which terms survive, and what is $V$ inside?`,
         [md`Only $\ell=1$; $V_{\text{in}}\propto z$`, md`Only $\ell=0$; $V_{\text{in}}=\sigma_0R/\varepsilon_0$, a constant`, md`All even $\ell$`, md`Only $\ell=0$; $V_{\text{in}}=0$`], 1,
         [md`A uniform $\sigma_0$ is pure $P_0$.`, null, md`$\sigma_0=\sigma_0P_0$ exactly; nothing else appears.`, md`$A_0=s_0R/\varepsilon_0=\sigma_0R/\varepsilon_0\neq0$. The field inside is zero, but $V$ is not.`],
-        md`$s_0=\sigma_0$, so $A_0=\sigma_0R/\varepsilon_0$ and $B_0=A_0R=\sigma_0R^2/\varepsilon_0=Q/4\pi\varepsilon_0$ with $Q=4\pi R^2\sigma_0$. Outside: a point charge. Inside: constant, equal to the surface value. (HW 3 Prob. 2.31(c) checks exactly this against the boundary conditions.)`,
+        md`$s_0=\sigma_0$, so $A_0=\sigma_0R/\varepsilon_0$ and $B_0=A_0R=\sigma_0R^2/\varepsilon_0=\tfrac{Q}{4\pi\varepsilon_0}$ with $Q=4\pi R^2\sigma_0$. Outside: a point charge. Inside: constant, equal to the surface value. (HW 3 Prob. 2.31(c) checks exactly this against the boundary conditions.)`,
         { figHtml: figShell({ lab: md`\sigma_0` }) }),
 
       P({
@@ -1365,7 +1365,7 @@
 
           **(c)** $\ell=0$ and $\ell=2$.
 
-          **Checks.** Total charge: $Q=\int\sigma_0\cos^2\theta\,2\pi R^2\sin\theta\,d\theta=\tfrac{4\pi R^2\sigma_0}{3}$, and the monopole term is $B_0=Q/4\pi\varepsilon_0$. Continuity at $R$: inside, $V_{\text{in}}=\dfrac{\sigma_0R}{3\varepsilon_0}+\dfrac{2\sigma_0r^2}{15\varepsilon_0R}P_2$, which equals $V_{\text{out}}$ at $r=R$. Jump: $\partial_rV_{\text{out}}-\partial_rV_{\text{in}}=-\dfrac{\sigma_0}{3\varepsilon_0}-\dfrac{6\sigma_0}{15\varepsilon_0}P_2-\dfrac{4\sigma_0}{15\varepsilon_0}P_2=-\dfrac{\sigma_0}{\varepsilon_0}\left(\tfrac13+\tfrac23P_2\right)$ ✓.
+          **Checks.** Total charge: $Q=\int\sigma_0\cos^2\theta\,2\pi R^2\sin\theta\,d\theta=\tfrac{4\pi R^2\sigma_0}{3}$, and the monopole term is $B_0=\tfrac{Q}{4\pi\varepsilon_0}$. Continuity at $R$: inside, $V_{\text{in}}=\dfrac{\sigma_0R}{3\varepsilon_0}+\dfrac{2\sigma_0r^2}{15\varepsilon_0R}P_2$, which equals $V_{\text{out}}$ at $r=R$. Jump: $\partial_rV_{\text{out}}-\partial_rV_{\text{in}}=-\dfrac{\sigma_0}{3\varepsilon_0}-\dfrac{6\sigma_0}{15\varepsilon_0}P_2-\dfrac{4\sigma_0}{15\varepsilon_0}P_2=-\dfrac{\sigma_0}{\varepsilon_0}\left(\tfrac13+\tfrac23P_2\right)$ ✓.
 
           **What to remember:** expand the source in $P_\ell$ by eye when you can; each $\ell$ is then a separate two-equation problem (continuity and jump).
         `,
@@ -1377,21 +1377,21 @@
           (b) Use Gauss's law to find the field inside and outside a long hollow cylindrical tube, which carries a uniform surface charge $\sigma$. Check that your result is consistent with Eq. 2.33.
           (c) Check that the result of Ex. 2.8 is consistent with boundary conditions 2.34 ($V$ continuous) and 2.36 (jump in $\partial V/\partial n$).
 
-          (Ex. 2.5: infinite plane, $\sigma/2\varepsilon_0$ on each side. Ex. 2.6: two infinite planes $\pm\sigma$. Prob. 2.11: spherical shell, $\vb E=0$ inside and $\sigma R^2/\varepsilon_0r^2$ outside. Ex. 2.8: spherical shell of total charge $q$; find $V$.)`,
+          (Ex. 2.5: infinite plane, $\tfrac{\sigma}{2\varepsilon_0}$ on each side. Ex. 2.6: two infinite planes $\pm\sigma$. Prob. 2.11: spherical shell, $\vb E=0$ inside and $\tfrac{\sigma R^2}{\varepsilon_0r^2}$ outside. Ex. 2.8: spherical shell of total charge $q$; find $V$.)`,
         figHtml: figTube(),
         hints: [
           md`For each surface, write $\vb E$ just above and just below with the same $\hat{\mathbf n}$, and subtract.`,
           md`(b) Coaxial Gaussian cylinder of radius $s$ and length $L$: no flux through the ends, $E\,2\pi sL=Q_{\text{enc}}/\varepsilon_0$.`,
-          md`(c) Ex. 2.8: $V=\dfrac{q}{4\pi\varepsilon_0r}$ outside, $\dfrac{q}{4\pi\varepsilon_0R}$ inside. Compare values and radial slopes at $r=R$, with $\sigma=q/4\pi R^2$.`,
+          md`(c) Ex. 2.8: $V=\dfrac{q}{4\pi\varepsilon_0r}$ outside, $\dfrac{q}{4\pi\varepsilon_0R}$ inside. Compare values and radial slopes at $r=R$, with $\sigma=\tfrac{q}{4\pi R^2}$.`,
         ],
         parts: [
           { lbl: md`(a) For the infinite plane (Ex. 2.5), $\vb E_{\text{above}}-\vb E_{\text{below}}$ is`, mc: [md`$\dfrac{\sigma}{2\varepsilon_0}\hat{\mathbf n}$`, md`$0$`, md`$\dfrac{\sigma}{\varepsilon_0}\hat{\mathbf n}$, consistent with 2.33`, md`$\dfrac{2\sigma}{\varepsilon_0}\hat{\mathbf n}$`], a: 2,
-            why: [md`That's one side. Below, the field is $-\tfrac{\sigma}{2\varepsilon_0}\hat{\mathbf n}$, so the difference is twice this.`, md`The field reverses direction across the plane.`, null, md`Each side has magnitude $\sigma/2\varepsilon_0$; the difference is $\sigma/\varepsilon_0$.`] },
+            why: [md`That's one side. Below, the field is $-\tfrac{\sigma}{2\varepsilon_0}\hat{\mathbf n}$, so the difference is twice this.`, md`The field reverses direction across the plane.`, null, md`Each side has magnitude $\tfrac{\sigma}{2\varepsilon_0}$; the difference is $\sigma/\varepsilon_0$.`] },
           { lbl: md`(b) |\vb E| \text{ outside the tube, at distance } s`, expr: 'sigma*R/(eps0*s)', vars: { sigma: [1, 2], R: [1, 2], s: [2.5, 4], eps0: [0.5, 2] } },
-          { lbl: md`(b) Inside the tube, and the jump at $s=R$:`, mc: [md`$\vb E=0$ inside; the jump is $\sigma/\varepsilon_0$, consistent`, md`$\vb E=\dfrac{\sigma}{2\varepsilon_0}\hat{\mathbf s}$ inside; the jump is $\sigma/2\varepsilon_0$`, md`$\vb E=0$ inside; the jump is $\sigma R/\varepsilon_0$`, md`$\vb E\propto s$ inside`], a: 0,
-            why: [null, md`No charge is enclosed by a Gaussian cylinder with $s<R$, so $E=0$.`, md`At $s=R$ the outside field is $\sigma R/\varepsilon_0R=\sigma/\varepsilon_0$.`, md`That would need volume charge inside. The tube is hollow.`] },
-          { lbl: md`(c) For Ex. 2.8, at $r=R$:`, mc: [md`$V$ jumps by $q/4\pi\varepsilon_0R$ and $\partial V/\partial r$ is continuous`, md`$V$ is continuous and $\partial_rV_{\text{out}}-\partial_rV_{\text{in}}=-\dfrac{q}{4\pi\varepsilon_0R^2}=-\dfrac{\sigma}{\varepsilon_0}$`, md`Both are continuous`, md`$V$ is continuous and $\partial_rV$ jumps by $+\sigma/\varepsilon_0$`], a: 1,
-            why: [md`Both expressions equal $q/4\pi\varepsilon_0R$ at $r=R$.`, null, md`Inside, $\partial_rV=0$; outside, $-q/4\pi\varepsilon_0R^2$. It jumps.`, md`Sign: $\partial_rV$ drops from $0$ to a negative value.`] },
+          { lbl: md`(b) Inside the tube, and the jump at $s=R$:`, mc: [md`$\vb E=0$ inside; the jump is $\sigma/\varepsilon_0$, consistent`, md`$\vb E=\dfrac{\sigma}{2\varepsilon_0}\hat{\mathbf s}$ inside; the jump is $\tfrac{\sigma}{2\varepsilon_0}$`, md`$\vb E=0$ inside; the jump is $\sigma R/\varepsilon_0$`, md`$\vb E\propto s$ inside`], a: 0,
+            why: [null, md`No charge is enclosed by a Gaussian cylinder with $s<R$, so $E=0$.`, md`At $s=R$ the outside field is $\tfrac{\sigma R}{\varepsilon_0R}=\sigma/\varepsilon_0$.`, md`That would need volume charge inside. The tube is hollow.`] },
+          { lbl: md`(c) For Ex. 2.8, at $r=R$:`, mc: [md`$V$ jumps by $\tfrac{q}{4\pi\varepsilon_0R}$ and $\partial V/\partial r$ is continuous`, md`$V$ is continuous and $\partial_rV_{\text{out}}-\partial_rV_{\text{in}}=-\dfrac{q}{4\pi\varepsilon_0R^2}=-\dfrac{\sigma}{\varepsilon_0}$`, md`Both are continuous`, md`$V$ is continuous and $\partial_rV$ jumps by $+\sigma/\varepsilon_0$`], a: 1,
+            why: [md`Both expressions equal $\tfrac{q}{4\pi\varepsilon_0R}$ at $r=R$.`, null, md`Inside, $\partial_rV=0$; outside, $-\tfrac{q}{4\pi\varepsilon_0R^2}$. It jumps.`, md`Sign: $\partial_rV$ drops from $0$ to a negative value.`] },
         ],
         sol: md`
           **(a)** Take $\hat{\mathbf n}$ from below to above in each case.
@@ -1411,7 +1411,7 @@
 
           **What to remember:** the jump is always $\sigma/\varepsilon_0$ in the normal component (or $-\sigma/\varepsilon_0$ in $\partial V/\partial n$), whatever the geometry. These checks are how you catch a wrong $E$ or $V$ on an exam.
         `,
-        figs: { tube: { svg: PF.plot({ w: 300, h: 180, x: [0, 3], y: [0, 1.25], xl: 's', yl: 'E', xt: [[1, 'R']], yt: [[1, md`\tfrac{\sigma}{\varepsilon_0}`]], curves: [{ f: () => 0, to: 0.999 }, { f: (s) => 1 / s, from: 1.001 }], vlines: [[1, '']] }), cap: 'The tube: zero inside, $\\sigma R/\\varepsilon_0s$ outside; a jump of $\\sigma/\\varepsilon_0$ at $s=R$.' } },
+        figs: { tube: { svg: PF.plot({ w: 300, h: 180, x: [0, 3], y: [0, 1.25], xl: 's', yl: 'E', xt: [[1, 'R']], yt: [[1, md`\tfrac{\sigma}{\varepsilon_0}`]], curves: [{ f: () => 0, to: 0.999 }, { f: (s) => 1 / s, from: 1.001 }], vlines: [[1, '']] }), cap: 'The tube: zero inside, $\\tfrac{\\sigma R}{\\varepsilon_0s}$ outside; a jump of $\\sigma/\\varepsilon_0$ at $s=R$.' } },
       }),
 
       RF(md`
@@ -1484,10 +1484,10 @@
       Q(md`A student uses a **positive** image, $+q$ at $(0,0,-d)$. Which BC fails, and what problem does this system actually solve?`,
         [md`BC #2 fails; it solves a grounded sphere`,
           md`Nothing fails; the sign of the image doesn't matter`,
-          md`BC #1 fails ($V=2q/4\pi\varepsilon_0\srm\neq0$ on the plane); it solves the problem with a mirror plane, $\partial V/\partial z=0$ at $z=0$`,
+          md`BC #1 fails ($V=2\tfrac{q}{4\pi\varepsilon_0}\srm\neq0$ on the plane); it solves the problem with a mirror plane, $\partial V/\partial z=0$ at $z=0$`,
           md`BC #1 fails; it solves a plane held at $V_0$`], 2,
         [md`Both terms still vanish at infinity. The plane is where it fails.`, md`On the plane the two terms add instead of cancel.`, null,
-          md`$V$ on the plane would be $2q/4\pi\varepsilon_0\sqrt{x^2+y^2+d^2}$, which varies along the plane; a conductor needs a constant.`],
+          md`$V$ on the plane would be $2\tfrac{q}{4\pi\varepsilon_0}\sqrt{x^2+y^2+d^2}$, which varies along the plane; a conductor needs a constant.`],
         md`Same-sign mirror charges give $V$ even in $z$, so $\partial V/\partial z=0$ on the plane: the Neumann condition of a symmetry plane, not the Dirichlet condition of a grounded conductor. The grounded plane needs the odd combination.`,
         { figHtml: figPlaneQ({ img: true, qi: '+q', lab: 'z=0' }) }),
 
@@ -1602,7 +1602,7 @@
       Q(md`An isolated neutral metal sphere sits a distance $a$ from a charge $q$. What is the potential of the sphere?`,
         [md`$0$`, md`$-\dfrac{q}{4\pi\varepsilon_0a}\dfrac{R}{a}$`, md`$\dfrac{q}{4\pi\varepsilon_0a}$`, md`$\dfrac{q}{4\pi\varepsilon_0(a-R)}$`], 2,
         [md`That's the grounded sphere. Isolated and neutral, it floats to a positive potential (for $q>0$).`, md`That's the potential the image $q'$ would make at its own distance, not the sphere's potential.`, null, md`That's $q$'s potential at the nearest point of the sphere. The sphere's potential is an average, not the extreme.`],
-        md`The center image $+Rq/a$ gives $\dfrac{Rq/a}{4\pi\varepsilon_0R}=\dfrac{q}{4\pi\varepsilon_0a}$ on the sphere (the grounded pair contributes $0$). Mean-value property check: the potential of $q$ averaged over the sphere equals its value at the center, $q/4\pi\varepsilon_0a$, and the induced charge (total zero, a dipole-like layer) averages to zero.`,
+        md`The center image $+Rq/a$ gives $\dfrac{Rq/a}{4\pi\varepsilon_0R}=\dfrac{q}{4\pi\varepsilon_0a}$ on the sphere (the grounded pair contributes $0$). Mean-value property check: the potential of $q$ averaged over the sphere equals its value at the center, $\tfrac{q}{4\pi\varepsilon_0a}$, and the induced charge (total zero, a dipole-like layer) averages to zero.`,
         { figHtml: figSphereQ({ cond: md`Q=0` }) }),
 
       Q(md`A charge $q$ sits a distance $a$ from the center of a grounded sphere. What is the total charge induced on the sphere?`,
@@ -1621,7 +1621,7 @@
         2. $\oint\sigma\,da=0$ (neutral)
         3. $V\to0$ as $r\to\infty$
 
-        **Images:** $q'=-\dfrac{R}{a}q$ at $b=\dfrac{R^2}{a}$ (makes the sphere an equipotential at $0$), plus $q''=+\dfrac{R}{a}q$ at the center (keeps it an equipotential, now at $V_c=q/4\pi\varepsilon_0a$, and makes the total charge $q'+q''=0$). Both images are inside the sphere, outside the region. BC #3 holds term by term. Uniqueness (second theorem: total charge given) says this is it.
+        **Images:** $q'=-\dfrac{R}{a}q$ at $b=\dfrac{R^2}{a}$ (makes the sphere an equipotential at $0$), plus $q''=+\dfrac{R}{a}q$ at the center (keeps it an equipotential, now at $V_c=\tfrac{q}{4\pi\varepsilon_0a}$, and makes the total charge $q'+q''=0$). Both images are inside the sphere, outside the region. BC #3 holds term by term. Uniqueness (second theorem: total charge given) says this is it.
 
         [[fig:neu]]
 
@@ -1662,7 +1662,7 @@
 
           **(b)** On the sphere the pair contributes $0$ and the center charge $\dfrac{q_c}{4\pi\varepsilon_0R}$:
           $$V_{\text{sphere}}=\frac{1}{4\pi\varepsilon_0}\left(\frac{Q}{R}+\frac{q}{a}\right).$$
-          Each source contributes what it would at the center: $Q$ (spread on the sphere) gives $Q/4\pi\varepsilon_0R$, and $q$ gives $q/4\pi\varepsilon_0a$.
+          Each source contributes what it would at the center: $Q$ (spread on the sphere) gives $\tfrac{Q}{4\pi\varepsilon_0R}$, and $q$ gives $\tfrac{q}{4\pi\varepsilon_0a}$.
 
           [[fig:img]]
 
@@ -1736,7 +1736,7 @@
           $$\sigma=+\varepsilon_0\frac{\partial V}{\partial r}\Big|_{R}=\frac{q}{4\pi}\left[-\frac{1}{(R-a)^2}-\frac{R/a}{(b-R)^2}\right].$$
           Since $b-R=\dfrac{R(R-a)}{a}$, the second term is $\dfrac{R/a}{R^2(R-a)^2/a^2}=\dfrac{a}{R(R-a)^2}$, so
           $$\sigma_{\text{near}}=-\frac{q}{4\pi(R-a)^2}\left(1+\frac aR\right)=-\frac{q\,(R+a)}{4\pi R\,(R-a)^2}.$$
-          Check $a\to0$ (charge at the center): $-q/4\pi R^2$, uniform, total $-q$ ✓.
+          Check $a\to0$ (charge at the center): $-\tfrac{q}{4\pi R^2}$, uniform, total $-q$ ✓.
 
           **(d)** $-q$ (Gauss's law with a surface inside the metal), not $q'$.
 
@@ -1833,7 +1833,7 @@
       Q(md`Strips at $x=\pm b$ are held at **opposite** potentials, $+V_0$ at $x=b$ and $-V_0$ at $x=-b$; plates $y=0,a$ grounded. Which $x$-dependence?`,
         [md`$\cosh(kx)$`, md`$e^{-k|x|}$`, md`$\cos(kx)$`, md`$\sinh(kx)$`], 3,
         [md`Even in $x$; it would give the same sign on both strips.`, md`Not a solution with a smooth derivative at $x=0$, and it's even.`, md`$x$ has the live faces; it can't oscillate.`, null],
-        md`The setup is odd under $x\to-x$, so $V(0,y)=0$: an antisymmetric mirror plane at $x=0$. That kills $\cosh$ and keeps $\sinh(n\pi x/a)$. Then one live face fixes $C_n\sinh(n\pi b/a)=4V_0/n\pi$ (odd $n$).`,
+        md`The setup is odd under $x\to-x$, so $V(0,y)=0$: an antisymmetric mirror plane at $x=0$. That kills $\cosh$ and keeps $\sinh(n\pi x/a)$. Then one live face fixes $C_n\sinh(n\pi b/a)=\tfrac{4V_0}{n\pi}$ (odd $n$).`,
         { figHtml: figBox({ left: md`-V_0`, right: md`+V_0`, top: 'V=0', bot: 'V=0', c0: '(-b,0)', c1: '(b,a)' }) }),
 
       RF(md`
@@ -1860,9 +1860,9 @@
         { figHtml: figBox({ top: 'V=0', bot: 'V=0', left: 'V=0', right: md`V_0(y)` }) }),
 
       Q(md`A slot of width $2a$ has both plates grounded and an end strip whose potential is symmetric about the midplane. You solve only the lower half, $0<y<a$, with $V=0$ at $y=0$ and $\partial V/\partial y=0$ at $y=a$. What are the allowed $k$?`,
-        [md`$k=n\pi/a$`, md`$k=(n-\tfrac12)\pi/a$`, md`$k=n\pi/2a$ for all $n$`, md`$k=2n\pi/a$`], 1,
-        [md`$\sin ka=0$ is for a zero **value** at $y=a$. Here the **slope** vanishes: $\cos ka=0$.`, null, md`Only the odd ones survive: $k=(2n-1)\pi/2a=(n-\tfrac12)\pi/a$. The even ones are antisymmetric about the midplane.`, md`Those would have zero slope nowhere special; and they skip the lowest mode.`],
-        md`$Y=\sin ky$ (from $V=0$ at $y=0$), and $Y'(a)=k\cos ka=0$ gives $ka=(n-\tfrac12)\pi$. Check against the full slot of width $2a$: modes $\sin(m\pi y/2a)$, of which the symmetric ones are odd $m$, i.e. $k=(2n-1)\pi/2a$. Same set.`,
+        [md`$k=n\pi/a$`, md`$k=(n-\tfrac12)\pi/a$`, md`$k=\tfrac{n\pi}{2a}$ for all $n$`, md`$k=2n\pi/a$`], 1,
+        [md`$\sin ka=0$ is for a zero **value** at $y=a$. Here the **slope** vanishes: $\cos ka=0$.`, null, md`Only the odd ones survive: $k=\tfrac{(2n-1)\pi}{2a}=(n-\tfrac12)\pi/a$. The even ones are antisymmetric about the midplane.`, md`Those would have zero slope nowhere special; and they skip the lowest mode.`],
+        md`$Y=\sin ky$ (from $V=0$ at $y=0$), and $Y'(a)=k\cos ka=0$ gives $ka=(n-\tfrac12)\pi$. Check against the full slot of width $2a$: modes $\sin\tfrac{m\pi y}{2a}$, of which the symmetric ones are odd $m$, i.e. $k=\tfrac{(2n-1)\pi}{2a}$. Same set.`,
         { figHtml: figSlot({ top: md`\partial V/\partial y=0`, topMirror: true, bot: 'V=0', end: md`V_0(y)` }) }),
 
       Q(md`Which boundary condition determines the coefficients $C_n$?`,
@@ -2036,10 +2036,10 @@
         | $V$ finite on the $z$-axis | integer $\ell$, $P_\ell$ only |
         | $V(R,\theta)=V_0(\theta)$ | Legendre's trick: $A_\ell R^\ell$ (or $B_\ell R^{-\ell-1}$) $=\tfrac{2\ell+1}{2}\int_0^\pi V_0P_\ell\sin\theta\,d\theta$ |
         | conductor, $V(R,\theta)=V_c$ | $\ell\ge1$: $A_\ell R^\ell+B_\ell R^{-(\ell+1)}=0$; $\ell=0$: $A_0+B_0/R=V_c$ |
-        | total charge $Q$ inside (region outside it) | $B_0=Q/4\pi\varepsilon_0$ |
+        | total charge $Q$ inside (region outside it) | $B_0=\tfrac{Q}{4\pi\varepsilon_0}$ |
         | surface charge $\sigma_0(\theta)$ on $r=R$ | $B_\ell=A_\ell R^{2\ell+1}$; $(2\ell+1)A_\ell R^{\ell-1}=s_\ell/\varepsilon_0$ |
 
-        **Why the charge condition is about $B_0$ alone.** Gauss's law on a sphere of radius $r$ in the region: $\oint(-\partial_rV)\,r^2d\Omega=Q_{\text{enc}}/\varepsilon_0$. Every $P_\ell$ with $\ell\ge1$ integrates to zero over the sphere, so only the $\ell=0$ term carries flux: $-\partial_r(B_0/r)\cdot4\pi r^2=4\pi B_0$, hence $B_0=Q_{\text{enc}}/4\pi\varepsilon_0$. A conductor with given charge therefore brings one unknown ($V_c$) and fixes one coefficient ($B_0$).
+        **Why the charge condition is about $B_0$ alone.** Gauss's law on a sphere of radius $r$ in the region: $\oint(-\partial_rV)\,r^2d\Omega=Q_{\text{enc}}/\varepsilon_0$. Every $P_\ell$ with $\ell\ge1$ integrates to zero over the sphere, so only the $\ell=0$ term carries flux: $-\partial_r(B_0/r)\cdot4\pi r^2=4\pi B_0$, hence $B_0=\tfrac{Q_{\text{enc}}}{4\pi\varepsilon_0}$. A conductor with given charge therefore brings one unknown ($V_c$) and fixes one coefficient ($B_0$).
       `),
 
       Q(md`$V_0(\theta)$ is given on a sphere of radius $R$ and you want $V$ outside, where there is no charge. Which coefficients does $V\to0$ remove?`,
@@ -2067,9 +2067,9 @@
         { figHtml: figField({ note: 'metal sphere: V = const on it' }) }),
 
       Q(md`An isolated metal sphere carries total charge $Q$. Which coefficient does the charge condition fix?`,
-        [md`$B_1$`, md`$A_0$`, md`Every $B_\ell$`, md`$B_0=Q/4\pi\varepsilon_0$`], 3,
+        [md`$B_1$`, md`$A_0$`, md`Every $B_\ell$`, md`$B_0=\tfrac{Q}{4\pi\varepsilon_0}$`], 3,
         [md`$B_1$ is a dipole term; its flux through a sphere is zero.`, md`$A_0$ is a constant: no field, no flux.`, md`Only $\ell=0$ survives the integral over the sphere.`, null],
-        md`Gauss: $Q/\varepsilon_0=\oint(-\partial_rV)r^2d\Omega$. Only $\ell=0$ survives the angular integral, giving $4\pi B_0$. So $B_0=Q/4\pi\varepsilon_0$: far away a charged sphere looks like a point charge, whatever else is going on.`,
+        md`Gauss: $Q/\varepsilon_0=\oint(-\partial_rV)r^2d\Omega$. Only $\ell=0$ survives the angular integral, giving $4\pi B_0$. So $B_0=\tfrac{Q}{4\pi\varepsilon_0}$: far away a charged sphere looks like a point charge, whatever else is going on.`,
         { figHtml: figField({ q: 'Q', note: 'isolated metal sphere, charge Q' }) }),
 
       RF(md`
@@ -2107,8 +2107,8 @@
 
       Q(md`Why is it legitimate to set the neutral sphere's potential to zero?`,
         [md`Because it is grounded`, md`Because neutral conductors are always at $V=0$`, md`Because $V$ is fixed only up to a constant; choosing $C=0$ in $-E_0r\cos\theta+C$ puts the plane $z=0$, and hence the sphere, at $0$ by symmetry`, md`Because $V\to0$ at infinity`], 2,
-        [md`It isn't; it's isolated and neutral. The trick works only because of the reference choice.`, md`A neutral sphere near a point charge floats at $q/4\pi\varepsilon_0a\neq0$.`, null, md`In a uniform field $V$ does not go to zero at infinity.`],
-        md`The applied potential has an arbitrary constant. The antisymmetry $z\to-z$ makes the plane $z=0$ an equipotential at $C$, and the sphere touches that plane, so the sphere is at $C$ too. Choosing $C=0$ costs nothing. For a **charged** sphere the same choice gives $V_c=Q/4\pi\varepsilon_0R$.`,
+        [md`It isn't; it's isolated and neutral. The trick works only because of the reference choice.`, md`A neutral sphere near a point charge floats at $\tfrac{q}{4\pi\varepsilon_0a}\neq0$.`, null, md`In a uniform field $V$ does not go to zero at infinity.`],
+        md`The applied potential has an arbitrary constant. The antisymmetry $z\to-z$ makes the plane $z=0$ an equipotential at $C$, and the sphere touches that plane, so the sphere is at $C$ too. Choosing $C=0$ costs nothing. For a **charged** sphere the same choice gives $V_c=\tfrac{Q}{4\pi\varepsilon_0R}$.`,
         { figHtml: figField({ note: 'uncharged metal sphere' }) }),
 
       P({
@@ -2122,7 +2122,7 @@
         hints: [
           md`BCs: $V(R,\theta)=V_0$; $V\to-E_0r\cos\theta$ (with $C=0$). Which coefficients does each fix?`,
           md`Far field: $A_1=-E_0$, other $A_\ell=0$. On the sphere: $\ell=0$: $B_0/R=V_0$; $\ell=1$: $-E_0R+B_1/R^2=0$.`,
-          md`Charge from $B_0=Q/4\pi\varepsilon_0$; $\sigma=-\varepsilon_0\partial_rV$ at $r=R$.`,
+          md`Charge from $B_0=\tfrac{Q}{4\pi\varepsilon_0}$; $\sigma=-\varepsilon_0\partial_rV$ at $r=R$.`,
         ],
         parts: [
           { lbl: md`V(r,\theta)`, expr: 'V0*R/r - E0*(r - R^3/r^2)*cos(theta)', vars: { V0: [1, 3], R: [1, 2], r: [2.5, 4], E0: [1, 2], theta: [0.2, 2.9] } },
@@ -2141,7 +2141,7 @@
 
           **(a)** $V=\dfrac{V_0R}{r}-E_0\left(r-\dfrac{R^3}{r^2}\right)\cos\theta$: the neutral-sphere solution plus a point-charge term.
 
-          **(b)** $B_0=Q/4\pi\varepsilon_0$, so $Q=4\pi\varepsilon_0RV_0$, the same as with no field (the field-induced part has zero net charge).
+          **(b)** $B_0=\tfrac{Q}{4\pi\varepsilon_0}$, so $Q=4\pi\varepsilon_0RV_0$, the same as with no field (the field-induced part has zero net charge).
 
           **(c)** $\sigma=-\varepsilon_0\partial_rV\big|_R=\varepsilon_0\left[\dfrac{V_0}{R}+3E_0\cos\theta\right]$.
 
@@ -2260,7 +2260,7 @@
 
           **Applications.**
           - $V_0=k\cos\theta$: $C_1=\tfrac23k$, others $0$: $\sigma=\tfrac{\varepsilon_0}{2R}\cdot9\cdot\tfrac23k\cos\theta=\dfrac{3\varepsilon_0k}{R}\cos\theta$. Direct check: $V_{\text{in}}=k\tfrac rR\cos\theta$, $V_{\text{out}}=k\tfrac{R^2}{r^2}\cos\theta$; slopes $k\cos\theta/R$ and $-2k\cos\theta/R$; jump $-3k\cos\theta/R$ ✓.
-          - $V_0=k$: $C_0=2k$: $\sigma=\tfrac{\varepsilon_0}{2R}\cdot2k=\dfrac{\varepsilon_0k}{R}$. Check: a sphere at potential $k$ has $Q=4\pi\varepsilon_0Rk$, so $\sigma=Q/4\pi R^2=\varepsilon_0k/R$ ✓.
+          - $V_0=k$: $C_0=2k$: $\sigma=\tfrac{\varepsilon_0}{2R}\cdot2k=\dfrac{\varepsilon_0k}{R}$. Check: a sphere at potential $k$ has $Q=4\pi\varepsilon_0Rk$, so $\sigma=\tfrac{Q}{4\pi R^2}=\varepsilon_0k/R$ ✓.
           - $V_0=k\cos^2\theta$: $C_0=\tfrac23k$, $C_2=\tfrac{4}{15}k$: $\sigma=\tfrac{\varepsilon_0}{2R}\left[\tfrac23k+25\cdot\tfrac4{15}kP_2\right]=\dfrac{\varepsilon_0k}{R}\left(\tfrac13+\tfrac{10}{3}P_2\right)=\dfrac{\varepsilon_0k}{R}\left(5\cos^2\theta-\tfrac43\right)$.
 
           **What to remember:** two regions sharing one boundary value; each $\ell$ is independent; $\sigma$ is the jump in the radial slope. Higher $\ell$ are weighted by $(2\ell+1)^2$: fine angular structure in $V_0$ needs a lot of surface charge.
@@ -2272,7 +2272,7 @@
           - Contains the origin: $B_\ell=0$. Reaches infinity with $V\to0$: $A_\ell=0$. Shell: keep both.
           - Uniform field far away: $A_1=-E_0$ (supplied, not killed). Don't impose $V\to0$.
           - Conductor surface: $A_\ell R^\ell+B_\ell R^{-(\ell+1)}=0$ for $\ell\ge1$; the $\ell=0$ part is its potential.
-          - Total charge: $B_0=Q/4\pi\varepsilon_0$, nothing else.
+          - Total charge: $B_0=\tfrac{Q}{4\pi\varepsilon_0}$, nothing else.
           - If a known solution already vanishes on a surface (the sphere-in-field on $z=0$), that surface can be made of grounded metal for free: the bump problem.
           - $\sigma$ from a solution: $-\varepsilon_0$ times the jump in $\partial_rV$ (or just $-\varepsilon_0\partial_rV$ outside a conductor).
       `),
@@ -2456,7 +2456,7 @@
           4. Jump: $\partial_yV\big|_{0^+}-\partial_yV\big|_{0^-}=-\sigma_0\sin kx/\varepsilon_0$.`,
         ['separated form', 'far-field', 'continuity', 'jump'], 1,
         [md`Right: the source picks $\sin kx$.`, null, md`Right.`, md`Right, but with step 2's functions both slopes are equal and the jump comes out $0$, a contradiction.`],
-        md`Below the sheet, $y\to-\infty$, and $e^{-ky}$ blows up there. Keep $e^{+ky}$ below: $V=Ce^{-k|y|}\sin kx$ with $C=\sigma_0/2\varepsilon_0k$. With $e^{-ky}$ on both sides there is no kink, hence no charge, and the jump condition can't be met.`),
+        md`Below the sheet, $y\to-\infty$, and $e^{-ky}$ blows up there. Keep $e^{+ky}$ below: $V=Ce^{-k|y|}\sin kx$ with $C=\tfrac{\sigma_0}{2\varepsilon_0k}$. With $e^{-ky}$ on both sides there is no kink, hence no charge, and the jump condition can't be met.`),
 
       RF(md`
         !!key Patterns to remember (the error list)

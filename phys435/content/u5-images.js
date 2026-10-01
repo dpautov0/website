@@ -511,8 +511,8 @@
   function fWedge120() {
     const f = PF.fig();
     const cx = 150, cy = 150, r = 92, p0 = 40;
-    f.line(cx, cy, cx + 130, cy, { cls: 'thick' });
-    f.line(cx, cy, cx + 130 * Math.cos(120 * DEG), cy - 130 * Math.sin(120 * DEG), { cls: 'thick' });
+    f.line(cx, cy, cx + 130, cy, { cls: 'dash' });
+    f.line(cx, cy, cx + 130 * Math.cos(120 * DEG), cy - 130 * Math.sin(120 * DEG), { cls: 'dash' });
     f.line(cx, cy, cx + 130 * Math.cos(240 * DEG), cy - 130 * Math.sin(240 * DEG), { cls: 'dash dim thin' });
     const L = [[p0, '+', 'q', false], [-p0, '-', '-q', true], [240 - p0, '-', '-q', true], [240 + p0, '+', '+q', true], [120 + p0, '+', '+q', true], [120 - p0, '-', '-q', true]];
     for (const [ang, sg, t, im] of L) {
@@ -1179,6 +1179,13 @@
 
           $q$ at height $d$. Find $\sigma$ a distance $d$ from the foot, and the induced charge within that distance.
 
+          **Region and boundary conditions** (the same for every grounded-plane problem): region $z\ge0$;
+
+          1. $V=0$ on the plane;
+          2. $V\to0$ far away.
+
+          The image $-q$ at depth $d$ meets both (equidistant points on the plane; every term dies far away), so $\sigma(x,y) = \dfrac{-qd}{2\pi(x^2+y^2+d^2)^{3/2}}$.
+
           **$\sigma$ at $r=d$.** Put $x^2+y^2 = d^2$:
 
           $$\sigma = \frac{-qd}{2\pi(2d^2)^{3/2}} = -\frac{q}{4\sqrt2\,\pi d^2} \approx -0.056\,\frac{q}{d^2},$$
@@ -1463,6 +1470,8 @@
           ### Worked example: lifting the charge
 
           How much work does it take to lift $q$ from height $d$ to height $2d$?
+
+          At every height $h$ the problem is the same boundary-value problem: region $z\ge0$; (1) $V=0$ on the plane; (2) $V\to0$ far away. The image $-q$ at depth $h$ satisfies both, so the energy formula $W(h)$ holds at every height.
 
           **From the energy.** $W(h) = -\dfrac{q^2}{16\pi\varepsilon_0h}$, so
 
@@ -2237,7 +2246,17 @@
         RF(md`
           ### Worked example: charge on the diagonal
 
-          Put $q$ at $(a,a,0)$, a distance $a$ from each plane. In units of $\dfrac{q^2}{4\pi\varepsilon_0a^2}$:
+          Put $q$ at $(a,a,0)$, a distance $a$ from each plane.
+
+          **Region:** the quadrant $x\ge0$, $y\ge0$. **Boundary conditions:**
+
+          1. $V=0$ on $x=0$;
+          2. $V=0$ on $y=0$;
+          3. $V\to0$ far away.
+
+          **Images:** $-q$ at $(-a,a)$, $-q$ at $(a,-a)$, $+q$ at $(-a,-a)$. **Check:** $x=0$ bisects the top pair and the bottom pair, $y=0$ the left pair and the right pair, each $\pm$ (conditions 1, 2); every term dies far away (3); no image is in the quadrant.
+
+          **Force,** in units of $\dfrac{q^2}{4\pi\varepsilon_0a^2}$:
 
           - $-q$ at $(-a,a)$, distance $2a$: $\left(-\tfrac14,\;0\right)$
           - $-q$ at $(a,-a)$, distance $2a$: $\left(0,\;-\tfrac14\right)$
@@ -2303,7 +2322,7 @@
         RF(md`
           ### Other angles
 
-          The same mirror-and-repeat construction works for a wedge of opening angle $\pi/n$ ($n = 1,2,3,\dots$): $180^\circ$ (a single plane, 1 image), $90^\circ$ (3 images), $60^\circ$ (5 images), $45^\circ$ (7 images). In general there are $2n-1$ images. Together with $q$, the $2n$ charges sit at the same distance from the edge, one in each of the $2n$ wedges of angle $\pi/n$ that fill the full circle, with signs alternating $+,-,+,-$ around it. Each wall bisects $\pm$ pairs, so $V=0$ on both walls.
+          The same mirror-and-repeat construction works for a wedge of opening angle $\pi/n$ ($n = 1,2,3,\dots$): $180^\circ$ (a single plane, 1 image), $90^\circ$ (3 images), $60^\circ$ (5 images), $45^\circ$ (7 images). In general there are $2n-1$ images. The boundary-value problem is the same as for the corner: region = inside the wedge; (1) $V=0$ on one wall, (2) $V=0$ on the other, (3) $V\to0$ far away. Together with $q$, the $2n$ charges sit at the same distance from the edge, one in each of the $2n$ wedges of angle $\pi/n$ that fill the full circle, with signs alternating $+,-,+,-$ around it. Each wall bisects $\pm$ pairs, so $V=0$ on both walls.
 
           [[fig:w60]]
 
@@ -2315,7 +2334,7 @@
 
           The test: **the wedge angle must divide $180^\circ$ a whole number of times.**
         `, { w60: { svg: fWedgeImg(3), cap: md`A $60^\circ$ wedge: $q$ plus 5 images around a circle, alternating in sign. The dashed lines are the walls and their reflections.` },
-          w120: { svg: fWedge120(), cap: md`A $120^\circ$ wedge (walls solid): reflecting back and forth produces an image $-q$ (circled) inside the wedge. Not allowed.` } }),
+          w120: { svg: fWedge120(), cap: md`A $120^\circ$ wedge (walls dashed; the grey dashed line is a reflected wall): reflecting back and forth produces an image $-q$ (circled) inside the wedge. Not allowed.` } }),
 
         Q(md`How many image charges does a $60^\circ$ grounded wedge need?`,
           [md`$2$`, md`$3$`, md`$5$`, md`Infinitely many`], 2,
@@ -2776,11 +2795,16 @@
         RF(md`
           ### Worked example: $a = 2R$
 
+          **Region:** $r\ge R$. **Boundary conditions:**
+
+          1. $V(R)=0$;
+          2. $V\to0$ at infinity.
+
           **Image.** $q' = -\dfrac{R}{2R}q = -\dfrac q2$ at $b = \dfrac{R^2}{2R} = \dfrac R2$.
 
           [[fig:img]]
 
-          **Check** at the near point: distances $R$ (to $q$) and $R/2$ (to $q'$): $\dfrac qR - \dfrac{q/2}{R/2} = 0$. At the far point: $3R$ and $\tfrac32R$: $\dfrac{q}{3R} - \dfrac{q/2}{3R/2} = 0$.
+          **Check** at the near point: distances $R$ (to $q$) and $R/2$ (to $q'$): $\dfrac qR - \dfrac{q/2}{R/2} = 0$. At the far point: $3R$ and $\tfrac32R$: $\dfrac{q}{3R} - \dfrac{q/2}{3R/2} = 0$. Condition 1 holds (at every $\theta$, by the general algebra); condition 2 holds since both terms die at infinity; the image is inside the sphere.
 
           **Induced charge.** $\sigma(\theta) = -\dfrac{3q}{4\pi R^2}\,\dfrac{1}{(5-4\cos\theta)^{3/2}}$: $\sigma(0) = -\dfrac{3q}{4\pi R^2}\approx-0.239\,\dfrac{q}{R^2}$ and $\sigma(\pi) = -\dfrac{q}{36\pi R^2}\approx-0.0088\,\dfrac{q}{R^2}$, 27 times smaller. Total $-q/2$.
 
@@ -2970,6 +2994,33 @@
 
           **Where the neutral sphere's potential comes from.** The center is inside the metal, so it is at the sphere's potential. Every induced charge is a distance $R$ from the center, so together they contribute $\dfrac{Q_{\text{total}}}{4\pi\varepsilon_0R}$ there, which is $0$ for a neutral sphere. What remains is $q$'s potential at the center: $V_{\text{sphere}} = \dfrac{q}{4\pi\varepsilon_0a}$. (The same argument for the grounded sphere, $0 = \dfrac{q}{4\pi\varepsilon_0a} + \dfrac{Q}{4\pi\varepsilon_0R}$, gives its induced charge $-\dfrac Raq$ in one line.)
         `, { img: { svg: fSphereImg({ center: "q''" }), cap: md`The grounded image $q'$ plus a second image $q''$ at the center. The dashed circle is an equipotential of this system.` } }),
+
+        Q(md`An isolated conductor carries a total charge $Q$. Which boundary conditions describe it (besides $V\to0$ at infinity)?`,
+          [md`$V$ is some constant on it, not known in advance, and $\oint\sigma\,da = Q$`, md`$V=0$ on it`, md`$\sigma = Q/A$, spread uniformly over its surface`, md`$V = \dfrac{Q}{4\pi\varepsilon_0R}$ on it, whatever charges are nearby`], 0,
+          [null,
+            md`That is a grounded conductor. An isolated one keeps its charge and lets its potential float.`,
+            md`Nearby charges push the charge around: $\sigma$ is not uniform when $q$ is close (it isn't even uniform on a lone non-spherical conductor).`,
+            md`That is the sphere's potential only when it is alone. A nearby $q$ shifts it: a neutral sphere floats to $\dfrac{q}{4\pi\varepsilon_0a}$.`],
+          md`A conductor in equilibrium is always an equipotential. If it is isolated, nothing fixes the value of that potential; what is fixed is its total charge. The second uniqueness theorem says that is enough: the field is unique once each conductor's total charge is given.`,
+          { figHtml: fSphere({ lab: 'Q' }) }),
+
+        Q(md`Your image system for the grounded sphere has only $q$ in $r>R$, gives $V=0$ on $r=R$, and goes to zero at infinity. Why is it guaranteed to be the real potential outside the sphere?`,
+          [md`Uniqueness: the same charge in the region and the same values on every boundary give the same solution`, md`Because image charges always work for spheres`, md`Because it also gives $V=0$ inside the sphere`, md`Because the induced charge equals $q'$`], 0,
+          [null,
+            md`Images work for spheres because this particular guess meets the conditions. The guarantee comes from the uniqueness theorem, not from the shape.`,
+            md`It doesn't: the image formula is not $0$ inside the sphere. Inside is not part of the region, so it doesn't matter.`,
+            md`That is a consequence of the solution being right, not the reason it is right.`],
+          md`Uniqueness (Unit 4): two functions with the same $\rho$ in a region and the same boundary values must be equal there. The real potential and the image potential share both, so they agree for $r\ge R$. That is the whole logic of the method.`,
+          { figHtml: fSphere() }),
+
+        Q(md`You switch from a **grounded** sphere to an **isolated, neutral** one, with $q$ in the same place. Which boundary condition changes, and what does that do to the images?`,
+          [md`Nothing changes; the images stay the same`, md`$V(\infty)=0$ is dropped, so the image moves off to infinity`, md`The region of interest becomes $r\le R$`, md`$V(R)=0$ is replaced by "$V(R)$ = an unknown constant, total charge $0$", so a center image $+\dfrac Raq$ is added`], 3,
+          [md`The grounded sphere carries charge $-\dfrac Raq$; a neutral one can't. The solution must change.`,
+            md`$V\to0$ at infinity holds in both cases; the change is on the sphere.`,
+            md`The charge is still outside; the region of interest is still $r\ge R$.`,
+            null],
+          md`Grounded: $V(R)=0$, and the charge adjusts (to $-\dfrac Raq$). Neutral: total charge $0$, and the potential adjusts (to $\dfrac{q}{4\pi\varepsilon_0a}$). Adding $+\dfrac Raq$ at the center fixes the total without spoiling the equipotential.`,
+          { figHtml: fSphere({ lab: 'Q=0' }) }),
 
         Q(md`The sphere is **isolated and uncharged**. Which boundary conditions describe it?`,
           [md`$V(R)=0$ and $V(\infty)=0$`, md`$V(R) = V_s$, an unknown constant; total charge on the sphere $=0$; $V(\infty)=0$`, md`$\sigma = 0$ everywhere on the sphere, and $V(\infty)=0$`, md`$V(R) = \dfrac{q}{4\pi\varepsilon_0(a-R)}$ and $V(\infty)=0$`], 1,

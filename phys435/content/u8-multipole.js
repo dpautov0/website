@@ -1610,7 +1610,7 @@
     f.dim(-64, 0, -64, -zP, 'z', { at: 'l' });
     const t = 52 * D2R, R = 175, px = R * Math.sin(t), py = -R * Math.cos(t);
     dl(f, 0, 0, px, py, { cls: 'dim dash thin' }); f.dot(px, py, 3); f.tag(px, py, '(r,\\theta)', 'r', 7, 'small');
-    f.angle(0, 0, 34, 90 - 52, 90, '\\theta');
+    f.angle(0, 0, 90, 90 - 52, 90, '\\theta');
     return f.svg();
   };
   // HW 5 Prob. 3.27: the sphere and a far point on the z axis
@@ -1632,6 +1632,308 @@
     return f.svg();
   };
 
-  // @@NEXT@@
-  C.unit({ id: 'u8', num: 'Unit 8', title: 'Multipole expansion', blurb: 'tmp', lessons: [L1, L2, L3] });
+  // ================================================================ Lesson 4
+  const L4 = {
+    id: 'u8-axis', title: 'On the axis: continuous charge, line charges, HW 3.27',
+    steps: [
+      RF(md`
+        ### On the $z$ axis, $\alpha = \theta'$
+
+        For a field point on the $+z$ axis, $\vb r = z\,\uv z$, so the angle between $\vb r$ and $\vb r'$ is the source's own polar angle: $\alpha = \theta'$. The expansion becomes
+
+        $$V(z) = \kq\sum_{n=0}^{\infty}\frac{1}{z^{n+1}}\int (r')^nP_n(\cos\theta')\,\rho(\vb r')\,d\tau'\qquad(z\text{ beyond the source}).$$
+
+        Each moment is now an ordinary integral in the source's spherical coordinates, with $d\tau' = r'^2\sin\theta'\,dr'\,d\theta'\,d\phi'$. (On the $-z$ axis $\alpha = \pi - \theta'$, which multiplies the $n$-th term by $(-1)^n$.)
+
+        [[fig:ax]]
+
+        !!method Moments of a continuous distribution, on the axis
+          1. $n = 0$: $Q = \int\rho\,d\tau'$. Nonzero: that's the answer.
+          2. $n = 1$: $\int r'\cos\theta'\,\rho\,d\tau'$ (this is $p_z$).
+          3. $n = 2$: $\int (r')^2\,\tfrac12(3\cos^2\theta' - 1)\,\rho\,d\tau'$.
+          Stop at the first nonzero one. If $\rho = f(r')\,g(\theta')$, each moment factors into $2\pi\times$(radial integral)$\times$(angular integral), and either factor can be the one that vanishes.
+
+        Symmetry shortcuts for a $\rho(r',\theta')$ with no $\phi'$-dependence (for such a source, reflection $z \to -z$, i.e. $\theta' \to \pi - \theta'$, does the same as inversion):
+
+        - $\rho$ even under $\theta' \to \pi - \theta'$ (for example $\propto \sin\theta'$ or $\cos^2\theta'$): every odd-$n$ moment vanishes, because $P_n$ is odd for odd $n$.
+        - $\rho$ odd (for example $\propto \cos\theta'$): every even-$n$ moment vanishes, $Q$ included.
+      `, { ax: { svg: fAxisTheta(), cap: 'Field point $P$ on the $+z$ axis: the angle between $\\vb r$ and $\\vb r\'$ is just $\\theta\'$, so $\\alpha = \\theta\'$.' } }),
+
+      Q(md`For a field point on the $+z$ axis, what does $P_n(\cos\alpha)$ inside the moment integral become?`,
+        [md`$1$, because $P_n(1) = 1$`, md`Nothing simpler: $P_n(\cos\alpha)$ can't be simplified`, md`$(-1)^nP_n(\cos\theta')$`, md`$P_n(\cos\theta')$, with $\theta'$ the polar angle of the source element`], 3,
+        [md`$P_n(1) = 1$ is the value at the *field point's* angle $\theta = 0$. Inside the integral the angle is $\alpha$, between $\vb r$ and $\vb r'$, and it varies over the source.`,
+          md`On the axis it does simplify: $\vb r \parallel \uv z$, so $\alpha = \theta'$.`,
+          md`That is the $-z$ axis, where $\alpha = \pi - \theta'$.`,
+          null],
+        md`$\cos\alpha = \uv r\cdot\uv r' = \uv z\cdot\uv r' = \cos\theta'$. So on the $+z$ axis each moment is $\int (r')^nP_n(\cos\theta')\,\rho\,d\tau'$, a plain integral over the source.`,
+        { figHtml: fAxisTheta() }),
+
+      Q(md`A sphere carries $\rho = f(r)\cos\theta$ for some radial function $f$. Which multipole moments vanish?`,
+        [md`Only the even ones (including $Q$); the odd ones are generally nonzero`, md`Every moment except the dipole ($n = 1$)`, md`None of them, in general`, md`All of them`], 1,
+        [md`Parity kills the even ones, but orthogonality does more. The angular factor is $\int_{-1}^1P_n(x)\,x\,dx$ (with $x = \cos\theta'$), and $x = P_1(x)$ is orthogonal to every $P_n$ with $n \neq 1$.`,
+          null,
+          md`$Q \propto \int_0^\pi\cos\theta'\sin\theta'\,d\theta' = 0$, for one.`,
+          md`$n = 1$ survives: $\int_{-1}^1x\cdot x\,dx = \tfrac23 \neq 0$ (as long as the radial integral is nonzero).`],
+        md`Each moment factors: $2\pi\displaystyle\int_0^R f(r')\,r'^{\,n+2}\,dr'\times\int_0^\pi P_n(\cos\theta')\cos\theta'\sin\theta'\,d\theta'$. With $x = \cos\theta'$ the angular factor is $\int_{-1}^1P_n(x)P_1(x)\,dx$, zero unless $n = 1$. So the outside potential is pure dipole, $\propto\cos\theta/r^2$, like the shell with $\sigma = k\cos\theta$ in Lesson 2. In general, if the angular dependence is a single $P_\ell(\cos\theta')$, only the $n = \ell$ moment survives.`,
+        { figHtml: fRhoCos() }),
+
+      Q(md`A sphere carries $\rho = f(r)\sin\theta$. Which moments must vanish by symmetry alone?`,
+        [md`All odd $n$`, md`All even $n$`, md`All except $n = 0$`, md`None`], 0,
+        [null,
+          md`$\sin\theta'$ is *even* under $\theta' \to \pi - \theta'$ (same value in both hemispheres), so the even $P_n$ survive in general.`,
+          md`$\sin\theta'$ is not a single Legendre polynomial in $\cos\theta'$; it has components along $P_0$, $P_2$, $P_4$, ..., so the even moments are generally nonzero.`,
+          md`$\int P_n(\cos\theta')\sin^2\theta'\,d\theta'$ vanishes for odd $n$: an odd function of $\cos\theta'$ integrated over both hemispheres.`],
+        md`Under $\theta' \to \pi - \theta'$, $\sin\theta'$ is unchanged and $P_n(\cos\theta')$ picks up $(-1)^n$. So the angular integral of every odd-$n$ moment cancels between the hemispheres. The even ones survive in general, though a *radial* integral can still vanish: that happens to $Q$ in HW 3.27 below.`,
+        { figHtml: fRhoSin() }),
+
+      RF(md`
+        ### Exact on-axis potential $\to$ multipole moments $\to$ off-axis potential
+
+        Often $V$ on the axis comes from one elementary integral. Expand it in powers of $1/z$ for $z$ beyond the source:
+
+        $$V(z) = \frac{c_0}{z} + \frac{c_1}{z^2} + \frac{c_2}{z^3} + \cdots$$
+
+        Compare with the on-axis multipole formula: $c_n = \kq\displaystyle\int (r')^nP_n(\cos\theta')\,\rho\,d\tau'$. The expansion coefficients **are** the multipole moments.
+
+        If the source is symmetric about the $z$ axis (no $\phi$-dependence), you get the potential everywhere outside for free. Outside the source $V$ obeys Laplace's equation with azimuthal symmetry and goes to zero at infinity, so (Unit 7) $V(r,\theta) = \displaystyle\sum_n\frac{B_n}{r^{n+1}}P_n(\cos\theta)$. On the $+z$ axis $\theta = 0$ and $P_n(1) = 1$, so $V(z) = \displaystyle\sum_n\frac{B_n}{z^{n+1}}$, and matching gives $B_n = c_n$.
+
+        !!method Off-axis from on-axis (azimuthal symmetry)
+          1. Find $V$ on the $+z$ axis exactly.
+          2. Expand in powers of $1/z$ (for $z$ beyond the source): $V = \sum c_n/z^{n+1}$.
+          3. Replace $\dfrac{c_n}{z^{n+1}}$ by $\dfrac{c_n\,P_n(\cos\theta)}{r^{n+1}}$.
+          This is HW 5 Prob. 3.24 (the disk), worked in Unit 7.
+
+        ### Worked example: a uniform ring (Griffiths Prob. 3.28)
+
+        A ring of radius $b$ in the $xy$-plane, centered on the origin, carries total charge $Q$ spread uniformly.
+
+        [[fig:ring]]
+
+        Every bit of the ring is a distance $\sqrt{z^2+b^2}$ from the axis point, so $V(z) = \kq\dfrac{Q}{\sqrt{z^2 + b^2}}$. Expand with $(1 + x)^{-1/2} = 1 - \tfrac12x + \tfrac38x^2 - \cdots$ and $x = b^2/z^2$:
+
+        $$V(z) = \kq\frac Qz\left(1 + \frac{b^2}{z^2}\right)^{-1/2} = \kq\left[\frac Qz - \frac{Qb^2}{2z^3} + \frac{3Qb^4}{8z^5} - \cdots\right].$$
+
+        Off the axis:
+
+        $$V(r,\theta) \approx \kq\left[\frac Qr - \frac{Qb^2}{2}\,\frac{P_2(\cos\theta)}{r^3} + \frac{3Qb^4}{8}\,\frac{P_4(\cos\theta)}{r^5}\right].$$
+
+        - No dipole (or other odd) term: the ring is symmetric under $z \to -z$.
+        - Direct check of the quadrupole: all of the charge sits at $r' = b$, $\theta' = 90^\circ$, so $\int (r')^2P_2(\cos\theta')\,dq = b^2P_2(0)\,Q = -\tfrac12Qb^2$.
+        - Sign: on the axis the ring's charge is farther away ($\sqrt{z^2+b^2} > z$) than if it sat at the center, so $V$ is a bit *below* $\kq\dfrac Qz$. In the plane of the ring $P_2(0) = -\tfrac12$ and the correction is positive.
+      `, { ring: { svg: fRing(), cap: 'Uniform ring of radius $b$ and charge $Q$ in the $xy$-plane; $P$ on the axis at height $z$.' } }),
+
+      Q(md`Why does the uniform ring have no dipole term?`,
+        [md`Because $Q \neq 0$`, md`Because the ring is a conductor`, md`Because the dipole term always vanishes on the axis`, md`Because the ring is symmetric under $z \to -z$, so its odd moments vanish`], 3,
+        [md`$Q \neq 0$ makes the monopole lead; it says nothing about $\vb p$. A charge off the origin has both.`,
+          md`Nothing here is a conductor; the reason is symmetry.`,
+          md`A charge at $z = s$ has the on-axis dipole term $\kq\dfrac{qs}{z^2}$, which is not zero.`,
+          null],
+        md`$\vb p = \int\vb r'\,dq$, and every bit of charge at $\vb r'$ has a partner at $-\vb r'$ (diametrically opposite on the ring), so $\vb p = 0$. On the axis: $(z^2+b^2)^{-1/2}$ expands in odd powers of $1/z$ only, i.e. even $n$ only.`,
+        { figHtml: fRing() }),
+
+      Q(md`Why does the "off-axis from on-axis" trick need the source to be symmetric about the $z$ axis?`,
+        [md`Because $P_n(1) = 1$ fails otherwise`, md`Without it $V$ depends on $\phi$ too, and values on one line cannot fix a function of two angles`, md`Because the series diverges off the axis`, md`It doesn't; it works for any source`], 1,
+        [md`$P_n(1) = 1$ is a property of the polynomials; it never fails.`,
+          null,
+          md`The series converges at every point beyond the source, in any direction.`,
+          md`For a source without azimuthal symmetry the exterior solution has $\phi$-dependent terms, and those can vanish on the $z$ axis, so the axis can't detect them.`],
+        md`The form $V = \sum_n \dfrac{B_nP_n(\cos\theta)}{r^{n+1}}$ is the general exterior solution only when nothing depends on $\phi$. A $\phi$-dependent source needs extra terms (spherical harmonics with $m \neq 0$), which are zero on the $z$ axis, so the axis values alone cannot determine them.`,
+        { figHtml: fRing() }),
+
+      Q(md`A rod from $z = -a$ to $z = a$ carries a uniform total charge $Q$. Which powers of $1/r$ appear in its far potential?`,
+        [md`All powers`, md`$1/r^2$, $1/r^4$, ...`, md`$1/r$, $1/r^3$, $1/r^5$, ...`, md`Only $1/r$`], 2,
+        [md`The rod is symmetric about the origin, so the odd-$n$ terms ($1/r^2$, $1/r^4$, ...) drop out.`,
+          md`Those are the odd-$n$ terms, which vanish for a source symmetric under $z \to -z$.`,
+          null,
+          md`Only a point charge at the origin (or a uniform sphere) gives just $1/r$. The rod has a quadrupole term.`],
+        md`Moments: $\displaystyle\int_{-a}^{a}\frac{Q}{2a}\,z'^{\,n}\,dz' = \frac{Qa^n}{n+1}$ for even $n$ and $0$ for odd $n$. So $V = \kq\left[\dfrac Qr + \dfrac{Qa^2}{3}\dfrac{P_2(\cos\theta)}{r^3} + \dfrac{Qa^4}{5}\dfrac{P_4(\cos\theta)}{r^5} + \cdots\right]$ (Griffiths Prob. 3.44). On the axis the quadrupole correction is positive: the near half of the rod gains more than the far half loses.`,
+        { figHtml: fSeg() }),
+
+      Q(md`A uniformly charged disk (HW 5 Prob. 3.24, worked in Unit 7) lies in the $xy$-plane. Which multipole terms appear in its far potential?`,
+        [md`All $n$`, md`Only even $n$: $\dfrac1r$, $\dfrac{P_2}{r^3}$, $\dfrac{P_4}{r^5}$, ...`, md`Only odd $n$`, md`Only the monopole: far away a disk is a point charge`], 1,
+        [md`The disk is symmetric under $z \to -z$, so the odd terms vanish.`,
+          null,
+          md`Odd terms need an up-down asymmetry; the disk has none. And $Q \neq 0$, so $n = 0$ is there.`,
+          md`To leading order yes, but the quadrupole ($\propto R^2$ relative) and higher terms are there: the on-axis expansion of $\sqrt{z^2+R^2} - z$ never stops.`],
+        md`On the axis, for $z > R$: $V = \dfrac{\sigma}{2\varepsilon_0}\left(\sqrt{z^2+R^2} - z\right) = \dfrac{\sigma}{2\varepsilon_0}\left[\dfrac{R^2}{2z} - \dfrac{R^4}{8z^3} + \dfrac{R^6}{16z^5} - \cdots\right]$: only odd powers of $1/z$, i.e. even $n$. The first term is $\kq\dfrac{\sigma\pi R^2}{z} = \kq\dfrac Qz$, as it must be. Then $\dfrac{1}{z^{n+1}} \to \dfrac{P_n(\cos\theta)}{r^{n+1}}$ gives the far potential everywhere: part (a) of Prob. 3.24.`,
+        { figHtml: fDisk() }),
+
+      RF(md`
+        ### Line charges along the axis
+
+        For a line charge $\lambda(z')$ on the $z$ axis, the sum $\sum q_is_i^{\,n}$ of Lesson 1 becomes an integral: the $n$-th moment is $\displaystyle\int\lambda(z')\,z'^{\,n}\,dz'$, and
+
+        $$V(r,\theta) = \kq\sum_n\left(\int\lambda(z')\,z'^{\,n}\,dz'\right)\frac{P_n(\cos\theta)}{r^{n+1}}.$$
+
+        Parity does part of the work: an even $\lambda$ kills the odd $n$, an odd $\lambda$ kills the even $n$. Orthogonality does the rest. On $-a < z' < a$, if $\lambda(z') \propto P_\ell(z'/a)$, then every moment with $n < \ell$ vanishes ($z'^{\,n}$ is a combination of $P_0, \dots, P_n$, each orthogonal to $P_\ell$), so the leading term is the $n = \ell$ one.
+      `),
+
+      Q(md`A rod from $z = -a$ to $z = a$ carries $\lambda(z) = k\,z/a$. Which term leads far away?`,
+        [md`Monopole`, md`Dipole`, md`Quadrupole`, md`Octopole`], 1,
+        [md`$\int_{-a}^a kz'/a\,dz' = 0$: as much negative charge below as positive above.`,
+          null,
+          md`The dipole moment $\int_{-a}^a \dfrac{kz'^2}{a}\,dz' = \tfrac23ka^2$ is already nonzero.`,
+          md`Lower orders are nonzero.`],
+        md`Odd $\lambda$: $Q = 0$. $p = \displaystyle\int_{-a}^a\frac{kz'}{a}\,z'\,dz' = \frac{2ka^2}{3} \neq 0$. Leading term $\kq\dfrac{2ka^2}{3}\dfrac{\cos\theta}{r^2}$.`,
+        { figHtml: rodLam((x) => x, [-1.25, 1.25], [[1, 'k'], [-1, '-k']]) }),
+
+      Q(md`The same rod with $\lambda(z) = k\left(\dfrac{3z^2}{a^2} - 1\right)$. Which term leads?`,
+        [md`Monopole`, md`Dipole`, md`Quadrupole`, md`Octopole`], 2,
+        [md`$\displaystyle\int_{-a}^a\left(\frac{3z'^2}{a^2} - 1\right)dz' = 2a - 2a = 0$.`,
+          md`$\lambda$ is even, so the dipole moment is zero.`,
+          null,
+          md`The quadrupole moment $\tfrac{8}{15}ka^3$ is already nonzero.`],
+        md`$\lambda = 2k\,P_2(z'/a)$, so by orthogonality $Q = p = 0$ and the quadrupole leads: $\displaystyle\int_{-a}^a k\left(\frac{3z'^2}{a^2} - 1\right)z'^2\,dz' = k\left(\frac{6a^3}{5} - \frac{2a^3}{3}\right) = \frac{8ka^3}{15}$. So $V \approx \kq\dfrac{8ka^3}{15}\dfrac{P_2(\cos\theta)}{r^3}$.`,
+        { figHtml: rodLam((x) => 3 * x * x - 1, [-1.3, 2.3], [[2, '2k'], [-1, '-k']]) }),
+
+      Q(md`The same rod with $\lambda(z) = k\left(1 + \dfrac za\right)$. Which term leads?`,
+        [md`Monopole`, md`Dipole`, md`Quadrupole`, md`None: every moment vanishes`], 0,
+        [null,
+          md`The dipole moment is nonzero ($\tfrac23ka^2$), but $Q = 2ka \neq 0$ leads.`,
+          md`$Q \neq 0$.`,
+          md`$\lambda \ge 0$ everywhere on the rod, so $Q > 0$.`],
+        md`$Q = \displaystyle\int_{-a}^a k\left(1 + \frac{z'}{a}\right)dz' = 2ka$, so the monopole leads. The $z'/a$ part adds a dipole correction $p = \tfrac23ka^2$: the charge is bunched toward the top.`,
+        { figHtml: rodLam((x) => 1 + x, [-0.3, 2.3], [[1, 'k'], [2, '2k']]) }),
+
+      Q(md`The same rod with $\lambda(z) = k\left(\dfrac{5z^3}{a^3} - \dfrac{3z}{a}\right)$. Which term leads?`,
+        [md`Dipole, since $\lambda$ is odd`, md`Monopole`, md`Quadrupole`, md`Octopole, $V \propto 1/r^4$`], 3,
+        [md`Odd $\lambda$ kills $Q$ and the quadrupole, but here the dipole moment vanishes too: $\lambda = 2k\,P_3(z'/a)$ is orthogonal to $z' \propto P_1$.`,
+          md`$Q = 0$ for an odd $\lambda$.`,
+          md`Even moments vanish for an odd $\lambda$.`,
+          null],
+        md`$\lambda = 2k\,P_3(z'/a)$. Orthogonality: $\int_{-a}^aP_3(z'/a)\,z'^{\,n}\,dz' = 0$ for $n = 0, 1, 2$. Direct check for $n = 1$: $k\displaystyle\int_{-a}^a\left(\frac{5z'^4}{a^3} - \frac{3z'^2}{a}\right)dz' = k\,(2a^2 - 2a^2) = 0$. The first nonzero moment is $n = 3$: $\dfrac{8ka^4}{35}$, so $V \approx \kq\dfrac{8ka^4}{35}\dfrac{P_3(\cos\theta)}{r^4}$.`,
+        { figHtml: rodLam((x) => 5 * x * x * x - 3 * x, [-2.3, 2.3], [[2, '2k'], [-2, '-2k']]) }),
+
+      P({
+        id: 'u8-p-rod', title: 'Rod from 0 to L: moments from the axis',
+        q: md`A uniform line charge $\lambda$ runs along the $z$ axis from $z = 0$ to $z = L$. (a) Find $V$ exactly on the axis for $z > L$. (b) Expand it in powers of $1/z$ and read off the first three multipole moments. (c) Write the far potential off the axis, to quadrupole order.`,
+        figHtml: fRod0L(),
+        hints: [
+          md`On the axis, $V(z) = \kq\displaystyle\int_0^L\frac{\lambda\,dz'}{z - z'}$.`,
+          md`$\ln\dfrac{z}{z - L} = -\ln\left(1 - \dfrac Lz\right) = \dfrac Lz + \dfrac{L^2}{2z^2} + \dfrac{L^3}{3z^3} + \cdots$`,
+          md`Or compute the moments directly: $\displaystyle\int_0^L\lambda\,z'^{\,n}\,dz' = \frac{\lambda L^{n+1}}{n+1}$. Then attach $\dfrac{P_n(\cos\theta)}{r^{n+1}}$.`,
+        ],
+        parts: [
+          { lbl: md`$\int_0^L\lambda\,dz'$ (monopole moment)`, expr: 'lambda*L', vars: { lambda: [0.5, 3], L: [0.5, 2] } },
+          { lbl: md`$\int_0^L\lambda z'\,dz'$ (dipole moment)`, expr: 'lambda*L^2/2', vars: { lambda: [0.5, 3], L: [0.5, 2] } },
+          { lbl: md`$\int_0^L\lambda z'^2\,dz'$ (quadrupole moment)`, expr: 'lambda*L^3/3', vars: { lambda: [0.5, 3], L: [0.5, 2] } },
+          { lbl: md`Which origin would make the dipole term vanish?`, mc: [md`$z = 0$, the bottom end`, md`$z = L/2$, the midpoint`, md`$z = L$, the top end`, md`None, since $Q \neq 0$`], a: 1,
+            why: [md`About $z = 0$ the dipole moment is $\lambda L^2/2 \neq 0$: that's the case you just computed.`, null, md`About the top end the dipole moment is $-\lambda L^2/2$.`, md`For $Q \neq 0$ you can always remove $\vb p$ by putting the origin at the center of charge, $p/Q = L/2$.`] },
+        ],
+        sol: md`
+          (a) $V(z) = \kq\displaystyle\int_0^L\frac{\lambda\,dz'}{z - z'} = \kq\,\lambda\ln\frac{z}{z - L}$.
+
+          (b) With $-\ln(1 - x) = x + \tfrac12x^2 + \tfrac13x^3 + \cdots$ and $x = L/z$:
+
+          $$V(z) = \kq\left[\frac{\lambda L}{z} + \frac{\lambda L^2}{2z^2} + \frac{\lambda L^3}{3z^3} + \cdots\right].$$
+
+          Moments: $\lambda L$, $\tfrac12\lambda L^2$, $\tfrac13\lambda L^3$. Direct check: $\int_0^L\lambda z'^{\,n}\,dz' = \dfrac{\lambda L^{n+1}}{n+1}$.
+
+          (c) The rod lies on the axis, so the source is azimuthally symmetric:
+
+          $$V(r,\theta) \approx \kq\left[\frac{\lambda L}{r} + \frac{\lambda L^2}{2}\,\frac{\cos\theta}{r^2} + \frac{\lambda L^3}{3}\,\frac{P_2(\cos\theta)}{r^3}\right].$$
+
+          The dipole term is there because the origin sits at the end of the rod. The center of charge is at $p/Q = L/2$; about the midpoint the dipole term vanishes and the moments are those of a centered rod of half-length $L/2$.
+
+          !!key What to remember
+            An exact on-axis integral plus a Taylor series in $1/z$ hands you every multipole moment at once. For an azimuthally symmetric source, then replace $\dfrac{1}{z^{n+1}}$ by $\dfrac{P_n(\cos\theta)}{r^{n+1}}$.
+        `,
+      }),
+
+      Q(md`A point charge $+q$ sits at the center of a ring of radius $b$ that carries total charge $-q$. Far away on the $z$ axis, $V$ is`,
+        [md`negative, $\approx -\kq\dfrac{qb^2}{2z^3}$`, md`positive, $\approx \kq\dfrac{qb^2}{2z^3}$`, md`zero, since $Q = 0$`, md`$\approx \kq\dfrac{qb}{z^2}$, a dipole term`], 1,
+        [md`The ring's charge is farther from an axis point ($\sqrt{z^2+b^2}$) than the center is ($z$), so the $+q$ wins on the axis.`,
+          null,
+          md`$Q = 0$ removes the monopole only. The quadrupole is not zero.`,
+          md`The arrangement is symmetric under $z \to -z$, so it has no dipole term.`],
+        md`Exactly on the axis: $V = \kq\left(\dfrac qz - \dfrac{q}{\sqrt{z^2+b^2}}\right) \approx \kq\dfrac{qb^2}{2z^3} > 0$. Off the axis: $\kq\dfrac{qb^2}{2}\dfrac{P_2(\cos\theta)}{r^3}$, from the ring's $-q\,b^2P_2(0) = +\tfrac12qb^2$. Keep this picture for the next problem: negative charge spread around the equator with positive charge closer to the center gives a positive quadrupole term on the axis.`,
+        { figHtml: fRingQ() }),
+
+      P({
+        id: 'HW5-3.27', src: 'HW 5 · Griffiths 3.27', title: 'Sphere with ρ ∝ (R − 2r) sin θ', big: true,
+        q: md`A sphere of radius $R$, centered at the origin, carries charge density $\rho(r,\theta) = k\,\dfrac{R}{r^2}\,(R - 2r)\sin\theta$, where $k$ is a constant, and $r$, $\theta$ are the usual spherical coordinates. Find the approximate potential for points on the $z$-axis, far from the sphere.`,
+        figHtml: f327(false),
+        hints: [
+          md`Far away on the $z$ axis: use the multipole expansion with $\alpha = \theta'$, and compute moments in order ($n = 0, 1, 2, \dots$) until one is nonzero.`,
+          md`Write $\rho\,d\tau' = kR\,(R - 2r')\sin^2\theta'\,dr'\,d\theta'\,d\phi'$: the $1/r'^2$ cancels against $d\tau'$, and every moment factors into $2\pi\times$(radial)$\times$(angular).`,
+          md`$n = 0$: $\int_0^R(R - 2r')\,dr' = 0$. $n = 1$: $\int_0^\pi\sin^2\theta'\cos\theta'\,d\theta' = 0$. So go to $n = 2$.`,
+          md`$n = 2$: radial $\int_0^R r'^2(R - 2r')\,dr' = -\tfrac16R^4$; angular $\int_0^\pi\tfrac12(3\cos^2\theta' - 1)\sin^2\theta'\,d\theta' = -\tfrac{\pi}{16}$, using $\int_0^\pi\cos^2\theta\sin^2\theta\,d\theta = \tfrac\pi8$ and $\int_0^\pi\sin^2\theta\,d\theta = \tfrac\pi2$.`,
+        ],
+        parts: [
+          { lbl: md`The total charge $Q$ is`, mc: [md`infinite, because $\rho \propto 1/r^2$ at the center`, md`$k\pi^2R^3$`, md`$0$`, md`$-\tfrac16k\pi^2R^5$`], a: 2,
+            why: [md`$d\tau' = r'^2\sin\theta'\,dr'\,d\theta'\,d\phi'$ supplies an $r'^2$ that cancels the $1/r'^2$. The integrand is finite.`, md`That comes from dropping the $-2r'$. In fact $\int_0^R(R - 2r')\,dr' = R^2 - R^2 = 0$.`, null, md`That uses the $n = 2$ radial integral $\int r'^2(R - 2r')\,dr' = -\tfrac16R^4$ in the wrong place, and it does not even have units of charge.`] },
+          { lbl: md`The dipole ($n = 1$) term vanishes because`, mc: [md`$Q = 0$, and a neutral distribution has no dipole moment`, md`$\int_0^\pi\sin^2\theta'\cos\theta'\,d\theta' = 0$: $\rho$ is the same in both hemispheres`, md`the radial integral $\int_0^R r'(R - 2r')\,dr'$ vanishes`, md`it doesn't: it is proportional to $\int_0^R r'(R - 2r')\,dr' = -\tfrac16R^3$`], a: 1,
+            why: [md`Neutral distributions can have dipole moments (a physical dipole is neutral). The reason here is symmetry.`, null, md`That radial integral is $\tfrac12R^3 - \tfrac23R^3 = -\tfrac16R^3 \neq 0$. It is the angular factor that vanishes.`, md`The radial factor is nonzero, but it multiplies an angular factor that is zero.`] },
+          { lbl: md`$\displaystyle\int (r')^2P_2(\cos\theta')\,\rho\,d\tau'$`, expr: 'k*pi^2*R^5/48', vars: { k: [0.5, 3], R: [0.5, 2] } },
+          { lbl: md`$V$ on the $z$-axis, far away`, expr: 'k*pi*R^5/(192*eps0*z^3)', vars: { k: [0.5, 3], R: [0.5, 2], eps0: [0.5, 2], z: [5, 20] }, accepts: ['(1/(4*pi*eps0))*k*pi^2*R^5/(48*z^3)'] },
+        ],
+        sol: md`
+          **Plan.** Far away on the $z$ axis, use the multipole expansion with $\alpha = \theta'$ and compute moments in order until one is nonzero.
+
+          **Set up the integrals.** $d\tau' = r'^2\sin\theta'\,dr'\,d\theta'\,d\phi'$, so
+
+          $$\rho\,d\tau' = kR\,(R - 2r')\sin^2\theta'\,dr'\,d\theta'\,d\phi'.$$
+
+          The $1/r'^2$ cancels, nothing depends on $\phi'$ (that integral gives $2\pi$), and each moment factors:
+
+          $$\int (r')^nP_n(\cos\theta')\,\rho\,d\tau' = 2\pi kR\int_0^R (r')^n(R - 2r')\,dr'\;\int_0^\pi P_n(\cos\theta')\sin^2\theta'\,d\theta'.$$
+
+          **$n = 0$ (monopole).** Radial factor: $\int_0^R(R - 2r')\,dr' = R^2 - R^2 = 0$. So $Q = 0$. (The angular factor, $\int_0^\pi\sin^2\theta'\,d\theta' = \tfrac\pi2$, is multiplied by zero.)
+
+          **$n = 1$ (dipole).** Angular factor: $\int_0^\pi\cos\theta'\sin^2\theta'\,d\theta' = \left[\tfrac13\sin^3\theta'\right]_0^\pi = 0$. So the dipole term vanishes. Symmetry: $\sin^2\theta'$ is the same in both hemispheres while $\cos\theta'$ flips sign. Every odd $n$ vanishes the same way.
+
+          **$n = 2$ (quadrupole).**
+
+          - Radial: $\displaystyle\int_0^R r'^2(R - 2r')\,dr' = \frac{R^4}{3} - \frac{R^4}{2} = -\frac{R^4}{6}$.
+          - Angular: $\displaystyle\int_0^\pi\frac{3\cos^2\theta' - 1}{2}\,\sin^2\theta'\,d\theta' = \frac12\left(3\cdot\frac\pi8 - \frac\pi2\right) = -\frac{\pi}{16}$.
+
+          $$\int (r')^2P_2(\cos\theta')\,\rho\,d\tau' = 2\pi kR\left(-\frac{R^4}{6}\right)\left(-\frac{\pi}{16}\right) = \frac{k\pi^2R^5}{48}.$$
+
+          **Result.** The first nonzero term is the quadrupole:
+
+          $$V(z) \approx \kq\,\frac{k\pi^2R^5}{48\,z^3} = \frac{k\pi R^5}{192\,\varepsilon_0 z^3}.$$
+
+          Positive for $k > 0$. On the $-z$ axis the same holds with $z \to |z|$, since $P_2$ is even.
+
+          [[fig:s]]
+
+          **Checks.**
+          - Units: $\dfrac{R}{r^2}(R - 2r)$ is dimensionless, so $k$ is a charge density ($\text{C/m}^3$). With $\varepsilon_0$ in $\text{C/(V\,m)}$, $\dfrac{kR^5}{\varepsilon_0 z^3}$ comes out in volts.
+          - Sign: $\rho > 0$ for $r < R/2$ and $\rho < 0$ for $R/2 < r < R$, both bunched toward the equator ($\sin\theta$). The negative shell sits farther out, around the equator, so seen from the axis it is farther away than the positive core: the positive charge wins and $V > 0$. Same as the ring of $-q$ around a central $+q$.
+          - Accuracy: $n = 3$ vanishes (odd), and the $n = 4$ term is $\dfrac{1}{10}\left(\dfrac Rz\right)^2$ of the quadrupole term. A numerical integration of the exact potential at $z = 10R$ agrees with the formula to $0.1\%$.
+          - Off the axis (not asked): $\rho$ has no $\phi$-dependence, so $V(r,\theta) \approx \kq\dfrac{k\pi^2R^5}{48}\dfrac{P_2(\cos\theta)}{r^3}$.
+
+          !!key What to remember
+            For a separable density, factor every moment into a radial and an angular integral and look for the zero factor before computing anything. Here the radial integral kills $Q$, symmetry kills every odd moment, and the answer is the quadrupole term.
+        `,
+        figs: { s: { svg: f327(true), cap: 'Sign of $\\rho$: positive inside the dashed circle $r = R/2$, negative outside it, both concentrated toward the equator.' } },
+      }),
+
+      RF(md`
+        !!key Patterns to remember
+          - On the $+z$ axis $\alpha = \theta'$: each moment is a plain integral $\int (r')^nP_n(\cos\theta')\,\rho\,d\tau'$ with $d\tau' = r'^2\sin\theta'\,dr'\,d\theta'\,d\phi'$.
+          - Separable $\rho = f(r')\,g(\theta')$: each moment is $2\pi\times$(radial)$\times$(angular). Look for the zero factor first.
+          - For an azimuthally symmetric source, up-down symmetry kills the odd moments and antisymmetry kills the even ones. If $g(\theta')$ is a single $P_\ell(\cos\theta')$, only $n = \ell$ survives (orthogonality).
+          - Exact on-axis $V$ $\to$ series in $1/z$ $\to$ replace $\dfrac{1}{z^{n+1}}$ by $\dfrac{P_n(\cos\theta)}{r^{n+1}}$ (azimuthal symmetry only).
+          - Line charge on the axis: the $n$-th moment is $\int\lambda(z')\,z'^{\,n}\,dz'$.
+
+        ### Unit summary
+
+        | question | tool |
+        |---|---|
+        | what dominates far away | first nonzero of $Q$, $\vb p$, quadrupole, ... |
+        | charges on the $z$ axis | moments $\sum_i q_is_i^{\,n}$ |
+        | point charges anywhere | $Q = \sum q_i$ and $\vb p = \sum q_i\vb r_i'$ |
+        | continuous source, field point on the axis | $\int (r')^nP_n(\cos\theta')\,\rho\,d\tau'$ |
+        | field of the dipole term | $\dfrac{p}{4\pi\varepsilon_0 r^3}\left(2\cos\theta\,\uv r + \sin\theta\,\boldsymbol{\hat\theta}\right)$ |
+        | origin moved by $\vb a$ | $\bar{\vb p} = \vb p - Q\vb a$ |
+      `),
+    ],
+  };
+
+  C.unit({
+    id: 'u8', num: 'Unit 8', title: 'Multipole expansion',
+    blurb: 'Lecture 14 material, assigned on HW 5 (Probs. 3.27, 3.36). Hour Exam I covers Lectures 1–13, so this is lower priority for the exam, but the homework needs it: the far-field expansion, monopole and dipole moments, the dipole field.',
+    lessons: [L1, L2, L3, L4],
+  });
 })();
