@@ -1540,10 +1540,10 @@
     f.ellipse(cx, cy, rx, ry);
     f.ellipse(cx, cy, 62, 19, { cls: 'dim' }); f.ellipse(cx, cy, 72, 22, { cls: 'dim' });
     f.line(cx, cy + 40, cx, 20, { cls: 'dim', arrow: 'end', hs: 6 });
-    f.dot(cx, zP, 3.4); f.tag(cx, zP, 'P', 'l', 8);
+    f.dot(cx, zP, 3.4); f.tag(cx, zP, 'P', 'l', 10);
     const p = [cx + 67 * Math.cos(-30 * DEG), cy - 20.5 * Math.sin(-30 * DEG)];
     f.line(p[0], p[1], cx, zP, { cls: 'dash' });
-    f.label(198, 108, md`\sqrt{r'^2+z^2}`, 'l', 'small');
+    f.label(181, 105, md`\srm`, 'l', 'small');      // no \sqrt in figure labels: KaTeX draws it as an inner svg
     callout(f, cx + 67 * Math.cos(200 * DEG), cy - 20.5 * Math.sin(200 * DEG), 28, 232, md`\text{ring } r',\ dr'`, 'tr');
     f.dim(cx, cy, cx + rx, cy, '', { off: 0 });
     f.label(cx + rx + 6, cy, 'R', 'l', 'small');
@@ -1667,8 +1667,8 @@
         figHtml: fig3charges(),
         hints: [md`$V=\kq\sum q_i/\srm_i$. Find each distance first.`, md`From $P$: 5.0 cm (3-4-5 triangle), 4.0 cm and 3.0 cm. From $M$: 1.5 cm, 1.5 cm and $\sqrt{1.5^2+4.0^2}$ cm.`],
         parts: [
-          { lbl: 'V(P)', ans: 569.2, unit: 'V' },
-          { lbl: 'V(M)', ans: 1408.7, unit: 'V' },
+          { lbl: 'V(P)', ans: 569.4, unit: 'V' },
+          { lbl: 'V(M)', ans: 1409.1, unit: 'V' },
         ],
         sol: md`
           **At $P$:** distances $\srm_1=5.0$ cm, $\srm_2=4.0$ cm, $\srm_3=3.0$ cm.
@@ -1740,7 +1740,7 @@
         { figHtml: figSegment() }),
       Q(md`For the segment, how does $V(z)$ behave far away ($z\gg L$)?`,
         [md`$V\approx\dfrac{\lambda}{4\pi\ep}\ln\dfrac{2L}{z}$`, md`$V\to0$ faster than any power of $z$`, md`$V\approx\kq\dfrac{2\lambda L}{z^2}$`, md`$V\approx\kq\dfrac{2\lambda L}{z}$`], 3,
-        [md`That log form belongs to the opposite limit, very close to a long segment.`,
+        [md`A logarithm belongs to the opposite limit, very close to a long segment (and there the prefactor is $\tfrac{\lambda}{2\pi\ep}$). This one even turns negative for $z>2L$. Far away the segment looks like a point charge.`,
           md`$V\to0$, but only as $1/z$: from far away the segment is a point charge $2\lambda L$.`,
           md`$1/z^2$ is the field. The potential of a point charge goes as $1/z$.`,
           null],
@@ -1822,8 +1822,8 @@
         figHtml: figRing(),
         hints: [md`$\srm=\sqrt{R^2+z^2}=5.0$ cm for every piece of the ring.`, md`$E_z=\kq\dfrac{Qz}{(R^2+z^2)^{3/2}}$.`],
         parts: [
-          { lbl: 'V', ans: 898.8, unit: 'V' },
-          { lbl: 'E_z', ans: 10785, unit: 'V/m' },
+          { lbl: 'V', ans: 899.0, unit: 'V' },
+          { lbl: 'E_z', ans: 10788, unit: 'V/m' },
         ],
         sol: md`
           $V=\dfrac{(8.99\times10^9)(5.0\times10^{-9})}{0.050}=899$ V.
@@ -1896,7 +1896,7 @@
           **What to remember.** $V$ first, $\vb E$ second is the efficient route, but you must know $V$ in a neighbourhood (in every direction you differentiate), not just along a line. Symmetry is what usually rescues the axis-only calculation; with $\pm q$ there is no symmetry that kills $E_x$.
         `,
         figs: {
-          rings: { svg: figDiskRings(), cap: 'A ring of radius $r\'$ and width $dr\'$: every bit of it is $\\sqrt{r\'^2+z^2}$ from P.' },
+          rings: { svg: figDiskRings(), cap: 'A ring of radius $r\'$ and width $dr\'$: every bit of it is $\\mathfrak r=\\sqrt{r\'^2+z^2}$ from P.' },
           off: { svg: figPMoff(), cap: md`Off-axis point $P'$: now the two distances differ, and $V$ is no longer zero.` },
         },
       }),
@@ -1993,7 +1993,7 @@
 
           $$E_z=-\frac{dV}{dz}=-\frac{\rho}{2\ep}\big[g(u_+)-g(u_-)\big]=\frac{\rho}{2\ep}\left[L+\sqrt{R^2+(z-L/2)^2}-\sqrt{R^2+(z+L/2)^2}\right].$$
 
-          **Checks.** (I verified both formulas numerically against a direct volume integral.)
+          **Checks.** Both formulas agree with a direct numerical volume integral over the cylinder. Three quick checks you can do by hand:
 
           - Far away: $\sqrt{R^2+(z+L/2)^2}-\sqrt{R^2+(z-L/2)^2}\approx L-\dfrac{R^2L}{2z^2}$, so $E_z\approx\dfrac{\rho R^2L}{4\ep z^2}=\dfrac{1}{4\pi\ep}\dfrac{\rho\pi R^2L}{z^2}$: the total charge as a point.
           - $E_z>0$ for $\rho>0$: the field points away from the cylinder.
@@ -2136,7 +2136,7 @@
         [[fig:ev]]
 
         Inside, $V$ is **constant, not zero**: $\vb E=-\nabla V=0$ only needs $V$ to be flat. The constant is whatever $V$ was when you arrived at the shell. Griffiths: you must always work your way in from the reference point, because that is where the potential is "nailed down". The potential inside depends on everything outside too.
-      `, { ev: { svg: figShellEV(), cap: 'Spherical shell, with $V_R=q/(4\\pi\\varepsilon_0R)$. Lecture 5 draws the same $E(r)$ graph.' } }),
+      `, { ev: { svg: figShellEV(), cap: 'Spherical shell, with $V_R=\\tfrac{q}{4\\pi\\varepsilon_0R}$. Lecture 5 draws the same $E(r)$ graph.' } }),
       Q(md`Inside a uniformly charged spherical shell (radius $R$, charge $q$, $V(\infty)=0$), at a point $P_1$ the potential is`,
         [md`zero, since $\vb E=0$ inside`, md`$\dfrac{q}{4\pi\ep R}$, the same everywhere inside`, md`$\dfrac{q}{4\pi\ep r}$, as if all the charge were at the center`, md`undefined, since there is no charge at $P_1$`], 1,
         [md`$\vb E=0$ means $V$ does not change inside, not that it is zero. You arrive at the shell with $V=\tfrac{q}{4\pi\ep R}$ and stay there.`,
@@ -2146,7 +2146,7 @@
         md`Integrate inward: from $\infty$ to $R$ you collect $\dfrac{q}{4\pi\ep R}$; from $R$ to $P_1$ the field is zero and you collect nothing. Every point inside has the same potential as the shell itself.`,
         { figHtml: figShell({ pin: true }) }),
       Q(md`A second, larger concentric shell (radius $R_2>R$, charge $Q_2$) is added around the first one. For points inside the inner shell,`,
-        [md`neither $V$ nor $\vb E$ changes`, md`$V$ is unchanged, but $\vb E$ becomes nonzero`, md`$\vb E$ stays zero, but $V$ goes up by $\dfrac{Q_2}{4\pi\ep R_2}$`, md`both change`], 2,
+        [md`neither $V$ nor $\vb E$ changes`, md`$V$ is unchanged, but $\vb E$ becomes nonzero`, md`$\vb E$ stays zero, but $V$ shifts by the constant $\dfrac{Q_2}{4\pi\ep R_2}$`, md`both change`], 2,
         [md`$\vb E$ is unchanged, but $V$ is not: the new shell contributes its own constant $\tfrac{Q_2}{4\pi\ep R_2}$ everywhere inside it.`,
           md`The outer shell's field is zero everywhere inside it (Gauss), so $\vb E$ stays zero.`,
           null,
@@ -2207,9 +2207,9 @@
         figHtml: figTwoShells({ qa: md`+3.0\text{ nC}`, qb: md`-1.0\text{ nC}` }),
         hints: [md`Superpose the two shells. Each gives $\kq\dfrac qR$ inside itself and $\kq\dfrac qr$ outside.`, md`At $r=8$ cm you are outside shell $a$ but inside shell $b$.`],
         parts: [
-          { lbl: 'V(0)', ans: 449.4, unit: 'V' },
+          { lbl: 'V(0)', ans: 449.5, unit: 'V' },
           { lbl: 'V(8\\text{ cm})', ans: 247.2, unit: 'V' },
-          { lbl: 'V(20\\text{ cm})', ans: 89.88, unit: 'V' },
+          { lbl: 'V(20\\text{ cm})', ans: 89.9, unit: 'V' },
         ],
         sol: md`
           - Center: $8.99\times10^9\left(\dfrac{3.0\times10^{-9}}{0.050}-\dfrac{1.0\times10^{-9}}{0.10}\right)=8.99\,(60-10)=449$ V.
@@ -2270,7 +2270,7 @@
 
           **What to remember.** Split the integral wherever the field formula changes, work in from the reference, and check continuity of $V$ at each boundary (a good catch for algebra slips). A smooth join means no surface charge; a corner would mean surface charge.
         `,
-        figs: { sv: { svg: figSolidSphereV(), cap: 'Solid sphere, $V_R=q/(4\\pi\\varepsilon_0R)$.' } },
+        figs: { sv: { svg: figSolidSphereV(), cap: 'Solid sphere, $V_R=\\tfrac{q}{4\\pi\\varepsilon_0R}$.' } },
       }),
       Q(md`For the uniformly charged solid sphere ($q>0$), where is $V$ largest?`,
         [md`At the surface, where $|\vb E|$ is largest`, md`At the center, where $\vb E=0$`, md`It is the same everywhere inside, as for a shell`, md`At infinity`], 1,
@@ -2327,7 +2327,7 @@
 
           **Why no reference point.** Eq. 2.22 involves only the two end points. An infinite cylinder would normally make $V(\infty)=0$ unusable, but you never needed it. (Here, since $E=0$ outside the neutral cable, $V$ is in fact constant beyond $b$, and setting $V(\infty)=0$ would also have worked.)
 
-          **Checks.** Units: $\rho a^2/\ep$ is (C/m³)(m²)/(C²/N·m²) = N·m/C = V. As $b\to a$ (outer shell right on the surface), only the inner part survives: $\rho a^2/(4\ep)$.
+          **Checks.** Units: $\rho a^2/\ep$ is (C/m³)(m²)/(C²/N·m²) = N·m/C = V. As $b\to a$ (outer shell right on the surface), only the inner part survives: $\tfrac{\rho a^2}{4\ep}$.
         `,
         figs: {
           gauss: { svg: figCoax({ gauss: true }), cap: 'Gaussian cylinders (dashed) inside the core and between the conductors.' },
@@ -2386,7 +2386,7 @@
         [[fig:given]]`,
         ['A', 'B', 'C', 'D'], 3,
         [md`That is the $E$ graph itself, not $V$. $V$ is largest where you have climbed the most against the field: at the center.`,
-          md`Corners in $V$ need jumps in $E$. This $E$ is continuous (it starts from zero at $a$ and joins smoothly at $b$), so $V$ has no corners.`,
+          md`Corners in $V$ need jumps in $E$. This $E$ never jumps (it starts from zero at $a$, and at $b$ it only changes slope), so $V$ has no corners.`,
           md`$E=0$ inside means $V$ is flat there, not zero. $V$ cannot jump up at $a$.`,
           null],
         md`Read slopes: $V'=-E$. For $r<a$, $E=0$: $V$ flat. For $a<r<b$, $E$ grows: $V$ falls ever more steeply. For $r>b$, $V\propto1/r$. Since $E$ is continuous everywhere, $V$ has no corners. This is a uniform thick shell; the charge is a volume density, so there are no kinks.`,
@@ -2571,8 +2571,8 @@
         figHtml: figShellEnum(),
         hints: [md`The boundary condition: $E^\perp_{\text{out}}-E^\perp_{\text{in}}=\sigma/\ep$, with "above" = outside.`, md`$q=4\pi R^2\sigma$. Check it with $E=\kq\dfrac{q}{R^2}$ just outside.`],
         parts: [
-          { lbl: '\\sigma', ans: 39.84, unit: 'nC/m²' },
-          { lbl: 'q', ans: 20.03, unit: 'nC' },
+          { lbl: '\\sigma', ans: 39.83, unit: 'nC/m²' },
+          { lbl: 'q', ans: 20.02, unit: 'nC' },
         ],
         sol: md`
           **Boundary condition used:** $E^\perp_{\text{above}}-E^\perp_{\text{below}}=\sigma/\ep$, with "above" = outside, $\uv n=\uv r$.
@@ -2684,9 +2684,9 @@
           4. $\sigma=\ep\left(\vb E_{\text{above}}-\vb E_{\text{below}}\right)\cdot\uv n$.
       `, { nhat: { svg: figNormal(), cap: 'A charged surface, with $\\hat{\\mathbf n}$ pointing from "below" into "above".' } }),
       Q(md`At a point of a charged surface, $\vb E_{\text{below}}=0$ and $\vb E_{\text{above}}=-(5.0\text{ kV/m})\,\uv n$: the field above points toward the surface. What is $\sigma$?`,
-        [md`$+44.3$ nC/m²`, md`$-22.1$ nC/m²`, md`$0$, since the field below is zero`, md`$-44.3$ nC/m²`], 3,
+        [md`$+44.3$ nC/m²`, md`$-88.5$ nC/m²`, md`$0$, since the field below is zero`, md`$-44.3$ nC/m²`], 3,
         [md`Sign: $(\vb E_{\text{above}}-\vb E_{\text{below}})\cdot\uv n=-5.0$ kV/m. Field lines arriving at a surface end on negative charge.`,
-          md`No factor of 1/2: the whole difference $-5.0$ kV/m equals $\sigma/\ep$.`,
+          md`That treats the jump as $\tfrac{\sigma}{2\ep}$ (the one-sided field of an isolated sheet), giving $\sigma=2\ep\,\Delta E$. The whole jump, $-5.0$ kV/m, equals $\sigma/\ep$.`,
           md`A zero field on one side is exactly the conductor case; the surface still carries charge.`,
           null],
         md`$\sigma=\ep\left(\vb E_{\text{above}}-\vb E_{\text{below}}\right)\cdot\uv n=(8.85\times10^{-12})(-5000)=-4.43\times10^{-8}$ C/m². Field pointing into a surface means negative charge there.`,
@@ -2705,7 +2705,7 @@
           md`$E_y$ flips sign across the surface. Tangential components must be continuous.`,
           null,
           md`$E_x$ is 0 above and 2 below: a tangential jump, impossible.`],
-        md`Only $E_z$ (the normal component) may jump. In the first pair $E_x$ and $E_y$ match and $E_z$ jumps by 4 kV/m, so $\sigma=\ep\cdot4000\text{ V/m}=35$ nC/m².`,
+        md`Only $E_z$ (the normal component) may jump. In the third pair $E_x$ and $E_y$ match and $E_z$ jumps by $5-1=4$ kV/m, so $\sigma=\ep\cdot4000\text{ V/m}=35.4$ nC/m². The other three pairs each have a tangential component that changes across the surface.`,
         { figHtml: figFlatSurface() }),
       Q(md`Just above a surface $\vb E=(2.0\text{ kV/m})\,\uv n$ and just below $\vb E=(5.0\text{ kV/m})\,\uv n$: the field points the same way on both sides but is weaker above. What is $\sigma$?`,
         [md`$+26.6$ nC/m²`, md`$-26.6$ nC/m²`, md`$+62.0$ nC/m²`, md`$0$, since the field points the same way on both sides`], 1,
@@ -2759,8 +2759,8 @@
         hints: [md`List the conditions first: tangential components continuous; $E_z$ jumps by $\sigma/\ep$.`, md`$\sigma=\ep\,(E_{z,\text{above}}-E_{z,\text{below}})$. Keep the signs of the $z$ components.`],
         parts: [
           { lbl: md`At $P_1$, are the tangential components consistent?`, mc: [md`yes`, md`no, $E_x$ differs`, md`no, $E_z$ differs`], a: 0, why: [null, md`$E_x=1.5$ kV/m on both sides (and $E_y=-2.0$ on both).`, md`$E_z$ is the normal component; it is allowed to jump.`] },
-          { lbl: '\\sigma(P_1)', ans: 53.13, unit: 'nC/m²' },
-          { lbl: '\\sigma(P_2)', ans: -35.42, unit: 'nC/m²' },
+          { lbl: '\\sigma(P_1)', ans: 53.10, unit: 'nC/m²' },
+          { lbl: '\\sigma(P_2)', ans: -35.40, unit: 'nC/m²' },
         ],
         sol: md`
           **Conditions:** $E^\parallel$ (here $E_x,E_y$) continuous; $E_{z,\text{above}}-E_{z,\text{below}}=\sigma/\ep$.

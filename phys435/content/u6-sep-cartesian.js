@@ -2113,7 +2113,9 @@
               { lbl: md`(b) $V(\text{C})$ in volts`, ans: 15, unit: 'V' },
             ],
             sol: md`
-              Four subproblems, one live side each (others grounded). By the rotation argument each gives $\tfrac14$ of its side potential at the center:
+              **Boundary conditions** (region $0 < x < a$, $0 < y < a$, as drawn): (1) $V(0, y) = 40\ \text{V}$, (2) $V(a, y) = 20\ \text{V}$, (3) $V(x, 0) = 10\ \text{V}$, (4) $V(x, a) = 30\ \text{V}$. All four are live, so no direction has two zero faces and no single series fits.
+
+              Split into four subproblems, one live side each (the other three grounded). Each subproblem is a rotated copy of the one-live-side square, and by the rotation argument each gives $\tfrac14$ of its side potential at the center:
 
               (a) $V_c = \tfrac14(10 + 20 + 30 + 40) = 25\ \text{V}$. (b) $V_c = \tfrac14(10 + 20 + 30 + 0) = 15\ \text{V}$.
 
@@ -2122,7 +2124,7 @@
           }),
 
           P({
-            title: 'Ex. 3.4 with a long pipe',
+            title: 'Ex. 3.4 with b = a',
             q: md`Ex. 3.4 with $b = a$: the cross-section is $2a$ wide and $a$ tall, the short sides at $x = \pm a$ are at $V_0$, the long sides are grounded. Find $V$ at the center.`,
             figHtml: EX34_BA,
             hints: [
@@ -2372,6 +2374,8 @@
               { lbl: md`(b) The full solution is`, mc: [md`one double series with $\sinh$ in $z$`, md`the Prob. 3.18 solution plus the same solution with the roles of $x$ and $z$ exchanged`, md`the Prob. 3.18 solution times 2`, md`impossible to write with separation of variables`], a: 1, why: [md`With two adjacent live faces, no single set of product functions has all the zero BCs.`, null, md`That would put $2V_0$ on the top and $0$ on the front face.`, md`Superposition handles it.`] },
             ],
             sol: md`
+              **Boundary conditions** (region $0 < x, y, z < a$): (1) $V = 0$ at $x = 0$; (2) $V = V_0$ at $x = a$ (live); (3) $V = 0$ at $y = 0$; (4) $V = 0$ at $y = a$; (5) $V = 0$ at $z = 0$; (6) $V = V_0$ at $z = a$ (live). Only $y$ has two zero faces, so one double series of products can't carry both live faces.
+
               **Split by live faces.** Subproblem 1: only the top live (Prob. 3.18). Subproblem 2: only the front face $x = a$ live: the same solution with $x$ and $z$ exchanged (sines in $y$ and $z$, $\sinh$ in $x$). On every face exactly one subproblem is live, so the sum satisfies all six BCs.
 
               (a) Each subproblem gives $V_0/6$ at the center, so $V_c = V_0/3$.
@@ -2716,20 +2720,24 @@
             { figHtml: SLOT }),
 
           P({
-            title: 'Charge induced on the bottom plate',
-            q: md`For the slot with a constant strip $V_0$ (Ex. 3.3), find the surface charge density $\sigma(x)$ induced on the bottom plate ($y = 0$): (a) far down the slot, using one term; (b) exactly, by summing the series. (c) Which way does $\vb E$ point just above the plate?`,
+            title: 'Charge induced on the plate and on the strip',
+            q: md`For the slot with a constant strip $V_0$ (Ex. 3.3), find the surface charge density $\sigma(x)$ induced on the bottom plate ($y = 0$): (a) far down the slot, using one term; (b) exactly, by summing the series. (c) Which way does $\vb E$ point just above the plate? (d) Find the charge density $\sigma_s(y)$ on the strip at $x = 0$, a conductor held at $V_0$ (Griffiths Prob. 3.16; 3.14 in the 4th edition). Use the closed form $V = \dfrac{2V_0}{\pi}\tan^{-1}\!\left(\dfrac{\sin(\pi y/a)}{\sinh(\pi x/a)}\right)$.`,
             figHtml: slot({ end: 'V_0', pts: [[0.8, 0, '\\sigma(x)\\,?', 'tr']] }),
             hints: [
               md`Conductor boundary condition: $\sigma = -\varepsilon_0\dfrac{\partial V}{\partial n}$, with $\hat{\mathbf n}$ pointing out of the conductor into the field region. Here $\hat{\mathbf n} = +\hat{\mathbf y}$.`,
               md`Differentiate the series term by term with respect to $y$, then set $y = 0$: each $\cos(0) = 1$.`,
               md`$\sum_{n\ \text{odd}}e^{-n\pi x/a} = \dfrac{e^{-\pi x/a}}{1 - e^{-2\pi x/a}} = \dfrac{1}{2\sinh(\pi x/a)}$ (a geometric series).`,
+              md`(d) On the strip the normal out of the metal is $+\hat{\mathbf x}$, so $\sigma_s = -\varepsilon_0\,\partial V/\partial x$ at $x = 0$. Use $\dfrac{d}{dx}\tan^{-1}u = \dfrac{u'}{1 + u^2}$, simplify, then set $x = 0$.`,
             ],
             parts: [
               { lbl: md`(a) $\sigma(x)$ far down the slot`, expr: '-4*eps0*V0*exp(-pi*x/a)/a', vars: { eps0: [0.5, 2], V0: [1, 3], x: [0.5, 3], a: [0.5, 2] }, accepts: ['-(4*eps0*V0/a)*exp(-pi*x/a)'] },
               { lbl: md`(b) exact $\sigma(x)$`, expr: '-2*eps0*V0/(a*sinh(pi*x/a))', vars: { eps0: [0.5, 2], V0: [1, 3], x: [0.2, 3], a: [0.5, 2] }, accepts: ['-(2*eps0*V0/a)/sinh(pi*x/a)'] },
               { lbl: md`(c) Just above the plate, $\vb E$ points`, mc: [md`along $-\hat{\mathbf y}$, into the plate, so $\sigma < 0$`, md`along $+\hat{\mathbf y}$, away from the plate`, md`along $+\hat{\mathbf x}$, parallel to the plate`, md`nowhere: $\vb E = 0$ at a conductor`], a: 0, why: [null, md`$V$ increases away from the grounded plate (toward the interior), so $\vb E = -\nabla V$ points toward the plate.`, md`At a conductor's surface $\vb E$ is perpendicular to it.`, md`$\vb E = 0$ *inside* the metal; just outside it is $\sigma/\varepsilon_0$ along the normal.`] },
+              { lbl: md`(d) $\sigma_s(y)$ on the strip`, expr: '2*eps0*V0/(a*sin(pi*y/a))', vars: { eps0: [0.5, 2], V0: [1, 3], y: [0.1, 0.9], a: [1, 2] }, accepts: ['(2*eps0*V0/a)/sin(pi*y/a)'] },
             ],
             sol: md`
+              **The potential.** This is Ex. 3.3: (1) $V(x, 0) = 0$, (2) $V(x, a) = 0$, (4) $V \to 0$ as $x \to \infty$ (homogeneous), (3) $V(0, y) = V_0$ (live), so $V = \tfrac{4V_0}{\pi}\sum_{\text{odd}}\tfrac1n e^{-n\pi x/a}\sin\tfrac{n\pi y}{a}$.
+
               **Conductor BC at the plate:** $E_{\perp} = \sigma/\varepsilon_0$ just outside, i.e. $\sigma = -\varepsilon_0\,\partial V/\partial n$ with $\hat{\mathbf n} = +\hat{\mathbf y}$ out of the bottom plate.
 
               $$\frac{\partial V}{\partial y}\bigg|_{y=0} = \frac{4V_0}{\pi}\sum_{\text{odd}}\frac1n\cdot\frac{n\pi}{a}e^{-n\pi x/a}\cos 0 = \frac{4V_0}{a}\sum_{\text{odd}}e^{-n\pi x/a}.$$

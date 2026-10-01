@@ -682,7 +682,7 @@
           | isolated, total charge $Q$ | $V$ = some constant (unknown), and $\oint\sigma\,da = Q$ |
           | isolated and neutral | the same, with $Q = 0$ |
 
-          Add $V\to0$ at infinity when all the charges are in a finite region.`,
+          Add $V\to0$ far away when the given charges sit in a finite region and every conductor that reaches infinity is grounded. (A conductor that reaches infinity at $V_0$ makes $V\to V_0$ along it instead; see the plane held at $V_0$ in a later lesson.)`,
           { figHtml: FP }),
 
         Q(md`Why can't you find $V$ above the plane simply by adding up Coulomb potentials?`,
@@ -737,7 +737,7 @@
           Every condition holds, so by uniqueness this **is** the potential of the real problem for $z\ge0$. The $-q$ is called the **image charge**: the conductor acts like a mirror for charge, with the sign flipped. (Page 2 of the notes calls it $-Q$ once; it is the same $-q$.)
 
           !!intuition Why a mirror charge works
-            A grounded plane is an equipotential, so the field meets it at right angles. The field of a $\pm q$ pair crosses the plane halfway between them at right angles too, by symmetry. Above the plane the two field patterns are identical, so the two potentials are identical.
+            A grounded plane is an equipotential, so the field meets it at right angles. The field of a $\pm q$ pair crosses the plane halfway between them at right angles too, by symmetry, and that midplane is at $V=0$. So the pair already has the property that defines the real boundary. Matching the boundary is not enough on its own; uniqueness (same charge above the plane, same values on the plane and at infinity) is what makes the two fields identical everywhere above the plane.
         `, { pair: { svg: fPair(), cap: md`The image pair. There is no metal in this picture: $z=0$ is just the surface where the pair's $V$ happens to be zero.` } }),
 
         Q(md`Remove the conductor. Where should you put **one** extra charge so that $V=0$ on the whole plane $z=0$?`,
@@ -760,6 +760,19 @@
           $$V = \kq\left(\frac{q}{2d} - \frac{q}{4d}\right) = \kq\,\frac{q}{4d}.$$
 
           The induced charge cuts the potential at $P$ in half compared with $q$ alone.`,
+          { figHtml: FP3 }),
+
+        Q(md`The lecture notes say the field follows from the image solution "similarly". What is $\vb E$ at the same point $P=(0,0,3d)$?`,
+          [md`$\kq\dfrac{q}{4d^2}\,\uv z$`, md`$\kq\dfrac{5q}{16d^2}\,\uv z$`, md`$\kq\dfrac{3q}{16d^2}\,\uv z$`, md`$-\kq\dfrac{3q}{16d^2}\,\uv z$`], 2,
+          [md`That is $q$'s field alone, from $2d$ away. It leaves out the induced charge, whose field at $P$ is the image's field.`,
+            md`You added the image's field. The image is negative, so its field at $P$ points down, toward it, and subtracts.`,
+            null,
+            md`Above $q$ the field of $+q$ points up, and it is the stronger one ($2d$ away, against $4d$ for the image). So $\vb E$ points up.`],
+          md`In the region of interest the field is the field of $q$ plus the field of its image (equivalently $-\nabla V$ of the two-charge formula). $+q$ is $2d$ below $P$: $\kq\dfrac{q}{(2d)^2}$ up. The image $-q$ is $4d$ below $P$: $\kq\dfrac{q}{(4d)^2}$ down, toward it. So
+
+          $$\vb E = \kq\frac{q}{d^2}\left(\frac14 - \frac1{16}\right)\uv z = \kq\frac{3q}{16d^2}\,\uv z.$$
+
+          The same recipe works at any point with $z\ge0$; below the plane $\vb E=0$.`,
           { figHtml: FP3 }),
 
         Q(md`What is the sign of $V$ in the region $z>0$?`,
@@ -815,7 +828,7 @@
           { figHtml: FP }),
 
         Q(md`The point $P$ is inside the metal, a distance $d/2$ below the surface. What is the actual potential at $P$?`,
-          [md`$\kq\left(\dfrac{q}{\srm_+} - \dfrac{q}{\srm_-}\right)$ evaluated at $P$`, md`It can't be found without knowing $\sigma$.`, md`$0$`, md`$-\kq\dfrac{q}{d/2}$, from the image alone`], 2,
+          [md`$\kq\left(\dfrac{q}{\srm_+} - \dfrac{q}{\srm_-}\right)$ evaluated at $P$`, md`It can't be found without knowing $\sigma$.`, md`$0$`, md`$-\kq\dfrac{q}{\srm_-}$ at $P$, from the image alone`], 2,
           [md`The two-charge formula is valid only for $z\ge0$. Below the plane the real situation is different: there is metal there and no charge at $z=-d$. The formula would give a negative number, which is wrong.`,
             md`Every point of a conductor is at the conductor's potential, and this one is grounded. No $\sigma$ needed.`,
             null,
@@ -1321,7 +1334,7 @@
 
           [[fig:force]]
 
-          - It is **attractive**, toward the plane, whatever the sign of $q$: a charge and its image always have opposite signs.
+          - It is **attractive**, toward the plane, whatever the sign of $q$: the image in a plane always has the opposite sign.
           - The distance is $2d$, from $q$ to its image, not the distance $d$ to the plane.
           - Only the image acts on $q$. A charge exerts no net force on itself, so $q$'s own field is left out.
 
@@ -1334,7 +1347,7 @@
             md`The induced charge under a negative charge is positive (the image is $+q$), so the force is attractive.`,
             md`The plane carries induced charge of the opposite sign, so it pulls. Grounded means $V=0$, not uncharged.`,
             md`By symmetry the force is along the line from the charge to its image, perpendicular to the plane.`],
-          md`A charge and its image always have opposite signs, so the force $\dfrac{q\cdot(-q)}{4\pi\varepsilon_0(2d)^2}$ is always attractive. A charge is always pulled toward a grounded conductor.`,
+          md`A charge and its image in a plane always have opposite signs, so the force $\dfrac{q\cdot(-q)}{4\pi\varepsilon_0(2d)^2}$ is always attractive. More generally, a grounded conductor only ever acquires induced charge of the opposite sign to $q$, so it always pulls $q$ toward itself.`,
           { figHtml: FPneg }),
 
         Q(md`What is the size of the force on $q$?`,
@@ -1552,8 +1565,8 @@
             md`Watch the units: $d = 0.015\ \text{m}$, $q = 2.0\times10^{-9}\ \text{C}$.`,
           ],
           parts: [
-            { lbl: md`$|F|$`, ans: 39.94, unit: 'µN' },
-            { lbl: md`$W$`, ans: -0.5992, unit: 'µJ' },
+            { lbl: md`$|F|$`, ans: 39.96, unit: 'µN' },
+            { lbl: md`$W$`, ans: -0.5993, unit: 'µJ' },
             { lbl: md`$\sigma$ under the charge`, ans: -1.415, unit: 'µC/m²' },
           ],
           sol: md`
@@ -1568,13 +1581,13 @@
 
             [[fig:img]]
 
-            **Force.** $F = \dfrac{1}{4\pi\varepsilon_0}\dfrac{q^2}{(2d)^2} = \dfrac{(8.99\times10^9)(2.0\times10^{-9})^2}{(0.030)^2} = 4.0\times10^{-5}\ \text{N} = 39.9\ \mu\text{N}$, toward the plate.
+            **Force.** $F = \dfrac{1}{4\pi\varepsilon_0}\dfrac{q^2}{(2d)^2} = \dfrac{(8.99\times10^9)(2.0\times10^{-9})^2}{(0.030)^2} = 3.996\times10^{-5}\ \text{N} \approx 40.0\ \mu\text{N}$, toward the plate.
 
             **Energy.** $W = -\dfrac{1}{4\pi\varepsilon_0}\dfrac{q^2}{4d} = -\dfrac{(8.99\times10^9)(4.0\times10^{-18})}{0.060} = -6.0\times10^{-7}\ \text{J} = -0.599\ \mu\text{J}$.
 
             **Surface charge.** $\sigma = -\dfrac{q}{2\pi d^2} = -\dfrac{2.0\times10^{-9}}{2\pi(0.015)^2} = -1.41\times10^{-6}\ \text{C/m}^2$.
 
-            **Check.** Here $|W| = F\,d$ exactly, since $|W| = \dfrac{q^2}{16\pi\varepsilon_0 d}$ and $F = \dfrac{q^2}{16\pi\varepsilon_0d^2}$: $39.9\ \mu\text{N}\times0.015\ \text{m} = 0.599\ \mu\text{J}$.
+            **Check.** Here $|W| = F\,d$ exactly, since $|W| = \dfrac{q^2}{16\pi\varepsilon_0 d}$ and $F = \dfrac{q^2}{16\pi\varepsilon_0d^2}$: $39.96\ \mu\text{N}\times0.015\ \text{m} = 0.599\ \mu\text{J}$.
           `,
           figs: { img: { svg: fForcePlane(), cap: md`The force on $q$ is the pull of its image, $2d = 3.0$ cm away.` } },
         }),

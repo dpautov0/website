@@ -79,8 +79,8 @@
       }
       placed.push(at(best[0], best[1]));
     }
-    // grow the view box if a label moved past the edge
-    if (moved) {
+    // grow the view box if any label (moved or not) pokes past the edge: real KaTeX widths beat the estimate
+    if (placed.length) {
       const vb = svg.viewBox.baseVal;
       let { x, y, width: w, height: h } = vb;
       const l = Math.min(x, ...placed.map((p) => p.l - 3)), t = Math.min(y, ...placed.map((p) => p.t - 3));

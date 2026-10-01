@@ -181,7 +181,7 @@
       const pts = [];
       for (let i = 0; i <= 90; i++) { const t = i / 90, ang = (200 + 210 * t) * DEG, r = 96 - 62 * t + 9 * Math.sin(3 * Math.PI * t); pts.push([cx + r * Math.cos(ang), cy - r * Math.sin(ang)]); }
       f.pl(pts, { cls: 'thick' }); headOn(f, pts, 0.45);
-      f.charge(A[0], A[1], { q: '+', lab: 'q', at: 'l' }); f.tag(A[0], A[1], 'a', 't', 10);
+      f.charge(A[0], A[1], { q: '+', lab: 'q', at: 'l' }); f.label(A[0] + 10, A[1] - 23, 'a', 'c');
       f.dot(B[0], B[1], 3.2); f.tag(B[0], B[1], 'b', 'tr', 7);
       return f.svg();
     };
