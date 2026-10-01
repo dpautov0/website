@@ -132,6 +132,29 @@
         ],
       },
       {
+        id: 'x-legendre', title: 'Legendre drill (randomized)', kind: 'review',
+        steps: [
+          R(md`
+            Last year's exam had a Legendre-polynomial problem straight up. These four drills generate new problems every time; do each until it's automatic. The full treatment is in Unit 7 and Unit L.
+
+            !!key What to have cold
+              - $P_0 = 1$, $P_1 = x$, $P_2 = \tfrac12(3x^2-1)$, $P_3 = \tfrac12(5x^3-3x)$, $P_4 = \tfrac18(35x^4-30x^2+3)$, with $x = \cos\theta$.
+              - $P_\ell(1) = 1$, $P_\ell(-1) = (-1)^\ell$, and $\displaystyle\int_0^\pi P_\ell P_{\ell'}\sin\theta\,d\theta = \frac{2}{2\ell+1}\delta_{\ell\ell'}$.
+              - $x^2 = \tfrac13P_0+\tfrac23P_2$, $\;x^3 = \tfrac35P_1+\tfrac25P_3$.
+              - Sphere held at $V_0(\theta) = \sum a_\ell P_\ell$: inside $V = \sum a_\ell (r/R)^\ell P_\ell$, outside $V = \sum a_\ell (R/r)^{\ell+1}P_\ell$.
+
+            ### 1. Values
+          `),
+          G('leg_value', { need: 3 }),
+          R(md`### 2. Integrals: orthogonality and the shortcuts`),
+          G('leg_integral', { need: 4 }),
+          R(md`### 3. Expanding a polynomial in $\cos\theta$`),
+          G('leg_expand', { need: 4 }),
+          R(md`### 4. The full sphere problem`),
+          G('leg_sphere', { need: 4 }),
+        ],
+      },
+      {
         id: 'x-quiz', title: 'Concept quiz (every unit)', kind: 'quiz', noBank: true,
         steps: [
           R(md`
@@ -141,7 +164,7 @@
           `),
           G('concept', { need: 15 }),
           R(md`### Images, separation of variables and boundary conditions (last year's exam focus)`),
-          G('concept', { need: 10, units: ['u5', 'u6', 'u7', 'ub'] }),
+          G('concept', { need: 10, units: ['u5', 'u6', 'u7', 'uL', 'ub'] }),
           R(md`### Boundary conditions only`),
           G('concept', { need: 8, units: ['ub'] }),
           R(md`### Fields, Gauss, potential`),
