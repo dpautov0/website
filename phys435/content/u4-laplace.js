@@ -78,7 +78,7 @@
     [-40, -20, 0, 20, 40].forEach((a) => f.label(cx + (R + 12) * Math.cos(a * D2R), cy - (R + 12) * Math.sin(a * D2R), '-', 'c', 'small'));
     if (!grounded) [145, 180, 215].forEach((a) => f.label(cx + (R + 12) * Math.cos(a * D2R), cy - (R + 12) * Math.sin(a * D2R), '+', 'c', 'small'));
     f.charge(cx + R + 92, cy, { q: '+', lab: 'q', at: 'r' });
-    if (grounded) { f.line(cx, cy + R, cx, cy + R + 12); f.ground(cx, cy + R + 12); f.label(cx + 16, cy + R + 22, 'V=0', 'l', 'small'); }
+    if (grounded) { f.line(cx, cy + R, cx, cy + R + 12); f.ground(cx, cy + R + 12); f.text(cx + 16, cy + R + 22, 'grounded', 'l'); }
     f.text(cx + R + 92, cy + 62, md`$\sigma$ on the sphere = ?`, 'c');
     return f.svg();
   };
@@ -321,7 +321,7 @@
         md`The region is the inside of the box. The only charge in it is $q$, so Poisson's equation has $q$ as its source. The walls are the boundary, and grounded means $V = 0$ there. The induced charge on the walls is unknown, but you don't need it: the boundary condition replaces it. (Afterwards you can get it from $\sigma = -\varepsilon_0\,\partial V/\partial n$.)`,
         { figHtml: fBoxQ() }),
 
-      Q(md`In which of these boxes is $V = 0$ everywhere inside the correct answer? (Labels give each wall's potential.)`,
+      Q(md`For which of these boxes is "$V = 0$ everywhere inside" the correct solution? (Labels give each wall's potential.)`,
         [md`A and D`, md`A only`, md`A and C`, md`A, B and C`], 1,
         [md`In D every wall is at $V_0$, so $V = V_0$ inside, not $0$.`, null,
           md`In C the charge is a source; $V = 0$ fails Poisson's equation at the charge.`,
@@ -369,7 +369,7 @@
       Q(md`Outside the same ball, $V(r) = \dfrac{\rho_0 R^3}{3\varepsilon_0 r}$. What is $\nabla^2 V$ for $r > R$?`,
         [md`$-\rho_0/\varepsilon_0$, the same as inside`, md`$-\dfrac{\rho_0R^3}{3\varepsilon_0 r^3}$`, md`$0$`, md`Undefined, because $1/r$ blows up at $r = 0$`], 2,
         [md`Outside the ball $\rho = 0$; all the charge is in $r < R$.`,
-          md`That's $V/r^2$, not the Laplacian. Here $r^2\,dV/dr$ is a constant, so its derivative is zero.`, null,
+          md`That's $\dfrac1r\dfrac{dV}{dr}$, only one piece of the Laplacian. Here $r^2\,dV/dr$ is a constant, so its derivative is zero.`, null,
           md`The blow-up is at $r = 0$, which is not in the region $r > R$. (Inside, the other formula applies and is finite.)`],
         md`$r^2 \dfrac{dV}{dr} = -\dfrac{\rho_0R^3}{3\varepsilon_0}$, a constant, so $\nabla^2 V = 0$. $1/r$ is harmonic away from the origin. Outside the ball you have a Laplace region; its only memory of the ball is the boundary value at $r = R$ (plus $V\to 0$ far away).`,
         { figHtml: fBall() }),
@@ -396,7 +396,7 @@
       `, { cyl: { svg: fCyl(), cap: md`A long cylinder of radius $a$; the potential is given inside and outside.` } }),
 
       P({
-        id: 'u4-p-r3', title: 'A potential that grows like r cubed',
+        id: 'u4-p-r3', title: 'A potential with an r-cubed term',
         q: md`Inside a ball of radius $R$ the potential is $V(r) = V_0 - k r^3$, where $V_0$ and $k>0$ are constants. Find the charge density $\rho(r)$ inside, and the total charge inside the ball.`,
         figHtml: fBall({ lab: '\\rho(r)', r: true }),
         hints: [
@@ -515,11 +515,13 @@
           { lbl: md`x \text{ where } V = 0`, ans: 5.333, unit: 'cm' },
         ],
         sol: md`
+          **Region:** $2\text{ cm} < x < 6\text{ cm}$, charge-free.
+
           **Boundary conditions.**
           1. $V = 10$ V at $x = 2$ cm (left plate).
           2. $V = -2$ V at $x = 6$ cm (right plate).
 
-          No charge between, so $V'' = 0$ and $V = ax+b$. The slope is $a = \dfrac{-2-10}{6-2} = -3$ V/cm, and $V = 10 - 3(x - 2)$ with $x$ in cm.
+          No charge between, so $V'' = 0$ and $V = ax+b$. Two conditions for two constants: their difference fixes the slope, $a = \dfrac{-2-10}{6-2} = -3$ V/cm, and condition 1 then fixes the offset: $V = 10 - 3(x - 2)$ with $x$ in cm.
 
           - $V(3\text{ cm}) = 10 - 3 = 7$ V.
           - $E_x = -dV/dx = +3$ V/cm $= 300$ V/m. It points in $+x$, from high potential to low.
@@ -552,6 +554,8 @@
           { lbl: md`E_x(0)`, expr: '-rho*d/(2*eps0)', vars: { rho: [0.5, 2], eps0: [0.5, 2], d: [0.5, 2] } },
         ],
         sol: md`
+          **Region:** $0 < x < d$, filled with charge density $\rho$.
+
           **Boundary conditions.**
           1. $V(0) = 0$ (grounded plate).
           2. $V(d) = 0$ (grounded plate).
@@ -574,7 +578,7 @@
 
           **What to remember.** With charge in the region $V$ curves ($V'' = -\rho/\varepsilon_0$) and can peak inside. Without charge it's a straight line between the boundary values. Two boundary conditions fix both constants either way.
         `,
-        figs: { vx: { svg: fSlabPlot(), cap: md`$V(x)$ is a downward parabola, zero on both grounded plates, with its peak $\rho d^2/8\varepsilon_0$ in the middle.` } },
+        figs: { vx: { svg: fSlabPlot(), cap: md`$V(x)$ is a downward parabola, zero on both grounded plates, with its peak $\rho d^2/(8\varepsilon_0)$ in the middle.` } },
       }),
 
       RF(md`
@@ -752,7 +756,7 @@
         $$V(x,y) = \frac{1}{2\pi R}\oint_{\text{circle}} V\,dl.$$
         2. **No local maxima or minima** inside the region. All extremes are on the boundary. (This follows from 1, just as in 1-D.)
 
-        The lecture's remark: look at the form of Laplace's equation. The two second derivatives must cancel. If $V$ curves up along $x$ ($\partial_x^2V>0$), it must curve down along $y$ by the same amount. A harmonic function has no bowls and no domes, only saddles.
+        The lecture adds: think about the form of Laplace's equation, since the second derivatives must be well-behaved for it to hold. One way to read it: the two second derivatives must cancel. If $V$ curves up along $x$ ($\partial_x^2V>0$), it must curve down along $y$ by the same amount. A harmonic function has no bowls and no domes, only saddles (or flat stretches).
 
         [[fig:saddle]]
 
@@ -804,7 +808,7 @@
         [md`2-D Laplace is a PDE, not an ODE; the solution isn't $ax + b$ with two constants.`,
           md`One number per wall is enough only when each wall is at a constant potential. Here one wall varies, and you need the whole function $V_0(y)$.`,
           md`Corners are four points. The boundary is a whole curve, and $V$ must be known along all of it.`, null],
-        md`In 2-D the boundary is a closed curve, and you need $V$ at every point of it: infinitely many conditions. "Three walls at $0$" are three whole lines of conditions, and the fourth wall contributes the function $V_0(y)$. Units 6 and 7 turn data like this into a solution by matching a Fourier series to $V_0(y)$.`,
+        md`In 2-D the boundary is a closed curve, and you need $V$ at every point of it: infinitely many conditions. "Three walls at $0$" are three whole lines of conditions, and the fourth wall contributes the function $V_0(y)$. Unit 6 turns data like this into a solution by matching a Fourier series to $V_0(y)$.`,
         { figHtml: fSquarePipe() }),
 
       Q(md`In a charge-free region $V(x,y) = x^2 - y^2 + 4$ (volts, with $x$ and $y$ in meters). What is the average of $V$ around the circle of radius $3$ m centered at $(2, 1)$?`,
@@ -881,6 +885,14 @@
         (The notes write $A_2 = 42.75$, a rounding slip: $342.1875/8 = 42.77$.) The values settle where $A = \tfrac18(300 + B)$ and $B = \tfrac18(300+A)$ hold together: $A = B = 300/7 \approx 42.86$. Two passes already get within $0.1$.
       `, { grid: { svg: fLecGrid(), cap: md`Lecture 8's grid. Shaded cells are fixed boundary values; $A$ and $B$ are the unknowns.` } }),
 
+      Q(md`In the lecture's first pass, $A_1 = 37.5$ but $B_1 = 42.19$, although $A$ and $B$ sit symmetrically on the grid. Why is $B_1$ larger?`,
+        [md`$B$'s update already uses the new $A_1 = 37.5$. With the old $A_0 = 0$ it would also be $37.5$.`, md`$B$ is closer to the row at $100$`, md`The right end of the middle row is held higher than the left end`, md`Rounding in the notes`], 0,
+        [null, md`Both sit one row below the top, and each has the same three $100$s among its 8 neighbours.`,
+          md`Both ends of the middle row are $0$.`,
+          md`$337.5/8 = 42.1875$ exactly. Nothing is rounded in the first pass.`],
+        md`The sweep does $A$ first, then $B$, and each new value is used as soon as it exists: $A_1 = \tfrac18(300 + B_0) = 37.5$, then $B_1 = \tfrac18(300 + A_1) = 42.19$. Updating both from the old values at once would give $A_1 = B_1 = 37.5$. The update order changes the path, not the end point: both versions converge to $300/7$. To reproduce the lecture's numbers, sweep in the same order and use each new value immediately.`,
+        { figHtml: fLecGrid() }),
+
       RF(md`
         ### Which neighbours?
 
@@ -909,7 +921,7 @@
       Q(md`One relaxation update of the center cell using the **4 nearest neighbours**. What is its new value?`,
         [md`$25$`, md`$22.2$`, md`$20$`, md`$80$`], 2,
         [md`$25$ is the 8-point average (diagonals included), the lecture's rule. This question asks for the 4 nearest: up, down, left, right.`,
-          md`$200/9$ averages all nine cells, including the center's old value. The update uses only the neighbours.`, null,
+          md`$200/9$ averages all nine cells, counting the center itself (as $0$). The update uses only the neighbours.`, null,
           md`$80$ is the sum of the four neighbours. Divide by $4$.`],
         md`Nearest neighbours: up $40$, left $20$, right $20$, down $0$. Average $= 80/4 = 20$. (With the lecture's 8-point rule you'd add the corners $60, 60, 0, 0$: $200/8 = 25$.)`,
         { figHtml: fPatchA() }),
@@ -1305,7 +1317,7 @@
 
           **Checks.** Charge at the center ($z = 0$): every surface point is a distance $R$ away, so $V = q/(4\pi\varepsilon_0R)$ everywhere on the sphere. Charge approaching the surface ($z\to R$): the inside and outside formulas meet at $q/(4\pi\varepsilon_0R)$. No charge inside: back to the mean value theorem.
 
-          **Why this works.** The average of $q$'s potential over the sphere, $\dfrac{1}{4\pi R^2}\oint\dfrac{q\,da}{4\pi\varepsilon_0\srm}$, is exactly the potential **at $q$'s position** produced by a charge $q$ spread uniformly over the sphere. A uniform shell's potential is constant inside ($q/4\pi\varepsilon_0 R$) and $q/(4\pi\varepsilon_0 z)$ outside: both results at once. To remember: inside charges count as if at the center; outside charges contribute their potential at the center.
+          **Why this works.** The average of $q$'s potential over the sphere, $\dfrac{1}{4\pi R^2}\oint\dfrac{q\,da}{4\pi\varepsilon_0\srm}$, is exactly the potential **at $q$'s position** produced by a charge $q$ spread uniformly over the sphere. A uniform shell's potential is constant inside, $q/(4\pi\varepsilon_0 R)$, and $q/(4\pi\varepsilon_0 z)$ outside: both results at once. To remember: inside charges count as if at the center; outside charges contribute their potential at the center.
         `,
         figs: {
           geom: { svg: fSphereZ({ inside: true, detail: true }), cap: md`Charge inside: $z < R$. The geometry of the integral is the same as before.` },
@@ -1617,7 +1629,7 @@
         1. $V = V_0$ on the top face.
         2. $V = 0$ on the other five faces.
 
-        Rotate the problem so each face takes its turn at $V_0$: six problems. Add their solutions. The sum satisfies Laplace's equation and equals $V_0$ on **every** face, and the unique solution of that problem is $V = V_0$ everywhere. Uniqueness also says each rotated problem's solution is just the rotated function, so all six give the same value at the center. Hence $6V_C = V_0$ and $V_C = V_0/6$, with no series at all. (Units 6 and 7 get the same number from a double Fourier series.)
+        Rotate the problem so each face takes its turn at $V_0$: six problems. Add their solutions. The sum satisfies Laplace's equation and equals $V_0$ on **every** face, and the unique solution of that problem is $V = V_0$ everywhere. Uniqueness also says each rotated problem's solution is just the rotated function, so all six give the same value at the center. Hence $6V_C = V_0$ and $V_C = V_0/6$, with no series at all. (Unit 6 gets the same number from a double Fourier series: Griffiths 3.18, Discussion 4.)
 
         [[fig:cube]]
       `, {
@@ -1673,13 +1685,15 @@
             why: [md`If it could, there would be two solutions with the same data, which the theorem rules out.`, null, md`Symmetry makes the guess natural; uniqueness is what proves no other answer exists.`, md`$\vb E$ is normal at each conductor, but that alone doesn't rule out $\theta$-dependence in between.`] },
         ],
         sol: md`
+          **Region:** $a < r < b$, charge-free.
+
           **Boundary conditions.**
           1. $V(a) = V_0$ (inner sphere held at $V_0$).
           2. $V(b) = 0$ (outer shell grounded).
 
           **Guess.** Charge-free region, no angle dependence in the data: try $V = A + B/r$. It satisfies Laplace's equation for $r>0$, since $r^2\,dV/dr = -B$ is constant.
 
-          **Fit.** $A + B/a = V_0$ and $A + B/b = 0$. Subtract: $B\left(\tfrac1a - \tfrac1b\right) = V_0$, so $B = \dfrac{V_0ab}{b-a}$ and $A = -\dfrac{B}{b} = -\dfrac{V_0 a}{b-a}$:
+          **Fit.** Each condition gives one equation, and together they fix $A$ and $B$: $A + B/a = V_0$ and $A + B/b = 0$. Subtract: $B\left(\tfrac1a - \tfrac1b\right) = V_0$, so $B = \dfrac{V_0ab}{b-a}$ and $A = -\dfrac{B}{b} = -\dfrac{V_0 a}{b-a}$:
           $$V(r) = \frac{V_0 a}{b-a}\left(\frac{b}{r} - 1\right) = \frac{V_0\,a\,(b-r)}{r\,(b-a)}.$$
 
           **Field.** $E_r = -\dfrac{dV}{dr} = \dfrac{V_0ab}{(b-a)\,r^2}$, outward for $V_0>0$.
@@ -1736,8 +1750,8 @@
         [md`Infinity, where $V\to 0$`, md`Nothing else; the sphere is the whole boundary`, md`The sphere's center`, md`A large sphere on which $\partial V/\partial n = 0$`], 0,
         [null, md`The region reaches infinity, which is part of its boundary. Without a condition there, $V = V_0$ everywhere would also fit Laplace and the sphere's value.`,
           md`The center isn't in the region; it's inside the metal.`,
-          md`That would say no flux leaves, i.e. no net charge, yet a sphere at $V_0\ne0$ is charged. The standard outer condition is $V\to 0$.`],
-        md`With $V\to 0$ at infinity, $V = V_0R/r$ satisfies Laplace's equation for $r>R$, equals $V_0$ on the sphere and vanishes at infinity: it's the solution. Without the condition at infinity, the constant $V = V_0$ would fit as well, and uniqueness would fail.`,
+          md`The region runs out to infinity, so its outer boundary is at infinity, not on a finite sphere. (A no-flux outer sphere would be a different problem: zero total flux means an uncharged sphere, and the answer would be $V = V_0$ everywhere.)`],
+        md`With $V\to 0$ at infinity, $V = V_0R/r$ ($R$ the sphere's radius) satisfies Laplace's equation for $r>R$, equals $V_0$ on the sphere and vanishes at infinity: it's the solution. Without the condition at infinity, the constant $V = V_0$ would fit as well, and uniqueness would fail.`,
         { figHtml: fSphereV0() }),
 
       P({
@@ -1789,7 +1803,7 @@
 
           **Why this works / what to remember.** Every uniqueness proof has the same skeleton: two solutions, look at the difference, show the difference is harmonic with "zero" boundary data, then show a harmonic function with zero data vanishes. Lecture 9 did the last step two ways: the no-extrema argument (first theorem, $V_3 = 0$ on $S$) and the integral of $E_3^2$ (second theorem). This problem uses the integral, which also handles derivative data, where the no-extrema argument can't.
         `,
-        figs: { proof: { svg: fHW35(), cap: md`Mixed data: $V$ given on $S_1$, $\partial V/\partial n$ given on $S_2$. On every point of the boundary one factor of $V_3\,\partial V_3/\partial n$ vanishes.` } },
+        figs: { proof: { svg: fHW35(), cap: md`Mixed data: $V$ given on $S_1$, $\partial V/\partial n$ given on $S_2$. At every point of the boundary one factor of $V_3\,\partial V_3/\partial n$ vanishes.` } },
       }),
 
       RF(md`
@@ -1872,12 +1886,12 @@
           - The surface integral should run over every boundary (each conductor and the outer surface), not only $S_{\text{outer}}$, and the $\vb E$ in the second line should be $\vb E_3$.
 
         !!key What the second theorem fixes
-          $\vb E$, and so $V$ up to one additive constant. If $V$ is pinned anywhere ($V\to 0$ at infinity, or a grounded conductor), $V$ is fixed too, and with it each conductor's potential and surface charge $\sigma = \varepsilon_0E_n$.
+          $\vb E$ everywhere, and with it each conductor's surface charge $\sigma = \varepsilon_0E_n$ ($\hat{\mathbf n}$ out of the metal). $V$ is fixed up to one additive constant. Pin $V$ anywhere ($V\to 0$ at infinity, or a grounded conductor) and $V$ is fixed too, including each conductor's potential.
       `, { cond: { svg: fCond4(), cap: md`Lecture 9's picture: conductors (hatched) with total charges $Q_a,\dots,Q_d$ and a given $\rho$ between them. Thick line: the outer boundary. Dashed: Gaussian surfaces around each conductor and just inside the outer boundary.` } }),
 
       Q(md`Conductors with given total charges $Q_a, \dots, Q_d$, a given $\rho$ between them, and $V\to 0$ at infinity. What does the second uniqueness theorem guarantee?`,
         [md`The charge distribution on each conductor, but not the field`, md`The field $\vb E$ everywhere in the region (and so $V$, given $V\to0$ at infinity)`, md`Only the potential of each conductor`, md`Nothing, unless the conductors' potentials are given too`], 1,
-        [md`It's the other way round: the field is what the proof shows to be unique. The surface charges then follow from $\sigma = \varepsilon_0E_n$.`, null,
+        [md`The field is exactly what the proof shows to be unique, and the surface charges then follow from $\sigma = \varepsilon_0E_n$. So it fixes both, not the charges alone.`, null,
           md`It gives much more: $\vb E$ at every point.`,
           md`Potentials are the first theorem's data. The second shows that total charges can replace them.`],
         md`Two candidate fields $\vb E_1$, $\vb E_2$ must be equal. With $V\to 0$ at infinity fixing the constant, $V$ is unique too, and so is each conductor's potential and each $\sigma = \varepsilon_0 E_n$ at its surface.`,
@@ -1889,6 +1903,14 @@
           md`Constancy of $V_3$ is a separate ingredient: it lets $V_3$ out of the integral.`, null,
           md`At a conductor's surface the field is normal, not tangent, and the flux of each field is $Q_i/\varepsilon_0$, not zero.`],
         md`$\oint\vb E_1\cdot d\vb a = Q_i/\varepsilon_0 = \oint\vb E_2\cdot d\vb a$, so the difference has zero flux. This is exactly where "the total charge is given" enters the proof.`,
+        { figHtml: fCond4() }),
+
+      Q(md`The proof also needs $\oint\vb E_3\cdot d\vb a = 0$ over the **outer** boundary. Why does that hold?`,
+        [md`Both fields enclose the same total charge $Q_{\text{tot}} = \sum_n Q_n + \int\rho\,d\tau$, because every $Q_n$ and $\rho$ are given; so both fluxes are $Q_{\text{tot}}/\varepsilon_0$`, md`$\vb E = 0$ on the outer boundary`, md`The total charge inside the outer boundary is always zero`, md`$V_3$ is constant on the outer boundary`], 0,
+        [null, md`Nothing makes the field vanish there. Only the two fluxes have to agree.`,
+          md`$Q_{\text{tot}}$ can be anything. What matters is that it is the same for both solutions.`,
+          md`That's what lets $V_3$ come out of the surface integral. It says nothing about the flux.`],
+        md`Lecture 9 (in green): $Q_{\text{tot}} = \sum_n Q_n + \int\rho\,d\tau$. Every term is part of the given data, so $\oint\vb E_1\cdot d\vb a = \oint\vb E_2\cdot d\vb a = Q_{\text{tot}}/\varepsilon_0$ over the outer boundary, and $\vb E_3 = \vb E_1 - \vb E_2$ has zero flux there. Same logic as for each conductor, applied to everything at once.`,
         { figHtml: fCond4() }),
 
       Q(md`Why can $V_3$ be pulled out of each surface integral $\oint V_3\,\vb E_3\cdot d\vb a$?`,
@@ -2162,7 +2184,8 @@
         |---|---|---|
         | "grounded" | $V = 0$ | its charge: charge flows to or from the earth |
         | "held at $V_0$", "connected to a battery" | $V = V_0$ | its charge |
-        | "isolated" or "insulated", carrying charge $Q$ | $V$ = an unknown constant on it, and $\oint\sigma\,da = Q$ | its potential |
+        | "isolated" (nothing attached), carrying charge $Q$ | $V$ = an unknown constant on it, and $\oint\sigma\,da = Q$ | its potential |
+        | "insulated from the others" (a thin gap), held at $V_0$ | $V = V_0$ on that piece; the gap only lets it differ from its neighbours | its charge |
         | "neutral" or "uncharged" (and isolated) | the same, with $Q = 0$ | its potential |
         | "surface charge $\sigma$" on a conductor | $\dfrac{\partial V}{\partial n} = -\dfrac{\sigma}{\varepsilon_0}$, with $\hat{\mathbf n}$ out of the metal | nothing |
         | "far away", all charges in a finite region | $V\to 0$ as $r\to\infty$ | |
@@ -2205,7 +2228,7 @@
         1. $V = 0$ on the three grounded sides.
         2. $V = V_0$ on the fourth side.
 
-        "Insulated from the others" only explains why touching sides can sit at different potentials (the gaps in the figure). Compare an **isolated** or insulated conductor that is not held at any potential: then its total charge stays fixed and its potential floats.`,
+        "Insulated from the others" only explains why touching sides can sit at different potentials (the gaps in the figure). It is not a Neumann condition. Compare an **isolated** conductor, with nothing attached and not held at any potential (older books also call it "insulated"): then its total charge stays fixed and its potential floats.`,
         { figHtml: fPipeIns() }),
 
       Q(md`A thin **plastic** spherical shell of radius $R$ carries a glued-on surface charge $\sigma(\theta)$. There are no conductors. At $r = R$, which conditions connect the solutions inside and outside?`,
@@ -2220,7 +2243,7 @@
         [md`$\partial V/\partial z = -\sigma/\varepsilon_0$`, md`$\partial V/\partial z = +\sigma/\varepsilon_0$`, md`$\partial V/\partial z = 0$`, md`$\partial V/\partial z = -\sigma/(2\varepsilon_0)$`], 0,
         [null, md`Sign. The field just above is $E_z = +\sigma/\varepsilon_0$, and $E_z = -\partial V/\partial z$.`,
           md`That would mean no charge on the surface.`,
-          md`$\sigma/2\varepsilon_0$ is the field of an isolated sheet. At a conductor the whole field $\sigma/\varepsilon_0$ is on the outside.`],
+          md`$\sigma/(2\varepsilon_0)$ is the field of an isolated sheet. At a conductor the whole field $\sigma/\varepsilon_0$ is on the outside.`],
         md`Just outside a conductor $\vb E = \dfrac{\sigma}{\varepsilon_0}\hat{\mathbf n}$, with $\hat{\mathbf n}$ pointing out of the metal (here $+\hat{\mathbf z}$). $E_z = -\partial V/\partial z$, so $\partial V/\partial z = -\sigma/\varepsilon_0$: Neumann data. Unit 5 runs this backwards: find $V$ first, then read off $\sigma = -\varepsilon_0\,\partial V/\partial z$.`,
         { figHtml: fPlaneSigma() }),
 

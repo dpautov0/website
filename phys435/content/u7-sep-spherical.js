@@ -38,6 +38,9 @@
     const x2 = x1 + (right ? 8 : -8);
     f.line(x1, y1, x2, y1, { cls: 'dim thin' });
     f.label(x2 + (right ? 4 : -4), y1, tex, right ? 'l' : 'r', cls);
+    // texSize underestimates KaTeX spacing around = and +; widen the view box so the label end is never clipped
+    const w = PF.texSize(tex).w, slack = w * 0.15 + 6;
+    f.track(x2 + (right ? 4 + w + slack : -4 - w - slack), y1);
   }
   // annulus (shaded region between two circles)
   function annulus(f, cx, cy, r1, r2) {

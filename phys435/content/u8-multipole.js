@@ -246,7 +246,7 @@
 
         $$\frac{1}{\srm} = \frac1r\sum_{n=0}^{\infty}\left(\frac{r'}{r}\right)^nP_n(\cos\alpha) = \frac1r\left[1 + \frac{r'}{r}\cos\alpha + \left(\frac{r'}{r}\right)^2\frac{3\cos^2\alpha - 1}{2} + \cdots\right]\qquad (r' < r).$$
 
-        ($1/\srm$ is called the *generating function* of the Legendre polynomials.) Put this inside the integral. $r$ is a constant as far as the integration over the source is concerned, so it comes out:
+        ($1/\srm$ is called the *generating function* of the Legendre polynomials. Griffiths labels the order $n$ here; it is the same index as the $\ell$ of Lectures 12–13.) Put this inside the integral. $r$ is a constant as far as the integration over the source is concerned, so it comes out:
 
         $$\boxed{V(\vb r) = \kq\sum_{n=0}^{\infty}\frac{1}{r^{n+1}}\int (r')^nP_n(\cos\alpha)\,\rho(\vb r')\,d\tau'}$$
 

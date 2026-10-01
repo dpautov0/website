@@ -427,7 +427,7 @@
       RF(md`
         In a charge-free region the potential obeys Laplace's equation, $\nabla^2V=0$; where there is charge, Poisson's, $\nabla^2V=-\rho/\varepsilon_0$. Either equation has **infinitely many** solutions. In one dimension every straight line $V=ax+b$ works. In two, $x^2-y^2$, $e^{kx}\sin ky$ for every $k$, $\ln(x^2+y^2)$, and endless others. In three, $1/r$, $r\cos\theta$, $r^2P_2(\cos\theta)$, and so on.
 
-        The equation only says that $V$ has no bumps or dips inside the region (Lecture 8: $V$ is the average of its surroundings). Which solution you actually get is decided by what happens at the edges of the region: the **boundary conditions** (BCs).
+        The equation only says that $V$ has no bumps or dips inside the region (Lecture 8: $V$ is the average of its surroundings). Which solution you get is decided by what happens at the edges of the region: the **boundary conditions** (BCs).
 
         [[fig:plates]]
 
@@ -1353,6 +1353,8 @@
         sol: md`
           **BCs:** 1. $V_{\text{in}}$ finite at $r=0$; 2. $V_{\text{out}}\to0$; 3. $V_{\text{in}}=V_{\text{out}}$ at $r=R$; 4. $\partial_rV_{\text{out}}-\partial_rV_{\text{in}}=-\sigma/\varepsilon_0$ at $r=R$.
 
+          [[fig:bc]]
+
           Expand: $\sigma=\sigma_0\cos^2\theta=\dfrac{\sigma_0}{3}P_0+\dfrac{2\sigma_0}{3}P_2$, so $s_0=\sigma_0/3$, $s_2=2\sigma_0/3$.
 
           From BC #1–#4 (as in the reading): $A_\ell=\dfrac{s_\ell}{(2\ell+1)\varepsilon_0R^{\ell-1}}$, $B_\ell=A_\ell R^{2\ell+1}$:
@@ -1369,6 +1371,7 @@
 
           **What to remember:** expand the source in $P_\ell$ by eye when you can; each $\ell$ is then a separate two-equation problem (continuity and jump).
         `,
+        figs: { bc: { svg: figShell({ lab: md`\#3,\ \#4\ \text{at}\ r=R`, inLab: md`\#1`, outLab: md`\#2` }), cap: 'BC #1 inside (finite at the center), #2 outside (far away), #3 and #4 on the shell.' } },
       }),
 
       P({
@@ -2134,6 +2137,8 @@
           1. $V(R,\theta)=V_0$
           2. $V\to-E_0r\cos\theta$ as $r\to\infty$ ($C=0$: the reference is the far-field potential)
 
+          [[fig:bc]]
+
           BC #2: $A_1=-E_0$, $A_0=0$, $A_{\ell\ge2}=0$. BC #1 per $\ell$:
           - $\ell=0$: $B_0/R=V_0$, so $B_0=V_0R$.
           - $\ell=1$: $-E_0R+B_1/R^2=0$, so $B_1=E_0R^3$.
@@ -2149,6 +2154,7 @@
 
           **What to remember:** each BC acts on its own $\ell$: the far field on $\ell=1$ (through $A_1$), the sphere's potential on $\ell=0$ and $\ell=1$, and the charge only on $\ell=0$.
         `,
+        figs: { bc: { svg: figField({ note: '#1: V = V₀ on the sphere;  #2: V → −E₀z' }), cap: 'BC #1 on the sphere, BC #2 far away.' } },
       }),
 
       RF(md`
@@ -2251,6 +2257,8 @@
           2. outside: $V\to0$
           3. $V_{\text{in}}(R,\theta)=V_{\text{out}}(R,\theta)=V_0(\theta)$
 
+          [[fig:bc]]
+
           BC #1 and #2: $V_{\text{in}}=\sum A_\ell r^\ell P_\ell$, $V_{\text{out}}=\sum B_\ell r^{-(\ell+1)}P_\ell$. BC #3 with Legendre's trick (Lecture 13):
           $$A_\ell=\frac{2\ell+1}{2R^\ell}C_\ell,\qquad B_\ell=\frac{2\ell+1}{2}R^{\ell+1}C_\ell.$$
           The sphere carries the charge that makes the slope jump (Griffiths 2.36, $\hat{\mathbf n}=\hat{\mathbf r}$):
@@ -2265,6 +2273,7 @@
 
           **What to remember:** two regions sharing one boundary value; each $\ell$ is independent; $\sigma$ is the jump in the radial slope. Higher $\ell$ are weighted by $(2\ell+1)^2$: fine angular structure in $V_0$ needs a lot of surface charge.
         `,
+        figs: { bc: { svg: figShell({ lab: md`\#3\ V_0(\theta)`, inLab: md`\#1`, outLab: md`\#2` }), cap: 'BC #1 inside, #2 outside, #3 on the sphere (shared by both regions).' } },
       }),
 
       RF(md`
