@@ -393,7 +393,7 @@
         [null,
           md`$\nabla^2 0 = 0$, so it does. It solves the equation; it just doesn't solve this problem.`,
           md`The charge is on the plates, which are the boundary. Between them $\rho = 0$, so Laplace holds there.`,
-          md`A constant $V$ would have to equal $0$ and $V_0$ at once. The field between the plates is $V_0/d$, as in Unit 3.`],
+          md`A constant $V$ would have to equal $0$ and $V_0$ at once. The field between the plates is $V_0/d$.`],
         md`Laplace's equation has many solutions; the boundary values select one. Here $V = V_0\,z/d$ ($z$ measured up from the bottom plate) satisfies $\nabla^2 V = 0$ and both plate values, and Lesson 4 shows that this makes it the only answer.`,
         { figHtml: fPlatesH() }),
 
@@ -859,7 +859,7 @@
 
         $$\frac{\partial^2 V}{\partial x^2} + \frac{\partial^2 V}{\partial y^2} = 0.$$
 
-        Now it's a partial differential equation, and the 1-D rules break. There's no general solution with a fixed number of constants. The boundary is a whole curve (an edge, a line), and you need $V$ all along it: infinitely many boundary conditions. You'll solve such problems by separation of variables in Units 6 and 7. For now, two observations:
+        Now it's a partial differential equation, and the 1-D rules break. There's no general solution with a fixed number of constants. The boundary is a whole curve (an edge, a line), and you need $V$ all along it: infinitely many boundary conditions. You'll solve such problems by separation of variables in Units 6–8. For now, two observations:
 
         1. **Mean value on circles.** $V$ at a point is the average of $V$ around any circle centered there, as long as there is no charge inside the circle:
         $$V(x,y) = \frac{1}{2\pi R}\oint_{\text{circle}} V\,dl.$$
@@ -1353,7 +1353,7 @@
         [md`$V_0$ is the value at the north pole only. The south pole has $-V_0$.`, null,
           md`$V_0/2$ is the average over the northern hemisphere alone. The southern hemisphere, where $V<0$, counts too.`,
           md`The mean value theorem has no $R$ in it: $V$ at the center is the surface average, whatever the radius.`],
-        md`No charge inside, so $V(C)$ equals the average of $V$ over the sphere: $\dfrac{1}{4\pi}\displaystyle\int V_0\cos\theta\,\sin\theta\,d\theta\,d\phi = \dfrac{V_0}{2}\int_0^\pi\cos\theta\sin\theta\,d\theta = 0$. The positive north and the negative south cancel exactly. (Unit 7 finds the whole interior, $V = V_0\,r\cos\theta/R$, which is indeed $0$ at the center.)`,
+        md`No charge inside, so $V(C)$ equals the average of $V$ over the sphere: $\dfrac{1}{4\pi}\displaystyle\int V_0\cos\theta\,\sin\theta\,d\theta\,d\phi = \dfrac{V_0}{2}\int_0^\pi\cos\theta\sin\theta\,d\theta = 0$. The positive north and the negative south cancel exactly. (Unit 8 finds the whole interior, $V = V_0\,r\cos\theta/R$, which is indeed $0$ at the center.)`,
         { figHtml: fSphereCos() }),
 
       RF(md`
@@ -1894,7 +1894,7 @@
 
           **Uniqueness.** The guess satisfies Laplace's equation in the region and both boundary conditions, so it is the solution; no $\theta$ or $\phi$ dependence can appear.
 
-          **Checks.** $V(a) = V_0$ and $V(b) = 0$. As $b\to\infty$, $V \to V_0a/r$, the isolated sphere. The field is $Q/(4\pi\varepsilon_0r^2)$ with $Q = 4\pi\varepsilon_0V_0\,\dfrac{ab}{b-a}$ on the inner sphere: capacitance $4\pi\varepsilon_0\,\dfrac{ab}{b-a}$, as in Unit 3.
+          **Checks.** $V(a) = V_0$ and $V(b) = 0$. As $b\to\infty$, $V \to V_0a/r$, the isolated sphere. The field is $Q/(4\pi\varepsilon_0r^2)$ with $Q = 4\pi\varepsilon_0V_0\,\dfrac{ab}{b-a}$ on the inner sphere: capacitance $4\pi\varepsilon_0\,\dfrac{ab}{b-a}$.
         `,
       }),
 
@@ -2152,7 +2152,7 @@
         [md`They can't rearrange in a new way: $2\vb E$ already fits all the new data, and the second theorem says the field that fits is unique.`,
           md`Fields are linear in the charges; energies go like the square.`,
           md`The field is proportional to the charges that make it.`, null],
-        md`Check $2\vb E$ against the new data: $\nabla\cdot(2\vb E) = 2\rho/\varepsilon_0$; each conductor is still an equipotential (at twice its old potential); the flux around conductor $i$ is $2Q_i/\varepsilon_0$; it still dies off far away. All the data fit, so by the second theorem $2\vb E$ **is** the field, and each $\sigma$ simply doubles. This is the fine print behind "$V\propto Q$" for a capacitor (Unit 3).`,
+        md`Check $2\vb E$ against the new data: $\nabla\cdot(2\vb E) = 2\rho/\varepsilon_0$; each conductor is still an equipotential (at twice its old potential); the flux around conductor $i$ is $2Q_i/\varepsilon_0$; it still dies off far away. All the data fit, so by the second theorem $2\vb E$ **is** the field, and each $\sigma$ simply doubles. This is the fine print behind "$V\propto Q$" for a capacitor.`,
         { figHtml: fCond4() }),
 
       Q(md`Which of these problems needs the **second** theorem (the first alone doesn't cover it)?`,
@@ -2448,7 +2448,7 @@
         [md`The field doesn't die off far away here. $V\to 0$ fits charges confined to a finite region.`,
           md`Sign: $\vb E = -\nabla V$, so $E_z = E_0$ needs $V = -E_0z$.`, null,
           md`In a uniform field $\partial V/\partial r = -E_0\cos\theta\ne 0$.`],
-        md`$\vb E = -\nabla V = E_0\hat{\mathbf z}$ gives $V = -E_0z + C = -E_0 r\cos\theta + C$ far away. Together with "the sphere is an equipotential with total charge $0$" that's the complete set of conditions for Griffiths Ex. 3.8, solved in Unit 7.`,
+        md`$\vb E = -\nabla V = E_0\hat{\mathbf z}$ gives $V = -E_0z + C = -E_0 r\cos\theta + C$ far away. Together with "the sphere is an equipotential with total charge $0$" that's the complete set of conditions for Griffiths Ex. 3.8, solved in Unit 8.`,
         { figHtml: fFieldSphere(false) }),
 
       Q(md`Two identical metal spheres, far apart. Sphere A is connected to a $9$ V battery whose other terminal is grounded. Sphere B is isolated and carries $5$ nC. Which quantities are **unknown** before you solve?`,
@@ -2498,7 +2498,7 @@
         [md`Nothing is grounded; $V$ at the shell is whatever the charge makes it.`,
           md`Reversed: $V$ is continuous across a surface charge; it's the normal derivative that jumps.`, null,
           md`Only a conductor's surface is an equipotential. Plastic holds its charge wherever it was put.`],
-        md`A surface charge is not a boundary of the region but a matching surface. $V$ is continuous (a finite field can't make $V$ jump). The normal field jumps by $\sigma/\varepsilon_0$: $E_{r,\text{out}} - E_{r,\text{in}} = \sigma/\varepsilon_0$, i.e. $\partial_r V_{\text{out}} - \partial_rV_{\text{in}} = -\sigma/\varepsilon_0$. Add $V$ finite at $r = 0$ and $V\to 0$ at infinity, and you have Griffiths Ex. 3.9 (Unit 7).`,
+        md`A surface charge is not a boundary of the region but a matching surface. $V$ is continuous (a finite field can't make $V$ jump). The normal field jumps by $\sigma/\varepsilon_0$: $E_{r,\text{out}} - E_{r,\text{in}} = \sigma/\varepsilon_0$, i.e. $\partial_r V_{\text{out}} - \partial_rV_{\text{in}} = -\sigma/\varepsilon_0$. Add $V$ finite at $r = 0$ and $V\to 0$ at infinity, and you have Griffiths Ex. 3.9 (Unit 8).`,
         { figHtml: fPlastic() }),
 
       Q(md`A grounded metal plate fills the plane $z = 0$, and the region of interest is $z > 0$. You're told the charge density on the plate's top surface is $\sigma(x,y)$. Which condition on $\partial V/\partial z$ just above the plate does that give?`,
@@ -2623,7 +2623,7 @@
         [md`Harmonic and right far away, but at $r = R$ it gives $-E_0R\cos\theta\ne0$.`,
           md`Zero at $r = R$ and right far away, but $R\cos\theta$ on its own is not harmonic: $\nabla^2(R\cos\theta) = -2R\cos\theta/r^2\ne0$.`,
           md`Not zero at $r = R$ (it gives $-E_0Re^{-1}\cos\theta$), and not harmonic either.`, null],
-        md`$r\cos\theta$ and $\cos\theta/r^2$ are both harmonic (the uniform-field and dipole potentials), so any combination is. $-E_0(r - R^3/r^2)\cos\theta$ vanishes at $r = R$ and tends to $-E_0r\cos\theta$ far away. All three conditions hold, so by uniqueness it's the answer (Griffiths Ex. 3.8, derived properly in Unit 7). The dipole term is the field of the charge induced on the sphere.`,
+        md`$r\cos\theta$ and $\cos\theta/r^2$ are both harmonic (the uniform-field and dipole potentials), so any combination is. $-E_0(r - R^3/r^2)\cos\theta$ vanishes at $r = R$ and tends to $-E_0r\cos\theta$ far away. All three conditions hold, so by uniqueness it's the answer (Griffiths Ex. 3.8, derived properly in Unit 8). The dipole term is the field of the charge induced on the sphere.`,
         { figHtml: fFieldSphere(true) }),
 
       RF(md`
@@ -2633,7 +2633,7 @@
 
         The next units are two systematic ways of guessing:
         - **Method of images (Unit 5).** Build $V$ from the real charges plus fictitious charges placed **outside** the region of interest. Charges outside the region don't change $\rho$ inside it, so Poisson's equation in the region is untouched; the fictitious charges only have to make the boundary conditions come out right.
-        - **Separation of variables (Units 6 and 7).** Build $V$ from products like $X(x)Y(y)$ or $R(r)\Theta(\theta)$, each harmonic on its own, and choose the coefficients so the sum matches the boundary values.
+        - **Separation of variables (Units 6–8).** Build $V$ from products like $X(x)Y(y)$ or $R(r)\Theta(\theta)$, each harmonic on its own, and choose the coefficients so the sum matches the boundary values.
 
         ### The classic image problem: the setup
 
@@ -2712,7 +2712,7 @@
           - Missing: a surface with no condition, no condition at infinity, only a total charge on an insulator, unknown $\rho$.
           - Too much: $V$ and $Q$ on one conductor, or $V$ and $\partial V/\partial n$ on one surface.
           - A guess is the answer only if it passes every test: the equation (with exactly the given charges) and every boundary condition.
-          - Coming next: images (Unit 5) and separation of variables (Units 6 and 7) are systematic ways to build guesses that pass.
+          - Coming next: images (Unit 5) and separation of variables (Units 6–8) are systematic ways to build guesses that pass.
       `),
     ],
   };

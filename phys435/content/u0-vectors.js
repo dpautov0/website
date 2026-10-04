@@ -277,7 +277,7 @@
     id: 'u0-vectors', title: 'Vectors, products and the separation vector',
     steps: [
       RF(md`
-        This unit is the math the whole course runs on: Griffiths Chapter 1, plus the vector calculus that Gauss's law and the curl of $\vb E$ need. The exam's formula sheet lists the curvilinear formulas and the three fundamental theorems, so the goal is to know what each object *means*, when to reach for it, and how to use the sheet without dropping a factor. Physics appears wherever it helps; the physics of Gauss's law is Unit 1.
+        This unit is the math the whole course runs on: Griffiths Chapter 1, plus the vector calculus that Gauss's law and the curl of $\vb E$ need. The exam's formula sheet lists the curvilinear formulas and the three fundamental theorems, so the goal is to know what each object *means*, when to reach for it, and how to use the sheet without dropping a factor. Physics appears wherever it helps; the physics of Gauss's law is the ECE 329 review.
 
         ### Components and unit vectors
 
@@ -1378,7 +1378,7 @@
 
         $$\int_{\vb a}^{\vb b}\vb E\cdot d\vb l = -\big[V(\vb b)-V(\vb a)\big],\qquad V(\vb r) = -\int_{\mathcal O}^{\vb r}\vb E\cdot d\vb l$$
 
-        The second is on the formula sheet; the first is the gradient theorem with $T = V$ and $\nabla V = -\vb E$. The path doesn't matter, which is why "the potential at a point" makes sense. Unit 2 builds on this.
+        The second is on the formula sheet; the first is the gradient theorem with $T = V$ and $\nabla V = -\vb E$. The path doesn't matter, which is why "the potential at a point" makes sense. The ECE 329 review builds on this.
       `, { paths: { svg: fTwoPaths(), cap: 'Two routes from $\\vb a$ to $\\vb b$. For a gradient, both give $T(\\vb b)-T(\\vb a)$.' } }),
 
       Q(md`For some function $T$, $\int\nabla T\cdot d\vb l$ along path 1 from $\vb a$ to $\vb b$ is $7$ (figure). What is it along path 2?`,
@@ -1673,7 +1673,7 @@
 
         $$\nabla\cdot\vb E = \frac{\rho}{\varepsilon_0}.$$
 
-        Read it as: lines of $\vb E$ begin on positive charge and end on negative charge (or run off to infinity); in empty space they never begin or end. Because it is local, you can run it backwards: given $\vb E$, the charge that made it is $\rho = \varepsilon_0\nabla\cdot\vb E$. Unit 1 does the physics; here, practise the derivative.
+        Read it as: lines of $\vb E$ begin on positive charge and end on negative charge (or run off to infinity); in empty space they never begin or end. Because it is local, you can run it backwards: given $\vb E$, the charge that made it is $\rho = \varepsilon_0\nabla\cdot\vb E$. The ECE 329 review does the physics; here, practise the derivative.
       `),
 
       Q(md`In some region $\vb E = k\,(x\,\uv x+y\,\uv y+z\,\uv z)$ with $k$ constant. What is the charge density there?`,
@@ -2579,7 +2579,7 @@
 
         **Check.** $-\nabla V = k\big[(2xy+z)\,\uv x+x^2\,\uv y+x\,\uv z\big] = \vb E$.
 
-        Setting the variables not yet "reached" to zero on each leg is what makes the legs easy; that is the whole trick. Unit 2 does this for HW 2.21.
+        Setting the variables not yet "reached" to zero on each leg is what makes the legs easy; that is the whole trick. The ECE 329 review does this for HW 2.21.
       `, { legs: { svg: fLegs(), cap: 'The integration path: leg 1 along $x$, leg 2 along $y$, leg 3 along $z$.' } }),
 
       P({

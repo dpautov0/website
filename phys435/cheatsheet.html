@@ -13,7 +13,7 @@
   @page { size: letter; margin: 0.28in; }
   * { box-sizing: border-box; }
   html, body { background: var(--paper); color: var(--ink); margin: 0; }
-  body { font: 8.6pt/1.25 "Segoe UI", Arial, sans-serif; }
+  body { font: 8.2pt/1.24 "Segoe UI", Arial, sans-serif; }
   .page { width: 7.94in; margin: 0 auto; padding: 0; }
   .top { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1.2px solid var(--ink); margin-bottom: 3px; padding-bottom: 1px; }
   .top b { font-size: 9pt; }
@@ -121,13 +121,12 @@
 <li>$\frac1{|\vec r-\vec r'|}=\sum\frac{r_<^\ell}{r_>^{\ell+1}}P_\ell(\cos\gamma)$.</li>
 </ul></section>
 
-<section><h2>9 · Multipoles</h2>
+<section><h2>9 · Recipes (most of the points)</h2>
 <ul>
-<li>$V=k\big[\frac Qr+\frac{\vec p\cdot\hat r}{r^2}+\dots\big]$, $V_\ell=\frac{k}{r^{\ell+1}}\int r'^\ell P_\ell(\cos\theta')\rho\,d\tau'$. $\vec p=\int\rho\vec r'd\tau'=\sum q_i\vec r_i$.</li>
-<li>$\vec E_{dip}=\frac{kp}{r^3}(2\cos\theta\,\hat r+\sin\theta\,\hat\theta)=\frac k{r^3}[3(\vec p\cdot\hat r)\hat r-\vec p]$.</li>
-<li>$\rho(\phi)$-free ⇒ only $p_z=2\pi\iint\rho\,r'^3\sin\theta'\cos\theta'dr'd\theta'$ (Spring '26: $\pm\rho_0$ halves ⇒ $\frac{\pi R^4\rho_0}2$).</li>
-<li>Odd in $z$ ⇒ only odd $\ell$. Even ⇒ even $\ell$. $Q\ne0$ ⇒ $\vec p$ depends on origin: $\vec p\,'=\vec p-Q\vec a$.</li>
-<li>$\vec N=\vec p\times\vec E$, $U=-\vec p\cdot\vec E$, $\vec F=(\vec p\cdot\nabla)\vec E$. $V$ falls as $r^{-1},r^{-2},r^{-3}$; $E$ one power faster.</li>
+<li><b>Separation:</b> (1) region + coordinates; (2) numbered BCs; (3) product ansatz, sign of the constant (oscillate where two BCs are zero); (4) apply the zero BCs ⇒ quantized $k$, basis; (5) superpose; (6) Fourier/Legendre on the live boundary; (7) check a limit, a symmetry, a corner value.</li>
+<li><b>Images:</b> (1) region of interest; (2) BCs on the metal; (3) images <b>outside</b> the region; (4) verify every BC (then uniqueness ⇒ done); (5) $\sigma=-\epsilon_0\partial V/\partial n$; (6) force = images on $q$ only; (7) energy = half.</li>
+<li><b>Given E, find ρ and V:</b> divergence for $r\neq0$, flux of a tiny sphere at 0, flux at ∞, jumps in $E_r$ ⇒ $\sigma$; $V$ by integrating in from ∞ piece by piece.</li>
+<li><b>Superposed Gauss:</b> each piece's field from its own center, then add vectors; $\Delta V$ by integrating each piece.</li>
 </ul></section>
 
 <section><h2>10 · Classic results</h2>
@@ -136,7 +135,7 @@
 <li>Nested metal shells: inner surface carries $-q_{enc}$, outer surface carries $Q_{shell}+q_{enc}$. A cavity's field depends only on the charge inside it.</li>
 <li>Edge at $V_0\frac ya$: $C_n=\frac{2V_0(-1)^{n+1}}{n\pi}$. Const: $\frac{4V_0}{n\pi}$ (odd). $\int_0^a\sin^2=\frac a2$.</li>
 <li>Line $\lambda$ at height $d$ over a grounded plane: $V=\frac{\lambda}{2\pi\epsilon_0}\ln\frac{s_-}{s_+}$ ($s_\pm$ = distance to $\pm\lambda$).</li>
-<li>Dipole: $V=\frac{kp\cos\theta}{r^2}$. Ball $\rho_0\cos\theta$ and shell $k\cos\theta$: exact dipole outside.</li>
+<li>Sphere at $V_0$ + grounded-sphere image pair: $V=$ image solution $+\frac{RV_0}{r}$ outside; inside a shell at $V_0$: image solution $+V_0$.</li>
 </ul></section>
 
 <section><h2>11 · Which method? Traps</h2>

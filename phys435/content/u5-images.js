@@ -725,8 +725,8 @@
           1. $V(x,y,0) = 0$: the plane is grounded.
           2. $V(\infty) = 0$: far from the charge ($x^2+y^2+z^2 \gg d^2$) the potential dies off.
 
-          !!key The licence to guess: uniqueness (Unit 4)
-            If $\rho$ is given in a region and $V$ is given on every boundary of that region, Poisson's equation has exactly one solution there. So **any** function that has the right $\rho$ in the region and meets every boundary condition is *the* answer, however you found it. (See [the first uniqueness theorem](#/l/u4-unique1) in Unit 4.)
+          !!key The licence to guess: uniqueness (Unit 3)
+            If $\rho$ is given in a region and $V$ is given on every boundary of that region, Poisson's equation has exactly one solution there. So **any** function that has the right $\rho$ in the region and meets every boundary condition is *the* answer, however you found it. (See [the first uniqueness theorem](#/l/u4-unique1) in Unit 3.)
 
         `, { setup: { svg: fPlane3D({ dim: true }), cap: md`$q$ a height $d$ above the grounded plane $z=0$.` } }),
 
@@ -3261,7 +3261,7 @@
 
           [[fig:img]]
 
-          For an isolated sphere the potential is not given; it comes out of the solution. The [second uniqueness theorem](#/l/u4-unique2) (Unit 4) says that fixing the **total charge** on each conductor is enough to make the solution unique.
+          For an isolated sphere the potential is not given; it comes out of the solution. The [second uniqueness theorem](#/l/u4-unique2) (Unit 3) says that fixing the **total charge** on each conductor is enough to make the solution unique.
 
           **Where the neutral sphere's potential comes from.** The center is inside the metal, so it is at the sphere's potential. Every induced charge is a distance $R$ from the center, so together they contribute $\dfrac{Q_{\text{total}}}{4\pi\varepsilon_0R}$ there, which is $0$ for a neutral sphere. What remains is $q$'s potential at the center: $V_{\text{sphere}} = \dfrac{q}{4\pi\varepsilon_0a}$. (The same argument for the grounded sphere, $0 = \dfrac{q}{4\pi\varepsilon_0a} + \dfrac{Q}{4\pi\varepsilon_0R}$, gives its induced charge $-\dfrac Raq$ in one line.)
         `, { img: { svg: fSphereImg({ center: "q''" }), cap: md`The grounded image $q'$ plus a second image $q''$ at the center. The dashed circle is an equipotential of this system.` } }),
@@ -3281,7 +3281,7 @@
             md`Images work for spheres because this particular guess meets the conditions. The guarantee comes from the uniqueness theorem, not from the shape.`,
             md`It doesn't: the image formula is not $0$ inside the sphere. Inside is not part of the region, so it doesn't matter.`,
             md`That is a consequence of the solution being right, not the reason it is right.`],
-          md`Uniqueness ([Unit 4](#/l/u4-unique1)): two functions with the same $\rho$ in a region and the same boundary values must be equal there. The real potential and the image potential share both, so they agree for $r\ge R$. That is the whole logic of the method.`,
+          md`Uniqueness ([Unit 3](#/l/u4-unique1)): two functions with the same $\rho$ in a region and the same boundary values must be equal there. The real potential and the image potential share both, so they agree for $r\ge R$. That is the whole logic of the method.`,
           { figHtml: fSphere() }),
 
         Q(md`You switch from a **grounded** sphere to an **isolated, neutral** one, with $q$ in the same place. Which boundary condition changes, and what does that do to the images?`,

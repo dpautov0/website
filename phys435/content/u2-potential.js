@@ -470,7 +470,7 @@
       RF(md`
         ### A very special kind of vector field
 
-        In Unit 1 you showed that the field of any static charge distribution has zero curl:
+        In the ECE 329 review you showed that the field of any static charge distribution has zero curl:
 
         $$\curl\vb E = 0 .$$
 
@@ -634,7 +634,7 @@
         [md`With $d\vb l$ along $\vb E$, $\vb E\cdot d\vb l>0$, so $dV=-\vb E\cdot d\vb l<0$.`,
           md`$V$ stays constant only when you move perpendicular to $\vb E$.`,
           null,
-          md`$V$ belongs to the field alone; no test charge appears in $V=-\int\vb E\cdot d\vb l$. (The potential energy $qV$ does depend on the sign of $q$; that is Unit 3.)`],
+          md`$V$ belongs to the field alone; no test charge appears in $V=-\int\vb E\cdot d\vb l$. (The potential energy $qV$ does depend on the sign of $q$; that is Unit 2.)`],
         md`$dV = \nabla V\cdot d\vb l = -\vb E\cdot d\vb l = -|\vb E|\,|d\vb l|<0$. The field points "downhill", from high potential to low.`,
         { figHtml: figAlongE() }),
       Q(md`In the uniform field $\vb E=E_0\,\uv x$ ($E_0>0$), take $V=0$ at the origin. What is $V$ at the point $(d,\,h,\,0)$?`,
@@ -1063,7 +1063,7 @@
 
         Units: $\vb E$ is in N/C; $V=-\int\vb E\cdot d\vb l$ is in N·m/C $=$ J/C, which is a **volt**. So $V$ is energy **per unit charge**, and N/C $=$ V/m, the usual unit for fields.
 
-        The name "potential" invites confusion with "potential energy". They are different: $V$ is a property of the source charges, with no test charge anywhere in its definition. Unit 3 shows that the work needed to bring a charge $Q$ from the reference point to $\vb r$ is $Q\,V(\vb r)$; that is where the two connect.
+        The name "potential" invites confusion with "potential energy". They are different: $V$ is a property of the source charges, with no test charge anywhere in its definition. Unit 2 shows that the work needed to bring a charge $Q$ from the reference point to $\vb r$ is $Q\,V(\vb r)$; that is where the two connect.
       `),
       Q(md`You carry a charge $Q$ slowly from $a$ to $b$ in a static field, so its kinetic energy doesn't change. How much work do *you* do?`,
         [md`$Q\,[V(a)-V(b)]$`, md`$Q\displaystyle\int_a^b\vb E\cdot d\vb l$`, md`$Q\,[V(b)-V(a)]$`, md`It depends on the path you take`], 2,
@@ -1087,7 +1087,7 @@
           null,
           md`The value of $V$ at one point says nothing about the field there; $\vb E$ depends on how $V$ changes.`,
           md`$V_P$ is set by the source charges. The test charge does not change it.`],
-        md`$V$ is a property of the sources (J per C). The energy of a particular charge $Q$ placed there is $QV_P$ (Unit 3). It can be negative: a negative charge is "downhill" where $V$ is high.`,
+        md`$V$ is a property of the sources (J per C). The energy of a particular charge $Q$ placed there is $QV_P$ (Unit 2). It can be negative: a negative charge is "downhill" where $V$ is high.`,
         { nofig: 'meaning of V versus energy; no geometry involved' }),
       RF(md`
         !!key Patterns to remember
@@ -1185,7 +1185,7 @@
 
         $$\divg\vb E=\divg(-\nabla V)=-\lap V=\frac{\rho}{\ep}\quad\Longrightarrow\quad\boxed{\lap V=-\frac{\rho}{\ep}}\qquad\text{(Poisson's equation)}$$
 
-        with $\lap=\dfrac{\partial^2}{\partial x^2}+\dfrac{\partial^2}{\partial y^2}+\dfrac{\partial^2}{\partial z^2}$ in Cartesian coordinates; the spherical and cylindrical forms are on the formula sheet. Where there is no charge it becomes **Laplace's equation**, $\lap V=0$. Unit 4 is about solving that one.
+        with $\lap=\dfrac{\partial^2}{\partial x^2}+\dfrac{\partial^2}{\partial y^2}+\dfrac{\partial^2}{\partial z^2}$ in Cartesian coordinates; the spherical and cylindrical forms are on the formula sheet. Where there is no charge it becomes **Laplace's equation**, $\lap V=0$. Unit 3 is about solving that one.
 
         What about the other equation, $\curl\vb E=0$? It puts **no** condition on $V$, because $\curl(\nabla V)=0$ for every function. One scalar equation does the work of the two vector equations for $\vb E$.
 
@@ -1249,7 +1249,7 @@
         [md`It works, but it is three integrals (one per component), each with the unit vector $\srh$ to resolve.`,
           null,
           md`Gauss's law gives $\vb E$ only when symmetry makes $|\vb E|$ constant on the surface. Here there is none.`,
-          md`Guessing works only in special cases; Unit 4 has systematic methods for $\rho=0$ regions with boundaries.`],
+          md`Guessing works only in special cases; Unit 3 has systematic methods for $\rho=0$ regions with boundaries.`],
         md`The $V$ integral is one scalar integral with no components. Once you have $V(\vb r)$ as a function of position (not just on an axis), $\vb E=-\nabla V$ is differentiation. Lesson 4 is built on this route.`,
         { figHtml: figTriangle() }),
       Q(md`In some region $V(x)=V_0\dfrac{x^2}{a^2}$, with no dependence on $y$ or $z$. What is $\rho$ there?`,
@@ -1320,7 +1320,7 @@
           null,
           md`Sign: $\rho=-\ep\lap V=-\ep k\left(-4\pi\delta^3\right)=+4\pi\ep k\,\delta^3$.`,
           md`$\rho$ vanishes for every $r>0$. All of it is concentrated at a single point.`],
-        md`From Unit 0: $\divg(\uv r/r^2)=4\pi\delta^3(\vb r)$ and $\nabla(1/r)=-\uv r/r^2$, so $\lap(1/r)=-4\pi\delta^3(\vb r)$. Then $\rho=-\ep\lap V=4\pi\ep k\,\delta^3(\vb r)$: a point charge $q=4\pi\ep k$. That is just $V=\dfrac{q}{4\pi\ep r}$ read backwards. You need this in Discussion 3 below.`,
+        md`From Unit 1: $\divg(\uv r/r^2)=4\pi\delta^3(\vb r)$ and $\nabla(1/r)=-\uv r/r^2$, so $\lap(1/r)=-4\pi\delta^3(\vb r)$. Then $\rho=-\ep\lap V=4\pi\ep k\,\delta^3(\vb r)$: a point charge $q=4\pi\ep k$. That is just $V=\dfrac{q}{4\pi\ep r}$ read backwards. You need this in Discussion 3 below.`,
         { nofig: 'identity for 1/r' }),
       Q(md`Between two oppositely charged plates there is no charge. Which statement about the region between them is correct?`,
         [md`$V=0$ there.`, md`$\vb E=0$ there.`, md`$\lap V=0$ there, but $V$ and $\vb E$ need not vanish.`, md`$V$ must be constant there.`], 2,
@@ -1339,14 +1339,14 @@
           md`Add any solution of Laplace's equation to $V$ and $\rho$ is unchanged. The boundary values pick out the right one.`,
           md`The total charge is far too little information to fix $V(\vb r)$.`,
           null],
-        md`Poisson's equation determines $V$ only up to a solution of $\lap V=0$. Boundary conditions remove that freedom (the uniqueness theorems of Unit 4 make this precise). Poisson's equation plus boundary conditions lets you find $V$ directly from a charge distribution.`,
+        md`Poisson's equation determines $V$ only up to a solution of $\lap V=0$. Boundary conditions remove that freedom (the uniqueness theorems of Unit 3 make this precise). Poisson's equation plus boundary conditions lets you find $V$ directly from a charge distribution.`,
         { nofig: 'statement about numerical methods' }),
       Q(md`In a charge-free region, can $V$ have a local maximum, a point where $V$ is higher than at all its neighbours?`,
         [md`Yes, at a point equidistant from several positive charges`, md`No: at a peak $V$ curves down in every direction, so $\lap V<0$, which needs $\rho>0$`, md`Yes, wherever $\vb E=0$`, md`Only in one dimension`], 1,
-        [md`Such a point may have $\vb E=0$, but there $V$ is a saddle: it rises in some directions and falls in others (like the zeros inside the polygon of charges in Unit 1).`, null,
+        [md`Such a point may have $\vb E=0$, but there $V$ is a saddle: it rises in some directions and falls in others (like the zeros inside the polygon of charges in the ECE 329 review).`, null,
           md`$\vb E=0$ makes a flat spot, not a peak. In charge-free space a flat spot is always a saddle.`,
           md`In one dimension Laplace's equation is $V''=0$: a straight line, with no peak at all.`],
-        md`With $\rho=0$, $\lap V=\dfrac{\partial^2V}{\partial x^2}+\dfrac{\partial^2V}{\partial y^2}+\dfrac{\partial^2V}{\partial z^2}=0$, so the curvatures can't all be negative. (Unit 4 makes this exact: a solution of Laplace's equation equals its average over any sphere around a point, so it has no local maxima or minima.) Consequence: no static arrangement of charges can hold a test charge in stable equilibrium in empty space (Earnshaw's theorem).`,
+        md`With $\rho=0$, $\lap V=\dfrac{\partial^2V}{\partial x^2}+\dfrac{\partial^2V}{\partial y^2}+\dfrac{\partial^2V}{\partial z^2}=0$, so the curvatures can't all be negative. (Unit 3 makes this exact: a solution of Laplace's equation equals its average over any sphere around a point, so it has no local maxima or minima.) Consequence: no static arrangement of charges can hold a test charge in stable equilibrium in empty space (Earnshaw's theorem).`,
         { nofig: 'conceptual' }),
 
       Q(md`In a charge-free region, $V$ depends only on $x$. What can $V(x)$ be?`,
@@ -1429,7 +1429,7 @@
           - From $V$ to $\rho$: differentiate. Use the right Laplacian ($\tfrac{1}{r^2}\tfrac{d}{dr}r^2\tfrac{d}{dr}$ for spheres, $\tfrac1s\tfrac{d}{ds}s\tfrac{d}{ds}$ for cylinders).
           - A $c/r$ singularity hides a point charge $4\pi\ep c$, because $\lap\tfrac1r=-4\pi\delta^3(\vb r)$.
           - Total charge: Gauss on a huge sphere, $Q=4\pi\ep r^2E_r$ as $r\to\infty$.
-          - From $\rho$ to $V$: integrate (Lesson 4). Poisson plus boundary conditions also fixes $V$ (Unit 4).
+          - From $\rho$ to $V$: integrate (Lesson 4). Poisson plus boundary conditions also fixes $V$ (Unit 3).
       `),
     ],
   };
@@ -1851,7 +1851,7 @@
         [md`The $1/r$ term is $\kq\,Q_{\text{net}}/r$, and here $Q_{\text{net}}=0$.`, null,
           md`$1/r^3$ is how the dipole's *field* falls off. $V$ goes one power slower.`,
           md`With $V(\infty)=0$, the potential of any finite distribution goes to zero far away.`],
-        md`The net-charge term $\kq\dfrac{Q}{r}$ vanishes, so the leading term is the dipole term $\propto\dfrac{p\cos\theta}{r^2}$. Then $\vb E=-\nabla V$ falls as $1/r^3$, as for the $\pm q$ pair in Unit 1. (The multipole expansion makes this systematic later in the course.)`,
+        md`The net-charge term $\kq\dfrac{Q}{r}$ vanishes, so the leading term is the dipole term $\propto\dfrac{p\cos\theta}{r^2}$. Then $\vb E=-\nabla V$ falls as $1/r^3$, as for the $\pm q$ pair in the ECE 329 review. (The multipole expansion makes this systematic later in the course.)`,
         { nofig: 'limiting behaviour' }),
 
       RF(md`
@@ -2254,7 +2254,7 @@
         [null, md`Shielding is a property of *conductors*, whose charges rearrange. This shell's charge is fixed and uniform.`,
           md`Sizes don't matter. Superposition simply adds the outside charge's field to the shell's (zero) field.`,
           md`The outside charge's field is nonzero inside, so $V$ is no longer constant there and $\vb E\neq0$.`],
-        md`Superposition: $\vb E_{\text{inside}}=\vb E_{\text{shell}}+\vb E_q=0+\vb E_q$. The shell theorem says only that the shell's *own* field vanishes inside. A conducting shell would be different: its charge would move to cancel $\vb E_q$ inside (Unit 3).`,
+        md`Superposition: $\vb E_{\text{inside}}=\vb E_{\text{shell}}+\vb E_q=0+\vb E_q$. The shell theorem says only that the shell's *own* field vanishes inside. A conducting shell would be different: its charge would move to cancel $\vb E_q$ inside (see the conductors review).`,
         { nofig: 'conceptual' }),
 
       RF(md`
@@ -2898,7 +2898,7 @@
         [[fig:svc]]
 
         - **Isolated flat sheet:** by symmetry the field is $\tfrac{\sigma}{2\ep}$ pointing away on both sides. Jump: $\tfrac{\sigma}{2\ep}-\left(-\tfrac{\sigma}{2\ep}\right)=\tfrac{\sigma}{\ep}$.
-        - **Surface of a conductor:** in electrostatics $\vb E=0$ inside a conductor (Unit 3 shows why). With "below" = inside, $\vb E_{\text{below}}=0$, so just outside
+        - **Surface of a conductor:** in electrostatics $\vb E=0$ inside a conductor (see the conductors review). With "below" = inside, $\vb E_{\text{below}}=0$, so just outside
           $$\vb E_{\text{outside}}=\frac{\sigma}{\ep}\,\uv n,\qquad \sigma=\ep\,\vb E_{\text{outside}}\cdot\uv n,$$
           with $\uv n$ pointing out of the conductor. That is twice the isolated sheet's field: the rest of the conductor's charge cancels the patch's field inside and doubles it outside.
         - **Parallel plates** (Griffiths Ex. 2.6): $\pm\sigma$ give $\sigma/\ep$ between the plates and $0$ outside. At each plate the jump is again $\pm\sigma/\ep$, with $\vb E=0$ on the outer side, just like a conductor surface.
@@ -3415,9 +3415,9 @@
         `,
       }),
       RF(md`
-        ### Building $V$ from the conditions (a preview of Unit 4)
+        ### Building $V$ from the conditions (a preview of Unit 3)
 
-        So far you have used the conditions to **check** a potential or to **read off** $\sigma$. They can also **determine** $V$, which is how Unit 4 uses them. Take the uniformly charged thin shell (radius $R$, density $\sigma$, no other charge) and pretend you have never seen Ex. 2.8.
+        So far you have used the conditions to **check** a potential or to **read off** $\sigma$. They can also **determine** $V$, which is how Unit 3 uses them. Take the uniformly charged thin shell (radius $R$, density $\sigma$, no other charge) and pretend you have never seen Ex. 2.8.
 
         [[fig:reg]]
 
@@ -3555,7 +3555,7 @@
           - $\sigma$ from fields: $\ep(\vb E_{\text{above}}-\vb E_{\text{below}})\cdot\uv n$. From potentials: $-\ep$ times the change in normal slope.
           - Graph reading: $V$ never jumps; a corner in $V$ (a jump in $E$) is surface charge; a ridge is positive, a valley negative. Curvature without a corner is volume charge.
           - Conductor: zero field inside, so the whole jump is outside: $E=\sigma/\ep$, perpendicular to the surface.
-          - Building $V$: one general solution per region, one condition per constant. Finite at the center and the far-field (or reference) condition kill terms; continuity of $V$ and the jump in $\partial V/\partial n$ fix the rest. Unit 4 uses exactly this.
+          - Building $V$: one general solution per region, one condition per constant. Finite at the center and the far-field (or reference) condition kill terms; continuity of $V$ and the jump in $\partial V/\partial n$ fix the rest. Unit 3 uses exactly this.
 
         Below: a drill that serves every multiple-choice question in this unit at random.
       `),

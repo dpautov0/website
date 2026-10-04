@@ -3409,6 +3409,6 @@
   };
   const LESSONS = [L1,L2,L3,L4];
   C.unit({ id: 'uW', num: 'Unit W', title: 'Polar coordinates and harder separation',
-    blurb: 'Separation of variables in plane polar coordinates (wedges, sectors, pipes) and the dipole moments of lopsided charge, built around last spring\'s Hour Exam 1.',
+    blurb: 'Separation of variables in plane polar coordinates (wedges, sectors, pipes), built around last spring\'s Hour Exam 1. The last lesson, on dipole moments, is Lecture 14 material and not on Exam I.',
     lessons: LESSONS });
 })();

@@ -135,7 +135,7 @@
         id: 'x-legendre', title: 'Legendre drill (randomized)', kind: 'review',
         steps: [
           R(md`
-            Last year's exam had a Legendre-polynomial problem straight up. These four drills generate new problems every time; do each until it's automatic. The full treatment is in Unit 7 and Unit L.
+            Last year's exam had a Legendre-polynomial problem straight up. These four drills generate new problems every time; do each until it's automatic. The full treatment is in Unit 8 and Unit 8.
 
             !!key What to have cold
               - $P_0 = 1$, $P_1 = x$, $P_2 = \tfrac12(3x^2-1)$, $P_3 = \tfrac12(5x^3-3x)$, $P_4 = \tfrac18(35x^4-30x^2+3)$, with $x = \cos\theta$.

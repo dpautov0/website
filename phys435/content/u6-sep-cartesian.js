@@ -527,7 +527,7 @@
             Use it when all three hold:
 
             1. **No charge in the region**, so $\nabla^2 V = 0$ (Laplace, not Poisson).
-            2. **Every boundary is a coordinate surface**: planes $x = \text{const}$, $y = \text{const}$ here (spheres $r = \text{const}$ in Unit 7).
+            2. **Every boundary is a coordinate surface**: planes $x = \text{const}$, $y = \text{const}$ here (spheres $r = \text{const}$ in Unit 8).
             3. **$V$ is given on every boundary**, including a limiting value far away. By the uniqueness theorem that fixes $V$ completely.
 
             The standard example (Griffiths Ex. 3.3) is the **slot**: two grounded metal plates at $y = 0$ and $y = a$, closed off at $x = 0$ by a strip held at $V_0(y)$ and insulated from the plates. Everything extends to $\pm\infty$ in $z$.

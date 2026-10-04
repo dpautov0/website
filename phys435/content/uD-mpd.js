@@ -1,5 +1,5 @@
 /* Unit D drill ladders: multipole expansion and delta functions in charge density (Griffiths 1.5, 2.2, 3.4).
-   Pushes four lessons into the existing Unit D (registered by uD-0.js).
+   Pushes four lessons into the drill holding unit (registered by uD-0.js).
    Every answer is checked in scratchpad/p435/verify/uD_mpd_mp.py and uD_mpd_delta.py. */
 (function () {
   'use strict';

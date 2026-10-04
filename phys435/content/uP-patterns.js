@@ -2786,7 +2786,7 @@
       RF(md`
         ### Twist 5: a sphere in a uniform field
 
-        Griffiths Ex. 3.8 (solved by separation of variables in [Unit 7](#/l/u7-field)) also has an image solution. Make the uniform field $E_0\uv z$ with two far charges: $-Q$ at $z = D$ and $+Q$ at $z = -D$, with $\dfrac{2Q}{4\pi\ep D^2} = E_0$, and let $D\to\infty$. Their images are $+\dfrac RDQ$ at $z = +\dfrac{R^2}{D}$ and $-\dfrac RDQ$ at $z = -\dfrac{R^2}{D}$. Together the images form a dipole of moment
+        Griffiths Ex. 3.8 (solved by separation of variables in [Unit 8](#/l/u7-field)) also has an image solution. Make the uniform field $E_0\uv z$ with two far charges: $-Q$ at $z = D$ and $+Q$ at $z = -D$, with $\dfrac{2Q}{4\pi\ep D^2} = E_0$, and let $D\to\infty$. Their images are $+\dfrac RDQ$ at $z = +\dfrac{R^2}{D}$ and $-\dfrac RDQ$ at $z = -\dfrac{R^2}{D}$. Together the images form a dipole of moment
         $$p = \frac RDQ\cdot\frac{2R^2}{D} = 4\pi\ep R^3E_0\quad(\text{along } +\uv z).$$
 
         So a grounded sphere in a uniform field is the uniform field plus a point dipole at the center:

@@ -1,5 +1,5 @@
 /* Unit L — Legendre polynomials: direct problems
-   (Griffiths 3.3.2). A drill unit that follows Unit 7:
+   (Griffiths 3.3.2). A drill unit that follows Unit 8:
    computing P_ℓ, Legendre's equation, orthogonality, expansions, and direct sphere problems. */
 (function () {
   'use strict';
@@ -248,7 +248,7 @@
     id: 'uL-compute', title: 'Computing P_ℓ',
     steps: [
       RF(md`
-        This unit has one job: make you fast and certain on any **direct** Legendre question. Last year's exam had one. Unit 7 used Legendre polynomials as a tool inside boundary-value problems. Here they are the topic, and every skill gets drilled until it takes under a minute.
+        This unit has one job: make you fast and certain on any **direct** Legendre question. Last year's exam had one. Unit 8 used Legendre polynomials as a tool inside boundary-value problems. Here they are the topic, and every skill gets drilled until it takes under a minute.
 
         Notation: the separated solution is $V(r,\theta) = R(r)\,Q(\theta)$ with
 
@@ -307,7 +307,7 @@
         | fourth derivative | $1680x^4 - 1440x^2 + 144$ |
         | times $\frac{1}{384}$ | $\tfrac{35}{8}x^4 - \tfrac{30}{8}x^2 + \tfrac38 = \tfrac18(35x^4 - 30x^2 + 3)$ |
 
-        Check: $\tfrac18(35 - 30 + 3) = 1$. (Unit 7 showed the short version for $\ell = 2, 3$ and did $P_5$. Here every line is written out, which is what an exam grader wants to see.)
+        Check: $\tfrac18(35 - 30 + 3) = 1$. (Unit 8 showed the short version for $\ell = 2, 3$ and did $P_5$. Here every line is written out, which is what an exam grader wants to see.)
 
         [[fig:rod]]
 
@@ -942,7 +942,7 @@
 
         $$\boxed{a_\ell = \frac{2\ell+1}{2}\int_{-1}^{1}f(x)\,P_\ell(x)\,dx = \frac{2\ell+1}{2}\int_0^\pi f(\theta)\,P_\ell(\cos\theta)\,\sin\theta\,d\theta}$$
 
-        It is the slot's sine-series trick again: multiply by one basis function, integrate, and orthogonality kills every term but one. The factor in front is one over the norm, as $\frac2a$ was one over $\int\sin^2 = \frac a2$ (Unit 7, Lesson 3 has the side-by-side table). For a sphere held at $V_0(\theta)$, the coefficient $A_\ell = \frac{2\ell+1}{2R^\ell}\int_0^\pi V_0P_\ell\sin\theta\,d\theta$ is exactly this with $f = V_0$ and $a_\ell = A_\ell R^\ell$.
+        It is the slot's sine-series trick again: multiply by one basis function, integrate, and orthogonality kills every term but one. The factor in front is one over the norm, as $\frac2a$ was one over $\int\sin^2 = \frac a2$ (Unit 8, Lesson 3 has the side-by-side table). For a sphere held at $V_0(\theta)$, the coefficient $A_\ell = \frac{2\ell+1}{2R^\ell}\int_0^\pi V_0P_\ell\sin\theta\,d\theta$ is exactly this with $f = V_0$ and $a_\ell = A_\ell R^\ell$.
 
         One coefficient has a meaning of its own: $a_0 = \frac12\int_{-1}^1f\,dx$ is the **average of $f$ over the sphere's surface**.
       `),
@@ -1005,7 +1005,7 @@
 
         $$\int_0^\pi g(\cos\theta)\,\sin\theta\,d\theta = \int_1^{-1}g(x)\,(-dx) = \int_{-1}^{1}g(x)\,dx$$
 
-        The minus sign from $dx$ and the flipped limits cancel. The two ways to get it wrong: keep only one of them (answer has the wrong sign), or forget the $\sin\theta$ and integrate in $\theta$ (wrong integral). The $\sin\theta$ is the area of a latitude band (Unit 7, Lesson 2): orthogonality is a statement about averaging over the sphere's surface.
+        The minus sign from $dx$ and the flipped limits cancel. The two ways to get it wrong: keep only one of them (answer has the wrong sign), or forget the $\sin\theta$ and integrate in $\theta$ (wrong integral). The $\sin\theta$ is the area of a latitude band (Unit 8, Lesson 2): orthogonality is a statement about averaging over the sphere's surface.
 
         | $\theta$ range | $x$ range |
         |---|---|
@@ -1338,7 +1338,7 @@
 
         $$a_\ell = \frac{2\ell+1}{2}\left[\int_0^1P_\ell\,dx - \int_{-1}^0P_\ell\,dx\right] = (2\ell+1)\int_0^1P_\ell\,dx$$
 
-        $a_1 = 3\cdot\tfrac12 = \tfrac32$, $\;a_3 = 7\cdot\left(-\tfrac18\right) = -\tfrac78$, $\;a_5 = 11\cdot\tfrac{1}{16} = \tfrac{11}{16}$. Unit 7 worked the first two; the new piece is $\int_0^1P_5\,dx = \tfrac18\left(\tfrac{63}{6} - \tfrac{70}{4} + \tfrac{15}{2}\right) = \tfrac18\cdot\tfrac12 = \tfrac{1}{16}$. All even $a_\ell = 0$, including $a_0$: equal areas at $\pm1$ average to zero.
+        $a_1 = 3\cdot\tfrac12 = \tfrac32$, $\;a_3 = 7\cdot\left(-\tfrac18\right) = -\tfrac78$, $\;a_5 = 11\cdot\tfrac{1}{16} = \tfrac{11}{16}$. Unit 8 worked the first two; the new piece is $\int_0^1P_5\,dx = \tfrac18\left(\tfrac{63}{6} - \tfrac{70}{4} + \tfrac{15}{2}\right) = \tfrac18\cdot\tfrac12 = \tfrac{1}{16}$. All even $a_\ell = 0$, including $a_0$: equal areas at $\pm1$ average to zero.
 
         **$\lvert\cos\theta\rvert$.** Even, so only even $\ell$, and $a_\ell = (2\ell+1)\int_0^1x\,P_\ell\,dx$:
 
@@ -1346,7 +1346,7 @@
         - $a_2 = 5\cdot\tfrac12\int_0^1\left(3x^3 - x\right)dx = \tfrac52\left(\tfrac34 - \tfrac12\right) = \tfrac58$
         - $a_4 = 9\cdot\tfrac18\int_0^1\left(35x^5 - 30x^3 + 3x\right)dx = \tfrac98\left(\tfrac{35}{6} - \tfrac{15}{2} + \tfrac32\right) = \tfrac98\left(-\tfrac16\right) = -\tfrac{3}{16}$
 
-        The next one is $a_6 = \tfrac{13}{128}$. Unit 7 only quoted these; now you have done them.
+        The next one is $a_6 = \tfrac{13}{128}$. Unit 8 only quoted these; now you have done them.
 
         [[fig:abs]]
 
@@ -1577,7 +1577,7 @@
       RF(md`
         ### The recipe
 
-        Every direct sphere problem is the same few lines. Unit 7 (Lesson 5) derived them on Griffiths' example $k\sin^2(\theta/2)$ (Ex. 3.6); here they are as a checklist with a shortcut for each quantity an exam can ask.
+        Every direct sphere problem is the same few lines. Unit 8 (Lesson 5) derived them on Griffiths' example $k\sin^2(\theta/2)$ (Ex. 3.6); here they are as a checklist with a shortcut for each quantity an exam can ask.
 
         **Setup.** A thin spherical shell of radius $R$ is held at $V_0(\theta)$; there is no other charge. Two regions, inside and outside.
 
@@ -1688,7 +1688,7 @@
       Q(md`Why does $V$ at the center depend only on $a_0$?`,
         [md`Because every other term carries $r^\ell$ with $\ell \ge 1$, which is zero at $r = 0$.`, md`Because $P_\ell(\cos\theta) = 0$ at the center.`, md`Because the center is on the equator.`, md`Because higher $a_\ell$ are always small.`], 0,
         [null, md`$\theta$ is undefined at the center; it is the $r^\ell$ factor that kills those terms.`, md`The center is not on any particular latitude.`, md`The $a_\ell$ can be large; they still multiply $r^\ell = 0$.`],
-        md`$V_{\text{in}}(0) = V_0\sum a_\ell\cdot0^\ell P_\ell = a_0V_0$, and $a_0 = \tfrac12\int_0^\pi\frac{V_0(\theta)}{V_0}\sin\theta\,d\theta$ is the surface average. So the center potential is the average over the sphere (the mean-value property, Unit 4).`,
+        md`$V_{\text{in}}(0) = V_0\sum a_\ell\cdot0^\ell P_\ell = a_0V_0$, and $a_0 = \tfrac12\int_0^\pi\frac{V_0(\theta)}{V_0}\sin\theta\,d\theta$ is the surface average. So the center potential is the average over the sphere (the mean-value property, Unit 3).`,
         { figHtml: sphL('V_0(\\theta)') }),
 
       Q(md`Which boundary potential gives **zero** field at the center of the sphere?`,
@@ -1706,7 +1706,7 @@
       Q(md`A sphere is held at $V_0\cos\theta$ (nothing else around). What is $\sigma(\theta)$?`,
         [md`$\dfrac{\varepsilon_0V_0}{R}\cos\theta$`, md`$\dfrac{2\varepsilon_0V_0}{R}\cos\theta$`, md`$\dfrac{3\varepsilon_0V_0}{R}\cos\theta$`, md`$\dfrac{\varepsilon_0V_0}{R}$`], 2,
         [md`The factor $2\ell + 1 = 3$ is missing.`, md`That counts only the outside slope ($\ell + 1 = 2$).`, null, md`A uniform $\sigma$ would be pure $\ell = 0$ and would make $V$ constant on the sphere.`],
-        md`$\sigma = \frac{\varepsilon_0V_0}{R}(2\ell+1)a_\ell P_\ell$ with $\ell = 1$, $a_1 = 1$: $\frac{3\varepsilon_0V_0}{R}\cos\theta$. Reverse check (Unit 7, Ex. 3.9): $\sigma = k\cos\theta$ makes $V = \frac{kR}{3\varepsilon_0}\cos\theta$ on the sphere.`,
+        md`$\sigma = \frac{\varepsilon_0V_0}{R}(2\ell+1)a_\ell P_\ell$ with $\ell = 1$, $a_1 = 1$: $\frac{3\varepsilon_0V_0}{R}\cos\theta$. Reverse check (Unit 8, Ex. 3.9): $\sigma = k\cos\theta$ makes $V = \frac{kR}{3\varepsilon_0}\cos\theta$ on the sphere.`,
         { figHtml: sphL('V_0\\cos\\theta') }),
 
       Q(md`A sphere is held at $V_0(1 + \cos\theta)$, nothing else around. The potential is $\ge 0$ everywhere on it. Where does the surface charge $\sigma$ change sign?`,
@@ -1741,7 +1741,7 @@
         figHtml: FIG.onePlusSq,
         hints: [
           md`Write the numbered BCs first: finite at $r = 0$, $V \to 0$ at infinity, $V = V_0(\theta)$ on both sides of $r = R$.`,
-          md`Expand by eye: $(1 + x)^2 = 1 + 2x + x^2 = \tfrac43P_0 + 2P_1 + \tfrac23P_2$ (Unit 7 did this one).`,
+          md`Expand by eye: $(1 + x)^2 = 1 + 2x + x^2 = \tfrac43P_0 + 2P_1 + \tfrac23P_2$ (Unit 8 did this one).`,
           md`Then use the table: center $a_0$; $E_z(0) = -a_1V_0/R$; $\sigma(0) = \frac{\varepsilon_0V_0}{R}\sum(2\ell+1)a_\ell$; $Q = 4\pi\varepsilon_0RV_0a_0$.`,
         ],
         parts: [
@@ -1783,7 +1783,7 @@
 
       P({
         title: 'Hemispheres at ±V₀, two terms',
-        q: md`The upper hemisphere of a thin shell (radius $R$) is held at $+V_0$ and the lower at $-V_0$. Keep only the first two nonzero terms, $a_1 = \tfrac32$ and $a_3 = -\tfrac78$. Find (a) $E_z$ at the center, (b) the dipole moment $p$, (c) $V$ at $r = 2R$ on the $+z$ axis (two terms), and (d) the two-term $\sigma(\theta)$. (Unit 7 did the inside values on the axis; this problem is about the outside and the charge.)`,
+        q: md`The upper hemisphere of a thin shell (radius $R$) is held at $+V_0$ and the lower at $-V_0$. Keep only the first two nonzero terms, $a_1 = \tfrac32$ and $a_3 = -\tfrac78$. Find (a) $E_z$ at the center, (b) the dipole moment $p$, (c) $V$ at $r = 2R$ on the $+z$ axis (two terms), and (d) the two-term $\sigma(\theta)$. (Unit 8 did the inside values on the axis; this problem is about the outside and the charge.)`,
         figHtml: FIG.hemPM,
         hints: [
           md`BCs as always: inside no $B_\ell$, outside no $A_\ell$, both sides match the data at $r = R$.`,
@@ -1937,7 +1937,7 @@
       Q(md`Why is the average of $V$ over **any** sphere of radius $r \lt R$ centered on the origin equal to $V(0)$?`,
         [md`Because $V$ is constant inside.`, md`Because $\int_0^\pi P_\ell(\cos\theta)\sin\theta\,d\theta = 0$ for $\ell \ge 1$, so only the $\ell = 0$ term $a_0V_0$ survives at every $r$.`, md`Because the field is zero inside.`, md`Only for $r = R/2$.`], 1,
         [md`$V$ varies inside (the $r^\ell P_\ell$ terms); its average doesn't.`, null, md`The field inside is generally not zero (e.g. $-\frac{a_1V_0}{R}\uv z$ at the center).`, md`It holds for every $r \lt R$.`],
-        md`Average over the sphere of radius $r$: $\frac12\int_0^\pi\sum a_\ell V_0(r/R)^\ell P_\ell\sin\theta\,d\theta = a_0V_0$, since each $P_\ell$ with $\ell \ge 1$ is orthogonal to $P_0 = 1$. This is the mean-value theorem for Laplace's equation (Unit 4), seen through Legendre polynomials.`,
+        md`Average over the sphere of radius $r$: $\frac12\int_0^\pi\sum a_\ell V_0(r/R)^\ell P_\ell\sin\theta\,d\theta = a_0V_0$, since each $P_\ell$ with $\ell \ge 1$ is orthogonal to $P_0 = 1$. This is the mean-value theorem for Laplace's equation (Unit 3), seen through Legendre polynomials.`,
         { figHtml: FIG.avg }),
 
       Q(md`For the same sphere, what is the average of $V$ over a concentric sphere of radius $2R$ (outside)?`,

@@ -1233,7 +1233,7 @@
         | neutral (uncharged) | total charge zero | that sphere adds no $1/r$ term |
         | surface charge $\sigma_0(\theta)$ glued on a shell | $V_{\text{in}} = V_{\text{out}}$ at $r = R$, and $\dfrac{\partial V_{\text{out}}}{\partial r} - \dfrac{\partial V_{\text{in}}}{\partial r} = -\dfrac{\sigma_0(\theta)}{\varepsilon_0}$ at $r = R$ | two equations per $\ell$ link the inside $A_\ell$ to the outside $B_\ell$ |
 
-        The last line is the general boundary condition at a charged surface (Unit 2): $V$ is continuous, and $E^\perp = -\partial V/\partial r$ jumps by $\sigma/\varepsilon_0$.
+        The last line is the general boundary condition at a charged surface (see the ECE 329 review): $V$ is continuous, and $E^\perp = -\partial V/\partial r$ jumps by $\sigma/\varepsilon_0$.
 
         [[fig:regions]]
 
@@ -1359,10 +1359,10 @@
         **Outside** (only $B_\ell$):
         - $\ell = 0$: $B_0/r$, the potential of a point charge at the center: the **monopole**. Gauss's law on a big sphere gives total charge $Q = 4\pi\varepsilon_0B_0$.
         - $\ell = 1$: $\dfrac{B_1\cos\theta}{r^2}$, a **dipole** $p = 4\pi\varepsilon_0B_1$ pointing along $+z$ (compare $\frac{p\cos\theta}{4\pi\varepsilon_0r^2}$).
-        - $\ell = 2$: $\dfrac{B_2P_2(\cos\theta)}{r^3}$, a **quadrupole**; each higher $\ell$ falls one power faster. Far away, the lowest $\ell$ with $B_\ell \ne 0$ dominates. (Unit 8 develops this into the multipole expansion.)
+        - $\ell = 2$: $\dfrac{B_2P_2(\cos\theta)}{r^3}$, a **quadrupole**; each higher $\ell$ falls one power faster. Far away, the lowest $\ell$ with $B_\ell \ne 0$ dominates. (The multipole extra (Lecture 14) develops this into the multipole expansion.)
 
         **Inside** (only $A_\ell$):
-        - $\ell = 0$: the constant $A_0$, which is the potential at the center. It equals the average of $V$ over the sphere (the mean-value property of Unit 4).
+        - $\ell = 0$: the constant $A_0$, which is the potential at the center. It equals the average of $V$ over the sphere (the mean-value property of Unit 3).
         - $\ell = 1$: $A_1r\cos\theta = A_1z$, a **uniform field** $\vb E = -A_1\uv z$.
         - $\ell = 2$: $A_2r^2P_2(\cos\theta) = A_2\left(z^2 - \tfrac{x^2+y^2}{2}\right)$, a saddle. Higher $\ell$ are steeper saddles that die quickly toward the center, like $(r/R)^\ell$.
 
@@ -1561,7 +1561,7 @@
         Each term is pinned to its surface value and decays away from the sphere: inward like $(r/R)^\ell$, outward like $(R/r)^{\ell+1}$. Equivalently $A_\ell = c_\ell/R^\ell$, $B_\ell = c_\ell R^{\ell+1}$, so $B_\ell = A_\ell R^{2\ell+1}$.
 
         Two free checks:
-        - **Center:** $V(0) = c_0 = \frac12\int_0^\pi V_0\sin\theta\,d\theta$, the surface average (mean-value theorem, Unit 4).
+        - **Center:** $V(0) = c_0 = \frac12\int_0^\pi V_0\sin\theta\,d\theta$, the surface average (mean-value theorem, Unit 3).
         - **Far away:** $V \approx \frac{c_0R}{r}$, so the sphere carries total charge $Q = 4\pi\varepsilon_0Rc_0$. For the Ex. 3.6 sphere, $Q = 4\pi\varepsilon_0R\cdot\frac k2 = 2\pi\varepsilon_0kR$.
       `, { axis: { svg: FIG.lecPlot, cap: 'The Ex. 3.6 sphere: $V$ along the $z$ axis. Inside it is linear; on the $+z$ axis outside it rises from $0$ to a maximum $k/8$ at $z = 2R$ and then decays; on the $-z$ axis it falls from $k$.' } }),
 
@@ -2183,7 +2183,7 @@
       Q(md`Across the charged shell, what happens to the **tangential** field $E_\theta$?`,
         [md`It is continuous, which matches $V$ being continuous for every $\theta$.`, md`It jumps by $\sigma_0/\varepsilon_0$.`, md`It is zero on both sides.`, md`It jumps by $\tfrac{\sigma_0}{2\varepsilon_0}$.`], 0,
         [null, md`Only the normal component jumps.`, md`Inside $\sigma_0 = k\cos\theta$, for instance, $E_\theta = \frac{k}{3\varepsilon_0}\sin\theta \ne 0$.`, md`Only the normal component jumps, and by $\sigma_0/\varepsilon_0$.`],
-        md`$E_\theta = -\frac1r\frac{\partial V}{\partial\theta}$. If $V_{\text{in}}(R,\theta) = V_{\text{out}}(R,\theta)$ for all $\theta$, their $\theta$-derivatives agree too, so $E_\theta$ is continuous. That is the "$E^\parallel$ continuous" boundary condition from Unit 2, built into condition 3.`,
+        md`$E_\theta = -\frac1r\frac{\partial V}{\partial\theta}$. If $V_{\text{in}}(R,\theta) = V_{\text{out}}(R,\theta)$ for all $\theta$, their $\theta$-derivatives agree too, so $E_\theta$ is continuous. That is the "$E^\parallel$ continuous" boundary condition from the ECE 329 review, built into condition 3.`,
         { figHtml: FIG.sigCos }),
 
       Q(md`On the shell, the $\ell$-th term of the potential is $\dfrac{s_\ell R}{(2\ell+1)\varepsilon_0}$, where $s_\ell$ is the $\ell$-th Legendre coefficient of the charge. To hold a shell at a surface potential with a given amplitude in the $\ell$-th harmonic, how does the needed charge depend on $\ell$?`,
@@ -2625,7 +2625,7 @@
 
         $$V(r,\theta) = \frac{q}{4\pi\varepsilon_0}\sum_{\ell=0}^\infty\frac{r^\ell}{d^{\ell+1}}P_\ell(\cos\theta)$$
 
-        and similarly $\frac{q}{4\pi\varepsilon_0}\sum_\ell\frac{d^\ell}{r^{\ell+1}}P_\ell(\cos\theta)$ for $r \gt d$. (This expansion of $1/|\vb r - d\uv z|$ is the starting point of the multipole expansion in Unit 8.) Its $\ell = 1$ term near the origin, $\frac{q\,r\cos\theta}{4\pi\varepsilon_0d^2}$, is the uniform field $-\frac{q}{4\pi\varepsilon_0d^2}\uv z$ that the charge makes at the origin, as it should be.
+        and similarly $\frac{q}{4\pi\varepsilon_0}\sum_\ell\frac{d^\ell}{r^{\ell+1}}P_\ell(\cos\theta)$ for $r \gt d$. (This expansion of $1/|\vb r - d\uv z|$ is the starting point of the multipole expansion in the multipole extra (Lecture 14).) Its $\ell = 1$ term near the origin, $\frac{q\,r\cos\theta}{4\pi\varepsilon_0d^2}$, is the uniform field $-\frac{q}{4\pi\varepsilon_0d^2}\uv z$ that the charge makes at the origin, as it should be.
 
         [[fig:pq]]
       `, { pq: { svg: FIG.axisQ, cap: 'A point charge on the axis. Inside the dashed sphere $r = d$ the potential is $\\sum r^\\ell/d^{\\ell+1}\\,P_\\ell$; outside it, $\\sum d^\\ell/r^{\\ell+1}\\,P_\\ell$.' } }),

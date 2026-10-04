@@ -677,7 +677,7 @@
       R(md`
         Built from what we know about the Hour Exam I given two semesters ago: (1) you're handed $\vb E$ and must find $V$ and $\rho$, and the field blows up at the origin, so there's a delta function hiding there; (2) a Gauss's-law problem with a cylinder and a sphere superimposed; (3) Griffiths' sphere image problem with a twist: the sphere is held at a potential instead of grounded. Problems 4–5 cover Legendre and the short-answer traps. 50 minutes, formula sheet only.
 
-        Unit P (Past-exam patterns) drills each of these with many more variations.
+        Unit 1 (deltas, superposed Gauss) and Unit 5 (images) drill each of these with many more variations.
       `),
       {
         t: 'paper',
@@ -889,7 +889,9 @@
       R(md`
         Last semester's actual Hour Exam I, retyped from the posted solutions, with the grading weights shown. Two problems: separation of variables in **polar** coordinates, and a multipole moment. Notice where the points went: in Problem 1, 2 of the 11 points are for the boundary conditions and most of the rest are for setting up the separation correctly. The Fourier integral at the end is worth only 2.
 
-        Polar separation is taught in Unit W. Work this one under exam conditions first.
+        Polar separation is taught in Unit 7. Work Problem 1 under exam conditions first.
+
+        **Skip Problem 2 and extension (b) for your exam.** They are multipole questions. This semester the multipole expansion is Lecture 14, and your Exam I covers Lectures 1–13, so last spring's cutoff evidently fell later than yours.
       `),
       {
         t: 'paper',

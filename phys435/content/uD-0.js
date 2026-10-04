@@ -1,42 +1,31 @@
-/* Unit D — Drill ladders. This file registers the unit; the uD-*.js files push their lessons into it. */
+/* Drill ladders. This file registers a holding unit; the uD-*.js files push their lessons into it, and zz-scope.js
+   then places each ladder at the end of the study-path unit it drills. */
 (function () {
   'use strict';
   const { R } = C;
 
   C.unit({
-    id: 'uD', num: 'Unit D', title: 'Drill ladders: Chapter 3, harder and harder',
-    blurb: 'The topics ECE 329 never taught, drilled from easy recognition up to harder-than-the-exam: separation of variables, images, Legendre, multipoles and deltas, boundary conditions and uniqueness.',
+    id: 'uD', num: 'Drill', title: 'Drill ladders',
+    blurb: 'Every topic drilled from quick recognition up to harder than the exam.',
     lessons: [
       {
-        id: 'uD-start', title: 'How to use the ladders',
+        id: 'uD-start', title: 'All drill ladders',
         steps: [
           R(md`
-            Each lesson in this unit is one topic, climbed in levels:
+            Each unit on the path ends with a drill ladder for its topic. This page lists them all in one place.
 
-            - **Level 1: recognize.** What kind of problem is this, which tool, which function.
-            - **Level 2: set up.** Region, numbered boundary conditions, the general solution with the right terms.
-            - **Level 3: solve the standard case.**
-            - **Level 4: one twist.** A boundary moved, a potential added, a symmetry broken.
-            - **Level 5: exam level.** Multi-part, like the last two Hour Exams.
-            - **Level 6: harder than the exam.** Combine two methods, reason without computing, catch the trap.
+            Every ladder climbs in levels: **1** recognize, **2** set up, **3** standard, **4** one twist, **5** exam level, **6** harder than the exam. Levels 1–2 are short; most questions are at 4–6. If a level goes badly, drop back one and redo it.
 
-            Climb in order. If a level goes badly, drop back one level and redo it before moving up. The conceptual questions are the fastest way to find out what you don't actually understand yet.
+            | Unit | Concepts | Problems |
+            |---|---|---|
+            | 1 · Delta functions | [concept ladder](#/l/uD-delta-concepts) | [problem ladder](#/l/uD-delta-problems) |
+            | 2 · Energy | [concept ladder](#/l/uD-energy-concepts) | [problem ladder](#/l/uD-energy-problems) |
+            | 4 · Boundary conditions | [concept ladder](#/l/uD-bc-concepts) | [problem ladder](#/l/uD-bc-problems) |
+            | 5 · Images and uniqueness | [concept ladder](#/l/uD-img-concepts) | [problem ladder](#/l/uD-img-problems) |
+            | 6–7 · Separation, Cartesian and polar | [concept ladder](#/l/uD-sep-concepts) | [problem ladder](#/l/uD-sep-problems) |
+            | 8 · Legendre | [concept ladder](#/l/uD-leg-concepts) | [problem ladder](#/l/uD-leg-problems) |
 
-            ### The ladders, in priority order
-
-            | Topic | Learn it first | Concepts | Problems |
-            |---|---|---|---|
-            | Separation of variables, Cartesian and polar | [Unit 6](#/l/u6-idea) (boxes), [Unit W](#/l/uW-polar) (polar, wedges) | [concept ladder](#/l/uD-sep-concepts) | [problem ladder](#/l/uD-sep-problems) |
-            | Legendre (spherical separation) | [Unit 7](#/l/u7-separate), [Unit L](#/l/uL-compute) | [concept ladder](#/l/uD-leg-concepts) | [problem ladder](#/l/uD-leg-problems) |
-            | Method of images and uniqueness | [Unit 4](#/l/u4-unique1), [Unit 5](#/l/u5-idea) | [concept ladder](#/l/uD-img-concepts) | [problem ladder](#/l/uD-img-problems) |
-            | Multipoles | [Unit 8](#/l/u8-expansion), [moments](#/l/uW-multipole) | [concept ladder](#/l/uD-mp-concepts) | [problem ladder](#/l/uD-mp-problems) |
-            | Delta functions in $\rho$ | [Dirac delta](#/l/u0-delta), [E to ρ](#/l/uP-delta) | [concept ladder](#/l/uD-delta-concepts) | [problem ladder](#/l/uD-delta-problems) |
-            | Boundary conditions in 2-D and 3-D | [Unit B](#/l/ub-what) | [concept ladder](#/l/uD-bc-concepts) | [problem ladder](#/l/uD-bc-problems) |
-            | Electrostatic energy | [Unit 3](#/l/u3-assembly) | [concept ladder](#/l/uD-energy-concepts) | [problem ladder](#/l/uD-energy-problems) |
-
-            **Polar is not spherical.** "Polar" here means a flat $(r,\theta)$ plane with nothing depending on $z$ (an infinitely long wedge or pipe): solutions $r^{\pm k}\sin k\theta$. "Spherical" means a 3-D sphere with $\theta$ measured from the $z$ axis: solutions $r^\ell P_\ell(\cos\theta)$.
-
-            Short on time? Do Levels 4–6 of the concept ladders first: they find the gaps fastest. Then the Level 5 problems, which are exam-sized.
+            Short on time? Levels 4–6 of each concept ladder find your gaps fastest; then the Level 5 problems, which are exam-sized.
           `),
         ],
       },

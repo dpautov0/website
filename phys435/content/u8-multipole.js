@@ -290,11 +290,11 @@
 
         [[fig:geom]]
 
-        Law of cosines: $\srm^2 = r^2 + r'^2 - 2rr'\cos\alpha = r^2\left[1 + \left(\dfrac{r'}{r}\right)^2 - 2\dfrac{r'}{r}\cos\alpha\right]$. Write $\srm = r\sqrt{1+\epsilon}$ with $\epsilon = \dfrac{r'}{r}\left(\dfrac{r'}{r} - 2\cos\alpha\right)$, expand $(1+\epsilon)^{-1/2} = 1 - \tfrac12\epsilon + \tfrac38\epsilon^2 - \dots$, and collect powers of $r'/r$. The coefficients come out as the Legendre polynomials from Unit 7:
+        Law of cosines: $\srm^2 = r^2 + r'^2 - 2rr'\cos\alpha = r^2\left[1 + \left(\dfrac{r'}{r}\right)^2 - 2\dfrac{r'}{r}\cos\alpha\right]$. Write $\srm = r\sqrt{1+\epsilon}$ with $\epsilon = \dfrac{r'}{r}\left(\dfrac{r'}{r} - 2\cos\alpha\right)$, expand $(1+\epsilon)^{-1/2} = 1 - \tfrac12\epsilon + \tfrac38\epsilon^2 - \dots$, and collect powers of $r'/r$. The coefficients come out as the Legendre polynomials from Unit 8:
 
         $$\frac{1}{\srm} = \frac1r\sum_{n=0}^{\infty}\left(\frac{r'}{r}\right)^nP_n(\cos\alpha) = \frac1r\left[1 + \frac{r'}{r}\cos\alpha + \left(\frac{r'}{r}\right)^2\frac{3\cos^2\alpha - 1}{2} + \cdots\right]\qquad (r' < r).$$
 
-        ($1/\srm$ is called the *generating function* of the Legendre polynomials. Griffiths labels the order $n$ here; it is the same index as the $\ell$ of Unit 7.) Put this inside the integral. $r$ is a constant as far as the integration over the source is concerned, so it comes out:
+        ($1/\srm$ is called the *generating function* of the Legendre polynomials. Griffiths labels the order $n$ here; it is the same index as the $\ell$ of Unit 8.) Put this inside the integral. $r$ is a constant as far as the integration over the source is concerned, so it comes out:
 
         $$\boxed{V(\vb r) = \kq\sum_{n=0}^{\infty}\frac{1}{r^{n+1}}\int (r')^nP_n(\cos\alpha)\,\rho(\vb r')\,d\tau'}$$
 
@@ -317,7 +317,7 @@
         !!trap $\alpha$ is not $\theta$
           $\theta$ is the polar angle of the field point. Replacing $P_n(\cos\alpha)$ by $P_n(\cos\theta)$ inside the integral is the classic mistake: the integral would then ignore where the charge actually is.
 
-        ### Legendre recap (Unit 7)
+        ### Legendre recap (Unit 8)
 
         | $P_0(x)$ | $P_1(x)$ | $P_2(x)$ | $P_3(x)$ |
         |---|---|---|---|
@@ -1156,7 +1156,7 @@
 
       P({
         id: 'u8-p-shellcos', title: 'Dipole moment of a shell with σ = k cos θ',
-        q: md`A spherical shell of radius $R$ carries surface charge $\sigma(\theta) = k\cos\theta$ (Griffiths Ex. 3.9). (a) Find its dipole moment. (b) The exact potential outside is $V = \dfrac{kR^3}{3\varepsilon_0}\dfrac{\cos\theta}{r^2}$ (Unit 7). What does that say about the other multipole moments?`,
+        q: md`A spherical shell of radius $R$ carries surface charge $\sigma(\theta) = k\cos\theta$ (Griffiths Ex. 3.9). (a) Find its dipole moment. (b) The exact potential outside is $V = \dfrac{kR^3}{3\varepsilon_0}\dfrac{\cos\theta}{r^2}$ (Unit 8). What does that say about the other multipole moments?`,
         figHtml: fShellCos(),
         hints: [
           md`$\vb p = \int\vb r'\,\sigma\,da'$ with $\vb r' = R\,\uv r'$ and $da' = R^2\sin\theta'\,d\theta'\,d\phi'$.`,
@@ -1389,7 +1389,7 @@
           md`$\vb E_2$ is the dipole field with the sign of $E_\theta$ flipped, and that sign is what makes the curl vanish. For $\vb E_2$, $(\nabla\times\vb E)_\phi = \dfrac{4k\sin\theta}{r^4} \neq 0$.`],
         md`Neither field has a $\phi$ component or depends on $\phi$, so only $(\nabla\times\vb E)_\phi = \dfrac1r\left[\dfrac{\partial}{\partial r}(rE_\theta) - \dfrac{\partial E_r}{\partial\theta}\right]$ can be nonzero (curl from the formula sheet).
 
-        - $\vb E_1$: $\dfrac{\partial}{\partial r}\left(\dfrac{k\sin\theta}{r^2}\right) = -\dfrac{2k\sin\theta}{r^3}$ and $\dfrac{\partial}{\partial\theta}\left(\dfrac{2k\cos\theta}{r^3}\right) = -\dfrac{2k\sin\theta}{r^3}$. They cancel, so $\nabla\times\vb E_1 = 0$. This is the curl test of Unit 2: $\vb E_1$ is the dipole field with $k = \dfrac{p}{4\pi\varepsilon_0}$.
+        - $\vb E_1$: $\dfrac{\partial}{\partial r}\left(\dfrac{k\sin\theta}{r^2}\right) = -\dfrac{2k\sin\theta}{r^3}$ and $\dfrac{\partial}{\partial\theta}\left(\dfrac{2k\cos\theta}{r^3}\right) = -\dfrac{2k\sin\theta}{r^3}$. They cancel, so $\nabla\times\vb E_1 = 0$. This is the curl test of the ECE 329 review: $\vb E_1$ is the dipole field with $k = \dfrac{p}{4\pi\varepsilon_0}$.
         - $\vb E_2$: now $\dfrac{\partial}{\partial r}(rE_\theta) = +\dfrac{2k\sin\theta}{r^3}$, so $(\nabla\times\vb E_2)_\phi = \dfrac{4k\sin\theta}{r^4} \neq 0$. No arrangement of static charges produces it.
 
         A sign slip in $E_\theta$ is not harmless: it turns the dipole field into an impossible one. Checking $\nabla\times\vb E = 0$ catches it.`,
@@ -1528,7 +1528,7 @@
         md`At $M$, $+q$ pushes a positive test charge away from itself (toward $-q$) and $-q$ pulls it the same way, so $\vb E$ runs from $+q$ to $-q$, opposite to $\vb p = q\vb d$. At $F$, $+q$ is closer and wins, so $\vb E$ points up, along $\vb p$, as the dipole formula says. The pure-dipole formula does not describe the region between the charges; it needs $r \gg d$.`,
         { figHtml: fBetween() }),
 
-      Q(md`A neutral metal sphere of radius $R$ sits in a uniform field $E_0\uv z$ (Unit 7). Outside, the induced charge adds $\dfrac{E_0R^3\cos\theta}{r^2}$ to $V$. What is that, in multipole language?`,
+      Q(md`A neutral metal sphere of radius $R$ sits in a uniform field $E_0\uv z$ (Unit 8). Outside, the induced charge adds $\dfrac{E_0R^3\cos\theta}{r^2}$ to $V$. What is that, in multipole language?`,
         [md`A pure dipole, $\vb p = 4\pi\varepsilon_0R^3E_0\,\uv z$, pointing along the applied field`, md`A pure dipole pointing against the applied field`, md`A monopole, since the sphere is charged by induction`, md`A quadrupole, since there are two induced regions`], 0,
         [null, md`Compare with $\kq\dfrac{p\cos\theta}{r^2}$: the coefficient $E_0R^3$ is positive, so $\vb p$ points along $+z$. The field pushes the induced $+$ charge to the $+z$ side.`,
           md`The sphere stays neutral: induction separates charge, it doesn't create any.`,
@@ -1889,7 +1889,7 @@
 
         Compare with the on-axis multipole formula: $c_n = \kq\displaystyle\int (r')^nP_n(\cos\theta')\,\rho\,d\tau'$. The expansion coefficients **are** the multipole moments.
 
-        If the source is symmetric about the $z$ axis (no $\phi$-dependence), you get the potential everywhere outside for free. The region of interest is outside a sphere, centered on the origin, that encloses all the charge. The conditions there, Unit 7 style:
+        If the source is symmetric about the $z$ axis (no $\phi$-dependence), you get the potential everywhere outside for free. The region of interest is outside a sphere, centered on the origin, that encloses all the charge. The conditions there, Unit 8 style:
 
         1. No charge in the region and no $\phi$-dependence, so $\lap V = 0$ gives $V = \displaystyle\sum_n\left(A_nr^n + \frac{B_n}{r^{n+1}}\right)P_n(\cos\theta)$.
         2. $V \to 0$ as $r \to \infty$. This kills every $A_n$.
@@ -1899,7 +1899,7 @@
           1. Find $V$ on the $+z$ axis exactly.
           2. Expand in powers of $1/z$ (for $z$ beyond the source): $V = \sum_n \dfrac{c_n}{z^{n+1}}$.
           3. Replace $\dfrac{c_n}{z^{n+1}}$ by $\dfrac{c_n\,P_n(\cos\theta)}{r^{n+1}}$.
-          This is HW 5 Prob. 3.24 (the disk), worked in Unit 7.
+          This is HW 5 Prob. 3.24 (the disk), worked in Unit 8.
 
         ### Worked example: a uniform ring (Griffiths 4th ed. Prob. 3.28)
 
@@ -1955,7 +1955,7 @@
         md`Exact: end-on, $V = \kq\dfrac{Q}{2a}\ln\dfrac{r+a}{r-a} = \kq\dfrac Qr\left(1 + \dfrac{a^2}{3r^2}+\cdots\right)$; broadside, $V = \kq\dfrac{Q}{a}\sinh^{-1}\dfrac ar = \kq\dfrac Qr\left(1 - \dfrac{a^2}{6r^2}+\cdots\right)$. Both corrections are the quadrupole term $\kq\dfrac{Qa^2}{3r^3}P_2(\cos\theta)$, with $P_2 = 1$ end-on and $-\tfrac12$ broadside.`,
         { figHtml: fSeg() }),
 
-      Q(md`A uniformly charged disk (HW 5 Prob. 3.24, worked in Unit 7) lies in the $xy$-plane. Which multipole terms appear in its far potential?`,
+      Q(md`A uniformly charged disk (HW 5 Prob. 3.24, worked in Unit 8) lies in the $xy$-plane. Which multipole terms appear in its far potential?`,
         [md`All $n$`, md`Only even $n$: $\dfrac1r$, $\dfrac{P_2}{r^3}$, $\dfrac{P_4}{r^5}$, ...`, md`Only odd $n$`, md`Only the monopole: far away a disk is a point charge`], 1,
         [md`The disk is symmetric under $z \to -z$, so the odd terms vanish.`,
           null,

@@ -206,7 +206,7 @@
   }
   function courseProgress() {
     let tot = 0, got = 0;
-    LESSONS.forEach((l) => { const p = lessonProgress(l); tot += p.tot || 1; got += p.tot ? p.got : p.pct; });
+    LESSONS.filter((l) => !l.unit.extra).forEach((l) => { const p = lessonProgress(l); tot += p.tot || 1; got += p.tot ? p.got : p.pct; });
     return tot ? got / tot : 0;
   }
 
@@ -227,14 +227,17 @@
   function buildSidebar(activeId) {
     const sb = document.getElementById('sidebar');
     const openUnit = activeId ? BYID.get(activeId)?.unit : null;
-    sb.innerHTML = `<nav aria-label="Course">${COURSE.units.map((u) => {
+    const unitHtml = (u) => {
       const pct = Math.round(unitProgress(u) * 100);
       const open = openUnit === u || (!openUnit && u === COURSE.units[0]);
       return `<details class="unit" ${open ? 'open' : ''}><summary><span class="u-num">${u.num}</span><span class="u-title">${u.title}</span><span class="u-pct">${pct}%</span></summary><ol>${u.lessons.map((l) => {
         const p = lessonProgress(l);
         return `<li class="${l.id === activeId ? 'active' : ''} k-${l.kind || 'lesson'}"><a href="#/l/${l.id}">${statusIcon(p)}<span class="l-title">${l.title}</span>${l.kind && l.kind !== 'lesson' ? `<span class="l-kind">${KIND[l.kind]}</span>` : ''}</a></li>`;
       }).join('')}</ol></details>`;
-    }).join('')}</nav>`;
+    };
+    const extras = COURSE.units.filter((u) => u.extra);
+    const extraOpen = openUnit && openUnit.extra;
+    sb.innerHTML = `<nav aria-label="Course">${COURSE.units.filter((u) => !u.extra).map(unitHtml).join('')}${extras.length ? `<details class="extra-group" ${extraOpen ? 'open' : ''}><summary>Extra: not needed for the exam</summary>${extras.map(unitHtml).join('')}</details>` : ''}</nav>`;
     renderMath(sb);
     const act = sb.querySelector('li.active');
     if (act) act.scrollIntoView({ block: 'nearest' });
@@ -249,12 +252,12 @@
   // ---------------------------------------------------------------- home
   function renderHome() {
     const main = document.getElementById('main');
-    const next = LESSONS.find((l) => { const p = lessonProgress(l); return p.tot && p.got < p.tot; }) || LESSONS[0];
+    const next = LESSONS.find((l) => { const p = lessonProgress(l); return !l.unit.extra && p.tot && p.got < p.tot; }) || LESSONS[0];
     const last = Store.s.last && BYID.get(Store.s.last);
     main.innerHTML = `
       <section class="home">
         <h1>PHYS 435 · Hour Exam I</h1>
-        <p class="lede">Mon Oct 5. Lectures 1–13: vector calculus, Coulomb and Gauss, potential, work and energy, conductors, Laplace's equation and uniqueness, the method of images, separation of variables. A formula sheet is provided.</p>
+        <p class="lede">Mon Oct 5, Lectures 1–13. This site teaches only what ECE 329 Exam 1 didn't: delta functions, energy, uniqueness, boundary conditions in 2-D and 3-D, images, and separation of variables. A formula sheet is provided.</p>
         <div class="home-actions">
           <a class="btn primary" href="#/l/${(last || next).id}">${last ? 'Continue: ' + last.title : 'Start: ' + next.title}</a>
           ${BYID.has('x-quiz') ? '<a class="btn" href="#/l/x-quiz">Concept quiz</a>' : ''}
@@ -264,15 +267,13 @@
         <section class="plan">
           <h2>Before Monday</h2>
           <ol>
-            ${BYID.has('uD-start') ? '<li><b>The <a href="#/drill">Drill</a> tab.</b> Ladders for everything ECE 329 never covered (separation of variables, Legendre, images, multipoles and deltas, boundary conditions and energy), from quick recognition up to harder than the exam.</li>' : ''}
-            <li><b>What the last two exams asked.</b> ${BYID.has('x-s26') ? '<a href="#/l/x-s26">The Spring 2026 exam</a>' : 'The Spring 2026 exam'} (polar separation of variables and a dipole moment)${BYID.has('uW-polar') ? ', with <a href="#/l/uW-polar">Unit W</a> for polar coordinates' : ''}. ${BYID.has('x-mock4') ? '<a href="#/l/x-mock4">Mock D</a>' : 'Mock D'}, in the format of the exam two semesters ago (E given, find V and ρ with a delta at the origin; Gauss with a sphere and a cylinder superimposed; sphere images with the sphere at V₀)${BYID.has('uP-delta') ? ', with <a href="#/l/uP-delta">Unit P</a> drilling each pattern' : ''}.</li>
-            <li><b>Boundary-value problems.</b> Units 5–7 (images, separation in Cartesian and spherical), Unit L (Legendre polynomials: last year's exam had one directly) and Unit B (boundary conditions). Last year's exam was mostly these.</li>
-            <li><b>The ground they stand on.</b> Unit 4 (Laplace and uniqueness), and the boundary-condition lessons in Units 2–3.</li>
-            <li><b>Fields, Gauss, potential, energy.</b> Units 0–3, fast if you're confident, with every homework problem worked.</li>
-            <li><b>Test yourself.</b> The method chooser, then Mock exams A–D on paper with only the formula sheet (C is boundary-value problems only). Use the concept quiz in between.</li>
+            <li><b>Units 1–8 in order.</b> Each unit teaches from scratch, then ends with its drill ladder (Level 1 to harder than the exam). Short on time: the lessons, then Levels 4–6 of each drill.</li>
+            <li><b>Weight.</b> The last two exams were mostly Units 5–8: images and separation of variables (last spring's Problem 1 was the polar wedge in Unit 7).</li>
+            <li><b>Unit 9.</b> Last spring's exam (Problem 1 only) and Mock D on paper with just the formula sheet, then the concept quiz.</li>
           </ol>
+          <p class="plan-note">Skip the Extra section in the sidebar: it holds the ECE 329 material you already know, repeats, and Lecture 14 (multipoles), which is not on this exam.</p>
         </section>
-        <div class="units">${COURSE.units.map((u) => {
+        <div class="units">${COURSE.units.filter((u) => !u.extra).map((u) => {
           const pct = Math.round(unitProgress(u) * 100);
           return `<a class="unit-card" href="#/l/${u.lessons[0].id}">
             <div class="uc-top"><span class="u-num">${u.num}</span><span class="uc-pct">${pct}%</span></div>
@@ -280,6 +281,7 @@
             ${u.blurb ? `<p>${u.blurb}</p>` : ''}
             <div class="meter"><span style="width:${pct}%"></span></div></a>`;
         }).join('')}</div>
+        ${COURSE.units.some((u) => u.extra) ? `<section class="extras"><h2>Extra (not needed for the exam)</h2><ul>${COURSE.units.filter((u) => u.extra).map((u) => `<li><a href="#/l/${u.lessons[0].id}">${u.title}</a>: ${u.blurb || ''}</li>`).join('')}</ul></section>` : ''}
         <section class="howto">
           <p>Answers: the boxes work like Desmos. Type <code>/</code> for a fraction, <code>^</code> for a power, <code>sqrt</code> for a root, <code>pi</code>, <code>theta</code>, <code>lambda</code>, <code>sigma</code>, <code>epsilon</code> for Greek, <code>_</code> for a subscript (<code>V_0</code>), and use the arrow keys to leave a fraction or power. Symbols are case-sensitive, so <code>r</code> and <code>R</code> differ. Greek letters can be typed as <code>lambda</code>, <code>sigma</code>, <code>rho</code>, <code>theta</code>, <code>eps0</code>. Multiple choice explains every wrong option. A drill doesn't count once you open its solution. Progress is saved in this browser.</p>
         </section>
