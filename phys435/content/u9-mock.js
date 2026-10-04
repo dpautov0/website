@@ -69,7 +69,7 @@
     f.axes(30, 140, { x: [0, 0.1], y: [0, 40], xl: '', yl: 'z' });
     return f.svg();
   };
-  const shellInside = () => {
+  const shellInside = (vlab = 'V=0') => {
     const f = PF.fig();
     const cx = 120, cy = 120, Rr = 90;
     f.hatchBand(f.arcPts(cx, cy, Rr + 10, Rr + 10, 0, 360).concat(f.arcPts(cx, cy, Rr, Rr, 360, 0)));
@@ -78,7 +78,7 @@
     f.charge(cx + 45, cy, { q: '+', lab: 'q', at: 't' });
     f.dim(cx, cy + 22, cx + 45, cy + 22, 'a', { at: 'b' });
     f.line(cx, cy, cx - 64, cy - 64, { cls: 'dim', arrow: 'end' }); f.label(cx - 40, cy - 28, 'R', 'r', 'small');
-    f.label(cx + Rr + 14, cy - 60, 'V=0', 'l', 'small');
+    f.label(cx + Rr + 14, cy - 60, vlab, 'l', 'small');
     return f.svg();
   };
   const slot = (lab) => {
@@ -643,6 +643,341 @@
     ],
   };
 
-  U5.lessons.push(chooser, mockA, mockB, mockC);
+  // ---------------------------------------------------------------- mock exam D: the format of the exam from two semesters ago
+  const eRegions = (inLab, outLab) => {        // an imaginary sphere r = R splitting two field formulas
+    const f = PF.fig();
+    const cx = 110, cy = 110, Rr = 70;
+    f.circle(cx, cy, Rr, { cls: 'dash dim' });
+    f.dot(cx, cy, 2.2); f.label(cx - 6, cy + 4, 'O', 'tr', 'small accent');
+    f.line(cx, cy, cx - 49, cy - 49, { arrow: 'end', cls: 'dim' }); f.label(cx - 30, cy - 18, 'R', 'r', 'small');
+    f.label(cx + 6, cy + 36, inLab, 'c');
+    f.label(cx + Rr + 18, cy - 46, outLab, 'l');
+    f.label(cx + Rr + 18, cy + 30, 'r>R', 'l', 'small accent'); f.label(cx + 30, cy + 2, 'r<R', 'l', 'small accent');
+    return f.svg();
+  };
+  const cylSphere = () => {                    // infinite +rho cylinder along z through a -rho ball
+    const f = PF.fig();
+    const cx = 150, cy = 125, Rr = 80, ac = 28, y0 = 12, y1 = 238;
+    f.add(`<path class="nodecl" style="fill:var(--bad);fill-opacity:.16;stroke:none" d="M${f.arcPts(cx, cy, Rr, Rr, 0, 360).map((p) => p.map((v) => v.toFixed(1)).join(',')).join('L')}Z"/>`);
+    f.add(`<path class="nodecl" style="fill:var(--primary);fill-opacity:.30;stroke:none" d="M${cx - ac},${y0}L${cx + ac},${y0}L${cx + ac},${y1}L${cx - ac},${y1}Z"/>`);
+    f.line(cx - ac, y0, cx - ac, y1); f.line(cx + ac, y0, cx + ac, y1);
+    f.circle(cx, cy, Rr);
+    f.line(cx, y1 + 6, cx, y0 - 6, { cls: 'dash dim thin' });
+    f.label(cx + 4, y0 - 4, 'z', 'l', 'small accent');
+    f.dot(cx, cy, 2.2);
+    f.label(cx + 14, y0 + 24, '+\\rho', 'c', 'small');
+    f.label(cx - 52, cy + 34, '-\\rho', 'c', 'small');
+    f.line(cx, cy, cx + Rr * 0.94, cy - Rr * 0.34, { arrow: 'end', cls: 'dim' }); f.label(cx + 52, cy - 30, 'R', 'b', 'small');
+    f.dim(cx, y1 - 14, cx + ac, y1 - 14, 'a', { at: 'b' });
+    return f.svg();
+  };
+  const mockD = {
+    id: 'x-mock4', title: 'Mock exam D: the exam from two semesters ago', kind: 'mock',
+    steps: [
+      R(md`
+        Built from what we know about the Hour Exam I given two semesters ago: (1) you're handed $\vb E$ and must find $V$ and $\rho$, and the field blows up at the origin, so there's a delta function hiding there; (2) a Gauss's-law problem with a cylinder and a sphere superimposed; (3) Griffiths' sphere image problem with a twist: the sphere is held at a potential instead of grounded. Problems 4–5 cover Legendre and the short-answer traps. 50 minutes, formula sheet only.
+
+        Unit P (Past-exam patterns) drills each of these with many more variations.
+      `),
+      {
+        t: 'paper',
+        html: '<div class="pp-title"><span>PHYS 435 · Mock Hour Exam I (D)</span><span>100 pts</span></div><div class="pp-meta"><span>Problems 1–5</span><span>Formula sheet allowed</span></div>',
+        items: [
+          {
+            q: md`
+              **Problem 1 (25 pts).** In spherical coordinates the electric field everywhere is ($A > 0$ a constant)
+              $$\vb E = \begin{cases}\dfrac{A}{r^2}\,\uv r, & r<R\\[2mm] \dfrac{AR^2}{r^4}\,\uv r, & r>R\end{cases}$$
+
+              [[fig:p1]]
+
+              (a) Find the charge density $\rho$ everywhere, **including the origin**. (b) Is there surface charge on $r = R$? (c) Find the total charge two ways: by adding up (a), and from the field far away. (d) Find $V(r)$ everywhere, taking $V(\infty) = 0$. (e) A different field: $\vb E = A\left(\dfrac{1}{r^2} - \dfrac{r}{R^3}\right)\uv r$ for $r<R$ and $\vb E = 0$ for $r>R$. Find $\rho$ and say what physical object this is.
+            `,
+            figs: { p1: { svg: eRegions('\\dfrac{A}{r^2}', '\\dfrac{AR^2}{r^4}'), cap: 'Two formulas for $E_r$, joined at $r = R$ (the dashed sphere is not a physical surface).' } },
+            ans: md`
+              - (a) $\rho = 4\pi\varepsilon_0A\,\delta^3(\vb r)$ for $r<R$ (nothing else inside), and $\rho = -\dfrac{2\varepsilon_0AR^2}{r^5}$ for $r>R$.
+              - (b) No: $E_r$ is continuous at $R$ (both give $A/R^2$).
+              - (c) $Q_{\text{tot}} = 4\pi\varepsilon_0A - 4\pi\varepsilon_0A = 0$; and $r^2E_r\to0$ at infinity, so $0$.
+              - (d) $V = \dfrac{AR^2}{3r^3}$ for $r>R$; $V = \dfrac Ar - \dfrac{2A}{3R}$ for $r<R$.
+              - (e) $\rho = 4\pi\varepsilon_0A\,\delta^3(\vb r) - \dfrac{3\varepsilon_0A}{R^3}$ inside, $0$ outside: a point charge at the center of a uniform ball of opposite charge (a neutral "atom").
+            `,
+            sol: md`
+              **The method.** Away from the origin, $\rho = \varepsilon_0\nabla\cdot\vb E = \dfrac{\varepsilon_0}{r^2}\dfrac{d}{dr}\left(r^2E_r\right)$. At the origin the formula is useless (division by zero), so check it separately with Gauss on a tiny sphere: $Q_{\text{enc}}(r\to0) = \lim 4\pi\varepsilon_0r^2E_r$. A finite nonzero limit means a point charge sits there.
+
+              **(a)** Inside: $r^2E_r = A$ is constant, so $\nabla\cdot\vb E = 0$ for $0<r<R$. But $4\pi\varepsilon_0r^2E_r = 4\pi\varepsilon_0A$ for every tiny sphere: a point charge $q = 4\pi\varepsilon_0A$, i.e. $\rho\supset4\pi\varepsilon_0A\,\delta^3(\vb r)$. This is $\nabla\cdot(\uv r/r^2) = 4\pi\delta^3(\vb r)$.
+
+              Outside: $r^2E_r = AR^2/r^2$, so $\rho = \dfrac{\varepsilon_0}{r^2}\cdot\left(-\dfrac{2AR^2}{r^3}\right) = -\dfrac{2\varepsilon_0AR^2}{r^5}$.
+
+              **(b)** $\sigma = \varepsilon_0(E_{\text{out}} - E_{\text{in}})|_R = \varepsilon_0\left(\dfrac{AR^2}{R^4} - \dfrac{A}{R^2}\right) = 0$.
+
+              **(c)** Cloud: $\displaystyle\int_R^\infty\left(-\frac{2\varepsilon_0AR^2}{r^5}\right)4\pi r^2\,dr = -8\pi\varepsilon_0AR^2\cdot\frac{1}{2R^2} = -4\pi\varepsilon_0A$. Plus the point charge: $0$. Far away, $4\pi\varepsilon_0r^2E_r = 4\pi\varepsilon_0AR^2/r^2\to0$. Same answer. The field falls faster than $1/r^2$, which already told you the total is zero.
+
+              **(d)** Outside: $V(r) = \displaystyle\int_r^\infty\frac{AR^2}{r'^4}dr' = \frac{AR^2}{3r^3}$. Inside, start from $V(R) = \dfrac{A}{3R}$ and add $\displaystyle\int_r^R\frac{A}{r'^2}dr' = \frac Ar - \frac AR$, which gives $V = \dfrac Ar - \dfrac{2A}{3R}$. Check: continuous at $R$, and $-dV/dr$ gives back $A/r^2$.
+
+              **(e)** $r^2E_r = A - Ar^3/R^3$, so for $0<r<R$: $\rho = \dfrac{\varepsilon_0}{r^2}\left(-\dfrac{3Ar^2}{R^3}\right) = -\dfrac{3\varepsilon_0A}{R^3}$, uniform. At the origin $4\pi\varepsilon_0r^2E_r\to4\pi\varepsilon_0A$: a point charge $+4\pi\varepsilon_0A$. The ball holds $-\dfrac{3\varepsilon_0A}{R^3}\cdot\dfrac43\pi R^3 = -4\pi\varepsilon_0A$, so the total is zero, consistent with $\vb E = 0$ outside. $E_r(R) = 0$ from inside too, so there's no surface charge.
+
+              !!trap
+                Computing $\nabla\cdot\vb E$ only away from the origin and calling the inside "empty" loses the point charge, which is the whole point of the problem. Whenever $E_r\sim1/r^2$ near $0$, there is a delta function.
+            `,
+          },
+          {
+            q: md`
+              **Problem 2 (25 pts).** An infinitely long solid cylinder of radius $a$ along the $z$ axis carries uniform charge density $+\rho$. Superimposed on it is a solid ball of radius $R > a$, centered on the origin, with uniform density $-\rho$. Where they overlap, the densities add to zero.
+
+              [[fig:p2]]
+
+              (a) Find $\vb E$ at a point inside both (Cartesian components). (b) Find $\vb E$ in the plane $z = 0$ for $a<s<R$. Where in that range is it zero? (c) Find $\vb E$ on the $z$ axis for $z>R$. (d) Find $V(s = a, z = 0) - V(\text{origin})$. (e) With $a = R/2$, find $\vb E$ at $s = R$, $z = 0$.
+            `,
+            figs: { p2: { svg: cylSphere(), cap: 'Blue: the $+\\rho$ cylinder, running off to $z=\\pm\\infty$. Red: the $-\\rho$ ball of radius $R$.' } },
+            ans: md`
+              - (a) $\vb E = \dfrac{\rho}{\varepsilon_0}\left(\dfrac x6,\ \dfrac y6,\ -\dfrac z3\right)$.
+              - (b) $\vb E = \dfrac{\rho\,(3a^2 - 2s^2)}{6\varepsilon_0s}\,\uv s$. It vanishes at $s = \sqrt{3/2}\,a$ (if that is less than $R$).
+              - (c) $\vb E = -\dfrac{\rho R^3}{3\varepsilon_0z^2}\,\uv z$.
+              - (d) $-\dfrac{\rho a^2}{12\varepsilon_0}$.
+              - (e) $\vb E = -\dfrac{5\rho R}{24\varepsilon_0}\,\uv s$ (pointing inward).
+            `,
+            sol: md`
+              **The method.** Neither the combination nor its overlap has a symmetry Gauss can use. Each piece separately does, so find each field with its own Gaussian surface and add the vectors.
+              - Cylinder ($+\rho$): $\vb E = \dfrac{\rho s}{2\varepsilon_0}\uv s$ for $s<a$ (pillbox: $E\,2\pi sL = \rho\pi s^2L/\varepsilon_0$), and $\dfrac{\rho a^2}{2\varepsilon_0s}\uv s$ for $s>a$.
+              - Ball ($-\rho$): $\vb E = -\dfrac{\rho}{3\varepsilon_0}\vb r$ for $r<R$, and $-\dfrac{\rho R^3}{3\varepsilon_0r^2}\uv r$ for $r>R$.
+
+              **(a)** $\dfrac{\rho}{2\varepsilon_0}(x, y, 0) - \dfrac{\rho}{3\varepsilon_0}(x, y, z) = \dfrac{\rho}{\varepsilon_0}\left(\dfrac x6, \dfrac y6, -\dfrac z3\right)$. Check: $\nabla\cdot\vb E = \dfrac{\rho}{\varepsilon_0}\left(\dfrac16 + \dfrac16 - \dfrac13\right) = 0$, right for an overlap with net density zero. Note that it is **not** uniform; compare "sphere with an off-center spherical cavity", which is uniform because both pieces have the same $\vb r$-linear form.
+
+              **(b)** Outside the cylinder but inside the ball, with $z = 0$ so that $\vb r = s\,\uv s$: $\dfrac{\rho a^2}{2\varepsilon_0s} - \dfrac{\rho s}{3\varepsilon_0} = \dfrac{\rho(3a^2 - 2s^2)}{6\varepsilon_0s}$, which is zero at $s^2 = \tfrac32a^2$.
+
+              **(c)** On the axis $s = 0$, so the cylinder contributes nothing (symmetry). The ball acts as a point charge $-\tfrac43\pi R^3\rho$: $E_z = -\dfrac{\rho R^3}{3\varepsilon_0z^2}$.
+
+              **(d)** On $z = 0$ inside both pieces, $E_s = \dfrac{\rho s}{6\varepsilon_0}$ from (a). $\Delta V = -\displaystyle\int_0^a\frac{\rho s}{6\varepsilon_0}ds = -\frac{\rho a^2}{12\varepsilon_0}$. (The cylinder's own potential diverges at infinity, which is why you only ever take differences here.)
+
+              **(e)** From (b) with $a = R/2$ and $s = R$: $\dfrac{\rho(3R^2/4 - 2R^2)}{6\varepsilon_0R} = -\dfrac{5\rho R}{24\varepsilon_0}$. The ball's inward pull wins there.
+            `,
+          },
+          {
+            q: md`
+              **Problem 3 (25 pts).** A conducting sphere of radius $R$ is held at potential $V_0$ (relative to infinity) by a battery. A point charge $q$ sits at distance $a > R$ from its center.
+
+              [[fig:p3]]
+
+              (a) Find an image system that reproduces $V$ outside the sphere. (b) Write $V(r, \theta)$ outside. (c) Find $\sigma(\theta)$. (d) Find the total charge on the sphere. (e) Find the force on $q$ (positive = away from the sphere). (f) For $a = 2R$, what $V_0$ makes the force zero? Is that equilibrium stable?
+            `,
+            figs: { p3: { svg: sphereQ({ vlab: 'V=V_0' }), cap: 'A sphere held at $V_0$, charge $q$ at distance $a$.' } },
+            ans: md`
+              - (a) $q' = -\dfrac{R}{a}q$ at $b = \dfrac{R^2}{a}$, plus $q_0 = 4\pi\varepsilon_0RV_0$ at the center.
+              - (b) $V = \dfrac{1}{4\pi\varepsilon_0}\left[\dfrac{q}{\sqrt{r^2 + a^2 - 2ar\cos\theta}} - \dfrac{qR/a}{\sqrt{r^2 + b^2 - 2br\cos\theta}}\right] + \dfrac{RV_0}{r}$.
+              - (c) $\sigma = -\dfrac{q\,(a^2 - R^2)}{4\pi R\,(R^2 + a^2 - 2aR\cos\theta)^{3/2}} + \dfrac{\varepsilon_0V_0}{R}$.
+              - (d) $Q = 4\pi\varepsilon_0RV_0 - \dfrac{qR}{a}$.
+              - (e) $F = \dfrac{qRV_0}{a^2} - \dfrac{q^2Ra}{4\pi\varepsilon_0(a^2 - R^2)^2}$.
+              - (f) $V_0 = \dfrac{8}{9}\dfrac{q}{4\pi\varepsilon_0R}$. Unstable.
+            `,
+            sol: md`
+              **Boundary conditions:** (1) $V = V_0$ on $r = R$; (2) $V\to0$ as $r\to\infty$; (3) the only charge in $r>R$ is $q$. Region: $r>R$.
+
+              **(a)** Griffiths Example 3.2 makes $V = 0$ on the sphere with $q' = -qR/a$ at $b = R^2/a$. To lift the whole sphere to $V_0$, add a charge at the center: it is constant on $r = R$, it is outside the region, and it dies at infinity. It must give $V_0$ on the sphere: $\dfrac{q_0}{4\pi\varepsilon_0R} = V_0$, so $q_0 = 4\pi\varepsilon_0RV_0$. By uniqueness this is **the** answer.
+
+              **(b)** Sum the three. The center charge gives $\dfrac{q_0}{4\pi\varepsilon_0r} = \dfrac{RV_0}{r}$.
+
+              **(c)** $\sigma = -\varepsilon_0\partial V/\partial r|_{R}$. The grounded part gives Griffiths' Eq. 3.21 result. The center charge adds a uniform $\dfrac{q_0}{4\pi R^2} = \dfrac{\varepsilon_0V_0}{R}$.
+
+              **(d)** Gauss outside, or just add the images inside: $q' + q_0 = -\dfrac{qR}{a} + 4\pi\varepsilon_0RV_0$. (For $a = 2R$: $4\pi\varepsilon_0RV_0 - q/2$.)
+
+              **(e)** $q_0$ pushes: $\dfrac{qq_0}{4\pi\varepsilon_0a^2} = \dfrac{qRV_0}{a^2}$. $q'$ pulls from distance $a - b = \dfrac{a^2 - R^2}{a}$: $\dfrac{q^2R/a}{4\pi\varepsilon_0(a^2 - R^2)^2/a^2} = \dfrac{q^2Ra}{4\pi\varepsilon_0(a^2 - R^2)^2}$.
+
+              **(f)** Set (e) to zero at $a = 2R$: $\dfrac{qV_0}{4R} = \dfrac{2q^2R^2}{4\pi\varepsilon_0\cdot9R^4}$, so $V_0 = \dfrac{8}{9}\dfrac{q}{4\pi\varepsilon_0R}$. **Unstable:** the image pull grows like $(a - R)^{-2}$ near the surface, while the push only grows like $a^{-2}$. Move $q$ a bit closer and the pull wins, so it falls in; move it a bit farther and the push wins, so it's pushed out. (Earnshaw: no stable equilibrium in a charge-free region.)
+
+              !!key
+                Every "sphere with a twist" is grounded-sphere images plus a charge at the center. Held at $V_0$: $q_0 = 4\pi\varepsilon_0RV_0$. Neutral and isolated: $q_0 = +qR/a$. Carrying $Q$: $q_0 = Q + qR/a$.
+            `,
+          },
+          {
+            q: md`
+              **Problem 4 (15 pts).** A thin spherical shell of radius $R$ is held at the potential $V(R, \theta) = V_0(1 + \cos\theta)^2$. There is no other charge.
+
+              [[fig:p4]]
+
+              (a) Find $V$ inside and outside. (b) Find $\sigma(\theta)$. (c) Find the total charge. (d) Find $\vb E$ at the center.
+            `,
+            figs: { p4: { svg: sphereV('V_0(1+\\cos\\theta)^2'), cap: 'The potential is specified on the shell.' } },
+            ans: md`
+              - (a) $V_{\text{in}} = V_0\left[\dfrac43 + 2\dfrac rR P_1 + \dfrac23\dfrac{r^2}{R^2}P_2\right]$, $V_{\text{out}} = V_0\left[\dfrac43\dfrac Rr + 2\dfrac{R^2}{r^2}P_1 + \dfrac23\dfrac{R^3}{r^3}P_2\right]$, with $P_\ell = P_\ell(\cos\theta)$.
+              - (b) $\sigma = \dfrac{\varepsilon_0V_0}{R}\left(5\cos^2\theta + 6\cos\theta - \dfrac13\right)$.
+              - (c) $Q = \dfrac{16}{3}\pi\varepsilon_0RV_0$.
+              - (d) $\vb E = -\dfrac{2V_0}{R}\,\uv z$.
+            `,
+            sol: md`
+              **Boundary conditions:** (1) $V$ finite at $r = 0$; (2) $V\to0$ at infinity; (3) $V = V_0(1 + \cos\theta)^2$ at $r = R$ from both sides.
+
+              **(a)** Expand with $u = \cos\theta$: $(1 + u)^2 = 1 + 2u + u^2$, and $u^2 = \tfrac13 + \tfrac23P_2$. So $(1+u)^2 = \tfrac43P_0 + 2P_1 + \tfrac23P_2$. Inside, each term gets $(r/R)^\ell$; outside, $(R/r)^{\ell+1}$.
+
+              **(b)** For a shell, $\sigma = \varepsilon_0\left(\dfrac{\partial V_{\text{in}}}{\partial r} - \dfrac{\partial V_{\text{out}}}{\partial r}\right)_R = \dfrac{\varepsilon_0}{R}\sum(2\ell+1)V_\ell P_\ell$. That gives $\dfrac{\varepsilon_0V_0}{R}\left(\tfrac43 + 6P_1 + \tfrac{10}{3}P_2\right) = \dfrac{\varepsilon_0V_0}{R}\left(5\cos^2\theta + 6\cos\theta - \tfrac13\right)$.
+
+              **(c)** Only $\ell = 0$ carries net charge. $V_{\text{out}}\to\dfrac43\dfrac{V_0R}{r} = \dfrac{Q}{4\pi\varepsilon_0r}$, so $Q = \dfrac{16}{3}\pi\varepsilon_0RV_0$.
+
+              **(d)** At the center only the $\ell = 1$ term has a gradient: $2V_0\dfrac{r\cos\theta}{R} = \dfrac{2V_0z}{R}$, so $\vb E = -\dfrac{2V_0}{R}\uv z$. (The $\ell = 2$ term is quadratic: zero gradient at the center.)
+            `,
+          },
+          {
+            q: md`
+              **Problem 5 (10 pts, short answers).**
+
+              [[fig:p5]]
+
+              (a) $\vb E = k\,\uv r/r^2$ everywhere. What is $\rho$?
+              (b) $\vb E = k\,\uv r$ everywhere (constant magnitude). What is $\rho$? Is there a point charge at the origin?
+              (c) An infinite uniformly charged cylinder has a spherical cavity centered on its axis. Is $\vb E$ uniform in the cavity?
+              (d) The charge $q$ in the figure sits a distance $d$ from the center of a thin conducting shell of radius $R$ held at $V_0$. What is the force on $q$?
+              (e) In (d), what charge sits on the outer face of the shell?
+            `,
+            figs: { p5: { svg: shellInside('V=V_0'), cap: 'Part (d): a charge inside a shell held at $V_0$; $a = d$ in the figure.' } },
+            ans: md`
+              - (a) $\rho = 4\pi\varepsilon_0k\,\delta^3(\vb r)$.
+              - (b) $\rho = \dfrac{2\varepsilon_0k}{r}$; no point charge.
+              - (c) No. $\vb E = \dfrac{\rho}{\varepsilon_0}\left(\dfrac{x}{2},\dfrac{y}{2},0\right) - \dfrac{\rho}{3\varepsilon_0}(x,y,z)$, measured from the cavity's center, which is not uniform.
+              - (d) $\dfrac{q^2Rd}{4\pi\varepsilon_0(R^2 - d^2)^2}$, toward the nearest part of the wall, the same as for a grounded shell.
+              - (e) $4\pi\varepsilon_0RV_0$.
+            `,
+            sol: md`
+              - (a) $\nabla\cdot(\uv r/r^2) = 4\pi\delta^3(\vb r)$, so the field is that of a point charge $q = 4\pi\varepsilon_0k$.
+              - (b) $\dfrac{\varepsilon_0}{r^2}\dfrac{d}{dr}(kr^2) = \dfrac{2\varepsilon_0k}{r}$. At the origin $r^2E_r = kr^2\to0$, so no point charge. (The charge within $r$ is $4\pi\varepsilon_0kr^2$, which goes to zero smoothly.)
+              - (c) A ball cavity in a ball gives uniform $\vb E$ because both fields are linear in the distance with the **same** coefficient $\rho/3\varepsilon_0$. A cylinder's field is $\rho s/2\varepsilon_0$, a different coefficient and only two components, so they don't cancel to a constant.
+              - (d) Inside, $V$ = (grounded-shell image solution) $+\,V_0$, and a constant exerts no force. Image: $q' = -qR/d$ at $R^2/d$, so the distance is $R^2/d - d$ and $F = \dfrac{q\cdot qR/d}{4\pi\varepsilon_0(R^2/d - d)^2} = \dfrac{q^2Rd}{4\pi\varepsilon_0(R^2 - d^2)^2}$.
+              - (e) The inner face carries $-q$ (Gauss inside the metal). Outside, the field is that of a sphere at $V_0$: $V = V_0R/r$, so the outer face holds $4\pi\varepsilon_0RV_0$, spread uniformly. (The shell's total is $4\pi\varepsilon_0RV_0 - q$.)
+            `,
+          },
+        ],
+      },
+    ],
+  };
+
+  // ---------------------------------------------------------------- Spring 2026 Exam 1, typed (problems + correct answers)
+  const wedgeAB = () => {                      // annular sector a<r<b, 0<theta<alpha
+    const f = PF.fig();
+    const ox = 40, oy = 230, a = 80, b = 210, al = 50, D = Math.PI / 180;
+    const P = (r, t) => [ox + r * Math.cos(t * D), oy - r * Math.sin(t * D)];
+    const nx = -Math.sin(al * D), ny = -Math.cos(al * D);
+    f.line(ox, oy, ox + a, oy, { cls: 'dash dim thin' }); f.line(ox, oy, ...P(a, al), { cls: 'dash dim thin' });
+    f.plane(ox + a, ox + b, oy, { side: 'below' });
+    const A = P(a, al), B = P(b, al);
+    f.hatchBand([A, B, [B[0] + 10 * nx, B[1] + 10 * ny], [A[0] + 10 * nx, A[1] + 10 * ny]]);
+    f.line(A[0], A[1], B[0], B[1], { cls: 'thick' });
+    f.hatchBand(f.arcPts(ox, oy, a, a, 0, al).concat(f.arcPts(ox, oy, a - 8, a - 8, al, 0)));
+    f.arc(ox, oy, a, 0, al, { cls: 'thick' });
+    f.hatchBand(f.arcPts(ox, oy, b + 8, b + 8, 0, al).concat(f.arcPts(ox, oy, b, b, al, 0)));
+    f.arc(ox, oy, b, 0, al, { cls: 'thick' });
+    f.dot(ox, oy, 2.2); f.label(ox - 6, oy + 4, 'O', 'tr', 'small accent');
+    f.angle(ox, oy, 24, 0, al, '\\alpha');
+    const L0 = P(b + 24, al / 2); f.label(L0[0], L0[1], 'V_0', 'l');
+    const L1 = P(a - 22, al / 2); f.label(L1[0], L1[1], '0', 'c', 'small');
+    f.label((A[0] + B[0]) / 2 + 22 * nx, (A[1] + B[1]) / 2 + 22 * ny, '0', 'c', 'small');
+    f.label(ox + (a + b) / 2, oy + 14, '0', 't', 'small');
+    f.label(ox + a, oy + 14, 'a', 't', 'small accent'); f.label(ox + b, oy + 14, 'b', 't', 'small accent');
+    return f.svg();
+  };
+  const hemiBall = () => {                     // solid ball, +rho0 north, -rho0 south
+    const f = PF.fig();
+    const cx = 120, cy = 120, Rr = 80;
+    f.add(`<path class="nodecl" style="fill:var(--bad);fill-opacity:.16;stroke:none" d="M${f.arcPts(cx, cy, Rr, Rr, 180, 360).map((p) => p.map((v) => v.toFixed(1)).join(',')).join('L')}Z"/>`);
+    f.add(`<path class="nodecl" style="fill:var(--primary);fill-opacity:.22;stroke:none" d="M${f.arcPts(cx, cy, Rr, Rr, 0, 180).map((p) => p.map((v) => v.toFixed(1)).join(',')).join('L')}Z"/>`);
+    f.circle(cx, cy, Rr);
+    f.line(cx - Rr, cy, cx + Rr, cy, { cls: 'dash dim' });
+    f.line(cx, cy + Rr + 14, cx, cy - Rr - 30, { cls: 'dim', arrow: 'end', hs: 6 }); f.label(cx + 6, cy - Rr - 30, 'z', 'l', 'small accent');
+    f.label(cx - 38, cy - 34, '+\\rho_0', 'c'); f.label(cx - 38, cy + 34, '-\\rho_0', 'c');
+    f.line(cx, cy, cx + Rr * 0.8, cy + Rr * 0.6, { cls: 'dim', arrow: 'end' }); f.label(cx + 40, cy + 22, 'R', 'bl', 'small');
+    return f.svg();
+  };
+  const mockE = {
+    id: 'x-s26', title: 'Spring 2026 Exam 1 (the real problems)', kind: 'mock',
+    steps: [
+      R(md`
+        Last semester's actual Hour Exam I, retyped from the posted solutions, with the grading weights shown. Two problems: separation of variables in **polar** coordinates, and a multipole moment. Notice where the points went: in Problem 1, 2 of the 11 points are for the boundary conditions and most of the rest are for setting up the separation correctly. The Fourier integral at the end is worth only 2.
+
+        Polar separation is taught in Unit W. Work this one under exam conditions first.
+      `),
+      {
+        t: 'paper',
+        html: '<div class="pp-title"><span>PHYS 435 · Hour Exam I · Spring 2026</span><span>as given</span></div><div class="pp-meta"><span>Problems 1–2 + extensions</span><span>Formula sheet allowed</span></div>',
+        items: [
+          {
+            q: md`
+              **Problem 1.** Consider the region $a<r<b$, $0<\theta<\alpha$ in two-dimensional polar coordinates $(r, \theta)$, with nothing depending on $z$. The straight walls $\theta = 0$ and $\theta = \alpha$ and the inner arc $r = a$ are grounded; the outer arc $r = b$ is held at $V_0$. In polar coordinates, $\nabla^2\Phi = \dfrac1r\dfrac{\partial}{\partial r}\left(r\dfrac{\partial\Phi}{\partial r}\right) + \dfrac{1}{r^2}\dfrac{\partial^2\Phi}{\partial\theta^2}$.
+
+              [[fig:p1]]
+
+              1. Write down the boundary conditions. (2 pts)
+              2. Separate variables, $\Phi = R(r)\Theta(\theta)$, and find the most general solution that satisfies the three homogeneous conditions. (Look for radial solutions of the form $R = r^\lambda$.) (6 pts)
+              3. Impose $\Phi(b, \theta) = V_0$ and find the coefficients. (3 pts)
+            `,
+            figs: { p1: { svg: wedgeAB(), cap: 'The region between two grounded walls and two arcs.' } },
+            ans: md`
+              1. $\Phi(a,\theta) = 0$, $\Phi(r,0) = 0$, $\Phi(r,\alpha) = 0$, $\Phi(b,\theta) = V_0$.
+              2. $\Phi = \displaystyle\sum_{n=1}^\infty C_n\sin\frac{n\pi\theta}{\alpha}\left[\left(\frac ra\right)^{n\pi/\alpha} - \left(\frac ar\right)^{n\pi/\alpha}\right]$.
+              3. $C_n = \dfrac{2V_0}{\pi n}\cdot\dfrac{1 - (-1)^n}{(b/a)^{n\pi/\alpha} - (a/b)^{n\pi/\alpha}}$: $\dfrac{4V_0}{n\pi[\cdots]}$ for odd $n$, $0$ for even $n$.
+            `,
+            sol: md`
+              **1. Boundary conditions.** (1) $\Phi(a,\theta) = 0\Rightarrow R(a) = 0$; (2) $\Phi(r,0) = 0\Rightarrow\Theta(0) = 0$; (3) $\Phi(r,\alpha) = 0\Rightarrow\Theta(\alpha) = 0$; (4) $\Phi(b,\theta) = V_0$. Conditions 1–3 are homogeneous (zero), so they go into the basis functions. Condition 4 is the one that's left for Fourier.
+
+              **2. Separate.** Put $R\Theta$ into Laplace, multiply by $r^2/(R\Theta)$: $\dfrac rR\dfrac{d}{dr}\left(r\dfrac{dR}{dr}\right) + \dfrac1\Theta\dfrac{d^2\Theta}{d\theta^2} = 0$. Each term is a constant.
+              - Angular: $\Theta'' = -k^2\Theta$, so $\Theta = A\cos k\theta + B\sin k\theta$. The sign is negative because $\Theta$ has to vanish at **two** angles (oscillate), the same reason $x$ got $\sin$ in the Cartesian slot.
+              - Radial: $r(rR')' = k^2R$. Try $R = r^\lambda$: $\lambda^2 = k^2$, so $R = Cr^k + Dr^{-k}$.
+              - Condition 2 gives $A = 0$. Condition 3 gives $\sin k\alpha = 0$, so $k = n\pi/\alpha$. Condition 1 gives $Ca^k + Da^{-k} = 0$, so $D = -Ca^{2k}$ and $R\propto(r/a)^k - (a/r)^k$.
+              - Superpose all $n$.
+
+              **3. Fourier.** At $r = b$: $V_0 = \sum C_n\left[(b/a)^{n\pi/\alpha} - (a/b)^{n\pi/\alpha}\right]\sin(n\pi\theta/\alpha)$. Multiply by $\sin(m\pi\theta/\alpha)$ and integrate over $0..\alpha$ (orthogonality gives $\alpha/2$): $C_m[\cdots]\dfrac\alpha2 = \dfrac{V_0\alpha}{m\pi}(1 - \cos m\pi)$.
+
+              !!intuition
+                It's the Cartesian slot in disguise. With $u = \ln r$, polar Laplace becomes $\Phi_{uu} + \Phi_{\theta\theta} = 0$, Cartesian in $(u, \theta)$, and $r^{\pm k} = e^{\pm ku}$. The bracket $(r/a)^k - (a/r)^k$ is just $2\sinh\big(k\ln(r/a)\big)$: the "sinh that vanishes at the grounded end".
+            `,
+          },
+          {
+            q: md`
+              **Problem 2.** A solid sphere of radius $R$ has charge density $\rho = +\rho_0$ in its northern hemisphere ($0\le\theta<\pi/2$) and $\rho = -\rho_0$ in its southern hemisphere.
+
+              [[fig:p2]]
+
+              1. What is the monopole contribution to $\vb E$ far away? (1 pt)
+              2. Find the dipole moment $\vb p$ and the dipole field $\vb E_{\text{dip}}(r, \theta)$. (4 pts)
+            `,
+            figs: { p2: { svg: hemiBall(), cap: 'A ball charged $+\\rho_0$ on top, $-\\rho_0$ below.' } },
+            ans: md`
+              1. $0$ (total charge zero).
+              2. $\vb p = \dfrac{\pi R^4\rho_0}{2}\,\uv z$; $\vb E_{\text{dip}} = \dfrac{1}{4\pi\varepsilon_0}\dfrac{\pi R^4\rho_0}{2r^3}\left(2\cos\theta\,\uv r + \sin\theta\,\uv\theta\right)$.
+            `,
+            sol: md`
+              **1.** The two halves cancel: $Q = 0$, so no $1/r^2$ term.
+
+              **2.** $\vb p = \displaystyle\int\rho\,\vb r'\,d\tau'$. Write $\vb r' = r'(\sin\theta'\cos\phi', \sin\theta'\sin\phi', \cos\theta')$. Since $\rho$ doesn't depend on $\phi'$, the $x$ and $y$ parts integrate to zero. That leaves
+              $$p_z = 2\pi\int_0^R r'^3dr'\int_0^\pi\rho(\theta')\sin\theta'\cos\theta'\,d\theta' = 2\pi\frac{R^4}{4}\left(\rho_0\cdot\frac12 - \rho_0\cdot\left(-\frac12\right)\right) = \frac{\pi R^4\rho_0}{2}.$$
+              It points toward the positive half, as it should. Then use the formula-sheet dipole field with $p = \pi R^4\rho_0/2$.
+
+              !!trap
+                Watch the powers: $r'\cdot r'^2\,dr'$ gives $r'^3$, so the result is $R^4$, not $R^3$. And keep the sign of $\cos\theta'$ in the southern half. Both halves add, because $-\rho_0$ times a negative $\cos\theta'$ is positive.
+            `,
+          },
+          {
+            q: md`
+              **Extensions (what a harder version would add).**
+
+              (a) In Problem 1 take $\alpha = \pi/2$ and $b = 2a$. Find $\Phi$ at $r = \sqrt2\,a$, $\theta = \pi/4$ from the first term only, and say whether the full series is higher or lower.
+              (b) In Problem 2, which multipole terms vanish exactly? Find the first nonzero one after the dipole (the coefficient of $P_\ell(\cos\theta)/r^{\ell+1}$ in $V$).
+              (c) In Problem 1, why must the separation constant make $\Theta$ oscillate and $R$ a power law, rather than the other way around?
+            `,
+            figs: { p1: { svg: wedgeAB(), cap: 'Same region as Problem 1.' } },
+            ans: md`
+              - (a) First term $\dfrac{8V_0}{5\pi}\approx0.509\,V_0$; the full series gives $0.464\,V_0$ (lower).
+              - (b) All even $\ell$ vanish (the density is odd in $z$). Next is $\ell = 3$: $V_3 = \dfrac{1}{4\pi\varepsilon_0}\left(-\dfrac{\pi R^6\rho_0}{12}\right)\dfrac{P_3(\cos\theta)}{r^4}$.
+              - (c) The two conditions that are zero lie on the walls $\theta = 0$ and $\theta = \alpha$. Only an oscillating $\Theta$ can vanish at two different angles.
+            `,
+            sol: md`
+              **(a)** With $\alpha = \pi/2$: $k = 2n$. The $n$-th term at $r = \sqrt2a$, $\theta = \pi/4$ is $\dfrac{4V_0}{n\pi}\sin\dfrac{n\pi}{2}\cdot\dfrac{2^n - 2^{-n}}{4^n - 4^{-n}} = \dfrac{4V_0}{n\pi}\dfrac{\sin(n\pi/2)}{2^n + 2^{-n}}$ (odd $n$). For $n = 1$ that is $\dfrac{4V_0}{\pi}\cdot\dfrac{1}{2.5} = \dfrac{8V_0}{5\pi} = 0.509V_0$. The $n = 3$ term is negative ($\sin\frac{3\pi}{2} = -1$), so the sum, $0.464V_0$, is lower.
+
+              **(b)** In general $V_\ell = \dfrac{1}{4\pi\varepsilon_0r^{\ell+1}}\displaystyle\int r'^\ell P_\ell(\cos\theta')\rho\,d\tau'$. Under $z\to-z$, $\rho$ flips sign and $P_\ell$ picks up $(-1)^\ell$, so even $\ell$ integrates to zero. For $\ell = 3$: $2\pi\cdot\dfrac{R^6}{6}\cdot\rho_0\cdot2\displaystyle\int_0^1P_3\,du = 2\pi\frac{R^6}{6}\rho_0\cdot2\left(-\frac18\right) = -\frac{\pi R^6\rho_0}{12}$.
+
+              **(c)** The same rule as in Cartesian coordinates: the direction with two zero conditions gets the oscillating function. If you chose $\Theta'' = +k^2\Theta$, then $\Theta = A\cosh k\theta + B\sinh k\theta$ could not vanish at both walls unless it were zero everywhere.
+            `,
+          },
+        ],
+      },
+    ],
+  };
+
+  U5.lessons.push(chooser, mockA, mockB, mockC, mockD, mockE);
   U5.lessons.push(U5.lessons.splice(U5.lessons.findIndex((l) => l.id === 'x-quiz'), 1)[0]);   // quiz last
 })();
