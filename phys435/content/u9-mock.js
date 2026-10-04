@@ -659,7 +659,7 @@
     const f = PF.fig();
     const cx = 150, cy = 125, Rr = 80, ac = 28, y0 = 12, y1 = 238;
     f.add(`<path class="nodecl" style="fill:var(--bad);fill-opacity:.16;stroke:none" d="M${f.arcPts(cx, cy, Rr, Rr, 0, 360).map((p) => p.map((v) => v.toFixed(1)).join(',')).join('L')}Z"/>`);
-    f.add(`<path class="nodecl" style="fill:var(--primary);fill-opacity:.30;stroke:none" d="M${cx - ac},${y0}L${cx + ac},${y0}L${cx + ac},${y1}L${cx - ac},${y1}Z"/>`);
+    f.add(`<path class="nodecl" style="fill:var(--primary, #3f7fd8);fill-opacity:.30;stroke:none" d="M${cx - ac},${y0}L${cx + ac},${y0}L${cx + ac},${y1}L${cx - ac},${y1}Z"/>`);
     f.line(cx - ac, y0, cx - ac, y1); f.line(cx + ac, y0, cx + ac, y1);
     f.circle(cx, cy, Rr);
     f.line(cx, y1 + 6, cx, y0 - 6, { cls: 'dash dim thin' });
@@ -875,7 +875,7 @@
     const f = PF.fig();
     const cx = 120, cy = 120, Rr = 80;
     f.add(`<path class="nodecl" style="fill:var(--bad);fill-opacity:.16;stroke:none" d="M${f.arcPts(cx, cy, Rr, Rr, 180, 360).map((p) => p.map((v) => v.toFixed(1)).join(',')).join('L')}Z"/>`);
-    f.add(`<path class="nodecl" style="fill:var(--primary);fill-opacity:.22;stroke:none" d="M${f.arcPts(cx, cy, Rr, Rr, 0, 180).map((p) => p.map((v) => v.toFixed(1)).join(',')).join('L')}Z"/>`);
+    f.add(`<path class="nodecl" style="fill:var(--primary, #3f7fd8);fill-opacity:.22;stroke:none" d="M${f.arcPts(cx, cy, Rr, Rr, 0, 180).map((p) => p.map((v) => v.toFixed(1)).join(',')).join('L')}Z"/>`);
     f.circle(cx, cy, Rr);
     f.line(cx - Rr, cy, cx + Rr, cy, { cls: 'dash dim' });
     f.line(cx, cy + Rr + 14, cx, cy - Rr - 30, { cls: 'dim', arrow: 'end', hs: 6 }); f.label(cx + 6, cy - Rr - 30, 'z', 'l', 'small accent');

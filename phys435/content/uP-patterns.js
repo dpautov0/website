@@ -101,7 +101,7 @@
     xt: [[0.5, 'R/2'], [1, 'R']], curves: [{ f: (x) => (x < 1 ? 1 / x - 1.5 + x * x / 2 : 0) }],
   });
   const pQencThomson = () => PF.plot({
-    w: 340, h: 200, x: [0, 1.4], y: [0, 1.25], xl: 'r', yl: 'Q_{\\text{enc}}/4\\pi\\varepsilon_0k', zero: true,
+    w: 340, h: 200, x: [0, 1.4], y: [0, 1.25], xl: 'r', yl: 'Q_{\\text{enc}}\\ (\\text{units } 4\\pi\\varepsilon_0k)', zero: true,
     xt: [[1, 'R']], yt: [[1, '1']], curves: [{ f: (x) => (x < 1 ? 1 - x * x * x : 0) }],
   });
 
@@ -192,7 +192,7 @@
           5. $V(r) = -\displaystyle\int_\infty^rE_r\,dr'$ (or from another reference point if $E$ doesn't fall off).
 
         !!trap Two opposite mistakes
-          Forgetting the delta when $r^2E_r\to q_0/4\pi\ep\neq0$, and adding a delta when $r^2E_r\to0$. A density that is infinite at the origin (like $1/r$) is **not** a point charge if it integrates to zero charge in a tiny ball.
+          Forgetting the delta when $r^2E_r\to\dfrac{q_0}{4\pi\ep}\neq0$, and adding a delta when $r^2E_r\to0$. A density that is infinite at the origin (like $1/r$) is **not** a point charge if it integrates to zero charge in a tiny ball.
       `),
 
       Q(md`In some range of $r$, the enclosed charge $Q_{\text{enc}}(r)$ **decreases** as $r$ increases. What is the sign of $\rho$ there?`,
@@ -337,7 +337,7 @@
         [md`$\sigma = \ep\left(E_{\text{out}}-E_{\text{in}}\right)$`, md`$\sigma = \ep\left(E_{\text{in}}-E_{\text{out}}\right)$`, md`$\sigma = \dfrac{\ep}{2}\left(E_{\text{out}}-E_{\text{in}}\right)$`, md`None: the divergence formula gives $\rho$ only`], 0,
         [null,
           md`Sign: more outward field outside means positive charge on the surface.`,
-          md`The jump across a surface charge is $\sigma/\ep$, not $\sigma/2\ep$.`,
+          md`The jump across a surface charge is $\sigma/\ep$, not $\dfrac{\sigma}{2\ep}$.`,
           md`A jump in $E_r$ is a delta function in $dE_r/dr$; its strength is a surface charge.`],
         md`Pillbox on the surface: $E_{\text{out}}-E_{\text{in}} = \sigma/\ep$. Equivalently, $Q_{\text{enc}}$ jumps by $4\pi R^2\sigma$ at $r=R$.`,
         { figHtml: fBallR() }),
@@ -528,7 +528,7 @@
 
           $$\rho = \frac{1}{4\pi r^2}\cdot4\pi\ep A\left(-\frac{4r^2}{a^3}\right)e^{-2r/a} = -\frac{4\ep A}{a^3}e^{-2r/a}.$$
 
-          With $A = e/4\pi\ep$ this is $-\dfrac{e}{\pi a^3}e^{-2r/a}$, the electron's ground-state cloud, finite at the origin.
+          With $A = \dfrac{e}{4\pi\ep}$ this is $-\dfrac{e}{\pi a^3}e^{-2r/a}$, the electron's ground-state cloud, finite at the origin.
 
           **Total.** $Q_{\text{enc}}\to0$: the atom is neutral.
 
@@ -830,7 +830,7 @@
       `, { dip: { svg: fDip(), cap: md`A point dipole $\vb p$ at the origin, and a field point at $(r,\theta)$.` } }),
 
       Q(md`$V = \dfrac{p\cos\theta}{4\pi\ep r^2}$. What is the flux of $\vb E$ through a sphere of radius $r$ centered on the origin?`,
-        [md`$p/\ep r$`, md`$0$`, md`$p/\ep$`, md`Infinite, since $V$ blows up`], 1,
+        [md`$\dfrac{p}{\ep r}$`, md`$0$`, md`$p/\ep$`, md`Infinite, since $V$ blows up`], 1,
         [md`Flux has units of charge/$\ep$; and the angular integral kills it anyway.`,
           null,
           md`That would be a net charge $p$, which has the wrong units (C·m).`,
@@ -1064,24 +1064,38 @@
   });
 
   // =====================================================================================
-  // Lesson 2 figures: hatched = +rho, grey tint = -rho, white = no net charge
+  // Lesson 2 figures: blue tint = +rho, red tint = -rho, uncoloured = no net charge.
+  // (Hatching means a conductor elsewhere on the site, so it is not used for charge here.)
   // =====================================================================================
-  // label at the end of a thin leader line (for regions that are hatched)
+  const CHG = { '+': 'fill:var(--primary, #3f7fd8);fill-opacity:.25;stroke:none', '-': 'fill:var(--bad);fill-opacity:.16;stroke:none' };
+  // filled region of charge density +rho or -rho; a hole can be cut with a keyhole point list
+  function chg(f, pts, sign) {
+    pts.forEach((p) => f.track(p[0], p[1]));
+    f.add(`<path class="nodecl" style="${CHG[sign]}" d="${dpath(pts)}"/>`);
+    return f;
+  }
+  // label at the end of a thin leader line (keeps labels clear of the outlines)
   const lead = (f, x0, y0, x1, y1, t, anchor) => { f.line(x0, y0, x1, y1, { cls: 'dim thin' }); f.label(x1 + (/l/.test(anchor) ? 3 : /r/.test(anchor) ? -3 : 0), y1, t, anchor); return f; };
-  // a point inside a hatched region: dot plus a leader to a label outside
+  // a point inside a charged region: dot plus a leader to a label outside
   const ptLead = (f, x, y, t, lx, ly, anchor) => { f.dot(x, y, 3); return lead(f, x, y, lx, ly, t, anchor); };
 
   // Sphere (+rho, radius R) pierced by an infinite cylinder (-rho, radius a) along z. Side view.
-  // o: { ap, pts: [[x, z, label, side | {lx, ly, anchor}]] (units of R), dens: false, noA }
+  // o: { ap, pts: [[x, z, label, side | {lx, ly, anchor}]] (units of R), dens: false (cylinder density unknown: grey, labelled rho_c), noA }
   function fSphCyl(o = {}) {
     const f = PF.fig();
     const cx = 170, cy = 150, Rp = 90, ap = o.ap ?? 28, ext = 46;
     const phi = Math.acos(-ap / Rp) / DEG, psi = Math.acos(ap / Rp) / DEG;
     const top = cy - Rp - ext, bot = cy + Rp + ext;
-    f.hatchBand(f.arcPts(cx, cy, Rp, Rp, phi, 360 - phi));
-    f.hatchBand(f.arcPts(cx, cy, Rp, Rp, -psi, psi));
-    tint(f, [[cx - ap, top], [cx + ap, top]].concat(f.arcPts(cx, cy, Rp, Rp, psi, phi)));
-    tint(f, [[cx + ap, bot], [cx - ap, bot]].concat(f.arcPts(cx, cy, Rp, Rp, 360 - phi, 360 - psi)));
+    chg(f, f.arcPts(cx, cy, Rp, Rp, phi, 360 - phi), '+');
+    chg(f, f.arcPts(cx, cy, Rp, Rp, -psi, psi), '+');
+    if (o.dens === false) {
+      tint(f, [[cx - ap, top], [cx + ap, top], [cx + ap, bot], [cx - ap, bot]], 0.18);
+      lead(f, cx - 62, cy + 40, cx - Rp - 20, cy + 78, '+\\rho', 'r');
+      lead(f, cx + ap - 8, top + 14, cx + ap + 26, top + 6, '\\rho_c', 'l');
+    } else {
+      chg(f, [[cx - ap, top], [cx + ap, top]].concat(f.arcPts(cx, cy, Rp, Rp, psi, phi)), '-');
+      chg(f, [[cx + ap, bot], [cx - ap, bot]].concat(f.arcPts(cx, cy, Rp, Rp, 360 - phi, 360 - psi)), '-');
+    }
     f.circle(cx, cy, Rp);
     for (const x of [cx - ap, cx + ap]) {
       f.line(x, top, x, bot, { cls: 'thin' });
@@ -1109,7 +1123,7 @@
     const f = PF.fig();
     const cx = 150, cy = 150, ap = 78, bp = o.bp ?? 44, dp = o.dp ?? 0, top = 30, bot = 270;
     const ccx = cx + dp;
-    f.hatchBand([[cx - ap, cy], [cx - ap, top], [cx + ap, top], [cx + ap, bot], [cx - ap, bot], [cx - ap, cy], [ccx - bp, cy]].concat(f.arcPts(ccx, cy, bp, bp, 180, 540)));
+    chg(f, [[cx - ap, cy], [cx - ap, top], [cx + ap, top], [cx + ap, bot], [cx - ap, bot], [cx - ap, cy], [ccx - bp, cy]].concat(f.arcPts(ccx, cy, bp, bp, 180, 540)), '+');
     f.circle(ccx, cy, bp);
     for (const x of [cx - ap, cx + ap]) {
       f.line(x, top, x, bot, { cls: 'thin' });
@@ -1137,7 +1151,7 @@
   function fBallLine(o = {}) {
     const f = PF.fig();
     const cx = 160, cy = 140, Rp = 90;
-    f.hatchBand(f.arcPts(cx, cy, Rp, Rp, 0, 360));
+    chg(f, f.arcPts(cx, cy, Rp, Rp, 0, 360), '+');
     f.circle(cx, cy, Rp);
     const y0 = o.inf ? cy - Rp - 40 : cy - Rp, y1 = o.inf ? cy + Rp + 40 : cy + Rp;
     f.line(cx, y0, cx, y1, { cls: 'thick' });
@@ -1159,11 +1173,11 @@
     const f = PF.fig();
     const u = o.u || 26, cx = 70, cy = 170, ap = u, D = (o.D || 3) * u, Rb = (o.Rb || 1) * u, h = (o.h || 2) * u;
     const top = cy - h - 40, bot = cy + Rb + 40;
-    f.hatchBand([[cx - ap, top], [cx + ap, top], [cx + ap, bot], [cx - ap, bot]]);
+    chg(f, [[cx - ap, top], [cx + ap, top], [cx + ap, bot], [cx - ap, bot]], '+');
     for (const x of [cx - ap, cx + ap]) { f.line(x, top, x, bot, { cls: 'thin' }); f.line(x, top, x, top - 14, { cls: 'thin dash dim' }); f.line(x, bot, x, bot + 14, { cls: 'thin dash dim' }); }
     f.line(cx, top - 20, cx, bot + 20, { cls: 'dim dash thin' });
     f.label(cx + 5, top - 22, 'z', 'bl', 'small accent');
-    f.hatchBand(f.arcPts(cx + D, cy, Rb, Rb, 0, 360)); f.circle(cx + D, cy, Rb);
+    chg(f, f.arcPts(cx + D, cy, Rb, Rb, 0, 360), '+'); f.circle(cx + D, cy, Rb);
     f.dot(cx + D, cy, 2.4);
     f.line(cx + ap + 4, cy, cx + D - Rb - 4, cy, { cls: 'dim dash thin' });
     f.line(cx + D + Rb + 4, cy, cx + D + Rb + 30, cy, { cls: 'dim dash thin' });
@@ -1185,10 +1199,10 @@
     const top = cy - Rp - ext, bot = cy + Rp + ext;
     const ang = (x) => Math.acos((x - cx) / Rp) / DEG;
     const aL = ang(ax - ap), aR = ang(ax + ap);
-    f.hatchBand(f.arcPts(cx, cy, Rp, Rp, aL, 360 - aL));
-    f.hatchBand(f.arcPts(cx, cy, Rp, Rp, -aR, aR));
-    tint(f, [[ax - ap, top], [ax + ap, top]].concat(f.arcPts(cx, cy, Rp, Rp, aR, aL)));
-    tint(f, [[ax + ap, bot], [ax - ap, bot]].concat(f.arcPts(cx, cy, Rp, Rp, 360 - aL, 360 - aR)));
+    chg(f, f.arcPts(cx, cy, Rp, Rp, aL, 360 - aL), '+');
+    chg(f, f.arcPts(cx, cy, Rp, Rp, -aR, aR), '+');
+    chg(f, [[ax - ap, top], [ax + ap, top]].concat(f.arcPts(cx, cy, Rp, Rp, aR, aL)), '-');
+    chg(f, [[ax + ap, bot], [ax - ap, bot]].concat(f.arcPts(cx, cy, Rp, Rp, 360 - aL, 360 - aR)), '-');
     f.circle(cx, cy, Rp);
     for (const x of [ax - ap, ax + ap]) { f.line(x, top, x, bot, { cls: 'thin' }); f.line(x, top, x, top - 14, { cls: 'thin dash dim' }); f.line(x, bot, x, bot + 14, { cls: 'thin dash dim' }); }
     f.line(ax, top - 20, ax, bot + 20, { cls: 'dim dash thin' });
@@ -1204,14 +1218,14 @@
     for (const [x, z, t, side] of (o.pts || [])) { const px = cx + x * Rp, py = cy - z * Rp; f.dot(px, py, 3); f.tag(px, py, t, side || 'r', 7); }
     return f.svg();
   }
-  // Two overlapping balls (+rho left, -rho right), centres a distance d apart. Overlap white.
+  // Two overlapping balls (+rho left, -rho right), centres a distance d apart. Overlap uncoloured.
   function fTwoBalls(o = {}) {
     const f = PF.fig();
     const cy = 120, Rp = 80, D = o.D || 100, x1 = 110, x2 = x1 + D;
     const al = Math.acos(D / 2 / Rp) / DEG;
     const cyl = !!o.cyl;
-    f.hatchBand(f.arcPts(x1, cy, Rp, Rp, al, 360 - al).concat(f.arcPts(x2, cy, Rp, Rp, 180 + al, 180 - al)));
-    tint(f, f.arcPts(x2, cy, Rp, Rp, 180 + al, 540 - al).concat(f.arcPts(x1, cy, Rp, Rp, al, -al)));
+    chg(f, f.arcPts(x1, cy, Rp, Rp, al, 360 - al).concat(f.arcPts(x2, cy, Rp, Rp, 180 + al, 180 - al)), '+');
+    chg(f, f.arcPts(x2, cy, Rp, Rp, 180 + al, 540 - al).concat(f.arcPts(x1, cy, Rp, Rp, al, -al)), '-');
     f.circle(x1, cy, Rp); f.circle(x2, cy, Rp);
     f.dot(x1, cy, 2.6); f.dot(x2, cy, 2.6);
     f.arrow(x1, cy, x2 - 4, cy, { cls: 'dim', hs: 6 });
@@ -1221,14 +1235,33 @@
     if (o.field) for (const y of [cy - 30, cy + 30]) f.arrow((x1 + x2) / 2 - 12, y, (x1 + x2) / 2 + 12, y, { hs: 5 });
     return f.svg();
   }
+  // Ball (+rho) with an off-centre spherical cavity, centres a distance d apart.
+  // o: { dp: offset in px (0 = concentric), inner: true fills the small ball red (a -2rho ball), end: true = end view of two cylinders }
+  function fBallCav(o = {}) {
+    const f = PF.fig();
+    const cx = 130, cy = 120, Rp = 90, bp = 32, dp = o.dp ?? 46, hx = cx + dp;
+    chg(f, f.arcPts(cx, cy, Rp, Rp, 0, 360).concat(f.arcPts(hx, cy, bp, bp, 360, 0)), '+');
+    if (o.inner) chg(f, f.arcPts(hx, cy, bp, bp, 0, 360), '-');
+    f.circle(cx, cy, Rp); f.circle(hx, cy, bp);
+    f.dot(cx, cy, 2.6); if (dp) f.dot(hx, cy, 2.6);
+    lead(f, cx - 50, cy + 44, cx - Rp - 14, cy + 78, '+\\rho', 'r');
+    if (o.inner) lead(f, hx + 10, cy - 14, cx + Rp + 18, cy - Rp + 6, '\\text{net } -\\rho', 'l');
+    if (dp) {
+      const yd = cy + Rp + 18;
+      f.line(cx, cy + 4, cx, yd + 4, { cls: 'dim dash thin' }); f.line(hx, cy + 4, hx, yd + 4, { cls: 'dim dash thin' });
+      f.dim(cx, yd, hx, yd, '\\vb d', { at: 'b' });
+    }
+    if (o.end) f.text(cx - Rp, cy - Rp - 8, 'end view: both axes out of the page', 'bl');
+    return f.svg();
+  }
   // Two infinite cylinders crossing at right angles (+rho vertical, -rho horizontal), side view.
   function fCross() {
     const f = PF.fig();
     const cx = 150, cy = 130, a = 34, L = 110;
-    f.hatchBand([[cx - a, cy - L], [cx + a, cy - L], [cx + a, cy - a], [cx - a, cy - a]]);
-    f.hatchBand([[cx - a, cy + a], [cx + a, cy + a], [cx + a, cy + L], [cx - a, cy + L]]);
-    tint(f, [[cx - L - 30, cy - a], [cx - a, cy - a], [cx - a, cy + a], [cx - L - 30, cy + a]]);
-    tint(f, [[cx + a, cy - a], [cx + L + 30, cy - a], [cx + L + 30, cy + a], [cx + a, cy + a]]);
+    chg(f, [[cx - a, cy - L], [cx + a, cy - L], [cx + a, cy - a], [cx - a, cy - a]], '+');
+    chg(f, [[cx - a, cy + a], [cx + a, cy + a], [cx + a, cy + L], [cx - a, cy + L]], '+');
+    chg(f, [[cx - L - 30, cy - a], [cx - a, cy - a], [cx - a, cy + a], [cx - L - 30, cy + a]], '-');
+    chg(f, [[cx + a, cy - a], [cx + L + 30, cy - a], [cx + L + 30, cy + a], [cx + a, cy + a]], '-');
     for (const x of [cx - a, cx + a]) f.line(x, cy - L, x, cy + L, { cls: 'thin' });
     for (const y of [cy - a, cy + a]) f.line(cx - L - 30, y, cx + L + 30, y, { cls: 'thin' });
     lead(f, cx + a - 10, cy - L + 20, cx + a + 30, cy - L + 6, '+\\rho\\ (\\text{along } z)', 'l');
@@ -1242,7 +1275,7 @@
     const a = (() => {
       const f = PF.fig();
       const cx = 110, cy = 110, Rp = 80, rr = 46;
-      f.hatchBand(f.arcPts(cx, cy, Rp, Rp, 0, 360)); f.circle(cx, cy, Rp);
+      chg(f, f.arcPts(cx, cy, Rp, Rp, 0, 360), '+'); f.circle(cx, cy, Rp);
       f.circle(cx, cy, rr, { cls: 'dash' });
       f.dot(cx, cy, 2.4);
       f.line(cx, cy, cx + rr * Math.cos(30 * DEG), cy - rr * Math.sin(30 * DEG), { cls: 'dim', arrow: 'end', hs: 5 });
@@ -1254,7 +1287,7 @@
     const b = (() => {
       const f = PF.fig();
       const cx = 110, top = 20, bot = 200, ap = 54, sp = 32;
-      f.hatchBand([[cx - ap, top], [cx + ap, top], [cx + ap, bot], [cx - ap, bot]]);
+      chg(f, [[cx - ap, top], [cx + ap, top], [cx + ap, bot], [cx - ap, bot]], '+');
       for (const x of [cx - ap, cx + ap]) { f.line(x, top, x, bot, { cls: 'thin' }); f.line(x, top, x, top - 12, { cls: 'thin dash dim' }); f.line(x, bot, x, bot + 12, { cls: 'thin dash dim' }); }
       f.line(cx, top - 16, cx, bot + 16, { cls: 'dim dash thin' });
       f.rect(cx - sp, 70, 2 * sp, 80, { cls: 'dash' });
@@ -1265,7 +1298,7 @@
       f.dim(cx, bot + 22, cx + ap, bot + 22, 'a', { at: 'b' });
       return f.svg();
     })();
-    return PF.row([{ svg: a, cap: md`Ball: Gaussian sphere of radius $r$.` }, { svg: b, cap: md`Infinite cylinder: coaxial Gaussian cylinder, radius $s$, length $L$.` }]);
+    return PF.row([{ svg: a, cap: md`Ball (blue = $+\rho$): Gaussian sphere of radius $r$.` }, { svg: b, cap: md`Infinite cylinder (blue = $+\rho$): coaxial Gaussian cylinder, radius $s$, length $L$.` }]);
   }
 
   // =====================================================================================
@@ -1341,8 +1374,8 @@
         { figHtml: fBlocks().svg }),
 
       Q(md`At a point inside a uniform ball, a distance $r$ from the center, which charges set the field?`,
-        [md`All the charge, through Coulomb's law; Gauss is a shortcut that hides this`, md`Only the charge closer to the center than $r$; shells outside $r$ give zero field there`, md`Only the charge outside $r$`, md`Only the charge within a distance $r$ of the point`], 1,
-        [md`True for the integral, but the outer shells' contributions cancel exactly; that is what makes Gauss work.`,
+        [md`All the charge: the shells outside $r$ add an inward push that reduces the field`, md`Only the charge closer to the center than $r$; shells outside $r$ give zero field there`, md`Only the charge outside $r$`, md`Only the charge within a distance $r$ of the point`], 1,
+        [md`A uniform shell gives exactly zero field everywhere inside it, so the shells outside $r$ add nothing, inward or outward.`,
           null,
           md`Backwards: the outer shells give nothing.`,
           md`The relevant region is a ball around the **center**, not around the point.`],
@@ -1354,20 +1387,20 @@
 
         A region with a hole is the full region **plus** a piece of density $-\rho$ filling the hole. Each of these has a symmetric shape, so each gets Gauss's law; then add. The same works for regions of different density that overlap: just superpose the pieces with their own densities.
 
-        **Warm-up (Lecture 3, Griffiths 2.18).** Two balls of radius $R$, densities $+\rho$ and $-\rho$, centers separated by $\vb d$ (from the $+$ center to the $-$ center). In the overlap, both inside formulas apply, with $\vb r_+$ and $\vb r_-$ measured from the two centers:
+        **Warm-up: two overlapping balls.** Two balls of radius $R$, densities $+\rho$ and $-\rho$, centers separated by $\vb d$ (from the $+$ center to the $-$ center). In the overlap, both inside formulas apply, with $\vb r_+$ and $\vb r_-$ measured from the two centers:
 
         $$\vb E = \frac{\rho}{3\ep}\vb r_+ - \frac{\rho}{3\ep}\vb r_- = \frac{\rho}{3\ep}\left(\vb r_+-\vb r_-\right) = \frac{\rho}{3\ep}\,\vb d.$$
 
         [[fig:two]]
 
-        **Uniform!** The position dependence cancels because both pieces have the **same** coefficient $\rho/3\ep$. A ball with an off-center spherical cavity is the same calculation: the field in the cavity is $\dfrac{\rho}{3\ep}\vb d$, with $\vb d$ from the ball's center to the cavity's center.
+        **Uniform!** The position dependence cancels because both pieces have the **same** coefficient $\dfrac{\rho}{3\ep}$. A ball with an off-center spherical cavity is the same calculation: the field in the cavity is $\dfrac{\rho}{3\ep}\vb d$, with $\vb d$ from the ball's center to the cavity's center.
 
         **Cylinder analog.** An infinite cylinder with an off-axis cylindrical hole (parallel axes, separation $\vb d$ perpendicular to them): $\vb E_{\text{hole}} = \dfrac{\rho}{2\ep}\vb d$, also uniform.
 
         **Mixed shapes are different.** A sphere and a cylinder have different coefficients ($\tfrac13$ vs $\tfrac12$) and the cylinder has no $z$-component, so the position dependence does **not** cancel.
-      `, { two: { svg: fTwoBalls({ field: true }), cap: md`Overlapping balls: $+\rho$ (hatched) and $-\rho$ (grey). The white overlap has no net charge, yet carries the uniform field $\dfrac{\rho}{3\ep}\vb d$.` } }),
+      `, { two: { svg: fTwoBalls({ field: true }), cap: md`Overlapping balls: blue = $+\rho$, red = $-\rho$. The uncoloured overlap has no net charge, yet carries the uniform field $\dfrac{\rho}{3\ep}\vb d$.` } }),
 
-      Q(md`Two balls, $+\rho$ and $-\rho$, overlap as shown. Which way does the field point in the white overlap?`,
+      Q(md`Two balls, $+\rho$ and $-\rho$, overlap as shown. Which way does the field point in the uncoloured overlap?`,
         [md`From the $-$ center toward the $+$ center`, md`It is zero, because the net density there is zero`, md`Radially out from the middle of the overlap`, md`Along $\vb d$, from the $+$ center toward the $-$ center`], 3,
         [md`Field lines run from positive charge to negative charge, so from $+$ toward $-$.`,
           md`Zero density means zero **divergence**, not zero field. The surrounding charges still push.`,
@@ -1383,7 +1416,7 @@
           null,
           md`The hole's $-\rho$ adds $-\dfrac{\rho}{2\ep}(\vb s-\vb d)$.`],
         md`$\dfrac{\rho}{2\ep}\vb s - \dfrac{\rho}{2\ep}(\vb s - \vb d) = \dfrac{\rho}{2\ep}\vb d$: uniform, pointing from the big axis toward the hole's axis.`,
-        { figHtml: fTwoBalls() }),
+        { figHtml: fBallCav({ end: true }) }),
 
       Q(md`Which superposition gives a **uniform** field in the region where both pieces overlap?`,
         [md`A $+\rho$ ball and a $-\rho$ infinite cylinder through it`, md`A $+\rho$ ball and a $-\rho$ ball (any offset)`, md`A $+\rho$ ball and a $-2\rho$ ball`, md`A $+\rho$ cylinder and a $-\rho$ cylinder at right angles`], 1,
@@ -1401,7 +1434,7 @@
           md`That is only the cavity piece; add the full ball.`,
           md`The offset $\vb d$ is zero, so the uniform field is zero.`],
         md`$\vb d = 0$ in $\dfrac{\rho}{3\ep}\vb d$. It is the shell theorem again: a thick spherical shell gives no field in its hollow.`,
-        { figHtml: fTwoBalls() }),
+        { figHtml: fBallCav({ dp: 0 }) }),
 
       Q(md`In the overlap of the two balls the net charge density is zero. Why is the field not zero there?`,
         [md`Because of numerical error in superposition`, md`Because $\divg\vb E = 0$ forces $\vb E$ to be constant`, md`The field at a point depends on all the charge everywhere; zero local density only means zero divergence there`, md`Because the overlap region is not symmetric`], 2,
@@ -1419,7 +1452,7 @@
           md`Sign: $\dfrac{\rho}{3\ep}\vb r - \dfrac{\rho}{3\ep}(\vb r - \vb d) = +\dfrac{\rho}{3\ep}\vb d$.`,
           null],
         md`Ball plus a $-\rho$ ball in the cavity: $\vb E = \dfrac{\rho}{3\ep}\vb d$. The thick side of the ball (opposite the cavity) pushes harder, so the field points toward the thin side.`,
-        { figHtml: fTwoBalls() }),
+        { figHtml: fBallCav() }),
 
       Q(md`Two overlapping balls, $+\rho$ and $-\rho$. At a point inside the $+$ ball but **outside** the $-$ ball, the field is`,
         [md`$\dfrac{\rho}{3\ep}\vb d$, as in the overlap`, md`$\dfrac{\rho}{3\ep}\vb r_+$ only`, md`$\dfrac{\rho}{3\ep}\vb r_+ - \dfrac{\rho R^3}{3\ep}\dfrac{\vb r_-}{r_-^3}$, not uniform`, md`zero`], 2,
@@ -1458,8 +1491,8 @@
 
         **Why it differs from two spheres.** In "ball minus ball" the $\tfrac13\vb r$ terms cancel exactly. Here $\tfrac12\vb s$ and $\tfrac13\vb r$ can't cancel: different coefficients and different vectors.
       `, {
-        set: { svg: fCylCav(), cap: md`Infinite cylinder of radius $a$ (hatched, $+\rho$) with an empty spherical cavity of radius $b$ on the axis.` },
-        sol: { svg: fCylCav({ field: true, noB: true }), cap: md`The field in the cavity: outward from the axis sideways, toward the center along $z$.` },
+        set: { svg: fCylCav(), cap: md`Infinite cylinder of radius $a$ (blue = $+\rho$) with an empty, uncoloured spherical cavity of radius $b$ on the axis.` },
+        sol: { svg: fCylCav({ field: true, noB: true }), cap: md`The field in the cavity (blue = $+\rho$): outward from the axis sideways, toward the center along $z$.` },
       }),
 
       Q(md`In the worked example, at a point on the axis just above the cavity's center ($z>0$), which way does $\vb E$ point?`,
@@ -1548,8 +1581,8 @@
         On the $z$-axis, $\vb s = 0$, so the cylinder contributes nothing: $\vb E = \dfrac{\rho z}{3\ep}\uv z$ inside the ball and $\dfrac{\rho R^3}{3\ep z^2}\uv z$ outside, as if there were no hole.
 
         !!trap A truly drilled hole is a different problem
-          If the hole is drilled and nothing sticks out, the removed piece is a **finite** plug (a short cylinder with spherical caps). A finite plug has no symmetry that makes $|\vb E|$ constant on a Gaussian surface, so Gauss's law can't give its field. The Gauss-solvable exam version is the infinite cylinder of $-\rho$. For a thin hole the two agree closely: on the axis the difference is about $2\%$ for $a = R/10$, but about $15$–$20\%$ for $a = 0.3R$.
-      `, { reg: { svg: fSphCyl({ pts: [[0, 0.5, 'I', { lx: 300, ly: 40 }], [-0.62, -0.3, 'II', { lx: 40, ly: 290 }], [0, 1.25, 'III', { lx: 60, ly: 20, anchor: 'r' }], [1.3, 0.5, 'IV', 'r']] }), cap: md`Ball $+\rho$ (hatched) pierced by an infinite cylinder of $-\rho$. White: the hole (net zero). Grey: the parts of the cylinder outside the ball (net $-\rho$). Sample points in regions I–IV.` } }),
+          If the hole is drilled and nothing sticks out, the removed piece is a **finite** plug (a short cylinder with spherical caps). A finite plug has no symmetry that makes $|\vb E|$ constant on a Gaussian surface, so Gauss's law can't give its field. The Gauss-solvable exam version is the infinite cylinder of $-\rho$. For a thin hole the two agree closely: near the center of the axis the stubs change the field by about $1.5\%$ for $a = R/10$, but by about $13\%$ for $a = 0.3R$, and more toward the poles.
+      `, { reg: { svg: fSphCyl({ pts: [[0, 0.5, 'I', { lx: 300, ly: 40 }], [-0.62, -0.3, 'II', { lx: 40, ly: 290 }], [0, 1.25, 'III', { lx: 60, ly: 20, anchor: 'r' }], [1.3, 0.5, 'IV', 'r']] }), cap: md`Ball pierced by an infinite cylinder: blue = $+\rho$, red = $-\rho$. Uncoloured: the hole (net zero). Red: the stubs of the cylinder outside the ball (net $-\rho$). Sample points in regions I–IV.` } }),
 
       Q(md`Sphere ($+\rho$) pierced by a $-\rho$ cylinder along $z$. At a point on the axis inside the hole, at height $z$, the field is`,
         [md`$\dfrac{\rho z}{3\ep}\uv z$`, md`$0$, since the net density in the hole is zero`, md`$\dfrac{\rho z}{3\ep}\uv z - \dfrac{\rho a}{2\ep}\uv z$`, md`$-\dfrac{\rho z}{6\ep}\uv z$`], 0,
@@ -1560,12 +1593,12 @@
         md`On the axis $\vb s = 0$, so only the ball acts: $\dfrac{\rho}{3\ep}z\,\uv z$, as if the hole weren't there.`,
         { figHtml: fSphCyl({ pts: [[0, 0.5, 'P', { lx: 300, ly: 40 }]] }) }),
 
-      Q(md`Same configuration. A point on the $z$-axis at $z = 1.5R$ (inside a grey stub). Which formulas do you use?`,
+      Q(md`Same configuration. A point on the $z$-axis at $z = 1.5R$ (inside a red stub). Which formulas do you use?`,
         [md`Ball inside, cylinder inside`, md`Ball outside, cylinder outside`, md`Ball outside, cylinder inside`, md`Ball inside, cylinder outside`], 2,
         [md`$r = 1.5R>R$: outside the ball.`,
           md`$s = 0<a$: inside the cylinder.`,
           null,
-          md`Backwards.`],
+          md`Backwards: $r = 1.5R$ is outside the ball, and $s = 0$ is inside the cylinder.`],
         md`Ball: $r>R$, point-charge formula. Cylinder: $s = 0<a$, inside formula, which gives $0$ on the axis. So $\vb E = \dfrac{\rho R^3}{3\ep(1.5R)^2}\uv z = \dfrac{4\rho R}{27\ep}\uv z$.`,
         { figHtml: fSphCyl({ pts: [[0, 1.5, 'P', 'l']] }) }),
 
@@ -1685,7 +1718,7 @@
 
           $$= \frac{\rho}{12\ep}\left(2R^2 - 3a^2 - 6a^2\ln\frac Ra\right).$$
 
-          **Check.** $a\to0$: both become $\dfrac{\rho R^2}{6\ep}$, the plain ball ✓. The ball's surface is **not** an equipotential here: the cylinder lowers the equator relative to the poles.
+          **Check.** $a\to0$: both become $\dfrac{\rho R^2}{6\ep}$, the plain ball ✓. The ball's surface is **not** an equipotential here: the negative cylinder **raises** the equator relative to the poles ($V(Q)>V(T)$), because the equator is farther from the negative charge on the axis.
 
           **Why integrate piece by piece.** The infinite cylinder's own potential can't be referenced at infinity, but differences are fine. Integrating $\vb E$ along a path avoids the problem entirely.
         `,
@@ -1697,7 +1730,7 @@
         A line charge along a diameter is a cylinder with zero radius. Two versions:
 
         - **Infinite line** through the ball: $\dfrac{\lambda}{2\pi\ep s}\uv s$, Gauss-exact.
-        - **Finite segment** (just the diameter, length $2R$): not Gauss-solvable. In the **mid-plane** use the segment result from Lecture 2: a segment of half-length $L$, at distance $s$ on its bisector, gives $E = \dfrac{1}{4\pi\ep}\dfrac{2\lambda L}{s\sqrt{s^2+L^2}}$, perpendicular to the segment.
+        - **Finite segment** (just the diameter, length $2R$): not Gauss-solvable. In the **mid-plane** use the finite-segment result: a segment of half-length $L$, at distance $s$ on its bisector, gives $E = \dfrac{1}{4\pi\ep}\dfrac{2\lambda L}{s\sqrt{s^2+L^2}}$, perpendicular to the segment.
 
         Then add the ball's field. In the equatorial plane both point along $\uv s$.
 
@@ -1710,7 +1743,7 @@
           md`Charges don't screen each other's fields in vacuum; fields just add.`,
           md`The infinite-line formula holds at any $s$, for an infinite line.`,
           null],
-        md`Gauss needs the infinite line. For the finite diameter use the Lecture 2 segment result with $L = R$. For $s\ll R$ it reduces to $\dfrac{\lambda}{2\pi\ep s}$; for $s\gg R$ to $\dfrac{2\lambda R}{4\pi\ep s^2}$, a point charge.`,
+        md`Gauss needs the infinite line. For the finite diameter use the finite-segment result with $L = R$. For $s\ll R$ it reduces to $\dfrac{\lambda}{2\pi\ep s}$; for $s\gg R$ to $\dfrac{2\lambda R}{4\pi\ep s^2}$, a point charge.`,
         { figHtml: fBallLine() }),
 
       Q(md`A ball (radius $R$, density $\rho$) with a line charge $\lambda$ along a diameter of length $2R$. What $\lambda$ makes the whole object neutral?`,
@@ -1718,7 +1751,7 @@
         [null,
           md`That is a charge, not a charge per length. Divide by the length $2R$.`,
           md`Forgot to divide by 2: the diameter is $2R$ long.`,
-          md`Doesn't come from $\lambda\cdot2R = -\tfrac43\pi R^3\rho$.`],
+          md`Missing the $\tfrac43\pi$ of the ball's volume: $\lambda = -\dfrac{\frac43\pi R^3\rho}{2R}$.`],
         md`$\lambda\cdot2R + \tfrac43\pi R^3\rho = 0\Rightarrow\lambda = -\tfrac23\pi R^2\rho$.`,
         { figHtml: fBallLine() }),
 
@@ -1775,14 +1808,14 @@
         $$\vb E(P) = \frac{\rho a}{\ep}\left(\frac16,\;0,\;\frac1{12}\right),\qquad|\vb E| = \frac{\sqrt5\,\rho a}{12\ep},$$
 
         at $\arctan\tfrac12\approx26.6^\circ$ above the $x$-axis.
-      `, { sep: { svg: fSep(), cap: md`A cylinder of radius $a$ along $z$ and a ball of radius $a$ centered $3a$ away; $P$ is $2a$ above the ball's center.` } }),
+      `, { sep: { svg: fSep(), cap: md`A cylinder of radius $a$ along $z$ and a ball of radius $a$ centered $3a$ away (blue = $+\rho$); $P$ is $2a$ above the ball's center.` } }),
 
       Q(md`In the worked example, which way does each piece push a positive test charge at $P$?`,
         [md`Ball: straight up; cylinder: along $+x$, away from the cylinder's axis`, md`Both straight up`, md`Ball: toward the cylinder; cylinder: up`, md`Ball: along $+x$; cylinder: along $+z$`], 0,
         [null,
           md`The cylinder's field is perpendicular to its axis, so it has no $z$-part.`,
           md`The ball's field is radial from the ball's own center, which is directly below $P$.`,
-          md`Swapped.`],
+          md`Swapped: the ball's center is directly below $P$, so its field is along $z$; the cylinder's field is perpendicular to its axis, so along $x$.`],
         md`Each piece's field is radial from its own center (ball) or axis (cylinder). $P$ is directly above the ball's center and $3a$ out from the cylinder's axis.`,
         { figHtml: fSep() }),
 
@@ -1860,7 +1893,7 @@
         q: md`
           Ball (radius $R$, $+\rho$) pierced by an infinite cylinder (radius $a = R/2$, $-\rho$) along $z$. Find $E_x$ and $E_z$ at the point $(2R, 0, 2R)$, in units of $\rho R/\ep$.
         `,
-        figHtml: fSphCyl({ ap: 45, pts: [[1.42, 1.42, 'P', 'r']] }),
+        figHtml: fSphCyl({ ap: 45, pts: [[2, 2, 'P', 'r']] }),
         hints: [
           md`$r = 2\sqrt2R>R$ and $s = 2R>a$: both outside formulas.`,
           md`Ball: $\dfrac{\rho R^3}{3\ep}\dfrac{\vb r}{r^3}$ with $\vb r = (2R,0,2R)$. Cylinder: $-\dfrac{\rho a^2}{2\ep}\dfrac{\vb s}{s^2}$ with $\vb s = (2R,0,0)$.`,
@@ -1898,9 +1931,9 @@
       Q(md`In the cylinder with a spherical cavity, the potential difference between the cavity's center and its top is $-\dfrac{\rho b^2}{6\ep}$, and between the center and its side is $+\dfrac{\rho b^2}{12\ep}$. What does that tell you?`,
         [md`There is an arithmetic error: the cavity wall must be an equipotential`, md`The field is zero in the cavity`, md`The cavity wall is not an equipotential; the top is at higher potential than the center, the side lower`, md`$V$ is constant inside the cavity`], 2,
         [md`Only a conductor's surface must be an equipotential. This is an empty hole in a charged insulator.`,
-          md`Then all differences would vanish.`,
+          md`Zero field means $V$ doesn't change from point to point, but these two differences are nonzero.`,
           null,
-          md`Then all differences would vanish.`],
+          md`Constant $V$ would make both differences zero; here they are $-\dfrac{\rho b^2}{6\ep}$ and $+\dfrac{\rho b^2}{12\ep}$.`],
         md`$V(0)-V(\text{top}) = -\dfrac{\rho b^2}{6\ep}<0$: the top is higher. $V(0)-V(\text{side}) = +\dfrac{\rho b^2}{12\ep}>0$: the side is lower. Field points from high to low: toward the center along $z$, outward sideways ✓.`,
         { figHtml: fCylCav({ noB: true, pts: [[0, 1, 'T', 'br'], [1, 0, 'S', 'l']] }) }),
 
@@ -1919,7 +1952,7 @@
           md`$\rho d^2/\ep$ is a potential (volts).`,
           md`$\rho/(\ep d)$ has units of V/m³.`,
           md`$\rho d^3$ is a charge; over $\ep$ it is V·m.`],
-        md`$\rho/\ep$ has units (C/m³)/(C/(V·m)) = V/m². Times one length: V/m. Fields in these problems always look like $\rho\times\text{length}/\ep$; potentials like $\rho\times\text{length}^2/\ep$.`,
+        md`$\rho/\ep$ has units (C/m³)/(C/(V·m)) = V/m². Times one length: V/m. Fields in these problems always look like $\dfrac{\rho\times\text{length}}{\ep}$; potentials like $\dfrac{\rho\times\text{length}^2}{\ep}$.`,
         { nofig: 'units only' }),
 
       Q(md`Ball of $+\rho$ (radius $R$) and a ball of $-2\rho$ (radius $b$) inside it, centered at $\vb d$ from the big center. In the small ball, $\vb E$ is`,
@@ -1929,7 +1962,7 @@
           null,
           md`The net density there is $-\rho$, and the field is not zero.`],
         md`$\dfrac{\rho}{3\ep}\vb r - \dfrac{2\rho}{3\ep}(\vb r - \vb d) = \dfrac{\rho}{3\ep}(2\vb d - \vb r)$. Check: $\divg\vb E = -\dfrac{\rho}{\ep}$, matching the net density $-\rho$ ✓.`,
-        { figHtml: fTwoBalls() }),
+        { figHtml: fBallCav({ inner: true }) }),
 
       Q(md`Ball of $+\rho$ pierced along $z$ by a $-\rho$ cylinder. Very far up the $z$-axis, how does the field behave?`,
         [md`Like $\dfrac{\rho R^3}{3\ep z^2}$, pointing up`, md`Like $\dfrac{\rho a^2}{2\ep z}$`, md`It points down, toward the ball`, md`It is zero`], 0,
@@ -2023,7 +2056,7 @@
           - Same shapes, equal and opposite densities, parallel: uniform field $\dfrac{\rho}{3\ep}\vb d$ (balls) or $\dfrac{\rho}{2\ep}\vb d$ (cylinders). Mixed shapes: not uniform.
           - On a cylinder's axis it contributes nothing; at a ball's center it contributes nothing. Use these points as checks.
           - A truly finite drilled plug is not Gauss-solvable; the exam version uses an infinite cylinder.
-          - A finite line segment needs the Lecture 2 segment formula, not $\lambda/2\pi\ep s$.
+          - A finite line segment needs the finite-segment formula $\dfrac{1}{4\pi\ep}\dfrac{2\lambda L}{s\sqrt{s^2+L^2}}$, not $\dfrac{\lambda}{2\pi\ep s}$.
           - Potential differences: integrate $\vb E$ piece by piece along a convenient path; infinite cylinders can't use $V(\infty) = 0$.
           - Check with $\divg\vb E = \rho_{\text{net}}/\ep$ in the region.
       `),
@@ -2326,7 +2359,7 @@
           md`Both images now attract: no balance point.`,
           md`Both terms are attractive.`],
         md`$q_0 = 4\pi\ep RV_0$ now has the opposite sign to $q$, so both images pull $q$ in.`,
-        { figHtml: fSph({ A: 3, lab: 'V=-V_0', neg: false }) }),
+        { figHtml: fSph({ A: 3, lab: 'V=V_0' }) }),
 
       Q(md`Far from everything ($r\gg a$), what does $V$ look like for the sphere held at $V_0$ with $q$ nearby?`,
         [md`$V\to V_0$`, md`$V\approx\dfrac{q}{4\pi\ep r}$`, md`$V\approx0$ faster than $1/r$`, md`$V\approx\dfrac{1}{4\pi\ep r}\left(q + 4\pi\ep RV_0 - \dfrac Raq\right)$`], 3,
@@ -2335,7 +2368,7 @@
           md`Only if the net charge vanishes.`,
           null],
         md`Far away every point charge looks like it is at the origin: $V\approx\dfrac{q_{\text{total}}}{4\pi\ep r}$ with $q_{\text{total}} = q + q_0 + q'$, the real charge $q$ plus the sphere's charge.`,
-        { figHtml: fSphImg({ A: 3, center: 'q_0' }) }),
+        { figHtml: fSph({ A: 3, lab: 'V=V_0' }) }),
 
       Q(md`What is the potential at the **center** of the sphere held at $V_0$ (with $q$ outside)?`,
         [md`$V_0 + \dfrac{q}{4\pi\ep a}$`, md`Undefined: an image sits there`, md`$0$`, md`$V_0$`], 3,
@@ -2931,7 +2964,7 @@
         [md`They differ by the battery's work.`,
           md`Moving charge $\Delta Q$ onto a conductor at $V_0$ costs (or returns) $V_0\Delta Q$.`,
           null,
-          md`No such formula applies here.`],
+          md`$V_0$ is the sphere's potential, not the potential at $q$, and the battery also exchanges energy; the work you do is $\dfrac{qRV_0}{a} - \dfrac{1}{4\pi\ep}\dfrac{q^2R}{2(a^2-R^2)}$.`],
         md`$\Delta Q = -\dfrac Raq$: the battery takes back charge and gains $\dfrac{qRV_0}{a}$. Energy bookkeeping: $W_{\text{you}} + W_{\text{bat}} = \Delta U$.`,
         { figHtml: fSph({ A: 3, lab: 'V=V_0' }) }),
 
