@@ -318,7 +318,7 @@
   // Plots for solutions
   const pSig2R = () => PF.plot({ w: 340, h: 200, x: [0, Math.PI], y: [-3.3, 0.3], xl: '\\theta', yl: '\\sigma\\ \\text{in units } q/4\\pi R^2', zero: true,
     xt: [[Math.PI / 2, '\\pi/2'], [Math.PI, '\\pi']], yt: [[-3, '-3'], [-1, '-1']], curves: [{ f: (t) => -3 / Math.pow(5 - 4 * Math.cos(t), 1.5) }] });
-  const pSigLine = () => PF.plot({ w: 340, h: 200, x: [-7, 7], y: [-0.36, 0.06], xl: 'x/d', yl: '\\sigma\\ \\text{in units } \\lambda/d', zero: true,
+  const pSigLine = () => PF.plot({ w: 340, h: 200, x: [-7, 7], y: [-0.36, 0.06], xl: '', yl: '\\sigma\\ \\text{in units } \\lambda/d', zero: true,
     xt: [[-1.732, '-\\sqrt3'], [1.732, '\\sqrt3']], yt: [[-0.318, '-1/\\pi']], curves: [{ f: (x) => -1 / (Math.PI * (1 + x * x)) }] });
   const pF8 = () => PF.plot({ w: 340, h: 210, x: [1, 4], y: [-1, 0.4], xl: 'a/R', yl: 'F\\ \\text{in units } q^2/4\\pi\\varepsilon_0R^2', zero: true,
     xt: [[1.618, '1.618'], [3, '3']], yt: [[0.2, '0.2'], [-0.5, '-0.5']], curves: [{ f: (A) => (1 + 1 / A) / (A * A) - A / Math.pow(A * A - 1, 2), from: 1.05 }] });
@@ -1181,7 +1181,7 @@
 
           **What to remember.** For a line charge $\sigma\propto1/x^2$, a much longer tail than the point charge's $1/\rho^3$: a third of the charge is outside $|x| = \sqrt3d$, and you have to go out past $6d$ to catch $90\%$.
         `,
-        figs: { sig: { svg: pSigLine(), cap: md`$\sigma(x)$ in units of $\lambda/d$; the strip edges $\pm\sqrt3\,d$ are marked.` } },
+        figs: { sig: { svg: pSigLine(), cap: md`$\sigma$ in units of $\lambda/d$ against $x/d$; the strip edges $\pm\sqrt3\,d$ are marked.` } },
       }),
 
       // ------------------------------------------------------------------ Level 4
