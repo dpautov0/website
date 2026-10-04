@@ -202,8 +202,8 @@
   function fTwoPl(o = {}) {
     const f = PF.fig();
     const yb = 200, yt = 60, cx = 170, cy = yb - (o.h ?? 47);
-    f.plane(30, 300, yb, { lab: 'V=0' });
-    f.plane(30, 300, yt, { side: 'above', lab: 'V=0' });
+    f.plane(30, 300, yb, { lab: '\\text{plane 1: } V=0' });
+    f.plane(30, 300, yt, { side: 'above', lab: '\\text{plane 2: } V=0' });
     f.charge(cx, cy, { q: '+', lab: 'q', at: 'r' });
     f.dim(80, yb, 80, yt, 'L', { at: 'l' });
     f.line(cx - 50, cy, cx - 10, cy, { cls: 'dim dash thin' });
@@ -316,13 +316,13 @@
     return f.svg();
   }
   // Plots for solutions
-  const pSig2R = () => PF.plot({ w: 340, h: 200, x: [0, Math.PI], y: [-3.3, 0.3], xl: '\\theta', yl: '\\sigma\\ \\text{in units } q/4\\pi R^2', zero: true,
+  const pSig2R = () => PF.plot({ w: 340, h: 200, x: [0, Math.PI], y: [-3.3, 0.3], xl: '\\theta', yl: '\\sigma\\ \\text{in units } q/(4\\pi R^2)', zero: true,
     xt: [[Math.PI / 2, '\\pi/2'], [Math.PI, '\\pi']], yt: [[-3, '-3'], [-1, '-1']], curves: [{ f: (t) => -3 / Math.pow(5 - 4 * Math.cos(t), 1.5) }] });
   const pSigLine = () => PF.plot({ w: 340, h: 200, x: [-7, 7], y: [-0.36, 0.06], xl: '', yl: '\\sigma\\ \\text{in units } \\lambda/d', zero: true,
     xt: [[-1.732, '-\\sqrt3'], [1.732, '\\sqrt3']], yt: [[-0.318, '-1/\\pi']], curves: [{ f: (x) => -1 / (Math.PI * (1 + x * x)) }] });
-  const pF8 = () => PF.plot({ w: 340, h: 210, x: [1, 4], y: [-1, 0.4], xl: 'a/R', yl: 'F\\ \\text{in units } q^2/4\\pi\\varepsilon_0R^2', zero: true,
+  const pF8 = () => PF.plot({ w: 340, h: 210, x: [1, 4], y: [-1, 0.4], xl: 'a/R', yl: 'F\\ \\text{in units } q^2/(4\\pi\\varepsilon_0R^2)', zero: true,
     xt: [[1.618, '1.618'], [3, '3']], yt: [[0.2, '0.2'], [-0.5, '-0.5']], curves: [{ f: (A) => (1 + 1 / A) / (A * A) - A / Math.pow(A * A - 1, 2), from: 1.05 }] });
-  const pF11 = () => PF.plot({ w: 340, h: 210, x: [1, 5], y: [-1, 0.3], xl: 'a/R', yl: 'F\\ \\text{in units } q^2/4\\pi\\varepsilon_0R^2', zero: true,
+  const pF11 = () => PF.plot({ w: 340, h: 210, x: [1, 5], y: [-1, 0.3], xl: 'a/R', yl: 'F\\ \\text{in units } q^2/(4\\pi\\varepsilon_0R^2)', zero: true,
     xt: [[5 / 3, '5/3'], [4, '4']], yt: [[0.2, '0.2'], [-0.5, '-0.5']], curves: [{ f: (A) => (375 / 256) / (A * A) - A / Math.pow(A * A - 1, 2), from: 1.05 }] });
 
   // =====================================================================================
@@ -453,7 +453,7 @@
       R(md`
         ### Level 3: the standard results
 
-        Results you should be able to rebuild in a minute ($k = \dfrac{1}{4\pi\ep}$ in words, written out in formulas):
+        Results you should be able to rebuild in a minute:
 
         - **Plane**, $q$ at height $d$: $\sigma(\rho) = -\dfrac{qd}{2\pi(\rho^2+d^2)^{3/2}}$, total $-q$, force $\dfrac{1}{4\pi\ep}\dfrac{q^2}{(2d)^2}$ toward the plane.
         - **Grounded sphere**, $q$ at $a$: $\sigma(\theta) = -\dfrac{q(a^2-R^2)}{4\pi R(R^2+a^2-2Ra\cos\theta)^{3/2}}$, total $-\dfrac Raq$, force $\dfrac{1}{4\pi\ep}\dfrac{q^2Ra}{(a^2-R^2)^2}$ toward the sphere.
@@ -486,7 +486,7 @@
         [md`Tempting, but the image is outside the region of interest. A Gaussian surface inside the metal (where $\vb E = 0$) encloses $q$ and the wall charge, not the image.`,
           null,
           md`Grounded fixes $V$, not the charge.`,
-          md`Not a quantity that appears anywhere here.`],
+          md`That is the image ratio turned upside down, and in any case the wall charge doesn't depend on $a$: Gauss's law in the metal gives $-q$ wherever $q$ sits.`],
         md`Gauss's law on a surface inside the metal: $\vb E = 0$ there, so $Q_{\text{enc}} = q + Q_{\text{wall}} = 0$. The image's size, $\dfrac Raq$, is bigger than $q$ and is **not** the induced charge in this geometry.`,
         { figHtml: fShell({ A: 0.4, lab: 'V=0', ground: true }) }),
 
@@ -532,7 +532,7 @@
           null,
           md`The plane pulls on $q$ the whole way; the force does work.`,
           md`Wrong sign: the plane attracts, so you hold $q$ back and do negative work.`],
-        md`At height $z$, the force is $\dfrac{q^2}{4\pi\ep(2z)^2}$ toward the plane. You push the other way: $W = -\displaystyle\int_\infty^d\frac{q^2}{16\pi\ep z^2}dz = -\frac{q^2}{16\pi\ep d}$, half of $qV_{\text{image}}$.`,
+        md`At height $z$, the force is $\dfrac{q^2}{4\pi\ep(2z)^2}$ toward the plane. You push the other way ($+z$) while $q$ moves down, so $W = \displaystyle\int_\infty^d\frac{q^2}{16\pi\ep z^2}\,dz = -\frac{q^2}{16\pi\ep d}$, half of $qV_{\text{image}}$.`,
         { figHtml: fPlane({}) }),
 
       Q(md`Which reason for that factor $\tfrac12$ is correct?`,
@@ -713,7 +713,7 @@
           md`That uses the distance to the center, as if the image were there.`,
           null,
           md`That's a force-like denominator; integrate $F = \dfrac{q^2Ra}{4\pi\ep(a^2-R^2)^2}$, don't guess.`],
-        md`$W = -\displaystyle\int_\infty^a\frac{q^2Ra'}{4\pi\ep(a'^2-R^2)^2}da' = -\frac{1}{4\pi\ep}\frac{q^2R}{2(a^2-R^2)} = \tfrac12qV_{\text{image}}$. As $R\to\infty$ with $a-R = d$, it becomes $-\dfrac{q^2}{16\pi\ep d}$, the plane.`,
+        md`You push outward with the size of the attraction while $q$ moves in: $W = \displaystyle\int_\infty^a\frac{q^2Ra'}{4\pi\ep(a'^2-R^2)^2}\,da' = -\frac{1}{4\pi\ep}\frac{q^2R}{2(a^2-R^2)} = \tfrac12qV_{\text{image}}$. As $R\to\infty$ with $a-R = d$, it becomes $-\dfrac{q^2}{16\pi\ep d}$, the plane.`,
         { figHtml: fSph({ A: 2.5, lab: 'V=0', ground: true }) }),
 
       Q(md`Now the sphere is held at $V_0$ by a battery while you bring $q$ in. In your work $W = \dfrac{qRV_0}{a} - \dfrac{1}{4\pi\ep}\dfrac{q^2R}{2(a^2-R^2)}$, which term carries the $\tfrac12$?`,
@@ -740,7 +740,7 @@
           null,
           md`Finite repulsion, yes, but it is swamped by the diverging attraction.`,
           md`There is one zero, at a specific distance, not near the surface.`],
-        md`Close up, the near image $-\dfrac Raq\to-q$ is a distance $\approx2(a-R)$ away: attraction $\approx\dfrac{q^2}{16\pi\ep(a-R)^2}$. Like charges attract at short range when one is a conductor. (Problem 8 in the next lesson finds where the force changes sign.)`,
+        md`Close up, the near image $-\dfrac Raq\to-q$ is a distance $\approx2(a-R)$ away: attraction $\approx\dfrac{q^2}{16\pi\ep(a-R)^2}$. Like charges attract at short range when one is a conductor. (The problem "A like-charged sphere that attracts" in the next lesson finds where the force changes sign.)`,
         { figHtml: fSph({ A: 1.4, lab: 'Q=+q' }) }),
 
       Q(md`Two students solve the neutral-sphere problem. One uses images; the other uses a Legendre series with $\oint\sigma\,da = 0$. Their formulas look different. Which is true?`,
@@ -790,7 +790,7 @@
         [md`The setup isn't symmetric unless $x_0 = L/2$.`,
           md`Field lines from $q$ reach both planes.`,
           null,
-          md`The physical answer is perfectly finite; you just shouldn't get it by adding image fluxes. Use a cleaner argument (below).`],
+          md`The induced charges are finite and well defined (Gauss: they add to $-q$). The sheet argument below gets the split without summing any series.`],
         md`The totals don't depend on where $q$ is **sideways**. So smear $q$ evenly over the whole plane $x = x_0$: a sheet. For a sheet between grounded plates, $V$ is piecewise linear with a kink at $x_0$, with field sizes $E_1$ (toward plane 1) and $E_2$ (toward plane 2): $E_1x_0 = E_2(L-x_0)$ (both sides climb to the sheet's potential) and $E_1 + E_2 = \sigma/\ep$, giving the split $(L-x_0):x_0$. Linearity carries it back to the point charge. Check $x_0\to0$: all on plane 1.`,
         { figHtml: fTwoPl({}) }),
 
@@ -827,7 +827,7 @@
           md`Same objection: identical spheres still each feel the other's image.`,
           null,
           md`Each image lies inside its own sphere, which is fine.`],
-        md`Each image fixes its own sphere only. The full answer is an infinite sequence of images of images; truncating after the first generation leaves errors of relative size $\sim R/D$ ($D$ = center separation). Only special geometries (planes at $\pi/n$, a hemisphere on a plane) close after finitely many images.`,
+        md`Each image fixes its own sphere only. The full answer is an infinite sequence of images of images; truncating after the first generation leaves errors of relative size $\sim R/D$ ($D$ = center separation). A few special geometries close after finitely many images (planes meeting at $\pi/n$, a hemispherical boss on a plane); most two-conductor problems don't.`,
         { figHtml: fTwoSph() }),
 
       Q(md`Which of these is solved **exactly** by finitely many images?`,
@@ -958,7 +958,7 @@
 
           **$P_2$:** $s = d$, $s' = \sqrt5\,d$: $V = \dfrac{\lambda}{2\pi\ep}\ln\sqrt5 = \dfrac{\lambda\ln5}{4\pi\ep}$.
 
-          **Check.** Both positive (closer to $+\lambda$ than to $-\lambda$), both $\ll$ the bare wire's divergence. The additive constant in a single line's potential cancels between the pair, which is why no reference point is needed.
+          **Check.** Both positive (each point is closer to $+\lambda$ than to $-\lambda$), and $V(P_2)<V(P_1)$ because $s'/s = \sqrt5<3$. The additive constant in a single line's potential cancels between the pair, which is why no reference point is needed.
         `,
         figs: { img: { svg: fPlaneImg({ kind: 'line', pts: [[0, 120, 'P_1', 'r'], [60, 60, 'P_2', 'tr']] }), cap: md`Plane removed, image $-\lambda$ at depth $d$.` } },
       }),
@@ -1476,13 +1476,13 @@
         figHtml: fSph({ A: 1.6, ground: true, lab: 'V=0', dSurf: true }),
         hints: [
           md`At distance $r$ from the center the force is $\dfrac{1}{4\pi\ep}\dfrac{q^2Rr}{(r^2-R^2)^2}$, toward the sphere.`,
-          md`$W = -\displaystyle\int_\infty^{R+d}F_{\text{attr}}\,dr$; substitute $u = r^2 - R^2$.`,
+          md`Your force is outward with size $F_{\text{attr}}$ while $r$ decreases: $W = \displaystyle\int_\infty^{R+d}F_{\text{attr}}\,dr$ (negative, since $dr<0$). Substitute $u = r^2 - R^2$.`,
         ],
         parts: [
           { lbl: md`(a) $W$`, expr: '-q^2*R/(8*pi*eps0*d*(2*R+d))', vars: { q: [1, 3], R: [0.5, 2], eps0: [0.5, 2], d: [0.5, 2] } },
           { lbl: md`(b) $W$ at $d = R$`, ans: -1 / 6 },
           { lbl: md`(c) $W$ is`, mc: [md`$\tfrac12qV_{\text{image}}$`, md`$qV_{\text{image}}$`, md`$2qV_{\text{image}}$`, md`unrelated to $V_{\text{image}}$`], a: 0,
-            why: [null, md`That would be right only if the image stayed fixed at its final place and size.`, md`No.`, md`For grounded conductors $W = \tfrac12qV_{\text{image}}$ always.`] },
+            why: [null, md`That would be right only if the image stayed fixed at its final place and size.`, md`The factor goes the other way: the image grows as $q$ comes in, so the pull builds up gradually and the integral is half of $qV_{\text{image}}$, not double.`, md`For a single charge near grounded conductors, $W = \tfrac12qV_{\text{image}}$; part (a) is exactly that.`] },
           { lbl: md`(d) As $R\to\infty$`, mc: [md`$W\to0$`, md`$W\to-\infty$`, md`$W\to-\dfrac{q^2}{8\pi\ep d}$`, md`$W\to-\dfrac{q^2}{16\pi\ep d}$, the plane result`], a: 3,
             why: [md`A huge sphere looks like a plane, which still attracts.`, md`The distance to the surface stays $d$.`, md`That's $qV_{\text{image}}$ for the plane, without the $\tfrac12$.`, null] },
         ],
@@ -1491,8 +1491,8 @@
 
           [[fig:img]]
 
-          **(a)** Attractive force at distance $r$: $\dfrac{1}{4\pi\ep}\dfrac{q^2Rr}{(r^2-R^2)^2}$. You hold back against it:
-          $$W = -\int_\infty^{R+d}\frac{1}{4\pi\ep}\frac{q^2Rr}{(r^2-R^2)^2}\,dr = -\frac{q^2R}{4\pi\ep}\left[-\frac{1}{2(r^2-R^2)}\right]_\infty^{R+d}\cdot(-1)\cdot(-1) = -\frac{1}{4\pi\ep}\frac{q^2R}{2\left((R+d)^2-R^2\right)}.$$
+          **(a)** Attractive force at distance $r$: $\dfrac{1}{4\pi\ep}\dfrac{q^2Rr}{(r^2-R^2)^2}$. You hold back against it: your force points outward with this size while $r$ decreases from $\infty$ to $R+d$, so
+          $$W = \int_\infty^{R+d}\frac{1}{4\pi\ep}\frac{q^2Rr}{(r^2-R^2)^2}\,dr = \frac{q^2R}{4\pi\ep}\left[-\frac{1}{2(r^2-R^2)}\right]_\infty^{R+d} = -\frac{1}{4\pi\ep}\frac{q^2R}{2\left((R+d)^2-R^2\right)}.$$
           With $(R+d)^2 - R^2 = d(2R+d)$: $W = -\dfrac{q^2R}{8\pi\ep\,d(2R+d)}$.
 
           **(b)** $d = R$: $W = -\dfrac{q^2R}{8\pi\ep\cdot3R^2} = -\dfrac16\,\dfrac{q^2}{4\pi\ep R}$.
@@ -1570,7 +1570,7 @@
           { lbl: md`(a) $Q_{\text{cap}}$`, expr: '-q*((a+R) - sqrt(a^2-R^2))/(2*a)', vars: { q: [1, 3], R: [0.5, 1], a: [1.5, 4] } },
           { lbl: md`(b) fraction at $a = 2R$`, ans: 0.634 },
           { lbl: md`(c) As $a\to\infty$ the cap's share tends to`, mc: [md`$\tfrac12$: the cap becomes a hemisphere and $\sigma$ becomes nearly uniform`, md`$0$`, md`$1$`, md`$\tfrac14$`], a: 0,
-            why: [null, md`The cap grows toward a hemisphere, not a point.`, md`That's the $a\to R$ limit.`, md`No.`] },
+            why: [null, md`The cap grows toward a hemisphere, not a point.`, md`That's the $a\to R$ limit.`, md`Far away $\sigma$ becomes nearly uniform, so the share is the cap's area fraction, and the cap tends to a hemisphere: $\tfrac12$, not $\tfrac14$.`] },
         ],
         sol: md`
           **Region** $r\ge R$; **BCs** 1. $V(R,\theta) = 0$, 2. $V\to0$; image $-\dfrac Raq$ at $\dfrac{R^2}{a}$, giving the standard $\sigma(\theta)$.
@@ -1669,7 +1669,7 @@
 
           **(c)** $\psi = \phi$ and $\pi - \phi$: $Q_{\text{floor}} = -\dfrac{q}{2\pi}\left[2(\pi-\phi) - 2\phi\right] = -q\left(1 - \dfrac{2\phi}{\pi}\right)$. Checks: $\phi\to0$ (on the floor) gives $-q$; $\phi = 45^\circ$ gives $-\dfrac q2$ by symmetry.
 
-          **What to remember.** The fraction $\left(1 - \dfrac{2\phi}{\pi}\right)$ is linear in angle: the corner splits its charge like the two plates split it linearly in distance (Level 6 concept question). Both are the same theorem in disguise.
+          **What to remember.** The fraction $\left(1 - \dfrac{2\phi}{\pi}\right)$ is linear in angle: the corner splits its charge the way the two parallel plates split it linearly in distance (Level 6 concept question). In both cases the fraction on one conductor, as a function of where $q$ sits, is the harmonic function that is $1$ on that conductor and $0$ on the other: $1 - x_0/L$ between plates, $1 - 2\phi/\pi$ in the corner.
         `,
         figs: { img: { svg: fCornerImg(87, 50, { phi: '30^\\circ' }), cap: md`Images for $q$ at $30^\circ$; walls removed.` } },
       }),

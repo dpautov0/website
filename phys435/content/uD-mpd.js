@@ -311,10 +311,11 @@
     const dd = 110, len = 34, s2 = o.s2 ?? 1;
     const one = (x, y, s) => { f.arrow(x, y + s * len / 2, x, y - s * len / 2, { cls: 'thick', hs: 8 }); };
     if (o.mode === 'side') {
-      one(0, 0, 1); one(dd, 0, s2);
+      one(0, 0, 1);
+      if (o.free) { f.circle(dd, 0, len / 2, { cls: 'dim dash thin' }); f.dot(dd, 0, 2.6); } else one(dd, 0, s2);
       f.line(0, len / 2 + 16, dd, len / 2 + 16, { cls: 'dim dash thin' });
       dimL(f, 0, len / 2 + 30, dd, len / 2 + 30, 'd', ['b']);
-      put(f, 0, 0, '\\mathbf p_1', ['l'], 8); put(f, dd, 0, '\\mathbf p_2', ['r'], 8);
+      put(f, 0, 0, '\\mathbf p_1', ['l'], 8); put(f, dd, 0, o.free ? '\\mathbf p_2\\ ?' : '\\mathbf p_2', ['r'], o.free ? len / 2 + 6 : 8);
     } else {
       one(0, 0, 1); one(0, -dd, s2);
       f.line(0, len / 2 + 8, 0, len / 2 + 20, { cls: 'dim dash thin' });
@@ -553,6 +554,7 @@
   const F_PM_Q = pts2({ ch: [[0, 0, '+', '+Q', 'r'], [0, 1.5, '-', '-Q', 'r']], ticks: [[1.5, 'b', 'y']], xr: [-1.4, 1.6], yr: [-1, 2.6] });
   const F_TWO_SIDE = twoDip({ mode: 'side' });
   const F_TWO_AXIS = twoDip({ mode: 'axis' });
+  const F_TWO_FREE = twoDip({ mode: 'side', free: true });
   const F_FOUR = PF.row([
     { svg: ball({ kind: 'hemi', R: 40, noZ: true }), cap: '(A)' }, { svg: ball({ kind: 'cos', R: 40, noZ: true }), cap: '(B)' },
     { svg: pts2({ ch: [[0, 0.6, '+'], [0, -0.6, '-']], xr: [-0.8, 0.8], yr: [-1, 1.4], u: 34 }), cap: '(C)' }, { svg: shell({ sig: (t) => (t < PI / 2 ? 1 : -1), R: 38 }), cap: '(D)' }]).svg;
@@ -650,7 +652,7 @@
 
       Q(md`An object has total charge $Q\ne0$ and dipole moment $\vb p$ about $O$. What is its dipole moment about $O'$, located at $\vb a$ (measured from $O$)?`,
         [md`$\vb p + Q\vb a$`, md`$\vb p - Q\vb a$`, md`$\vb p$`, md`$Q\vb a$`], 1,
-        [md`Sign: positions measured from $O'$ are $\vb r' - \vb a$, so the shift subtracts.`, null, md`That holds only when $Q = 0$.`, md`That forgets the original $\vb p$; it would be right only for a point charge sitting at $O$.`],
+        [md`Sign: positions measured from $O'$ are $\vb r' - \vb a$, so the shift subtracts.`, null, md`That holds only when $Q = 0$.`, md`That drops the original $\vb p$ and has the wrong sign. Test it on a point charge $Q$ sitting at $O$: $\vb p = 0$ about $O$, and about $O'$ its position is $-\vb a$, so $\vb p' = -Q\vb a$.`],
         md`$\vb p' = \int(\vb r' - \vb a)\rho\,d\tau' = \vb p - Q\vb a$. Choosing $\vb a = \vb p/Q$ (the "center of charge") makes $\vb p' = 0$; about that point the far field is monopole plus quadrupole.`,
         { figHtml: F_ORIGIN_SHIFT }),
 
@@ -720,7 +722,7 @@
             | ball, $\pm\rho_0$ halves | $0$ | $\frac12\pi R^4\rho_0\,\hat{\mathbf z}$ |
             | ball, $\rho_0\cos\theta$ | $0$ | $\frac13\pi R^4\rho_0\,\hat{\mathbf z}$ |
             | shell, $k\cos\theta$ | $0$ | $\frac43\pi R^3k\,\hat{\mathbf z}$ |
-            | shell, $\pm\sigma_0$ halves | $0$ | $\pi R^3\sigma_0\,\hat{\mathbf z}$ |
+            | shell, $\pm\sigma_0$ halves | $0$ | $2\pi R^3\sigma_0\,\hat{\mathbf z}$ |
             | ring, $\lambda_0\cos\phi$ | $0$ | $\pi R^2\lambda_0\,\hat{\mathbf x}$ |
             | rod, $\lambda_0z/L$ on $(-L, L)$ | $0$ | $\frac23\lambda_0L^2\,\hat{\mathbf z}$ |
 
@@ -753,7 +755,7 @@
 
       Q(md`A point charge $q$ sits at the origin. A small dipole at $(r, 0, 0)$ points along $+\hat{\mathbf y}$, perpendicular to the line joining them. What is the force on the dipole?`,
         [md`Zero, because $\vb p\perp\vb E$`, md`$\dfrac{qp}{4\pi\varepsilon_0r^3}$ along $-\hat{\mathbf x}$, toward $q$`, md`$\dfrac{qp}{4\pi\varepsilon_0r^3}$ along $+\hat{\mathbf y}$, along $\vb p$`, md`$\dfrac{2qp}{4\pi\varepsilon_0r^3}$ along $-\hat{\mathbf x}$`], 2,
-        [md`$\vb p\perp\vb E$ makes the energy $-\vb p\cdot\vb E$ zero, not the force. The force depends on how $\vb E$ changes along $\vb p$.`, md`That is what you'd get for a dipole pointing along $\hat{\mathbf x}$, and even then the factor is 2.`, null, md`That is the radial (aligned) dipole: $p\,\partial E_x/\partial x = -2qp/(4\pi\varepsilon_0r^3)$.`],
+        [md`$\vb p\perp\vb E$ makes the energy $-\vb p\cdot\vb E$ zero, not the force. The force depends on how $\vb E$ changes along $\vb p$.`, md`"Toward $q$" is the answer for a dipole lying along the line to $q$ (and then the size is $\dfrac{2qp}{4\pi\varepsilon_0r^3}$). Here $\vb p$ is perpendicular to that line, and $\vb F = p\,\partial\vb E/\partial y$ points along $\hat{\mathbf y}$.`, null, md`That is the radial (aligned) dipole: $p\,\partial E_x/\partial x = -2qp/(4\pi\varepsilon_0r^3)$.`],
         md`$\vb F = p\,\dfrac{\partial\vb E}{\partial y}$. Moving in $y$ from $(r,0,0)$, $\vb E = \dfrac{q(x,y,z)}{4\pi\varepsilon_0(x^2+y^2+z^2)^{3/2}}$ gains a $y$-component $\dfrac{qy}{4\pi\varepsilon_0r^3}$, so $\vb F = \dfrac{qp}{4\pi\varepsilon_0r^3}\hat{\mathbf y}$. Check with Newton's third law: the dipole's field at $q$ (on the dipole's equator) is $-\dfrac{p}{4\pi\varepsilon_0r^3}\hat{\mathbf y}$, so $q$ feels $-\dfrac{qp}{4\pi\varepsilon_0r^3}\hat{\mathbf y}$ and the dipole the opposite.`,
         { figHtml: F_Q_DIP_PERP }),
 
@@ -875,7 +877,7 @@
         [md`Parallel to $\vb p_1$`, md`Pointing along $+\hat{\mathbf x}$, away from $\vb p_1$`, md`Antiparallel to $\vb p_1$`, md`All orientations have the same energy`], 2,
         [md`On the equator $\vb E_1 = -\dfrac{p}{4\pi\varepsilon_0d^3}\hat{\mathbf z}$; parallel gives $U>0$, the highest energy.`, md`$E_1$ has no $x$-component there, so $U = 0$ for that orientation; you can do better.`, null, md`$U = -\vb p_2\cdot\vb E_1$ depends on the angle.`],
         md`$\vb p_2$ lines up with the local field of $\vb p_1$, which on the equator points opposite to $\vb p_1$. So side-by-side dipoles prefer to be antiparallel (and the parallel side-by-side pair repels). On the axis, where $\vb E_1\parallel\vb p_1$, they prefer head-to-tail.`,
-        { figHtml: F_TWO_SIDE }),
+        { figHtml: F_TWO_FREE }),
 
       Q(md`A neutral conducting sphere sits a large distance $D$ from a point charge $q$. The field of $q$ induces a dipole in the sphere. How does the attractive force fall off with $D$?`,
         [md`$1/D^2$`, md`$1/D^5$`, md`$1/D^3$`, md`It is zero: the sphere is neutral`], 1,
@@ -1053,7 +1055,7 @@
           { lbl: md`(a) $p_x$`, expr: 'pi*sigma0*R^3/3', vars: { sigma0: [1, 3], R: [0.5, 2] } },
           { lbl: md`(b) $V$ on the $x$-axis`, expr: 'sigma0*R^3/(12*eps0*x^2)', vars: { sigma0: [1, 3], R: [0.5, 1], eps0: [0.5, 2], x: [5, 9] } },
           { lbl: md`(c) On the $z$-axis, $V_{\text{dip}}$ is`, mc: [md`$\dfrac{\sigma_0R^3}{12\varepsilon_0z^2}$`, md`$\dfrac{\sigma_0R^3}{6\varepsilon_0z^2}$`, md`negative`, md`$0$, because $\vb p\perp\uv r$ there`], a: 3,
-            why: [md`That is the value along $\vb p$; on the $z$-axis $\vb p\cdot\uv r = 0$.`, md`Wrong direction and an extra factor 2.`, md`It is exactly zero, by symmetry: every point on the $z$-axis is equidistant from $\pm$ partners.`, null] },
+            why: [md`That is the value along $\vb p$ (the $x$-axis); on the $z$-axis $\vb p\cdot\uv r = 0$.`, md`Twice the $x$-axis value, and the $x$-axis value doesn't apply here anyway: on the $z$-axis $\vb p\cdot\uv r = 0$.`, md`It is exactly zero, by symmetry: every point on the $z$-axis is equidistant from $\pm$ partners.`, null] },
         ],
         sol: md`
           (a) $p_x = \int s\cos\phi\cdot\sigma_0\cos\phi\cdot s\,ds\,d\phi = \sigma_0\dfrac{R^3}{3}\pi = \dfrac{\pi\sigma_0R^3}{3}$. ($p_y\propto\int\sin\phi\cos\phi = 0$, $Q\propto\int\cos\phi = 0$.)
@@ -1392,7 +1394,16 @@
   const FD_D3X = spikes({ sp: [[0, '\\delta(3x)']], ticks: [[-60, '-1'], [0, '0'], [60, '1']] });
   const FD_DX2 = spikes({ sp: [[-60, '', 70], [60, md`\delta(x^2 - 4)`, 70]], ticks: [[-60, '-2'], [0, '0'], [60, '2']] });
   const FD_LINE = radial({ fn: (r) => 1 / r, rs: [], olab: md`\lambda\ \text{(line, out of page)}` });
-  const FD_LINE_V = cyl2({ a: 0, lab: '' });
+  const FD_LINE_V = (() => {
+    const f = PF.fig();
+    f.charge(0, 0, { q: '+', r: 6 });
+    put(f, 0, 0, md`\lambda\ (\text{line, out of page})`, ['bl', 'b', 'l'], 10, 'small');
+    const p0 = pol(10, 30), p = pol(110, 30);
+    dl(f, p0[0], p0[1], p[0], p[1], { cls: 'dim dash thin' }); f.dot(p[0], p[1], 2.8);
+    put(f, p[0], p[1], 'P', ['tr', 'r', 't'], 5);
+    put(f, p[0] * 0.55, p[1] * 0.55, 's', ['tl', 't', 'l'], 5, 'small');
+    return widen(f).svg();
+  })();
   const FD_SCR = plt({ x: [0, 5], y: [0, 4], xl: 'r', yl: 'E_r', curves: [{ f: (r) => 1 / (r * r * (1 + r) ** 2), from: 0.3, lab: md`\dfrac{A}{r^2(1+r/a)^2}`, labAt: 1.6 }], xt: [[1, 'a']] });
   const FD_DCOS = spikes({ xl: '\\theta', sp: [[60, md`\delta(\cos\theta)`]], ticks: [[-60, '0'], [60, '\\pi/2'], [120, '\\pi']], x0: -70, x1: 150 });
   const FD_ECOS = plt({ x: [0, 8], y: [-1.5, 3], zero: true, xl: 'r', yl: 'E_r', curves: [{ f: (r) => 3 * Math.cos(r) / (r * r + 0.6), from: 0.5, lab: md`\dfrac{A\cos(r/a)}{r^2}`, labAt: 3.2 }] });
@@ -1516,8 +1527,8 @@
         { figHtml: FD_D3X }),
 
       Q(md`What is $\displaystyle\int_0^\infty x^3\,\delta(x^2 - 4)\,dx$?`,
-        [md`$2$`, md`$8$`, md`$4$`, md`$16$`], 0,
-        [null, md`$x^3$ at the root is 8, but you must divide by $|g'(2)| = 4$.`, md`Dividing by $2$ instead of $|g'(2)| = 2x = 4$.`, md`Counting both roots $\pm2$; only $x = 2$ is in $(0,\infty)$, and you still need the $1/|g'|$.`],
+        [md`$2$`, md`$8$`, md`$4$`, md`$0$`], 0,
+        [null, md`$x^3$ at the root is 8, but you must divide by $|g'(2)| = 4$.`, md`Dividing by $2$ instead of $|g'(2)| = 2x = 4$.`, md`That also counts the root $x = -2$, whose $\dfrac{(-2)^3}{4} = -2$ cancels the $+2$. But $x = -2$ is outside $(0,\infty)$.`],
         md`$g(x) = x^2 - 4$ has roots $\pm2$; only $x = 2$ is in range, with $|g'(2)| = 4$. So the integral is $\dfrac{2^3}{4} = 2$.`,
         { figHtml: FD_DX2 }),
 
@@ -1528,8 +1539,8 @@
         { figHtml: FD_LINE }),
 
       Q(md`$V = -\dfrac{\lambda}{2\pi\varepsilon_0}\ln(s/s_0)$, the line-charge potential. What is $\nabla^2V$?`,
-        [md`$0$ everywhere`, md`$-\dfrac{\lambda}{\varepsilon_0}\delta(x)\delta(y)$`, md`$-\dfrac{\lambda}{2\pi\varepsilon_0s^2}$`, md`$+\dfrac{\lambda}{\varepsilon_0}\delta(x)\delta(y)$`], 1,
-        [md`$\nabla^2\ln s = \frac1s\frac{d}{ds}(s\cdot\frac1s) = 0$ only for $s>0$.`, null, md`That is $d^2V/ds^2$, not the cylindrical Laplacian $\frac1s\frac{d}{ds}(s\frac{dV}{ds})$.`, md`Sign: $\nabla^2V = -\rho/\varepsilon_0$, and $\rho>0$ for $\lambda>0$.`],
+        [md`$0$ everywhere`, md`$-\dfrac{\lambda}{\varepsilon_0}\delta(x)\delta(y)$`, md`$+\dfrac{\lambda}{2\pi\varepsilon_0s^2}$`, md`$+\dfrac{\lambda}{\varepsilon_0}\delta(x)\delta(y)$`], 1,
+        [md`$\nabla^2\ln s = \frac1s\frac{d}{ds}(s\cdot\frac1s) = 0$ only for $s>0$.`, null, md`That is $d^2V/ds^2$, not the cylindrical Laplacian $\frac1s\frac{d}{ds}(s\frac{dV}{ds})$, which is $0$ for $s>0$.`, md`Sign: $\nabla^2V = -\rho/\varepsilon_0$, and $\rho>0$ for $\lambda>0$.`],
         md`$\nabla^2\ln s = 2\pi\delta(x)\delta(y)$, so $\nabla^2V = -\dfrac{\lambda}{2\pi\varepsilon_0}\cdot2\pi\delta(x)\delta(y) = -\dfrac{\lambda}{\varepsilon_0}\delta(x)\delta(y)$: Poisson with $\rho = \lambda\delta(x)\delta(y)$.`,
         { figHtml: FD_LINE_V }),
 
@@ -1540,8 +1551,8 @@
         { figHtml: FD_SCR }),
 
       Q(md`What is $\displaystyle\int_0^\pi g(\theta)\,\delta(\cos\theta)\sin\theta\,d\theta$?`,
-        [md`$g(0)$`, md`$g(\pi/2)$`, md`$\dfrac{g(\pi/2)}{\sin(\pi/2)^2}$, which differs from $g(\pi/2)$`, md`$0$`], 1,
-        [md`$\cos\theta = 0$ at $\theta = \pi/2$, not $0$.`, null, md`Substitute $u = \cos\theta$, $du = -\sin\theta\,d\theta$: the $\sin\theta$ is exactly absorbed, no extra factor.`, md`The root $\pi/2$ is inside $(0,\pi)$.`],
+        [md`$g(0)$`, md`$g(\pi/2)$`, md`$-g(\pi/2)$, because $d(\cos\theta) = -\sin\theta\,d\theta$`, md`$0$`], 1,
+        [md`$\cos\theta = 0$ at $\theta = \pi/2$, not $0$.`, null, md`The minus sign from $du = -\sin\theta\,d\theta$ is cancelled by the flipped limits: $\theta$ from $0$ to $\pi$ is $u$ from $1$ to $-1$, so the integral is $\int_{-1}^{1}g\,\delta(u)\,du$.`, md`The root $\pi/2$ is inside $(0,\pi)$.`],
         md`With $u = \cos\theta$: $\int_{-1}^{1}g(\theta(u))\,\delta(u)\,du = g(\pi/2)$. This is why $\delta(\cos\theta)$ is the natural way to pin charge to the $xy$-plane in spherical coordinates.`,
         { figHtml: FD_DCOS }),
 
@@ -1563,7 +1574,7 @@
         md`$q_0 = 4\pi\varepsilon_0\lim r^2E_r = 4\pi\varepsilon_0A$. For $r>0$: $\rho = \dfrac{\varepsilon_0}{r^2}\dfrac{d}{dr}A\cos(r/a) = -\dfrac{\varepsilon_0A\sin(r/a)}{ar^2}$, alternating in sign in shells.`,
         { figHtml: FD_ECOS }),
 
-      Q(md`$E_r = \dfrac{A\ln(r/a)}{r^2}$ is claimed for all $r>0$. What is at the origin?`,
+      Q(md`$E_r = \dfrac{A\ln(r/a)}{r^2}$ ($A>0$) is claimed for all $r>0$. What is at the origin?`,
         [md`A point charge $-4\pi\varepsilon_0A$`, md`No point charge`, md`A point dipole`, md`Nothing physical: $Q_{\text{enc}}(r) = 4\pi\varepsilon_0A\ln(r/a)\to-\infty$ as $r\to0$`], 3,
         [md`$r^2E_r = A\ln(r/a)$ has no finite limit.`, md`The limit isn't zero either; it diverges.`, md`A dipole has zero flux through small spheres; here the flux diverges.`, null],
         md`The enclosed charge $4\pi\varepsilon_0r^2E_r$ diverges logarithmically as $r\to0$, and $\rho = \dfrac{\varepsilon_0A}{r^3}$ has an infinite positive integral near the origin. An infinite negative point charge would be needed to balance it: not a physical distribution. **When $r^2E_r$ has no finite limit, say so; don't invent a delta.**`,
@@ -1602,7 +1613,7 @@
       R(md`
         ### Level 5: exam level
 
-        The Kou exam pattern: given a piecewise $\vb E$ or $V$, find $\rho$ everywhere (origin, volume, surfaces) and check that it adds up to what the far field says.
+        The exam pattern: given a piecewise $\vb E$ or $V$, find $\rho$ everywhere (origin, volume, surfaces) and check that it adds up to what the far field says.
       `),
 
       Q(md`$V = \dfrac{Ae^{-r/a}(1 + r/a)}{r}$. What is the total charge?`,
@@ -1626,7 +1637,7 @@
       Q(md`$V = A/r$ for $r<R$ and $V = B/r^2$ for $r>R$, with $B\ne AR$. What is on the sphere $r = R$?`,
         [md`A surface charge only`, md`A dipole layer: $V$ jumps, so $E_r$ has a $\delta(r - R)$ and $\rho$ has a $\delta'(r - R)$`, md`Nothing; only the jump in $E_r$ matters`, md`A point charge`], 1,
         [md`A surface charge makes $E$ jump, not $V$. A jump in $V$ needs more.`, null, md`A jump in $V$ means an infinite $E$ at the surface; that is a source.`, md`Point charges live at points, not on spheres.`],
-        md`$E_r = -dV/dr$ contains $-(V_{\text{out}} - V_{\text{in}})\delta(r - R)$, and $\rho = \varepsilon_0\nabla\cdot\vb E$ then contains $\delta'$: two opposite sheets pressed together, a dipole layer. Physical charge layers of finite thickness can't make $V$ jump, which is why problems assume $V$ continuous: here $B = AR$.`,
+        md`$E_r = -dV/dr$ contains $-(V_{\text{out}} - V_{\text{in}})\delta(r - R)$, and $\rho = \varepsilon_0\nabla\cdot\vb E$ then contains $\delta'$: two opposite sheets pressed together, a dipole layer. (When $E_r$ also jumps, an ordinary surface charge sits there too; the jump in $V$ is what demands the dipole layer.) Physical charge layers of finite thickness can't make $V$ jump, which is why problems assume $V$ continuous: here $B = AR$.`,
         { figHtml: FD_VDISC }),
 
       Q(md`Outside a ball, $V$ is exactly $\propto1/r^2$ with no angular dependence. What does that imply?`,

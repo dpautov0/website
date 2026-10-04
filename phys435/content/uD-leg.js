@@ -112,7 +112,7 @@
     f.line(0, 0, eb[0], eb[1], { cls: 'dim', arrow: 'end', hs: 6 });
     labLine(f, [0, 0], eb, 'b', 1, 4, 0.78);
     if (o.sigB) for (let th = 12; th < 180; th += 22) { const s = o.sigB(th); if (!s) continue; for (const sd of [1, -1]) { const [x, y] = at(0, 0, rb + 9, sd * th); sgn(f, x, y, s); } }
-    if (o.labA) leader(f, 0, 0, ra, 150, o.labA, 10);
+    if (o.labA) leader(f, 0, 0, ra, o.labATh ?? 150, o.labA, o.labALen ?? 10);
     if (o.labB) leader(f, 0, 0, o.sigB ? rb + 10 : rb, 40, o.labB, 14);
     return f.svg();
   }
@@ -168,7 +168,7 @@
     f.label(-6, 4, 'O', 'tr', 'small accent');
     f.line(-ra - 30, 0, ra + 30, 0, { cls: 'dim dash thin' });
     f.dim(-ra - 18, 0, -ra - 18, -hs, o.hLab || '3c', { off: 0, at: 'l' });
-    f.label(ra + 8, -hs, 'Q,\ \text{radius } 4c', 'l', 'small');
+    f.label(ra + 8, -hs, 'Q,\\ \\text{radius } 4c', 'l', 'small');
     if (o.P) {
       const p = at(0, 0, o.P.r * S, o.P.th);
       f.line(0, 0, p[0], p[1], { cls: 'dim dash thin' });
@@ -388,9 +388,10 @@
   F.ringTilt = ringTilt();
   F.cos2t = sph({ lab: 'V_0\\cos2\\theta' });
   F.cosGround = shells({ rb: 116, labA: 'V_0\\cos\\theta', labB: 'V=0' });
+  F.cosGround2 = shells({ ra: 45, rb: 90, labA: 'V_0\\cos\\theta', labATh: 140, labALen: 66, labB: 'V=0' });
 
   // problem figures
-  F.p1 = sph({ lab: 'V_0(2-3\\sin^2\\theta)', labTh: 30, Pin: { f: 0.5, th: 0, lab: 'P_1' }, Pout: { f: 2, th: 90, lab: 'P_2', at: 't', noMark: true } });
+  F.p1 = sph({ lab: 'V_0(2-3\\sin^2\\theta)', labTh: 30, Pin: { f: 0.5, th: 0, lab: 'A' }, Pout: { f: 2, th: 90, lab: 'B', at: 't', noMark: true } });
   F.p2 = sph({ lab: 'V_0(\\theta)=\\ ?', labTh: 30, inLab: 'V_{\\text{in}}\\ \\text{given}', inY: 28, extra: (f, rr) => {
     f.dot(0, rr, 2.8); f.tag(0, rr, '\\text{S}', 'br', 8, 'small'); f.dot(-rr, 0, 2.8); f.tag(-rr, 0, '\\text{E}', 'l', 7, 'small');
   } });
@@ -546,7 +547,7 @@
         md`A neutral conductor in this field is an equipotential, and by the up-down antisymmetry of the field it must sit at the equatorial-plane potential, $0$. So "grounded" and "isolated neutral" give the same boundary conditions and, by uniqueness, the same $V = -E_0\left(r - R^3/r^2\right)\cos\theta$. Grounding matters only when something breaks the symmetry (Level 6).`,
         { figHtml: F.fieldN }),
 
-      Q(md`Inside a charge-free sphere, the potential on the $z$ axis is $V(z) = V_0\left(1 + z^2/R^2\right)$. What is $V(r,\theta)$?`,
+      Q(md`Inside a charge-free sphere (azimuthal symmetry), the potential on the $z$ axis is $V(z) = V_0\left(1 + z^2/R^2\right)$. What is $V(r,\theta)$?`,
         [md`$V_0\left(1 + \dfrac{r^2\cos^2\theta}{R^2}\right)$`, md`$V_0\left(1 + \dfrac{r^2}{R^2}\right)$`, md`$V_0\left(1 + \dfrac{r^2}{R^2}P_2(\cos\theta)\right)$`, md`$V_0\left(1 + \dfrac{r^2}{R^2}P_1(\cos\theta)^2\right)$`], 2,
         [md`This just writes $z = r\cos\theta$. It agrees on the axis but $\nabla^2(z^2) = 2 \ne 0$: it is not a solution.`, md`No angle at all: this is $V$ on the axis spread over every direction, and $\nabla^2 r^2 = 6 \ne 0$.`, null, md`$P_1^2 = \cos^2\theta$; same as the first option and not harmonic.`],
         md`On the axis, $V = \sum A_\ell z^\ell$. Match powers: $A_0 = V_0$, $A_2 = V_0/R^2$. Off the axis each $z^\ell$ becomes $r^\ell P_\ell(\cos\theta)$, because $r^\ell P_\ell$ is the unique harmonic function of that form equal to $z^\ell$ on the axis.`,
@@ -595,13 +596,13 @@
 
       Q(md`A grounded metal sphere of radius $a$ sits inside a concentric shell of radius $b$ held at $V_0\cos\theta$. In the gap, $V$ has the form`,
         [md`$A\left(r - \dfrac{a^3}{r^2}\right)\cos\theta$`, md`$Ar\cos\theta$`, md`$A\left(r + \dfrac{a^3}{r^2}\right)\cos\theta$`, md`$A\left(r - \dfrac{a^2}{r}\right)\cos\theta$`], 0,
-        [null, md`$Ar\cos\theta$ ignores the inner sphere: it is not zero at $r = a$.`, md`With the plus sign $V(a,\theta) = 2Aa\cos\theta \ne 0$. This combination has $\partial V/\partial r = 0$ at $r = a$ instead, which is not the grounded condition.`, md`$r - a^2/r$ is the 2-D (cylinder) combination. In 3-D the $\ell = 1$ partner of $r$ is $1/r^2$.`],
+        [null, md`$Ar\cos\theta$ ignores the inner sphere: it is not zero at $r = a$.`, md`With the plus sign $V(a,\theta) = 2Aa\cos\theta \ne 0$, so the grounded condition fails. The two terms must cancel at $r = a$, which takes the minus sign.`, md`$r - a^2/r$ is the 2-D (cylinder) combination. In 3-D the $\ell = 1$ partner of $r$ is $1/r^2$.`],
         md`Only $\ell = 1$ is driven. BC $V(a,\theta) = 0$ gives $A_1a + B_1/a^2 = 0$, so $B_1 = -A_1a^3$. The form is the same as a grounded sphere in a uniform field; the outer shell supplies the "field".`,
         { figHtml: F.groundIn }),
 
       Q(md`A problem reads: "a solid metal sphere is held at $V_0\cos\theta$." What is wrong?`,
         [md`Nothing; solve as usual.`, md`$V_0\cos\theta$ is not a solution of Laplace's equation.`, md`You'd need a dielectric to support it.`, md`A conductor is an equipotential, so its surface can't have a $\theta$-dependent potential.`], 3,
-        [md`Charges in a conductor move until $V$ is constant. A metal surface can't hold $V_0\cos\theta$.`, md`Boundary data need not satisfy Laplace's equation; only $V$ in the region does. This isn't the problem.`, md`No dielectric anywhere in this course's sphere problems. The issue is the word "metal".`, null],
+        [md`Charges in a conductor move until $V$ is constant. A metal surface can't hold $V_0\cos\theta$.`, md`Boundary data need not satisfy Laplace's equation; only $V$ in the region does. This isn't the problem.`, md`A dielectric nearby changes nothing about the metal: its surface is still one equipotential. The issue is the word "metal".`, null],
         md`Nonuniform surface potentials belong to **non-conducting** shells (or insulated patches) held at that potential by some external means. Metal gets a single constant. If you see a $\theta$-dependent surface potential, the surface is not a conductor; if you see "conductor", write $V = \text{const}$.`,
         { figHtml: F.metalCos }),
 
@@ -619,7 +620,7 @@
 
       Q(md`A shell (radius $R$) is held at $V_0(1 + 2\cos\theta)$. At $r = 20R$ on the $+z$ axis, what fraction of $V$ comes from the $\ell = 1$ term?`,
         [md`about $0.5\%$`, md`about $9\%$`, md`about $50\%$`, md`about $1\%$`], 1,
-        [md`$0.5\%$ is $(R/r)^2$ alone, forgetting the coefficient $2$ and the ratio to the $\ell = 0$ term.`, null, md`Comparable only near the shell. Each extra $\ell$ costs another factor $R/r = 1/20$.`, md`$1\%$ would be $\ell = 1$ relative to $\ell = 0$ with coefficient ratio 1/5.`],
+        [md`$0.5\%$ is the $\ell = 1$ term itself, $2(R/r)^2 = 0.005$ in units of $V_0$. The question asks for its share of $V$, which is $0.005/0.055$.`, null, md`Comparable only near the shell. Each extra $\ell$ costs another factor $R/r = 1/20$.`, md`$1\%$ would make the $\ell = 1$ term about $100$ times smaller than the $\ell = 0$ term. It is only $2(R/r) = \tfrac1{10}$ of it: one extra power of $R/r$, times the coefficient ratio $2$.`],
         md`Outside: $V = V_0\left[\tfrac Rr + 2\left(\tfrac Rr\right)^2\cos\theta\right]$. At $r = 20R$ on the axis: $0.05 + 0.005$. Share $= 0.005/0.055 = 1/11 \approx 9\%$. Each step up in $\ell$ costs a factor $R/r$ (times the coefficient ratio).`,
         { figHtml: F.far20 }),
 
@@ -655,7 +656,7 @@
 
       Q(md`A metal sphere held at $V_0$ (relative to the far equatorial plane) sits in a uniform field $E_0\hat{\mathbf z}$. Its surface charge is $\sigma = \varepsilon_0\left(3E_0\cos\theta + V_0/R\right)$. What is the smallest $V_0$ for which $\sigma \ge 0$ everywhere?`,
         [md`$E_0R$`, md`$\tfrac32E_0R$`, md`$3E_0R$`, md`$0$`], 2,
-        [md`At $V_0 = E_0R$, $\sigma(\pi) = \varepsilon_0(-3E_0 + E_0) \lt 0$.`, md`$\tfrac32$ comes from mixing up with the charged-sphere formula $Q/4\pi R^2$. Evaluate $\sigma$ at the south pole directly.`, null, md`With $V_0 = 0$ the southern half is negative.`],
+        [md`At $V_0 = E_0R$, $\sigma(\pi) = \varepsilon_0(-3E_0 + E_0) \lt 0$.`, md`At $V_0 = \tfrac32E_0R$, $\sigma(\pi) = \varepsilon_0\left(-3E_0 + \tfrac32E_0\right) \lt 0$: only half the needed uniform charge. Evaluate $\sigma$ at the south pole directly.`, null, md`With $V_0 = 0$ the southern half is negative.`],
         md`The most negative point is the south pole, $\cos\theta = -1$: $\sigma = \varepsilon_0(V_0/R - 3E_0) \ge 0$ needs $V_0 \ge 3E_0R$. The $\ell = 0$ charge from $V_0$ must out-weigh the $\ell = 1$ induced charge everywhere.`,
         { figHtml: F.fieldV }),
 
@@ -692,7 +693,7 @@
       Q(md`A shell of radius $a$ carries $k\cos\theta$. A concentric **grounded** metal shell of radius $b \gt a$ surrounds it. What is $V$ for $r \gt b$?`,
         [md`a dipole field, $\dfrac{ka^3\cos\theta}{3\varepsilon_0r^2}$`, md`a reduced dipole, since the grounded shell screens part of it`, md`$0$`, md`a uniform field`], 2,
         [md`That would be the field with no outer shell.`, md`Screening is complete, not partial.`, null, md`A uniform field outside would need $V \to \infty$ far away.`],
-        md`Region $r \gt b$: no charge, $V = 0$ on $r = b$, $V \to 0$ at infinity. $V = 0$ satisfies all of it, and by uniqueness it is the answer. The grounded shell picks up exactly $-k\cos\theta\,(a/b)^2$ worth of induced charge to cancel the dipole outside.`,
+        md`Region $r \gt b$: no charge, $V = 0$ on $r = b$, $V \to 0$ at infinity. $V = 0$ satisfies all of it, and by uniqueness it is the answer. The grounded shell picks up induced charge $\sigma_b = -k\left(\dfrac ab\right)^3\cos\theta$ on its inner face: its dipole moment $\tfrac43\pi b^3\sigma_b$ is exactly minus the inner shell's $\tfrac43\pi a^3k$, so the two cancel outside.`,
         { figHtml: F.dipIn }),
 
       Q(md`A metal sphere in a uniform field carries net charge $Q$. Compared with the neutral sphere, its induced dipole moment is`,
@@ -701,9 +702,9 @@
         md`Each $\ell$ is solved separately. The net charge is the $\ell = 0$ condition; the dipole is set by the $\ell = 1$ conditions ($A_1 = -E_0$, $V$ constant on the sphere). $V = -E_0(r - R^3/r^2)\cos\theta + \frac{Q}{4\pi\varepsilon_0r}$: superpose.`,
         { figHtml: F.fieldQ }),
 
-      Q(md`Outside some charge distribution, the potential on the $+z$ axis is $V(z) = V_0R^3/z^3$ for $z \gt R$. What is $V$ on the $-z$ axis at the same distance $\lvert z\rvert$?`,
+      Q(md`Outside some azimuthally symmetric charge distribution (all of it inside $r = R$), the potential on the $+z$ axis is $V(z) = V_0R^3/z^3$ for $z \gt R$. What is $V$ on the $-z$ axis at the same distance $\lvert z\rvert$?`,
         [md`$-V_0R^3/\lvert z\rvert^3$`, md`$V_0R^3/\lvert z\rvert^3$`, md`$0$`, md`It can't be determined from data on the $+z$ axis.`], 1,
-        [md`That treats $V$ as odd in $z$. But $1/z^3$ is $B_2/r^3$, an $\ell = 2$ term, and $P_2(-1) = +1$.`, null, md`Nothing vanishes on the axis: every $P_\ell(\pm1) = \pm1$. Odd terms flip sign at the south pole; this $\ell = 2$ term doesn't.`, md`It can: the $+z$ axis data fix every $B_\ell$, which then fix $V$ everywhere in the region, including the $-z$ axis.`],
+        [md`That treats $V$ as odd in $z$. But $1/z^3$ is $B_2/r^3$, an $\ell = 2$ term, and $P_2(-1) = +1$.`, null, md`Nothing vanishes on the axis: $\lvert P_\ell(\pm1)\rvert = 1$ for every $\ell$. Odd terms flip sign at the south pole; this $\ell = 2$ term doesn't.`, md`It can: with azimuthal symmetry the $+z$ axis data fix every $B_\ell$, which then fix $V$ everywhere in the region, including the $-z$ axis. (Without azimuthal symmetry, this would be the right answer.)`],
         md`$V(r,\theta) = V_0\dfrac{R^3}{r^3}P_2(\cos\theta)$. At $\theta = \pi$, $P_2 = 1$: same value. The axis trick determines the whole solution, so it answers questions far from the axis too.`,
         { figHtml: F.axisOut }),
 
@@ -767,7 +768,7 @@
         md`Gauss on a surface inside the metal: $E = 0$ there, so $Q_{\text{enc}} = q + Q_{\text{ind}} = 0$. In Legendre terms, the $\ell = 0$ piece of the induced potential inside is $-q/4\pi\varepsilon_0R$, the same as a charge $-q$ spread on the shell; every $\ell \ge 1$ piece integrates to zero.`,
         { figHtml: F.gshell }),
 
-      Q(md`Inside a charge-free shell, the axis potential is $V(z) = V_0\left(1 - z/R + z^2/R^2\right)$ for $\lvert z\rvert \le R$. What is the potential on the shell's equator ($r = R$, $\theta = \pi/2$)?`,
+      Q(md`Inside a charge-free shell (azimuthal symmetry), the axis potential is $V(z) = V_0\left(1 - z/R + z^2/R^2\right)$ for $\lvert z\rvert \le R$. What is the potential on the shell's equator ($r = R$, $\theta = \pi/2$)?`,
         [md`$V_0$`, md`$V_0/2$`, md`$3V_0/2$`, md`$0$`], 1,
         [md`$V_0$ is the axis value at $z = 0$ (the center), not the equator of the shell.`, null, md`That uses $P_2(0) = +\tfrac12$. It is $-\tfrac12$.`, md`Only the $\ell = 1$ term vanishes at the equator.`],
         md`Axis trick: $V = V_0\left[1 - \tfrac rRP_1 + \tfrac{r^2}{R^2}P_2\right]$. At $r = R$, $\theta = \pi/2$: $1 - 0 - \tfrac12 = \tfrac12$. Axis data reach the whole sphere.`,
@@ -811,9 +812,9 @@
 
       Q(md`A shell of radius $a$ is held at $V_0\cos\theta$, inside a concentric grounded shell of radius $b = 2a$. What is $\sigma$ on the inner shell at its north pole?`,
         [md`$\dfrac{3\varepsilon_0V_0}{a}$, as without the outer shell`, md`$\dfrac{24}{7}\dfrac{\varepsilon_0V_0}{a}$`, md`$\dfrac{21}{8}\dfrac{\varepsilon_0V_0}{a}$`, md`$\dfrac{6\varepsilon_0V_0}{a}$`], 1,
-        [md`The inside slope is unchanged, but the gap solution now has to reach $0$ at $b$ instead of at infinity, so its slope at $a$ is steeper.`, null, md`$\tfrac78$ is upside down: the grounded shell increases $\sigma$, by the factor $\dfrac{b^3}{b^3 - a^3} = \tfrac87$.`, md`$6$ would need the outer shell to touch the inner one; at $b = 2a$ the correction is only $\tfrac87$.`],
+        [md`The inside slope is unchanged, but the gap solution now has to reach $0$ at $b$ instead of at infinity, so its slope at $a$ is steeper.`, null, md`$\tfrac78$ is upside down: the grounded shell increases $\sigma$, by the factor $\dfrac{b^3}{b^3 - a^3} = \tfrac87$.`, md`$6$ doubles the free value, which needs $\dfrac{b^3}{b^3 - a^3} = 2$, i.e. $b = 2^{1/3}a \approx 1.26a$. At $b = 2a$ the factor is only $\tfrac87$.`],
         md`Gap: $A(r - b^3/r^2)\cos\theta$ with $A(a - b^3/a^2) = V_0$. Outside slope at $a$: $A(1 + 2b^3/a^3)$; inside slope $V_0/a$. $\sigma = -\varepsilon_0(\text{out} - \text{in}) = \dfrac{3\varepsilon_0V_0}{a}\dfrac{b^3}{b^3 - a^3}$, which is $\dfrac{24}{7}\dfrac{\varepsilon_0V_0}{a}$ at $b = 2a$ and tends to $3\varepsilon_0V_0/a$ as $b \to \infty$.`,
-        { figHtml: F.cosGround }),
+        { figHtml: F.cosGround2 }),
 
       Q(md`A grounded metal sphere sits in a field $E_0\hat{\mathbf z}$; $\sigma = 3\varepsilon_0E_0\cos\theta$. What is the net electric force on its **northern** hemisphere?`,
         [md`$0$: the whole sphere is neutral`, md`$3\pi\varepsilon_0R^2E_0^2$, upward`, md`$\tfrac92\pi\varepsilon_0R^2E_0^2$, upward`, md`$\tfrac94\pi\varepsilon_0R^2E_0^2$, upward`], 3,
@@ -839,8 +840,8 @@
           - $V$ given: continuity alone, then $\sigma = \frac{\varepsilon_0V_0}{R}\sum(2\ell+1)a_\ell P_\ell$ is the output. $\sigma$ given: continuity plus the jump, $V_{\text{in}} = \sum\frac{s_\ell r^\ell}{(2\ell+1)\varepsilon_0R^{\ell-1}}P_\ell$.
           - Center: $V(0) = a_0V_0$, $\mathbf E(0)$ from $\ell = 1$ only. Net charge: $\ell = 0$ only. Far field: the lowest $\ell$ present.
           - Symmetric data → even $\ell$; antisymmetric → odd $\ell$; kinks and jumps → infinitely many.
-          - Sphere in a field: $B_1 = E_0R^3$ always. Net charge or a held potential adds only an $\ell = 0$ term.
-          - Axis data determine everything: $z^\ell \to r^\ell P_\ell$, $z^{-(\ell+1)} \to r^{-(\ell+1)}P_\ell$.
+          - Metal sphere in a uniform field: $B_1 = E_0R^3$, whatever its charge or potential. Net charge or a held potential adds only an $\ell = 0$ term. (A shell with fixed $\sigma$ is different: its $B_1$ comes from its own charge.)
+          - With azimuthal symmetry, axis data determine everything: $z^\ell \to r^\ell P_\ell$, $z^{-(\ell+1)} \to r^{-(\ell+1)}P_\ell$.
       `),
     ],
   };
@@ -859,7 +860,7 @@
 
       P({
         title: 'A P₂ in disguise',
-        q: md`A thin shell of radius $R$ is held at $V_0(\theta) = V_0\left(2 - 3\sin^2\theta\right)$, with no other charge anywhere. Find (a) the Legendre coefficients $a_0$ and $a_2$ in $V_0(\theta) = V_0\sum a_\ell P_\ell(\cos\theta)$, (b) $V$ at $P_1$ ($r = R/2$ on the $+z$ axis) in units of $V_0$, (c) $V$ at $P_2$ ($r = 2R$, $\theta = 90^\circ$) in units of $V_0$, and (d) the total charge on the shell.`,
+        q: md`A thin shell of radius $R$ is held at $V_0(\theta) = V_0\left(2 - 3\sin^2\theta\right)$, with no other charge anywhere. Find (a) the Legendre coefficients $a_0$ and $a_2$ in $V_0(\theta) = V_0\sum a_\ell P_\ell(\cos\theta)$, (b) $V$ at point $A$ ($r = R/2$ on the $+z$ axis) in units of $V_0$, (c) $V$ at point $B$ ($r = 2R$, $\theta = 90^\circ$) in units of $V_0$, and (d) the total charge on the shell.`,
         figHtml: F.p1,
         hints: [
           md`Rewrite in $\cos\theta$: $\sin^2\theta = 1 - \cos^2\theta$. Then compare with $P_2 = \tfrac12(3\cos^2\theta - 1)$.`,
@@ -869,8 +870,8 @@
         parts: [
           { lbl: md`(a) $a_0$`, ans: 0 },
           { lbl: md`(a) $a_2$`, ans: 2 },
-          { lbl: md`(b) $V(P_1)/V_0$`, ans: 0.5 },
-          { lbl: md`(c) $V(P_2)/V_0$`, ans: -0.125 },
+          { lbl: md`(b) $V(A)/V_0$`, ans: 0.5 },
+          { lbl: md`(c) $V(B)/V_0$`, ans: -0.125 },
           { lbl: md`(d) Total charge on the shell`, mc: [md`$\dfrac{8\pi\varepsilon_0RV_0}{3}$`, md`$0$`, md`$-4\pi\varepsilon_0RV_0$`, md`$8\pi\varepsilon_0RV_0$`], a: 1,
             why: [md`That is $4\pi\varepsilon_0R\times\tfrac23V_0$: it treats $\langle 3\sin^2\theta\rangle$ as $\tfrac43$ instead of $2$.`, null, md`$-1$ is the value at the equator, not the average.`, md`$2$ is the value at the poles, not the average.`] },
         ],
@@ -1459,7 +1460,7 @@
 
           (f) $\int\sigma_0\cos^2\theta(-E_0R\cos\theta)\,2\pi R^2\sin\theta\,d\theta \propto \int_{-1}^1x^3\,dx = 0$. The interaction energy of a charge distribution with a uniform field is $-\mathbf p\cdot\mathbf E_0$ (plus $Q$ times the reference potential at the center, here $0$), and this distribution has $\mathbf p = 0$.
 
-          **What to remember:** in a uniform field, $\ell = 0$ feels the force, $\ell = 1$ feels the torque and energy, $\ell \ge 2$ feel nothing.
+          **What to remember:** in a uniform field, $\ell = 0$ feels the force, $\ell = 1$ feels the torque and the orientation energy $-\mathbf p\cdot\mathbf E_0$, $\ell \ge 2$ feel nothing.
         `,
       }),
 
@@ -1503,7 +1504,7 @@
 
           **What to remember:** truncation error is worst on the boundary at a jump; a factor $(r/R)$ or $(R/r)$ makes everything converge fast. The exterior and interior series of the same shell are related by $r \to R^2/r$.
         `,
-        figs: { ps: { svg: F.hemiPlot, cap: md`On the surface: the step (dashed) and the 3-term sum (solid). The sum overshoots near the equator and falls short at the poles.` } },
+        figs: { ps: { svg: F.hemiPlot, cap: md`On the surface: the step (dashed) and the 3-term sum (solid). The sum overshoots at mid-latitudes (about $1.11$ near $49^\circ$, $-0.11$ near $131^\circ$), passes through $\tfrac12$ at the equator, and falls short at the poles.` } },
       }),
 
       P({
@@ -1521,7 +1522,7 @@
           { lbl: md`(c) $V(P)$ through $\ell = 3$`, ans: 0.225856 },
           { lbl: md`(d) $F_z$ on $q$`, ans: -0.024 },
           { lbl: md`(e) The $\ell = 2$ term is small because`, mc: [md`the ring is far away`, md`$P_2(\cos\theta)$ is small at $60^\circ$`, md`the ring is symmetric about the $xy$ plane`, md`the ring sits near the $P_2$ node: $\alpha = 53.1^\circ$, close to $54.7^\circ$`], a: 3,
-            why: [md`$\ell = 3$ is even further suppressed by distance, yet it is ten times larger here.`, md`$P_2(\cos60^\circ) = -0.125$ is not small compared with $P_1 = 0.5$ or $P_3 = -0.44$.`, md`It isn't: it sits above the plane, which is why odd $\ell$ appear.`, null] },
+            why: [md`$\ell = 3$ is even further suppressed by distance, yet it is more than ten times larger here.`, md`$P_2(\cos60^\circ) = -0.125$ is not small compared with $P_1 = 0.5$ or $P_3 = -0.44$.`, md`It isn't: it sits above the plane, which is why odd $\ell$ appear.`, null] },
         ],
         sol: md`
           **Region:** $r \lt D = 5c$ (charge-free, contains the origin). **Boundary conditions:**
@@ -1586,7 +1587,7 @@
         !!key Patterns to remember
           - Always: region, numbered conditions, which family dies, then expand the data in $P_\ell$.
           - Concentric spheres never mix $\ell$: one 2×2 system per driven $\ell$.
-          - Charges: $Q = 4\pi\varepsilon_0B_0$ outside any sphere. Forces in a uniform field: $Q\mathbf E_0$. Energies: $-\mathbf p\cdot\mathbf E_0$.
+          - Charges: $Q = 4\pi\varepsilon_0B_0$ outside any sphere. Forces in a uniform field: $Q\mathbf E_0$. Interaction energy: $QV_{\text{ext}}(0) - \mathbf p\cdot\mathbf E_0$.
           - Sum the axis series and you often get a closed form (an image, a geometric series).
           - Truncation is worst on the boundary at a jump; inside or outside, each term is suppressed by a power of $r/R$.
       `),

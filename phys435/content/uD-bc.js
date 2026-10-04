@@ -49,11 +49,12 @@
       else if (L.k === 'dash') f.circle(cx, cy, L.r, { cls: 'dash dim' });
       else f.circle(cx, cy, L.r);
       if (L.glyph) {
-        const n = L.r > 40 ? 5 : 3;
+        // gRot: -90 puts the + half on the right (cos phi with x to the right); default + half on top (cos theta, z up)
+        const n = L.r > 40 ? 5 : 3, rot = L.gRot || 0;
         for (let i = 0; i < n; i++) {
           const ang = 25 + (130 / (n - 1)) * i;
-          const [px, py] = pol(cx, cy, L.r - 7, ang); plus(f, px, py);
-          const [mx, my] = pol(cx, cy, L.r - 7, -ang);
+          const [px, py] = pol(cx, cy, L.r - 7, ang + rot); plus(f, px, py);
+          const [mx, my] = pol(cx, cy, L.r - 7, -ang + rot);
           if (L.glyph === 'cos') minus(f, mx, my); else plus(f, mx, my);
         }
       }
@@ -200,7 +201,7 @@
   const fQ26 = sph({ layers: [{ k: 'shell', r: 80, lab: 'V=0', at: 40 }], q: [[30, -10, '+', 'q', 't']], gnd: true, extra: (f, cx, cy) => { f.dot(cx, cy, 2); f.dim(cx, cy + 20, cx + 30, cy + 20, 'a', { at: 'b' }); } });
   const fQ27 = fNested(md`\sigma_0\cos\theta`);
   const fQ28 = fNested(md`\sigma_0(2+\cos\theta)`);
-  const fQ29 = sph({ layers: [{ k: 'sig', r: 55, lab: md`\sigma_0\cos\phi`, at: 40, glyph: 'cos' }], rad: [[55, 210, 'a', 0.5, 't']], extra: (f, cx, cy) => { f.arrow(cx + 95, cy + 60, cx + 125, cy + 60, { cls: 'dim' }); f.label(cx + 129, cy + 60, 'x', 'l', 'small accent'); } });
+  const fQ29 = sph({ layers: [{ k: 'sig', r: 55, lab: md`\sigma_0\cos\phi`, at: 40, glyph: 'cos', gRot: -90 }], rad: [[55, 270, 'a', 0.5, 'r']], extra: (f, cx, cy) => { f.arrow(cx + 95, cy + 60, cx + 125, cy + 60, { cls: 'dim' }); f.label(cx + 129, cy + 60, 'x', 'l', 'small accent'); } });
   const fQ30 = sph({ layers: [{ k: 'mball', r: 35, lab: 'Q', at: 90, gap: 6 }, { k: 'thick', r: 70, r2: 98, lab: md`Q_{\rm shell}=0`, at: 40 }], rad: [[70, 205, 'b', 0.75, 't'], [98, 320, 'c', 1.0, 'br']], extra: (f, cx, cy) => f.label(cx - 45, cy - 6, 'a', 'r', 'small') });
   const fQ31 = plates({ slab: [0, 0.5], slabLab: md`\rho_0`, L: 'V=0', R: 'V=0', ticks: [[0, '0'], [0.5, 'd/2'], [1, 'd']] });
   const fQ32 = sph({ layers: [{ k: 'mball', r: 45, lab: 'V=0', at: 135 }], E: 'up', q: [[0, -95, '+', 'q', 'r']], gnd: true });
@@ -225,7 +226,7 @@
   const fQ43 = sph({ layers: [{ k: 'mball', r: 45, lab: 'V=0', at: 225 }], q: [[0, -115, '+', 'q', 'r']], gnd: true, extra: (f, cx, cy) => f.dim(cx - 30, cy, cx - 30, cy - 115, 'a', { at: 'l' }) });
   const fQ44 = sph({ layers: [{ k: 'shell', r: 70, lab: 'V=0', at: 40 }], q: [[0, 0, '+', 'q', 'b']], gnd: true, extra: (f, cx, cy) => { f.arrow(cx + 12, cy - 18, cx + 34, cy - 18, { cls: 'dim' }); f.label(cx + 38, cy - 18, md`\delta`, 'l', 'small'); } });
   const fQ45 = sph({ layers: [{ k: 'mball', r: 40, lab: md`\lambda,\ V=0`, at: 135 }], E: 'right' });
-  const fQ46 = sph({ layers: [{ k: 'mball', r: 40, lab: 'Q', at: 90, gap: 6 }, { k: 'shell', r: 95, lab: 'V_0', at: 35 }], bat: 'V_0', extra: (f, cx, cy) => f.label(cx, cy + 62, '\\text{isolated}', 'c', 'small accent') });
+  const fQ46 = sph({ layers: [{ k: 'mball', r: 40, lab: 'Q', at: 90, gap: 6 }, { k: 'shell', r: 95, lab: 'V_0', at: 35 }], bat: 'V_0', rad: [[95, 330, 'b', 0.72, 'tr']], extra: (f, cx, cy) => { f.label(cx - 46, cy + 30, 'a', 'r', 'small'); f.label(cx, cy + 62, '\\text{isolated}', 'c', 'small accent'); } });
 
   // =====================================================================================
   // Lesson 1: boundary conditions, conceptual ladder
@@ -247,7 +248,7 @@
       Q(md`You have found $V(r,\theta)$ outside the grounded metal sphere. Which expression gives its surface charge?`,
         [md`$\sigma = +\varepsilon_0\,\dfrac{\partial V}{\partial r}\Big|_{r=R}$`, md`$\sigma = -\dfrac{\varepsilon_0\,V(R,\theta)}{R}$`, md`$\sigma = -\varepsilon_0\,\dfrac{\partial V}{\partial r}\Big|_{r=R}$`, md`$\sigma = -\dfrac{\varepsilon_0}{R}\,\dfrac{\partial V}{\partial \theta}\Big|_{r=R}$`], 2,
         [md`Sign flipped. Just outside a conductor $E_r = \sigma/\varepsilon_0$, and $E_r = -\partial V/\partial r$.`, md`On a grounded sphere $V(R,\theta) = 0$, so this always gives zero. The charge comes from the normal derivative, not from the value.`, null, md`That is the tangential field, and it is zero on a conductor because $V$ is constant along the surface.`],
-        md`Just outside a conductor $\vb E = (\sigma/\varepsilon_0)\hat{\mathbf n}$. Here $\hat{\mathbf n} = \hat{\mathbf r}$, so $\sigma = \varepsilon_0E_r = -\varepsilon_0\,\partial V/\partial r$ at $r = R$. Sanity check: for a positively charged region near the surface, $V$ falls as you move away, $\partial V/\partial r < 0$, and $\sigma > 0$.`,
+        md`Just outside a conductor $\vb E = (\sigma/\varepsilon_0)\hat{\mathbf n}$. Here $\hat{\mathbf n} = \hat{\mathbf r}$, so $\sigma = \varepsilon_0E_r = -\varepsilon_0\,\partial V/\partial r$ at $r = R$. Sanity check: where the surface charge is positive, field lines leave the metal, $V$ falls as you move out, $\partial V/\partial r < 0$, and the formula gives $\sigma > 0$.`,
         { figHtml: fQ1 }),
       Q(md`A metal block has a spherical cavity of radius $a$ with a charge $q$ inside (off center). You know $V$ inside the cavity. What is the surface charge on the cavity wall?`,
         [md`$\sigma = +\varepsilon_0\,\dfrac{\partial V}{\partial r}\Big|_{r=a}$`, md`$\sigma = -\varepsilon_0\,\dfrac{\partial V}{\partial r}\Big|_{r=a}$`, md`$\sigma = -\dfrac{q}{4\pi a^2}$ everywhere on the wall`, md`$\sigma = \varepsilon_0\,\dfrac{\partial V}{\partial r}$ evaluated just inside the metal`], 0,
@@ -264,7 +265,7 @@
         [md`That describes a surface with no charge on it, such as the edge of a uniformly charged ball. With $\sigma$ present, the normal field jumps.`, md`Swapped. $V$ never jumps at a surface charge (only at a dipole layer); its normal derivative does.`, md`Nothing is grounded. An insulating sheet with fixed $\sigma$ does not fix the value of $V$.`, null],
         md`Gauss's law on a pillbox gives the jump in the normal field: $E_{\rm out}-E_{\rm in} = \sigma/\varepsilon_0$, that is $\partial_rV_{\rm out}-\partial_rV_{\rm in} = -\sigma/\varepsilon_0$. A finite field means $V$ is continuous. Both hold at every $\theta$.`,
         { figHtml: fQ3 }),
-      Q(md`An isolated metal sphere carries total charge $Q$. A point charge $q$ sits nearby. Which condition on the sphere is correct?`,
+      Q(md`An isolated metal sphere of radius $R$ carries total charge $Q$. A point charge $q$ sits outside it, a distance $d$ from its center. Which condition on the sphere is correct?`,
         [md`$V(R,\theta) = 0$`, md`$V(R,\theta) = V_s$, an unknown constant, together with $-\varepsilon_0\oint \dfrac{\partial V}{\partial r}\,da = Q$`, md`$V(R,\theta) = \dfrac{Q}{4\pi\varepsilon_0 R}$`, md`$\sigma = \dfrac{Q}{4\pi R^2}$ on the whole surface`], 1,
         [md`That is a grounded sphere. A grounded sphere can draw charge from the ground, so its $Q$ is not fixed.`, null, md`That ignores $q$. Evaluating $V$ at the center (inside the metal) gives $V_s = \dfrac{Q}{4\pi\varepsilon_0R}+\dfrac{q}{4\pi\varepsilon_0d}$.`, md`Uniform only when the sphere is alone. The charge $q$ pulls charge around.`],
         md`"Isolated with charge $Q$" means two facts: the sphere is an equipotential (value unknown), and the total charge is fixed. The unknown constant $V_s$ is one more unknown, and the total-charge condition is one more equation, so the count still balances.
@@ -407,7 +408,7 @@
       Q(md`A square region $0<x,y<a$ is claimed to be charge-free. The boundary values in the figure all fit the candidate $V = \dfrac{V_0(x^2+y^2)}{a^2}$. What is wrong?`,
         [md`Nothing: the boundary values match, so uniqueness makes it the answer`, md`It fails Laplace: $\nabla^2V = 4V_0/a^2$, which is the potential of a uniform $\rho = -4\varepsilon_0V_0/a^2$`, md`It has a minimum at the origin, but Laplace is still satisfied`, md`It fails only at the corners`], 1,
         [md`Uniqueness needs **both** the boundary values and the right equation inside. This one solves Poisson with a charge density, not Laplace.`, null, md`$\nabla^2(x^2+y^2) = 4\ne0$. (Its minimum sits on the boundary corner, which is not the problem.)`, md`The failure is everywhere inside, not at the corners.`],
-        md`$\nabla^2V = V_0(2+2)/a^2 = 4V_0/a^2 = -\rho/\varepsilon_0$ gives $\rho = -4\varepsilon_0V_0/a^2$. The boundary data are fine; the region is not charge-free for this $V$. The real Laplace solution with these boundary values exists and is different (for instance $V_0(x^2-y^2)/a^2$ plus a harmonic correction).`,
+        md`$\nabla^2V = V_0(2+2)/a^2 = 4V_0/a^2 = -\rho/\varepsilon_0$ gives $\rho = -4\varepsilon_0V_0/a^2$. The boundary data are fine; the region is not charge-free for this $V$. The real Laplace solution with these boundary values exists and is different: it equals the candidate minus a function $w$ with $\nabla^2w = 4V_0/a^2$ inside and $w = 0$ on all four edges.`,
         { figHtml: fQ21 }),
       Q(md`A computer solution for a charge-free box with one wall at $V_0$ and the others grounded reports $V = 1.3V_0$ at an interior point. What do you conclude?`,
         [md`Possible if the point is close to the live wall`, md`Possible because the corners concentrate the field`, md`Possible only if the box is long and thin`, md`Impossible: a Laplace solution has no interior maximum, so $0\le V\le V_0$ everywhere inside`], 3,
@@ -506,7 +507,7 @@
 
         - **Neumann consistency.** In a region with total charge $Q_{\rm enc}$, the given $\partial V/\partial n$ must satisfy $-\oint\partial V/\partial n\,da = Q_{\rm enc}/\varepsilon_0$. Data that break this have **no** solution.
         - **Over-specification.** Giving both $V$ and $\partial V/\partial n$ on the same closed boundary usually has no solution.
-        - **2-D logs.** Net line charge means $\ln s$ at infinity; an isolated cylinder "at $V_0$ relative to infinity" is meaningless.
+        - **2-D logs.** Net line charge means $\ln s$ at infinity; a charged cylinder "at $V_0$ relative to infinity" is meaningless, because $V(\infty)$ is not finite.
         - **Hidden charge.** A candidate with $1/r$ behavior at a point where nothing is placed describes a point charge you didn't put there.
       `),
       Q(md`A sphere of radius $R$ has its upper hemisphere at $V_0$ and its lower hemisphere at $0$; there is nothing else. What is the leading behavior of $V$ far away?`,
@@ -529,7 +530,7 @@
         [md`Existence fails: Dirichlet data fix the solution, which then has its own normal derivative.`, md`Dirichlet data alone already make the solution unique.`, null, md`Shape is irrelevant.`],
         md`Each type of data alone is enough. Adding the other over-determines the problem: the normal derivative you specified will in general disagree with the one the Dirichlet solution has.`,
         { figHtml: fQ40 }),
-      Q(md`A sphere with $V = V_0\cos\theta$ on it has an empty interior. A candidate for $V$ inside satisfies Laplace everywhere except that it behaves like $A/r$ near the origin, and it matches $V_0\cos\theta$ on the surface. What is wrong?`,
+      Q(md`A sphere of radius $R$ with $V = V_0\cos\theta$ on it has an empty interior. A candidate for $V$ inside satisfies Laplace everywhere except that it behaves like $A/r$ near the origin, and it matches $V_0\cos\theta$ on the surface. What is wrong?`,
         [md`Nothing; Laplace is satisfied almost everywhere`, md`The surface condition must fail somewhere`, md`It is fine if $A$ is small`, md`It contains a point charge $4\pi\varepsilon_0A$ at the origin, which the problem does not have`], 3,
         [md`$\nabla^2(1/r) = -4\pi\delta^3(\vb r)$; "almost everywhere" hides a point charge.`, md`It matched by construction; the failure is in the interior.`, md`Any nonzero $A$ means a real charge.`, null],
         md`Finiteness at the origin is the condition that kills $1/r$. Without it, Laplace plus the surface data admit extra solutions (with point charges), so uniqueness needs the region to be honestly charge-free. Correct answer: $V = V_0\dfrac{r}{R}\cos\theta$.`,
@@ -554,7 +555,7 @@
         [md`$\lambda$ is given, and it forces a $\ln s$ that the far condition forbids.`, md`The conditions are contradictory, not under-specified.`, md`Sign of $\lambda$ doesn't matter.`, null],
         md`Correct far condition: $V\to-E_0s\cos\phi-\dfrac{\lambda}{2\pi\varepsilon_0}\ln s + C$. With $V(a) = 0$: $V = -E_0\left(s-\dfrac{a^2}{s}\right)\cos\phi-\dfrac{\lambda}{2\pi\varepsilon_0}\ln\dfrac{s}{a}$.`,
         { figHtml: fQ45 }),
-      Q(md`Inner metal sphere: isolated with charge $Q$. Outer metal shell: held at $V_0$ by a battery. The region between and outside is empty. Is the field determined?`,
+      Q(md`Inner metal sphere (radius $a$): isolated with charge $Q$. Concentric outer metal shell (radius $b$): held at $V_0$ (relative to infinity) by a battery. The region between and outside is empty. Is the field determined?`,
         [md`Yes, uniquely: each conductor has either its potential or its charge specified`, md`No: both conductors need their potentials`, md`No: both conductors need their charges`, md`Only between the conductors`], 0,
         [null, md`Mixing is allowed: a conductor with given charge contributes an equation in place of its unknown potential.`, md`Mixing is allowed. The battery's shell has its potential given instead.`, md`Outside is fixed too: $V = V_0b/r$.`],
         md`Uniqueness extends to mixed data: on each conductor give $V$ or $Q$. Here: between, $V = V_0 + \dfrac{Q}{4\pi\varepsilon_0}\left(\dfrac1r-\dfrac1b\right)$; outside, $V = V_0b/r$.`,
@@ -602,7 +603,7 @@
     f.dim(cx - Rr - 40, cy, cx - Rr - 40, cy - Rr, 'R', { at: 'l' });
     return f.svg();
   })();
-  const fB10 = sph({ layers: [{ k: 'sig', r: 55, lab: md`\sigma_0\cos\phi`, at: 40, glyph: 'cos' }], E: 'right', rad: [[55, 210, 'a', 0.5, 't']] });
+  const fB10 = sph({ layers: [{ k: 'sig', r: 55, lab: md`\sigma_0\cos\phi`, at: 40, glyph: 'cos', gRot: -90 }], E: 'right', rad: [[55, 270, 'a', 0.5, 'r']] });
   const fB11 = sph({ layers: [{ k: 'mball', r: 30, lab: 'V_0', at: 90, gap: 5 }, { k: 'shell', r: 65, lab: 'Q', at: 45, gap: 5 }, { k: 'shell', r: 100, lab: 'V=0', at: 30 }], gnd: true, extra: (f, cx, cy) => { f.label(cx - 33, cy + 22, 'a', 'r', 'small'); f.label(cx - 64, cy + 36, 'b', 'r', 'small'); f.label(cx - 98, cy + 50, 'c', 'r', 'small'); } });
   const fB12 = (() => {
     const f = fig(); const cx = 160, cy = 130;
@@ -1083,10 +1084,10 @@
         [md`$\tfrac{\varepsilon_0}{2}\int E^2$ is always positive, but the point-charge formula leaves out the infinite self-energies, and what remains can be negative.`, null, md`Their fields don't cancel everywhere; and the interaction term is not zero.`, md`With $V = 0$ at infinity (the reference the formula assumes), the value is fixed.`],
         md`$W = q_1q_2/(4\pi\varepsilon_0d)<0$ for opposite signs: the field does positive work pulling them together, so you do negative work assembling them.`,
         { figHtml: fE2 }),
-      Q(md`An isolated metal sphere of radius $R$ carries $Q$. Where is its energy $\dfrac{Q^2}{8\pi\varepsilon_0R}$ stored?`,
+      Q(md`An isolated metal sphere of radius $R$ carries $Q$. Using the energy density $u = \tfrac{\varepsilon_0}{2}E^2$, where is its energy $\dfrac{Q^2}{8\pi\varepsilon_0R}$ located?`,
         [md`In the surface charge layer`, md`Inside the metal`, md`In the field outside the sphere`, md`Half inside the metal, half outside`], 2,
-        [md`In the field picture, energy lives in $E^2$; the surface is a set of measure zero.`, md`$E = 0$ inside a conductor, so no energy density there.`, null, md`Inside, $E = 0$.`],
-        md`$u = \tfrac{\varepsilon_0}{2}E^2$ with $E = \dfrac{Q}{4\pi\varepsilon_0r^2}$ for $r>R$: $\int_R^\infty u\,4\pi r^2dr = \dfrac{Q^2}{8\pi\varepsilon_0R}$. The two pictures ($\tfrac12QV$ on the surface, $E^2$ outside) agree on the total, not on the location; the field picture is the physical one.`,
+        [md`That is the $\tfrac12\int\sigma V\,da$ picture. With $u = \tfrac{\varepsilon_0}{2}E^2$ the energy sits wherever $E\ne0$, and an infinitely thin layer has no volume.`, md`$E = 0$ inside a conductor, so no energy density there.`, null, md`Inside, $E = 0$.`],
+        md`$u = \tfrac{\varepsilon_0}{2}E^2$ with $E = \dfrac{Q}{4\pi\varepsilon_0r^2}$ for $r>R$: $\int_R^\infty u\,4\pi r^2dr = \dfrac{Q^2}{8\pi\varepsilon_0R}$. The two pictures ($\tfrac12QV$ on the surface, $E^2$ outside) agree on the total, not on the location. Electrostatics alone cannot say which location is "real"; the field picture is the one that carries over to radiation, and the one to use when a question asks where the energy is.`,
         { figHtml: fE3 }),
       Q(md`You slowly move $q$ from $A$ to $B$ near a fixed charge $Q$. Which is right?`,
         [md`$W_{\rm you} = q\,[V(B)-V(A)] = -W_{\rm field}$`, md`$W_{\rm you} = q\,[V(A)-V(B)]$`, md`$W_{\rm you} = W_{\rm field}$`, md`$W_{\rm you}$ depends on the path`], 0,
@@ -1110,7 +1111,7 @@
         { figHtml: fE5 }),
       Q(md`Why is there a $\tfrac12$ in $W = \tfrac12\sum_iq_iV_{\text{others}}(\vb r_i)$?`,
         [md`Because the average potential along the path is half the final one`, md`Because only half the field lines end on other charges`, md`Because the energy is shared with the field`, md`Because the sum counts each pair twice: $q_1V_2$ contains the $1$–$2$ pair and so does $q_2V_1$`], 3,
-        [md`That is the reason for the $\tfrac12$ in $\tfrac12CV^2$-type charging, not for this sum.`, md`Not a thing.`, md`Field energy and charge energy are the same energy counted two ways, not shares.`, null],
+        [md`That is the reason for the $\tfrac12$ in $\tfrac12CV^2$-type charging, not for this sum.`, md`Field lines play no role in this sum. The $\tfrac12$ is pure bookkeeping: summing $q_iV_{\text{others}}$ over every $i$ visits each pair twice.`, md`Field energy and charge energy are the same energy counted two ways, not shares.`, null],
         md`$\sum_iq_iV_{\text{others}}(\vb r_i) = \sum_i\sum_{j\ne i}\dfrac{q_iq_j}{4\pi\varepsilon_0r_{ij}}$, where every pair appears as $(i,j)$ and $(j,i)$. Half of it is the sum over pairs.`,
         { figHtml: fE6 }),
       Q(md`A thin shell of radius $R$ carries $Q$. Using $W = \tfrac12\int\sigma V\,da$, which value of $V$ goes in?`,
@@ -1150,7 +1151,7 @@
         { figHtml: fE10 }),
       Q(md`For a charged shell of radius $R$, what fraction of the energy lies beyond $r = 2R$?`,
         [md`$\dfrac14$`, md`$\dfrac18$`, md`$\dfrac12$`, md`$\dfrac34$`], 2,
-        [md`That would be for $u\propto1/r^2$ in volume; here $u\,dV\propto dr/r^2$.`, md`Same mistake with a cube.`, null, md`Inverted: three quarters would be beyond $\tfrac43R$.`],
+        [md`$\left(\tfrac12\right)^2$ assumes the energy beyond $r_1$ falls like $1/r_1^2$. With $u\,d\tau\propto dr/r^2$ it falls like $1/r_1$.`, md`$\left(\tfrac12\right)^3$ assumes the energy beyond $r_1$ falls like $1/r_1^3$. It falls like $1/r_1$.`, null, md`Inverted: three quarters would be beyond $\tfrac43R$.`],
         md`Energy beyond $r_1$: $\dfrac{kQ^2}{2r_1}$. Ratio to $\dfrac{kQ^2}{2R}$ is $R/r_1 = \tfrac12$. Field energy of a point-like charge is spread out over a large volume.`,
         { figHtml: fE11 }),
       Q(md`Concentric shells: $Q_1$ at radius $a$, $Q_2$ at $b>a$. What is the interaction energy?`,
@@ -1170,7 +1171,7 @@
         { figHtml: fE14 }),
       Q(md`Isolated capacitor, $\pm Q$, plate area $A$. The field between the plates is $Q/(\varepsilon_0A)$. Why is the force on one plate $\dfrac{Q^2}{2\varepsilon_0A}$ and not $\dfrac{Q^2}{\varepsilon_0A}$?`,
         [md`Because only half the plate's area faces the other plate`, md`Because the energy formula has a $\tfrac12$`, md`Because a plate feels only the other plate's field, $\dfrac{Q}{2\varepsilon_0A}$ (equivalently the average of the fields on its two sides)`, md`It is $\dfrac{Q^2}{\varepsilon_0A}$`], 2,
-        [md`The whole plate faces the other plate.`, md`That gives the right number by accident of bookkeeping; the physical reason is self-force.`, null, md`That would count the plate pushing on itself.`],
+        [md`The whole plate faces the other plate.`, md`The $\tfrac12$ in the energy counts pairs; it does not tell you which field acts on the plate. The force comes from the field the plate actually feels, which excludes its own.`, null, md`That would count the plate pushing on itself.`],
         md`$F = Q\cdot\dfrac{Q}{2\varepsilon_0A}$. Energy check at fixed $Q$: $W = \dfrac{Q^2x}{2\varepsilon_0A}$, $F = -\dfrac{dW}{dx} = -\dfrac{Q^2}{2\varepsilon_0A}$ (attractive).`,
         { figHtml: fE15 }),
 
@@ -1183,7 +1184,7 @@
 
         **Batteries.** At fixed $V$, for any change: $W_{\rm battery} = 2\,\Delta W_{\rm stored}$ and $W_{\rm you} = -\Delta W_{\rm stored}$.
 
-        **Connecting conductors** always lowers the electrostatic energy (charge flows until the potentials match); the difference goes to heat and radiation in the wire.
+        **Connecting conductors** that sit at different potentials always lowers the electrostatic energy (charge flows until the potentials match); the difference goes to heat and radiation in the wire. If the potentials are already equal, no charge flows and nothing changes.
       `),
       Q(md`A charge $q$ sits at height $d$ above a grounded plane. Why is the energy $-\dfrac{q^2}{4\pi\varepsilon_0(4d)}$ and not $-\dfrac{q^2}{4\pi\varepsilon_0(2d)}$ (the energy of $q$ and its image)?`,
         [md`The image system has field in both half-spaces; the real system has field only above the plane, so the real energy is half`, md`Because the plane absorbs half the energy`, md`Because the image is half the size of $q$`, md`It is $-\dfrac{q^2}{4\pi\varepsilon_0(2d)}$`], 0,
@@ -1276,7 +1277,7 @@
       R(md`
         ### Level 6: harder than the exam
 
-        - The energy of a charge near a conductor is $\tfrac12qV_{\rm induced}$ for grounded **and** for isolated conductors (the conductor's own $\tfrac12\oint\sigma V$ vanishes when it is neutral, or when it is at $V = 0$).
+        - The energy of a charge near a conductor is $\tfrac12qV_{\rm induced}$ for a grounded conductor **and** for an isolated **neutral** one: the conductor's own term $\tfrac12\oint\sigma V\,da = \tfrac12Q_cV_c$ vanishes when $V_c = 0$ or when $Q_c = 0$. An isolated conductor with $Q_c\ne0$ adds $\tfrac12Q_cV_c$.
         - Using the image-pair energy (without the $\tfrac12$) with $F = -dW/dz$ gives **twice** the force.
         - 2-D (line charges): energy per length diverges logarithmically, but differences are finite.
       `),
@@ -1291,8 +1292,8 @@
         md`Her $W$ changes with $a$ twice as fast as the real one, $-\dfrac{q^2}{16\pi\varepsilon_0a}$, because in her picture the image is a real charge whose field energy below the plane also changes. Real: $F = -\dfrac{d}{da}\left(-\dfrac{q^2}{16\pi\varepsilon_0a}\right) = -\dfrac{q^2}{16\pi\varepsilon_0a^2}$.`,
         { figHtml: fE32 }),
       Q(md`A line charge $\lambda$ above a grounded plane is lifted from $h$ to $2h$. What can you say about the energy per length?`,
-        [md`It is infinite before and after, so the work is infinite`, md`The work per length is zero, since the image moves too`, md`The energy per length is finite here (the image cancels the log), and the work to lift is $\dfrac{\lambda^2\ln2}{4\pi\varepsilon_0}$`, md`The work per length is $\dfrac{\lambda^2}{4\pi\varepsilon_0h}$`], 2,
-        [md`A line charge's own field energy diverges at small $s$ (self-energy), but that part does not change as it moves. The change is finite.`, md`The image attracts the line; lifting costs work.`, null, md`That is the force per length times $h$, ignoring that the force falls off as $1/z$.`],
+        [md`It is infinite before and after, so the work is infinite`, md`The work per length is zero, since the image moves too`, md`The self-energy per length is infinite but does not change, the image removes the large-$s$ log, and the work to lift is $\dfrac{\lambda^2\ln2}{4\pi\varepsilon_0}$`, md`The work per length is $\dfrac{\lambda^2}{4\pi\varepsilon_0h}$`], 2,
+        [md`The energy is infinite before and after, but only because of the line's own small-$s$ self-energy, and that part does not change as it moves. The change is finite.`, md`The image attracts the line; lifting costs work.`, null, md`That is the force per length times $h$, ignoring that the force falls off as $1/z$.`],
         md`Far away, the line plus its image form a line dipole, so there is no large-$s$ divergence; the small-$s$ self-energy is infinite but constant. Force per length $\dfrac{\lambda^2}{2\pi\varepsilon_0(2z)}$; work $\int_h^{2h}\dfrac{\lambda^2}{4\pi\varepsilon_0z}dz = \dfrac{\lambda^2\ln2}{4\pi\varepsilon_0}$.`,
         { figHtml: fE33 }),
       Q(md`Two isolated conductors far apart sit at different potentials $V_1\ne V_2$ (charges of either sign). They are connected by a wire. The energy...`,
@@ -1317,7 +1318,7 @@
             - Shell $\tfrac12$, ball $\tfrac35$ (in $kQ^2/R$); a sixth of the ball's energy is inside it.
             - Charge near a conductor: $W = \tfrac12qV_{\rm induced}$. Force is the full image force.
             - Fixed $Q$: $F = -\partial_xW$. Fixed $V$: $F = +\partial_xW$, battery work $= 2\Delta W$. Same force either way.
-            - Pressure $\sigma^2/(2\varepsilon_0)$ outward. Connecting conductors always dissipates energy.
+            - Pressure $\sigma^2/(2\varepsilon_0)$ outward. Connecting conductors at different potentials always dissipates energy.
       `),
     ],
   };
@@ -1393,7 +1394,7 @@
           $$W = \frac{q^2}{4\pi\varepsilon_0a}\left(-\frac23+\frac14-\frac25\right) = -\frac{49}{60}\,\frac{q^2}{4\pi\varepsilon_0a} = -\frac{49q^2}{240\pi\varepsilon_0a}.$$
           The $+q$ pair alone: $\dfrac{q^2}{4\pi\varepsilon_0(4a)} = \dfrac{q^2}{16\pi\varepsilon_0a}$.
 
-          **Meaning:** $W<0$, so the field would do net positive work if you let the charges collapse; the configuration is bound. No self-energies appear: this formula counts pairs only.
+          **Meaning:** $W<0$: this arrangement has less energy than the charges spread out at infinity, so pulling them all apart again would cost you $+\dfrac{49}{60}\,\dfrac{q^2}{4\pi\varepsilon_0a}$. No self-energies appear: this formula counts pairs only.
         `,
       }),
       P({
@@ -1523,7 +1524,7 @@
 
           Fraction: $\dfrac{1/b-1/c}{1/a} = \dfrac12-\dfrac14 = \dfrac14$. Potential: $kQ\left(\dfrac1a-\dfrac1b+\dfrac1c\right)$, lower than $kQ/a$: more capacitance, less energy for the same $Q$.
 
-          **The general rule:** at fixed charges, introducing metal never raises the energy, because it removes field from its own volume (and the charges rearrange to lower it further).
+          **The general rule:** with the other charges held fixed, bringing in an uncharged, isolated piece of metal never raises the energy: it removes the field from its own volume, and its induced charges rearrange to lower the energy further. (Metal that brings its own net charge, or is tied to a battery, needs the full calculation.)
         `,
       }),
 
@@ -1631,7 +1632,7 @@
 
           At $a = 2R$: (i) $-\dfrac{q^2}{6\cdot4\pi\varepsilon_0R}$, (ii) $-\dfrac{q^2}{24\cdot4\pi\varepsilon_0R}$, ratio $\tfrac14$. Integrating the image force from $\infty$ to $a$ reproduces both (checked).
 
-          **Why** $\tfrac12qV_{\rm ind}$ for the neutral sphere: total $W = \tfrac12\left[qV(\vb r_q)+\oint\sigma V_s\,da\right]$; the second term is $\tfrac12V_s\cdot0$. Far away, the neutral sphere's energy falls off as $1/a^4$ (induced dipole), the grounded one as $1/a$.
+          **Why** $\tfrac12qV_{\rm ind}$ for the neutral sphere: total $W = \tfrac12\left[qV(\vb r_q)+\oint\sigma V_s\,da\right]$; the second term is $\tfrac12V_s\cdot0$. Far away, the neutral sphere's energy falls off as $1/a^4$ (induced dipole), the grounded one as $1/a^2$ (induced net charge $-qR/a$ at distance $a$).
         `,
         figs: { img: { svg: fP13sol, cap: 'Images (dashed): the sphere is replaced by them. The center image is present only for the neutral sphere.' } },
       }),

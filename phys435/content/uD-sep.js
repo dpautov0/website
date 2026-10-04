@@ -369,7 +369,7 @@
       Q(md`Pie slice $0<r<b$, $0<\theta<\alpha$: both walls grounded, the arc at $V_0$. The tip $r = 0$ is part of the region. Which product solutions?`,
         [md`$r^{n\pi/\alpha}\sin(n\pi\theta/\alpha)$`, md`$r^{-n\pi/\alpha}\sin(n\pi\theta/\alpha)$`, md`$r^{n}\sin n\theta$`, md`$(A + B\ln r)$ times a constant`], 0,
         [null, md`$r^{-k}$ blows up at the tip, which is inside the region.`,
-          md`$\sin n\theta$ with integer $n$ is for a full circle. It doesn't vanish at $\theta = \alpha$ unless $\alpha$ happens to be $\pi/m$.`,
+          md`$\sin n\theta$ with integer $n$ is for a full circle. Every one of them vanishes at $\theta = \alpha$ only if $\alpha$ is a multiple of $\pi$; for a general opening most of them don't.`,
           md`That's the $k = 0$ piece. Its angular part $C + D\theta$ must vanish at both walls, so it is zero.`],
         md`The walls are the two homogeneous faces facing each other (in the $\theta$ direction), so $\Theta = \sin k\theta$ with $\sin k\alpha = 0$: $k = n\pi/\alpha$. The radial pieces are $r^{\pm k}$, and the tip being in the region kills $r^{-k}$.`,
         { figHtml: WEDGE_PIE }),
@@ -642,7 +642,7 @@
           md`The ramp (B) reaches $V_0$ at $y = a$, where the plate is at $0$: that's a jump too.`],
         md`What matters is the odd extension: a jump in value gives $1/n$, a jump in slope gives $1/n^2$. Constant: $\frac{4V_0}{n\pi}$ (odd $n$). Ramp: $\frac{2V_0}{n\pi}(-1)^{n+1}$. Tent: $\frac{8V_0}{n^2\pi^2}\sin\frac{n\pi}{2}$. One sine: $C_1 = V_0$ and nothing else.`,
         { figHtml: SHAPES.svg }),
-      Q(md`A long box with square cross-section $a\times a$ and depth $c \gg a$ has its lid at $V_0$ and all other faces grounded. Far below the lid (depth $d$ below it, $a \ll d$), $V$ falls like:`,
+      Q(md`A long box with square cross-section $a\times a$ and depth $c \gg a$ has its lid at $V_0$ and all other faces grounded. Far below the lid (depth $d$ below it, $a \ll d$, and still many $a$ above the bottom), $V$ falls like:`,
         [md`$e^{-\pi d/a}$`, md`$e^{-2\pi d/a}$`, md`$e^{-\sqrt2\,\pi d/a}$`, md`$1/d$`], 2,
         [md`That's the 2-D slot. Here the lowest mode is $\sin(\pi x/a)\sin(\pi y/a)$, with two transverse wavenumbers.`,
           md`That would be the $(n, m) = (2, 0)$ wavenumber, which isn't an allowed mode; and even $n$ vanish for a constant lid.`, null,
@@ -673,7 +673,7 @@
         [md`$\sigma$ is negative, but its integral doesn't converge.`,
           md`$\sigma < 0$ everywhere on the wall (it faces a region at higher potential).`, null,
           md`The wall is grounded and faces higher potential, so $\sigma < 0$.`],
-        md`Near the corner where the grounded wall meets the live arc, the region looks like a quarter-plane with walls at $0$ and $V_0$: $\Phi \approx V_0\cdot\frac{\text{angle}}{\pi/2}$, so $E \propto 1/\rho$ and $\int\sigma\,d\rho$ diverges like $\ln\rho$. In the series, $\lambda = -\varepsilon_0\sum C_n[(b/a)^k + (a/b)^k - 2]$, whose terms tend to $4V_0/(n\pi)$: a harmonic series. Partial sums grow by about $1.47\,\varepsilon_0V_0$ per decade of $N$. A real gap of width $g$ makes it finite, $\propto\ln(b/g)$.`,
+        md`Near the corner where the grounded wall meets the live arc, the region looks like a quarter-plane with walls at $0$ and $V_0$: $\Phi \approx V_0\cdot\frac{\text{angle}}{\pi/2}$, so $E \propto 1/\rho$ and $\int\sigma\,d\rho$ diverges like $\ln\rho$. In the series, with $\Phi = \sum C_n\sin k\theta\,[(r/a)^k - (a/r)^k]$ and $C_n = \dfrac{4V_0}{n\pi[(b/a)^k - (a/b)^k]}$, integrating $\sigma = -\dfrac{\varepsilon_0}{r}\partial_\theta\Phi\big|_{\theta=0}$ from $a$ to $b$ gives $\lambda = -\varepsilon_0\sum C_n[(b/a)^k + (a/b)^k - 2]$, whose terms tend to $4V_0/(n\pi)$: a harmonic series. Partial sums grow by about $1.47\,\varepsilon_0V_0$ per decade of $N$. A real gap of width $g$ makes it finite, $\propto\ln(b/g)$.`,
         { figHtml: EXAM }),
       Q(md`Sector $a<r<b$ with $b = 3a$, $\alpha = \pi/3$: wall $\theta = 0$ and the inner arc grounded, wall $\theta = \alpha$ and the outer arc at $V_0$. What is $\Phi$ at $P = (\sqrt3\,a, \pi/6)$?`,
         [md`$V_0/2$, by symmetry`, md`Less than $V_0/2$, because $P$ is nearer the grounded inner arc ($0.73a$ vs $1.27a$)`, md`$V_0/3$`, md`It can't be found without summing the series`], 0,
@@ -748,8 +748,8 @@
   // ================================================================ problem figures
   const P1F = wedge({ al: 45, b: 160, w0: 'V=0', wA: 'V=0', outer: 'V_0\\sin4\\theta', angLab: '\\pi/4' });
   const P1S = wedge({ al: 45, b: 160, w0: '\\#1\\;\\Phi=0', wA: '\\#2\\;\\Phi=0', outer: '\\#4\\;\\Phi=V_0\\sin4\\theta', angLab: '\\pi/4', O: false, extra: (f) => put(f, 0, 0, '\\#3\\;\\Phi\\text{ finite}', ['bl', 'l', 'b'], 6, 'small') });
-  const P2F = wedge({ al: 180, a: 50, b: 120, w0: 'V=0', wA: 'V=0', inner: 'V=0', outer: 'V_0', angLab: '\\pi', ticks: true, pts: [[85, 90, 'P', 'tr']] });
-  const P2S = wedge({ al: 180, a: 50, b: 120, w0: '\\#1', wA: '\\#2', inner: '\\#3', outer: '\\#4\\;\\Phi=V_0', angLab: '\\pi', O: false });
+  const P2F = wedge({ al: 180, a: 55, b: 110, w0: 'V=0', wA: 'V=0', inner: 'V=0', outer: 'V_0', angLab: '\\pi', ticks: true, pts: [[82.5, 90, 'P', 'tr']] });
+  const P2S = wedge({ al: 180, a: 55, b: 110, w0: '\\#1', wA: '\\#2', inner: '\\#3', outer: '\\#4\\;\\Phi=V_0', angLab: '\\pi', O: false });
   const P3F = rbox({ w: 130, h: 130, T: 'V_0\\sin(\\pi x/a)', R: 'V_0\\sin(\\pi y/a)', L: '0', B: '0', xt: 'a', yt: 'a', pts: [[65, 65, 'C', ['br', 'tr']], [65, 97.5, 'P', ['tr', 'br']]] });
   const P3S = PF.row([
     { svg: rbox({ w: 110, h: 110, T: 'V_0\\sin(\\pi x/a)', R: '0', L: '0', B: '0', axes: false }), cap: '$V_A = V_0\\sin\\frac{\\pi x}{a}\\dfrac{\\sinh(\\pi y/a)}{\\sinh\\pi}$' },
@@ -775,7 +775,7 @@
   const P12F = wedge({ al: 90, a: 70, b: 140, w0: 'V=0', wA: 'V=0', inner: 'V=0', outer: 'V_0', angLab: '\\pi/2', ticks: true, bLab: '2a', pts: [[105, 0, 'P', 'tr'], [70, 45, 'Q', 'tr']] });
   const P12S = plt({ w: 280, h: 170, x: [1, 2], y: [-6, 0.5], zero: true, xt: [[1, 'a'], [1.5, '1.5a'], [2, '2a']], yt: [[-2, '-2'], [-4, '-4']], xl: 'r', yl: '\\sigma/(\\varepsilon_0V_0/a)', curves: [{ f: (r) => sigWall(r), from: 1, to: 1.985, n: 200 }], pts: [{ x: 1.5, y: sigWall(1.5), lab: 'P' }] });
   const P13F = wedge({ al: 90, a: 70, b: 140, w0: 'V=0', wA: 'V=0', inner: 'V=0', outerP: [[0, 30, '0'], [30, 60, 'V_0'], [60, 90, '0']], angLab: '\\pi/2', ticks: true, bLab: '2a', pts: [[105, 45, 'P', 'tl']] });
-  const P14F = cyl({ R: 70, lab: [['V_0', 45], ['V=0', 225]], gaps: [0, 90], pts: [[35, 45, 'P']], extra: (f) => { f.line(-90, 0, -72, 0, { cls: 'dim dash thin' }); axis(f, 72, 0, 96, 0, 'x', ['r']); f.line(0, 90, 0, 72, { cls: 'dim dash thin' }); axis(f, 0, -72, 0, -96, 'y', ['t']); } });
+  const P14F = cyl({ R: 70, lab: [['V_0', 45], ['V=0', 225]], gaps: [0, 90, 180, 270], pts: [[35, 45, 'P']], extra: (f) => { f.line(-90, 0, -72, 0, { cls: 'dim dash thin' }); axis(f, 72, 0, 96, 0, 'x', ['r']); f.line(0, 90, 0, 72, { cls: 'dim dash thin' }); axis(f, 0, -72, 0, -96, 'y', ['t']); } });
   const P14S = plt({ w: 280, h: 150, x: [0, 2 * PI], y: [-0.25, 1.25], zero: true, xt: [[PI / 2, '\\pi/2'], [PI, '\\pi'], [2 * PI, '2\\pi']], yt: [[1, 'V_0'], [0.25, '\\tfrac14']], xl: '\\phi', yl: 'V(R,\\phi)', hlines: [[0.25, '']], curves: [{ f: (p) => (p < PI / 2 ? 1 : 0), n: 600 }] });
   const P15F = rbox({ w: 130, h: 130, ins: { L: true, R: true }, L: '\\partial_x V=0', R: '\\partial_x V=0', T: 'V_0\\,x/a', B: '0', xt: 'a', yt: 'a', pts: [[0, 65, 'P', ['r', 'tr']], [130, 65, 'Q', ['l', 'tl']], [65, 65, 'C', ['tr', 'br']]] });
   const P16F = wedge({ al: 90, a: 70, b: 140, w0: 'V=0', wA: 'V=0', inner: 'V=0', outer: 'V_0', angLab: '\\pi/2', ticks: true, bLab: '2a', rays: [45], pts: [[105, 45, 'P_1', 'tl'], [133, 45, 'P_2', 'tl']] });
@@ -1085,7 +1085,7 @@
           { lbl: md`(a) $c_1/V_0$`, ans: -0.63662, unit: '' },
           { lbl: md`(b) $\Phi(P)/V_0$`, ans: 0.34404, unit: '' },
           { lbl: md`(c) As $r\to\infty$`, mc: [md`$0$`, md`$V_0/2$ everywhere`, md`$V_0\theta/\alpha$`, md`It grows like $\ln r$`], a: 2,
-            why: [md`The live wall runs out to infinity; $\Phi$ can't vanish there.`, md`Only on the bisector.`, null, md`The $k = 0$ radial piece $\ln r$ needs $\theta$-independent data; here the walls already fix the $k = 0$ piece as $V_0\theta/\alpha$.`] },
+            why: [md`The live wall runs out to infinity; $\Phi$ can't vanish there.`, md`Only on the bisector.`, null, md`A $\ln r$ term would violate BC #4 (finite as $r\to\infty$), and the walls, which hold $0$ and $V_0$ at every $r$, fix the $k = 0$ piece as $V_0\theta/\alpha$ with no $r$ dependence.`] },
         ],
         sol: md`
           **Region** $r>a$, $0<\theta<\pi/2$. **BCs:** 1. $\Phi(r,0) = 0$; 2. $\Phi(r,\pi/2) = V_0$; 3. $\Phi(a,\theta) = 0$; 4. $\Phi$ finite as $r\to\infty$.
@@ -1164,7 +1164,7 @@
           { lbl: md`(b) $V_L(C)/V_0$`, ans: 0.054885, unit: '' },
           { lbl: md`(c) $V_T(C)/V_0$`, ans: 0.89023, unit: '' },
           { lbl: md`(d) $V(C)/V_0$`, ans: 0.94512, unit: '' },
-          { lbl: md`(e) For one long side at $V_0$ (the rest grounded), the center value $T$ and the short-side value $S$ satisfy`, mc: [md`$T + S = V_0/2$`, md`$T = S = V_0/4$`, md`$T + S = V_0$`, md`$T - S = V_0/2$`], a: 0,
+          { lbl: md`(e) Let $T$ be the center value with one long side at $V_0$ (the rest grounded), and $S$ the center value with one short side at $V_0$. They satisfy`, mc: [md`$T + S = V_0/2$`, md`$T = S = V_0/4$`, md`$T + S = V_0$`, md`$T - S = V_0/2$`], a: 0,
             why: [null, md`That's the square. The long sides are closer to C.`, md`There are two of each: $2T + 2S = V_0$.`, md`No symmetry gives a difference.`] },
         ],
         sol: md`
@@ -1335,7 +1335,7 @@
 
           [[fig:ps]]
 
-          **Rule:** the terms fall like $(r/b)^{\pi n/\alpha}/n$, so the count grows like $1/\ln(b/r)$ as the point approaches the live face. Right on the arc you'd need hundreds of terms, and near its corners convergence fails (Gibbs). An exam answer at a point well inside: one or two terms, and say how big the next one is.
+          **Rule:** the terms fall like $(r/b)^{\pi n/\alpha}/n$, so the count grows like $1/\ln(b/r)$ as the point approaches the live face. Right on the arc the damping is gone: $32$ nonzero terms at $\theta = \pi/4$, more toward the corners, and next to the corners the overshoot never goes away (Gibbs). An exam answer at a point well inside: one or two terms, and say how big the next one is.
         `,
         figs: { ps: { svg: P16S, cap: 'Partial sums vs the number of nonzero terms $N$, with the full values dashed.' } },
       }),
