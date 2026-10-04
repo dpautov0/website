@@ -371,6 +371,11 @@
   })();
   const PIPE_HALF = cyl({ R: 58, lab: [['+V_0', 60], ['-V_0', 300]], extra: (f) => { f.dot(-58, 0, 2.6); f.dot(58, 0, 2.6); } });
 
+  // extra setup figures for the added conceptual MCs (lesson 1)
+  const HALFANN = wedge({ al: 180, a: 40, b: 120, w0: 'V=0', wA: 'V=0', inner: 'V=0', outer: 'V_0', O: false, angLab: '\\pi' });
+  const RHALF = cyl({ R: 58, lab: [['V_0', 30], ['V=0', 150]], extra: (f) => { f.dot(0, -58, 2.6); f.dot(0, 58, 2.6); } });
+  const CIRC_HALF = cyl({ R: 60, lab: [['V(R,\\phi)', 40]], extra: (f) => { f.pl(f.arcPts(0, 0, 30, 30, 0, 360), { cls: 'dim dash thin' }); const p = pol(30, 235); put(f, p[0], p[1], 's=R/2', ['bl', 'b', 'l'], 4, 'small'); } });
+
   // ================================================================ Lesson 1
   const L1 = {
     id: 'uW-polar', title: 'Laplace in polar coordinates (no z dependence)',
@@ -493,6 +498,26 @@
         md`$s\,\frac{dR}{ds} = -3s^{-3}$, then $s\,\frac{d}{ds}(-3s^{-3}) = 9s^{-3} = 3^2\,s^{-3}$. So $s^{-3}$ is the decaying partner of $s^3$ for $k = 3$.`,
         { nofig: 'pure algebra on the radial ODE' }),
 
+      Q(md`Which of these is **not** a solution of Laplace's equation in plane polar coordinates?`,
+        [md`$s^2\cos2\phi$`, md`$s^2\cos\phi$`, md`$\dfrac{\sin\phi}{s}$`, md`$\ln s$`],
+        1,
+        [md`The power and the angular frequency match: $s^{k}\cos k\phi$ with $k = 2$. It is $x^2 - y^2$, a harmonic polynomial.`,
+          null,
+          md`$s^{-1}\sin\phi$ is $s^{-k}\sin k\phi$ with $k = 1$, the 2-D dipole. It solves Laplace wherever $s \ne 0$.`,
+          md`$\ln s$ is the $k = 0$ radial solution: $\frac1s\frac{d}{ds}\left(s\cdot\frac1s\right) = 0$.`],
+        md`The power of $s$ and the angular frequency must match: $s^{\pm k}$ goes with $\cos k\phi$ and $\sin k\phi$. For $s^2\cos\phi$ the radial part gives $\frac1s\partial_s(s\cdot2s\cos\phi) = 4\cos\phi$ and the angular part gives $\frac{1}{s^2}\partial_\phi^2(s^2\cos\phi) = -\cos\phi$, so $\nabla^2V = 3\cos\phi \ne 0$. A mismatched pair means you forgot that both separated equations share the same $k$.`,
+        { nofig: 'pure algebra: which functions are harmonic' }),
+
+      Q(md`Write $s^2\cos2\phi$ in Cartesian coordinates.`,
+        [md`$x^2 + y^2$`, md`$2xy$`, md`$x^2 - y^2$`, md`$x^2$`],
+        2,
+        [md`$x^2 + y^2 = s^2$ has no angular part, and $\nabla^2(x^2+y^2) = 4 \ne 0$: it is not harmonic.`,
+          md`$2xy = s^2\sin2\phi$, the sine partner.`,
+          null,
+          md`$\nabla^2 x^2 = 2 \ne 0$. And $x^2 = s^2\cos^2\phi$ contains a $k = 0$ piece.`],
+        md`$s^2\cos2\phi = s^2(\cos^2\phi - \sin^2\phi) = x^2 - y^2$. The inside solutions $s^k\cos k\phi$ and $s^k\sin k\phi$ are the real and imaginary parts of $(x + iy)^k$: $x$, $y$, $x^2 - y^2$, $2xy$, ... Seeing them as polynomials tells you at once that they are smooth on the axis, which is why the inside of a pipe keeps $s^{+k}$.`,
+        { nofig: 'pure algebra: coordinate conversion' }),
+
       RF(md`
         ### The $k = 0$ solutions: $\ln s$ and $\phi$
 
@@ -554,6 +579,32 @@
         md`$\frac1s\partial_s(s\,\partial_s(\phi\ln s)) = \frac1s\partial_s(\phi) = 0$ and $\frac{1}{s^2}\partial_\phi^2(\phi\ln s) = 0$. It rarely appears in exam answers, but you should know it is there when the wedge walls are at different potentials **and** the potential varies along them like $\ln s$.`,
         { nofig: 'pure algebra on the k = 0 solutions' }),
 
+      Q(md`Why do the $k = 0$ solutions have to be worked out separately?`,
+        [md`For $k = 0$ the trial power gives $\lambda^2 = 0$, a double root: $s^0$ twice. The missing second solution is $\ln s$ (and $\phi$ for the angle)`,
+          md`Because $k = 0$ is never allowed by the boundary conditions`,
+          md`Because $\cos(0\cdot\phi) = 1$ does not solve the angular equation`,
+          md`Because $\ln s$ is infinite at $s = 0$, so it must be handled with a limit`],
+        0,
+        [null,
+          md`$k = 0$ is often essential: the coax ($a_0 + b_0\ln s$) and two plates at different potentials ($V_0\phi/\alpha$) are pure $k = 0$.`,
+          md`$\Psi = 1$ does solve $\Psi'' = 0$. The trouble is that $\Psi'' = 0$ has a second solution, $\phi$, which $\cos$ and $\sin$ don't produce.`,
+          md`Blowing up at the axis decides when you **drop** $\ln s$, not why it appears. It comes from solving $(sR')' = 0$.`],
+        md`A second-order ODE needs two independent solutions. For $k\ne0$ they are $s^{k}$ and $s^{-k}$ (and $\cos k\phi$, $\sin k\phi$). At $k = 0$ both pairs collapse ($s^{\pm0} = 1$, $\sin 0 = 0$), so solve directly: $(sR')' = 0 \Rightarrow R = C + D\ln s$, and $\Psi'' = 0 \Rightarrow \Psi = A + B\phi$. Forgetting this case is the most common way to lose the coax or the two-plate answer.`,
+        { nofig: 'about the ODE, not a geometry' }),
+
+      Q(md`A student combines terms from different families and writes $V = \ln s\,\cos\phi$. Is it a solution of Laplace's equation?`,
+        [md`Yes: $\ln s$ and $\cos\phi$ each appear in the general solution`,
+          md`Yes, but only away from the axis`,
+          md`No, because $\ln s$ is not allowed when the region wraps around`,
+          md`No: $\ln s$ belongs to $k = 0$ and $\cos\phi$ to $k = 1$; the product leaves $\nabla^2 V = -\dfrac{\ln s\cos\phi}{s^2}$`],
+        3,
+        [md`Appearing in the general solution separately doesn't make every product a solution. Only $R_k(s)\Psi_k(\phi)$ with the **same** $k$ work.`,
+          md`Away from the axis it still fails: $\nabla^2V = -\ln s\cos\phi/s^2 \ne 0$ at a generic point.`,
+          md`$\ln s$ is single-valued and is allowed around a full circle (it carries net charge). The problem is the mismatch with $\cos\phi$.`,
+          null],
+        md`The radial part is $\frac1s\partial_s\left(s\cdot\frac{\cos\phi}{s}\right) = 0$, the angular part is $\frac{1}{s^2}\partial_\phi^2(\ln s\cos\phi) = -\frac{\ln s\cos\phi}{s^2}$. They don't cancel. Each separated product uses one $k$ for both factors: $1$ and $\ln s$ go with $1$ and $\phi$; $s^{\pm1}$ go with $\cos\phi$ and $\sin\phi$.`,
+        { nofig: 'pure algebra on a trial function' }),
+
       RF(md`
         ### Who decides $k$? The region, or the walls
 
@@ -600,6 +651,32 @@
         md`$k = n\pi/\alpha = n/2$. The half-integer modes $\sin(\phi/2)$, $\sin(3\phi/2),\dots$ are new. Near the edge the lowest one dominates, $V \propto s^{1/2}\sin(\phi/2)$, so $E \propto s^{-1/2}$: the field **diverges** at a sharp edge. The next lesson shows why.`,
         { figHtml: SLIT }),
 
+      Q(md`A half-annulus $a<s<b$, $0<\phi<\pi$: the flat edges (both halves of the diameter) and the inner arc are grounded, and the outer arc is at $V_0$. The allowed $k$ turn out to be integers. Why?`,
+        [md`Because the region goes all the way around the axis`,
+          md`Because the grounded walls at $\phi = 0$ and $\phi = \alpha = \pi$ give $k = n\pi/\alpha = n$`,
+          md`Because every polar problem has integer $k$`,
+          md`Because the outer arc is at a constant potential`],
+        1,
+        [md`It only goes halfway round. Single-valuedness plays no part here; the walls quantize $k$.`,
+          null,
+          md`A $60^\circ$ wedge has $k = 3, 6, 9, \dots$ and the outside of a right-angle edge has $k = \tfrac23, \tfrac43, \dots$ Integers are special.`,
+          md`The arc's data fix the coefficients by Fourier's trick. They don't decide which $k$ are allowed.`],
+        md`Same rule as every wedge: $\Psi(0) = 0$ kills $\cos k\phi$, and $\sin k\pi = 0$ gives $k = n$. The integers come from $\alpha = \pi$, not from going around. The difference shows in the angular functions: only $\sin n\phi$ here, while a full annulus keeps both $\cos n\phi$ and $\sin n\phi$.`,
+        { figHtml: HALFANN }),
+
+      Q(md`For a full pipe, a student tries the angular function $\cos(\phi/2)$. What goes wrong?`,
+        [md`Nothing: $k = \tfrac12$ is allowed whenever the pipe is grounded`,
+          md`$\cos(\phi/2)$ does not solve $\Psi'' = -k^2\Psi$`,
+          md`$\cos\!\left(\dfrac{\phi + 2\pi}{2}\right) = -\cos\dfrac{\phi}{2}$: going once around flips the sign, so $V$ would have two values at the same point`,
+          md`The radial partner $s^{1/2}$ blows up on the axis`],
+        2,
+        [md`Half-integer $k$ needs a cut: a grounded sheet you can't cross (the wedge of angle $2\pi$). A full pipe has no cut.`,
+          md`It does solve it, with $k = \tfrac12$. The failure is periodicity, not the ODE.`,
+          null,
+          md`$s^{1/2} \to 0$ at the axis, which is finite. That isn't the issue.`],
+        md`Around a full circle $V(s,\phi + 2\pi) = V(s,\phi)$, and $\cos k\phi$ satisfies this only for integer $k$. With $k = \tfrac12$ the potential would jump across the ray $\phi = 0$, which can't happen in empty space. Half-integers are right only when a grounded sheet along that ray makes it a boundary, as in the slit problem.`,
+        { figHtml: cyl({ R: 50, lab: [['V(R,\\phi)', 40]], phi: 130, phiR: 18 }) }),
+
       Q(md`A pipe's surface is held at $V(R,\phi) = V_0$ for $0<\phi<\pi$ and $-V_0$ for $\pi<\phi<2\pi$ (two insulated halves). Which angular functions appear?`,
         [md`$\sin k\phi$ with $k = 1, 3, 5, \dots$ only`,
           md`$\cos k\phi$ with $k$ odd`,
@@ -642,6 +719,42 @@
           null],
         md`The tip is in the region, $V$ is finite there, so $s^{-k}$ is out. This is the polar version of "inside a sphere, drop $r^{-(\ell+1)}$".`,
         { figHtml: wedge({ al: 60, a: 0, b: 140, w0: 'V=0', wA: 'V=0', outer: 'V_0', ticks: true }) }),
+
+      Q(md`The region is the inside of a circle (the axis is in it). Which of the $k = 0$ functions $1$, $\ln s$, $\phi$, $\phi\ln s$ survive?`,
+        [md`Only $1$`, md`$1$ and $\ln s$`, md`$1$ and $\phi$`, md`All four`],
+        0,
+        [null,
+          md`$\ln s \to -\infty$ on the axis, which is in the region. (It would mean a line charge on the axis, and the region is empty.)`,
+          md`$\phi$ is not single-valued around the full circle.`,
+          md`$\phi$ and $\phi\ln s$ fail single-valuedness, and $\ln s$ and $\phi\ln s$ blow up on the axis.`],
+        md`Two filters: the axis (finiteness) removes $\ln s$ and $\phi\ln s$; going around (single-valuedness) removes $\phi$ and $\phi\ln s$. Only the constant is left, which is why the center of a pipe sits at the average of its boundary values.`,
+        { figHtml: region('disk') }),
+
+      Q(md`The region is everything outside a circle of radius $R$, there is no net charge per length, and $V$ stays bounded far away. Which form is right?`,
+        [md`$a_0 + b_0\ln s + \sum_k s^{k}(\dots)$`,
+          md`$\sum_k s^{-k}(\dots)$, with $a_0 = 0$ necessarily`,
+          md`$\sum_k (s^{k} + s^{-k})(\dots)$`,
+          md`$a_0 + \sum_k s^{-k}\left(c_k\cos k\phi + d_k\sin k\phi\right)$`],
+        3,
+        [md`$s^k$ grows without bound far away, and $\ln s$ needs net charge. Both are out.`,
+          md`In 2-D nothing forces $a_0 = 0$: a constant is a solution and stays bounded. A pipe at $V_0(2+\sin3\phi)$ has $V\to 2V_0$ far away.`,
+          md`Keeping both powers is for an annulus. Here infinity is in the region.`,
+          null],
+        md`Infinity in the region kills $s^{k}$; no net charge kills $\ln s$ (its coefficient is $-\lambda/(2\pi\varepsilon_0)$); single-valuedness kills $\phi$. What remains is a constant plus decaying multipoles. If a uniform field is imposed, add the one allowed growing term $-E_0s\cos\phi$.`,
+        { figHtml: region('ext') }),
+
+      Q(md`A long wire carries charge $\lambda>0$ per unit length and nothing else is around. What does $V$ do as $s\to\infty$?`,
+        [md`$V\to0$, as in 3-D`,
+          md`$V\to$ a constant`,
+          md`$V \approx -\dfrac{\lambda}{2\pi\varepsilon_0}\ln s + \text{const}$, which decreases without bound`,
+          md`$V$ falls off like $1/s$`],
+        2,
+        [md`You can't set $V = 0$ at infinity in 2-D when $\lambda\ne0$: $\ln s$ never levels off.`,
+          md`A constant far away means zero net charge per length. Gauss's law needs $E_s = \lambda/(2\pi\varepsilon_0s)$, whose integral is a logarithm.`,
+          null,
+          md`$1/s$ is the potential of a 2-D dipole ($k = 1$). The net-charge term is $k = 0$: $\ln s$.`],
+        md`$E_s = \dfrac{\lambda}{2\pi\varepsilon_0s}$ integrates to $-\dfrac{\lambda}{2\pi\varepsilon_0}\ln s$. The reference point has to be at a finite distance (often the wire's surface). This is why the "infinity in the region" row of the table keeps $\ln s$ only when there is net charge.`,
+        { figHtml: cyl({ R: 20, axes: false, shell: true, lab: [['\\lambda', 45]], pts: [[70, 20, 's']] }) }),
 
       Q(md`A wedge of opening $\alpha$ runs from an inner arc at $s = a$ out to infinity, with $V \to 0$ far away. Which radial function goes with $\sin(n\pi\phi/\alpha)$?`,
         [md`$s^{n\pi/\alpha}$`, md`$s^{n\pi/\alpha} - a^{2n\pi/\alpha}s^{-n\pi/\alpha}$`, md`$\ln(s/a)$`, md`$s^{-n\pi/\alpha}$`],
@@ -690,6 +803,97 @@
         { figHtml: cyl({ R: 70, a: 30, aMetal: true, outerMetal: true, lab: [['V_2', 40]], aLab: [['V_1', 130]] }) }),
 
       RF(md`
+        ### Reading the modes off the boundary data
+
+        On a full circle you rarely need the Fourier integrals. Rewrite the boundary function as a sum of $\cos k\phi$ and $\sin k\phi$ with trig identities, or use its symmetries to see which coefficients vanish:
+
+        - even in $\phi$ ($\phi\to-\phi$) ⇒ cosines only; odd ⇒ sines only;
+        - unchanged under a half-turn ($\phi\to\phi+\pi$) ⇒ even $k$ only; sign flip under a half-turn ⇒ odd $k$ only;
+        - nonzero average ⇒ a constant $a_0$.
+
+        Each mode then gets its own radial power: $(s/R)^k$ inside, $(R/s)^k$ outside.
+      `),
+
+      Q(md`A pipe's surface is held at $V(R,\phi) = V_0\sin^2\phi$. Which terms appear in $V$ inside?`,
+        [md`Only $k = 2$: $(s/R)^2\sin2\phi$`,
+          md`A constant and $(s/R)^2\cos2\phi$`,
+          md`$k = 1$ and $k = 2$`,
+          md`A constant and all even $k$`],
+        1,
+        [md`$\sin^2\phi$ is not $\sin2\phi$. Use $\sin^2\phi = \tfrac12 - \tfrac12\cos2\phi$: a constant plus a **cosine**.`,
+          null,
+          md`$\sin^2\phi$ is unchanged by $\phi\to\phi+\pi$, so no odd $k$ can appear.`,
+          md`The identity has exactly two terms. Fourier's trick gives zero for $k = 4, 6, \dots$`],
+        md`$V_0\sin^2\phi = \tfrac{V_0}{2} - \tfrac{V_0}{2}\cos2\phi$, so $V_{\text{in}} = \tfrac{V_0}{2} - \tfrac{V_0}{2}\left(\tfrac sR\right)^2\cos2\phi$. Always try a trig identity before integrating: products and powers of $\sin$ and $\cos$ are finite Fourier sums.`,
+        { figHtml: cyl({ R: 56, lab: [['V_0\\sin^2\\phi', 40]] }) }),
+
+      Q(md`The pipe is held at $V(R,\phi) = V_0\cos^3\phi$. Which $k$ appear?`,
+        [md`$k = 3$ only`, md`$k = 0$, $1$, $2$ and $3$`, md`All odd $k$`, md`$k = 1$ and $k = 3$`],
+        3,
+        [md`$\cos^3\phi$ is not $\cos3\phi$: $\cos^3\phi = \tfrac34\cos\phi + \tfrac14\cos3\phi$.`,
+          md`$\cos^3\phi$ flips sign under $\phi\to\phi+\pi$, so even $k$ (including the constant) are absent.`,
+          md`Odd-only is right, but the series stops: a cube of $\cos\phi$ contains nothing above $k = 3$.`,
+          null],
+        md`$\cos3\phi = 4\cos^3\phi - 3\cos\phi$, so $\cos^3\phi = \tfrac34\cos\phi + \tfrac14\cos3\phi$. Inside: $V_0\left[\tfrac34\tfrac sR\cos\phi + \tfrac14\left(\tfrac sR\right)^3\cos3\phi\right]$. Near the axis the $k = 1$ part wins, so the field there is uniform, $-\tfrac{3V_0}{4R}\hat{\mathbf x}$.`,
+        { figHtml: cyl({ R: 56, lab: [['V_0\\cos^3\\phi', 40]] }) }),
+
+      Q(md`The pipe is held at $V(R,\phi) = V_0\sin\phi\cos\phi$. What is $V$ inside?`,
+        [md`$\dfrac{V_0}{2}\left(\dfrac sR\right)^2\sin2\phi$`, md`$V_0\dfrac sR\sin\phi\cos\phi$`, md`$\dfrac{V_0}{2}\,\dfrac sR\,\sin2\phi$`, md`$\dfrac{V_0}{2} + \dfrac{V_0}{2}\left(\dfrac sR\right)^2\cos2\phi$`],
+        0,
+        [null,
+          md`Multiplying the boundary function by $s/R$ doesn't make a solution. The power must match the mode: $\sin\phi\cos\phi = \tfrac12\sin2\phi$ is $k = 2$, so it needs $(s/R)^2$.`,
+          md`Right mode, wrong power: $k = 2$ goes with $s^2$.`,
+          md`That is $V_0\cos^2\phi$. $\sin\phi\cos\phi$ has no constant part and is a sine.`],
+        md`$\sin\phi\cos\phi = \tfrac12\sin2\phi$: one mode, $k = 2$ sine. Inside, $V = \tfrac{V_0}{2}(s/R)^2\sin2\phi = \tfrac{V_0}{R^2}xy$, a saddle. Outside it would be $\tfrac{V_0}{2}(R/s)^2\sin2\phi$.`,
+        { figHtml: cyl({ R: 56, lab: [['V_0\\sin\\phi\\cos\\phi', 40]] }) }),
+
+      Q(md`The pipe is held at $V(R,\phi) = V_0|\sin\phi|$. Which Fourier terms appear?`,
+        [md`$\sin k\phi$ with odd $k$`, md`$k = 1$ only`, md`A constant and $\cos k\phi$ with even $k$`, md`All $\cos k\phi$ and $\sin k\phi$`],
+        2,
+        [md`$|\sin\phi|$ is even under $\phi\to-\phi$, so it has no sine terms at all.`,
+          md`$|\sin\phi|$ is not $\sin\phi$: it is never negative, so it has a nonzero average, and it has kinks at $\phi = 0, \pi$ that one mode can't make.`,
+          null,
+          md`Two symmetries remove most of them: evenness in $\phi$ kills the sines, and $|\sin(\phi+\pi)| = |\sin\phi|$ kills odd $k$.`],
+        md`Even in $\phi$ ⇒ cosines only. Unchanged under $\phi\to\phi+\pi$ ⇒ even $k$ only. The average is $\tfrac{2V_0}{\pi}$, so $V(R,\phi) = \tfrac{2V_0}{\pi} - \tfrac{4V_0}{\pi}\left(\tfrac{\cos2\phi}{3} + \tfrac{\cos4\phi}{15} + \dots\right)$. Reading the symmetries first tells you which integrals are zero before you do any.`,
+        { figHtml: cyl({ R: 56, lab: [['V_0|\\sin\\phi|', 40]] }) }),
+
+      Q(md`A pipe is split into two insulated halves: $V = V_0$ on the right half ($-\pi/2<\phi<\pi/2$) and $V = 0$ on the left half. Which terms appear?`,
+        [md`$\sin k\phi$ with odd $k$, as for the $\pm V_0$ split`,
+          md`$\cos k\phi$ with odd $k$, and no constant`,
+          md`A constant and all $\cos k\phi$`,
+          md`The constant $V_0/2$ and $\cos k\phi$ with odd $k$`],
+        3,
+        [md`These data are even in $\phi$ (the right half is symmetric about the $x$-axis), so no sines. The $\pm V_0$ split was odd.`,
+          md`The average is $V_0/2$, not zero. You need the constant.`,
+          md`$V - V_0/2$ flips sign under $\phi\to\phi+\pi$, so the even $k\ge2$ vanish.`,
+          null],
+        md`Write $V = \tfrac{V_0}{2} + \left(V - \tfrac{V_0}{2}\right)$. The second piece is $\pm V_0/2$: even in $\phi$ (cosines) and odd under a half-turn (odd $k$). Fourier gives $A_k = \tfrac{2V_0}{k\pi}\sin\tfrac{k\pi}{2}$: $\tfrac{2V_0}{\pi}$, $-\tfrac{2V_0}{3\pi}$, $\tfrac{2V_0}{5\pi}$, ...`,
+        { figHtml: RHALF }),
+
+      Q(md`A pipe is held at $V_0(\cos\phi + \cos2\phi)$. Close to the axis, which part controls the field?`,
+        [md`The $\cos2\phi$ part, because higher modes have more structure`,
+          md`The $\cos\phi$ part: it goes as $s/R$, while the $\cos2\phi$ part goes as $(s/R)^2$, which is much smaller near the axis`,
+          md`Both equally, since they have the same amplitude on the pipe`,
+          md`Neither: the field is zero on the axis`],
+        1,
+        [md`Higher modes are **weaker** inside: each extra power of $s/R$ suppresses them more toward the axis.`,
+          null,
+          md`Equal on the pipe, but inside they scale differently: $s/R$ versus $(s/R)^2$.`,
+          md`The $k = 1$ term gives a uniform field $-\tfrac{V_0}{R}\hat{\mathbf x}$, which is nonzero on the axis.`],
+        md`$V_{\text{in}} = V_0\left[\tfrac sR\cos\phi + \left(\tfrac sR\right)^2\cos2\phi\right]$. Near the axis the field is the uniform $k = 1$ field, $-\tfrac{V_0}{R}\hat{\mathbf x}$, plus a correction proportional to $s$. Far outside the same ordering holds: $R/s$ beats $(R/s)^2$. The lowest mode present always dominates far from the boundary that drives it.`,
+        { figHtml: cyl({ R: 56, lab: [['V_0(\\cos\\phi+\\cos2\\phi)', 40]] }) }),
+
+      Q(md`Inside a pipe, $V = 3 + 2\dfrac sR\cos\phi - \left(\dfrac sR\right)^2\sin2\phi$ (in volts). What is the average of $V$ around the circle $s = R/2$?`,
+        [md`$3$ V`, md`$4$ V`, md`$3.75$ V`, md`It depends on where you start on the circle`],
+        0,
+        [null,
+          md`That adds the $k = 1$ amplitude at $s = R/2$. Every $\cos k\phi$ and $\sin k\phi$ averages to zero around a full circle.`,
+          md`The $k = 2$ term averages to zero too; only the constant survives the average.`,
+          md`An average over a full circle doesn't depend on the starting point.`],
+        md`$\frac{1}{2\pi}\oint\cos k\phi\,d\phi = 0$ for $k \ge 1$, so the average on any circle $s<R$ is $a_0 = 3$ V, the value at the center. In a charge-free region with no $\ln s$ term, the average on a circle doesn't depend on its radius: the 2-D mean-value property.`,
+        { figHtml: CIRC_HALF }),
+
+      RF(md`
         ### The same logic in three coordinate systems
 
         [[fig:cmp]]
@@ -733,6 +937,26 @@
           md`Infinity kills $s^{k}$: again the semi-infinite case.`],
         md`Two radial boundaries means two radial conditions, so you need both independent solutions. The combination $(s/a)^k - (a/s)^k$ that vanishes at $s = a$ is the polar version of $\sinh k(x)$, vanishing at $x = 0$. In fact $(s/a)^k - (a/s)^k = 2\sinh(k\ln(s/a))$.`,
         { figHtml: wedge({ al: 55, a: 45, b: 140, w0: 'V=0', wA: 'V=0', inner: 'V=0', outer: 'V_0' }) }),
+
+      Q(md`Substitute $u = \ln s$ (so $s\,\dfrac{d}{ds} = \dfrac{d}{du}$) into the radial equation $s\dfrac{d}{ds}\!\left(s\dfrac{dR}{ds}\right) = k^2R$. What do you get?`,
+        [md`$\dfrac{d^2R}{du^2} = k^2R$`, md`$\dfrac{d^2R}{du^2} = -k^2R$`, md`$\dfrac{d^2R}{du^2} + \dfrac{dR}{du} = k^2R$`, md`$\dfrac{dR}{du} = kR$`],
+        0,
+        [null,
+          md`The sign stays: the radial equation has $+k^2$. With $-k^2$ you would get $\cos(k\ln s)$, the case where the radial direction oscillates.`,
+          md`That is what the **spherical** operator $\frac{d}{dr}\left(r^2\frac{dR}{dr}\right)$ becomes with $u = \ln r$. The extra first derivative is why its roots are $\ell$ and $-(\ell+1)$.`,
+          md`The equation is second order; $s\frac{d}{ds}$ appears twice.`],
+        md`$s\frac{d}{ds}$ is exactly $\frac{d}{du}$, so $s\frac{d}{ds}\left(s\frac{dR}{ds}\right) = \frac{d^2R}{du^2}$. The radial equation is the slot's $X'' = k^2X$ in the variable $\ln s$. So $R = e^{\pm ku} = s^{\pm k}$, or equally $\cosh(k\ln s)$ and $\sinh(k\ln s)$. Every slot trick ($\sinh$ that vanishes at one end, $\cosh$ symmetric about the middle) has a polar twin with $x \to \ln s$.`,
+        { nofig: 'change of variable in the radial ODE' }),
+
+      Q(md`The $k\ne0$ radial solution $\dfrac{\sinh(k\ln s)}{k} = \dfrac{s^k - s^{-k}}{2k}$ is perfectly good for any $k>0$. What does it become as $k\to0$?`,
+        [md`$0$`, md`$1$`, md`$\ln s$`, md`$s$`],
+        2,
+        [md`The numerator goes to $0$, but so does the denominator $2k$. Expand before taking the limit.`,
+          md`That is the limit of $\cosh(k\ln s)$, the other solution.`,
+          null,
+          md`$s$ is not a $k = 0$ solution at all: $s\frac{d}{ds}\left(s\cdot1\right) = s \ne 0$.`],
+        md`$s^{\pm k} = e^{\pm k\ln s} \approx 1 \pm k\ln s$, so $\frac{s^k - s^{-k}}{2k} \to \ln s$, just as $\frac{\sinh kx}{k} \to x$. The $\ln s$ that the power trick seemed to miss is the limit of the $\sinh$-type combination: the $k = 0$ case is not an exception but the end of the family.`,
+        { nofig: 'a limit of the radial functions' }),
 
       Q(md`For the sphere the radial solutions are $r^\ell$ and $r^{-(\ell+1)}$, not $r^{\pm\ell}$. Why the asymmetry, when polar gives the symmetric $s^{\pm k}$?`,
         [md`Spheres have a different charge distribution`,
@@ -924,6 +1148,15 @@
       { f: (r) => examPhi(r, PI / 4, PI / 2, 2, 1), cls: 'dash', lab: '\\text{first term}', labAt: 1.4, sides: ['tl', 't', 'l'] },
     ], pts: [{ x: 1.5, y: examPhi(1.5, PI / 4, PI / 2, 2, 401) }] });
 
+  // extra setup figures for the added conceptual MCs (lesson 2)
+  const NOTCH45 = wedge({ al: 45, a: 0, b: 120, open: true, L: 120, w0: '\\text{metal}', wA: '\\text{metal}', angLab: '\\pi/4' });
+  const W120 = wedge({ al: 120, a: 0, b: 120, open: true, L: 120, w0: '\\text{metal}', wA: '\\text{metal}', angLab: '2\\pi/3' });
+  const HALFARC = wedge({ al: 60, a: 55, b: 165, inner: '0', w0: '0', wA: '0', outer: 'V_0', outerAt: 14, ticks: true,
+    extra: (f) => { const g = pol(165, 30); f.dot(g[0], g[1], 2.4); const p = pol(174, 47); put(f, p[0], p[1], '0', sidesToward(47), 6, 'small'); } });
+  const HUMP = wedge({ al: 60, a: 55, b: 165, inner: '0', w0: '0', wA: '0', outer: 'f(\\theta)', ticks: true });
+  const COSARC = wedge({ al: 60, a: 55, b: 165, inner: '0', w0: '0', wA: '0', outer: 'V_0\\cos(\\pi\\theta/\\alpha)', ticks: true });
+  const TWOV = wedge({ al: 55, a: 0, r0: 8, open: true, L: 160, w0: '\\Phi=V_1', wA: '\\Phi=V_2', O: false, angLab: '\\alpha' });
+
   // ================================================================ Lesson 2
   const L2 = {
     id: 'uW-wedge', title: 'Wedges and sectors',
@@ -1062,6 +1295,16 @@
         md`The zeros of $\sin$ are at multiples of $\pi$. With walls at $0$ and $\alpha$, the half-wavelengths must fit: $n$ half-waves in an angle $\alpha$. A full circle has no walls; there $k$ is fixed by $2\pi$-periodicity instead.`,
         { figHtml: wedge({ al: 75, a: 0, b: 120, w0: '\\Theta(0)=0', wA: '\\Theta(\\alpha)=0', O: false, outerArc: false }) }),
 
+      Q(md`In the wedge that runs from an inner arc at $V_0$ out to infinity (grounded walls, $\Phi\to0$ far away), which condition quantizes $k$?`,
+        [md`The inner arc at $V_0$`, md`$\Phi\to0$ at infinity`, md`The two grounded walls`, md`Finiteness at $r = 0$`],
+        2,
+        [md`The live arc is the inhomogeneous condition. It fixes the coefficients at the end, by Fourier's trick.`,
+          md`$\Phi\to0$ removes $r^{+k}$. It decides which radial power survives, not which $k$ exist.`,
+          null,
+          md`$r = 0$ is not in this region: it stops at the inner arc $r = a$.`],
+        md`Quantization always comes from the pair of homogeneous conditions in the oscillating direction: $\Theta(0) = \Theta(\alpha) = 0 \Rightarrow k = n\pi/\alpha$. Then infinity picks $r^{-k}$, and the arc fixes the $c_n$. One job per condition.`,
+        { figHtml: OUTW }),
+
       Q(md`A student writes $R(r) = C\left[(r/a)^k - (a/r)^k\right]$. Which boundary condition is this built to satisfy?`,
         [md`#4, the outer arc at $V_0$`, md`#2, the wall $\theta = 0$`, md`Finiteness at $r = 0$`, md`#1, the grounded inner arc`],
         3,
@@ -1121,6 +1364,36 @@
         md`$\sin(n\pi\theta/\alpha)$ with even $n$ is odd about $\theta = \alpha/2$; a constant is even about it. Their overlap is zero. If the outer arc were at $V_0$ on only one half, even $n$ would come back.`,
         { figHtml: EXAM }),
 
+      Q(md`The outer arc of the exam sector is held at $V_0$ for $0<\theta<\alpha/2$ and at $0$ for $\alpha/2<\theta<\alpha$ (insulated halves). Which $n$ appear in the sine series of the arc data?`,
+        [md`Odd $n$ only, as before`, md`Even $n$ only`, md`All $n$ except multiples of $4$`, md`All $n$`],
+        2,
+        [md`Odd-only needs data symmetric about the bisector. Half on, half off is not.`,
+          md`The data aren't antisymmetric about the bisector either, so odd $n$ survive too.`,
+          null,
+          md`Close, but $\int_0^{\alpha/2}\sin\frac{n\pi\theta}{\alpha}\,d\theta = \frac{\alpha}{n\pi}\left(1 - \cos\frac{n\pi}{2}\right)$, which is zero for $n = 4, 8, \dots$`],
+        md`$c_n = \frac{2V_0}{n\pi}\left(1 - \cos\frac{n\pi}{2}\right)$: $n = 1, 2, 3$ give $\frac{2V_0}{\pi}$, $\frac{2V_0}{\pi}$, $\frac{2V_0}{3\pi}$, and $n = 4$ gives $0$. Lopsided data bring back even modes, just as in a slot with only half a face live.`,
+        { figHtml: HALFARC }),
+
+      Q(md`The outer arc is held at a hump $f(\theta) = V_0\,\dfrac{\theta(\alpha - \theta)}{\alpha^2}$, symmetric about the bisector. Which $n$ appear?`,
+        [md`Odd $n$ only`, md`$n = 1$ only, since the hump looks like one half-wave`, md`Even $n$ only`, md`All $n$`],
+        0,
+        [null,
+          md`It looks like $\sin(\pi\theta/\alpha)$ but isn't one: the coefficients for $n = 3, 5, \dots$ are small but not zero.`,
+          md`Even modes are antisymmetric about the bisector; their overlap with a symmetric hump is zero.`,
+          md`The symmetry kills every even $n$.`],
+        md`Symmetric about $\theta = \alpha/2$ ⇒ only the modes symmetric about it: odd $n$. The coefficients are $\frac{8V_0}{\pi^3n^3}$ for odd $n$, so $n = 3$ is $\frac{1}{27}$ of $n = 1$ and the first term is excellent even on the arc. Smooth data that vanish at the walls converge fast; a step (constant $V_0$ against grounded walls) converges slowly.`,
+        { figHtml: HUMP }),
+
+      Q(md`The outer arc is held at $V_0\cos(\pi\theta/\alpha)$: $+V_0$ next to one wall, $-V_0$ next to the other. Which $n$ appear in the sine series?`,
+        [md`$n = 1$ only`, md`Even $n$ only`, md`Odd $n$ only`, md`None: a cosine can't be expanded in sines`],
+        1,
+        [md`$\cos(\pi\theta/\alpha)$ is not $\sin(\pi\theta/\alpha)$; its $n = 1$ coefficient is $0$.`,
+          null,
+          md`The data are antisymmetric about the bisector, so the symmetric (odd-$n$) modes drop out.`,
+          md`Any reasonable function on $(0,\alpha)$ has a sine series; it just converges slowly where the function doesn't vanish at the ends.`],
+        md`$\cos(\pi\theta/\alpha)$ changes sign under $\theta\to\alpha-\theta$, and so do the even-$n$ sines. So only even $n$ appear, with $c_n = \frac{4nV_0}{\pi(n^2-1)}$: $\frac{8V_0}{3\pi}$, $\frac{16V_0}{15\pi}$, ... The rule: symmetric data ⇒ odd $n$; antisymmetric data ⇒ even $n$.`,
+        { figHtml: COSARC }),
+
       Q(md`A student's answer to the exam problem is $\Phi = \sum_{n\text{ odd}}\dfrac{4V_0}{n\pi}\left(\dfrac rb\right)^{n\pi/\alpha}\sin\dfrac{n\pi\theta}{\alpha}$. Which boundary condition does it violate?`,
         [md`#4, $\Phi(b,\theta) = V_0$`, md`#2, $\Phi(r,0) = 0$`, md`#3, $\Phi(r,\alpha) = 0$`, md`#1, $\Phi(a,\theta) = 0$`],
         3,
@@ -1150,6 +1423,39 @@
           md`$\sin(\pi\theta/\alpha)$ has no overlap with $\sin(2\pi\theta/\alpha)$.`],
         md`Read it off without integrating: $C_1\left[(b/a)^{\pi/\alpha} - (a/b)^{\pi/\alpha}\right] = V_0$. The answer is a single product term. This "the boundary data is one mode" shortcut saves a lot of time on exams; look for it first.`,
         { figHtml: wedge({ al: 60, a: 55, b: 165, inner: '0', w0: '0', wA: '0', outer: 'V_0\\sin(\\pi\\theta/\\alpha)', ticks: true }) }),
+
+      Q(md`On the grounded wall $\theta = 0$ of the exam sector, which components of $\vb E$ are nonzero just inside the region?`,
+        [md`$E_r$ only`, md`Both $E_r$ and $E_\theta$`, md`$E_\theta$ only, perpendicular to the wall`, md`Neither: the wall is grounded`],
+        2,
+        [md`$E_r = -\partial_r\Phi$, and $\Phi = 0$ all along the wall, so its derivative along the wall is zero.`,
+          md`The tangential component of $\vb E$ at a conductor's surface is zero.`,
+          null,
+          md`Grounded means $\Phi = 0$ on the wall, not $\vb E = 0$ next to it. The field meets the wall head-on and ends on induced charge.`],
+        md`Along the wall $\Phi(r,0) = 0$ for every $r$, so $E_r = -\partial_r\Phi = 0$ there: no tangential field at a conductor. The normal component $E_\theta = -\frac1r\partial_\theta\Phi$ is what remains, and it gives the surface charge.`,
+        { figHtml: EXAM }),
+
+      Q(md`For $V_0>0$, what is the sign of the induced surface charge on the grounded walls of the exam sector?`,
+        [md`Negative everywhere on the walls`, md`Positive everywhere`, md`Zero, because the walls are grounded`, md`It changes sign along each wall`],
+        0,
+        [null,
+          md`Positive charge sits on a conductor that is at a **higher** potential than its surroundings. The walls are at $0$ and the inside is above $0$.`,
+          md`A grounded conductor carries whatever charge keeps it at $0$; here that is nonzero.`,
+          md`$\Phi>0$ at every interior point (it lies between the boundary values $0$ and $V_0$), so the field points into the walls all along them.`],
+        md`Inside, $0<\Phi<V_0$, so $\Phi$ rises as you leave a wall and $\vb E$ points back into it. With $\hat{\mathbf n}$ into the region, $\sigma = \varepsilon_0\vb E\cdot\hat{\mathbf n}<0$. The positive charge sits on the live arc. Near the inner corners, where two grounded faces meet at $90^\circ$, $\sigma\to0$; near the outer corners, next to the live arc, it is largest.`,
+        { figHtml: EXAM }),
+
+      Q(md`Which expression gives the surface charge on the wall $\theta = 0$?`,
+        [md`$\sigma = -\varepsilon_0\dfrac{\partial\Phi}{\partial r}\Big|_{\theta=0}$`,
+          md`$\sigma = +\dfrac{\varepsilon_0}{r}\dfrac{\partial\Phi}{\partial\theta}\Big|_{\theta=0}$`,
+          md`$\sigma = -\varepsilon_0\dfrac{\partial\Phi}{\partial\theta}\Big|_{\theta=0}$`,
+          md`$\sigma = -\dfrac{\varepsilon_0}{r}\dfrac{\partial\Phi}{\partial\theta}\Big|_{\theta=0}$`],
+        3,
+        [md`$\partial_r$ is the derivative **along** the wall; it is zero there. You need the normal derivative.`,
+          md`Sign error. On this wall the normal into the region is $+\hat{\boldsymbol\theta}$. The $+$ sign belongs to the **other** wall, where the normal is $-\hat{\boldsymbol\theta}$.`,
+          md`Missing $1/r$: the angular part of the polar gradient is $\frac1r\partial_\theta$. Without it the units are wrong.`,
+          null],
+        md`$\sigma = \varepsilon_0\vb E\cdot\hat{\mathbf n}$ with $\hat{\mathbf n}$ pointing out of the metal into the region. On $\theta = 0$, $\hat{\mathbf n} = \hat{\boldsymbol\theta}$ and $E_\theta = -\frac1r\partial_\theta\Phi$. Check the units: $\Phi/r$ is a field.`,
+        { figHtml: EXAM }),
 
       P({
         title: 'Pie slice: the tip is in the region',
@@ -1185,6 +1491,29 @@
         `,
         figs: { map: { svg: PIE_MAP, cap: 'Equipotentials of the pie slice ($\\alpha = \\pi/3$) at $0.05V_0$, $0.1V_0$, $0.2V_0, \\dots$: they crowd toward the arc and spread out near the tip.' } },
       }),
+
+      Q(md`Near the tip of a pie slice, why does the $n = 1$ term dominate the series?`,
+        [md`Each higher mode carries $r^{n\pi/\alpha}$, an extra factor $r^{(n-1)\pi/\alpha}$ compared with $n = 1$, which goes to zero at the tip`,
+          md`The higher Fourier coefficients $\frac{4V_0}{n\pi}$ are smaller`,
+          md`The grounded walls cancel the higher modes near the tip`,
+          md`Only $n = 1$ satisfies the wall conditions near the tip`],
+        0,
+        [null,
+          md`The coefficients shrink only like $1/n$, which can't make a term negligible. The radial powers do the work.`,
+          md`Each mode satisfies the wall conditions on its own; nothing cancels between them.`,
+          md`Every $\sin(n\pi\theta/\alpha)$ vanishes on both walls at every $r$.`],
+        md`The $n$-th term relative to the first is roughly $\frac1n(r/b)^{(n-1)\pi/\alpha}$. For $\alpha = \pi/3$ at $r = b/2$ the $n = 3$ term is already $0.5\%$ of the first. That is why the behaviour at the vertex ($E\propto r^{\pi/\alpha - 1}$) comes from the lowest mode alone.`,
+        { figHtml: PIE }),
+
+      Q(md`Where in the pie slice ($\alpha = \pi/3$, arc at $V_0$) is the first term of the series the best approximation to the full answer?`,
+        [md`Near the live arc $r = b$`, md`Near the tip`, md`Close to the walls`, md`Equally good everywhere`],
+        1,
+        [md`On the arc the series is the sine series of a constant: it needs many terms there, especially near the corners.`,
+          null,
+          md`Near a wall every term is small, but the higher terms are not smaller **relative** to the first than elsewhere at the same $r$.`,
+          md`The higher terms carry $(r/b)^{3n}$, so their weight depends strongly on $r$.`],
+        md`Term $n$ carries $(r/b)^{n\pi/\alpha} = (r/b)^{3n}$. Toward the tip the higher modes fade much faster than the first. At $r = b/2$ the first term is within $0.5\%$; on the arc itself it is off by more than $25\%$ in places (it gives $\frac{4}{\pi}V_0$ at the middle of the arc instead of $V_0$).`,
+        { figHtml: PIE }),
 
       RF(md`
         ### The field near the vertex: sharp notches and sharp edges
@@ -1228,6 +1557,36 @@
           md`Far from the corner the walls look flat and $\sigma$ is ordinary; it is the corner that suppresses it.`],
         md`Field region angle $\alpha = \pi/2$: $\sigma \propto r^{\pi/\alpha - 1} = r$. Field lines can't get into a hollow corner. (Cartesian check: $\Phi \propto xy$ near the corner, $E \propto \sqrt{x^2+y^2}$.)`,
         { figHtml: wedge({ al: 90, a: 0, b: 110, open: true, L: 110, w0: '\\text{metal}', wA: '\\text{metal}', angLab: '\\pi/2' }) }),
+
+      Q(md`A notch cut into a metal block has a field region of opening $\alpha = \pi/4$. Near the bottom of the notch, how does $|\vb E|$ scale with the distance $r$ from the vertex?`,
+        [md`$r^{4}$`, md`$r^{3}$`, md`$r^{-3/4}$`, md`$r^{1/4}$`],
+        1,
+        [md`$r^{\pi/\alpha} = r^4$ is how the **potential** grows. The field is one derivative down.`,
+          null,
+          md`That is $r^{\alpha/\pi - 1}$, with the ratio upside down. A narrow notch shields; its field can't diverge.`,
+          md`Upside-down exponent again: it is $\pi/\alpha = 4$, not $1/4$.`],
+        md`$\Phi \approx c\,r^{\pi/\alpha}\sin(\pi\theta/\alpha) = c\,r^4\sin4\theta$, so $|\vb E| \propto r^{\pi/\alpha - 1} = r^3$. The narrower the notch, the faster the field dies toward its bottom. (The allowed $k$ here are $4, 8, 12, \dots$)`,
+        { figHtml: NOTCH45 }),
+
+      Q(md`Two metal faces meet at an inside angle of $120^\circ$, so the field region near the edge is a wedge with $\alpha = 2\pi/3$. How does the surface charge density on the faces behave near the edge?`,
+        [md`$\sigma \propto r^{3/2}$`, md`$\sigma \propto r^{-1/2}$, diverging`, md`$\sigma$ stays constant`, md`$\sigma \propto r^{1/2}$, going to zero`],
+        3,
+        [md`$r^{3/2} = r^{\pi/\alpha}$ is the potential's power. $\sigma$ follows the field, one power lower.`,
+          md`Divergence needs a protruding edge, $\alpha > \pi$. A $120^\circ$ hollow has $\alpha < \pi$.`,
+          md`Constant $\sigma$ is the flat case, $\alpha = \pi$.`,
+          null],
+        md`$\sigma = \varepsilon_0E_\perp \propto r^{\pi/\alpha - 1} = r^{3/2 - 1} = r^{1/2}$. Any hollow ($\alpha<\pi$) starves its corner of charge; the wider the hollow, the slower the decrease, until the exponent reaches $0$ at $\alpha = \pi$.`,
+        { figHtml: W120 }),
+
+      Q(md`The field region outside a right-angle metal edge is a wedge with $\alpha = 3\pi/2$, with metal on both faces. Which $k$ are allowed?`,
+        [md`$k = \tfrac23, \tfrac43, 2, \dots$`, md`$k = \tfrac32, 3, \tfrac92, \dots$`, md`$k = 1, 2, 3, \dots$`, md`$k = 2, 4, 6, \dots$`],
+        0,
+        [null,
+          md`That is $n\alpha/\pi$, upside down. The rule is $k = n\pi/\alpha$.`,
+          md`Integers need $\alpha = \pi$ (or a full circle). This region is three quarters of a turn.`,
+          md`That is the **inside** of a right-angle corner, $\alpha = \pi/2$.`],
+        md`$k = n\pi/\alpha = \frac{2n}{3}$. The lowest, $k = \tfrac23<1$, is what makes the field diverge at the edge: $E\propto r^{k-1} = r^{-1/3}$. Any $\alpha > \pi$ gives a lowest $k$ below $1$, and a divergent field.`,
+        { figHtml: CORNER }),
 
       P({
         title: 'Lightning rods: the vertex exponent',
@@ -1350,6 +1709,16 @@
         md`The constant is the $k = 0$ solution with $B = 0$. Then $\Phi_2 = -\sum_{n\text{ odd}}\frac{4V_0}{n\pi}(r/b)^{k}\sin k\theta$, and $\Phi = V_0 - (\text{pie-slice answer})$. Symmetric idea to the slot with both plates at $V_1$.`,
         { figHtml: wedge({ al: 60, a: 0, b: 140, r0: 8, w0: '\\Phi=V_0', wA: '\\Phi=V_0', outer: '\\Phi=0', O: false }) }),
 
+      Q(md`Two plates meet at angle $\alpha$ (insulated at the edge): $\Phi = V_1$ on $\theta = 0$ and $\Phi = V_2$ on $\theta = \alpha$. What is $\Phi$ between them?`,
+        [md`$\dfrac{(V_1 + V_2)\,\theta}{\alpha}$`, md`$V_1 + \dfrac{(V_2 - V_1)\,\theta}{\alpha}$`, md`$\dfrac{V_2\,\theta}{\alpha}$`, md`$V_1 + \dfrac{V_2\,\theta}{\alpha}$`],
+        1,
+        [md`At $\theta = 0$ this gives $0$, not $V_1$.`,
+          null,
+          md`That grounds the first plate. You need the constant $V_1$ too.`,
+          md`At $\theta = \alpha$ this gives $V_1 + V_2$.`],
+        md`Both pieces are $k = 0$ solutions: the constant $A$ and $B\theta$. The first wall gives $A = V_1$, the second $B\alpha = V_2 - V_1$. Check both walls before moving on: it takes five seconds and catches most sign slips.`,
+        { figHtml: TWOV }),
+
       P({
         title: 'Two plates at an angle: field and charge',
         q: md`For the two plates at angle $\alpha$ (wall $\theta = 0$ grounded, wall $\theta = \alpha$ at $V_0$), find (a) $E_\theta$, (b) the surface charge density on the grounded plate, (c) the charge per unit length ($z$) on the live plate between $r = a$ and $r = b$.`,
@@ -1471,6 +1840,19 @@
         figs: { bis: { svg: BISECT, cap: '$\\Phi$ along the bisector: the full series (solid) and the first term (dashed). The dot is the point $r = 1.5a$.' } },
       }),
 
+      Q(md`For the exam sector ($\alpha = \pi/2$, $b = 2a$) at $r = 1.5a$ on the bisector, the first term is $11\%$ above the full series. For the pie slice ($\alpha = \pi/3$) at $r = b/2$ it is within $0.5\%$. What makes the difference?`,
+        [md`The exam series contains even $n$ as well`,
+          md`The exam's Fourier coefficients are larger`,
+          md`The inner arc adds a second series`,
+          md`The exam point is closer to the live arc ($r/b = 0.75$), and $k = 2n$ grows more slowly than $3n$, so the higher modes are damped much less`],
+        3,
+        [md`Both series have odd $n$ only: a constant on the arc is symmetric about the bisector.`,
+          md`Both use the same $\frac{4V_0}{n\pi}$ from the constant on the arc.`,
+          md`The inner arc is grounded; it only shapes the radial function. There is one series.`,
+          null],
+        md`The $n = 3$ term relative to $n = 1$ is roughly $\frac13(0.75)^4 \approx 0.1$ at the exam point and $\frac13(0.5)^6 \approx 0.005$ for the pie slice. Two things set the damping: how far you are from the live arc, and how fast $k$ grows with $n$ (a narrower wedge damps faster).`,
+        { figHtml: EXAM_NUM }),
+
       RF(md`
         ### The hard variant: walls at different potentials **and** arcs present
 
@@ -1514,6 +1896,49 @@
           md`At $r = b$ it equals $1$ too.`,
           md`$r = 0$ is not in the region; this has an $r^{-k}$ term.`],
         md`Both arcs carry $-V_0\theta/\alpha$, so each mode needs the same coefficient $g_n$ at $r = a$ and $r = b$. The radial function must therefore be $1$ at both ends. It sags in between (minimum at $r = \sqrt{ab}$, symmetric under $r\to ab/r$). If the arcs had different data you would add two pieces, one vanishing at each arc.`,
+        { figHtml: HARD }),
+
+      Q(md`In the hard variant, after subtracting $V_0\theta/\alpha$, the arcs carry $-V_0\theta/\alpha$. Which modes appear in its sine series?`,
+        [md`Odd $n$ only, as for a constant`, md`Even $n$ only`, md`$n = 1$ only`, md`All $n$, with alternating signs: $g_n = \dfrac{2V_0(-1)^n}{n\pi}$`],
+        3,
+        [md`A ramp is not symmetric about the bisector, so even modes survive.`,
+          md`A ramp isn't antisymmetric about the bisector either (its average isn't zero), so odd modes survive too.`,
+          md`A ramp is not a single sine mode.`,
+          null],
+        md`$\theta$ on $(0,\alpha)$ is neither symmetric nor antisymmetric about $\alpha/2$, so every $n$ appears. Integrating by parts, $\int_0^\alpha\theta\sin\frac{n\pi\theta}{\alpha}\,d\theta = -\frac{\alpha^2}{n\pi}\cos n\pi$, which is where the $(-1)^n$ comes from.`,
+        { figHtml: HARD }),
+
+      Q(md`In the hard variant you want a **single** series, with no superposition. Which separated factor has to oscillate?`,
+        [md`The angular factor $\sin(n\pi\theta/\alpha)$, as always`,
+          md`Neither: $V_0\theta/\alpha$ alone does it`,
+          md`The angular factor $\cos(n\pi\theta/\alpha)$`,
+          md`The radial factor, $\sin\!\big(\mu\ln(r/a)\big)$, because the two zero conditions in one direction are now the two arcs`],
+        3,
+        [md`Every $\sin(n\pi\theta/\alpha)$ vanishes on the live wall, so no sine series in $\theta$ alone can reach $V_0$ there. That route needs the subtraction first.`,
+          md`$V_0\theta/\alpha$ is not zero on the grounded arcs.`,
+          md`$\cos(n\pi\theta/\alpha)$ equals $1$ on the grounded wall $\theta = 0$, so it breaks that condition.`,
+          null],
+        md`The rule never changes: the direction with **two homogeneous conditions** oscillates. Here $r$ has two (both arcs grounded) and $\theta$ has only one. In polar coordinates "oscillate in $r$" means oscillate in $\ln r$: $\sin(\mu\ln(r/a))$, with an angular partner that vanishes on the grounded wall.`,
+        { figHtml: HARD }),
+
+      Q(md`In that radial-oscillation route, what must $\mu$ be so that $\sin\!\big(\mu\ln(r/a)\big)$ also vanishes on the outer arc $r = b$?`,
+        [md`$\mu = \dfrac{m\pi}{\ln(b/a)}$`, md`$\mu = \dfrac{m\pi}{b - a}$`, md`$\mu = \dfrac{m\pi}{\alpha}$`, md`$\mu = \dfrac{m\ln(b/a)}{\pi}$`],
+        0,
+        [null,
+          md`The argument is $\mu\ln(r/a)$, not $\mu(r - a)$. The "width" of the radial interval is $\ln(b/a)$.`,
+          md`$m\pi/\alpha$ quantizes angular modes between the walls. Here the zeros are on the arcs.`,
+          md`Upside down: you need $\mu\ln(b/a) = m\pi$.`],
+        md`$\sin(\mu\ln(b/a)) = 0 \Rightarrow \mu\ln(b/a) = m\pi$. It is the slot's $k = n\pi/a$ with the plate separation replaced by the logarithmic width $\ln(b/a)$. A thin sector ($b$ close to $a$) has a small $\ln(b/a)$ and a large $\mu$, so the modes die quickly away from the live wall.`,
+        { figHtml: HARD }),
+
+      Q(md`Which angular function goes with $\sin\!\big(\mu\ln(r/a)\big)$ in that route?`,
+        [md`$\sin(\mu\theta)$`, md`$\cosh(\mu\theta)$`, md`$\sinh(\mu\theta)$`, md`$\theta$`],
+        2,
+        [md`With the radial factor oscillating, the separation constant has the other sign and the angular equation is $\Theta'' = +\mu^2\Theta$: no sines.`,
+          md`$\cosh(\mu\theta) = 1$ at $\theta = 0$, but that wall is grounded.`,
+          null,
+          md`$\theta$ is the $k = 0$ solution; it doesn't pair with $\mu \ne 0$.`],
+        md`For $R = \sin(\mu\ln(r/a))$, $r\frac{d}{dr}\left(r\frac{dR}{dr}\right) = -\mu^2R$, so $\Theta'' = +\mu^2\Theta$ and $\Theta = A\cosh\mu\theta + B\sinh\mu\theta$. The grounded wall $\theta = 0$ kills $\cosh$. The live wall then fixes the coefficients: $\Phi = \sum_{m\text{ odd}}\frac{4V_0}{m\pi}\sin\left(\mu\ln\frac ra\right)\frac{\sinh\mu\theta}{\sinh\mu\alpha}$.`,
         { figHtml: HARD }),
 
       P({
@@ -1653,6 +2078,17 @@
   const LINECYL_IMG = cyl({ R: 60, axes: false, circCls: 'dash dim', line: { d: 110, lab: '\\lambda' }, extra: (f) => {
     const b = 60 * 60 / 110; f.charge(b, 0, { q: '-', image: true }); f.line(-60, 0, 120, 0, { cls: 'dim dash thin' });
     put(f, b, 0, '-\\lambda', ['b', 'bl', 'br'], 10, 'accent'); dimL(f, 0, 30, b, 30, 'R^2/d', ['b', 'br']); } });
+
+  // extra setup figures for the added conceptual MCs (lesson 3)
+  const FIELD_G = cyl({ R: 50, metal: true, field: true, lab: [['V=0', 125]] });
+  const COAX_PM = cyl({ R: 72, a: 28, aMetal: true, outerMetal: true, lab: [['-\\lambda', 40]], aLab: [['+\\lambda', 135]] });
+  const SHELL0 = shellMarks(() => 1, { step: 15, lab: [['\\sigma_0', 50, 66]] });
+  const SHELL2 = shellMarks((p) => Math.cos(2 * p), { step: 12, lab: [['\\sigma_0\\cos2\\phi', 50, 66]] });
+  const SHELL3 = shellMarks((p) => Math.cos(3 * p), { step: 10, lab: [['\\sigma_0\\cos3\\phi', 50, 66]] });
+  const SHELL_Q = cyl({ R: 50, shell: true, lab: [['\\sigma(\\phi)', 40]] });
+  const SHELL_IN_PIPE = cyl({ R: 72, a: 32, outerMetal: true, lab: [['V=0', 40]], aLab: [['\\sigma(\\phi)', 130]] });
+  const LINE_NEUTRAL = cyl({ R: 46, metal: true, lab: [['\\text{neutral}', 120]], line: { d: 130, lab: '\\lambda' }, axesExt: 160, extra: (f) => dimL(f, 0, 40, 130, 40, 'd', ['b']) });
+  const LINE_INSIDE = cyl({ R: 70, outerMetal: true, lab: [['V=0', 40]], line: { d: 34, lab: '\\lambda' } });
 
   // ================================================================ Lesson 3
   const L3 = {
@@ -1879,6 +2315,39 @@
         md`An insulating shell is not an equipotential, and nothing grounds it. Its potential is whatever the charge produces, and here it varies around the shell. "Grounded" or "held at $V_0$" are conditions for conductors; for a charged insulator you match across the surface instead.`,
         { figHtml: SHELL1 }),
 
+      Q(md`A thin cylindrical shell carries $\sigma = \sigma_0\cos2\phi$. Writing $V_{\text{in}} = A(s/R)^2\cos2\phi$ and $V_{\text{out}} = A(R/s)^2\cos2\phi$, what is $A$?`,
+        [md`$\dfrac{\sigma_0R}{2\varepsilon_0}$`, md`$\dfrac{\sigma_0R}{4\varepsilon_0}$`, md`$\dfrac{\sigma_0R}{5\varepsilon_0}$`, md`$\dfrac{\sigma_0R}{3\varepsilon_0}$`],
+        1,
+        [md`That is the $k = 1$ result. The slopes are $k/R$ on each side, so $k = 2$ gives $4A/R$ in total.`,
+          null,
+          md`$2\ell + 1 = 5$ is the **sphere** with $\sigma_0P_2(\cos\theta)$. The cylinder uses $2k$.`,
+          md`$3$ is the sphere's $\ell = 1$ factor.`],
+        md`Slopes at $s = R$: inside $\frac{2A}{R}$, outside $-\frac{2A}{R}$. The jump condition gives $-\frac{4A}{R} = -\frac{\sigma_0}{\varepsilon_0}$, so $A = \frac{\sigma_0R}{4\varepsilon_0} = \frac{\sigma_0R}{2k\varepsilon_0}$ with $k = 2$.`,
+        { figHtml: SHELL2 }),
+
+      Q(md`A thin cylindrical shell carries a **uniform** $\sigma_0$. What is $V$ inside?`,
+        [md`$-\dfrac{\sigma_0R}{\varepsilon_0}\ln s$`, md`Proportional to $s\cos\phi$`, md`Proportional to $s^2$`, md`A constant: there is no field inside`],
+        3,
+        [md`$\ln s$ blows up on the axis, which is inside. The $\ln s$ belongs to the outside.`,
+          md`Uniform $\sigma$ has no $\cos\phi$ part; Fourier's trick gives only $k = 0$.`,
+          md`$s^2$ alone doesn't solve Laplace; it would need charge inside.`,
+          null],
+        md`Only $k = 0$ appears. Inside, the axis kills $\ln s$ and leaves a constant. Outside, $V = c - \frac{\sigma_0R}{\varepsilon_0}\ln\frac sR$, whose slope at $s = R$ is $-\frac{\sigma_0}{\varepsilon_0}$, exactly the required jump from the inside slope $0$. Gauss's law says the same: no enclosed charge, no field.`,
+        { figHtml: SHELL0 }),
+
+      Q(md`A thin insulating shell of radius $a$ carrying $\sigma(\phi)$ sits inside a coaxial grounded metal pipe of radius $b$. Which set of conditions determines $V$?`,
+        [md`$V(a,\phi) = 0$ and $V(b,\phi) = 0$`,
+          md`$V$ finite on the axis; $V$ continuous at $s = a$; $V\to\text{const}$ as $s\to\infty$`,
+          md`$V$ finite on the axis; $V$ continuous at $s = a$; $\partial_sV_{\text{out}} - \partial_sV_{\text{in}} = -\sigma/\varepsilon_0$ at $s = a$; $V(b,\phi) = 0$`,
+          md`$V$ continuous at $s = a$; $\partial_sV$ continuous at $s = a$; $V(b,\phi) = 0$`],
+        2,
+        [md`The insulating shell is not an equipotential and isn't grounded; you match across it instead.`,
+          md`The region stops at the metal pipe, so infinity isn't in it. And this set misses the jump that puts the charge in.`,
+          null,
+          md`A continuous slope means no surface charge at $s = a$.`],
+        md`Two regions: $0\le s<a$ (the axis is inside: finite there) and $a<s<b$ (keep both powers, and $\ln s$). Glue them at $s = a$ with continuity plus the jump, and ground at $s = b$. Per mode that is four conditions for four constants.`,
+        { figHtml: SHELL_IN_PIPE }),
+
       P({
         title: 'A shell with $\\sigma_0\\cos\\phi$',
         q: md`A long thin cylindrical shell of radius $R$ carries $\sigma(\phi) = \sigma_0\cos\phi$. Find (a) $V_{\text{in}}$, (b) $E_x$ inside, (c) $V_{\text{out}}$. (d) A sphere with $\sigma_0\cos\theta$ has a uniform interior field $\sigma_0/(3\varepsilon_0)$. Why is the cylinder's larger?`,
@@ -1901,6 +2370,36 @@
           (d) The jump $\sigma_0/\varepsilon_0$ is shared between the inside slope and the outside slope. Cylinder: slopes $1\cdot\frac AR$ and $1\cdot\frac AR$, so the inside gets $\frac12$. Sphere: $A\frac rR\cos\theta$ inside (slope $\frac AR$) and $A\frac{R^2}{r^2}\cos\theta$ outside (slope $-\frac{2A}R$), so the jump is $\frac{3A}{R}$ and the inside gets $\frac13$ of it.
         `,
       }),
+
+      Q(md`Inside the $\sigma_0\cos\phi$ shell the field is uniform, $E_x = -\dfrac{\sigma_0}{2\varepsilon_0}$, so just inside at $\phi = 0$, $E_s = -\dfrac{\sigma_0}{2\varepsilon_0}$. What is $E_s$ just **outside** at $\phi = 0$?`,
+        [md`$+\dfrac{\sigma_0}{2\varepsilon_0}$`, md`$-\dfrac{\sigma_0}{2\varepsilon_0}$, the same`, md`$+\dfrac{\sigma_0}{\varepsilon_0}$`, md`$0$`],
+        0,
+        [null,
+          md`If $E_s$ were continuous there would be no charge at $\phi = 0$, but $\sigma(0) = \sigma_0$.`,
+          md`That adds the full jump to zero. The jump is $E_{\text{out}} - E_{\text{in}} = \sigma_0/\varepsilon_0$, starting from $-\sigma_0/(2\varepsilon_0)$.`,
+          md`A zero field outside would make the jump only $\sigma_0/(2\varepsilon_0)$.`],
+        md`$E_{s,\text{out}} - E_{s,\text{in}} = \frac{\sigma_0}{\varepsilon_0}$ at $\phi = 0$: $-\frac{\sigma_0}{2\varepsilon_0} + \frac{\sigma_0}{\varepsilon_0} = +\frac{\sigma_0}{2\varepsilon_0}$. The positive strip pushes field both ways: outward outside, inward (toward $-x$) inside. The jump splits evenly because both radial slopes are $1/R$.`,
+        { figHtml: SHELL1 }),
+
+      Q(md`Outside the $\sigma_0\cos\phi$ shell, $V = \dfrac{\sigma_0R^2}{2\varepsilon_0}\dfrac{\cos\phi}{s}$. How does $|\vb E|$ fall off?`,
+        [md`$1/s$`, md`$1/s^3$, like a dipole`, md`Exponentially`, md`$1/s^2$`],
+        3,
+        [md`$1/s$ is the falloff of the potential. The field is one derivative down.`,
+          md`$1/r^3$ is the 3-D dipole field. A line dipole is one power slower.`,
+          md`Exponential decay appears in the slot ($e^{-n\pi x/a}$), not for powers of $s$.`,
+          null],
+        md`$E_s = \frac{\sigma_0R^2\cos\phi}{2\varepsilon_0s^2}$ and $E_\phi = \frac{\sigma_0R^2\sin\phi}{2\varepsilon_0s^2}$, so $|\vb E| = \frac{\sigma_0R^2}{2\varepsilon_0s^2}$, the same in every direction. Seen from far away the shell is a line dipole along $\hat{\mathbf x}$ with moment $\pi R^2\sigma_0$ per unit length: in 2-D, dipole potential $\propto1/s$ and field $\propto1/s^2$.`,
+        { figHtml: SHELL1 }),
+
+      Q(md`A shell carries $\sigma = \sigma_0\cos3\phi$. Far away, how does $V$ fall off?`,
+        [md`$1/s$, like every neutral distribution in 2-D`, md`$\ln s$`, md`$1/s^4$, like a 3-D octupole`, md`$1/s^3$`],
+        3,
+        [md`$1/s$ is the line dipole ($k = 1$). This charge has only a $k = 3$ component.`,
+          md`$\ln s$ needs net charge, and $\oint\cos3\phi\,d\phi = 0$.`,
+          md`3-D intuition again. In 2-D the $k$-th multipole potential falls as $s^{-k}$.`,
+          null],
+        md`Only $k = 3$ matches, so $V_{\text{out}} = \frac{\sigma_0R}{6\varepsilon_0}\left(\frac Rs\right)^3\cos3\phi$. Six alternating lobes cancel each other quickly at a distance. Finer pattern, faster falloff, both outward and toward the axis.`,
+        { figHtml: SHELL3 }),
 
       RF(md`
         ### A metal pipe in a uniform field (Griffiths 4th ed. Prob. 3.25)
@@ -1983,6 +2482,56 @@
         md`$\sigma = 2\varepsilon_0E_0\cos\phi$, maximal on the downstream side $\phi = 0$, where the field lines leave the metal (field lines start on positive charge). The upstream side $\phi = \pi$ carries $-2\varepsilon_0E_0$.`,
         { figHtml: IN_FIELD }),
 
+      Q(md`A grounded metal cylinder and a grounded metal sphere of the same radius sit in the same uniform field $E_0$ (the cylinder's axis perpendicular to the field). What is the ratio of their largest induced surface charge densities, cylinder : sphere?`,
+        [md`$1:1$`, md`$3:2$`, md`$1:2$`, md`$2:3$`],
+        3,
+        [md`The field at a conductor's surface is the applied field **plus** the field of the induced charge, and the induced part differs: $E_0$ for the cylinder, $2E_0$ for the sphere.`,
+          md`Upside down: the sphere has $3\varepsilon_0E_0$, the cylinder $2\varepsilon_0E_0$.`,
+          md`$1:2$ compares only the induced parts ($E_0$ vs $2E_0$), not the total surface fields $2E_0$ and $3E_0$.`,
+          null],
+        md`Cylinder: $\sigma = 2\varepsilon_0E_0\cos\phi$. Sphere: $\sigma = 3\varepsilon_0E_0\cos\theta$. The induced 2-D dipole potential $R^2\cos\phi/s$ has radial slope $1\times$ at the surface; the 3-D dipole $R^3\cos\theta/r^2$ has slope $2\times$. So the surface field is $E_0 + E_0$ for the cylinder and $E_0 + 2E_0$ for the sphere.`,
+        { figHtml: FIELD_G }),
+
+      Q(md`Just outside the neutral pipe in the uniform field $E_0\hat{\mathbf x}$, on the downstream side ($\phi = 0$), how strong is the field?`,
+        [md`$E_0$: the applied field is unchanged at the surface`, md`$2E_0$, pointing radially out of the pipe`, md`$3E_0$`, md`$0$, because the pipe shields it`],
+        1,
+        [md`The induced charge adds its own field. At $\phi = 0$ it adds another $E_0$ outward.`,
+          null,
+          md`$3E_0$ is the sphere.`,
+          md`Shielding happens **inside** the metal. Outside, the field lines crowd onto the surface.`],
+        md`$E_s = -\partial_sV = E_0\left(1 + \frac{R^2}{s^2}\right)\cos\phi$, which is $2E_0$ at $s = R$, $\phi = 0$. The field lines bunch up where they converge onto the front and back of the pipe, and the field doubles there.`,
+        { figHtml: IN_FIELD }),
+
+      Q(md`Same pipe in the uniform field. What is the field just outside the surface at the top of the pipe ($\phi = \pi/2$)?`,
+        [md`Zero`, md`$E_0\hat{\mathbf x}$, as far away`, md`$2E_0\hat{\mathbf x}$, sped up around the pipe`, md`$E_0$, pointing radially outward`],
+        0,
+        [null,
+          md`At a conductor's surface the field has no tangential part, and $\hat{\mathbf x}$ is tangent to the pipe at the top.`,
+          md`That is the flow of an ideal fluid around a cylinder, which must run tangent to the surface. A conductor's field must be normal to it.`,
+          md`$E_s = 2E_0\cos\phi$, which is $0$ at $\phi = \pi/2$.`],
+        md`On the metal $\vb E$ is normal, and $E_s = 2E_0\cos\phi = 0$ at the top. So $\vb E = 0$ there and $\sigma = 0$: that is where the induced charge changes sign. Moving away from the surface, the field grows back toward $E_0$.`,
+        { figHtml: IN_FIELD }),
+
+      Q(md`Far from the neutral pipe in the uniform field, the pipe's own contribution to $V$ (the induced charge's potential) falls off as`,
+        [md`$1/s^2$, like a dipole`, md`$\ln s$`, md`$1/s$`, md`$1/s^3$`],
+        2,
+        [md`$1/r^2$ is the **3-D** dipole. A line dipole in 2-D gives $\cos\phi/s$.`,
+          md`$\ln s$ is the net-charge term, and the pipe is neutral.`,
+          null,
+          md`Too fast: $1/s^3$ would be a $k = 3$ multipole.`],
+        md`$V = -E_0s\cos\phi + E_0R^2\frac{\cos\phi}{s}$. The second term is a 2-D dipole: two opposite line charges close together, potential $\propto\cos\phi/s$, field $\propto1/s^2$. Everything in 2-D is one power slower than in 3-D: monopole $\ln s$ vs $1/r$, dipole $1/s$ vs $1/r^2$.`,
+        { figHtml: IN_FIELD }),
+
+      Q(md`A line dipole with moment $p'$ per unit length has $V = \dfrac{p'\cos\phi}{2\pi\varepsilon_0s}$. What is the induced dipole moment per unit length of the neutral pipe in the field $E_0\hat{\mathbf x}$?`,
+        [md`$2\pi\varepsilon_0R^2E_0$`, md`$4\pi\varepsilon_0R^3E_0$`, md`$\pi\varepsilon_0R^2E_0$`, md`$\varepsilon_0R^2E_0$`],
+        0,
+        [null,
+          md`That is the **sphere**'s induced moment, with units C·m. A moment per unit length has units C.`,
+          md`Off by $2$. Match $E_0R^2\cos\phi/s$ with $p'\cos\phi/(2\pi\varepsilon_0s)$.`,
+          md`Missing the $2\pi$ from the line-charge potential.`],
+        md`Match the induced term: $E_0R^2\frac{\cos\phi}{s} = \frac{p'\cos\phi}{2\pi\varepsilon_0s} \Rightarrow p' = 2\pi\varepsilon_0R^2E_0$. Check directly: $p' = \oint\sigma\,x\,dl = \int_0^{2\pi}2\varepsilon_0E_0\cos\phi\cdot R\cos\phi\cdot R\,d\phi = 2\pi\varepsilon_0E_0R^2$.`,
+        { figHtml: IN_FIELD }),
+
       P({
         title: 'A charged metal pipe in a uniform field (Kou-level)', big: true,
         q: md`The metal pipe of radius $R$ now carries charge $\lambda$ per unit length and sits in the uniform field $E_0\hat{\mathbf x}$. Take $V = 0$ on the pipe.
@@ -2009,6 +2558,36 @@
           **What to remember.** Charge and applied field separate cleanly: the $\ln s$ term carries the charge, the $s^{\pm1}\cos\phi$ terms carry the field. The reference $V = 0$ on the pipe is a choice you are told; in 2-D with net charge you can't use infinity.
         `,
       }),
+
+      Q(md`The metal pipe in the uniform field now carries net charge $\lambda$ per length. Far away, which part of the **pipe's own** contribution to $V$ dominates?`,
+        [md`The induced dipole, $\propto\cos\phi/s$`, md`A constant`, md`The line-charge term, $-\dfrac{\lambda}{2\pi\varepsilon_0}\ln s$`, md`A $1/s^2$ term`],
+        2,
+        [md`$1/s$ dies away while $\ln s$ keeps growing in magnitude. With $\lambda \ne 0$ the monopole wins.`,
+          md`A constant has no field. The net charge makes a field $\lambda/(2\pi\varepsilon_0s)$ at any distance.`,
+          null,
+          md`There is no $k = 2$ term here at all, and it would fall faster than the others anyway.`],
+        md`$V = -E_0\left(s - \frac{R^2}{s}\right)\cos\phi - \frac{\lambda}{2\pi\varepsilon_0}\ln\frac sR$. The pipe's own part is a line charge plus a line dipole, and the first nonzero multipole wins far away, just as in 3-D. Here that is the monopole ($k = 0$).`,
+        { figHtml: IN_FIELD_Q }),
+
+      Q(md`Outside a long charged insulating shell, $V = 4 - 3\ln\dfrac sR + 2\dfrac Rs\cos\phi$ (in volts). Which part tells you the shell's net charge per unit length?`,
+        [md`The constant $4$`, md`Only the coefficient of $\ln s$: $\lambda = 2\pi\varepsilon_0\cdot3$`, md`The coefficient of $\cos\phi/s$`, md`Both the $\ln s$ and the $\cos\phi/s$ coefficients`],
+        1,
+        [md`A constant carries no field and no charge; it only sets the reference level.`,
+          null,
+          md`The $\cos\phi/s$ term is a line dipole. Its charge integrates to zero around the shell.`,
+          md`Only $k = 0$ carries net charge: Gauss's law over a big circle needs $\oint E_s\,s\,d\phi$, and every $\cos k\phi$ term integrates to zero.`],
+        md`$\oint E_s\,s\,d\phi = \lambda/\varepsilon_0$. The $\ln s$ term gives $E_s = 3/s$, so $\lambda = 2\pi\varepsilon_0\cdot3 = 6\pi\varepsilon_0$ C/m; the dipole term adds $\int\cos\phi\,d\phi = 0$. The $\ln s$ coefficient counts the charge; everything else describes how the charge is arranged.`,
+        { figHtml: SHELL_Q }),
+
+      Q(md`A coaxial cable: the inner wire carries $+\lambda$ per length and the outer tube $-\lambda$. What is $V$ outside the tube?`,
+        [md`$-\dfrac{\lambda}{2\pi\varepsilon_0}\ln s + \text{const}$`, md`Proportional to $1/s$`, md`A constant: there is no field outside`, md`It depends on the tube's thickness`],
+        2,
+        [md`The $\ln s$ coefficient counts **all** the charge inside the circle, and $+\lambda - \lambda = 0$.`,
+          md`$1/s$ needs a $\cos\phi$ asymmetry. Everything here is symmetric about the axis.`,
+          null,
+          md`Gauss's law cares only about the enclosed charge, not about the tube's thickness.`],
+        md`By symmetry only the $k = 0$ terms $a_0 + b_0\ln s$ appear, and $b_0 = -\lambda_{\text{enc}}/(2\pi\varepsilon_0) = 0$ outside. So $E = 0$ and $V$ is constant there. This is why a coaxial cable produces no field outside itself.`,
+        { figHtml: COAX_PM }),
 
       P({
         title: 'Coaxial cylinders with an angular potential',
@@ -2070,6 +2649,46 @@
           md`The image strength is exactly $-\lambda$. Any total other than $-\lambda$ (line plus pipe) leaves a net $\ln s$ term, and $V$ grows without bound far away.`],
         md`The image line has strength $-\lambda$ at $R^2/d$, so the induced charge per length is $-\lambda$. In 2-D, "grounded" means the pipe is an equipotential **and** $V$ stays bounded far away (BC 3). That forces the line and the pipe together to be neutral, so the full $-\lambda$ goes onto the pipe.`,
         { figHtml: LINECYL }),
+
+      Q(md`For the line charge $\lambda>0$ beside the grounded pipe, where is the induced charge density largest in magnitude?`,
+        [md`On the side nearest the line charge`, md`On the far side`, md`At the top and bottom ($\phi = \pm\pi/2$)`, md`It is uniform, because the pipe is an equipotential`],
+        0,
+        [null,
+          md`The far side is shielded by the pipe itself and sees the weakest field.`,
+          md`Nothing special happens at $\pm\pi/2$; $|\sigma|$ decreases steadily from the near side to the far side.`,
+          md`Equipotential doesn't mean uniform charge. The charge arranges itself so that the potential is uniform, and that takes more charge where the line is close.`],
+        md`$|\sigma| \propto \dfrac{1}{R^2 + d^2 - 2Rd\cos\phi}$, largest at $\phi = 0$, where the distance to the line is smallest. All of it is negative (for $\lambda>0$), attracted toward the line.`,
+        { figHtml: LINECYL }),
+
+      Q(md`The line charge $\lambda$ now sits beside an **isolated, neutral** metal pipe instead of a grounded one. Which image system reproduces the field outside?`,
+        [md`$-\lambda$ at $R^2/d$ only, as for the grounded pipe`, md`$-\lambda R/d$ at $R^2/d$`, md`No image: a neutral pipe has no induced charge`, md`$-\lambda$ at $R^2/d$ plus $+\lambda$ on the axis`],
+        3,
+        [md`That puts $-\lambda$ on the pipe, which is the grounded case. A neutral pipe must carry zero net charge.`,
+          md`$-qR/a$ is the sphere's rule. For a line charge and a cylinder the image strength is $-\lambda$.`,
+          md`Neutral means zero **net** charge. Induced $+$ and $-$ charge still separate.`,
+          null],
+        md`The pair ($\lambda$ at $d$, $-\lambda$ at $R^2/d$) makes the circle an equipotential. A line charge on the axis is also constant on that circle, so adding $+\lambda$ there keeps the circle an equipotential and brings the pipe's net charge back to zero. Same trick as for a neutral sphere (an extra image at the center).`,
+        { figHtml: LINE_NEUTRAL }),
+
+      Q(md`The line charge is moved farther and farther from the grounded pipe ($d \to \infty$). What happens to the total induced charge per length on the pipe?`,
+        [md`It shrinks like $-\lambda R/d$, as for a grounded sphere`, md`It shrinks to zero exponentially`, md`It stays exactly $-\lambda$`, md`It grows like $\ln(d/R)$`],
+        2,
+        [md`That is the 3-D sphere, where $q' = -qR/a$. In 2-D the image strength is $-\lambda$ for every $d$.`,
+          md`Nothing exponential appears: the image charge doesn't depend on $d$ at all.`,
+          null,
+          md`The total is fixed at $-\lambda$; only its distribution changes with $d$.`],
+        md`In 2-D, "grounded" means the pipe is at the same potential as far away, and any net line charge would make $V$ grow like $\ln s$. So line plus pipe must be neutral for every $d$, and the pipe carries $-\lambda$. As $d$ grows the charge only spreads more evenly: $\sigma(0)/\sigma(\pi) = \left(\frac{d+R}{d-R}\right)^2 \to 1$.`,
+        { figHtml: LINECYL }),
+
+      Q(md`A line charge $\lambda$ sits **inside** a grounded pipe, at distance $d<R$ from its axis. Where is the image that makes the pipe an equipotential?`,
+        [md`$-\lambda$ at distance $R - d$ from the axis`, md`$-\lambda$ at distance $R^2/d$ from the axis, outside the pipe`, md`$-\lambda R/d$ at $R^2/d$`, md`$-\lambda$ on the axis`],
+        1,
+        [md`For a circle the image distance is never "$R$ minus something"; the rule is $d\,d' = R^2$.`,
+          null,
+          md`For a cylinder the image strength is $-\lambda$, not $-\lambda R/d$.`,
+          md`A line charge on the axis is constant on the circle, so it can't cancel the variation that the off-center line produces around the pipe.`],
+        md`The same rule works both ways: $d\,d' = R^2$, so $d' = R^2/d > R$. The image always sits on the far side of the boundary from the region of interest, here outside the pipe. Inside, $V$ is the potential of $\lambda$ and its image, plus a constant that makes the pipe zero.`,
+        { figHtml: LINE_INSIDE }),
 
       P({
         title: 'Line charge and grounded pipe: numbers',
@@ -2194,6 +2813,46 @@
   const AXPLOT = plt({ w: 330, h: 200, x: [1, 4], y: [0.85, 1.03], xl: 'z/R', yl: 'V_{\\text{exact}}/V_{\\text{dip}}', xt: [[1, '1'], [2, '2'], [3, '3'], [4, '4']], yt: [[0.9, '0.9'], [1, '1']], hlines: [[1, '']],
     curves: [{ f: (z) => (2 * Math.pow(z * z + 1, 1.5) - 2 * z * z * z - 3 * z) / (6 * z) / (1 / (8 * z * z)), lab: '\\text{exact}/\\text{dipole}', labAt: 1.8, sides: ['br', 'b'] }], pts: [{ x: 2, y: 0.9618 }] });
 
+  // extra setup figures for the added conceptual MCs (lesson 4)
+  // point charges in the xz-plane (x right, z up); list: { x, z, q: '+'|'-', lab }
+  function qfig(list, o = {}) {
+    const f = PF.fig();
+    const xr = o.xr ?? 95, zr = o.zr ?? 95;
+    if (o.x !== false) { f.line(-xr, 0, xr, 0, { cls: 'dim dash thin' }); axis(f, xr, 0, xr + 22, 0, 'x', ['r', 'br', 'tr']); }
+    f.line(0, zr, 0, -zr, { cls: 'dim dash thin' }); axis(f, 0, -zr, 0, -zr - 22, 'z', ['t', 'tr', 'tl']);
+    if (o.O !== false) f.dot(0, 0, 2.2);
+    for (const c of list) f.charge(c.x, -c.z, { q: c.q });
+    if (o.extra) o.extra(f);
+    for (const c of list) put(f, c.x, -c.z, c.lab, c.sides || ['tr', 'tl', 'r', 'l', 'br', 'bl'], 11);
+    if (o.O !== false) put(f, 0, 0, 'O', ['bl', 'br', 'l', 'tl'], 6, 'small accent');
+    return widen(f).svg();
+  }
+  const TWOQ = qfig([{ x: 0, z: 60, q: '+', lab: '+q' }, { x: 60, z: 0, q: '-', lab: '-q' }]);
+  const ONEQ = qfig([{ x: 0, z: 60, q: '+', lab: '+q', sides: ['l', 'tl', 'bl'] }], { x: false, extra: (f) => dimL(f, 34, 0, 34, -60, 'a', ['r', 'tr', 'br']) });
+  const THREEQ = qfig([{ x: 0, z: 60, q: '+', lab: '+2q' }, { x: 60, z: 0, q: '-', lab: '-q', sides: ['tr', 'br', 't'] }, { x: -60, z: 0, q: '-', lab: '-q', sides: ['tl', 'bl', 't'] }]);
+  const LINQUAD = qfig([{ x: 0, z: 55, q: '+', lab: '+q', sides: ['l', 'tl', 'bl'] }, { x: 0, z: 0, q: '-', lab: '-2q', sides: ['l', 'tl', 'bl'] }, { x: 0, z: -55, q: '+', lab: '+q', sides: ['l', 'tl', 'bl'] }],
+    { x: false, O: false, extra: (f) => { dimL(f, 34, 0, 34, -55, 'd', ['r']); dimL(f, 34, 0, 34, 55, 'd', ['r']); } });
+  const DIPCOL = qfig([{ x: 0, z: 50, q: '+', lab: '+q', sides: ['l', 'tl', 'bl'] }, { x: 0, z: -50, q: '-', lab: '-q', sides: ['l', 'tl', 'bl'] }], { x: false, O: false });
+  const QROW = PF.row([{ svg: DIPCOL, cap: '(A)' }, { svg: ball({ kind: 'full', R: 50, labs: [['\\rho_0', 40]] }), cap: '(B)' }, { svg: LINQUAD, cap: '(C)' }]);
+  const OFFBALL = (() => {
+    const f = PF.fig(), c = -72, r0 = 36;
+    shadeP(f, f.arcPts(0, c, r0, r0, 0, 360)); f.circle(0, c, r0);
+    f.line(0, 30, 0, c - r0 - 2, { cls: 'dim dash thin' });
+    axis(f, 0, c - r0 - 2, 0, c - r0 - 30, 'z', ['t', 'tr', 'tl']);
+    f.dot(0, 0, 2.4); f.dot(0, c, 2.4);
+    put(f, 0, 0, 'O', ['l', 'bl', 'tl'], 6, 'small accent');
+    put(f, 0, c, 'Q', ['r', 'tr', 'br'], 8);
+    dimL(f, 62, 0, 62, c, 'd', ['r', 'tr', 'br']);
+    return widen(f).svg();
+  })();
+  const PM_PTS = [[-0.55, 0.3], [0.5, 0.33], [-0.2, 0.68], [0.28, 0.66], [-0.75, 0.12], [0.76, 0.14]];
+  const BALL_FLIP = ball({ kind: 'full', labs: [['-\\rho_0', 140], ['+\\rho_0', 220]], extra: (f) => {
+    f.line(-60, 0, 60, 0, { cls: 'dim dash thin' });
+    for (const [x, y] of PM_PTS) { minus(f, x * 62, -y * 62); plus(f, x * 62, y * 62); }
+  } });
+  const BALLCOS2 = ball({ kind: 'full', Rdim: 200, labs: [['\\rho=\\rho_0\\cos^2\\theta', 40]] });
+  const BALL_IN = ball({ kind: 'pm', P: [35, 40], labs: [['+\\rho_0', 140], ['-\\rho_0', 220]] });
+
   // ================================================================ Lesson 4
   const L4 = {
     id: 'uW-multipole', title: 'Moments of lopsided charge: the Spring 2026 Problem 2 family',
@@ -2246,6 +2905,36 @@
         md`Both halves contribute positively: $z'>0$ with $\rho>0$, and $z'<0$ with $\rho<0$. The dipole points from $-$ to $+$, like a pair $-q$ below $+q$.`,
         { figHtml: BALL }),
 
+      Q(md`The ball is flipped: $-\rho_0$ in the northern hemisphere and $+\rho_0$ in the southern one. What is $\vb p$?`,
+        [md`$-\dfrac{\pi R^4\rho_0}{2}\hat{\mathbf z}$`, md`$+\dfrac{\pi R^4\rho_0}{2}\hat{\mathbf z}$, since only the size matters`, md`$0$`, md`$-\dfrac{\pi R^4\rho_0}{4}\hat{\mathbf z}$`],
+        0,
+        [null,
+          md`The sign of $\vb p$ is physical: it decides which way the far field points on the axis and which way the ball turns in an external field.`,
+          md`Flipping the charges flips $\vb p$; it doesn't remove it.`,
+          md`Both halves still contribute equally, so the magnitude is unchanged. $\pi R^4\rho_0/4$ is one hemisphere alone.`],
+        md`Every $\rho$ changes sign, so $\vb p = \int\vb r'\rho\,d\tau'$ does too. The dipole still points from $-$ to $+$, now downward. Far away on the $+z$ axis the field then points **down**, toward the ball.`,
+        { figHtml: BALL_FLIP }),
+
+      Q(md`Charge $+q$ sits at $(0,0,d)$ and $-q$ at $(d,0,0)$. What is $\vb p$?`,
+        [md`$qd(\hat{\mathbf x} - \hat{\mathbf z})$`, md`$qd\,\hat{\mathbf x}$`, md`$0$, because $Q = 0$`, md`$qd(-\hat{\mathbf x} + \hat{\mathbf z})$`],
+        3,
+        [md`Sign error: $\vb p$ points from the negative charge **to** the positive one.`,
+          md`Each charge contributes $q_i\vb r_i$. You need both, and $+q$ contributes along $\hat{\mathbf z}$.`,
+          md`$Q = 0$ makes $\vb p$ independent of the origin, not zero.`,
+          null],
+        md`$\vb p = \sum q_i\vb r_i = q(0,0,d) - q(d,0,0) = qd(-1,0,1)$. It points from $-q$ to $+q$ and has length $\sqrt2\,qd$: charge times separation. Since $Q = 0$, any other origin gives the same answer.`,
+        { figHtml: TWOQ }),
+
+      Q(md`Charge $+2q$ sits at $(0,0,a)$, and $-q$ at $(a,0,0)$ and at $(-a,0,0)$. What is $\vb p$?`,
+        [md`$0$, because the charges balance`, md`$qa\,\hat{\mathbf z}$`, md`$2qa\,\hat{\mathbf z}$`, md`$2qa\,\hat{\mathbf z} - 2qa\,\hat{\mathbf x}$`],
+        2,
+        [md`Balanced charge means $Q = 0$, not $\vb p = 0$. The positive charge sits above the negative charge's center.`,
+          md`The top charge is $2q$, so it contributes $2qa\hat{\mathbf z}$.`,
+          null,
+          md`The two $-q$ charges sit at $\pm a\hat{\mathbf x}$; their $x$-contributions cancel.`],
+        md`$\vb p = 2q(a\hat{\mathbf z}) - q(a\hat{\mathbf x}) - q(-a\hat{\mathbf x}) = 2qa\hat{\mathbf z}$. Shortcut: the negative charge's center is at the origin and the positive charge's is at $a\hat{\mathbf z}$, so $\vb p = (2q)(a\hat{\mathbf z})$.`,
+        { figHtml: THREEQ }),
+
       RF(md`
         ### The integral
 
@@ -2273,12 +2962,49 @@
         md`$\vb p = \int\vb r'\rho\,d\tau'$: length × charge. Check any answer: $\rho_0R^4$ and $\sigma_0R^3$ are both C·m.`,
         { nofig: 'units only' }),
 
+      Q(md`Which of these has the units of a dipole moment ($\rho_0$ in C/m³, $\sigma_0$ in C/m², $\lambda$ in C/m, $R$ in m)?`,
+        [md`$\dfrac{\pi R^3\rho_0}{2}$`, md`$\dfrac{\pi R^4\rho_0}{2}$`, md`$2\pi R^2\sigma_0$`, md`$\lambda R$`],
+        1,
+        [md`$R^3\rho_0$ is a charge (C).`, null, md`$R^2\sigma_0$ is a charge.`, md`$\lambda R$ is a charge too: C/m times m.`],
+        md`A dipole moment is charge times length, C·m, and $R^4\rho_0$ has units $\text{m}^4\cdot\text{C/m}^3$. Each kind of density needs one more power of $R$ than it takes to make a charge: $\rho_0R^4$, $\sigma_0R^3$, $\lambda R^2$. A quick units check catches the classic dropped $r'$ in $\int\vb r'\rho\,d\tau'$.`,
+        { nofig: 'units only' }),
+
+      Q(md`The $\pm\rho_0$ ball's radius is doubled, with the same $\rho_0$. By what factor does $p$ grow?`,
+        [md`$2$`, md`$4$`, md`$8$`, md`$16$`],
+        3,
+        [md`$p$ is not proportional to $R$ alone: both the charge and the lever arm grow.`,
+          md`$R^2$ is how a surface charge's total charge grows.`,
+          md`$8$ is how the **charge** of each hemisphere grows ($R^3$). The lever arm adds one more factor of $2$.`,
+          null],
+        md`$p = \frac{\pi R^4\rho_0}{2}$: charge $\propto R^3$ times separation $\propto R$. Doubling $R$ gives $2^4 = 16$. A units check ($\rho_0R^4$ is C·m) gives the power immediately.`,
+        { figHtml: BALL }),
+
       Q(md`At a point beside the ball, on the equatorial plane ($\theta = 90^\circ$), which way does $\vb E_{\text{dip}}$ point?`,
         [md`Up, $+\hat{\mathbf z}$`, md`Radially outward`, md`Radially inward`, md`Down, $-\hat{\mathbf z}$`],
         3,
         [md`At $\theta = 90^\circ$, $\hat{\boldsymbol\theta} = -\hat{\mathbf z}$, and $E_\theta>0$.`, md`$E_r\propto 2\cos\theta = 0$ there.`, md`$E_r = 0$ there.`, null],
         md`$\vb E = \frac{p}{4\pi\varepsilon_0r^3}\hat{\boldsymbol\theta}$ and $\hat{\boldsymbol\theta}$ points toward increasing $\theta$, i.e. down at the equator. Antiparallel to $\vb p$, half the on-axis strength.`,
         { figHtml: BALL_EQ }),
+
+      Q(md`Far from a neutral object you measure $V \approx -\dfrac{C\cos\theta}{r^2}$ with $C>0$. Which way does $\vb p$ point?`,
+        [md`$+\hat{\mathbf z}$`, md`Radially outward`, md`You can't tell without the charge distribution`, md`$-\hat{\mathbf z}$`],
+        3,
+        [md`$+\hat{\mathbf z}$ would give $V>0$ above the object ($\theta = 0$). Here $V<0$ there.`,
+          md`$\vb p$ is one fixed vector, not a field.`,
+          md`The dipole term alone fixes $\vb p$: compare with $\frac{p_z\cos\theta}{4\pi\varepsilon_0r^2}$.`,
+          null],
+        md`$\frac{p_z\cos\theta}{4\pi\varepsilon_0r^2} = -\frac{C\cos\theta}{r^2} \Rightarrow p_z = -4\pi\varepsilon_0C<0$. Negative $V$ above means the negative charge is on top, so $\vb p$ points down. Reading signs off the potential is quicker than redoing the integral.`,
+        { nofig: 'reading a formula' }),
+
+      Q(md`Can you use $V \approx \dfrac{p\cos\theta}{4\pi\varepsilon_0r^2}$ (plus higher terms) at a point **inside** the $\pm\rho_0$ ball?`,
+        [md`Yes, the expansion is valid everywhere if you keep enough terms`, md`No: the expansion assumes every source point is closer to the origin than the field point ($r'<r$)`, md`Only on the $z$-axis`, md`Yes, and the dipole term alone is exact inside`],
+        1,
+        [md`The series in powers of $r'/r$ diverges when some of the charge lies farther out than the field point.`,
+          null,
+          md`The axis is not special; the condition is on $r$ versus $r'$.`,
+          md`Inside the ball the potential is finite at the center, while $\cos\theta/r^2$ blows up there.`],
+        md`The expansion comes from $\frac{1}{|\vb r - \vb r'|} = \sum_\ell\frac{r'^\ell}{r^{\ell+1}}P_\ell(\cos\gamma)$, valid for $r'<r$. Outside the ball that holds for all of the charge. Inside it fails for the charge at larger radius; you would need a direct integral instead.`,
+        { figHtml: BALL_IN }),
 
       Q(md`Does the answer $\vb p = \frac{\pi R^4\rho_0}{2}\hat{\mathbf z}$ depend on where you put the origin?`,
         [md`Yes, always`, md`No, because $Q = 0$`, md`No, because the ball is symmetric`, md`Only if the origin is outside the ball`],
@@ -2378,6 +3104,26 @@
         md`With $Q\ne0$, moving the origin trades dipole for monopole. Choosing the center of charge as origin makes $\vb p = 0$, which is the "best" expansion point.`,
         { figHtml: HEMI }),
 
+      Q(md`A uniformly charged ball (total charge $Q$) is centered at $z = d$ on the $z$-axis. What is its dipole moment about the origin?`,
+        [md`$0$: a uniform ball has no dipole moment`, md`$-Qd\,\hat{\mathbf z}$`, md`It depends on the radius of the ball`, md`$Qd\,\hat{\mathbf z}$`],
+        3,
+        [md`Only about its own center. With $Q\ne0$, $\vb p$ depends on the origin.`,
+          md`Sign: $\vb p = \int\vb r'\rho\,d\tau'$, and the charge sits at positive $z'$ on average.`,
+          md`$\int\vb r'\rho\,d\tau' = Q\,\vb r_{\text{center}}$ for any spherically symmetric ball; the radius drops out.`,
+          null],
+        md`Write $\vb r' = d\hat{\mathbf z} + \vb u$ with $\vb u$ measured from the ball's center: $\vb p = Qd\hat{\mathbf z} + \int\vb u\rho\,d\tau' = Qd\hat{\mathbf z} + 0$. This is $\vb p' = \vb p - Q\vb d$ run backwards. The far field is still led by $Q/(4\pi\varepsilon_0r)$; the "dipole" only says that the charge is off-center.`,
+        { figHtml: OFFBALL }),
+
+      Q(md`A single charge $+q$ sits at $z = a$. What is $\vb p$ about the origin $O$, and about the charge's own position?`,
+        [md`$qa\,\hat{\mathbf z}$ about $O$; $0$ about the charge`, md`$0$ about both: one charge can't be a dipole`, md`$qa\,\hat{\mathbf z}$ about both`, md`$-qa\,\hat{\mathbf z}$ about $O$; $0$ about the charge`],
+        0,
+        [null,
+          md`About $O$ the definition gives $q\vb r = qa\hat{\mathbf z}$. For a charged object the "dipole moment" measures how far its charge is from the chosen origin.`,
+          md`About the charge itself $\vb r' = 0$, so $\vb p = 0$. With $Q\ne0$ the answer depends on the origin.`,
+          md`$\vb p = q\vb r$, with $\vb r$ pointing from the origin to the charge: $+a\hat{\mathbf z}$.`],
+        md`$\vb p = q\vb r'$ depends on where $\vb r'$ is measured from. The expansion about $O$ has a dipole term $\frac{qa\cos\theta}{4\pi\varepsilon_0r^2}$, which is just the first correction for the charge being off-center. Choosing the charge's position as the origin removes it.`,
+        { figHtml: ONEQ }),
+
       P({
         title: 'A ball with $\\rho = \\rho_0\\cos\\theta$',
         q: md`A ball of radius $R$ has $\rho = \rho_0\cos\theta$. Find (a) $Q$, (b) $p_z$. (c) Is the potential outside exactly the dipole potential?`,
@@ -2448,6 +3194,66 @@
         [md`$Q \ne 0$.`, null, md`The ring is even under $z\to-z$, so it is the odd ones that vanish.`, md`The octupole vanishes too.`],
         md`The ring is symmetric under $z\to-z$, so every odd $q_\ell$ vanishes. $\vb p = 0$, and the first correction to $Q/r$ is a quadrupole.`,
         { figHtml: RING }),
+
+      Q(md`A uniformly charged ring ($Q>0$, radius $R$) lies in the $xy$-plane. What is the sign of its quadrupole moment $q_2 = \int r'^2P_2(\cos\theta')\,dq$?`,
+        [md`Negative: $q_2 = -\tfrac12QR^2$`, md`Positive, because the charge is spread out`, md`Zero, by symmetry`, md`It depends on $R$`],
+        0,
+        [null,
+          md`Spread out **in the equatorial plane** means $\theta' = 90^\circ$, where $P_2(0) = -\tfrac12$. Positive $q_2$ is charge stretched along the $z$-axis.`,
+          md`The ring is even under $z\to-z$: that kills the odd moments, not $q_2$.`,
+          md`$R$ sets the size, $-\tfrac12QR^2$, not the sign.`],
+        md`All the charge is at $r' = R$, $\theta' = 90^\circ$: $q_2 = QR^2P_2(0) = -\tfrac12QR^2$. Squashed (oblate) charge gives $q_2<0$; stretched (prolate) charge gives $q_2>0$. The $kr\sin\theta$ ball, concentrated near the equator, also has $q_2<0$.`,
+        { figHtml: RING }),
+
+      Q(md`A ball has $\rho = \rho_0\cos^2\theta$. Which statement about its moments (origin at the center) is right?`,
+        [md`$\vb p = 0$, but $Q$ and the quadrupole are nonzero`,
+          md`$Q = 0$, because $\cos^2\theta$ averages out like $\cos\theta$`,
+          md`Only $Q$ is nonzero, so the field outside is exactly monopole`,
+          md`$\vb p \ne 0$, because the density is largest at the poles`],
+        0,
+        [null,
+          md`$\cos^2\theta\ge0$ everywhere, so the total charge is positive: $Q = \tfrac{4}{9}\pi R^3\rho_0$.`,
+          md`$\cos^2\theta = \tfrac13 + \tfrac23P_2(\cos\theta)$ contains $P_2$, so the quadrupole is nonzero.`,
+          md`Charge piles up at **both** poles equally. The density is even under $z\to-z$, so $p_z = 0$.`],
+        md`Parity: $\rho$ is even under $z\to-z$, so every odd moment vanishes ($\vb p = 0$). In Legendre polynomials, $\cos^2\theta = \tfrac13P_0 + \tfrac23P_2$, so exactly $Q$ and $q_2$ survive (here $q_2 = \tfrac{8}{75}\pi R^5\rho_0>0$: a prolate blob). Outside, the potential is exactly monopole plus quadrupole.`,
+        { figHtml: BALLCOS2 }),
+
+      Q(md`A charge distribution is odd under inversion through the origin: $\rho(-\vb r) = -\rho(\vb r)$. Which moments vanish about the origin?`,
+        [md`All odd $\ell$: dipole, octupole, ...`, md`None in general`, md`Only $Q$`, md`All even $\ell$: $Q$, the quadrupole, ...`],
+        3,
+        [md`Backwards. An odd density pairs $+$ at $\vb r$ with $-$ at $-\vb r$, and that pair **adds** to $\vb p$.`,
+          md`Symmetry does kill half of them: the moments of even order pair up and cancel.`,
+          md`The quadrupole cancels too: it weights $\vb r$ and $-\vb r$ with the same even polynomial.`,
+          null],
+        md`The moment of order $\ell$ weights $\rho$ with polynomials of degree $\ell$ in $x', y', z'$, which have parity $(-1)^\ell$. An odd $\rho$ times an even polynomial integrates to zero. So $Q$, the quadrupole, ... vanish, while $\vb p$, the octupole, ... can survive. The $\pm\rho_0$ ball and the pair of opposite octants are both like this.`,
+        { nofig: 'a symmetry rule' }),
+
+      Q(md`Which of these has $Q = 0$ and $\vb p = 0$ but a **nonzero** quadrupole moment?`,
+        [md`(A) $+q$ at $z = d$, $-q$ at $z = -d$`, md`(B) a uniformly charged ball`, md`(C) $+q$ at $z = \pm d$, $-2q$ at the origin`, md`A single point charge at the origin`],
+        2,
+        [md`(A) is a pure dipole: $p_z = 2qd \ne 0$, and $q_2 = qd^2 - qd^2 = 0$.`,
+          md`(B) is spherically symmetric: only $Q$ survives, and every higher moment is zero.`,
+          null,
+          md`A point charge at the origin has $Q\ne0$ and every higher moment zero.`],
+        md`For (C): $Q = q - 2q + q = 0$, $p_z = qd - qd = 0$, and $q_2 = \sum q_iz_i^2 = 2qd^2$. A quadrupole with the lower moments zero needs charge that is stretched (or squashed) along an axis without being lopsided.`,
+        { figHtml: QROW.svg }),
+
+      Q(md`Charges $+q$, $-2q$, $+q$ sit on the $z$-axis at $z = d$, $0$, $-d$. Far away, how does the leading term of $V$ fall off?`,
+        [md`$1/r$`, md`$1/r^2$`, md`$1/r^3$`, md`$1/r^4$`],
+        2,
+        [md`$Q = q - 2q + q = 0$: no monopole.`,
+          md`$p_z = qd + 0 - qd = 0$: no dipole.`,
+          null,
+          md`The quadrupole $q_2 = \sum q_iz_i^2 = 2qd^2$ is nonzero, so the leading term comes before $1/r^4$.`],
+        md`Check the moments in order: $Q = 0$, $\vb p = 0$, $q_2 = qd^2 + qd^2 = 2qd^2 \ne 0$. The leading term is the quadrupole, $V\approx\frac{1}{4\pi\varepsilon_0}\frac{2qd^2}{r^3}P_2(\cos\theta)$: two back-to-back dipoles whose dipole moments cancel.`,
+        { figHtml: LINQUAD }),
+
+      Q(md`Far from that quadrupole, you double your distance. By what factor does $|\vb E|$ drop?`,
+        [md`$4$`, md`$8$`, md`$2$`, md`$16$`],
+        3,
+        [md`$4$ is a point charge's field ($1/r^2$).`, md`$8$ is a dipole's field ($1/r^3$), or the quadrupole's **potential**.`, md`No multipole field falls as $1/r$ in 3-D.`, null],
+        md`Quadrupole $V\propto1/r^3$, so $E\propto1/r^4$, and doubling $r$ divides $E$ by $2^4 = 16$. The pattern: the $\ell$-th multipole has $V\propto r^{-(\ell+1)}$ and $E\propto r^{-(\ell+2)}$.`,
+        { figHtml: LINQUAD }),
 
       Q(md`For the exam ball, how big is the error of the dipole approximation at distance $r$, relative to the dipole term?`,
         [md`Of order $R/r$`, md`Of order $(R/r)^3$`, md`Zero`, md`Of order $(R/r)^2$`],
@@ -2551,6 +3357,36 @@
         [md`A uniform field exerts no net force on a neutral object.`, md`$\vb p\times\vb E_0 \ne 0$ when they are perpendicular.`, null, md`$Q = 0$ kills the force, not the torque.`],
         md`$\vb F = Q\vb E_0 = 0$; $\vb N = \vb p\times\vb E_0 = pE_0\,\hat{\mathbf z}\times\hat{\mathbf x} = pE_0\hat{\mathbf y}$. It rotates $\vb p$ from $+z$ toward $+x$.`,
         { figHtml: BALL_EXTX }),
+
+      Q(md`The $\pm\rho_0$ ball sits in a uniform field $\vb E_0$. In which orientation is the torque on it largest?`,
+        [md`$\vb p$ parallel to $\vb E_0$`, md`$\vb p$ antiparallel to $\vb E_0$`, md`$\vb p$ perpendicular to $\vb E_0$`, md`The torque is zero in every orientation, because $Q = 0$`],
+        2,
+        [md`Parallel is the stable equilibrium: $\vb p\times\vb E_0 = 0$.`,
+          md`Antiparallel is also an equilibrium (an unstable one); the torque is zero there.`,
+          null,
+          md`$Q = 0$ makes the **force** vanish in a uniform field. The torque is $\vb p\times\vb E_0$, which needs only $\vb p$.`],
+        md`$|\vb N| = pE_0\sin\vartheta$, largest at $\vartheta = 90^\circ$. The energy $U = -pE_0\cos\vartheta$ is steepest there and flat at $0$ and $180^\circ$, the two equilibria.`,
+        { figHtml: BALL_EXT }),
+
+      Q(md`The ball's dipole is tilted $30^\circ$ away from a uniform field $\vb E_0$. What is the magnitude of the torque?`,
+        [md`$\tfrac12pE_0$`, md`$\tfrac{\sqrt3}{2}pE_0$`, md`$pE_0$`, md`$0$, because the net force is zero`],
+        0,
+        [null,
+          md`That uses $\cos30^\circ$. The torque is $|\vb p\times\vb E_0| = pE_0\sin\vartheta$; the cosine belongs to the energy.`,
+          md`$pE_0$ is the maximum, at $90^\circ$.`,
+          md`Zero force doesn't mean zero torque: the two hemispheres are pushed opposite ways along different lines.`],
+        md`$N = pE_0\sin30^\circ = \tfrac12pE_0$, turning $\vb p$ toward $\vb E_0$. Remember the pair: torque $\propto\sin\vartheta$, energy $U = -pE_0\cos\vartheta$.`,
+        { figHtml: BALL_EXT }),
+
+      Q(md`How much work must you do to turn the ball slowly from $\vb p$ parallel to $\vb E_0$ to $\vb p$ antiparallel?`,
+        [md`$pE_0$`, md`$2pE_0$`, md`$0$, because both end states are equilibria`, md`$-2pE_0$`],
+        1,
+        [md`That only takes you to $90^\circ$: $U$ goes from $-pE_0$ to $0$.`,
+          null,
+          md`Being equilibria doesn't make their energies equal: $U = -pE_0$ and $+pE_0$.`,
+          md`Sign: you push against the torque, so you do positive work.`],
+        md`$W = U_{\text{final}} - U_{\text{initial}} = (+pE_0) - (-pE_0) = 2pE_0$. For the exam ball, $2pE_0 = \pi R^4\rho_0E_0$.`,
+        { figHtml: BALL_EXT }),
 
       Q(md`On the exam you computed $p_z$ for the $\pm\rho_0$ ball and got $0$. Which slip most likely caused it?`,
         [md`Using $r'^3$ instead of $r'^2$`, md`Using $+\rho_0$ for both hemispheres, so $\int_0^\pi\sin\theta'\cos\theta'\,d\theta' = 0$`, md`Using $2\pi$ for the $\phi'$ integral`, md`Putting the origin at the center`],
