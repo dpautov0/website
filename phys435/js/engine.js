@@ -264,6 +264,7 @@
         <section class="plan">
           <h2>Before Monday</h2>
           <ol>
+            ${BYID.has('uD-start') ? '<li><b>The <a href="#/drill">Drill</a> tab.</b> Ladders for everything ECE 329 never covered (separation of variables, Legendre, images, multipoles and deltas, boundary conditions and energy), from quick recognition up to harder than the exam.</li>' : ''}
             <li><b>What the last two exams asked.</b> ${BYID.has('x-s26') ? '<a href="#/l/x-s26">The Spring 2026 exam</a>' : 'The Spring 2026 exam'} (polar separation of variables and a dipole moment)${BYID.has('uW-polar') ? ', with <a href="#/l/uW-polar">Unit W</a> for polar coordinates' : ''}. ${BYID.has('x-mock4') ? '<a href="#/l/x-mock4">Mock D</a>' : 'Mock D'}, in the format of the exam two semesters ago (E given, find V and ρ with a delta at the origin; Gauss with a sphere and a cylinder superimposed; sphere images with the sphere at V₀)${BYID.has('uP-delta') ? ', with <a href="#/l/uP-delta">Unit P</a> drilling each pattern' : ''}.</li>
             <li><b>Boundary-value problems.</b> Units 5–7 (images, separation in Cartesian and spherical), Unit L (Legendre polynomials: last year's exam had one directly) and Unit B (boundary conditions). Last year's exam was mostly these.</li>
             <li><b>The ground they stand on.</b> Unit 4 (Laplace and uniqueness), and the boundary-condition lessons in Units 2–3.</li>
@@ -600,7 +601,7 @@
   function route() {
     const h = location.hash || '#/';
     const m = /^#\/l\/(.+)$/.exec(h);
-    const ALIAS = { '#/sheet': 'x-sheet', '#/quiz': 'x-quiz', '#/mock': 'x-mock' };
+    const ALIAS = { '#/sheet': 'x-sheet', '#/quiz': 'x-quiz', '#/mock': 'x-mock', '#/drill': 'uD-start' };
     const id = ALIAS[h] || (m && m[1]);
     document.body.classList.remove('nav-open');
     document.querySelectorAll('.top-link').forEach((tl) => tl.classList.toggle('on', ALIAS[tl.getAttribute('href')] === id));

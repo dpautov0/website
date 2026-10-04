@@ -346,3 +346,5 @@ math-field.mf::part(virtual-keyboard-toggle) { color: var(--dim); }
 
 /* the cheat-sheet link only fits in the top bar on wider screens; the home page has a button for it */
 @media (max-width: 640px) { .top-link.top-cs { display: none; } }
+/* the Drill tab stands out: it is the main thing to do before the exam */
+.top-link.top-drill { color: var(--fg); font-weight: 600; border-bottom: 2px solid var(--bad); }
