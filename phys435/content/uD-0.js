@@ -21,6 +21,20 @@
             - **Level 6: harder than the exam.** Combine two methods, reason without computing, catch the trap.
 
             Climb in order. If a level goes badly, drop back one level and redo it before moving up. The conceptual questions are the fastest way to find out what you don't actually understand yet.
+
+            ### The ladders, in priority order
+
+            | Topic | Concepts | Problems |
+            |---|---|---|
+            | Separation of variables, Cartesian and polar | [concept ladder](#/l/uD-sep-concepts) | [problem ladder](#/l/uD-sep-problems) |
+            | Legendre (spherical separation) | [concept ladder](#/l/uD-leg-concepts) | [problem ladder](#/l/uD-leg-problems) |
+            | Method of images and uniqueness | [concept ladder](#/l/uD-img-concepts) | [problem ladder](#/l/uD-img-problems) |
+            | Multipoles | [concept ladder](#/l/uD-mp-concepts) | [problem ladder](#/l/uD-mp-problems) |
+            | Delta functions in $\rho$ | [concept ladder](#/l/uD-delta-concepts) | [problem ladder](#/l/uD-delta-problems) |
+            | Boundary conditions in 2-D and 3-D | [concept ladder](#/l/uD-bc-concepts) | [problem ladder](#/l/uD-bc-problems) |
+            | Electrostatic energy | [concept ladder](#/l/uD-energy-concepts) | [problem ladder](#/l/uD-energy-problems) |
+
+            Short on time? Do Levels 4–6 of the concept ladders first: they find the gaps fastest. Then the Level 5 problems, which are exam-sized.
           `),
         ],
       },
