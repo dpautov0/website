@@ -665,13 +665,13 @@
 
       Q(md`Outside a neutral cylinder, the general solution is $a_0 + b_0\ln s + \sum_k s^{-k}(c_k\cos k\phi + d_k\sin k\phi)$ (plus any imposed field). Which condition kills $b_0$?`,
         [md`$V$ finite at $s = 0$`,
-          md`The cylinder is neutral, so the field far away has no $1/s$ part; equivalently $V$ stays bounded as $s\to\infty$`,
+          md`Zero net charge: by Gauss's law the coefficient of $\ln s$ is $-\lambda/(2\pi\varepsilon_0)$, and here $\lambda = 0$`,
           md`$V \to 0$ at infinity, which kills every term`,
           md`Single-valuedness`],
         1,
         [md`$s = 0$ is inside the cylinder, not in the region of interest.`,
           null,
-          md`$V \to 0$ does kill $a_0$ and $b_0$, but it is too strong as a reason: $s^{-k}$ terms survive it. And with net charge you can't impose it at all.`,
+          md`$V\to0$ does not kill every term: the $s^{-k}$ terms vanish at infinity anyway. And it is often not available: with an imposed field $V$ grows like $-E_0s\cos\phi$, and a neutral 2-D object can sit at a constant $a_0 \ne 0$.`,
           md`$\ln s$ is single-valued. Single-valuedness kills $\phi$, not $\ln s$.`],
         md`$b_0 = -\lambda/(2\pi\varepsilon_0)$ by Gauss's law: the $\ln s$ term carries all the net charge per length. Neutral cylinder: $b_0 = 0$.`,
         { figHtml: cyl({ R: 50, metal: true, lab: [['\\lambda=0', 40]] }) }),
@@ -884,8 +884,8 @@
 
   // ================================================================ Lesson 2 figures
   const EXAM = wedge({ al: 60, a: 55, b: 170, inner: '\\#1:\\ \\Phi(a,\\theta)=0', w0: '\\#2:\\ \\Phi(r,0)=0', wA: '\\#3:\\ \\Phi(r,\\alpha)=0', outer: '\\#4:\\ \\Phi(b,\\theta)=V_0', ticks: true });
-  const EXAM_MAP = wedge({ al: 60, a: 55, b: 170, ticks: true, outer: 'V_0', w0: '0', wA: '0', inner: '0',
-    map: { fn: (r, th) => examPhi(r / 55, th, PI / 3, 170 / 55), levels: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9] } });
+  const EXAM_MAP = wedge({ al: 60, a: 55, b: 165, ticks: true, outer: 'V_0', w0: '0', wA: '0', inner: '0',
+    map: { fn: (r, th) => examPhi(r / 55, th, PI / 3, 3), levels: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9] } });
   const ROLES = wedge({ al: 60, a: 55, b: 170, inner: 'D=-Ca^{2k}', w0: 'A=0', wA: 'k=n\\pi/\\alpha', outer: 'C_n', ticks: true });
   const PIE = wedge({ al: 60, a: 0, b: 160, w0: '\\Phi=0', wA: '\\Phi=0', outer: '\\Phi=V_0', ticks: true });
   const PIE_P = wedge({ al: 60, a: 0, b: 160, w0: '\\Phi=0', wA: '\\Phi=0', outer: '\\Phi=V_0', ticks: true, angLab: '\\alpha=\\pi/3', Ptheta: [80, 30, 46] });
@@ -997,6 +997,32 @@
           null,
           md`$\ln r$ is the $k = 0$ radial function, and $k = 0$ is killed by the grounded walls.`],
         md`An annular sector is like an annulus: neither the origin nor infinity is in it. Keep both powers; the inner arc condition then picks the combination $(r/a)^k - (a/r)^k$.`,
+        { figHtml: EXAM }),
+
+      Q(md`In the exam problem, what job does BC #3, $\Phi(r,\alpha) = 0$, do?`,
+        [md`It kills the $\cos k\theta$ term`,
+          md`It quantizes $k$: $\sin k\alpha = 0$, so $k = n\pi/\alpha$`,
+          md`It fixes $D = -Ca^{2k}$`,
+          md`It fixes the $C_n$ by Fourier's trick`],
+        1,
+        [md`That is BC #2, $\Theta(0) = 0$, which sets $A = 0$.`,
+          null,
+          md`That is BC #1, the grounded inner arc, which acts on $R(r)$.`,
+          md`That is BC #4, the only inhomogeneous condition, used last.`],
+        md`Each BC has one job. #2 kills $\cos$; #3 quantizes $k$; #1 ties $D$ to $C$; #4 fixes the $C_n$. Writing the job next to each BC is a quick way to make sure your solution uses all four.`,
+        { figHtml: EXAM }),
+
+      Q(md`The exam says the four metal pieces are insulated from each other at the corners. Why does that matter?`,
+        [md`The gaps make $\Phi$ discontinuous everywhere inside the region`,
+          md`It changes the allowed values of $k$`,
+          md`It means the BCs hold only away from the corners, so Fourier's trick fails`,
+          md`Touching pieces would form one conductor at one potential, so the arc could not be at $V_0$ while the walls are at $0$`],
+        3,
+        [md`Inside the region $\Phi$ is smooth (it solves Laplace). Only at the two corner points does the boundary value jump from $V_0$ to $0$.`,
+          md`$k$ is fixed by the two grounded walls, $k = n\pi/\alpha$, gaps or not.`,
+          md`Two isolated points don't change an integral over $\theta$. Fourier's trick works fine; the series just converges slowly near the corners.`,
+          null],
+        md`Metal pieces in contact are one conductor, which is an equipotential. To hold different faces at different potentials you need insulating gaps. In the idealized problem the gaps are infinitely thin, so they only show up as jumps of the boundary data at the corners.`,
         { figHtml: EXAM }),
 
       RF(md`
@@ -1498,8 +1524,8 @@
         figHtml: HARD,
         hints: [md`Subtract $V_0\theta/\alpha$ to make the walls homogeneous.`, md`$g_n = \dfrac{2V_0(-1)^n}{n\pi}$.`, md`$R_n$ must be $1$ on both arcs.`, md`At $\theta = \pi/4$, $\sin(n\pi/2)$ kills even $n$; at $r = \sqrt{ab}$, $R_n = \dfrac{2(ab)^{k/2}}{a^k + b^k}$.`],
         parts: [
-          { lbl: md`(a) First step`, mc: [md`Expand $V_0$ on the wall in a sine series in $r$`, md`Subtract $V_0\theta/\alpha$ so that the walls become homogeneous`, md`Use $\sin(n\pi\theta/\alpha)$ directly and fit the wall`, md`Use images`],
-            a: 1, why: [md`That works only with the $\sin(\mu\ln r)$ basis (the "other route"); in the standard approach you first remove the wall data.`, null, md`Every sine vanishes at $\theta = \alpha$; it can't fit $V_0$.`, md`No finite set of image charges makes this boundary.`] },
+          { lbl: md`(a) First step`, mc: [md`Write $\Phi = V_0\theta/\alpha$: it already matches both walls`, md`Subtract $V_0\theta/\alpha$ so that the walls become homogeneous`, md`Use $\sin(n\pi\theta/\alpha)$ directly and fit the wall`, md`Use images`],
+            a: 1, why: [md`$V_0\theta/\alpha$ matches the walls but not the arcs: on $r = a$ and $r = b$ it equals $V_0\theta/\alpha \ne 0$, while the arcs are grounded. It is only the first piece.`, null, md`Every sine vanishes at $\theta = \alpha$; it can't fit $V_0$.`, md`No finite set of image charges makes this boundary.`] },
           { lbl: md`(b) $g_1/V_0$`, ans: -0.63662, unit: '' },
           { lbl: md`(c) $R_n(r)$`, expr: '(r^k + (a*b)^k/r^k)/(a^k + b^k)', vars: { r: [1.1, 1.9], a: [0.5, 1], b: [2, 3], k: [1, 4] }, accepts: ['((r/b)^k + (a/r)^k)/((a/b)^k + 1)'] },
           { lbl: md`(d) $\Phi(\sqrt2a,\pi/4)/V_0$`, ans: 0.036181, unit: '' },
@@ -1529,6 +1555,19 @@
           **Why so small?** The arcs are close together ($\ln(b/a) = 0.69$) compared with the angular width, so the grounded arcs dominate the middle of the region; the wall at $V_0$ is felt only near $\theta = \pi/2$.
         `,
       }),
+
+      Q(md`Which list of boundary conditions matches the figure (a pie slice of opening $\pi/2$, tip in the region)?`,
+        [md`$\Phi(r,0) = 0$, $\Phi(r,\pi/2) = V_0$, $\Phi(b,\theta) = 0$, $\Phi(a,\theta) = 0$`,
+          md`$\Phi(r,0) = 0$, $\Phi(r,\pi/2) = 0$, $\Phi(b,\theta) = V_0$, $\Phi$ finite at $r = 0$`,
+          md`$\Phi(r,0) = 0$, $\Phi(r,\pi/2) = V_0$, $\Phi(b,\theta) = 0$, $\Phi$ finite at $r = 0$`,
+          md`$\Phi(r,0) = 0$, $\Phi(r,\pi/2) = V_0$, $\Phi(b,\theta) = 0$, $\Phi\to0$ as $r\to\infty$`],
+        2,
+        [md`There is no inner arc: the tip $r = 0$ is part of the region. Its condition is finiteness, not a value on $r = a$.`,
+          md`Wrong live face: in the figure the wall $\theta = \pi/2$ is at $V_0$ and the arc is grounded.`,
+          null,
+          md`The region stops at the arc $r = b$; infinity is not in it.`],
+        md`Read each face of the figure: wall $\theta = 0$ at $0$, wall $\theta = \pi/2$ at $V_0$, arc at $0$. The tip is in the region, so the fourth condition is regularity there, which kills $r^{-k}$ (and $\ln r$). The live wall then calls for the $k = 0$ term $2V_0\theta/\pi$.`,
+        { figHtml: PIE2 }),
 
       P({
         title: 'Pie slice with one live wall',
@@ -1827,6 +1866,19 @@
         md`$E_{\perp}$ jumps by $\sigma/\varepsilon_0$ and $E_\parallel$ is continuous; in terms of $V$, $V$ is continuous and $-\partial_sV$ jumps by $\sigma/\varepsilon_0$ going outward.`,
         { figHtml: SHELL1 }),
 
+      Q(md`A long, thin **insulating** shell of radius $R$ carries $\sigma_0\cos\phi$, with nothing else around. Which of these is **not** a boundary condition of the problem?`,
+        [md`$V(R,\phi) = 0$`,
+          md`$V_{\text{in}}(R,\phi) = V_{\text{out}}(R,\phi)$`,
+          md`$V_{\text{in}}$ finite on the axis`,
+          md`$\partial_sV_{\text{out}} - \partial_sV_{\text{in}} = -\dfrac{\sigma_0\cos\phi}{\varepsilon_0}$ at $s = R$`],
+        0,
+        [null,
+          md`Continuity of $V$ holds across any surface charge. It is one of the two matching conditions.`,
+          md`The axis is in the inner region and carries no charge, so $V$ is finite there. It kills $s^{-k}$ inside.`,
+          md`This is the jump condition; it is what puts the charge into the problem.`],
+        md`An insulating shell is not an equipotential, and nothing grounds it. Its potential is whatever the charge produces, and here it varies around the shell. "Grounded" or "held at $V_0$" are conditions for conductors; for a charged insulator you match across the surface instead.`,
+        { figHtml: SHELL1 }),
+
       P({
         title: 'A shell with $\\sigma_0\\cos\\phi$',
         q: md`A long thin cylindrical shell of radius $R$ carries $\sigma(\phi) = \sigma_0\cos\phi$. Find (a) $V_{\text{in}}$, (b) $E_x$ inside, (c) $V_{\text{out}}$. (d) A sphere with $\sigma_0\cos\theta$ has a uniform interior field $\sigma_0/(3\varepsilon_0)$. Why is the cylinder's larger?`,
@@ -1993,6 +2045,13 @@
 
         [[fig:lc]]
 
+        **Region:** outside the pipe, $s>R$, except the line itself. **BCs:**
+        1. $V(R,\phi) = 0$ (grounded pipe)
+        2. near the line, $V \to -\dfrac{\lambda}{2\pi\varepsilon_0}\ln(\text{distance to the line})$ (the given charge)
+        3. $V$ stays bounded as $s\to\infty$ (no leftover $\ln s$)
+
+        BC 3 is what "grounded" means in 2-D: you can't put the zero at infinity, so instead you require that nothing grows far away. Since a net charge per length always brings a growing $\ln s$, the pipe must carry exactly $-\lambda$.
+
         **Images.** For a cylinder the image of a line charge is a line charge $-\lambda$ (same magnitude, not $-\lambda R/d$ as for a sphere's point charge) at distance $R^2/d$ from the axis, plus a constant: on the pipe the pair gives $\frac{\lambda}{2\pi\varepsilon_0}\ln\frac Rd$, the same at every point of the circle, so add $\frac{\lambda}{2\pi\varepsilon_0}\ln\frac dR$ to ground it. The induced surface charge is
         $$\sigma(\phi) = -\frac{\lambda}{2\pi R}\,\frac{d^2 - R^2}{R^2 + d^2 - 2Rd\cos\phi},$$
         and it adds up to exactly $-\lambda$ per length.
@@ -2006,10 +2065,10 @@
         [md`$-\lambda R/d$`, md`$0$`, md`$-\lambda$`, md`$-\lambda d/R$`],
         2,
         [md`That is the sphere's image rule ($q' = -qR/a$). For a cylinder and a line charge the image is $-\lambda$.`,
-          md`A grounded conductor near a charge does acquire charge.`,
+          md`Zero induced charge is the isolated neutral pipe. Then the image system would need an extra $+\lambda$ on the axis, and the total charge $\lambda$ would make $V$ grow like $\ln s$ far away.`,
           null,
-          md`More than $\lambda$ can't be induced; the image strength is exactly $-\lambda$.`],
-        md`The image line has strength $-\lambda$ at $R^2/d$, so the induced charge per length is $-\lambda$. In 2-D, "grounded" and "neutral" differ by the constant needed to make the pipe an equipotential, and the full $-\lambda$ goes onto the pipe.`,
+          md`The image strength is exactly $-\lambda$. Any total other than $-\lambda$ (line plus pipe) leaves a net $\ln s$ term, and $V$ grows without bound far away.`],
+        md`The image line has strength $-\lambda$ at $R^2/d$, so the induced charge per length is $-\lambda$. In 2-D, "grounded" means the pipe is an equipotential **and** $V$ stays bounded far away (BC 3). That forces the line and the pipe together to be neutral, so the full $-\lambda$ goes onto the pipe.`,
         { figHtml: LINECYL }),
 
       P({
@@ -2073,6 +2132,19 @@
   // ================================================================ Lesson 4 figures
   const BALL = ball({ kind: 'pm', Rdim: 200, labs: [['+\\rho_0', 140], ['-\\rho_0', 220]] });
   const BALL_P = ball({ kind: 'pm', P: [135, 40], labs: [['+\\rho_0', 140], ['-\\rho_0', 220]] });
+  const BALL_EQ = ball({ kind: 'pm', P: [135, 90], thR: 22, labs: [['+\\rho_0', 140], ['-\\rho_0', 220]] });
+  const BALL_EXTX = ball({ kind: 'pm', labs: [['+\\rho_0', 140], ['-\\rho_0', 220]], extra: (f) => {
+    for (const y of [-40, 0, 40]) { f.arrow(-150, y, -96, y, { cls: 'dim', hs: 6 }); f.arrow(96, y, 150, y, { cls: 'dim', hs: 6 }); }
+    put(f, 150, -40, '\\vb E_0', ['r', 'tr'], 6); axis(f, 64, 70, 100, 70, 'x', ['r', 'br']);
+  } });
+  const RING = (() => {
+    const f = PF.fig();
+    f.ellipse(0, 0, 70, 18, { half: 'front', cls: 'thick' }); f.ellipse(0, 0, 70, 18, { half: 'back', cls: 'thick' });
+    f.line(0, 60, 0, 22, { cls: 'dim dash thin' }); f.line(0, 14, 0, -14, { cls: 'dim dash thin' });
+    axis(f, 0, -22, 0, -80, 'z', ['t', 'tr']);
+    f.dot(0, 0, 2.2); put(f, 70, 0, '\\lambda', ['r', 'tr', 'br'], 6, 'small');
+    return widen(f).svg();
+  })();
   const BALL_AX = ball({ kind: 'pm', zTop: 150, labs: [['+\\rho_0', 140], ['-\\rho_0', 220]], extra: (f) => { f.dot(0, -118, 2.8); put(f, 0, -118, 'P\\ (z)', ['r', 'tr'], 6); } });
   const SHELLPM = ball({ kind: 'shellpm', Rdim: 200, labs: [['+\\sigma_0', 125, 70], ['-\\sigma_0', 235, 70]] });
   const HEMI = ball({ kind: 'north', Rdim: 155, labs: [['\\rho_0', 135]] });
@@ -2206,7 +2278,7 @@
         3,
         [md`At $\theta = 90^\circ$, $\hat{\boldsymbol\theta} = -\hat{\mathbf z}$, and $E_\theta>0$.`, md`$E_r\propto 2\cos\theta = 0$ there.`, md`$E_r = 0$ there.`, null],
         md`$\vb E = \frac{p}{4\pi\varepsilon_0r^3}\hat{\boldsymbol\theta}$ and $\hat{\boldsymbol\theta}$ points toward increasing $\theta$, i.e. down at the equator. Antiparallel to $\vb p$, half the on-axis strength.`,
-        { figHtml: BALL_P }),
+        { figHtml: BALL_EQ }),
 
       Q(md`Does the answer $\vb p = \frac{\pi R^4\rho_0}{2}\hat{\mathbf z}$ depend on where you put the origin?`,
         [md`Yes, always`, md`No, because $Q = 0$`, md`No, because the ball is symmetric`, md`Only if the origin is outside the ball`],
@@ -2375,7 +2447,7 @@
         1,
         [md`$Q \ne 0$.`, null, md`The ring is even under $z\to-z$, so it is the odd ones that vanish.`, md`The octupole vanishes too.`],
         md`The ring is symmetric under $z\to-z$, so every odd $q_\ell$ vanishes. $\vb p = 0$, and the first correction to $Q/r$ is a quadrupole.`,
-        { figHtml: ball({ kind: 'none', R: 56, extra: (f) => { f.ellipse(0, 0, 56, 14, { cls: 'thick' }); } }) }),
+        { figHtml: RING }),
 
       Q(md`For the exam ball, how big is the error of the dipole approximation at distance $r$, relative to the dipole term?`,
         [md`Of order $R/r$`, md`Of order $(R/r)^3$`, md`Zero`, md`Of order $(R/r)^2$`],
@@ -2478,7 +2550,7 @@
         2,
         [md`A uniform field exerts no net force on a neutral object.`, md`$\vb p\times\vb E_0 \ne 0$ when they are perpendicular.`, null, md`$Q = 0$ kills the force, not the torque.`],
         md`$\vb F = Q\vb E_0 = 0$; $\vb N = \vb p\times\vb E_0 = pE_0\,\hat{\mathbf z}\times\hat{\mathbf x} = pE_0\hat{\mathbf y}$. It rotates $\vb p$ from $+z$ toward $+x$.`,
-        { figHtml: BALL }),
+        { figHtml: BALL_EXTX }),
 
       Q(md`On the exam you computed $p_z$ for the $\pm\rho_0$ ball and got $0$. Which slip most likely caused it?`,
         [md`Using $r'^3$ instead of $r'^2$`, md`Using $+\rho_0$ for both hemispheres, so $\int_0^\pi\sin\theta'\cos\theta'\,d\theta' = 0$`, md`Using $2\pi$ for the $\phi'$ integral`, md`Putting the origin at the center`],
