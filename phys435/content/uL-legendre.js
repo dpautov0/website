@@ -1,5 +1,5 @@
 /* Unit L — Legendre polynomials: direct problems
-   (Lecture 12 pp. 4–6 and Lecture 13; Griffiths 3.3.2). A drill unit that follows Unit 7:
+   (Griffiths 3.3.2). A drill unit that follows Unit 7:
    computing P_ℓ, Legendre's equation, orthogonality, expansions, and direct sphere problems. */
 (function () {
   'use strict';
@@ -203,7 +203,7 @@
     return f.svg();
   }
 
-  // Lecture 12's slot: grounded plates at y = 0 and y = a, the end x = 0 held at V0(y)
+  // Unit 6's slot: grounded plates at y = 0 and y = a, the end x = 0 held at V0(y)
   function slotFig() {
     const f = PF.fig();
     const a = 90, L = 200;
@@ -250,7 +250,7 @@
       RF(md`
         This unit has one job: make you fast and certain on any **direct** Legendre question. Last year's exam had one. Unit 7 used Legendre polynomials as a tool inside boundary-value problems. Here they are the topic, and every skill gets drilled until it takes under a minute.
 
-        Notation (the lecture's): the separated solution is $V(r,\theta) = R(r)\,Q(\theta)$ with
+        Notation: the separated solution is $V(r,\theta) = R(r)\,Q(\theta)$ with
 
         $$Q(\theta) = P_\ell(\cos\theta), \qquad x = \cos\theta, \qquad \ell = 0, 1, 2, \dots$$
 
@@ -258,7 +258,7 @@
 
         [[fig:x]]
 
-        ### Rodrigues' formula (Lecture 13)
+        ### Rodrigues' formula
 
         $$P_\ell(x) = \frac{1}{2^\ell\,\ell!}\left(\frac{d}{dx}\right)^{\ell}\left(x^2 - 1\right)^{\ell}$$
 
@@ -350,11 +350,11 @@
         { figHtml: FIG.p1to4 }),
 
       RF(md`
-        ### A fast check: the recurrence (a tool, not in the lectures)
+        ### A fast check: the recurrence
 
         $$(\ell+1)\,P_{\ell+1}(x) = (2\ell+1)\,x\,P_\ell(x) - \ell\,P_{\ell-1}(x)$$
 
-        This is a standard identity (Bonnet's recursion). The lectures don't use it, so on the exam treat it as a check, not as the derivation they asked for. Climb from $P_0 = 1$, $P_1 = x$:
+        This is a standard identity (Bonnet's recursion). On the exam treat it as a check, not as a substitute for a derivation you are asked to show. Climb from $P_0 = 1$, $P_1 = x$:
 
         - $\ell = 1$: $\;2P_2 = 3x\cdot x - 1$, so $P_2 = \tfrac12(3x^2 - 1)$.
         - $\ell = 2$: $\;3P_3 = 5x\cdot\tfrac12(3x^2 - 1) - 2x = \tfrac12(15x^3 - 9x)$, so $P_3 = \tfrac12(5x^3 - 3x)$.
@@ -390,7 +390,7 @@
 
         | property | statement |
         |---|---|
-        | normalisation | $P_\ell(1) = 1$ for every $\ell$ (Lecture 13) |
+        | normalisation | $P_\ell(1) = 1$ for every $\ell$ |
         | south pole | $P_\ell(-1) = (-1)^\ell$ |
         | parity | $P_\ell(-x) = (-1)^\ell P_\ell(x)$ |
         | equator | $P_\ell(0) = 0$ for odd $\ell$; $\;P_0(0) = 1$, $P_2(0) = -\tfrac12$, $P_4(0) = \tfrac38$, $P_6(0) = -\tfrac{5}{16}$ |
@@ -618,11 +618,11 @@
       RF(md`
         ### Two forms of one equation
 
-        Separating $V = R(r)\,Q(\theta)$ in Laplace's equation (Lecture 12, p. 5) gives the angular equation
+        Separating $V = R(r)\,Q(\theta)$ in Laplace's equation gives the angular equation
 
         $$\frac{d}{d\theta}\left(\sin\theta\,\frac{dQ}{d\theta}\right) = -\ell(\ell+1)\,Q\sin\theta$$
 
-        This is **Legendre's equation** in the lecture's form. Change the variable to $x = \cos\theta$ and it becomes
+        This is **Legendre's equation** in its $\theta$ form. Change the variable to $x = \cos\theta$ and it becomes
 
         $$\left(1 - x^2\right)\frac{d^2P}{dx^2} - 2x\,\frac{dP}{dx} + \ell(\ell+1)\,P = 0, \qquad\text{equivalently}\qquad \frac{d}{dx}\left[\left(1 - x^2\right)\frac{dP}{dx}\right] + \ell(\ell+1)\,P = 0$$
 
@@ -649,7 +649,7 @@
         md`$\frac{d}{dx}\left[(1 - x^2)P'\right] = (1 - x^2)P'' + \frac{d(1 - x^2)}{dx}P' = (1 - x^2)P'' - 2xP'$. If you work from the compact form you can't lose it.`,
         { nofig: 'calculus step, no configuration' }),
 
-      Q(md`The lecture writes the radial equation as $\frac{d}{dr}\left(r^2\frac{dR}{dr}\right) = +\ell(\ell+1)R$ and the angular one with $-\ell(\ell+1)$. Why the opposite signs?`,
+      Q(md`After separation the radial equation reads $\frac{d}{dr}\left(r^2\frac{dR}{dr}\right) = +\ell(\ell+1)R$, while the angular one carries $-\ell(\ell+1)$. Why the opposite signs?`,
         [md`A convention; either sign works for both.`, md`After dividing by $RQ$ the two pieces add to zero, so they must be equal and opposite constants.`, md`Because $\sin\theta$ is negative for $\theta \gt \pi/2$.`, md`Because $r$ and $\theta$ have different units.`], 1,
         [md`The signs are linked: choose $+\ell(\ell+1)$ for one piece and the other is forced to be $-\ell(\ell+1)$.`, null, md`$\sin\theta \ge 0$ on $[0, \pi]$.`, md`Units have nothing to do with it; each piece is dimensionless.`],
         md`$\frac{1}{R}\frac{d}{dr}(r^2R') + \frac{1}{Q\sin\theta}\frac{d}{d\theta}(\sin\theta Q') = 0$, with the first piece a function of $r$ only and the second of $\theta$ only. Each must be a constant, and the two constants sum to zero. Calling the first $\ell(\ell+1)$ is what makes the radial solutions the clean powers $r^\ell$ and $r^{-(\ell+1)}$.`,
@@ -697,8 +697,8 @@
 
       Q(md`For $Q(\theta) = P_2(\cos\theta)$, what is $\dfrac{d}{d\theta}\left(\sin\theta\,\dfrac{dQ}{d\theta}\right)$?`,
         [md`$-2\,P_2(\cos\theta)\sin\theta$`, md`$6\,P_2(\cos\theta)\sin\theta$`, md`$-6\,P_2(\cos\theta)$`, md`$-6\,P_2(\cos\theta)\sin\theta$`], 3,
-        [md`$-2 = -\ell(\ell+1)$ with $\ell = 1$. Here $\ell = 2$.`, md`The lecture's equation has a minus sign: $-\ell(\ell+1)Q\sin\theta$.`, md`The $\sin\theta$ on the right is part of the lecture's form; it only disappears in the $x$ form.`, null],
-        md`It is Legendre's equation in the lecture's form with $\ell(\ell+1) = 6$: $-6\,Q\sin\theta$. You can check directly: $Q = \tfrac12(3\cos^2\theta - 1)$, $\sin\theta\,Q' = -3\sin^2\theta\cos\theta$, and its $\theta$ derivative is $-3\sin\theta\,(3\cos^2\theta - 1) = -6\,P_2\sin\theta$.`,
+        [md`$-2 = -\ell(\ell+1)$ with $\ell = 1$. Here $\ell = 2$.`, md`The $\theta$ form has a minus sign: $-\ell(\ell+1)Q\sin\theta$.`, md`The $\sin\theta$ on the right is part of the $\theta$ form; it only disappears in the $x$ form.`, null],
+        md`It is Legendre's equation in the $\theta$ form with $\ell(\ell+1) = 6$: $-6\,Q\sin\theta$. You can check directly: $Q = \tfrac12(3\cos^2\theta - 1)$, $\sin\theta\,Q' = -3\sin^2\theta\cos\theta$, and its $\theta$ derivative is $-3\sin\theta\,(3\cos^2\theta - 1) = -6\,P_2\sin\theta$.`,
         { figHtml: plotTh([2]) }),
 
       RF(md`
@@ -722,7 +722,7 @@
         [[fig:q0]]
 
         !!key This is a boundary condition
-          The requirement is physical: **$V$ is finite on the $z$ axis, at $\theta = 0$ and $\theta = \pi$.** It throws out every solution except the polynomials and forces $\ell = 0, 1, 2, \dots$ It plays the role that $V = 0$ on both plates played in the slot (Lecture 12), where it quantized $k = n\pi/a$. Negative $\ell$ adds nothing: $\ell$ and $-(\ell+1)$ give the same $\ell(\ell+1)$.
+          The requirement is physical: **$V$ is finite on the $z$ axis, at $\theta = 0$ and $\theta = \pi$.** It throws out every solution except the polynomials and forces $\ell = 0, 1, 2, \dots$ It plays the role that $V = 0$ on both plates played in the slot (Unit 6), where it quantized $k = n\pi/a$. Negative $\ell$ adds nothing: $\ell$ and $-(\ell+1)$ give the same $\ell(\ell+1)$.
 
         (If the region did not contain the whole axis, for example the space inside a cone $\theta \lt \alpha$, the condition at $\theta = \pi$ would be gone and non-integer $\ell$ would appear. That never happens in this course.)
       `, { q0: { svg: FIG.q0, cap: 'Both $\\ell = 0$ solutions of Legendre\'s equation. Dashed: $P_0 = 1$. Solid: $Q_0 = \\tfrac12\\ln\\frac{1+x}{1-x}$, infinite at both poles.' } }),
@@ -733,7 +733,7 @@
         md`Only the angular equation knows about $\ell$, and only regularity at the poles cuts its solutions down to the polynomials $P_\ell$. Every other condition acts on the radial part or on the coefficients.`,
         { figHtml: FIG.coords }),
 
-      Q(md`In the slot of Lecture 12, which boundary condition played the same role as "finite at $\theta = 0, \pi$"?`,
+      Q(md`In the slot of Unit 6, which boundary condition played the same role as "finite at $\theta = 0, \pi$"?`,
         [md`$V \to 0$ as $x \to \infty$`, md`$V = V_0(y)$ at $x = 0$`, md`Continuity of $V$ across $y = a/2$`, md`$V = 0$ at $y = 0$ and $y = a$, which quantized $k = n\pi/a$`], 3,
         [md`That killed the growing exponential, like $V \to 0$ at infinity kills $r^\ell$ outside.`, md`That fixed the Fourier coefficients, like $V_0(\theta)$ fixes $A_\ell$.`, md`There is no such condition in the slot.`, null],
         md`In both cases two conditions on the "angular" variable select a discrete set of eigenfunctions: $\sin(n\pi y/a)$ with integer $n$, or $P_\ell(\cos\theta)$ with integer $\ell$. Then the other variable carries the matching radial (or $x$) dependence.`,
@@ -749,6 +749,18 @@
         [md`It is not a polynomial, so it cannot match $V_0(\theta)$.`, md`It violates $V \to 0$ at infinity.`, md`It is infinite at $\theta = 0$ and $\theta = \pi$, and the $z$ axis is inside the region.`, md`It is an odd function of $x$.`], 2,
         [md`Non-polynomial functions can match boundary data fine (step functions do). The problem is the infinity.`, md`$Q_0$ is angular; the radial factor decides behavior at infinity.`, null, md`Odd functions are fine ($P_1$, $P_3$ are odd).`],
         md`$Q_0 \to \pm\infty$ as $x \to \pm1$. A potential with charge-free space around the axis can't be infinite there, so the coefficient of $Q_0$ (and of every $Q_\ell$) must be zero.`,
+        { figHtml: FIG.coords }),
+
+      Q(md`Suppose the region were the inside of a cone, $\theta \lt 120^\circ$, so the south pole $\theta = \pi$ is not part of it (a grounded conducting cone sits along $\theta = 120^\circ$). What happens to the quantization of $\ell$?`,
+        [md`Nothing: $\ell$ is still $0, 1, 2, \dots$`, md`$\ell$ must now be negative.`, md`$\ell$ is no longer forced to be an integer: finiteness at $\theta = 0$ alone keeps one solution for every $\lambda$, and the condition on the cone picks the allowed values.`, md`Separation of variables fails without the south pole.`], 2,
+        [md`The integers came from demanding finiteness at **both** poles. With $\theta = \pi$ outside the region, the second demand is gone.`, md`Negative $\ell$ repeat non-negative ones ($\ell \to -\ell - 1$); that is not what changes.`, null, md`The equation still separates; only the condition that quantizes $\ell$ changes.`],
+        md`For a non-integer $\lambda$ the series solution that is finite at $\theta = 0$ diverges only at $\theta = \pi$. If $\theta = \pi$ is outside the region, that solution is allowed, and $V = 0$ on the cone selects a discrete set of non-integer $\ell$, the way $V = 0$ at $y = a$ selected $k = n\pi/a$ in the slot. Remove a boundary and the condition that quantized the constant goes with it. (This never happens in this course; it shows where the integers come from.)`,
+        { figHtml: (() => { const f = PF.fig(); zAxis(f, 0, 0, -110); const L = at(0, 0, 100, -120), Rt = at(0, 0, 100, 120); f.line(0, 0, L[0], L[1], { cls: 'thick' }); f.line(0, 0, Rt[0], Rt[1], { cls: 'thick' }); f.tag(Rt[0], Rt[1], 'V=0', 'r', 6, 'small'); thetaMark(f, 0, 0, 120, 18, '120^\\circ'); return f.svg(); })() }),
+
+      Q(md`Legendre's equation is second order, so it takes two conditions. For a general constant $\lambda$, what do "finite at $\theta = 0$" and "finite at $\theta = \pi$" each do?`,
+        [md`The first removes one of the two independent solutions; the second then allows a solution only when $\lambda = \ell(\ell+1)$ with integer $\ell \ge 0$.`, md`They are the same condition counted twice.`, md`Both are needed just to remove the second solution; $\ell$ is fixed later by $V(R,\theta)$.`, md`Neither matters; $\lambda$ is fixed by the radial equation.`], 0,
+        [null, md`They act at different points. For non-integer $\lambda$ a solution can be finite at one pole and infinite at the other.`, md`$V(R,\theta)$ fixes the coefficients $A_\ell$, $B_\ell$ after $\ell$ is quantized; it can't change which $\ell$ exist.`, md`The radial equation accepts any $\lambda$: $r^n$ with $n(n+1) = \lambda$.`],
+        md`Same pattern as the slot: one zero face removes $\cos ky$, the second forces $\sin ka = 0$. Here one pole removes the solution that is singular there, and the other pole quantizes $\lambda$. Two conditions for a second-order equation, each with its own job.`,
         { figHtml: FIG.coords }),
 
       Q(md`Why don't negative values like $\ell = -3$ appear in the general solution?`,
@@ -886,7 +898,7 @@
 
       RF(md`
         !!key Patterns to remember
-          - Lecture form $\frac{d}{d\theta}(\sin\theta\,Q') = -\ell(\ell+1)Q\sin\theta$; with $x = \cos\theta$, $d/d\theta = -\sin\theta\,d/dx$, it becomes $(1 - x^2)P'' - 2xP' + \ell(\ell+1)P = 0$.
+          - $\theta$ form $\frac{d}{d\theta}(\sin\theta\,Q') = -\ell(\ell+1)Q\sin\theta$; with $x = \cos\theta$, $d/d\theta = -\sin\theta\,d/dx$, it becomes $(1 - x^2)P'' - 2xP' + \ell(\ell+1)P = 0$.
           - Degree $n$ solution means $\ell(\ell+1) = n(n+1)$. Free fact: $P_\ell'(1) = \ell(\ell+1)/2$.
           - A function of $\cos\theta$ solves the equation only if it is a single $P_\ell$. Mixtures don't.
           - $\ell$ is a non-negative integer because $V$ must be finite on the $z$ axis ($\theta = 0, \pi$). That is a boundary condition, the analog of $V = 0$ on the slot's plates.
@@ -910,7 +922,7 @@
     id: 'uL-orth', title: 'Orthogonality and coefficients',
     steps: [
       RF(md`
-        ### The statement (Lecture 13)
+        ### The statement
 
         $$\int_{-1}^{1}P_\ell(x)\,P_{\ell'}(x)\,dx = \int_0^\pi P_\ell(\cos\theta)\,P_{\ell'}(\cos\theta)\,\sin\theta\,d\theta = \frac{2}{2\ell+1}\,\delta_{\ell\ell'}$$
 
@@ -924,13 +936,13 @@
 
         ### Fourier's trick: the coefficient formula
 
-        Completeness (Lecture 13) says any reasonable $f$ on $[-1, 1]$ can be written $f(x) = \sum_\ell a_\ell P_\ell(x)$. Multiply both sides by $P_m(x)$ and integrate:
+        Completeness says any reasonable $f$ on $[-1, 1]$ can be written $f(x) = \sum_\ell a_\ell P_\ell(x)$. Multiply both sides by $P_m(x)$ and integrate:
 
         $$\int_{-1}^1 f\,P_m\,dx = \sum_\ell a_\ell\int_{-1}^1P_\ell P_m\,dx = \sum_\ell a_\ell\,\frac{2}{2\ell+1}\,\delta_{\ell m} = a_m\,\frac{2}{2m+1}$$
 
         $$\boxed{a_\ell = \frac{2\ell+1}{2}\int_{-1}^{1}f(x)\,P_\ell(x)\,dx = \frac{2\ell+1}{2}\int_0^\pi f(\theta)\,P_\ell(\cos\theta)\,\sin\theta\,d\theta}$$
 
-        It is the slot's sine-series trick again: multiply by one basis function, integrate, and orthogonality kills every term but one. The factor in front is one over the norm, as $\frac2a$ was one over $\int\sin^2 = \frac a2$ (Unit 7, Lesson 3 has the side-by-side table). For a sphere held at $V_0(\theta)$, the lecture's $A_\ell = \frac{2\ell+1}{2R^\ell}\int_0^\pi V_0P_\ell\sin\theta\,d\theta$ is exactly this with $f = V_0$ and $a_\ell = A_\ell R^\ell$.
+        It is the slot's sine-series trick again: multiply by one basis function, integrate, and orthogonality kills every term but one. The factor in front is one over the norm, as $\frac2a$ was one over $\int\sin^2 = \frac a2$ (Unit 7, Lesson 3 has the side-by-side table). For a sphere held at $V_0(\theta)$, the coefficient $A_\ell = \frac{2\ell+1}{2R^\ell}\int_0^\pi V_0P_\ell\sin\theta\,d\theta$ is exactly this with $f = V_0$ and $a_\ell = A_\ell R^\ell$.
 
         One coefficient has a meaning of its own: $a_0 = \frac12\int_{-1}^1f\,dx$ is the **average of $f$ over the sphere's surface**.
       `),
@@ -944,7 +956,7 @@
       Q(md`To get $a_m$ from $f(x) = \sum_\ell a_\ell P_\ell(x)$, what do you multiply both sides by, and over what do you integrate?`,
         [md`$P_m(x)$, then integrate over $0 \le x \le 1$`, md`$\sin\theta$, then integrate over $0 \le \theta \le \pi$`, md`$P_m(\cos\theta)$, then integrate $d\theta$ over $[0, \pi]$ with no other factor`, md`$P_m(x)$, then integrate over $-1 \le x \le 1$`], 3,
         [md`Orthogonality holds on the full interval $[-1, 1]$. On $[0, 1]$, $\int_0^1P_1P_2\,dx = \tfrac18 \ne 0$.`, md`That only extracts $a_0$ (times 2). You need a different basis function for each $m$.`, md`Without $\sin\theta$ this is not the orthogonality integral; cross terms survive.`, null],
-        md`Multiply by $P_m(x)$ and integrate $dx$ over $[-1, 1]$, or equivalently by $P_m(\cos\theta)\sin\theta$ and integrate $d\theta$ over $[0, \pi]$. The lecture writes the second form.`,
+        md`Multiply by $P_m(x)$ and integrate $dx$ over $[-1, 1]$, or equivalently by $P_m(\cos\theta)\sin\theta$ and integrate $d\theta$ over $[0, \pi]$. Sphere problems usually use the second form.`,
         { figHtml: XMAP }),
 
       Q(md`Why is the prefactor in $a_\ell = \frac{2\ell+1}{2}\int_{-1}^1 fP_\ell\,dx$ equal to $\frac{2\ell+1}{2}$ and not $1$?`,
@@ -1074,6 +1086,24 @@
         md`$\frac{1}{4\pi R^2}\oint f\,da = \frac{1}{4\pi R^2}\int_0^\pi f\,2\pi R^2\sin\theta\,d\theta = \tfrac12\int_0^\pi f\sin\theta\,d\theta = a_0$. For a sphere held at $V_0(\theta)$ this is the potential at the center.`,
         { figHtml: XMAP }),
 
+      Q(md`What is the Legendre expansion of $x\,P_2(x)$?`,
+        [md`$P_3$`, md`$\tfrac25P_1 + \tfrac35P_3$`, md`$\tfrac35P_1 + \tfrac25P_3$`, md`$\tfrac32P_3 - \tfrac12P_1$`], 1,
+        [md`$xP_2 = \tfrac32x^3 - \tfrac12x$ has leading coefficient $\tfrac32$, while $P_3$ has $\tfrac52$. It passes the pole check ($1$), but the shape is wrong.`, null, md`Those are the coefficients of $x^3$ itself. Here $x^3$ is multiplied by $\tfrac32$ and $\tfrac12x$ is subtracted.`, md`That just renames $x^3$ as $P_3$ and $x$ as $P_1$. Powers are not Legendre polynomials.`],
+        md`$xP_2 = \tfrac32x^3 - \tfrac12x = \tfrac32\left(\tfrac25P_3 + \tfrac35P_1\right) - \tfrac12P_1 = \tfrac35P_3 + \tfrac25P_1$. Pole check: $1$. It is the recurrence read backwards, $xP_\ell = \dfrac{(\ell+1)P_{\ell+1} + \ell P_{\ell-1}}{2\ell+1}$: multiplying by $x = \cos\theta$ only couples neighbouring $\ell$.`,
+        { figHtml: plotP([1, 2, 3]) }),
+
+      Q(md`$\left[P_2(x)\right]^2$ is a polynomial of degree 4. What is its $P_0$ coefficient $a_0$?`,
+        [md`$0$, by orthogonality`, md`$\tfrac25$`, md`$\tfrac15$`, md`$\tfrac14$`], 2,
+        [md`Orthogonality says $\int P_2P_0\,dx = 0$. Here the integrand is $P_2\cdot P_2\cdot P_0$, and $\int P_2^2\,dx \ne 0$.`, md`That is $\int_{-1}^1P_2^2\,dx$ itself. $a_0$ is half of it: $\tfrac12\int f\,dx$.`, null, md`$\tfrac14$ is $P_2(0)^2$, the value on the equator, not the average.`],
+        md`$a_0 = \tfrac12\int_{-1}^1P_2^2\,dx = \tfrac12\cdot\tfrac25 = \tfrac15$: the average of $P_2^2$ over the sphere. The full expansion is $\tfrac15P_0 + \tfrac27P_2 + \tfrac{18}{35}P_4$ (pole check: $1$). The norm $\tfrac{2}{2\ell+1}$ is twice the surface average of $P_\ell^2$.`,
+        { figHtml: FIG.p2sq }),
+
+      Q(md`You may use only $P_0$ and $P_1$ to approximate $f(x) = x^3$ on $[-1, 1]$, with the smallest mean-square error. Which combination?`,
+        [md`$x$, which matches $f$ at $x = \pm1$`, md`$\tfrac35x$`, md`$\tfrac12x$`, md`$0$, because $x^3$ is not a combination of $P_0$ and $P_1$`], 1,
+        [md`That matches $f$ at the poles but sits above it in between. Least squares weights the whole interval.`, null, md`$\tfrac12$ is not the projection: $a_1 = \tfrac32\int_{-1}^1x^4\,dx = \tfrac35$.`, md`Zero is a poor fit: the $P_1$ part of $x^3$ is not zero.`],
+        md`The best fit with a few Legendre polynomials is the truncated Legendre series: $a_\ell = \tfrac{2\ell+1}{2}\int fP_\ell\,dx$ for the kept $\ell$, whatever you drop. Here $a_0 = 0$, $a_1 = \tfrac35$. That is why "keep the first two terms" is a controlled approximation: adding terms never changes the earlier ones, and each one lowers the error.`,
+        { figHtml: plotP([1, 3]) }),
+
       G('leg_integral', { need: 4 }),
 
       P({
@@ -1201,7 +1231,7 @@
       RF(md`
         ### Method 1: polynomials in $\cos\theta$, by eye
 
-        Lecture 13 says the coefficient integral "usually is difficult to solve analytically unless the boundary condition itself is made of a superposition of Legendre polynomials." On an exam it usually is. Then you need no integral at all.
+        The coefficient integral is usually hard to do analytically unless the boundary condition is itself a sum of a few Legendre polynomials. On an exam it usually is. Then you need no integral at all.
 
         **Peel from the top.** The highest power $x^n$ means the series stops at $\ell = n$. Choose the $P_n$ coefficient to reproduce the $x^n$ term (divide by the leading coefficient $\tfrac32$, $\tfrac52$, $\tfrac{35}{8}$), subtract, and repeat on what is left.
 
@@ -1217,7 +1247,7 @@
 
         The coefficients sum to 1 because every $P_\ell(1) = 1$ and $x^k = 1$ at $x = 1$. That is the pole check.
 
-        **Trig to $x$ first:** $\sin^2\theta = 1 - x^2$, $\;\cos2\theta = 2x^2 - 1$, $\;\cos3\theta = 4x^3 - 3x$, $\;\sin^2\frac\theta2 = \frac{1 - x}{2}$ (the lecture's example), $\;\cos^2\frac\theta2 = \frac{1 + x}{2}$, $\;\sin^2\theta\cos\theta = x - x^3$. Only **even** powers of $\sin\theta$ are polynomials in $x$. (Unit 7, Lesson 3 has a longer table of finished expansions.)
+        **Trig to $x$ first:** $\sin^2\theta = 1 - x^2$, $\;\cos2\theta = 2x^2 - 1$, $\;\cos3\theta = 4x^3 - 3x$, $\;\sin^2\frac\theta2 = \frac{1 - x}{2}$ (Griffiths Ex. 3.6), $\;\cos^2\frac\theta2 = \frac{1 + x}{2}$, $\;\sin^2\theta\cos\theta = x - x^3$. Only **even** powers of $\sin\theta$ are polynomials in $x$. (Unit 7, Lesson 3 has a longer table of finished expansions.)
 
         **Worked: $\sin^4\theta$.** $(1 - x^2)^2 = 1 - 2x^2 + x^4 = 1 - 2\left(\tfrac13 + \tfrac23P_2\right) + \left(\tfrac15 + \tfrac47P_2 + \tfrac{8}{35}P_4\right)$:
 
@@ -1260,6 +1290,18 @@
         [md`That is $\sin^2\frac\theta2$ alone.`, md`That is only the average. The product varies with $\theta$: it is $0$ at both poles.`, md`Sign: at the north pole this gives $\tfrac13$, but the product is $0$ there.`, null],
         md`$\sin^2\frac\theta2\cos^2\frac\theta2 = \tfrac14\sin^2\theta = \tfrac14(1 - x^2) = \tfrac14\cdot\tfrac23(P_0 - P_2) = \tfrac16(P_0 - P_2)$. Poles: $0$. Equator: $\tfrac16\left(1 + \tfrac12\right) = \tfrac14 = \sin^245^\circ\cos^245^\circ$.`,
         { figHtml: sphL('V_0\\sin^2\\tfrac{\\theta}{2}\\cos^2\\tfrac{\\theta}{2}') }),
+
+      Q(md`A sphere is held at $V_0\cos4\theta = V_0\left(8\cos^4\theta - 8\cos^2\theta + 1\right)$. What is the $P_4$ coefficient?`,
+        [md`$8$`, md`$\tfrac{8}{35}$`, md`$\tfrac{35}{64}$`, md`$\tfrac{64}{35}$`], 3,
+        [md`That renames $x^4$ as $P_4$. $P_4$'s leading coefficient is $\tfrac{35}{8}$, not $1$.`, md`That is the $P_4$ coefficient of $x^4$ alone; here $x^4$ comes with a factor $8$.`, md`Inverted.`, null],
+        md`Peel from the top: only the $x^4$ term can feed $P_4$, and $x^4 = \tfrac{8}{35}P_4 + \dots$, so $8x^4$ gives $\tfrac{64}{35}P_4$. The full expansion is $-\tfrac{1}{15}P_0 - \tfrac{16}{21}P_2 + \tfrac{64}{35}P_4$ (pole check: $\tfrac{-7 - 80 + 192}{105} = 1$). The top coefficient takes one division; you never need the rest to get it.`,
+        { figHtml: sphL('V_0\\cos4\\theta') }),
+
+      Q(md`A sphere is held at $V_0\left[(1 + \cos\theta)^3 - (1 - \cos\theta)^3\right]$. Without expanding, which coefficients vanish?`,
+        [md`Every odd $a_\ell$`, md`Every $a_\ell$ with $\ell \gt 3$, and nothing else`, md`Every even $a_\ell$, and every $a_\ell$ with $\ell \gt 3$`, md`None`], 2,
+        [md`Swap $x \to -x$: the two cubes trade places and the bracket changes sign. The data are odd, so it is the **even** ones that vanish.`, md`True but incomplete: parity also kills $a_0$ and $a_2$.`, null, md`Degree and parity each remove some.`],
+        md`$f(-x) = (1 - x)^3 - (1 + x)^3 = -f(x)$: odd, so even $\ell$ vanish. Degree 3: $\ell \le 3$. Only $a_1$ and $a_3$ remain. Expanding confirms it: $6x + 2x^3 = \tfrac{36}{5}P_1 + \tfrac45P_3$ (pole check: $8 = 2^3$).`,
+        { figHtml: sphL('V_0[(1+\\cos\\theta)^3-(1-\\cos\\theta)^3]') }),
 
       G('leg_expand', { need: 4 }),
 
@@ -1393,7 +1435,7 @@
 
         The cap $\theta \lt \alpha$ is held at $V_0$, the rest is grounded. In $x$, with $c = \cos\alpha$: $f = 1$ for $c \lt x \le 1$, else $0$. So $a_\ell = \frac{2\ell+1}{2}\int_c^1P_\ell\,dx$.
 
-        **A tool (not in the lectures):** $(2\ell+1)P_\ell = \dfrac{d}{dx}\left[P_{\ell+1} - P_{\ell-1}\right]$ for $\ell \ge 1$. Check $\ell = 1$: $\frac{d}{dx}(P_2 - P_0) = 3x = 3P_1$. Since $P_{\ell+1}(1) = P_{\ell-1}(1) = 1$, the upper limit drops out:
+        **A tool:** $(2\ell+1)P_\ell = \dfrac{d}{dx}\left[P_{\ell+1} - P_{\ell-1}\right]$ for $\ell \ge 1$. Check $\ell = 1$: $\frac{d}{dx}(P_2 - P_0) = 3x = 3P_1$. Since $P_{\ell+1}(1) = P_{\ell-1}(1) = 1$, the upper limit drops out:
 
         $$a_0 = \frac{1 - \cos\alpha}{2}, \qquad a_\ell = \tfrac12\left[P_{\ell-1}(\cos\alpha) - P_{\ell+1}(\cos\alpha)\right] \quad (\ell \ge 1)$$
 
@@ -1461,7 +1503,7 @@
 
         Read the last two rows with care. They hold for a kink or jump strictly between the poles. When it is not on the equator (a cap edge), $\lvert a_\ell\rvert$ oscillates with $\ell$ under an envelope of the same power. The rates look slower than a sine series ($1/n$ for a jump, $1/n^2$ for a kink) only because $P_\ell$ is normalised by $P_\ell(1) = 1$, not to unit norm. Away from the poles $\lvert P_\ell(x)\rvert$ itself shrinks like $\ell^{-1/2}$, so the terms $a_\ell P_\ell(x)$ fall like $\ell^{-1}$ and $\ell^{-2}$, as for sines. At the poles $P_\ell = 1$, so nothing helps there: the step's pole partial sums $1.5, 0.63, 1.31, 0.73, \dots$ close in on $1$ only like $\ell^{-1/2}$.
 
-        At a jump the series converges to the **midpoint**: $0$ on the equator for $\pm V_0$, $\tfrac12V_0$ at the edge of a cap held at $V_0$. Next to the jump the partial sums overshoot. This is the Gibbs phenomenon from Lecture 12, the same as for sines: for the $\pm1$ step the peak tends to about $1.18$ (about 9% of the jump of 2), and adding terms squeezes the ringing toward the jump without lowering the peak.
+        At a jump the series converges to the **midpoint**: $0$ on the equator for $\pm V_0$, $\tfrac12V_0$ at the edge of a cap held at $V_0$. Next to the jump the partial sums overshoot. This is the Gibbs phenomenon of Unit 6, the same as for sines: for the $\pm1$ step the peak tends to about $1.18$ (about 9% of the jump of 2), and adding terms squeezes the ringing toward the jump without lowering the peak.
 
         [[fig:gibbs]]
 
@@ -1483,8 +1525,20 @@
       Q(md`You add more and more terms to the $\pm1$ step series. What happens to the Gibbs overshoot next to the equator?`,
         [md`It disappears.`, md`It grows without bound.`, md`It moves away from the jump.`, md`It is squeezed toward the jump, but its height stays about 9% of the jump.`], 3,
         [md`The series converges at every point away from the jump, but the maximum of the partial sums does not come down.`, md`It stays bounded near $1.18$.`, md`It moves toward the jump: the peak sits at a distance that shrinks like $1/N$.`, null],
-        md`From the numbers: the first peak next to the jump is $1.20$ through $\ell = 5$, $1.18$ through $\ell = 21$, $1.179$ through $\ell = 41$, at $x \approx 0.47, 0.14, 0.07$. Same as Lecture 12's sine series. (The pole values also wander, $1.31$ through $\ell = 5$ and $1.17$ through $\ell = 21$, but that is the slow convergence at the poles, not Gibbs.)`,
+        md`From the numbers: the first peak next to the jump is $1.20$ through $\ell = 5$, $1.18$ through $\ell = 21$, $1.179$ through $\ell = 41$, at $x \approx 0.47, 0.14, 0.07$. Same as the sine series of Unit 6. (The pole values also wander, $1.31$ through $\ell = 5$ and $1.17$ through $\ell = 21$, but that is the slow convergence at the poles, not Gibbs.)`,
         { figHtml: FIG.step5 }),
+
+      Q(md`The cap $\theta \lt 60^\circ$ is held at $V_0$ and the rest of the sphere is grounded. What does the full Legendre series give exactly on the rim, $\theta = 60^\circ$, $r = R$?`,
+        [md`$V_0$`, md`$\tfrac12V_0$`, md`$\tfrac14V_0$, the average over the sphere`, md`$0$`], 1,
+        [md`That is the value just inside the cap.`, null, md`$\tfrac14V_0$ is $a_0$, the potential at the center, not the value on the rim.`, md`That is the value just outside the cap.`],
+        md`At a jump the series converges to the midpoint of the two sides, $\tfrac12(V_0 + 0)$, and the partial sums ring around it (Gibbs). The physical potential right at the insulating gap is not defined; the series reports the midpoint.`,
+        { figHtml: hemis({ cap: 60, top: 'V_0', bot: 'V=0', botThin: true, topTh: 22, extra: { mark: { th: 60, lab: '60^\\circ', r: 20 } } }) }),
+
+      Q(md`The partial sums of the $\lvert\cos\theta\rvert$ series (plotted) approach the kink at the equator. Do they overshoot the way the step's partial sums do?`,
+        [md`No: $\lvert\cos\theta\rvert$ is continuous, so the series converges uniformly. The kink only gets rounded off and slows the convergence there.`, md`Yes, by about 9% of the jump, as for any non-polynomial data.`, md`Yes, but only at the poles.`, md`No, because the series has only even $\ell$.`], 0,
+        [null, md`Gibbs needs a jump in the function itself. A kink is a jump in the slope; the function has no gap to overshoot.`, md`At the poles $\lvert\cos\theta\rvert = 1$ is smooth.`, md`Parity is not the reason: the step has only odd $\ell$ and still rings.`],
+        md`Jump in the value: coefficients $\sim\ell^{-1/2}$, and the partial sums overshoot next to the jump. Jump in the slope: coefficients $\sim\ell^{-3/2}$, and the sums round the corner off without overshooting. The plot shows the rounded kink at $x = 0$.`,
+        { figHtml: FIG.absPlot }),
 
       Q(md`You want $V$ at $r = R/2$ inside the $\pm V_0$ sphere to three digits. Why can you ignore the Gibbs ringing?`,
         [md`The ringing cancels by symmetry inside.`, md`The ringing only exists for the outside solution.`, md`Each term carries $(r/R)^\ell = 2^{-\ell}$, so the high-$\ell$ terms that make the ringing are crushed.`, md`Gibbs ringing only happens for sine series.`], 2,
@@ -1523,7 +1577,7 @@
       RF(md`
         ### The recipe
 
-        Every direct sphere problem is the same few lines. Unit 7 (Lesson 5) derived them on the lecture's example $k\sin^2(\theta/2)$; here they are as a checklist with a shortcut for each quantity an exam can ask.
+        Every direct sphere problem is the same few lines. Unit 7 (Lesson 5) derived them on Griffiths' example $k\sin^2(\theta/2)$ (Ex. 3.6); here they are as a checklist with a shortcut for each quantity an exam can ask.
 
         **Setup.** A thin spherical shell of radius $R$ is held at $V_0(\theta)$; there is no other charge. Two regions, inside and outside.
 
@@ -1583,10 +1637,10 @@
         md`$B_\ell/r^{\ell+1}$ blows up at the origin, and there is no charge there. Inside: keep $r^\ell$. Outside: keep $r^{-(\ell+1)}$. Mixing these up is the most common error in the whole topic.`,
         { figHtml: FIG.cos3 }),
 
-      Q(md`Lecture 13's sphere is held at $V_0(\theta) = k\sin^2(\theta/2) = \tfrac k2\left(P_0 - P_1\right)$, and inside $V = \tfrac k2\left(1 - \tfrac rR\cos\theta\right)$. What is $V$ outside?`,
+      Q(md`The Ex. 3.6 sphere is held at $V_0(\theta) = k\sin^2(\theta/2) = \tfrac k2\left(P_0 - P_1\right)$, and inside $V = \tfrac k2\left(1 - \tfrac rR\cos\theta\right)$. What is $V$ outside?`,
         [md`$\dfrac k2\left(1 - \dfrac Rr\cos\theta\right)$`, md`$\dfrac k2\left(\dfrac Rr - \dfrac Rr\cos\theta\right)$`, md`$\dfrac k2\left(\dfrac Rr - \dfrac{R^2}{r^2}\cos\theta\right)$`, md`$\dfrac k2\left(1 - \dfrac rR\cos\theta\right)$, the same as inside`], 2,
         [md`The constant must fall off too: $\ell = 0$ goes with $R/r$ outside, or $V$ would not vanish at infinity.`, md`$\ell = 1$ goes with $(R/r)^{\ell+1} = R^2/r^2$, not $R/r$.`, null, md`$r/R$ grows without bound. $V \to 0$ as $r \to \infty$ forbids every $A_\ell$ outside.`],
-        md`BCs outside: 1. $V \to 0$ as $r \to \infty$ (the lecture's in-class answer), so every $A_\ell = 0$. 2. $V(R,\theta) = \tfrac k2(P_0 - P_1)$, so $B_0 = \tfrac{kR}{2}$ and $B_1 = -\tfrac{kR^2}{2}$. Each $P_\ell$ keeps its coefficient and trades $(r/R)^\ell$ for $(R/r)^{\ell+1}$. At $r = R$ both forms give $\tfrac k2(1 - \cos\theta)$. Far away $V \approx \dfrac{kR}{2r}$: a net charge $Q = 2\pi\varepsilon_0kR$.`,
+        md`BCs outside: 1. $V \to 0$ as $r \to \infty$, so every $A_\ell = 0$. 2. $V(R,\theta) = \tfrac k2(P_0 - P_1)$, so $B_0 = \tfrac{kR}{2}$ and $B_1 = -\tfrac{kR^2}{2}$. Each $P_\ell$ keeps its coefficient and trades $(r/R)^\ell$ for $(R/r)^{\ell+1}$. At $r = R$ both forms give $\tfrac k2(1 - \cos\theta)$. Far away $V \approx \dfrac{kR}{2r}$: a net charge $Q = 2\pi\varepsilon_0kR$.`,
         { figHtml: sphL('k\\sin^2(\\theta/2)') }),
 
       Q(md`A sphere's data have $a_0 = 0$, $a_1 = 0.4$, $a_2 = 0.3$ (in units of $V_0$). What is $\vb E$ at the center?`,
@@ -1654,6 +1708,30 @@
         [md`The factor $2\ell + 1 = 3$ is missing.`, md`That counts only the outside slope ($\ell + 1 = 2$).`, null, md`A uniform $\sigma$ would be pure $\ell = 0$ and would make $V$ constant on the sphere.`],
         md`$\sigma = \frac{\varepsilon_0V_0}{R}(2\ell+1)a_\ell P_\ell$ with $\ell = 1$, $a_1 = 1$: $\frac{3\varepsilon_0V_0}{R}\cos\theta$. Reverse check (Unit 7, Ex. 3.9): $\sigma = k\cos\theta$ makes $V = \frac{kR}{3\varepsilon_0}\cos\theta$ on the sphere.`,
         { figHtml: sphL('V_0\\cos\\theta') }),
+
+      Q(md`A sphere is held at $V_0(1 + \cos\theta)$, nothing else around. The potential is $\ge 0$ everywhere on it. Where does the surface charge $\sigma$ change sign?`,
+        [md`Nowhere: $V_0(\theta) \ge 0$, so $\sigma \ge 0$.`, md`At the south pole only, where $V_0 = 0$.`, md`At $\theta = 90^\circ$.`, md`At $\cos\theta = -\tfrac13$, $\theta \approx 109.5^\circ$.`], 3,
+        [md`$\sigma$ follows $\sum(2\ell+1)a_\ell P_\ell$, not $V_0$. The $\ell = 1$ part is weighted three times as much.`, md`There $\sigma = \tfrac{\varepsilon_0V_0}{R}(1 - 3) \lt 0$; it is negative over a whole cap, not just at a point.`, md`At $90^\circ$, $\sigma = \tfrac{\varepsilon_0V_0}{R} \gt 0$.`, null],
+        md`$a_0 = a_1 = 1$, so $\sigma = \tfrac{\varepsilon_0V_0}{R}(1 + 3\cos\theta)$: zero at $\cos\theta = -\tfrac13$. Below that latitude the charge is negative even though the potential there is positive: field lines from the hot north curve around and end on the cold southern cap.`,
+        { figHtml: sphL('V_0(1+\\cos\\theta)') }),
+
+      Q(md`In the direct sphere problem (inside and outside), how many conditions fix the coefficients for one value of $\ell$, and why that number?`,
+        [md`Two: one per region.`, md`One: $V(R,\theta) = V_0(\theta)$.`, md`Three: finite at $0$, zero at infinity, and the surface.`, md`Four: two unknowns ($A_\ell$, $B_\ell$) in each of two regions, so two conditions per region.`], 3,
+        [md`Each region has two unknowns per $\ell$, so one condition per region leaves one constant free.`, md`That is one equation; there are four unknowns per $\ell$.`, md`The surface condition counts twice: it must hold from the inside **and** from the outside.`, null],
+        md`Inside: finite at $r = 0$ ($B_\ell = 0$) and $V(R^-) = V_0$ (fixes $A_\ell$). Outside: $V \to 0$ ($A_\ell = 0$) and $V(R^+) = V_0$ (fixes $B_\ell$). Four conditions, four unknowns. A charged shell has the same count, with continuity and the jump replacing the two surface values.`,
+        { figHtml: FIG.cos3 }),
+
+      Q(md`$\sigma = \dfrac{\varepsilon_0V_0}{R}\displaystyle\sum_\ell(2\ell+1)a_\ell P_\ell(\cos\theta)$. When you integrate it over the sphere to get the total charge, what happens to the factors $2\ell + 1$?`,
+        [md`They all survive, so $Q = 4\pi\varepsilon_0RV_0\sum(2\ell+1)a_\ell$.`, md`Only the $\ell = 0$ term survives the integral, and its factor is $1$: $Q = 4\pi\varepsilon_0RV_0a_0$.`, md`They cancel against the norms $\frac{2}{2\ell+1}$.`, md`Only the $\ell = 1$ term survives.`], 1,
+        [md`$\int_0^\pi P_\ell\sin\theta\,d\theta = 0$ for every $\ell \ge 1$; those terms carry no net charge.`, null, md`No norms appear: you integrate $P_\ell$ once, not $P_\ell^2$.`, md`$\int P_1\sin\theta\,d\theta = 0$ too; the $\ell = 1$ term moves charge from south to north without adding any.`],
+        md`$Q = \oint\sigma\,da = 2\pi R^2\int_0^\pi\sigma\sin\theta\,d\theta$, and $\int_0^\pi P_\ell\sin\theta\,d\theta = 2\delta_{\ell0}$. So $Q = 2\pi R^2\cdot\frac{\varepsilon_0V_0}{R}\cdot2a_0 = 4\pi\varepsilon_0RV_0a_0$, the same as from the far field. The higher harmonics rearrange charge without adding any.`,
+        { figHtml: sphL('V_0(\\theta)') }),
+
+      Q(md`Double the radius of a sphere, keeping the same pattern $V_0(\theta)$ on it. How do the total charge $Q$ and the surface charge $\sigma(\theta)$ change?`,
+        [md`$Q$ doubles; $\sigma$ halves.`, md`Both double.`, md`$Q$ quadruples (area); $\sigma$ is unchanged.`, md`Both are unchanged; only the potential matters.`], 0,
+        [null, md`$\sigma = \frac{\varepsilon_0V_0}{R}\sum(2\ell+1)a_\ell P_\ell$ falls like $1/R$.`, md`The same $\sigma$ would need the same field at the surface, but the field is of order $V_0/R$, which halves.`, md`The same potential on a bigger sphere needs more charge: $Q = 4\pi\varepsilon_0Ra_0V_0$ grows with $R$ (capacitance $\propto R$).`],
+        md`Fields scale like $V_0/R$ (the same potential differences over twice the distance), so $\sigma = \varepsilon_0\,\Delta E_r$ halves. Charge is $\sigma$ times area: $\tfrac12\times4 = 2$. Same as the isolated sphere, $C = 4\pi\varepsilon_0R$. Scaling checks like this catch a missing factor of $R$ fast.`,
+        { figHtml: sphL('V_0(\\theta)') }),
 
       G('leg_sphere', { need: 4 }),
 
@@ -1821,7 +1899,7 @@
 
         **The axis trick** (Unit 7, Lesson 8) works because the general solution $\sum(A_\ell r^\ell + B_\ell r^{-(\ell+1)})P_\ell$ reduces on the $+z$ axis to $\sum(A_\ell z^\ell + B_\ell z^{-(\ell+1)})$, since $P_\ell(1) = 1$. Knowing $V$ on the axis fixes every coefficient, and uniqueness does the rest. It needs a charge-free region that contains a piece of the axis.
 
-        **The point-charge expansion** (not in the lectures; Griffiths §3.4.1, and Unit 8 uses it for the multipole expansion). Here $r_<$ is the smaller of $r$ and $r'$, $r_>$ the larger, and $\gamma$ is the angle between $\vb r$ and $\vb r'$. For a charge on the $z$ axis, $\gamma = \theta$. You can derive it in one line with the axis trick: on the axis below a charge at $z = d$, $\frac{1}{d - z} = \sum_\ell\frac{z^\ell}{d^{\ell+1}}$.
+        **The point-charge expansion** (Griffiths §3.4.1; Unit 8 uses it for the multipole expansion). Here $r_<$ is the smaller of $r$ and $r'$, $r_>$ the larger, and $\gamma$ is the angle between $\vb r$ and $\vb r'$. For a charge on the $z$ axis, $\gamma = \theta$. You can derive it in one line with the axis trick: on the axis below a charge at $z = d$, $\frac{1}{d - z} = \sum_\ell\frac{z^\ell}{d^{\ell+1}}$.
 
         **Averages.** Over a sphere of radius $r$ centered on the origin, $\int_0^\pi P_\ell(\cos\theta)\sin\theta\,d\theta = 0$ for every $\ell \ge 1$. So only the $\ell = 0$ term survives the average: $a_0V_0$ inside (the same on every inner sphere, the mean-value property), and $a_0V_0R/r$ outside.
       `),
@@ -1879,6 +1957,24 @@
         [md`$r/d \gt 1$ there: the series would diverge. Always expand in (smaller)/(larger).`, null, md`Not a variable that appears in the expansion.`, md`The $r$ dependence is as important as the angle.`],
         md`$r_< = d$, $r_> = r$. Each term is an outside solution $B_\ell r^{-(\ell+1)}P_\ell$ with $B_\ell = \frac{qd^\ell}{4\pi\varepsilon_0}$: the multipole moments of a single off-center charge.`,
         { figHtml: FIG.charge }),
+
+      Q(md`A sphere of radius $R$ is held at $V_0(\theta)$. Now a grounded concentric shell is added at $r = 2R$. What changes?`,
+        [md`Nothing anywhere: the grounded shell is far away.`, md`Both inside and outside change.`, md`Only the inside changes.`, md`Inside $r \lt R$ nothing changes; between $R$ and $2R$ both $A_\ell$ and $B_\ell$ now appear.`], 3,
+        [md`Between the shells $V$ must now vanish at $2R$, not at infinity, and the old $\sum a_\ell(R/r)^{\ell+1}P_\ell$ doesn't.`, md`The inside is bounded by $r = R$ alone, where $V$ is still $V_0(\theta)$, and the center is still regular: by uniqueness nothing changes there.`, md`Backwards.`, null],
+        md`Each region feels only its own boundary conditions. Inside: finite at $0$ and $V_0(\theta)$ at $R$, unchanged. Between: $V_0(\theta)$ at $R$ and $0$ at $2R$, a two-sphere problem with both $r^\ell$ and $r^{-(\ell+1)}$. What does change is the charge on the inner sphere: the nearby grounded shell pulls more onto it.`,
+        { figHtml: (() => { const f = PF.fig(); f.circle(0, 0, 124, { cls: 'thick' }); f.circle(0, 0, 56, { cls: 'thick' }); zAxis(f, 0, 0, -152); leader(f, 0, 0, 124, 40, 'V=0', 14); leader(f, 0, 0, 56, 205, 'V_0(\\theta)', 12); const e = at(0, 0, 124, 120); f.line(0, 0, e[0], e[1], { cls: 'dim', arrow: 'end', hs: 6 }); labLine(f, [0, 0], e, '2R', 1, 4, 0.75); const g = at(0, 0, 56, 300); f.line(0, 0, g[0], g[1], { cls: 'dim', arrow: 'end', hs: 6 }); labLine(f, [0, 0], g, 'R', 1, 3, 0.55); return f.svg(); })() }),
+
+      Q(md`A charge $q$ on the $z$ axis at $z = d$ gives, near the origin, $V = \dfrac{q}{4\pi\varepsilon_0}\displaystyle\sum_\ell\dfrac{r^\ell}{d^{\ell+1}}P_\ell(\cos\theta)$. Move it away, $d \to \infty$, while holding $E_0 = \dfrac{q}{4\pi\varepsilon_0d^2}$ fixed. Near the origin, which terms survive (apart from a constant)?`,
+        [md`Only $\ell = 1$: $V \to \text{const} + E_0r\cos\theta$, a uniform field $-E_0\uv z$.`, md`Only $\ell = 0$: the potential becomes a constant.`, md`All of them, unchanged.`, md`None: the charge is gone.`], 0,
+        [null, md`The $\ell = 0$ term, $\frac{q}{4\pi\varepsilon_0d} = E_0d$, is a constant (large, but a constant makes no field). The $\ell = 1$ term $E_0r\cos\theta$ stays finite.`, md`The $\ell$ term is $E_0d^2\cdot\frac{r^\ell}{d^{\ell+1}} = E_0\frac{r^\ell}{d^{\ell-1}}$, which vanishes for $\ell \ge 2$.`, md`Its field near the origin is held at $E_0$ by construction.`],
+        md`$\frac{q}{4\pi\varepsilon_0}\frac{r^\ell}{d^{\ell+1}} = E_0\frac{r^\ell}{d^{\ell-1}}$: $\ell = 0$ gives the constant $E_0d$, $\ell = 1$ gives $E_0r\cos\theta = E_0z$, and every $\ell \ge 2$ dies. A source pushed off to infinity leaves only its lowest non-trivial harmonic. That is what "a uniform field far away" means, and why the sphere-in-a-field problem keeps exactly $A_1$.`,
+        { figHtml: FIG.charge }),
+
+      Q(md`Two equal charges $+q$ sit at $z = +a$ and $z = -a$. For $r \gt a$, which $\ell$ appear in $V$?`,
+        [md`Odd $\ell$ only`, md`Every $\ell$`, md`Even $\ell$ only, starting with $\ell = 0$ (net charge $2q$)`, md`$\ell = 0$ only`], 2,
+        [md`That is the $\pm q$ pair, which is antisymmetric. Equal charges are symmetric under $z \to -z$.`, md`Mirror symmetry removes every odd $\ell$.`, null, md`Off the center the pair is not spherically symmetric: an $\ell = 2$ (quadrupole) term is there.`],
+        md`$V(r, \pi - \theta) = V(r,\theta)$, so only even $\ell$. On the axis, $\frac{1}{z - a} + \frac{1}{z + a} = \frac{2z}{z^2 - a^2} = 2\sum_{\text{even }\ell}\frac{a^\ell}{z^{\ell+1}}$, so $V = \frac{2q}{4\pi\varepsilon_0}\sum_{\text{even}}\frac{a^\ell}{r^{\ell+1}}P_\ell(\cos\theta)$: a monopole $2q$, then a quadrupole.`,
+        { figHtml: (() => { const f = PF.fig(); const a = 46; zAxis(f, 0, a + 40, -a - 110); f.dot(0, 0, 2.4); f.label(-6, 4, 'O', 'r', 'small accent'); f.charge(0, -a, { q: '+', lab: '+q', at: 'r' }); f.charge(0, a, { q: '+', lab: '+q', at: 'r' }); f.dim(-30, 0, -30, -a, 'a', { at: 'l' }); f.dim(-30, 0, -30, a, 'a', { at: 'l' }); return f.svg(); })() }),
 
       Q(md`Which of these quantities for a sphere at $V_0(\theta)$ needs more than $a_0$ and $a_1$?`,
         [md`$V$ at the center`, md`$\vb E$ at the center`, md`The total charge`, md`$\sigma$ at the north pole`], 3,
@@ -2007,7 +2103,7 @@
 
       P({
         id: 'uL-E4', src: 'Exam-style', title: 'A point charge in Legendre form', big: true,
-        q: md`A point charge $q$ sits on the $z$ axis at $z = d$. Using $\dfrac{1}{\lvert\vb r - \vb r'\rvert} = \sum_\ell\dfrac{r_<^\ell}{r_>^{\ell+1}}P_\ell(\cos\gamma)$ (not in the lectures; you may also derive it with the axis trick), find (a) the $\ell = 2$ term of $V$ for $r \lt d$ and (b) for $r \gt d$. (c) At $r = d/2$, $\theta = 90^\circ$, evaluate the series through $\ell = 2$ and the exact $V$ (units of $\frac{q}{4\pi\varepsilon_0d}$).`,
+        q: md`A point charge $q$ sits on the $z$ axis at $z = d$. Using $\dfrac{1}{\lvert\vb r - \vb r'\rvert} = \sum_\ell\dfrac{r_<^\ell}{r_>^{\ell+1}}P_\ell(\cos\gamma)$ (you may also derive it with the axis trick), find (a) the $\ell = 2$ term of $V$ for $r \lt d$ and (b) for $r \gt d$. (c) At $r = d/2$, $\theta = 90^\circ$, evaluate the series through $\ell = 2$ and the exact $V$ (units of $\frac{q}{4\pi\varepsilon_0d}$).`,
         figHtml: FIG.charge,
         hints: [
           md`The charge is on the axis, so $\gamma = \theta$. For $r \lt d$, $r_< = r$ and $r_> = d$.`,
@@ -2229,7 +2325,7 @@
           - Read the symmetry first: symmetric data, even $\ell$; antisymmetric, odd $\ell$; polynomial of degree $n$, $\ell \le n$.
           - Given $V$ inside: the boundary data are $V(R,\theta)$; the $r$ power and angle tell you $\ell$.
           - Given $V$ on the axis: expand in $z^\ell$ or $z^{-(\ell+1)}$ and attach $P_\ell(\cos\theta)$. Never replace $z$ by $r\cos\theta$.
-          - Point charge on the axis: $\frac{q}{4\pi\varepsilon_0}\sum\frac{r_<^\ell}{r_>^{\ell+1}}P_\ell(\cos\theta)$ (not in the lectures; derive it from $\frac{1}{d - z}$ if asked).
+          - Point charge on the axis: $\frac{q}{4\pi\varepsilon_0}\sum\frac{r_<^\ell}{r_>^{\ell+1}}P_\ell(\cos\theta)$ (derive it from $\frac{1}{d - z}$ if asked).
           - Average over any concentric sphere, center value, total charge: all $a_0$. Center field and dipole: $a_1$.
           - Check $P_\ell(1) = 1$ after Rodrigues, the pole and equator values after an expansion, and every BC at the end.
       `),

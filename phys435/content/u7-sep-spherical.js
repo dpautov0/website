@@ -1,5 +1,5 @@
 /* Unit 7 — Separation of variables in spherical coordinates
-   (Lecture 12 pp. 4–6 and Lecture 13; Griffiths 3.3.2, Ex. 3.6–3.9; HW 5: Griffiths 3.22 and 3.24, 5th ed.). */
+   (Griffiths 3.3.2, Ex. 3.6–3.9; HW 5: Griffiths 3.22 and 3.24, 5th ed.). */
 (function () {
   'use strict';
   const { RF, P, Q } = C;
@@ -416,8 +416,6 @@
 
         $$\frac{\partial}{\partial r}\left(r^2\frac{\partial V}{\partial r}\right) + \frac{1}{\sin\theta}\frac{\partial}{\partial\theta}\left(\sin\theta\frac{\partial V}{\partial\theta}\right) = 0$$
 
-        (The notes write this line as a continuation of "$\nabla^2 V =$". It is really $r^2\nabla^2 V$. Harmless here, since it equals zero.)
-
         [[fig:coords]]
 
         !!key Azimuthal symmetry
@@ -445,7 +443,7 @@
       RF(md`
         ### Separating: $V(r,\theta) = R(r)\,Q(\theta)$
 
-        Following the lecture, look for product solutions:
+        Look for product solutions:
 
         $$V(r,\theta) = R(r)\,Q(\theta)$$
 
@@ -456,20 +454,20 @@
 
         $$Q\,\frac{d}{dr}\left(r^2\frac{dR}{dr}\right) + \frac{R}{\sin\theta}\frac{d}{d\theta}\left(\sin\theta\,\frac{dQ}{d\theta}\right) = 0$$
 
-        (The notes drop a $d$ here: their $\tfrac{Q(\theta)}{d\theta}$ should be $\tfrac{dQ}{d\theta}$.) Divide by $RQ$ (the notes say "dividing by $1/RQ$"; they mean multiplying by $1/RQ$):
+        Divide by $RQ$:
 
         $$\underbrace{\frac{1}{R}\frac{d}{dr}\left(r^2\frac{dR}{dr}\right)}_{\text{depends only on } r} + \underbrace{\frac{1}{Q\sin\theta}\frac{d}{d\theta}\left(\sin\theta\,\frac{dQ}{d\theta}\right)}_{\text{depends only on } \theta} = 0$$
 
-        The lecture's in-class question: *what does each piece need to be equal to?* Hold $\theta$ fixed and change $r$. The second piece cannot change, and the sum stays zero, so the first piece cannot change either. Each piece is a constant, and the two constants cancel. The lecture writes them as $+\ell(\ell+1)$ and $-\ell(\ell+1)$:
+        *What does each piece need to be equal to?* Hold $\theta$ fixed and change $r$. The second piece cannot change, and the sum stays zero, so the first piece cannot change either. Each piece is a constant, and the two constants cancel. Write them as $+\ell(\ell+1)$ and $-\ell(\ell+1)$:
 
         $$\frac{d}{dr}\left(r^2\frac{dR}{dr}\right) = \ell(\ell+1)\,R \qquad\qquad \frac{d}{d\theta}\left(\sin\theta\,\frac{dQ}{d\theta}\right) = -\ell(\ell+1)\,Q\sin\theta$$
 
         One partial differential equation became two ordinary ones, exactly as in Cartesian coordinates.
       `),
 
-      Q(md`Why does the lecture multiply the azimuthally symmetric Laplace equation by $r^2$ before separating?`,
+      Q(md`Why multiply the azimuthally symmetric Laplace equation by $r^2$ before separating?`,
         [md`Because $r^2\nabla^2 V$ and $\nabla^2 V$ are the same thing.`, md`To make the equation dimensionless.`, md`Because azimuthal symmetry requires it.`, md`So that after dividing by $RQ$, one term depends only on $r$ and the other only on $\theta$.`], 3,
-        [md`They are not the same; they differ by a factor $r^2$. Both vanish, which is why the notes' loose "$=$" does no harm.`, md`Units have nothing to do with it; $\nabla^2 V = 0$ is already fine dimensionally.`, md`Azimuthal symmetry removes the $\phi$ term. The factor $r^2$ is a separate step.`, null],
+        [md`They are not the same; they differ by a factor $r^2$. Both vanish here, but that is not why the step is taken.`, md`Units have nothing to do with it; $\nabla^2 V = 0$ is already fine dimensionally.`, md`Azimuthal symmetry removes the $\phi$ term. The factor $r^2$ is a separate step.`, null],
         md`In $\nabla^2 V$ the $\theta$ term carries $\frac{1}{r^2}$. If you divided by $RQ$ without first multiplying by $r^2$, the angular term would be $\frac{1}{r^2}\times(\text{function of }\theta)$, which mixes $r$ and $\theta$, and the "each term is constant" argument would fail. Multiplying by $r^2$ removes that factor so the variables separate cleanly.`,
         { nofig: 'about the algebra of the equation, not a configuration' }),
 
@@ -490,7 +488,7 @@
 
         $$R(r) = A\,r^\ell + \frac{B}{r^{\ell+1}}$$
 
-        The notes say "you can check by plugging in". For the second one: $r^2\frac{d}{dr}r^{-(\ell+1)} = -(\ell+1)\,r^{-\ell}$, and $\frac{d}{dr}\left[-(\ell+1)\,r^{-\ell}\right] = \ell(\ell+1)\,r^{-(\ell+1)}$, as required. Two constants, $A$ and $B$, as a second-order equation should have.
+        Check by plugging in. For the second one: $r^2\frac{d}{dr}r^{-(\ell+1)} = -(\ell+1)\,r^{-\ell}$, and $\frac{d}{dr}\left[-(\ell+1)\,r^{-\ell}\right] = \ell(\ell+1)\,r^{-(\ell+1)}$, as required. Two constants, $A$ and $B$, as a second-order equation should have.
 
         **Why write the constant as $\ell(\ell+1)$?** Any constant $c \ge -\tfrac14$ can be written that way. The payoff is that the roots come out as the clean numbers $\ell$ and $-(\ell+1)$. It also makes negative $\ell$ redundant: $\ell \to -\ell-1$ gives the same $\ell(\ell+1)$ (for example $\ell = -3$ gives $(-3)(-2) = 6 = 2\cdot3$) and merely swaps the two radial solutions. So take $\ell \ge 0$.
 
@@ -524,14 +522,20 @@
       Q(md`The pictured sphere is held at a potential $V_0(\theta)$ and there is no charge inside. For the potential **inside**, which radial solutions are allowed for each $\ell$?`,
         [md`$r^\ell$ only`, md`$r^{-(\ell+1)}$ only`, md`Both`, md`$r^\ell$ for $\ell \ge 1$, but only $r^{-1}$ for $\ell = 0$`], 0,
         [null, md`$r^{-(\ell+1)}$ blows up at the center, which is inside the region. Nothing there could produce an infinite potential.`, md`Both is for a region that contains neither $r = 0$ nor $r \to \infty$.`, md`$1/r$ at the center would be the potential of a point charge sitting at $r = 0$. There is none.`],
-        md`The region includes $r = 0$, where nothing is singular, so every $r^{-(\ell+1)}$ is thrown out (all $B_\ell = 0$). Only $r^\ell$ survives. This is the lecture's "$V(0,\theta) \ne \infty \Rightarrow B = 0$".`,
+        md`The region includes $r = 0$, where nothing is singular, so every $r^{-(\ell+1)}$ is thrown out (all $B_\ell = 0$). Only $r^\ell$ survives. In short: $V(0,\theta) \ne \infty \Rightarrow B_\ell = 0$.`,
         { figHtml: FIG.inRegion }),
 
       Q(md`Same sphere, but now you want the potential **outside**, where there is no charge and $V \to 0$ far away. Which radial solutions are allowed?`,
         [md`$r^\ell$ only`, md`Both`, md`$r^{-(\ell+1)}$ only`, md`$r^{-(\ell+1)}$ for $\ell \ge 1$, plus a constant for $\ell = 0$`], 2,
         [md`$r^\ell$ grows without bound as $r \to \infty$ (for $\ell \ge 1$), and the constant $r^0$ does not go to zero.`, md`Both is for a shell region $a \lt r \lt b$ that reaches neither $0$ nor $\infty$.`, null, md`A constant term would make $V \to \text{const} \ne 0$ at infinity. With $V \to 0$ the $\ell = 0$ term must be $B_0/r$.`],
-        md`$V \to 0$ as $r \to \infty$ kills every $r^\ell$ including $\ell = 0$ (a nonzero constant does not go to zero). Only $r^{-(\ell+1)}$ survives: $1/r$, $1/r^2$, $1/r^3$, ... This is the lecture's "$V(\infty,\theta) \to 0$, so $A_\ell = 0$".`,
+        md`$V \to 0$ as $r \to \infty$ kills every $r^\ell$ including $\ell = 0$ (a nonzero constant does not go to zero). Only $r^{-(\ell+1)}$ survives: $1/r$, $1/r^2$, $1/r^3$, ... In short: $V(\infty,\theta) \to 0 \Rightarrow A_\ell = 0$.`,
         { figHtml: FIG.outRegion }),
+
+      Q(md`The radial equation is second order, so each $\ell$ has two constants, $A_\ell$ and $B_\ell$. For the inside of the pictured sphere (held at $V_0(\theta)$, no charge inside), which two conditions fix them, and how?`,
+        [md`$V(R,\theta) = V_0(\theta)$ alone fixes both, since it holds at every $\theta$.`, md`Finite at $r = 0$ sets $B_\ell = 0$; then $V(R,\theta) = V_0(\theta)$ sets $A_\ell R^\ell = c_\ell$.`, md`$V \to 0$ at infinity sets $A_\ell = 0$; then $V(R,\theta) = V_0(\theta)$ sets $B_\ell$.`, md`Finite at $r = 0$ fixes both: it sets $B_\ell = 0$ and $A_\ell = 0$.`], 1,
+        [md`At $r = R$ the two terms give one combination, $A_\ell R^\ell + B_\ell R^{-(\ell+1)} = c_\ell$: one equation, two unknowns. "Every $\theta$" separates the different $\ell$ from each other, not $A_\ell$ from $B_\ell$.`, null, md`Infinity is not in the inside region. That pair belongs to the outside problem.`, md`Finiteness only rules out the singular $r^{-(\ell+1)}$; $r^\ell$ is perfectly finite at the center.`],
+        md`Count before you solve: two constants per $\ell$, so two conditions per $\ell$. Inside, one comes from the center (regularity) and one from the surface. Outside, one from infinity and one from the surface. Between two spheres, one from each sphere. A charged shell has two regions and four conditions.`,
+        { figHtml: FIG.inRegion }),
 
       RF(md`
         ### The angular equation: Legendre's equation
@@ -591,11 +595,11 @@
       RF(md`
         ### Superposition: the general solution
 
-        Laplace's equation is linear, so any sum of solutions is again a solution. Summing the separated solutions over all $\ell$ (Lecture 13):
+        Laplace's equation is linear, so any sum of solutions is again a solution. Summing the separated solutions over all $\ell$:
 
         $$\boxed{V(r,\theta) = \sum_{\ell=0}^{\infty}\left(A_\ell\, r^\ell + \frac{B_\ell}{r^{\ell+1}}\right)P_\ell(\cos\theta)}$$
 
-        This is the formula to memorize; it is **not** on the formula sheet. Every azimuthally symmetric problem in this unit starts by writing it down. The boundary conditions then decide which $A_\ell$ and $B_\ell$ survive and what their values are. The lecture: "We can use an infinite number of $A_\ell$ and $B_\ell$ to match any boundary conditions," because, like the sines, the Legendre polynomials are complete (next two lessons).
+        This is the formula to memorize; it is **not** on the formula sheet. Every azimuthally symmetric problem in this unit starts by writing it down. The boundary conditions then decide which $A_\ell$ and $B_\ell$ survive and what their values are. An infinite number of $A_\ell$ and $B_\ell$ can match any boundary conditions, because, like the sines, the Legendre polynomials are complete (next two lessons).
 
         (There is no extra constant in front of $P_\ell$: it is absorbed into $A_\ell$ and $B_\ell$.)
       `),
@@ -676,13 +680,13 @@
         | 3 | $\tfrac12(5x^3 - 3x)$ | $\tfrac12(5\cos^3\theta - 3\cos\theta)$ |
         | 4 | $\tfrac18(35x^4 - 30x^2 + 3)$ | $\tfrac18(35\cos^4\theta - 30\cos^2\theta + 3)$ |
 
-        Know $P_0$ through $P_3$ cold (the lecture lists them). Recognize $P_4$.
+        Know $P_0$ through $P_3$ cold. Recognize $P_4$.
 
         [[fig:x]]
 
         The variable $x = \cos\theta$ is the **height** of a point on a unit sphere: $x = 1$ at the north pole, $0$ on the equator, $-1$ at the south pole. A function of $x$ is a function of latitude. That is why $P_\ell(\cos\theta)$ describes how a potential varies from pole to pole.
 
-        **Rodrigues' formula** (Lecture 13) generates them all:
+        **Rodrigues' formula** generates them all:
 
         $$P_\ell(x) = \frac{1}{2^\ell\,\ell!}\left(\frac{d}{dx}\right)^{\ell}\left(x^2 - 1\right)^\ell$$
 
@@ -718,7 +722,7 @@
       Q(md`Why does Rodrigues' formula carry the factor $\dfrac{1}{2^\ell\,\ell!}$?`,
         [md`It makes the polynomials orthogonal.`, md`It makes $\int_{-1}^1 P_\ell^2\,dx = 1$.`, md`It makes $P_\ell(0) = 0$.`, md`It makes $P_\ell(1) = 1$ for every $\ell$.`], 3,
         [md`Orthogonality does not depend on overall constants: $\int P_\ell P_{\ell'} = 0$ stays zero if you rescale either one.`, md`With this convention $\int_{-1}^1 P_\ell^2\,dx = \frac{2}{2\ell+1}$, not $1$. That is why coefficient formulas carry $\frac{2\ell+1}{2}$.`, md`$P_0(0) = 1$ and $P_2(0) = -\tfrac12$, so that is false anyway.`, null],
-        md`The derivative part fixes the *shape*; the constant in front is a convention. The convention chosen is $P_\ell(1) = 1$ (Griffiths Eq. 3.63, Lecture 13). It is not a unit normalization: $\int_{-1}^{1}P_\ell^2\,dx = \frac{2}{2\ell+1}$.`,
+        md`The derivative part fixes the *shape*; the constant in front is a convention. The convention chosen is $P_\ell(1) = 1$ (Griffiths Eq. 3.63). It is not a unit normalization: $\int_{-1}^{1}P_\ell^2\,dx = \frac{2}{2\ell+1}$.`,
         { nofig: 'about a normalization convention' }),
 
       RF(md`
@@ -768,7 +772,7 @@
 
         Worked: $\int_{-1}^1 P_1P_3\,dx = \tfrac12\int_{-1}^1(5x^4 - 3x^2)\,dx = \tfrac12\left[x^5 - x^3\right]_{-1}^{1} = 0$, and $\int_{-1}^1 P_2^2\,dx = \tfrac14\int_{-1}^1(9x^4 - 6x^2 + 1)\,dx = \tfrac14\left(\tfrac{18}{5} - 4 + 2\right) = \tfrac25$.
 
-        **Completeness** (Lecture 13: "the Legendre polynomials are a complete set"). Any reasonable function of $\theta$ on $[0, \pi]$, piecewise smooth with finitely many jumps, can be written as
+        **Completeness.** The Legendre polynomials are a complete set: any reasonable function of $\theta$ on $[0, \pi]$, piecewise smooth with finitely many jumps, can be written as
 
         $$f(\theta) = \sum_{\ell=0}^\infty c_\ell\,P_\ell(\cos\theta), \qquad c_\ell = \frac{2\ell+1}{2}\int_0^\pi f(\theta)\,P_\ell(\cos\theta)\,\sin\theta\,d\theta$$
 
@@ -903,7 +907,7 @@
     id: 'u7-expand', title: 'Expanding V₀(θ) in Legendre polynomials',
     steps: [
       RF(md`
-        Every problem in this unit ends the same way: write the boundary function as $\sum_\ell c_\ell P_\ell(\cos\theta)$ and match coefficients term by term. The lecture is blunt about the integrals: the coefficient integral "usually is difficult to solve analytically unless the boundary condition itself is made of a superposition of Legendre polynomials." On exams it almost always is. So the most useful skill in this unit is rewriting a function of $\theta$ as a combination of $P_\ell$'s **without integrating**.
+        Every problem in this unit ends the same way: write the boundary function as $\sum_\ell c_\ell P_\ell(\cos\theta)$ and match coefficients term by term. The coefficient integral is usually hard to do analytically unless the boundary condition is itself a sum of a few Legendre polynomials. On exams it almost always is. So the most useful skill in this unit is rewriting a function of $\theta$ as a combination of $P_\ell$'s **without integrating**.
 
         ### Method 1: by eye (anything that is a polynomial in $\cos\theta$)
 
@@ -968,6 +972,12 @@
         md`$\cos2\theta = 2x^2 - 1 = 2\left(\tfrac23P_2 + \tfrac13\right) - 1 = \tfrac43P_2 - \tfrac13P_0$. So $c_0 = -\tfrac{V_0}{3}$. Directly: $c_0 = \tfrac12\int_{-1}^1(2x^2 - 1)\,dx = \tfrac12\left(\tfrac43 - 2\right) = -\tfrac13$. This is the area average of the boundary data, and soon it will be the potential at the center.`,
         { figHtml: sphLab('V_0(\\theta)=V_0\\cos2\\theta') }),
 
+      Q(md`The sphere is held at $V_0\cos\theta\cos2\theta$. Using $\cos2\theta = 2\cos^2\theta - 1$ and $x^3 = \tfrac25P_3 + \tfrac35P_1$, what is $c_1$?`,
+        [md`$-V_0$`, md`$\dfrac{V_0}{5}$`, md`$\dfrac{4V_0}{5}$`, md`$0$, because the data are odd`], 1,
+        [md`That counts only the $-x$ term. The $2x^3$ term also contains $P_1$: $2\cdot\tfrac35 = \tfrac65$.`, null, md`That is $c_3 = 2\cdot\tfrac25$.`, md`Odd data kill the **even** $\ell$. $\ell = 1$ is odd and survives.`],
+        md`$\cos\theta\cos2\theta = 2x^3 - x = 2\left(\tfrac25P_3 + \tfrac35P_1\right) - P_1 = \tfrac45P_3 + \tfrac15P_1$. Check at the north pole: $\tfrac45 + \tfrac15 = 1 = \cos0\cos0$. Parity said odd $\ell$ only, the degree said $\ell \le 3$, and peeling gave the numbers.`,
+        { figHtml: sphLab('V_0(\\theta)=V_0\\cos\\theta\\cos2\\theta') }),
+
       Q(md`The sphere is held at $V_0\sin\theta$. Which statement about its Legendre expansion is true?`,
         [md`Only $\ell = 1$, since $\sin\theta$ is "first order" like $\cos\theta$`, md`$\ell = 0$ and $\ell = 1$ only`, md`Infinitely many terms, all with even $\ell$; you need the coefficient integral`, md`Infinitely many terms, all with odd $\ell$`], 2,
         [md`$P_1 = \cos\theta$, which is antisymmetric north–south; $\sin\theta$ is symmetric.`, md`$\sin\theta = \sqrt{1 - x^2}$ is not a polynomial in $x$, so no finite set of $P_\ell$ reproduces it.`, null, md`$\sin(\pi - \theta) = \sin\theta$: symmetric, so even $\ell$.`],
@@ -1006,7 +1016,7 @@
 
       Q(md`The sphere is held at $V_0\cos^2(\theta/2)$. What is its expansion?`,
         [md`$\tfrac{V_0}{2}\left(P_0 + P_1\right)$`, md`$\tfrac{V_0}{2}\left(P_0 - P_1\right)$`, md`$\tfrac{V_0}{3}\left(2P_2 + P_0\right)$`, md`$V_0P_1$`], 0,
-        [null, md`That is $\sin^2(\theta/2)$, the lecture's example: it is $0$ at the north pole.`, md`That is $\cos^2\theta$; the half angle changes everything.`, md`$P_1 = \cos\theta$ is negative on the southern half; $\cos^2(\theta/2) \ge 0$ everywhere.`],
+        [null, md`That is $\sin^2(\theta/2)$ (Griffiths Ex. 3.6): it is $0$ at the north pole.`, md`That is $\cos^2\theta$; the half angle changes everything.`, md`$P_1 = \cos\theta$ is negative on the southern half; $\cos^2(\theta/2) \ge 0$ everywhere.`],
         md`Half-angle identity: $\cos^2(\theta/2) = \tfrac12(1 + \cos\theta) = \tfrac12(P_0 + P_1)$. Checks: $V_0$ at the north pole, $0$ at the south pole.`,
         { figHtml: sphLab('V_0(\\theta)=V_0\\cos^2(\\theta/2)') }),
 
@@ -1052,6 +1062,12 @@
       `, { step: { svg: FIG.stepPlot, cap: 'Dashed: the $\\pm V_0$ step. Thin: the $\\ell = 1$ term alone, $\\tfrac32\\cos\\theta$. Solid: the sum through $\\ell = 7$.' } }),
 
       WG.sphere({ bc: 'step', n: 3 }),
+
+      Q(md`On the shell itself, partial sums of the $\pm V_0$ hemisphere series overshoot to about $1.18V_0$ next to the equator. Inside, at $r = 0.9R$, does the actual potential exceed $V_0$ anywhere?`,
+        [md`Yes, by about $0.18V_0$ just above the equator.`, md`Yes, but by less, since $(0.9)^\ell$ damps the overshoot.`, md`No. The true $V$ inside lies between $-V_0$ and $+V_0$ (no maxima inside a charge-free region). The overshoot belongs to truncated sums on the surface.`, md`No, because $V = 0$ everywhere inside.`], 2,
+        [md`The overshoot is a feature of partial sums at the jump, not of the potential. The exact $V$ can't exceed the largest boundary value.`, md`The true potential has no overshoot to damp. At $r = 0.9R$ the series converges to a value between $-V_0$ and $V_0$.`, null, md`Only the center and the equatorial plane are at $0$ (odd data); elsewhere $V \ne 0$.`],
+        md`$V$ is harmonic inside, so its maximum and minimum sit on the boundary, at $\pm V_0$. At any $r \lt R$ the factors $(r/R)^\ell$ make the series converge quickly, and the limit is the true potential. Gibbs ringing only bothers you if you evaluate truncated sums right on the surface near the jump.`,
+        { figHtml: FIG.hemPM }),
 
       Q(md`Compare $C_n = \dfrac2a\displaystyle\int_0^a V_0(y)\sin\frac{n\pi y}{a}\,dy$ for the slot with $c_\ell = \dfrac{2\ell+1}{2}\displaystyle\int_0^\pi V_0(\theta)P_\ell(\cos\theta)\sin\theta\,d\theta$. The factor $\frac{2\ell+1}{2}$ plays the role of which factor in $C_n$?`,
         [md`$\dfrac2a$`, md`$\dfrac a2$`, md`$\dfrac{n\pi}{a}$`, md`$\sin\dfrac{n\pi y}{a}$`], 0,
@@ -1199,7 +1215,7 @@
           1. Draw the setup and name the **region** where you want $V$ (inside, outside, between two spheres; two regions if a surface carries charge).
           2. Write the general solution once per region, each with its own coefficients:
              $$V(r,\theta) = \sum_{\ell=0}^{\infty}\left(A_\ell r^\ell + \frac{B_\ell}{r^{\ell+1}}\right)P_\ell(\cos\theta)$$
-          3. List the **boundary conditions** as a numbered list, the way the lectures do (BC #1, #2, ...).
+          3. List the **boundary conditions** as a numbered list (BC #1, #2, ...).
           4. Next to each, say what it does: it **kills** a family of coefficients, or it **fixes** the ones that are left.
           5. Solve, then check every condition in the final answer.
 
@@ -1221,7 +1237,7 @@
 
         [[fig:regions]]
 
-        So in practice: **inside** keep $A_\ell r^\ell$; **outside** keep $B_\ell/r^{\ell+1}$; **between two spheres** keep both; **outside in a uniform field** keep $B_\ell/r^{\ell+1}$ plus the single growing term $-E_0r\cos\theta$. The lecture's in-class answers say exactly this: "$V(0,\theta) \ne \infty \Rightarrow B = 0$" (every $B_\ell$) for the inside, and "$V(\infty,\theta) \to 0$, so $A_\ell = 0$" for the outside.
+        So in practice: **inside** keep $A_\ell r^\ell$; **outside** keep $B_\ell/r^{\ell+1}$; **between two spheres** keep both; **outside in a uniform field** keep $B_\ell/r^{\ell+1}$ plus the single growing term $-E_0r\cos\theta$. In short: $V(0,\theta) \ne \infty \Rightarrow B_\ell = 0$ (every $B_\ell$) for the inside, and $V(\infty,\theta) \to 0 \Rightarrow A_\ell = 0$ for the outside.
       `, { regions: { svg: FIG.regions, cap: 'Shaded: the region where you want $V$. The region decides which radial powers survive.' } }),
 
       Q(md`The pictured shell is held at $V_0(\theta)$ and there is no charge inside. You want $V$ **inside**. Which list of boundary conditions is complete and correct?`,
@@ -1232,7 +1248,7 @@
         1. $V$ finite at $r = 0$: kills every $B_\ell$.
         2. $V(R,\theta) = V_0(\theta)$: fixes every $A_\ell$ through $A_\ell R^\ell = c_\ell$, the Legendre coefficients of $V_0$.
 
-        Two conditions, and each one has a job. This is the lecture's Example (Griffiths Ex. 3.6).`,
+        Two conditions, and each one has a job. This is Griffiths Ex. 3.6.`,
         { figHtml: FIG.inRegion }),
 
       Q(md`An **uncharged** metal sphere sits in a field that is $E_0\hat{\mathbf z}$ far away. You want $V$ outside. Which list is right?`,
@@ -1324,6 +1340,18 @@
         [md`One equation cannot fix two unknowns.`, null, md`Those two were used up deciding *which* coefficients exist (no $B$ inside, no $A$ outside). They say nothing about their sizes.`, md`There are four conditions in total, but two only kill coefficients. Per $\ell$, two equations remain for two unknowns.`],
         md`Per $\ell$: continuity gives $A_\ell R^\ell = B_\ell/R^{\ell+1}$, and the jump gives $(\ell+1)\frac{B_\ell}{R^{\ell+2}} + \ell A_\ell R^{\ell-1} = \frac{s_\ell}{\varepsilon_0}$, where $s_\ell$ is the $\ell$-th Legendre coefficient of $\sigma_0(\theta)$. Two linear equations, two unknowns.`,
         { figHtml: FIG.sigShell }),
+
+      Q(md`Outside a sphere, suppose the condition far away is $V \to V_1$, a nonzero constant, instead of $V \to 0$ (the zero of potential was put somewhere else). Which coefficients survive outside?`,
+        [md`Every $B_\ell$ only, as usual.`, md`Every $A_\ell$ and every $B_\ell$.`, md`$A_1$ and the $B_\ell$.`, md`$A_0 = V_1$ and every $B_\ell$.`], 3,
+        [md`A sum of $B_\ell/r^{\ell+1}$ goes to $0$, not to $V_1$. The constant $A_0$ must stay.`, md`$A_\ell r^\ell$ with $\ell \ge 1$ still blows up, and $V$ stays finite far away.`, md`$A_1r\cos\theta$ is a uniform field. A constant far-field value needs $A_0$, the $\ell = 0$ growing solution $r^0 = 1$.`, null],
+        md`$r^0 = 1$ is the $\ell = 0$ "growing" solution, and it doesn't grow: it is a constant. "$V \to V_1$" keeps exactly that one, $A_0 = V_1$; every other $A_\ell$ still dies. Shifting the reference just adds $V_1$ to the answer and changes nothing physical.`,
+        { figHtml: FIG.outRegion }),
+
+      Q(md`An inner sphere (radius $a$) is held at $V_a(\theta)$ and an outer sphere (radius $b$) is grounded. Now push the outer sphere off to infinity, $b \to \infty$. What happens to the coefficients between the spheres?`,
+        [md`Every $A_\ell \to 0$, and the problem becomes the outside problem of a single sphere.`, md`Every $B_\ell \to 0$.`, md`Nothing; both sets stay as they were.`, md`$A_0$ survives and equals $V_a$.`], 0,
+        [null, md`The $B_\ell$ carry the inner sphere's data out into the region. They survive and tend to $c_\ell a^{\ell+1}$.`, md`The outer condition $A_\ell b^\ell + B_\ell b^{-(\ell+1)} = 0$ gives $A_\ell = -B_\ell/b^{2\ell+1}$, which goes to zero.`, md`$A_0 = -B_0/b \to 0$ as well: a grounded sphere at infinity is the condition $V \to 0$.`],
+        md`The grounded outer sphere says $A_\ell = -B_\ell b^{-(2\ell+1)}$. As $b \to \infty$ every $A_\ell \to 0$, and "$V = 0$ on a sphere at infinity" becomes "$V \to 0$ at infinity". Moving a boundary to infinity turns its condition into a far-field condition and kills the terms that grow toward it.`,
+        { figHtml: shells({ labA: 'V_a(\\theta)', labB: 'V=0' }) }),
 
       RF(md`
         ### What each surviving term is
@@ -1426,7 +1454,7 @@
   };
 
   // =====================================================================================
-  // Lesson 5: a sphere with a given surface potential (Lecture 13 example = Griffiths Ex. 3.6, 3.7)
+  // Lesson 5: a sphere with a given surface potential (Griffiths Ex. 3.6, 3.7)
   // =====================================================================================
   FIG.lecIn = sph({ lab: 'V_0(\\theta)=k\\sin^2(\\theta/2)', inLab: 'V(r,\\theta)' });
   FIG.lecOut = sph({ lab: 'V_0(\\theta)=k\\sin^2(\\theta/2)', outLab: 'V(r,\\theta)=?', outX: -70, outY: 70 });
@@ -1447,13 +1475,13 @@
     id: 'u7-shell-V', title: 'A sphere with a given potential (inside and outside)',
     steps: [
       RF(md`
-        ### The lecture's example (Griffiths Ex. 3.6): the potential inside
+        ### Griffiths Ex. 3.6: the potential inside
 
         *A spherical shell of radius $R$ is held at a fixed potential $V_0(\theta)$. Find the potential inside.*
 
         [[fig:setup]]
 
-        **Region:** $0 \le r \le R$, no charge. **Boundary conditions** (the lecture's in-class answer):
+        **Region:** $0 \le r \le R$, no charge. **Boundary conditions:**
 
         1. $V(0,\theta) \ne \infty$: kills every $B_\ell$.
         2. $V(R,\theta) = V_0(\theta)$: fixes the $A_\ell$.
@@ -1468,11 +1496,11 @@
 
         $$\boxed{A_\ell = \frac{2\ell+1}{2R^\ell}\int_0^\pi V_0(\theta)\,P_\ell(\cos\theta)\,\sin\theta\,d\theta}$$
 
-        **The lecture's boundary data:** $V_0(\theta) = k\sin^2(\theta/2)$. By the half-angle formula,
+        **Griffiths' boundary data:** $V_0(\theta) = k\sin^2(\theta/2)$. By the half-angle formula,
 
         $$k\sin^2\frac\theta2 = \frac k2\left(1 - \cos\theta\right) = \frac k2\left[P_0(\cos\theta) - P_1(\cos\theta)\right]$$
 
-        The lecture does $A_0$ by the integral: $A_0 = \frac12\int_0^\pi\frac k2\left[P_0 - P_1\right]P_0\sin\theta\,d\theta = \frac12\cdot\frac k2\cdot2 = \frac k2$ (only the $P_0P_0$ piece survives). Likewise $A_1 = \frac{3}{2R}\cdot\frac k2\cdot\left(-\frac23\right) = -\frac{k}{2R}$, and every other $A_\ell = 0$ because $P_\ell$ is orthogonal to both $P_0$ and $P_1$. Faster, by eye: match $A_0R^0 = \frac k2$ and $A_1R = -\frac k2$. Either way:
+        By the integral: $A_0 = \frac12\int_0^\pi\frac k2\left[P_0 - P_1\right]P_0\sin\theta\,d\theta = \frac12\cdot\frac k2\cdot2 = \frac k2$ (only the $P_0P_0$ piece survives). Likewise $A_1 = \frac{3}{2R}\cdot\frac k2\cdot\left(-\frac23\right) = -\frac{k}{2R}$, and every other $A_\ell = 0$ because $P_\ell$ is orthogonal to both $P_0$ and $P_1$. Faster, by eye: match $A_0R^0 = \frac k2$ and $A_1R = -\frac k2$. Either way:
 
         $$V(r,\theta) = \frac k2\left(1 - \frac rR\cos\theta\right) \qquad (r \le R)$$
 
@@ -1482,9 +1510,9 @@
 
         !!intuition Why the answer was linear
           On the sphere, $k\sin^2\frac\theta2 = \frac k2\left(1 - \frac zR\right)$ is already a linear function of $z$, and a linear function solves Laplace's equation. By uniqueness, the same linear function is the answer everywhere inside. Whenever the boundary data are the surface values of a simple harmonic function ($1$, $z$, $z^2 - \tfrac12(x^2+y^2)$, ...), that function is the inside solution.
-      `, { setup: { svg: FIG.lecIn, cap: 'Lecture 13: a spherical shell held at $V_0(\\theta)$; find $V$ inside. The $z$ axis is the symmetry axis.' } }),
+      `, { setup: { svg: FIG.lecIn, cap: 'Griffiths Ex. 3.6: a spherical shell held at $V_0(\\theta)$; find $V$ inside. The $z$ axis is the symmetry axis.' } }),
 
-      Q(md`For the lecture's sphere, $V_0(\theta) = k\sin^2(\theta/2)$, what is the potential at the center?`,
+      Q(md`For the Ex. 3.6 sphere, $V_0(\theta) = k\sin^2(\theta/2)$, what is the potential at the center?`,
         [md`$0$`, md`$k$`, md`$\dfrac k2$`, md`$\dfrac{k}{4}$`], 2,
         [md`$0$ is the north-pole value. The center sees the whole sphere.`, md`$k$ is the south-pole value.`, null, md`That is half the right value, as if an extra $\tfrac12$ slipped into $A_0 = \tfrac12\int_0^\pi V_0\sin\theta\,d\theta$. The area average of $\frac k2(1 - \cos\theta)$ is $\frac k2$, since $\cos\theta$ averages to zero over the surface.`],
         md`$V(0) = A_0 = \frac k2$. Physically, the potential at the center of a charge-free sphere is the average of the potential over its surface (mean-value theorem). Here the $\cos\theta$ part averages to zero, leaving $\frac k2$.`,
@@ -1509,7 +1537,7 @@
 
         **Region:** $r \ge R$. **Boundary conditions:**
 
-        1. $V(\infty,\theta) \to 0$: kills every $A_\ell$ (lecture: "so $A_\ell = 0$").
+        1. $V(\infty,\theta) \to 0$: kills every $A_\ell$.
         2. $V(R,\theta) = V_0(\theta)$: fixes the $B_\ell$.
 
         After BC 1, $V = \sum_\ell \frac{B_\ell}{r^{\ell+1}}P_\ell(\cos\theta)$, and BC 2 is $\sum_\ell\frac{B_\ell}{R^{\ell+1}}P_\ell(\cos\theta) = V_0(\theta)$. The same Fourier trick gives
@@ -1534,24 +1562,24 @@
 
         Two free checks:
         - **Center:** $V(0) = c_0 = \frac12\int_0^\pi V_0\sin\theta\,d\theta$, the surface average (mean-value theorem, Unit 4).
-        - **Far away:** $V \approx \frac{c_0R}{r}$, so the sphere carries total charge $Q = 4\pi\varepsilon_0Rc_0$. For the lecture's sphere, $Q = 4\pi\varepsilon_0R\cdot\frac k2 = 2\pi\varepsilon_0kR$.
-      `, { axis: { svg: FIG.lecPlot, cap: 'The lecture\'s sphere: $V$ along the $z$ axis. Inside it is linear; on the $+z$ axis outside it rises from $0$ to a maximum $k/8$ at $z = 2R$ and then decays; on the $-z$ axis it falls from $k$.' } }),
+        - **Far away:** $V \approx \frac{c_0R}{r}$, so the sphere carries total charge $Q = 4\pi\varepsilon_0Rc_0$. For the Ex. 3.6 sphere, $Q = 4\pi\varepsilon_0R\cdot\frac k2 = 2\pi\varepsilon_0kR$.
+      `, { axis: { svg: FIG.lecPlot, cap: 'The Ex. 3.6 sphere: $V$ along the $z$ axis. Inside it is linear; on the $+z$ axis outside it rises from $0$ to a maximum $k/8$ at $z = 2R$ and then decays; on the $-z$ axis it falls from $k$.' } }),
 
       WG.sphere({ bc: 'sin2h', n: 1 }),
 
-      Q(md`Far from the lecture's sphere, what is $V$ to leading order?`,
+      Q(md`Far from the Ex. 3.6 sphere, what is $V$ to leading order?`,
         [md`$\dfrac{kR}{2r}$`, md`$-\dfrac{kR^2}{2r^2}\cos\theta$`, md`$\dfrac k2$`, md`$0$ at every order`], 0,
         [null, md`That is the dipole term. It falls off faster than the monopole term, which is not zero here.`, md`A constant would violate $V \to 0$ at infinity.`, md`The sphere carries net charge, so the $1/r$ term is there.`],
         md`$V_{\text{out}} = \frac k2\left(\frac Rr - \frac{R^2}{r^2}\cos\theta\right)$; for $r \gg R$ the $1/r$ term wins: $V \approx \frac{kR}{2r}$, a point charge $Q = 2\pi\varepsilon_0kR$ at the center.`,
         { figHtml: FIG.lecOut }),
 
-      Q(md`On the $+z$ axis outside the lecture's sphere, $V(z) = \dfrac k2\left(\dfrac Rz - \dfrac{R^2}{z^2}\right)$. Where is it largest?`,
+      Q(md`On the $+z$ axis outside the Ex. 3.6 sphere, $V(z) = \dfrac k2\left(\dfrac Rz - \dfrac{R^2}{z^2}\right)$. Where is it largest?`,
         [md`At $z = R$, on the sphere`, md`At $z = 2R$, where $V = k/8$`, md`At infinity`, md`It is negative everywhere on the $+z$ axis`], 1,
         [md`At $z = R$ it is $0$ (the north pole is at $0$).`, null, md`It goes to zero at infinity.`, md`$\frac Rz \gt \frac{R^2}{z^2}$ for $z \gt R$, so it is positive.`],
         md`$\frac{dV}{dz} = \frac k2\left(-\frac{R}{z^2} + \frac{2R^2}{z^3}\right) = 0$ at $z = 2R$, where $V = \frac k2\left(\frac12 - \frac14\right) = \frac k8$. Near the grounded pole the dipole term (negative on $+z$) cancels the monopole; far away the monopole wins. The plot in the reading shows it.`,
         { figHtml: FIG.lecOut }),
 
-      Q(md`If the lecture's sphere were held at $k\cos^2(\theta/2)$ instead, what would $V$ inside be?`,
+      Q(md`If the Ex. 3.6 sphere were held at $k\cos^2(\theta/2)$ instead, what would $V$ inside be?`,
         [md`$\dfrac k2\left(1 - \dfrac rR\cos\theta\right)$`, md`$k\left(1 + \dfrac rR\cos\theta\right)$`, md`$\dfrac k2\left(1 + \dfrac{R^2}{r^2}\cos\theta\right)$`, md`$\dfrac k2\left(1 + \dfrac rR\cos\theta\right)$`], 3,
         [md`That is the original problem. $\cos^2(\theta/2)$ is the mirror image, hot at the north pole.`, md`$\cos^2(\theta/2) = \frac12(1 + \cos\theta)$: the factor $\frac12$ is missing; at the north pole this gives $2k$.`, md`$R^2/r^2$ is the outside dependence; it blows up at the center.`, null],
         md`$k\cos^2\frac\theta2 = \frac k2(P_0 + P_1)$, so $V_{\text{in}} = \frac k2\left(1 + \frac rR\cos\theta\right)$. Only the sign of the $\ell = 1$ term changes: same center value $\frac k2$, field reversed.`,
@@ -1581,11 +1609,35 @@
         md`$V(\text{center})$ = area average $= \frac12\int_0^{60^\circ}V_0\sin\theta\,d\theta = \frac{V_0}{2}(1 - \cos60^\circ) = \frac{V_0}{4}$. A polar cap of half-angle $\alpha$ covers the fraction $\frac{1 - \cos\alpha}{2}$ of the sphere. Exam shortcut: the center value is just this weighted average; no series needed.`,
         { figHtml: FIG.capSph }),
 
-      Q(md`What is the total charge on the lecture's sphere (held at $k\sin^2(\theta/2)$, nothing else around)?`,
+      Q(md`What is the total charge on the Ex. 3.6 sphere (held at $k\sin^2(\theta/2)$, nothing else around)?`,
         [md`$2\pi\varepsilon_0kR$`, md`$0$`, md`$4\pi\varepsilon_0kR$`, md`$\pi\varepsilon_0kR$`], 0,
         [null, md`The average potential is $\frac k2 \ne 0$, so the sphere is charged.`, md`That would be a sphere held entirely at $k$. The average is $\frac k2$.`, md`Off by 2: $Q = 4\pi\varepsilon_0B_0 = 4\pi\varepsilon_0\cdot\frac{kR}{2}$.`],
         md`$B_0 = c_0R = \frac{kR}{2}$ and $Q = 4\pi\varepsilon_0B_0 = 2\pi\varepsilon_0kR$. The $\ell = 1$ part carries no net charge. Shortcut: $Q = 4\pi\varepsilon_0R\times(\text{average surface potential})$.`,
         { figHtml: FIG.lecOut }),
+
+      Q(md`A sphere is held at $V_0(\cos\theta + \cos^2\theta)$. What are $V$ and $\vb E$ at the center?`,
+        [md`$V = 0$ and $\vb E = 0$`, md`$V = \tfrac{V_0}{3}$ and $\vb E = 0$`, md`$V = \tfrac{V_0}{3}$ and $\vb E = -\tfrac{V_0}{R}\uv z$`, md`$V = 2V_0$ and $\vb E = -\tfrac{2V_0}{R}\uv z$`], 2,
+        [md`$\cos^2\theta$ averages to $\tfrac13$ over the sphere, so $c_0 \ne 0$; and the $\cos\theta$ term makes a field.`, md`The $\cos\theta$ term is the $\ell = 1$ part, $A_1r\cos\theta = A_1z$: a uniform field.`, null, md`$2V_0$ is the north-pole value, $\sum c_\ell$. The center sees only $c_0$, and only $c_1$ makes a field there.`],
+        md`$\cos\theta + \cos^2\theta = \tfrac13P_0 + P_1 + \tfrac23P_2$. At the center $V = c_0 = \tfrac{V_0}{3}$. Only the $\ell = 1$ term has a gradient at $r = 0$ (the $r^2$ terms have zero slope there): $\vb E = -\tfrac{c_1}{R}\uv z = -\tfrac{V_0}{R}\uv z$. Center value and center field need only $c_0$ and $c_1$.`,
+        { figHtml: sphLab('V_0(\\theta)=V_0(\\cos\\theta+\\cos^2\\theta)') }),
+
+      Q(md`A sphere is held at $V_0\left(\cos^2\theta - \tfrac13\right)$, nothing else around. How does $V$ fall off far away?`,
+        [md`Like $1/r$: the sphere is charged.`, md`Like $1/r^2$: a dipole.`, md`It doesn't fall off; $V \to -\tfrac{V_0}{3}$.`, md`Like $1/r^3$: a pure quadrupole.`], 3,
+        [md`The data average to zero ($\cos^2\theta$ averages to $\tfrac13$), so $c_0 = 0$: no net charge.`, md`The data are north–south symmetric, so there is no $\ell = 1$ term.`, md`Outside, $V \to 0$ is imposed; constants are killed.`, null],
+        md`$\cos^2\theta - \tfrac13 = \tfrac23P_2(\cos\theta)$ exactly: a single harmonic. Outside, $V = \tfrac{2V_0}{3}\left(\tfrac Rr\right)^3P_2(\cos\theta)$. Reading the data as one $P_\ell$ gives the far field at once: the lowest non-zero $\ell$ falls like $r^{-(\ell+1)}$.`,
+        { figHtml: sphLab('V_0(\\theta)=V_0(\\cos^2\\theta-\\tfrac13)') }),
+
+      Q(md`The data on a sphere are antisymmetric, $V_0(\pi - \theta) = -V_0(\theta)$ (the $\pm V_0$ hemispheres, for example). What is $V$ on the equatorial plane, inside and outside?`,
+        [md`$V_0/2$`, md`$0$ everywhere on the plane, like a grounded sheet`, md`$0$ inside, but not outside`, md`It depends on how many terms you keep`], 1,
+        [md`Half the range would fit symmetric data running from $0$ to $V_0$. These data are odd.`, null, md`Outside the terms are $c_\ell(R/r)^{\ell+1}P_\ell$ with odd $\ell$ only, and every odd $P_\ell(0) = 0$. The plane is at zero outside too.`, md`Every term vanishes there, so every partial sum is exactly $0$.`],
+        md`Odd data contain only odd $\ell$, and $P_\ell(0) = 0$ for odd $\ell$, so every term vanishes at $\theta = \pi/2$ for every $r$. Symmetry says the same: reflecting $z \to -z$ flips the sign of the whole problem, so the plane $z = 0$ must be at zero. You could put a grounded plane there without changing anything.`,
+        { figHtml: FIG.hemPM }),
+
+      Q(md`A sphere is held at some fixed pattern $V_0(\theta)$. Keep a field point P fixed and let the sphere grow, $R \to \infty$, with the same pattern on it. What does $V(\text{P})$ tend to?`,
+        [md`$V_0(\theta_P)$, the data at P's angle`, md`$0$`, md`$c_0$, the average of the data over the sphere`, md`It diverges`], 2,
+        [md`That is the value on the surface, $r = R$. P ends up deep inside, where the angular structure has died away.`, md`Only if the average is zero. The $\ell = 0$ term is a constant inside and doesn't shrink.`, null, md`Every term is bounded by $|c_\ell|(r/R)^\ell$, which can only shrink as $R$ grows.`],
+        md`Inside, $V = \sum_\ell c_\ell(r/R)^\ell P_\ell(\cos\theta)$. At fixed $r$ every $\ell \ge 1$ term carries $(r/R)^\ell \to 0$, so only $c_0$ is left. Seen from near its center, a very large sphere acts like a uniform potential equal to its average. It is the same reason only the lowest mode matters far from a live face in Unit 6.`,
+        { figHtml: sph({ lab: 'V_0(\\theta)', Pin: { f: 0.3, th: 40, lab: 'P' } }) }),
 
       P({
         title: 'Sphere at V₀ cos θ',
@@ -1777,7 +1829,7 @@
         !!key Patterns to remember
           - Inside (BCs: finite at $0$; $V(R,\theta) = V_0$): $V = \sum c_\ell(r/R)^\ell P_\ell$, $A_\ell = \frac{2\ell+1}{2R^\ell}\int_0^\pi V_0P_\ell\sin\theta\,d\theta$.
           - Outside (BCs: $V \to 0$; $V(R,\theta) = V_0$): $V = \sum c_\ell(R/r)^{\ell+1}P_\ell$, $B_\ell = \frac{2\ell+1}{2}R^{\ell+1}\int_0^\pi V_0P_\ell\sin\theta\,d\theta$.
-          - Lecture example: $k\sin^2\frac\theta2 = \frac k2(P_0 - P_1)$ gives $V_{\text{in}} = \frac k2\left(1 - \frac rR\cos\theta\right)$, $V_{\text{out}} = \frac k2\left(\frac Rr - \frac{R^2}{r^2}\cos\theta\right)$.
+          - Ex. 3.6: $k\sin^2\frac\theta2 = \frac k2(P_0 - P_1)$ gives $V_{\text{in}} = \frac k2\left(1 - \frac rR\cos\theta\right)$, $V_{\text{out}} = \frac k2\left(\frac Rr - \frac{R^2}{r^2}\cos\theta\right)$.
           - Center = surface average ($c_0$). Far away $V \approx c_0R/r$, so $Q = 4\pi\varepsilon_0Rc_0$.
           - $\ell = 1$ data: uniform field inside, pure dipole outside.
       `),
@@ -1799,7 +1851,7 @@
     id: 'u7-field', title: 'Metal sphere in a uniform field (Griffiths Ex. 3.8)',
     steps: [
       RF(md`
-        *An uncharged metal sphere of radius $R$ is placed in an otherwise uniform electric field $\vb E = E_0\uv z$. Find the potential outside.* This is not in the lectures, but it is in Griffiths §3.3.2 and is one of the most common exam problems in this unit.
+        *An uncharged metal sphere of radius $R$ is placed in an otherwise uniform electric field $\vb E = E_0\uv z$. Find the potential outside.* It is in Griffiths §3.3.2 and is one of the most common exam problems in this unit.
 
         [[fig:setup]]
 
@@ -1909,6 +1961,18 @@
         [md`Net charge adds a monopole term outside and a uniform part to $\sigma$.`, null, md`A constant would not decay and has nothing to do with the charge; the charge shows up as $B_0 = \frac{Q}{4\pi\varepsilon_0}$.`, md`The sphere is no longer at $V = 0$; its potential floats to $\frac{Q}{4\pi\varepsilon_0R}$, and the dipole part is unchanged.`],
         md`Superposition: (neutral sphere in the field) + (isolated sphere with charge $Q$). $V = -E_0\left(r - \frac{R^3}{r^2}\right)\cos\theta + \frac{Q}{4\pi\varepsilon_0r}$, which is constant ($\frac{Q}{4\pi\varepsilon_0R}$) on the sphere as a conductor must be, and has total charge $Q$. This is Griffiths' Prob. 3.21 (4th ed.).`,
         { figHtml: FIG.chargedField }),
+
+      Q(md`For the uncharged metal sphere in a uniform field, $A_1 = -E_0$ comes from the far-field condition. Which condition fixes $B_1 = E_0R^3$?`,
+        [md`The far-field condition, $V \to -E_0r\cos\theta$.`, md`$V = 0$ on the sphere: $A_1R + B_1/R^2 = 0$.`, md`The sphere being neutral.`, md`Laplace's equation.`], 1,
+        [md`At large $r$ the $B_1/r^2$ term dies; the far field can't see it.`, null, md`Neutrality fixes $B_0 = 0$ (no $1/r$ term). It says nothing about the dipole.`, md`Every $B_1\cos\theta/r^2$ satisfies Laplace's equation, whatever $B_1$ is.`],
+        md`Each condition has one job. Far away: picks $\ell = 1$ and sets $A_1 = -E_0$. On the sphere: links $B_1$ to $A_1$, $B_1 = -A_1R^3 = E_0R^3$. Neutral: $B_0 = 0$. If the sphere carries charge $Q$, only that last job changes.`,
+        { figHtml: FIG.metalField }),
+
+      Q(md`Same neutral metal sphere in the field, but the reference is shifted: far away $V \to -E_0r\cos\theta + V_1$. What changes in the solution?`,
+        [md`The induced dipole changes to $4\pi\varepsilon_0R^3(E_0 + V_1/R)$.`, md`A $1/r$ term appears.`, md`Nothing at all; $V_1$ can't appear.`, md`$V$ gains the constant $V_1$ everywhere and the sphere now sits at $V_1$; fields and charges don't change.`], 3,
+        [md`A constant has no $\cos\theta$ part, so the $\ell = 1$ matching is untouched.`, md`The sphere is still neutral, so $B_0 = 0$.`, md`It does appear: $A_0 = V_1$, and the sphere's potential follows it.`, null],
+        md`The far-field condition now keeps $A_0 = V_1$ as well as $A_1 = -E_0$. Neutrality keeps $B_0 = 0$, so on the sphere $V = V_1$ (still an equipotential). Adding a constant to $V$ changes no field and no charge, which is why you may choose $V_1 = 0$.`,
+        { figHtml: FIG.metalField }),
 
       Q(md`Far below the sphere, field lines are uniformly spaced. The lines that end on the sphere's southern half come from a disk of what radius?`,
         [md`$R$`, md`$\sqrt2\,R$`, md`$\sqrt3\,R$`, md`$3R$`], 2,
@@ -2128,6 +2192,18 @@
         md`$s_\ell = \frac{(2\ell+1)\varepsilon_0}{R}c_\ell$. Fine-grained charge patterns partly cancel each other's potential, so you need more charge to make the same surface potential. This is exactly the factor in HW 3.22, next.`,
         { figHtml: FIG.sigP2 }),
 
+      Q(md`For the shell with $\sigma_0 = k\cos\theta$, the radial field jumps by $\sigma_0/\varepsilon_0 = k/\varepsilon_0$ across the north pole. How is that jump shared between the two sides?`,
+        [md`All of it outside; the field inside is zero, as for a conductor.`, md`Half on each side, $\pm\tfrac{k}{2\varepsilon_0}$, as for a flat sheet.`, md`$E_r^{\text{out}} = +\tfrac{2k}{3\varepsilon_0}$ and $E_r^{\text{in}} = -\tfrac{k}{3\varepsilon_0}$.`, md`$E_r^{\text{out}} = +\tfrac{k}{3\varepsilon_0}$ and $E_r^{\text{in}} = -\tfrac{2k}{3\varepsilon_0}$.`], 2,
+        [md`The inside field is $-\tfrac{k}{3\varepsilon_0}\uv z$, not zero. Zero inside happens only for a conductor or a uniform shell.`, md`The $\pm\tfrac{\sigma}{2\varepsilon_0}$ split is for an isolated flat sheet. The rest of the shell's charge adds its own field at the pole.`, null, md`Swapped. Outside, $V \propto 1/r^2$ gives $E_r = 2B_1\cos\theta/r^3$; inside, $V \propto r$ gives $E_r = -A_1\cos\theta$, with $B_1 = A_1R^3$.`],
+        md`From $V_{\text{in}} = \tfrac{k}{3\varepsilon_0}r\cos\theta$: $E_r^{\text{in}} = -\tfrac{k}{3\varepsilon_0}\cos\theta$. From $V_{\text{out}} = \tfrac{kR^3}{3\varepsilon_0}\tfrac{\cos\theta}{r^2}$: $E_r^{\text{out}} = \tfrac{2k}{3\varepsilon_0}\cos\theta$ at $r = R$. Jump: $\tfrac{2k}{3\varepsilon_0} + \tfrac{k}{3\varepsilon_0} = \tfrac{k}{\varepsilon_0}$. For harmonic $\ell$ the split is $\tfrac{\ell+1}{2\ell+1}$ outside and $\tfrac{\ell}{2\ell+1}$ inside: that is where the $2\ell+1$ comes from.`,
+        { figHtml: FIG.sigCos }),
+
+      Q(md`For a shell held at $V_0(\theta)$, a student computes $\sigma = -\varepsilon_0\,\partial V_{\text{out}}/\partial r$ at $r = R$, ignoring the inside. For which data does that happen to be right?`,
+        [md`Only for constant $V_0$: then $V$ inside is constant and $E_r^{\text{in}} = 0$.`, md`For any data, since a shell is a conductor.`, md`Only for data with zero average.`, md`Only for north–south antisymmetric data.`], 0,
+        [null, md`A shell held at a non-uniform $V_0(\theta)$ is not an equipotential, so it isn't a conductor in equilibrium, and the field inside is not zero.`, md`Zero average removes $\ell = 0$, which is exactly the one harmonic with no inside field. Every remaining $\ell \ge 1$ has $E_r^{\text{in}} \ne 0$.`, md`Odd data have only $\ell \ge 1$ terms, all with an inside field.`],
+        md`$\sigma = -\varepsilon_0\left[\partial_rV_{\text{out}} - \partial_rV_{\text{in}}\right]_R$. For harmonic $\ell$ the inside derivative is $\tfrac{\ell c_\ell}{R}$, zero only for $\ell = 0$. Dropping it replaces the factor $2\ell+1$ by $\ell+1$: for $V_0\cos\theta$ you'd get $\tfrac{2\varepsilon_0V_0}{R}\cos\theta$ instead of $\tfrac{3\varepsilon_0V_0}{R}\cos\theta$. The conductor formula $\sigma = -\varepsilon_0\partial V/\partial n$ needs $\vb E = 0$ on the other side.`,
+        { figHtml: FIG.hw322 }),
+
       RF(md`
         ### Going the other way: the charge on a sphere held at $V_0(\theta)$ (HW 3.22)
 
@@ -2139,7 +2215,7 @@
 
         $$\sigma(\theta) = \frac{\varepsilon_0}{R}\sum_\ell(2\ell+1)\,c_\ell\,P_\ell(\cos\theta)$$
 
-        The same factor $2\ell+1$ as in Ex. 3.9, read backwards. Example, the lecture's sphere ($c_0 = \frac k2$, $c_1 = -\frac k2$): $\sigma = \frac{\varepsilon_0}{R}\left[\frac k2 - \frac{3k}{2}\cos\theta\right] = \frac{\varepsilon_0k}{2R}(1 - 3\cos\theta)$. It is **negative** near the north pole: holding that pole at zero next to a hot southern half takes negative charge there.
+        The same factor $2\ell+1$ as in Ex. 3.9, read backwards. Example, the Ex. 3.6 sphere ($c_0 = \frac k2$, $c_1 = -\frac k2$): $\sigma = \frac{\varepsilon_0}{R}\left[\frac k2 - \frac{3k}{2}\cos\theta\right] = \frac{\varepsilon_0k}{2R}(1 - 3\cos\theta)$. It is **negative** near the north pole: holding that pole at zero next to a hot southern half takes negative charge there.
       `),
 
       P({
@@ -2309,8 +2385,8 @@
       }),
 
       P({
-        title: 'Charge on the lecture\'s sphere',
-        q: md`The lecture's sphere is held at $V_0(\theta) = k\sin^2(\theta/2)$ with no other charge. Find the surface charge $\sigma(\theta)$ on it, and its value at the north pole.`,
+        title: 'Charge on the Ex. 3.6 sphere',
+        q: md`The Ex. 3.6 sphere is held at $V_0(\theta) = k\sin^2(\theta/2)$ with no other charge. Find the surface charge $\sigma(\theta)$ on it, and its value at the north pole.`,
         figHtml: FIG.lecIn,
         hints: [
           md`Use the HW 3.22 result in the form $\sigma = \frac{\varepsilon_0}{R}\sum(2\ell+1)c_\ell P_\ell$, with $c_0 = \frac k2$, $c_1 = -\frac k2$.`,
@@ -2440,6 +2516,12 @@
         md`$\frac{V_0b^2}{b^3 - a^3} \to -E_0$ as $b \to \infty$. The outer sphere at $-E_0b\cos\theta = -E_0z$ is exactly the potential of a uniform field, so you recover Ex. 3.8. A good habit: test a new answer against a limit you already know.`,
         { figHtml: FIG.shGround }),
 
+      Q(md`Two spheres: the inner one (radius $a$) at a constant $V_a$, the outer one (radius $b$) at $V_b(\theta)$. Shrink the inner sphere, $a \to 0$, keeping $V_a$ fixed. What happens to the $B_\ell$?`,
+        [md`They blow up, since $r^{-(\ell+1)}$ is singular at the center.`, md`$B_0$ tends to $V_a$; the others vanish.`, md`They stay the same.`, md`They all go to $0$: a vanishingly small sphere has no effect, and you recover the inside solution of the outer sphere.`], 3,
+        [md`The coefficients shrink faster than the functions grow on the shrinking sphere; no point charge is left in the limit.`, md`$B_0 = \dfrac{V_a - c_0}{1/a - 1/b} \to (V_a - c_0)\,a \to 0$. A tiny sphere at finite potential holds a vanishing charge.`, md`Each $B_\ell$ depends on $a$: for $\ell \ge 1$, $B_\ell = -A_\ell a^{2\ell+1}$.`, null],
+        md`For $\ell \ge 1$ the inner condition (a constant has no $\ell \ge 1$ part) gives $B_\ell = -A_\ell a^{2\ell+1} \to 0$. For $\ell = 0$, the charge on a sphere of radius $a$ held a finite potential away from its surroundings is of order $4\pi\varepsilon_0a\,\Delta V \to 0$. Shrinking a boundary to a point (at finite potential) removes it, and "finite at $r = 0$" takes its place.`,
+        { figHtml: FIG.twoShells }),
+
       P({
         title: 'Two concentric spheres',
         q: md`The inner sphere (radius $a$) is held at $V_0$ and the outer sphere (radius $b$) at $V_0\cos\theta$. Find (a) $V$ between them and (b) the total charge on the inner sphere.`,
@@ -2494,6 +2576,12 @@
         [md`The shell's potential is held fixed by whatever maintains it. Its charge changes by $-q$ to cancel the extra monopole.`, md`The dipole term is set by the $\ell = 1$ part of $V(R,\theta)$, which does not change.`, null, md`The argument is the same for either sign.`],
         md`The outside region is bounded by the shell and infinity, with $V$ specified on both. By uniqueness $V_{\text{out}} = V_0\frac{R^2}{r^2}\cos\theta$ regardless of what is inside. The shell's charge becomes whatever is needed: here total enclosed charge must be zero (no $1/r$ term), so the shell carries $-q$ net.`,
         { figHtml: FIG.ptShell }),
+
+      Q(md`A point charge $q$ sits at the center of a thin **grounded** shell of radius $R$. What is $V$ outside the shell?`,
+        [md`$\dfrac{q}{4\pi\varepsilon_0r}$, since the shell doesn't shield`, md`$0$ everywhere outside: the shell carries $-q$`, md`$\dfrac{q}{4\pi\varepsilon_0}\left(\dfrac1r - \dfrac1R\right)$`, md`$-\dfrac{q}{4\pi\varepsilon_0r}$`], 1,
+        [md`With the shell held at $0$, the outside region has $V = 0$ on $r = R$ and at infinity; the only harmonic function with those values is $0$.`, null, md`That is the **inside** answer. Used outside it tends to $-\tfrac{q}{4\pi\varepsilon_0R}$ at infinity instead of $0$.`, md`That needs a total charge $-q$, but the outside sees the total enclosed charge, $q + (-q) = 0$.`],
+        md`Outside: $V(R) = 0$ and $V \to 0$, so $V_{\text{out}} = 0$ by uniqueness. Gauss then says the total enclosed charge is zero: the ground wire supplies $-q$ to the shell. Inside: $V = \tfrac{q}{4\pi\varepsilon_0}\left(\tfrac1r - \tfrac1R\right)$, the point charge plus the constant $A_0 = -\tfrac{q}{4\pi\varepsilon_0R}$ that grounds the shell.`,
+        { figHtml: sph({ charge: 'center', lab: 'V=0\\ (\\text{grounded})', Rth: 120 }) }),
 
       P({
         title: 'Charge at the center of a shell',
@@ -2553,6 +2641,12 @@
         [null, md`That decays away from the origin; inside $r \lt d$ the terms must be $r^\ell$.`, md`That is the $\ell = 1$ term for $r \gt d$.`, md`Units: the $\ell$ term is $\frac{r^\ell}{d^{\ell+1}}$, so $\frac{r}{d^2}$.`],
         md`$\frac{q}{4\pi\varepsilon_0}\frac{r}{d^2}P_1(\cos\theta) = \frac{q\,z}{4\pi\varepsilon_0d^2}$. Its gradient is the uniform field $-\frac{q}{4\pi\varepsilon_0d^2}\uv z$, the charge's field at the origin (pointing away from $q$).`,
         { figHtml: FIG.axisQ }),
+
+      Q(md`On the $+z$ axis outside a sphere you know $V(z) = V_0\left(\dfrac Rz + \dfrac{2R^3}{z^3}\right)$, and the region $r \gt R$ is charge-free. What is $V$ in the equatorial plane at $r = 2R$?`,
+        [md`$\dfrac{V_0}{2}$`, md`$\dfrac{3V_0}{4}$`, md`$\dfrac{3V_0}{8}$`, md`$\dfrac{5V_0}{8}$`], 2,
+        [md`That keeps only the $1/r$ term. The $2R^3/z^3$ piece is an $\ell = 2$ term and survives off the axis.`, md`That is the value on the axis at $z = 2R$. Off the axis each term gets its $P_\ell(\cos\theta)$, and $P_2(0) = -\tfrac12$.`, null, md`$P_2(0) = -\tfrac12$, not $+\tfrac12$.`],
+        md`Match powers with $\dfrac{B_\ell}{z^{\ell+1}}$: $\dfrac{R}{z}$ is $\ell = 0$ ($B_0 = V_0R$) and $\dfrac{2R^3}{z^3}$ is $\ell = 2$ ($B_2 = 2V_0R^3$). Off the axis, $V = V_0\left[\dfrac Rr + \dfrac{2R^3}{r^3}P_2(\cos\theta)\right]$. At $r = 2R$, $\theta = 90^\circ$: $V_0\left[\tfrac12 + 2\cdot\tfrac18\cdot\left(-\tfrac12\right)\right] = \tfrac38V_0$. The trap is pairing $z^{-3}$ with $\ell = 3$: the power is $\ell + 1$.`,
+        { figHtml: sph({ Pout: { f: 2, th: 90, lab: 'P' }, Rth: 210 }) }),
 
       P({
         title: 'A charge outside a grounded sphere, by separation of variables',

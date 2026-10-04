@@ -1,4 +1,4 @@
-/* Unit 6 — Separation of variables, Cartesian (Lecture 11 pp. 3–5, Lecture 12 pp. 1–4; Griffiths 3.3.1:
+/* Unit 6 — Separation of variables, Cartesian (Griffiths 3.3.1:
    Ex. 3.3 slot, Ex. 3.4 pipe, Ex. 3.5 3-D pipe; HW 5 Prob 3.17; Discussion 4 Probs 3.15, 3.18). */
 (function () {
   'use strict';
@@ -488,6 +488,31 @@
   const cubeV = (x, y, z, N = 21) => { let s = 0; for (let n = 1; n <= N; n += 2) for (let m = 1; m <= N; m += 2) { const g = PI * Math.hypot(n, m); s += 16 / (PI * PI * n * m) * Math.sin(n * PI * x) * Math.sin(m * PI * y) * shr(g, z, 1); } return s; };
   const CUBE_SLICE = box({ w: 120, h: 120, T: 'V_0', L: '0', R: '0', B: '0', xl: 'x', yl: 'z', xt: [[120, 'a']], yt: [[120, 'a']], map: { fn: (x, z) => cubeV(x, 0.5, z), box: [0, 1, 0, 1], S: 120, levels: [0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9], nx: 60 }, pts: [[60, 60]] });
 
+  // ---------------------------------------------------------------- figures for the extra drill questions
+  // the slot with its top plate removed: grounded plane y = 0, live strip x = 0 running up to y -> infinity
+  function openTop() {
+    const f = PF.fig();
+    const L = 230, H = 140;
+    f.plane(4, L, 0, { side: 'below' });
+    f.wall(0, -H, -3, { side: 'left' });
+    f.line(L, 0, L + 24, 0, { cls: 'dim dash' });
+    f.line(0, -H, 0, -H - 24, { cls: 'dim dash' });
+    f.label(L * 0.6, 16, 'V=0', 't', 'small');
+    f.label(-16, -H / 2, 'V_0(y)', 'r');
+    f.line(L + 26, 0, L + 46, 0, { cls: 'dim', arrow: 'end', hs: 6 }); f.label(L + 48, 0, 'x', 'l', 'small accent');
+    f.line(0, -H - 30, 0, -H - 52, { cls: 'dim', arrow: 'end', hs: 6 }); f.label(5, -H - 50, 'y', 'l', 'small accent');
+    f.label(-15, 9, '0', 'r', 'small accent');
+    f.text(L * 0.55, -H * 0.6, 'no top plate', 'c');
+    return widen(f).svg();
+  }
+  const OPEN_TOP = openTop();
+  const GIBBS4 = PF.row([
+    { svg: shape(() => 1), cap: '(A) $V_0$' },
+    { svg: shape((y) => y), cap: '(B) $V_0y/a$' },
+    { svg: shape((y) => 1 - y), cap: '(C) $V_0(1-y/a)$' },
+    { svg: shape((y) => 4 * y * (1 - y)), cap: '(D) $\\tfrac{4V_0}{a^2}y(a-y)$' },
+  ]).svg;
+
   C.unit({
     id: 'u6', num: 'Unit 6', title: 'Separation of variables: Cartesian',
     blurb: 'Solving Laplace\'s equation in slots, pipes and boxes: product solutions, choosing sin/cos vs exponentials/sinh/cosh, Fourier\'s trick, superposition of faces, 3-D boxes, and exam strategy.',
@@ -497,7 +522,7 @@
         id: 'u6-idea', title: 'When to separate, and the product ansatz',
         steps: [
           RF(md`
-            Images work when a few point charges can fake the boundary. Most boundary-value problems are not like that: a box whose walls sit at different potentials, a slot closed off by a live strip, a cube with a live lid. For those you solve Laplace's equation directly. The method is **separation of variables** (Lecture 11, Griffiths 3.3.1).
+            Images work when a few point charges can fake the boundary. Most boundary-value problems are not like that: a box whose walls sit at different potentials, a slot closed off by a live strip, a cube with a live lid. For those you solve Laplace's equation directly. The method is **separation of variables** (Griffiths 3.3.1).
 
             Use it when all three hold:
 
@@ -505,13 +530,13 @@
             2. **Every boundary is a coordinate surface**: planes $x = \text{const}$, $y = \text{const}$ here (spheres $r = \text{const}$ in Unit 7).
             3. **$V$ is given on every boundary**, including a limiting value far away. By the uniqueness theorem that fixes $V$ completely.
 
-            The lecture's example (Griffiths Ex. 3.3) is the **slot**: two grounded metal plates at $y = 0$ and $y = a$, closed off at $x = 0$ by a strip held at $V_0(y)$ and insulated from the plates. Everything extends to $\pm\infty$ in $z$.
+            The standard example (Griffiths Ex. 3.3) is the **slot**: two grounded metal plates at $y = 0$ and $y = a$, closed off at $x = 0$ by a strip held at $V_0(y)$ and insulated from the plates. Everything extends to $\pm\infty$ in $z$.
 
             [[fig:s3]]
 
             [[fig:s2]]
 
-            !!key Boundary conditions (the lecture's numbering)
+            !!key Boundary conditions (this numbering is used for the slot all unit)
               1. $V(x,y)\big|_{y=0} = 0$ (bottom plate)
               2. $V(x,y)\big|_{y=a} = 0$ (top plate)
               3. $V(x,y)\big|_{x=0} = V_0(y)$ (the end strip)
@@ -522,7 +547,7 @@
             $$\frac{\partial^2 V}{\partial x^2} + \frac{\partial^2 V}{\partial y^2} = 0 .$$
 
             BC #4 is not stated in the problem. It is physics: far from the only live surface, between two grounded plates, the potential has to die out.
-          `, { s3: { svg: SLOT3D, cap: 'The slot in 3-D (Griffiths Fig. 3.17). The end strip (front edge drawn thick) is insulated from both plates.' }, s2: { svg: SLOT_BC, cap: 'The same slot seen down the $z$-axis, with the four boundary conditions numbered as in lecture.' } }),
+          `, { s3: { svg: SLOT3D, cap: 'The slot in 3-D (Griffiths Fig. 3.17). The end strip (front edge drawn thick) is insulated from both plates.' }, s2: { svg: SLOT_BC, cap: 'The same slot seen down the $z$-axis, with the four boundary conditions numbered as in the list.' } }),
 
           Q(md`Which of these four problems is a job for separation of variables?`,
             [md`(A) A point charge $q$ midway between two grounded parallel plates.`, md`(B) A long rectangular pipe whose four walls are held at given potentials $V_1,\dots,V_4$, with nothing inside.`, md`(C) A uniformly charged solid ball.`, md`(D) A point charge $q$ outside a grounded metal sphere.`], 1,
@@ -539,7 +564,7 @@
           Q(md`Why is the slot a two-dimensional problem?`,
             [md`The plates and the strip extend to $\pm\infty$ in $z$ and nothing changes along $z$, so $\partial^2 V/\partial z^2 = 0$.`, md`Because $V = 0$ at $z = \pm\infty$.`, md`Because the plates are thin.`, md`Because $E_z = 0$ on the plates.`], 0,
             [null, md`No condition at $z = \pm\infty$ is used. The potential is the same at every $z$, which is all you need.`, md`Thickness is irrelevant. What matters is that the setup looks identical at every $z$.`, md`$E_z = 0$ everywhere, not just on the plates, and that is a consequence of $V$ not depending on $z$.`],
-            md`If you slide along $z$ the configuration does not change, so neither does $V$. Then $\partial V/\partial z = 0$ and the $z$ term drops out of the Laplacian (the blue note in the lecture: "0 since no variation in $z$").`,
+            md`If you slide along $z$ the configuration does not change, so neither does $V$. Then $\partial V/\partial z = 0$ and the $z$ term drops out of the Laplacian.`,
             { figHtml: SLOT3D }),
 
           Q(md`BC #4, $V \to 0$ as $x \to \infty$, is not in the problem statement. Why is it right?`,
@@ -555,7 +580,7 @@
 
             $$V(x,y) = X(x)\,Y(y).$$
 
-            The lecture calls this "an extreme simplification since only a very small number of functions obey this form." For example $V = 5x + 6y$ solves Laplace's equation and is not a single product. But the products are special, and **sums** of them build every solution you need.
+            This is an extreme simplification: very few functions have this form. For example $V = 5x + 6y$ solves Laplace's equation and is not a single product. But the products are special, and **sums** of them build every solution you need.
 
             Substitute:
 
@@ -569,8 +594,6 @@
               Call the pieces $f(x)$ and $g(y)$, with $f(x) + g(y) = 0$ for every $x$ and $y$. Hold $y$ fixed and change $x$: $g$ does not change, so $f$ cannot change either. So $f$ is a constant and $g$ is minus the same constant. Griffiths: "the whole method rides on it."
 
             $$\frac{1}{X}\frac{d^2X}{dx^2} = k^2, \qquad \frac{1}{Y}\frac{d^2Y}{dy^2} = -k^2 .$$
-
-            (The notes write the second one as $\tfrac{1}{Y(y)}\tfrac{d^2X}{dx^2} = -k^2$. That is a copying slip; it is $Y''$ over $Y$.)
 
             One partial differential equation has become two ordinary ones, with the solutions you know:
 
@@ -600,7 +623,7 @@
           RF(md`
             ### Which variable oscillates?
 
-            The sign of the separation constant is a choice, and the boundary conditions make it for you. The lecture simply writes $+k^2$ for $X$ and $-k^2$ for $Y$; here is why that is the right assignment (Griffiths explains it right after Eq. 3.29).
+            The sign of the separation constant is a choice, and the boundary conditions make it for you. For the slot, $X$ gets $+k^2$ and $Y$ gets $-k^2$. Here is why that is the right assignment (Griffiths explains it right after Eq. 3.29).
 
             - $Y$ must vanish at **both** $y = 0$ and $y = a$. A sine can do that. An exponential combination $Ce^{ky} + De^{-ky}$ crosses zero at most once, so it cannot. So $Y$ gets the **negative** constant: $Y'' = -k^2Y$, sines and cosines.
             - $X$ must die as $x \to \infty$. A sine never dies; $e^{-kx}$ does. So $X$ gets the **positive** constant: $X'' = +k^2X$, exponentials.
@@ -639,6 +662,12 @@
             [md`The decay rate is the same $k$ that appears in the sine. Here $k = 3\pi/a$, not $\pi/a$.`, md`Inverted: a larger $k$ means *faster* decay, so the length scale is $\tfrac{a}{3\pi}$, not $\tfrac{3a}{\pi}$.`, null, md`Along the slot the function must decay, not oscillate.`],
             md`The same $k$ appears in both factors: $X'' = k^2X$, $Y'' = -k^2Y$. With $Y = \sin(3\pi y/a)$, $k = 3\pi/a$, so $X = e^{-3\pi x/a}$. High harmonics die fast: by $x = a$ the $n = 3$ term is down by $e^{-3\pi} \approx 8\times10^{-5}$.`,
             { figHtml: SLOT }),
+
+          Q(md`Take away the top plate of the slot: one grounded plate lies along $y = 0$, the strip at $x = 0$ (held at $V_0(y)$) now runs up forever, and the region is the quarter-plane $x > 0$, $y > 0$. What happens to the allowed values of $k$?`,
+            [md`Any $k > 0$ is allowed. Only one zero boundary is left in $y$, so nothing quantizes $k$, and the sum over $n$ becomes an integral over $k$.`, md`$k = n\pi/a$ still, with $a \to \infty$, so every $k$ is $0$ and $V = 0$.`, md`Only $k = 0$ survives, so $V$ is linear in $x$ and $y$.`, md`Separation of variables stops working without a second plate.`], 0,
+            [null, md`$n\pi/a \to 0$ for fixed $n$, but $n$ can grow with $a$: the allowed values crowd together until they fill the whole line $k > 0$. Nothing collapses to zero.`, md`A linear function can't vanish on the plate and match a general $V_0(y)$ on the strip; the $k = 0$ pieces are not enough.`, md`The products $e^{-kx}\sin ky$ still solve Laplace's equation and still vanish on the plate. Only the bookkeeping changes: an integral over $k$ instead of a sum.`],
+            md`Quantization comes from fitting a whole number of half-waves between **two** zero boundaries. With the top plate gone, $\sin ky$ vanishes at $y = 0$ for every $k$, and staying bounded as $y \to \infty$ doesn't single out any $k$. So $V = \displaystyle\int_0^\infty C(k)\,e^{-kx}\sin ky\,dk$: a Fourier sine *transform* instead of a Fourier series. Moving a face to infinity turns a discrete set of modes into a continuous one.`,
+            { figHtml: OPEN_TOP }),
 
           RF(md`
             ### The master recipe
@@ -680,7 +709,7 @@
               md`Which exponential survives as $y \to \infty$?`,
             ],
             parts: [
-              { lbl: md`Which sign assignment?`, mc: [md`$X''/X = +k^2$, $Y''/Y = -k^2$`, md`$X''/X = -k^2$, $Y''/Y = +k^2$`, md`both $-k^2$`, md`both $+k^2$`], a: 1, why: [md`That's the lecture's slot. Here the zero walls are at $x = 0$ and $x = L$, so $x$ must oscillate.`, null, md`The two constants must add to zero.`, md`They must add to zero.`] },
+              { lbl: md`Which sign assignment?`, mc: [md`$X''/X = +k^2$, $Y''/Y = -k^2$`, md`$X''/X = -k^2$, $Y''/Y = +k^2$`, md`both $-k^2$`, md`both $+k^2$`], a: 1, why: [md`That's the Ex. 3.3 slot. Here the zero walls are at $x = 0$ and $x = L$, so $x$ must oscillate.`, null, md`The two constants must add to zero.`, md`They must add to zero.`] },
               { lbl: md`The product solutions are`, mc: [md`$\sin\frac{n\pi y}{L}\,e^{-n\pi x/L}$`, md`$\cos\frac{n\pi x}{L}\,e^{-n\pi y/L}$`, md`$\sin\frac{n\pi x}{L}\,e^{+n\pi y/L}$`, md`$\sin\frac{n\pi x}{L}\,e^{-n\pi y/L}$`], a: 3, why: [md`The roles of $x$ and $y$ are swapped here.`, md`$\cos 0 = 1$: the wall at $x = 0$ wouldn't be grounded.`, md`It blows up as $y \to \infty$.`, null] },
               { lbl: md`$k$ for the first mode ($n = 1$)`, expr: 'pi/L', vars: { L: [1, 3] } },
               { lbl: md`Which BC fixes the coefficients?`, mc: [md`$V = V_0(x)$ at $y = 0$`, md`$V = 0$ at $x = 0$`, md`$V = 0$ at $x = L$`, md`$V \to 0$ as $y \to \infty$`], a: 0, why: [null, md`It removes $\cos kx$.`, md`It quantizes $k = n\pi/L$.`, md`It removes $e^{+ky}$.`] },
@@ -693,7 +722,7 @@
               3. $V(x, 0) = V_0(x)$ (live) $\Rightarrow C_n$
               4. $V \to 0$ as $y \to \infty$ (homogeneous) $\Rightarrow$ no $e^{+ky}$
 
-              $x$ has the two zero boundaries, so $X''/X = -k^2$ and $Y''/Y = +k^2$: the lecture's slot with $x$ and $y$ swapped.
+              $x$ has the two zero boundaries, so $X''/X = -k^2$ and $Y''/Y = +k^2$: the Ex. 3.3 slot with $x$ and $y$ swapped.
 
               $$V(x,y) = \sum_{n=1}^{\infty} C_n\,e^{-n\pi y/L}\sin\frac{n\pi x}{L}, \qquad C_n = \frac{2}{L}\int_0^L V_0(x)\sin\frac{n\pi x}{L}\,dx .$$
 
@@ -716,17 +745,17 @@
         id: 'u6-slot', title: 'The slot, one boundary condition at a time',
         steps: [
           RF(md`
-            Start from the separated solution (Lecture 11 p. 4):
+            Start from the separated solution:
 
             $$V(x,y) = \left(Ae^{kx} + Be^{-kx}\right)\left(C\sin ky + D\cos ky\right).$$
 
-            Now spend the boundary conditions one at a time, in the lecture's order. The three homogeneous (zero) ones go first.
+            Now spend the boundary conditions one at a time, in this order. The three homogeneous (zero) ones go first.
 
             **BC #1**, $V(x,0) = 0$. At $y = 0$ the second bracket is $C\cdot 0 + D\cdot 1 = D$. For $V$ to vanish there at every $x$, $D = 0$ ("since $\cos 0 = 1$"). So $Y = C\sin ky$.
 
             **BC #4**, $V \to 0$ as $x \to \infty$. $e^{kx}$ blows up, so $A = 0$ ("since $e^{kx} \to \infty$"). So $X = Be^{-kx}$.
 
-            Combine the constants (the lecture's "$BC$, call this $C$"):
+            Combine the constants (rename the product $BC$ as $C$):
 
             $$V(x,y) = C\,e^{-kx}\sin ky .$$
 
@@ -765,6 +794,12 @@
             md`$C e^{-kx}\sin ka = 0$ for all $x$ requires $\sin ka = 0$: $ka = \pi, 2\pi, 3\pi, \dots$. Two zero boundary conditions in the same direction always quantize the separation constant: a whole number of half-waves must fit across the slot.`,
             { figHtml: SLOT_BC }),
 
+          Q(md`Suppose you apply BC #2, $V(x, a) = 0$, to $Y = C\sin ky + D\cos ky$ **before** BC #1. What does BC #2 alone give?`,
+            [md`$k = n\pi/a$ at once.`, md`Only the relation $C\sin ka + D\cos ka = 0$ between $C$ and $D$. The quantization appears once BC #1 has set $D = 0$.`, md`$D = 0$.`, md`$C = 0$.`], 1,
+            [md`That needs $D = 0$ first. With both terms present, $C\sin ka + D\cos ka = 0$ holds for any $k$ if you choose $D = -C\tan ka$.`, null, md`$\cos ka$ is not $1$ in general. Setting $D = 0$ is the job of BC #1 at $y = 0$, where $\cos 0 = 1$.`, md`Nothing singles out $C$: BC #2 gives one equation linking $C$ and $D$, and $C = 0$ is just one (bad) way to satisfy it.`],
+            md`The $y$-function has two constants and the unknown $k$, so it takes **both** $y$-conditions. One condition gives one relation; the second makes it quantize. Either order ends the same way: BC #1 gives $D = 0$, then BC #2 gives $\sin ka = 0$; or BC #2 gives $D = -C\tan ka$, then BC #1 gives $D = 0$, so $\tan ka = 0$ and again $k = n\pi/a$.`,
+            { figHtml: SLOT_BC }),
+
           Q(md`Why are $n = 0$ and negative $n$ left out of $k = n\pi/a$?`,
             [md`$n = 0$ gives $V = 0$ everywhere; negative $n$ repeat the positive ones with the sign absorbed into $C_n$.`, md`$n = 0$ is needed for a constant term, but negative $n$ are not allowed.`, md`Negative $n$ give cosines, which BC #1 removed.`, md`Both make $1/n$ blow up.`], 0,
             [null, md`With $k = 0$, $\sin ky = 0$ identically (and the $k = 0$ linear solutions can't vanish on both plates either). There is no constant term in the slot.`, md`$\sin(-ky) = -\sin ky$: still a sine.`, md`$1/n$ appears only in the constant-$V_0$ coefficients. The reason is more basic: no new functions.`],
@@ -774,13 +809,19 @@
           Q(md`After BCs #1, #2 and #4, one term $C\,e^{-n\pi x/a}\sin(n\pi y/a)$ is left for each $n$. Which boundary conditions does one such term satisfy?`,
             [md`All four.`, md`BCs #1, #2 and #4 exactly; BC #3 only if $V_0(y)$ happens to be proportional to $\sin(n\pi y/a)$.`, md`Only BCs #1 and #2.`, md`Only BC #3.`], 1,
             [md`At $x = 0$ the term is $C\sin(n\pi y/a)$: a single sine. A constant strip, for instance, is not a single sine.`, null, md`It also dies far away, so BC #4 holds too.`, md`Backwards: #3 is the one it generally misses.`],
-            md`This is the lecture's "issue 2": we have an infinite set of solutions and no obvious way to satisfy BC #3. Griffiths: "unless $V_0(y)$ just happens to have the form $\sin(n\pi y/a)$ for some integer $n$, we simply can't fit the final boundary condition." The fix is to add them up.`,
+            md`This is the open problem: we have an infinite set of solutions and no obvious way to satisfy BC #3. Griffiths: "unless $V_0(y)$ just happens to have the form $\sin(n\pi y/a)$ for some integer $n$, we simply can't fit the final boundary condition." The fix is to add them up.`,
+            { figHtml: SLOT_BC }),
+
+          Q(md`After BCs #1, #2 and #4, how many free constants are left in each term $\left(Ae^{kx} + Be^{-kx}\right)\left(C\sin ky + D\cos ky\right)$?`,
+            [md`None: the three zero conditions fix everything.`, md`Two per $n$: $B$ and $C$ separately.`, md`Four per $n$, one for each letter.`, md`One per $n$: $A = 0$, $D = 0$, and $B$ and $C$ only appear as the product $BC$, renamed $C_n$. BC #3 fixes it.`], 3,
+            [md`A homogeneous condition can never fix an overall size: if a term satisfies it, so does any multiple of the term. The size has to come from the live face.`, md`$B$ and $C$ enter only through the product $BC$. Doubling $B$ and halving $C$ changes nothing, so they are one constant.`, md`BC #1 removes $D$, BC #4 removes $A$, and the remaining $B$ and $C$ only enter as a product.`, null],
+            md`Bookkeeping: each homogeneous BC either deletes a term ($D$, $A$) or quantizes $k$. None of them can set an amplitude, because zero conditions are blind to scaling. That leaves exactly one constant per mode, and the only non-zero condition, BC #3, sets all of them at once through Fourier's trick.`,
             { figHtml: SLOT_BC }),
 
           RF(md`
             ### Two issues, one fix
 
-            The lecture lists two issues at this point:
+            Two issues remain at this point:
 
             1. We have an infinite set of solutions, one for each $n$.
             2. We have no obvious way to satisfy BC #3.
@@ -815,13 +856,13 @@
           Q(md`What does it mean that the functions $\sin(n\pi y/a)$, $n = 1, 2, \dots$, are **complete** on $0 < y < a$?`,
             [md`Each one vanishes at $y = 0$ and $y = a$.`, md`They are orthogonal to each other.`, md`Any reasonable function $V_0(y)$ on $(0, a)$, even one with finitely many jumps, can be written as $\sum C_n\sin(n\pi y/a)$.`, md`The series has infinitely many terms.`], 2,
             [md`True, but that's what lets them satisfy BCs #1 and #2. Completeness is a different property.`, md`That is orthogonality, the property used to *compute* the $C_n$. Completeness guarantees the expansion exists.`, null, md`Infinitely many functions isn't enough: e.g. the even-$n$ sines alone are infinite but not complete.`],
-            md`Completeness = "you can build anything from them" (the lecture: "they can represent any function even if it has a finite number of discontinuities", via Dirichlet's theorem). Orthogonality = "you can pick out one coefficient at a time". The method needs both.`,
+            md`Completeness = "you can build anything from them" (Dirichlet's theorem: they can represent any function, even one with a finite number of discontinuities). Orthogonality = "you can pick out one coefficient at a time". The method needs both.`,
             { nofig: 'definition' }),
 
           RF(md`
             ### Fourier's trick
 
-            The sines are **orthogonal** on $0 \le y \le a$ (the in-class question: "what does that mean?"):
+            The sines are **orthogonal** on $0 \le y \le a$. What that means:
 
             $$\int_0^a \sin\!\left(\frac{n\pi y}{a}\right)\sin\!\left(\frac{m\pi y}{a}\right)dy = \frac{a}{2}\,\delta_{nm}, \qquad \delta_{nm} = \begin{cases}1, & n = m\\ 0, & n \ne m\end{cases}$$
 
@@ -837,8 +878,6 @@
 
             !!key Fourier's trick (Griffiths Eq. 3.34)
               $$C_n = \frac{2}{a}\int_0^a V_0(y)\sin\!\left(\frac{n\pi y}{a}\right)dy$$
-
-            Two slips in the notes on this page, in case you compare: a stray $dy$ appears on the right before anything has been integrated, and the middle step is written $\sum C_n\delta_{mn}$, dropping the $\tfrac{a}{2}$. The last expression, $\tfrac{a}{2}C_m$, is right.
           `, { orth: ORTH }),
 
           Q(md`$\displaystyle\int_0^a \sin^2\!\left(\frac{3\pi y}{a}\right)dy = \;?$`,
@@ -880,7 +919,7 @@
 
             $$C_n = \begin{cases} 0, & n \text{ even},\\[2pt] \dfrac{4V_0}{n\pi}, & n \text{ odd}.\end{cases}$$
 
-            The notes skip the factor $\tfrac{a}{m\pi}$ from integrating the sine (they write $-V_0\cos\tfrac{m\pi y}{a}\big|_0^a = \tfrac{a}{2}C_m$), and then write $\tfrac{4V_0}{n\pi}$ where the index is $m$. The final result is right; if your own algebra doesn't reproduce it, that missing $\tfrac{a}{m\pi}$ is why.
+            Don't drop the factor $\tfrac{a}{n\pi}$ that integrating the sine produces. It cancels the $a$ in $\tfrac{2}{a}$ and leaves $C_n$ in volts; without it the result can't come out as $\tfrac{4V_0}{n\pi}$.
 
             !!key The slot (Griffiths Eq. 3.36)
               $$V(x,y) = \frac{4V_0}{\pi}\sum_{n = 1,3,5,\dots}\frac{1}{n}\,e^{-n\pi x/a}\sin\!\left(\frac{n\pi y}{a}\right)$$
@@ -914,7 +953,7 @@
           Q(md`Inside the slot with a constant strip $V_0 > 0$, the potential is:`,
             [md`Between $0$ and $V_0$ everywhere.`, md`Above $V_0$ near the corners (Gibbs).`, md`Negative close to the plates.`, md`Exactly $V_0/2$ on the midline $y = a/2$.`], 0,
             [null, md`Gibbs overshoot is a property of *truncated* sums on the boundary, not of the true potential.`, md`Near a plate $V$ falls to $0$ from above. A harmonic function takes its extreme values on the boundary, here $0$ and $V_0$, so it can't dip below $0$ anywhere inside.`, md`On the midline $V$ falls from $V_0$ (at the strip) toward $0$ (far away).`],
-            md`Solutions of Laplace's equation have no local maxima or minima inside the region (the averaging property from Lecture 9). So $V$ lies between the smallest and largest boundary values: $0 < V < V_0$. Use this as a sanity check on any answer.`,
+            md`Solutions of Laplace's equation have no local maxima or minima inside the region (the averaging property). So $V$ lies between the smallest and largest boundary values: $0 < V < V_0$. Use this as a sanity check on any answer.`,
             { figHtml: SLOT }),
 
           Q(md`What are the units of the coefficients $C_n$ in $V = \sum C_n e^{-n\pi x/a}\sin(n\pi y/a)$?`,
@@ -949,7 +988,7 @@
               3. $V(0, y) = V_0\sin(3\pi y/a)$ (live)
               4. $V \to 0$ as $x \to \infty$ (homogeneous)
 
-              BCs #1, #4, #2 are the lecture's, so exactly as before: $D = 0$, $A = 0$, $k = n\pi/a$, and
+              BCs #1, #4, #2 are those of Ex. 3.3, so exactly as before: $D = 0$, $A = 0$, $k = n\pi/a$, and
 
               $$V = \sum_{n=1}^{\infty} C_n\,e^{-n\pi x/a}\sin\!\left(\frac{n\pi y}{a}\right).$$
 
@@ -1046,7 +1085,7 @@
           Q(md`Which property guarantees that coefficients $C_n$ **exist** that make $\sum C_n\sin(n\pi y/a) = V_0(y)$?`,
             [md`Orthogonality of the sines.`, md`Linearity of Laplace's equation.`, md`Completeness of the sines on $(0, a)$.`, md`Uniqueness of the solution.`], 2,
             [md`Orthogonality lets you *compute* the $C_n$ once you know they exist. It doesn't promise they exist.`, md`Linearity lets you add solutions. It doesn't say the sum can match an arbitrary $V_0(y)$.`, null, md`Uniqueness certifies the answer after you've built it.`],
-            md`Completeness (Dirichlet's theorem in the lecture): the sines span every reasonable function on the interval. Each property has a job: completeness (it can be done), orthogonality (how to do it), linearity (the sum is still a solution), uniqueness (it is the answer).`,
+            md`Completeness (Dirichlet's theorem): the sines span every reasonable function on the interval. Each property has a job: completeness (it can be done), orthogonality (how to do it), linearity (the sum is still a solution), uniqueness (it is the answer).`,
             { nofig: 'about properties of the method' }),
 
           Q(md`You keep only the terms $n = 1, 3, 5, \dots, 99$ of the slot series. Is the result a solution of Laplace's equation?`,
@@ -1060,7 +1099,7 @@
 
             On the strip itself ($x = 0$) the coefficients fall off only like $1/n$, so convergence there is slow. Inside the slot each term carries $e^{-n\pi x/a}$, and the series converges fast.
 
-            At the corners the boundary value jumps: the strip is at $V_0$, the plate next to it at $0$. Every sine is zero at $y = 0$ and $y = a$, so the series gives exactly $0$ at the corners. (A sine series converges to the middle of a jump in the *odd* extension, which runs from $-V_0$ to $+V_0$; the middle is $0$.) Just inside, partial sums overshoot and ring: the **Gibbs phenomenon** (the lecture's sketch on L12-4: "the function oscillates at the edges").
+            At the corners the boundary value jumps: the strip is at $V_0$, the plate next to it at $0$. Every sine is zero at $y = 0$ and $y = a$, so the series gives exactly $0$ at the corners. (A sine series converges to the middle of a jump in the *odd* extension, which runs from $-V_0$ to $+V_0$; the middle is $0$.) Just inside, partial sums overshoot and ring: the **Gibbs phenomenon**: the function oscillates at the edges.
 
             [[fig:gibbs]]
 
@@ -1086,11 +1125,23 @@
             md`Numerically the peak of the partial sum is $1.200V_0$ with 2 terms, $1.188V_0$ with 3, $1.181V_0$ with 6, $1.1797V_0$ with 11 and $1.1790V_0$ with 51, always just inside the corner, at about $y = a/(n_{\max} + 1)$. This is a property of truncated Fourier series at a jump, not of the real potential.`,
             { figHtml: SLOT }),
 
+          Q(md`The end profile decides where the partial sums ring. Which profile makes them overshoot (Gibbs) at the bottom corner $(0, 0)$ but **not** at the top corner $(0, a)$?`,
+            [md`(A)`, md`(B)`, md`(C)`, md`(D)`], 2,
+            [md`The constant is $V_0$ next to **both** plates, so it jumps at both corners and rings at both.`, md`Backwards: the ramp is $0$ at the bottom (no jump there) and $V_0$ at the top, so it rings only at $(0, a)$.`, null, md`The parabola is $0$ at both plates: no jump anywhere, no Gibbs ringing, and coefficients that fall like $1/n^3$.`],
+            md`Gibbs ringing lives at jumps. Every sine is zero on the plates, so a profile that is non-zero right next to a plate jumps at that corner. $V_0(1 - y/a)$ is $V_0$ at $y = 0$ and $0$ at $y = a$: it rings only at the bottom corner. Its coefficients are $\tfrac{2V_0}{n\pi}$ for every $n$, the $1/n$ fall-off that a jump always produces.`,
+            { figHtml: GIBBS4 }),
+
           Q(md`At which point do you need the **most** terms of the series to get $V$ to 1%?`,
             [md`$(0.02a,\; 0.02a)$, right next to the corner.`, md`$(a,\; a/2)$`, md`$(2a,\; a/4)$`, md`All points need the same number.`], 0,
             [null, md`At $x = a$ the $n = 3$ term is down by $e^{-2\pi}/3 \approx 6\times10^{-4}$ relative to $n = 1$. One term is enough.`, md`Even farther out; one term is plenty.`, md`The factor $e^{-n\pi x/a}$ makes convergence much faster away from the strip.`],
             md`Close to the live face the higher harmonics haven't decayed ($e^{-n\pi x/a} \approx 1$ when $x \ll \tfrac{a}{n\pi}$), and close to the corner $V$ changes fast. Far down the slot one term does it.`,
             { figHtml: SLOT_BC }),
+
+          Q(md`Differentiate the constant-strip series term by term: $E_y = -\dfrac{\partial V}{\partial y} = -\dfrac{4V_0}{a}\displaystyle\sum_{\text{odd}}e^{-n\pi x/a}\cos\dfrac{n\pi y}{a}$. This converges at every $x > 0$ but not on the strip itself ($x = 0$). Why?`,
+            [md`For $x > 0$ the factor $e^{-n\pi x/a}$ makes the terms shrink geometrically; at $x = 0$ the terms are $\cos(n\pi y/a)$, which don't shrink at all.`, md`The series for $V$ itself diverges at $x = 0$, so its derivative must too.`, md`Fourier series can never be differentiated term by term.`, md`$E_y$ is infinite everywhere on the strip.`], 0,
+            [null, md`$V$'s series converges on the strip (to $V_0$, slowly, with $1/n$ terms). Differentiating multiplies each term by $n\pi/a$, which cancels the $1/n$ and leaves terms that don't decay.`, md`It works wherever the differentiated series converges, which is everywhere inside the slot thanks to the exponentials.`, md`On the strip $V = V_0$ is constant along $y$, so $E_y = 0$ there (away from the corners). The trouble is with the series, not the field.`],
+            md`Each derivative brings down a factor $n$. With $1/n$ coefficients that leaves terms of size $1$ on the live face, but any $x > 0$ adds $e^{-n\pi x/a}$, and the sum converges fast. Rule of thumb: compute fields and $\sigma$ from the series anywhere off the live face; on the live face itself use a closed form or take a limit.`,
+            { figHtml: SLOT }),
 
           RF(md`
             ### Far down the slot
@@ -1169,7 +1220,7 @@
               { lbl: md`(c) $E_x$ in V/m`, ans: 157.08, unit: 'V/m' },
             ],
             sol: md`
-              **Boundary conditions** (region $x > 0$, $0 < y < a$, $a = 2\ \text{cm}$): #1 $V = 0$ at $y = 0$ (kills $\cos ky$); #2 $V = 0$ at $y = a$ (gives $k = n\pi/a$); #3 $V = 100\ \text{V}$ at $x = 0$ (live: $C_n = \tfrac{4V_0}{n\pi}$, odd $n$); #4 $V \to 0$ as $x \to \infty$ (kills $e^{+kx}$). This is the lecture's slot, so
+              **Boundary conditions** (region $x > 0$, $0 < y < a$, $a = 2\ \text{cm}$): #1 $V = 0$ at $y = 0$ (kills $\cos ky$); #2 $V = 0$ at $y = a$ (gives $k = n\pi/a$); #3 $V = 100\ \text{V}$ at $x = 0$ (live: $C_n = \tfrac{4V_0}{n\pi}$, odd $n$); #4 $V \to 0$ as $x \to \infty$ (kills $e^{+kx}$). This is the Ex. 3.3 slot, so
 
               $$V = \frac{4V_0}{\pi}\sum_{\text{odd } n}\frac1n e^{-n\pi x/a}\sin\frac{n\pi y}{a} \approx \frac{4V_0}{\pi}e^{-\pi x/a}\sin\frac{\pi y}{a}.$$
 
@@ -1200,7 +1251,7 @@
               { lbl: md`(c) One term is worse at Q because:`, mc: [md`Q is closer to the strip, so the higher harmonics have decayed less: the $n = 3$ term is $\tfrac13e^{-\pi/2} \approx 7\%$ of $n = 1$ there.`, md`Q is off the midline, where the series doesn't converge.`, md`The coefficients are different at Q.`, md`It isn't worse; both are equally good.`], a: 0, why: [null, md`The series converges at every interior point.`, md`The $C_n$ are numbers; they don't depend on the point.`, md`At $(a/2, a/2)$ the error is 1.4%; at Q it's about 6%.`] },
             ],
             sol: md`
-              **Boundary conditions:** the lecture's slot, #1 $V(x, 0) = 0$, #2 $V(x, a) = 0$, #4 $V \to 0$ as $x \to \infty$ (homogeneous), #3 $V(0, y) = V_0$ (live). So $V = \tfrac{4V_0}{\pi}\sum_{\text{odd}}\tfrac1n e^{-n\pi x/a}\sin\tfrac{n\pi y}{a}$, and the only question is how many terms to keep.
+              **Boundary conditions:** the Ex. 3.3 slot, #1 $V(x, 0) = 0$, #2 $V(x, a) = 0$, #4 $V \to 0$ as $x \to \infty$ (homogeneous), #3 $V(0, y) = V_0$ (live). So $V = \tfrac{4V_0}{\pi}\sum_{\text{odd}}\tfrac1n e^{-n\pi x/a}\sin\tfrac{n\pi y}{a}$, and the only question is how many terms to keep.
 
               **Terms at Q** ($x = y = a/4$), with $\tfrac{4}{\pi} = 1.2732$:
 
@@ -1264,6 +1315,18 @@
             md`Match term by term: $C_1 = 2V_0$, $C_4 = -V_0$, all others zero. So $V = 2V_0e^{-\pi x/a}\sin\tfrac{\pi y}{a} - V_0e^{-4\pi x/a}\sin\tfrac{4\pi y}{a}$. The $n = 4$ part dies four times faster.`,
             { figHtml: slot({ end: 'V_0[2\\sin(\\pi y/a)-\\sin(4\\pi y/a)]' }) }),
 
+          Q(md`The live end is held at $V_0\sin^3(\pi y/a)$. Use $\sin^3u = \tfrac34\sin u - \tfrac14\sin 3u$. What is $C_3$?`,
+            [md`$+\dfrac{V_0}{4}$`, md`$-\dfrac{V_0}{4}$`, md`$-\dfrac{4V_0}{3\pi}$`, md`$0$, since $\sin^3$ is a single mode`], 1,
+            [md`Sign: the identity has $-\tfrac14\sin 3u$.`, null, md`That has the form of a constant strip's coefficient. Here the data already is a finite sum of sines, so there is no integral and no $\pi$ in the answer.`, md`A power of a sine is not one sine. The identity splits it into $n = 1$ and $n = 3$.`],
+            md`$V_0\sin^3\tfrac{\pi y}{a} = \tfrac34V_0\sin\tfrac{\pi y}{a} - \tfrac14V_0\sin\tfrac{3\pi y}{a}$, so $C_1 = \tfrac34V_0$, $C_3 = -\tfrac14V_0$, all others zero: $V = \tfrac34V_0e^{-\pi x/a}\sin\tfrac{\pi y}{a} - \tfrac14V_0e^{-3\pi x/a}\sin\tfrac{3\pi y}{a}$. Check at $(0, a/2)$: $\tfrac34 + \tfrac14 = 1 = \sin^3(\pi/2)$.`,
+            { figHtml: slot({ end: 'V_0\\sin^3(\\pi y/a)' }) }),
+
+          Q(md`The live end is held at $V_0\sin(\pi y/a)\cos(\pi y/a)$. Which coefficients are non-zero?`,
+            [md`$C_1 = V_0$ only.`, md`The odd $n$, from Fourier's trick.`, md`$C_2 = V_0/2$ only.`, md`$C_2 = V_0$ only.`], 2,
+            [md`The $\cos$ factor changes the mode: the product is not $\sin(\pi y/a)$.`, md`The profile is antisymmetric about $a/2$ ($\sin$ symmetric, $\cos$ antisymmetric), so the odd $n$ are exactly the ones that vanish.`, null, md`$\sin u\cos u = \tfrac12\sin 2u$: the factor $\tfrac12$ stays.`],
+            md`$\sin u\cos u = \tfrac12\sin 2u$, so $V = \tfrac{V_0}{2}e^{-2\pi x/a}\sin\tfrac{2\pi y}{a}$. One term, no integral. Before reaching for Fourier's trick, try a trig identity.`,
+            { figHtml: slot({ end: 'V_0\\sin(\\pi y/a)\\cos(\\pi y/a)' }) }),
+
           RF(md`
             ### Use symmetry before you integrate
 
@@ -1302,6 +1365,12 @@
             [md`The average alone is not enough: a centered strip with the same average gives a different midline potential. It is the whole symmetric part that matters.`, md`All their odd coefficients agree: $\tfrac{2V_0}{n\pi}$ for both.`, null, md`Check: the odd coefficients are $\tfrac{2V_0}{n\pi}$ for both, and even terms vanish on the midline.`],
             md`Symmetric part of the ramp: $\tfrac12\left(\tfrac{y}{a} + \tfrac{a-y}{a}\right)V_0 = \tfrac{V_0}{2}$. Symmetric part of the half-strip: $\tfrac12(V_0 + 0) = \tfrac{V_0}{2}$. So on the midline both equal the slot with a constant strip at $V_0/2$: $V(x, a/2) = \tfrac{2V_0}{\pi}\sum_{\text{odd}}\tfrac{(-1)^{(n-1)/2}}{n}e^{-n\pi x/a}$.`,
             { figHtml: PF.row([{ svg: RAMP, cap: 'ramp' }, { svg: HALF, cap: 'lower half' }]).svg }),
+
+          Q(md`The end data $V_0(y)$ is symmetric about the midline $y = a/2$ (for example the centered strip shown). What can you say on the midline without any series?`,
+            [md`$\partial V/\partial y = 0$ there: $E_y = 0$, so the field runs along the midline and never crosses it.`, md`$V = 0$ on the whole midline.`, md`$\partial V/\partial x = 0$ there.`, md`Nothing, until the coefficients are known.`], 0,
+            [null, md`That is the antisymmetric case ($\pm V_0$ strips). Symmetric data gives equal values at $y$ and $a - y$, not opposite ones.`, md`$V$ still decays along the slot, on the midline as everywhere else.`, md`Symmetry alone settles it: $V(x, a - y) = V(x, y)$, so $\partial V/\partial y$ is odd about $a/2$ and must vanish there.`],
+            md`Mirror symmetry about $y = a/2$ makes $V$ even about the midline, so its slope across the midline is zero. Every surviving term agrees: $\tfrac{d}{dy}\sin\tfrac{n\pi y}{a} \propto \cos\tfrac{n\pi}{2} = 0$ at $y = a/2$ for odd $n$. The midline behaves like an insulating wall ($E_\perp = 0$), so you could solve just the lower half with $\partial V/\partial y = 0$ on its top. Antisymmetric data gives the other kind of wall: $V = 0$, like a grounded sheet.`,
+            { figHtml: CSTRIP }),
 
           RF(md`
             ### The catalog
@@ -1348,6 +1417,12 @@
             [md`A constant jumps to $0$ at the plates: $1/n$.`, md`The ramp jumps from $V_0$ to $0$ at $y = a$: $1/n$.`, null, md`Jumps (at both plates and in the middle): $1/n$.`],
             md`The parabola is continuous, vanishes at both plates, and is smooth inside: $C_n = \tfrac{32V_0}{(n\pi)^3}$ for odd $n$. Its series converges so fast that the single term $1.032V_0\sin(\pi y/a)$ is within $0.043V_0$ of the parabola everywhere on the face. Rule: jumps give $1/n$, kinks give $1/n^2$, smooth data that vanishes at the ends gives $1/n^3$ or faster.`,
             { figHtml: SHAPES.svg }),
+
+          Q(md`The live end is held at $V_0\sin^2(\pi y/a)$. Which $n$ appear, and how fast do the coefficients fall?`,
+            [md`Only $n = 2$, since $\sin^2$ is a single mode.`, md`Even $n$ only, falling like $1/n$.`, md`All $n$, falling like $1/n^2$.`, md`Odd $n$ only, falling like $1/n^3$.`], 3,
+            [md`$\sin^2(\pi y/a) = \tfrac12 - \tfrac12\cos(2\pi y/a)$: a constant and a **cosine**, and neither is a single sine on $(0, a)$.`, md`$\sin^2(\pi y/a)$ is symmetric about $a/2$, so the even sines have zero overlap with it.`, md`Symmetry removes the even $n$. And there is no kink or jump: the profile is smooth and zero at both plates.`, null],
+            md`Symmetric about the midline: odd $n$ only. Zero at both plates and smooth: $1/n^3$. The integral gives $C_n = -\dfrac{8V_0}{\pi n(n^2 - 4)}$ for odd $n$: $C_1 = \tfrac{8V_0}{3\pi} = 0.849V_0$, $C_3 = -\tfrac{8V_0}{15\pi}$, $C_5 = -\tfrac{8V_0}{105\pi}$. Two quick checks (symmetry, smoothness) predict the shape of the answer before any integral.`,
+            { figHtml: slot({ end: 'V_0\\sin^2(\\pi y/a)' }) }),
 
           Q(md`The ramp $V_0y/a$ ends at $V_0$ next to the grounded top plate. At $(x, y) = (0, a)$, what does its sine series give?`,
             [md`$V_0$`, md`$V_0/2$`, md`$0$`, md`It diverges.`], 2,
@@ -1398,7 +1473,7 @@
               3. $V(0, y) = +V_0$ for $0 < y < a/2$, $-V_0$ for $a/2 < y < a$ (live) $\Rightarrow C_n$
               4. $V \to 0$ as $x \to \infty$ (homogeneous) $\Rightarrow A = 0$
 
-              BCs #1, #2, #4 are those of Ex. 3.3, so exactly as in lecture
+              BCs #1, #2, #4 are those of Ex. 3.3, so exactly as before
 
               $$V(x,y) = \sum_{n=1}^{\infty} C_n\,e^{-n\pi x/a}\sin\!\left(\frac{n\pi y}{a}\right).$$
 
@@ -1418,19 +1493,19 @@
 
               [[fig:map]]
 
-              **Why only $n = 2, 6, 10$.** The data is antisymmetric about $y = a/2$, so only even $n$ survive and $V(x, a/2) = 0$. The midplane is then an equipotential at $0$, exactly like a grounded plate. Each half is the lecture's slot with width $a/2$ and a constant strip ($+V_0$ below, $-V_0$ above):
+              **Why only $n = 2, 6, 10$.** The data is antisymmetric about $y = a/2$, so only even $n$ survive and $V(x, a/2) = 0$. The midplane is then an equipotential at $0$, exactly like a grounded plate. Each half is the Ex. 3.3 slot with width $a/2$ and a constant strip ($+V_0$ below, $-V_0$ above):
 
               [[fig:stack]]
 
               The width-$a/2$ slot has modes $\sin\tfrac{m\pi y}{a/2} = \sin\tfrac{2m\pi y}{a}$ with $m$ odd and coefficients $\tfrac{4V_0}{m\pi}$. With $n = 2m$: $n = 2, 6, 10$ and $C_n = \tfrac{4V_0}{m\pi} = \tfrac{8V_0}{n\pi}$. Same answer, no integral.
 
-              **A number.** At $(a/2, a/4)$: $V = \tfrac{8V_0}{2\pi}e^{-\pi}\sin\tfrac{\pi}{2} + \tfrac{8V_0}{6\pi}e^{-3\pi}\sin\tfrac{3\pi}{2} = (0.05502 - 0.00003)V_0 = 0.0550\,V_0$. It equals the lecture slot's value at $(a, a/2)$, as the stacking picture says it must.
+              **A number.** At $(a/2, a/4)$: $V = \tfrac{8V_0}{2\pi}e^{-\pi}\sin\tfrac{\pi}{2} + \tfrac{8V_0}{6\pi}e^{-3\pi}\sin\tfrac{3\pi}{2} = (0.05502 - 0.00003)V_0 = 0.0550\,V_0$. It equals the Ex. 3.3 slot's value at $(a, a/2)$, as the stacking picture says it must.
 
               **Checks.** BC #3 at $y = a/4$: $\tfrac{8V_0}{\pi}\left(\tfrac12 - \tfrac16 + \tfrac1{10} - \dots\right) = \tfrac{8V_0}{\pi}\cdot\tfrac{\pi}{8} = V_0$. Correct sign: positive below the midline, negative above. Far field: $V \approx \tfrac{4V_0}{\pi}e^{-2\pi x/a}\sin\tfrac{2\pi y}{a}$, which dies twice as fast as the constant strip's far field, because the effective width is $a/2$.
 
               **What to remember:** split the integral at the jumps and cover the whole width; then use symmetry to predict which $n$ survive and to check the result.
             `,
-            figs: { map: { svg: STRIPS_MAP, cap: 'Equipotentials of the strips solution; dashed contours are negative. The midplane is the $V = 0$ line.' }, stack: { svg: STACK.svg, cap: 'The strips problem is two stacked copies of the lecture slot with width $a/2$.' } },
+            figs: { map: { svg: STRIPS_MAP, cap: 'Equipotentials of the strips solution; dashed contours are negative. The midplane is the $V = 0$ line.' }, stack: { svg: STACK.svg, cap: 'The strips problem is two stacked copies of the Ex. 3.3 slot with width $a/2$.' } },
           }),
 
           WG.sep({ bc: 'strips', geo: 'slot', n: 2, title: 'The ±V₀ strips: only n = 2, 6, 10, … appear' }),
@@ -1442,7 +1517,7 @@
             (a) Find $C_1$ to $C_4$. (b) Which statement is true? (c) Find $V$ at $(a,\, a/2)$.`,
             figHtml: HALF,
             hints: [
-              md`BCs #1, #2, #4 as in lecture, so the same series. BC #3: $V_0(y) = V_0$ for $y < a/2$, $0$ above.`,
+              md`BCs #1, #2, #4 as in Ex. 3.3, so the same series. BC #3: $V_0(y) = V_0$ for $y < a/2$, $0$ above.`,
               md`$C_n = \tfrac{2}{a}\int_0^{a/2}V_0\sin\tfrac{n\pi y}{a}dy$: the grounded half adds nothing.`,
               md`At $y = a/2$ the even terms vanish, and at $x = a$ the $n = 3$ term is tiny.`,
             ],
@@ -1455,7 +1530,7 @@
               { lbl: md`(c) $V(a, a/2)/V_0$`, ans: 0.027494, unit: '' },
             ],
             sol: md`
-              **Boundary conditions:** #1 $V(x, 0) = 0$, #2 $V(x, a) = 0$, #4 $V \to 0$ as $x \to \infty$ (all homogeneous, as in lecture); #3 $V(0, y) = V_0$ for $0 < y < a/2$, $0$ for $a/2 < y < a$ (live). So $V = \sum C_n e^{-n\pi x/a}\sin\tfrac{n\pi y}{a}$ with
+              **Boundary conditions:** #1 $V(x, 0) = 0$, #2 $V(x, a) = 0$, #4 $V \to 0$ as $x \to \infty$ (all homogeneous, as in Ex. 3.3); #3 $V(0, y) = V_0$ for $0 < y < a/2$, $0$ for $a/2 < y < a$ (live). So $V = \sum C_n e^{-n\pi x/a}\sin\tfrac{n\pi y}{a}$ with
 
               $$C_n = \frac{2}{a}\int_0^{a/2}V_0\sin\frac{n\pi y}{a}\,dy = \frac{2V_0}{n\pi}\left(1 - \cos\frac{n\pi}{2}\right).$$
 
@@ -1483,7 +1558,7 @@
               { lbl: md`$V(a, a/2)/V_0$`, ans: 0.027494, unit: '' },
             ],
             sol: md`
-              **BCs:** #1, #2, #4 homogeneous as in lecture; #3 $V(0, y) = V_0y/a$ (live). So $V = \sum C_n e^{-n\pi x/a}\sin\tfrac{n\pi y}{a}$ with
+              **BCs:** #1, #2, #4 homogeneous as in Ex. 3.3; #3 $V(0, y) = V_0y/a$ (live). So $V = \sum C_n e^{-n\pi x/a}\sin\tfrac{n\pi y}{a}$ with
 
               $$C_n = \frac{2V_0}{a^2}\int_0^a y\sin\frac{n\pi y}{a}\,dy = \frac{2V_0}{a^2}\left(-\frac{a^2\cos n\pi}{n\pi}\right) = (-1)^{n+1}\frac{2V_0}{n\pi}.$$
 
@@ -1511,7 +1586,7 @@
               { lbl: md`one-term $V(a, a/2)/V_0$`, ans: 0.038906, unit: '' },
             ],
             sol: md`
-              **BCs:** #1, #2, #4 as in lecture (homogeneous). #3: $V(0, y) = V_0$ for $a/4 < y < 3a/4$, $0$ otherwise (live).
+              **BCs:** #1, #2, #4 as in Ex. 3.3 (homogeneous). #3: $V(0, y) = V_0$ for $a/4 < y < 3a/4$, $0$ otherwise (live).
 
               $$C_n = \frac{2V_0}{a}\cdot\frac{a}{n\pi}\left[\cos\frac{n\pi}{4} - \cos\frac{3n\pi}{4}\right] = \frac{2V_0}{n\pi}\left[\cos\frac{n\pi}{4} - \cos\frac{3n\pi}{4}\right].$$
 
@@ -1543,7 +1618,7 @@
               { lbl: md`$V(a, a/2)/V_0$`, ans: 0.044599, unit: '' },
             ],
             sol: md`
-              **BCs:** #1, #2, #4 homogeneous as in lecture. #3: $V(0, y) = \tfrac{4V_0}{a^2}y(a - y)$ (live).
+              **BCs:** #1, #2, #4 homogeneous as in Ex. 3.3. #3: $V(0, y) = \tfrac{4V_0}{a^2}y(a - y)$ (live).
 
               $$C_n = \frac{2}{a}\cdot\frac{4V_0}{a^2}\cdot\frac{2a^3}{(n\pi)^3}(1 - \cos n\pi) = \frac{16V_0}{(n\pi)^3}(1 - \cos n\pi) = \frac{32V_0}{(n\pi)^3}\ \ (n \text{ odd}).$$
 
@@ -1632,8 +1707,14 @@
           Q(md`A slot open toward **negative** $x$ (region $x < 0$), live strip at $x = 0$, $V \to 0$ as $x \to -\infty$. Which $x$-function?`,
             [md`$e^{-kx}$`, md`$e^{+kx}$`, md`$\sinh kx$`, md`$\cosh kx$`], 1,
             [md`For $x \to -\infty$, $e^{-kx} = e^{k|x|}$ blows up.`, null, md`Contains $e^{-kx}$, which blows up as $x \to -\infty$.`, md`Blows up at both ends.`],
-            md`Keep whichever exponential decays in the direction the region extends. Here $V = \tfrac{4V_0}{\pi}\sum_{\text{odd}}\tfrac1n e^{+n\pi x/a}\sin\tfrac{n\pi y}{a}$, the mirror image of the lecture's slot.`,
+            md`Keep whichever exponential decays in the direction the region extends. Here $V = \tfrac{4V_0}{\pi}\sum_{\text{odd}}\tfrac1n e^{+n\pi x/a}\sin\tfrac{n\pi y}{a}$, the mirror image of the Ex. 3.3 slot.`,
             { figHtml: SLOT_LEFT }),
+
+          Q(md`Take Ex. 3.4 (both faces $x = \pm b$ at $V_0$, plates grounded) and move the face at $x = -b$ off to $x \to -\infty$, with $V \to 0$ there. The plates and the face at $x = +b$ stay. Which $x$-factor goes with $\sin(n\pi y/a)$ now?`,
+            [md`$\dfrac{\cosh(n\pi x/a)}{\cosh(n\pi b/a)}$, as before`, md`$\dfrac{\sinh(n\pi x/a)}{\sinh(n\pi b/a)}$`, md`$e^{n\pi(x - b)/a}$`, md`$e^{-n\pi(x - b)/a}$`], 2,
+            [md`The mirror symmetry that produced $\cosh$ left with the face at $-b$, and $\cosh$ blows up as $x \to -\infty$.`, md`$\sinh$ also blows up as $x \to -\infty$ (and it belongs to a grounded face at $x = 0$, which isn't there).`, null, md`That grows without bound as $x \to -\infty$.`],
+            md`The new condition at $-\infty$ does what BC #4 did in the slot: it kills the exponential that grows in that direction, leaving $e^{+n\pi x/a}$. Normalized to $1$ on the live face it is $e^{n\pi(x - b)/a}$: a slot that opens to the left from $x = b$. Moving a face to infinity trades a symmetry (or a zero face) for a decay condition.`,
+            { figHtml: PF.row([{ svg: G_EX34, cap: 'before' }, { svg: SLOT_LEFT, cap: 'after: the region runs from the live face to $-\\infty$' }]).svg }),
 
           RF(md`
             ### The oscillating direction: sin or cos?
@@ -1672,7 +1753,7 @@
           Q(md`The plates of a slot are at $y = -a/2$ and $y = +a/2$ (origin on the midline), and the end strip is at a constant $V_0$. Which $y$-functions appear?`,
             [md`$\sin(n\pi y/a)$ with odd $n$`, md`$\cos(n\pi y/a)$ with odd $n$`, md`$\cos(n\pi y/a)$, all $n$`, md`$\sin(2n\pi y/a)$`], 1,
             [md`$\sin(\pi y/a)$ at $y = a/2$ is $1$, not $0$: it doesn't vanish on the plates in these coordinates.`, null, md`$\cos(2\pi y/a)$ at $y = \pm a/2$ is $-1$: even $n$ cosines don't vanish on the plates.`, md`These vanish on the plates but are odd in $y$; a constant (even) strip has no overlap with them.`],
-            md`$\cos(n\pi y/a) = 0$ at $y = \pm a/2$ exactly for odd $n$. These are the lecture's $\sin(n\pi y'/a)$, $n$ odd, written in the shifted coordinate $y = y' - a/2$. Same physics; corner origins are easier.`,
+            md`$\cos(n\pi y/a) = 0$ at $y = \pm a/2$ exactly for odd $n$. These are the corner-origin $\sin(n\pi y'/a)$, $n$ odd, written in the shifted coordinate $y = y' - a/2$. Same physics; corner origins are easier.`,
             { figHtml: SLOT_MID }),
 
           Q(md`In Ex. 3.4 the $n$-th term is $C_n\cosh(n\pi x/a)\sin(n\pi y/a)$ with $C_n\cosh(n\pi b/a)$ fixed by the faces. At the center $x = 0$, relative to its size on the faces, the $n$-th term is:`,
@@ -1688,7 +1769,7 @@
 
             $$V_{k=0} = (A + Bx)(C + Dy),$$
 
-            any combination of $1$, $x$, $y$ and $xy$. In the lecture's slot they were useless: no straight line vanishes on both plates. They are needed when the pair of faces that should carry the sines is **not both zero**, for example a slot whose two plates are at different potentials. Every sine vanishes on both plates, so no sum of sines can produce a non-zero plate.
+            any combination of $1$, $x$, $y$ and $xy$. In the Ex. 3.3 slot they were useless: no straight line vanishes on both plates. They are needed when the pair of faces that should carry the sines is **not both zero**, for example a slot whose two plates are at different potentials. Every sine vanishes on both plates, so no sum of sines can produce a non-zero plate.
 
             !!method Making the boundary conditions homogeneous
               If the plates at $y = 0$ and $y = a$ are at $0$ and $V_1$, write $V = V_1\dfrac{y}{a} + W$. The linear piece is a $k = 0$ solution that carries both plates (and the far field). $W$ then has zero BCs on both plates, and you solve for it with the usual series.
@@ -1710,7 +1791,7 @@
 
             1. $W(x, 0) = 0$; 2. $W(x, a) = V_1 - V_1 = 0$; 3. $W(0, y) = -V_1\,y/a$; 4. $W \to 0$.
 
-            That is the lecture's slot with the ramp $-V_1y/a$ on its end (Lesson 4): $C_n = -(-1)^{n+1}\dfrac{2V_1}{n\pi} = (-1)^n\dfrac{2V_1}{n\pi}$. So
+            That is the Ex. 3.3 slot with the ramp $-V_1y/a$ on its end (Lesson 4): $C_n = -(-1)^{n+1}\dfrac{2V_1}{n\pi} = (-1)^n\dfrac{2V_1}{n\pi}$. So
 
             $$V(x,y) = V_1\frac{y}{a} + \frac{2V_1}{\pi}\sum_{n=1}^{\infty}\frac{(-1)^n}{n}\,e^{-n\pi x/a}\sin\!\left(\frac{n\pi y}{a}\right).$$
 
@@ -1730,6 +1811,12 @@
             [md`The plates are at different potentials, so the field between them doesn't die out.`, md`That's only the midline value.`, null, md`That's only the top plate.`],
             md`Far from the end, nothing depends on $x$, so $\partial^2V/\partial y^2 = 0$: a straight line from $0$ to $V_1$. This is the $k = 0$ term, and it's why BC #4 is $V \to V_1y/a$, not $V \to 0$.`,
             { figHtml: K0 }),
+
+          Q(md`Both plates of a slot are held at $V_1$, and the end strip at $x = 0$ is grounded (insulated from the plates). What is $V$?`,
+            [md`$\dfrac{4V_1}{\pi}\displaystyle\sum_{\text{odd}}\dfrac1n e^{-n\pi x/a}\sin\dfrac{n\pi y}{a}$`, md`$V_1\dfrac{y}{a} + \dfrac{4V_1}{\pi}\displaystyle\sum_{\text{odd}}\dfrac1n e^{-n\pi x/a}\sin\dfrac{n\pi y}{a}$`, md`$V_1\left(1 - e^{-\pi x/a}\right)$`, md`$V_1 - \dfrac{4V_1}{\pi}\displaystyle\sum_{\text{odd}}\dfrac1n e^{-n\pi x/a}\sin\dfrac{n\pi y}{a}$`], 3,
+            [md`That is the ordinary slot: plates at $0$, strip at $V_1$. Here it is the other way round.`, md`$V_1y/a$ is the $k = 0$ piece for plates at $0$ and $V_1$. With both plates at $V_1$ the $k = 0$ piece is the constant $V_1$.`, md`It is $0$ on the end and $V_1$ far away, but on the plates it is $V_1(1 - e^{-\pi x/a}) \ne V_1$, and it doesn't solve Laplace's equation ($\partial_x^2$ of the exponential has nothing to cancel it).`, null],
+            md`Peel off the $k = 0$ piece that carries the plates, here the constant $V_1$. Then $W = V - V_1$ is $0$ on both plates, $-V_1$ on the end, and $0$ far away: the standard slot with $V_0 \to -V_1$. So $V = V_1 - V_{\text{slot}}$. Check: plates $V_1 - 0$; end $V_1 - V_1 = 0$; far away $V_1$. At $(a/2, a/2)$, $V = V_1(1 - 0.261) = 0.739V_1$.`,
+            { figHtml: slot({ top: 'V=V_1', bot: 'V=V_1', end: 'V=0' }) }),
 
           Q(md`Which functions are the $k = 0$ separable solutions of the 2-D Laplace equation?`,
             [md`Constants only.`, md`$x^2 - y^2$`, md`$e^xe^y$`, md`$(A + Bx)(C + Dy)$`], 3,
@@ -1792,7 +1879,7 @@
             figHtml: SLOT_LEFT,
             hints: [
               md`List the BCs. Which exponential survives as $x \to -\infty$?`,
-              md`Everything else is the lecture's slot.`,
+              md`Everything else is the Ex. 3.3 slot.`,
             ],
             parts: [
               { lbl: md`Which $x$-dependence?`, mc: [md`$e^{-n\pi x/a}$`, md`$e^{+n\pi x/a}$`, md`$\sinh(n\pi x/a)$`, md`$\cosh(n\pi x/a)$`], a: 1, why: [md`For negative $x$ this grows as $x \to -\infty$.`, null, md`Contains the growing exponential.`, md`Blows up as $x \to -\infty$.`] },
@@ -1801,11 +1888,11 @@
             sol: md`
               **Boundary conditions** (region $x < 0$): #1 $V(x, 0) = 0$; #2 $V(x, a) = 0$; #3 $V(0, y) = V_0$ (live); #4 $V \to 0$ as $x \to -\infty$.
 
-              #4 now kills $e^{-kx}$ (which blows up for $x \to -\infty$), so $X = e^{+kx}$. #1, #2 as before. #3 by Fourier's trick, exactly as in lecture:
+              #4 now kills $e^{-kx}$ (which blows up for $x \to -\infty$), so $X = e^{+kx}$. #1, #2 as before. #3 by Fourier's trick, exactly as in Ex. 3.3:
 
               $$V(x,y) = \frac{4V_0}{\pi}\sum_{n\ \text{odd}}\frac1n\,e^{n\pi x/a}\sin\frac{n\pi y}{a}\qquad(x < 0).$$
 
-              It's the mirror image of the lecture's slot: $V(x, y) = V_{\text{slot}}(-x, y)$. At $(-a, a/2)$: $\tfrac{4V_0}{\pi}\left(e^{-\pi} - \tfrac13e^{-3\pi} + \dots\right) = 0.0550V_0$.
+              It's the mirror image of the Ex. 3.3 slot: $V(x, y) = V_{\text{slot}}(-x, y)$. At $(-a, a/2)$: $\tfrac{4V_0}{\pi}\left(e^{-\pi} - \tfrac13e^{-3\pi} + \dots\right) = 0.0550V_0$.
             `,
           }),
 
@@ -1896,7 +1983,7 @@
             { figHtml: box({ center: true, L: 'V_0', R: 'V_0', T: '0', B: '0', w: 110, h: 110, yt: [[110, 'a']] }) }),
 
           Q(md`Make Ex. 3.4 very long ($b \gg a$). Near the face $x = b$, the potential looks like:`,
-            [md`The lecture's slot, measured inward from the face: $\dfrac{\cosh(n\pi x/a)}{\cosh(n\pi b/a)} \approx e^{-n\pi(b - x)/a}$.`, md`A constant $V_0$ everywhere.`, md`A linear function of $x$.`, md`Half the slot solution, because two faces share the potential.`], 0,
+            [md`The Ex. 3.3 slot, measured inward from the face: $\dfrac{\cosh(n\pi x/a)}{\cosh(n\pi b/a)} \approx e^{-n\pi(b - x)/a}$.`, md`A constant $V_0$ everywhere.`, md`A linear function of $x$.`, md`Half the slot solution, because two faces share the potential.`], 0,
             [null, md`It still vanishes on the plates.`, md`Linear pieces would need plates at different potentials.`, md`Far from the other face, that face has no influence: you get the full slot, not half.`],
             md`For $b \gg a$, $\dfrac{\cosh(n\pi x/a)}{\cosh(n\pi b/a)} \to e^{n\pi(x - b)/a}$ near $x = b$: the slot with the strip at $x = b$. Limits like this are a quick way to check a closed-box answer.`,
             { figHtml: G_EX34 }),
@@ -1920,7 +2007,7 @@
               { lbl: md`(a) The coefficients in $V = \sum C_n\sinh\frac{n\pi x}{a}\sin\frac{n\pi y}{a}$ are`, mc: [md`$C_n = \dfrac{2}{a}\displaystyle\int_0^a V_0(y)\sin\frac{n\pi y}{a}\,dy$`, md`$C_n = \dfrac{2}{a\sinh(n\pi b/a)}\displaystyle\int_0^a V_0(y)\sin\frac{n\pi y}{a}\,dy$`, md`$C_n = \dfrac{2}{b\sinh(n\pi b/a)}\displaystyle\int_0^b V_0(y)\sin\frac{n\pi y}{a}\,dy$`, md`$C_n = \dfrac{2}{a\cosh(n\pi b/a)}\displaystyle\int_0^a V_0(y)\sin\frac{n\pi y}{a}\,dy$`], a: 1, why: [md`At $x = b$ each term carries $\sinh(n\pi b/a)$, which must be divided out.`, null, md`The live side spans $0 < y < a$; the orthogonality interval is $[0, a]$ with value $a/2$.`, md`The $x$-function is $\sinh$, so it's $\sinh(n\pi b/a)$ that appears at $x = b$.`] },
               { lbl: md`(b) $C_1$ for constant $V_0$`, expr: '4*V0/(pi*sinh(pi*b/a))', vars: { V0: [1, 3], b: [0.5, 2], a: [0.5, 2] }, accepts: ['4*V0/pi/sinh(pi*b/a)'] },
               { lbl: md`(b) For $b = a$, $V$ at the center $(a/2, a/2)$ in units of $V_0$`, ans: 0.25, unit: '' },
-              { lbl: md`For $b \gg a$, near the live side the potential looks like`, mc: [md`a constant $V_0$`, md`the lecture's slot, with $e^{-n\pi(b - x)/a}$`, md`a linear function $V_0x/b$`, md`Ex. 3.4's $\cosh$ solution`], a: 1, why: [md`It still vanishes on the plates $y = 0, a$.`, null, md`That would need the plates to vary in potential along $x$.`, md`There is only one live side; nothing is symmetric in $x$.`] },
+              { lbl: md`For $b \gg a$, near the live side the potential looks like`, mc: [md`a constant $V_0$`, md`the Ex. 3.3 slot, with $e^{-n\pi(b - x)/a}$`, md`a linear function $V_0x/b$`, md`Ex. 3.4's $\cosh$ solution`], a: 1, why: [md`It still vanishes on the plates $y = 0, a$.`, null, md`That would need the plates to vary in potential along $x$.`, md`There is only one live side; nothing is symmetric in $x$.`] },
             ],
             sol: md`
               **Setup.** Infinite along $z$, nothing depends on $z$: $\dfrac{\partial^2V}{\partial x^2} + \dfrac{\partial^2V}{\partial y^2} = 0$ inside, no charge.
@@ -1944,7 +2031,7 @@
 
               $$C_n\sinh\!\left(\frac{n\pi b}{a}\right) = \frac{2}{a}\int_0^a V_0(y)\sin\!\left(\frac{n\pi y}{a}\right)dy .$$
 
-              **(b)** For constant $V_0$ the integral is the lecture's: $C_n\sinh(n\pi b/a) = \tfrac{4V_0}{n\pi}$ for odd $n$, $0$ for even $n$:
+              **(b)** For constant $V_0$ the integral is the constant-strip one: $C_n\sinh(n\pi b/a) = \tfrac{4V_0}{n\pi}$ for odd $n$, $0$ for even $n$:
 
               $$V(x,y) = \frac{4V_0}{\pi}\sum_{n = 1,3,5,\dots}\frac{1}{n}\,\frac{\sinh(n\pi x/a)}{\sinh(n\pi b/a)}\,\sin\!\left(\frac{n\pi y}{a}\right).$$
 
@@ -1954,7 +2041,7 @@
 
               - $x = 0$: $\sinh 0 = 0$. $x = b$: the ratio is $1$ and the series is the sine series of $V_0$. $y = 0, a$: every sine vanishes.
               - $b = a$, center: $V = \tfrac{4V_0}{\pi}\sum_{\text{odd}}\tfrac{(-1)^{(n-1)/2}}{n}\tfrac{\sinh(n\pi/2)}{\sinh(n\pi)} = \tfrac{2V_0}{\pi}\sum_{\text{odd}}\tfrac{(-1)^{(n-1)/2}}{n\cosh(n\pi/2)}$. Partial sums: $0.2537$ ($n = 1$), $0.2499$ ($n \le 3$), $0.25000$ ($n \le 5$). Exactly $V_0/4$, as the rotation argument below demands.
-              - $b \gg a$: near $x = b$, $\tfrac{\sinh(n\pi x/a)}{\sinh(n\pi b/a)} \approx e^{-n\pi(b - x)/a}$: the lecture's slot, seen from the live side.
+              - $b \gg a$: near $x = b$, $\tfrac{\sinh(n\pi x/a)}{\sinh(n\pi b/a)} \approx e^{-n\pi(b - x)/a}$: the Ex. 3.3 slot, seen from the live side.
 
               **What to remember:** a grounded face at $x = 0$ means $\sinh$; divide by the $\sinh$ at the live face so the $x$-factor is $1$ there; then it is the same Fourier problem as the slot.
             `,
@@ -1967,6 +2054,24 @@
             [md`To make the series converge.`, md`It comes from the orthogonality integral.`, md`It normalizes the sines.`, md`So the $x$-factor equals $1$ on the live side, where the coefficients are fitted.`], 3,
             [md`The division is forced by the boundary condition at $x = b$. That the ratio then behaves like $e^{-n\pi(b - x)/a}$ inside, so the series converges fast there, is a consequence, not the reason.`, md`Orthogonality gives $\tfrac{a}{2}$, not a $\sinh$.`, md`The sines are untouched.`, null],
             md`Fit the data at $x = b$: there the term is $C_n\sinh(n\pi b/a)\sin(n\pi y/a)$, so Fourier's trick determines the product $C_n\sinh(n\pi b/a)$. Writing the answer with the ratio makes every term equal to its boundary value on the live side and zero on the grounded one.`,
+            { figHtml: G_HW }),
+
+          Q(md`In HW 3.17 (three grounded sides, the side $x = b$ at $V_0$), hold the point P $= (a/2, a/2)$ fixed and move the live side away: $b \to \infty$. What happens to $V(\text{P})$?`,
+            [md`It tends to $V_0/4$, the square's value.`, md`It tends to $\dfrac{4V_0}{\pi}e^{-\pi/2}$, the slot's value half a width from a live face.`, md`It falls to $0$, roughly like $e^{-\pi b/a}$.`, md`It stays the same, since P doesn't move.`], 2,
+            [md`$V_0/4$ is the value for $b = a$ only, when P is the center of a square.`, md`That would be right half a width from the **live** face. P is half a width from a grounded face, and the live face is receding.`, null, md`P stays put, but the live face gets farther away and the grounded plates screen it more and more.`],
+            md`Each term carries $\dfrac{\sinh(n\pi x/a)}{\sinh(n\pi b/a)}$. At fixed $x$ this goes to zero like $e^{-n\pi b/a}$ as $b \to \infty$. Every boundary near P is grounded, so $V \to 0$ there. (Near the receding live face, by contrast, the potential still looks like the slot.)`,
+            { figHtml: box({ L: '0', R: 'V_0', T: '0', B: '0', xt: [[170, 'b']], yt: [[110, 'a']], pts: [[55, 55, 'P', 'tr']] }) }),
+
+          Q(md`In the slot, the far condition $V \to 0$ killed $e^{+kx}$. Now close the region with a grounded wall at $x = b$ and make $x = 0$ the live face (shown). What job does $V(b, y) = 0$ do?`,
+            [md`It kills $e^{+kx}$, as in the slot.`, md`It quantizes $k$ a second time.`, md`It fixes the coefficients $C_n$.`, md`It fixes the ratio of $e^{+kx}$ to $e^{-kx}$, so that $X \propto \sinh k(b - x)$.`], 3,
+            [md`$e^{+kx}$ is bounded on $0 < x < b$, so nothing forces it out. It is needed to cancel $e^{-kx}$ at $x = b$.`, md`$k$ is already fixed by the two plates. One zero face can't quantize anything: a $\sinh$ has only one zero.`, md`A homogeneous condition can't fix an amplitude. The live face at $x = 0$ does that.`, null],
+            md`$Ae^{kx} + Be^{-kx} = 0$ at $x = b$ gives $B = -Ae^{2kb}$, i.e. $X \propto \sinh k(b - x)$. One constant is removed per mode, the same count as in the slot; only the mechanism differs (a ratio is fixed instead of a term deleted).`,
+            { figHtml: G_LEFT }),
+
+          Q(md`For HW 3.17 with a constant $V_0$, $V = \dfrac{4V_0}{\pi}\displaystyle\sum_{\text{odd}}\dfrac1n\dfrac{\sinh(n\pi x/a)}{\sinh(n\pi b/a)}\sin\dfrac{n\pi y}{a}$. What is the charge density on the grounded side $x = 0$?`,
+            [md`$0$, because $V = 0$ on that side.`, md`$-\dfrac{4\varepsilon_0V_0}{a}\displaystyle\sum_{\text{odd}}\dfrac{\sin(n\pi y/a)}{\sinh(n\pi b/a)}$`, md`$+\dfrac{4\varepsilon_0V_0}{a}\displaystyle\sum_{\text{odd}}\dfrac{\sin(n\pi y/a)}{\sinh(n\pi b/a)}$`, md`$-\dfrac{4\varepsilon_0V_0}{\pi}\displaystyle\sum_{\text{odd}}\dfrac{\sin(n\pi y/a)}{n\sinh(n\pi b/a)}$`], 1,
+            [md`$\sigma$ comes from the **slope** of $V$, not its value: $\sigma = -\varepsilon_0\,\partial V/\partial n$. A grounded conductor facing a positive region carries negative charge.`, null, md`Sign: the normal out of the metal is $+\hat{\mathbf x}$ and $V$ rises into the pipe, so $\partial V/\partial x > 0$ and $\sigma < 0$.`, md`Differentiating $\sinh(n\pi x/a)$ brings down $\tfrac{n\pi}{a}$, which cancels the $\tfrac1n$ and the $\pi$.`],
+            md`$\sigma = -\varepsilon_0\dfrac{\partial V}{\partial x}\Big|_{x=0}$ with $\hat{\mathbf n} = +\hat{\mathbf x}$ (out of the metal, into the region). $\dfrac{d}{dx}\sinh\dfrac{n\pi x}{a} = \dfrac{n\pi}{a}\cosh\dfrac{n\pi x}{a} \to \dfrac{n\pi}{a}$ at $x = 0$. So $\sigma = -\dfrac{4\varepsilon_0V_0}{a}\sum_{\text{odd}}\dfrac{\sin(n\pi y/a)}{\sinh(n\pi b/a)}$. It is negative everywhere on that side, and small when the live side is far away ($b \gg a$).`,
             { figHtml: G_HW }),
 
           RF(md`
@@ -2187,7 +2292,7 @@
 
             $$C_{nm} = \frac{4}{ab}\int_0^a\!\!\int_0^b V_0(y,z)\sin\frac{n\pi y}{a}\sin\frac{m\pi z}{b}\,dz\,dy .$$
 
-            For a constant $V_0$ the double integral factorizes into two lecture integrals: $C_{nm} = \tfrac{4V_0}{ab}\cdot\tfrac{2a}{n\pi}\cdot\tfrac{2b}{m\pi} = \dfrac{16V_0}{\pi^2nm}$ for $n$ and $m$ both odd, zero otherwise.
+            For a constant $V_0$ the double integral factorizes into two constant-strip integrals: $C_{nm} = \tfrac{4V_0}{ab}\cdot\tfrac{2a}{n\pi}\cdot\tfrac{2b}{m\pi} = \dfrac{16V_0}{\pi^2nm}$ for $n$ and $m$ both odd, zero otherwise.
 
             The slowest mode is $(1, 1)$, with $\gamma_{11} = \pi\sqrt{1/a^2 + 1/b^2}$: a 3-D pipe screens its live end faster than the 2-D slot of the same width ($\sqrt2\,\pi/a$ instead of $\pi/a$ for a square pipe).
           `, { pipe: { svg: PIPE3D, cap: 'Griffiths Fig. 3.22: the pipe runs along $x$ to infinity; its end at $x = 0$ (thick, shaded) is held at $V_0(y,z)$.' } }),
@@ -2213,7 +2318,7 @@
           Q(md`The end of the Ex. 3.5 pipe is at a constant $V_0$. Which $(n, m)$ have non-zero $C_{nm}$?`,
             [md`All $n$ and $m$`, md`$n$ odd, any $m$`, md`$n + m$ even`, md`$n$ and $m$ both odd`], 3,
             [md`The integral factorizes; each factor vanishes for an even index.`, md`The $z$ integral $\int_0^b\sin\tfrac{m\pi z}{b}dz$ vanishes for even $m$ too.`, md`$n = 2$, $m = 2$ has $n + m$ even but $C_{22} = 0$.`, null],
-            md`$C_{nm} = \tfrac{4V_0}{ab}\left[\int_0^a\sin\tfrac{n\pi y}{a}dy\right]\left[\int_0^b\sin\tfrac{m\pi z}{b}dz\right]$. Each bracket is the lecture's integral: zero for even index. So both must be odd: $C_{nm} = \tfrac{16V_0}{\pi^2nm}$.`,
+            md`$C_{nm} = \tfrac{4V_0}{ab}\left[\int_0^a\sin\tfrac{n\pi y}{a}dy\right]\left[\int_0^b\sin\tfrac{m\pi z}{b}dz\right]$. Each bracket is the constant-strip integral: zero for even index. So both must be odd: $C_{nm} = \tfrac{16V_0}{\pi^2nm}$.`,
             { figHtml: PIPE3D }),
 
           Q(md`Why is the prefactor in $C_{nm}$ equal to $\dfrac{4}{ab}$?`,
@@ -2305,6 +2410,18 @@
             [md`$\gamma$ is $\sqrt{k^2 + l^2}$, not $k + l$.`, md`$2^2 + 1^2 = 5$, not $3$.`, md`That ignores the $y$-mode: $l = \pi/a$ contributes too.`, null],
             md`$k = 2\pi/a$, $l = \pi/a$, $\gamma = \tfrac{\pi}{a}\sqrt{4 + 1} = \sqrt5\,\pi/a$. The $z$-function must curve upward exactly enough to cancel both downward curvatures.`,
             { nofig: 'algebra of the constants' }),
+
+          Q(md`Take the cube with a live lid (Prob. 3.18) and remove its bottom: the four grounded side walls now run down to $z \to -\infty$, with $V \to 0$ there. The lid at $z = a$ is still at $V_0$. What replaces $\dfrac{\sinh(\gamma z)}{\sinh(\gamma a)}$?`,
+            [md`$e^{\gamma(z - a)}$, with the same $\gamma = \tfrac{\pi}{a}\sqrt{n^2 + m^2}$ and the same $C_{nm}$`, md`$\dfrac{\cosh(\gamma z)}{\cosh(\gamma a)}$`, md`$e^{-\gamma z}$`, md`Nothing changes: the bottom face never mattered.`], 0,
+            [null, md`$\cosh$ blows up as $z \to -\infty$.`, md`It grows without bound as $z \to -\infty$.`, md`The grounded bottom is what chose $\sinh$; without it the decay condition chooses instead.`],
+            md`The grounded bottom ($Z(0) = 0$) is replaced by $V \to 0$ as $z \to -\infty$, which kills $e^{-\gamma z}$. Normalized to $1$ on the lid: $e^{\gamma(z - a)}$. The sines in $x$ and $y$ and the coefficients $\tfrac{16V_0}{\pi^2nm}$ are unchanged, because the lid and the side walls are. It is Ex. 3.5's pipe, pointing down. There are still six BCs; one now sits at infinity.`,
+            { figHtml: CUBE }),
+
+          Q(md`The cube's lid is held at $V_0\sin(\pi x/a)$, the same at every $y$. Which coefficients $C_{nm}$ (of $\sin\tfrac{n\pi x}{a}\sin\tfrac{m\pi y}{a}$) are non-zero?`,
+            [md`Only $C_{11}$.`, md`$n = 1$ and odd $m$, with $C_{1m}\sinh(\gamma_{1m}a) = \dfrac{4V_0}{m\pi}$.`, md`$n$ and $m$ both odd, $C_{nm}\sinh(\gamma_{nm}a) = \dfrac{16V_0}{\pi^2nm}$.`, md`$n = 1$ and every $m$.`], 1,
+            [md`In $y$ the lid is constant, not $\sin(\pi y/a)$, and a constant needs all the odd $y$-modes.`, null, md`That's the constant lid. In $x$ this lid already is the single mode $n = 1$.`, md`A constant in $y$ is symmetric about $a/2$, so the even $m$ vanish.`],
+            md`Factor the lid: $\sin\tfrac{\pi x}{a}$ times $1$. In $x$, read off $n = 1$. In $y$, expand the constant: $1 = \tfrac4\pi\sum_{\text{odd}}\tfrac1m\sin\tfrac{m\pi y}{a}$. So $C_{1m}\sinh(\gamma_{1m}a) = \tfrac{4V_0}{m\pi}$ for odd $m$, with $\gamma_{1m} = \tfrac{\pi}{a}\sqrt{1 + m^2}$: a single sum instead of a double one.`,
+            { figHtml: cube({ top: 'V_0\\sin(\\pi x/a)' }) }),
 
           Q(md`Counting boundary conditions: how many does the cube problem need, and why?`,
             [md`One, the live lid; the rest are automatic.`, md`Four, like the slot.`, md`Six: Laplace's equation is second order in each of $x$, $y$, $z$, so two per variable.`, md`Eight, one per corner.`], 2,
@@ -2475,7 +2592,7 @@
 
           Q(md`Which is BC #3 for the slot with $\pm V_0$ strips (Discussion Problem 3.15)?`,
             [md`$V(0, y) = 0$`, md`$V(0, y) = V_0$ for $0 < y < a$`, md`$V(0, y) = V_0$ for $0 < y < a/2$ and $-V_0$ for $a/2 < y < a$`, md`$V(x, a/2) = 0$`], 2,
-            [md`The end isn't grounded; it's two live strips.`, md`That's the lecture's constant strip, not this problem.`, null, md`That's a consequence of the antisymmetry, not one of the given BCs.`],
+            [md`The end isn't grounded; it's two live strips.`, md`That's the constant strip of Ex. 3.3, not this problem.`, null, md`That's a consequence of the antisymmetry, not one of the given BCs.`],
             md`A piecewise live face. Write it out in pieces; in Fourier's trick split the integral at $a/2$. The midplane result $V(x, a/2) = 0$ is a check, not an input.`,
             { figHtml: STRIPS }),
 
@@ -2666,7 +2783,7 @@
           `),
 
           Q(md`You open an exam problem about a pipe with given wall potentials. What should you write first?`,
-            [md`The cross-section with each wall's potential, and the numbered list of BCs marked homogeneous or live.`, md`The general solution $\sum C_n e^{-n\pi x/a}\sin(n\pi y/a)$.`, md`Fourier's trick.`, md`The answer from the lecture slot.`], 0,
+            [md`The cross-section with each wall's potential, and the numbered list of BCs marked homogeneous or live.`, md`The general solution $\sum C_n e^{-n\pi x/a}\sin(n\pi y/a)$.`, md`Fourier's trick.`, md`The answer to the Ex. 3.3 slot.`], 0,
             [null, md`The right functions depend on the BCs; writing the slot's solution by habit is how $\cosh$/$\sinh$/$e^{-kx}$ mix-ups happen.`, md`Fourier's trick is the last step, after the zero BCs have shaped the functions.`, md`Only if the geometry really is the slot.`],
             md`The BC list decides everything that follows: which direction gets sines, which function in the other direction, which face goes into the coefficients. It is also where a lot of the credit is.`,
             { figHtml: G_HW }),
@@ -2686,7 +2803,7 @@
           Q(md`Your coefficients come out as $C_n = \dfrac{4V_0a}{n\pi}$. What does the units check tell you?`,
             [md`Nothing; $a$ is just a length.`, md`$C_n$ must be in volts; an extra length means a factor $\tfrac{1}{a}$ went missing (here $2$ was used in place of $\tfrac{2}{a}$).`, md`The answer is right for a wide slot.`, md`You should have used $\tfrac{1}{a}$.`], 1,
             [md`$V = \sum C_n\times(\text{dimensionless})$, so $C_n$ must be volts.`, null, md`The width only appears through $x/a$ and $y/a$ in a correct answer.`, md`$\tfrac{1}{a}$ would fix the units but be off by a factor of 2.`],
-            md`The exponentials and sines are dimensionless, so $[C_n] = [V]$. The notes' own slip on L12-3 (the missing $\tfrac{a}{m\pi}$) would break units mid-calculation; a units check catches it.`,
+            md`The exponentials and sines are dimensionless, so $[C_n] = [V]$. Dropping the factor $\tfrac{a}{n\pi}$ from integrating the sine would break the units mid-calculation; a units check catches it.`,
             { nofig: 'units' }),
 
           Q(md`The live end of a slot is at $V_0\cos(\pi y/a)$: $+V_0$ at the bottom, $-V_0$ at the top. Which $n$ appear?`,
@@ -2702,8 +2819,8 @@
             { figHtml: BOX_TOP }),
 
           Q(md`Does the order in which you apply the homogeneous boundary conditions matter?`,
-            [md`Yes; the lecture's order (#1, #4, #2) is required.`, md`Yes; quantize $k$ first or the others fail.`, md`No, the homogeneous ones can go in any order, but the live face must come after superposition.`, md`No; the live face can go first too.`], 2,
-            [md`Griffiths applies (iv) first; the lecture applies #1 first. Same result.`, md`You can quantize $k$ before or after removing the cosine.`, null, md`A single product can't match a general $V_0(y)$; you need the full sum first.`],
+            [md`Yes; the order #1, #4, #2 is required.`, md`Yes; quantize $k$ first or the others fail.`, md`No, the homogeneous ones can go in any order, but the live face must come after superposition.`, md`No; the live face can go first too.`], 2,
+            [md`Griffiths applies (iv) first; Lesson 2 applied #1 first. Same result.`, md`You can quantize $k$ before or after removing the cosine.`, null, md`A single product can't match a general $V_0(y)$; you need the full sum first.`],
             md`Homogeneous BCs act on each product separately and commute. The live face acts on the whole sum, so it is last.`,
             { figHtml: SLOT_BC }),
 
@@ -2832,7 +2949,7 @@
               { lbl: md`(b) $V(a/2, a/4)/V_0$, one term`, ans: 0.036681, unit: '' },
             ],
             sol: md`
-              **BCs:** (1), (2) $V = 0$ on the plates; (4) $V \to 0$ far away (homogeneous: the lecture's functions); (3) $V(0, y) = V_0\cos(\pi y/a)$ (live).
+              **BCs:** (1), (2) $V = 0$ on the plates; (4) $V \to 0$ far away (homogeneous: the Ex. 3.3 functions); (3) $V(0, y) = V_0\cos(\pi y/a)$ (live).
 
               $\sin A\cos B = \tfrac12[\sin(A + B) + \sin(A - B)]$ gives $\int_0^a\cos\tfrac{\pi y}{a}\sin\tfrac{n\pi y}{a}dy = \tfrac{a}{\pi}\tfrac{n(1 + \cos n\pi)}{n^2 - 1}$, so
 
