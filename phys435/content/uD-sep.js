@@ -332,6 +332,8 @@
       RF(md`
         One page of tools, then the ladder. Everything below is 2-D Laplace, $\lap V = 0$, in a region with no charge.
 
+        **Haven't learned polar yet?** Polar here is a flat $(r, \theta)$ plane with nothing depending on $z$; it is **not** spherical. Do [Laplace in polar coordinates](#/l/uW-polar) and [Wedges and sectors](#/l/uW-wedge) first (and [Unit 6](#/l/u6-idea) for boxes), then come back.
+
         | Coordinates | Pieces for separation constant $k \ne 0$ | The $k = 0$ piece |
         |---|---|---|
         | Cartesian $(x, y)$ | $\sin kx,\ \cos kx$ times $\sinh ky,\ \cosh ky$ (or $e^{\pm ky}$) | $(A + Bx)(C + Dy)$ |

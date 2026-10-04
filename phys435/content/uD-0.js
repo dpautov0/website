@@ -24,15 +24,17 @@
 
             ### The ladders, in priority order
 
-            | Topic | Concepts | Problems |
-            |---|---|---|
-            | Separation of variables, Cartesian and polar | [concept ladder](#/l/uD-sep-concepts) | [problem ladder](#/l/uD-sep-problems) |
-            | Legendre (spherical separation) | [concept ladder](#/l/uD-leg-concepts) | [problem ladder](#/l/uD-leg-problems) |
-            | Method of images and uniqueness | [concept ladder](#/l/uD-img-concepts) | [problem ladder](#/l/uD-img-problems) |
-            | Multipoles | [concept ladder](#/l/uD-mp-concepts) | [problem ladder](#/l/uD-mp-problems) |
-            | Delta functions in $\rho$ | [concept ladder](#/l/uD-delta-concepts) | [problem ladder](#/l/uD-delta-problems) |
-            | Boundary conditions in 2-D and 3-D | [concept ladder](#/l/uD-bc-concepts) | [problem ladder](#/l/uD-bc-problems) |
-            | Electrostatic energy | [concept ladder](#/l/uD-energy-concepts) | [problem ladder](#/l/uD-energy-problems) |
+            | Topic | Learn it first | Concepts | Problems |
+            |---|---|---|---|
+            | Separation of variables, Cartesian and polar | [Unit 6](#/l/u6-idea) (boxes), [Unit W](#/l/uW-polar) (polar, wedges) | [concept ladder](#/l/uD-sep-concepts) | [problem ladder](#/l/uD-sep-problems) |
+            | Legendre (spherical separation) | [Unit 7](#/l/u7-separate), [Unit L](#/l/uL-compute) | [concept ladder](#/l/uD-leg-concepts) | [problem ladder](#/l/uD-leg-problems) |
+            | Method of images and uniqueness | [Unit 4](#/l/u4-unique1), [Unit 5](#/l/u5-idea) | [concept ladder](#/l/uD-img-concepts) | [problem ladder](#/l/uD-img-problems) |
+            | Multipoles | [Unit 8](#/l/u8-expansion), [moments](#/l/uW-multipole) | [concept ladder](#/l/uD-mp-concepts) | [problem ladder](#/l/uD-mp-problems) |
+            | Delta functions in $\rho$ | [Dirac delta](#/l/u0-delta), [E to ρ](#/l/uP-delta) | [concept ladder](#/l/uD-delta-concepts) | [problem ladder](#/l/uD-delta-problems) |
+            | Boundary conditions in 2-D and 3-D | [Unit B](#/l/ub-what) | [concept ladder](#/l/uD-bc-concepts) | [problem ladder](#/l/uD-bc-problems) |
+            | Electrostatic energy | [Unit 3](#/l/u3-assembly) | [concept ladder](#/l/uD-energy-concepts) | [problem ladder](#/l/uD-energy-problems) |
+
+            **Polar is not spherical.** "Polar" here means a flat $(r,\theta)$ plane with nothing depending on $z$ (an infinitely long wedge or pipe): solutions $r^{\pm k}\sin k\theta$. "Spherical" means a 3-D sphere with $\theta$ measured from the $z$ axis: solutions $r^\ell P_\ell(\cos\theta)$.
 
             Short on time? Do Levels 4–6 of the concept ladders first: they find the gaps fastest. Then the Level 5 problems, which are exam-sized.
           `),
