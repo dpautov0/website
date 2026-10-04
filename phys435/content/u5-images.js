@@ -1,4 +1,4 @@
-/* Unit 5 — The method of images (Lecture 10, Lecture 11 pp. 1–2; Griffiths 3.2). */
+/* Unit 5 — The method of images (Griffiths 3.2). */
 (function () {
   'use strict';
   const { RF, P, Q } = C;
@@ -148,7 +148,7 @@
     return f.svg();
   }
 
-  // Perspective view of the plane (lecture F10-1 / Griffiths Fig. 3.14). charges: [[zInUnits, '+'|'-', 'label', 'heightLabel']]
+  // Perspective view of the plane (Griffiths Fig. 3.14). charges: [[zInUnits, '+'|'-', 'label', 'heightLabel']]
   function fPlane3D(o = {}) {
     const f = PF.fig({ proj: { ox: 160, oy: 175, s: 1 } });
     const c = [[110, -150], [110, 150], [-110, 150], [-110, -150]].map(([x, y]) => f.p3(x, y, 0));
@@ -580,7 +580,7 @@
     }
     return f.svg();
   }
-  // The law-of-cosines triangle (lecture F10-4 / Griffiths Fig. 3.13).
+  // The law-of-cosines triangle (Griffiths Fig. 3.13).
   function fTriangle() {
     const f = PF.fig();
     const O = [40, 160], Qp = [110, 160], Qr = [290, 160], Pt = [150, 46];
@@ -626,7 +626,7 @@
     f.label(cx - Rp * 0.72 - 4, cy - Rp * 0.72 - 4, 'V=0', 'br', 'small');
     return f.svg();
   }
-  // equivalence picture (lecture F11-3)
+  // equivalence picture
   const fEquiv = () => PF.row([{ svg: fSphere({ A: 2.2, Rp: 42 }), cap: 'Real problem' }, { svg: fSphereImg({ A: 2.2, Rp: 42, surfLab: '' }), cap: 'Image system: the same $V$ for $r>R$' }]);
 
   // ================================================================ plots
@@ -642,6 +642,61 @@
     xt: [[2, '2'], [3, '3'], [4, '4'], [5, '5']], yt: [[-1, '-1'], [-0.5, '-0.5']],
     curves: [{ f: (A) => -0.5 / (A * A - 1), from: 1.18 }, { f: (A) => -0.25 / (A - 1), cls: 'dim dash', from: 1.2, to: 2.2 }] });
 
+  // ================================================================ figures for the added conceptual questions
+  // thin grounded sheet with empty space on both sides; P below the sheet
+  function fSheet() {
+    const f = PF.fig();
+    const Y0 = 120;
+    f.plane(20, 320, Y0, { lab: 'V=0', t: 4 });
+    f.charge(160, 50, { q: '+', lab: 'q', at: 'r' });
+    f.dim(130, 50, 130, Y0, 'd', { at: 'l' });
+    f.dot(230, 180, 3); f.tag(230, 180, 'P', 'r');
+    f.text(90, 180, 'empty space below', 'c');
+    return f.svg();
+  }
+  // grounded plane at height h above the origin, q at z0
+  function fPlaneH() {
+    const f = PF.fig();
+    const AX = 60, Y0 = 210, Yh = 150, Yq = 70;
+    f.line(AX, Y0 + 10, AX, 30, { cls: 'dim thin', arrow: 'end', hs: 6 }); f.label(AX + 6, 28, 'z', 'bl', 'small accent');
+    for (const [y, t] of [[Y0, '0'], [Yh, 'h'], [Yq, 'z_0']]) { f.line(AX - 4, y, AX + 4, y, { cls: 'dim' }); f.label(AX - 8, y, t, 'r', 'small'); }
+    f.plane(90, 320, Yh, { lab: 'V=0' });
+    f.charge(200, Yq, { q: '+', lab: 'q', at: 'r' });
+    f.line(AX + 6, Yq, 190, Yq, { cls: 'dim dash thin' });
+    return f.svg();
+  }
+  // grounded plane in a uniform applied field, with a charge above it
+  function fPlaneFieldQ() {
+    const f = PF.fig();
+    const Y0 = 170;
+    f.plane(20, 320, Y0, { lab: 'V=0' });
+    for (const x of [70, 150, 230]) f.arrow(x, 74, x, 34, { cls: 'thick' });
+    f.tag(230, 50, 'E_0\\,\\uv z', 'r', 10);
+    f.charge(150, 125, { q: '+', lab: 'q', at: 'r' });
+    f.dim(110, 125, 110, Y0, 'd', { at: 'l' });
+    return f.svg();
+  }
+  // a charge q and a charge -q/2 (no conductor)
+  function fApol() {
+    const f = PF.fig();
+    f.charge(80, 60, { q: '-', lab: '-q/2', at: 't' });
+    f.charge(260, 60, { q: '+', lab: 'q', at: 't' });
+    f.line(88, 60, 252, 60, { cls: 'dim dash thin' });
+    f.dim(80, 84, 260, 84, 'D', { at: 'b' });
+    return f.svg();
+  }
+  // two grounded half-planes meeting at 90 degrees, with q outside the corner
+  function fOutCorner() {
+    const f = PF.fig();
+    const ox = 140, oy = 110;
+    f.plane(ox, ox + 180, oy, { side: 'above' });
+    f.wall(ox, oy, oy - 100, { side: 'right' });
+    f.label(ox + 176, oy + 8, 'V=0', 'tr', 'small');
+    f.label(ox - 8, oy - 94, 'V=0', 'r', 'small');
+    f.charge(ox - 70, oy + 60, { q: '+', lab: 'q', at: 'r' });
+    return f.svg();
+  }
+
   // shared setup figures (built once)
   const FP = fPlane();
 
@@ -653,7 +708,7 @@
       id: 'u5-idea', title: 'The idea: trade the conductor for image charges',
       steps: [
         RF(md`
-          Lecture 10 opens with a problem you can't do with Coulomb's law alone.
+          Start with a problem you can't do with Coulomb's law alone.
 
           A point charge $q$ is held a height $d$ above an infinite conducting plane, and the plane is grounded. Find the potential above the plane.
 
@@ -661,7 +716,7 @@
 
           The charge $q$ pulls negative charge onto the part of the plane underneath it. The potential above the plane is the potential of $q$ **plus** the potential of that induced charge, and you know neither how much charge is induced nor how it is spread. So you can't just add up Coulomb potentials.
 
-          Treat it as a boundary-value problem instead. The lecture writes the conditions right next to the drawing.
+          Treat it as a boundary-value problem instead. Write the conditions right next to the drawing.
 
           **Region of interest:** $z\ge0$. The only charge there is $q$ at $(0,0,d)$, so $V$ obeys Poisson's equation $\nabla^2V = -\rho/\varepsilon_0$ with that one point charge as its source.
 
@@ -673,8 +728,7 @@
           !!key The licence to guess: uniqueness (Unit 4)
             If $\rho$ is given in a region and $V$ is given on every boundary of that region, Poisson's equation has exactly one solution there. So **any** function that has the right $\rho$ in the region and meets every boundary condition is *the* answer, however you found it. (See [the first uniqueness theorem](#/l/u4-unique1) in Unit 4.)
 
-          (The recap at the top of the notes writes $\nabla^2 V = \rho/\varepsilon_0$. The minus sign is missing: Poisson's equation is $\nabla^2V = -\rho/\varepsilon_0$.)
-        `, { setup: { svg: fPlane3D({ dim: true }), cap: md`The lecture's picture: $q$ a height $d$ above the grounded plane $z=0$.` } }),
+        `, { setup: { svg: fPlane3D({ dim: true }), cap: md`$q$ a height $d$ above the grounded plane $z=0$.` } }),
 
         Q(md`The plane in the figure is **grounded**. Which boundary condition does that word give you?`,
           [md`$V(x,y,0) = 0$`, md`$\sigma = 0$ everywhere on the plane`, md`$\vb E = 0$ just above the plane`, md`The total charge on the plane is zero`], 0,
@@ -729,7 +783,7 @@
         RF(md`
           ### The trick: imagine there is no conductor
 
-          The question asked in class: if there were no conductor, how would you make the potential zero on the plane $z=0$? Put a charge $-q$ at $z=-d$, the mirror point.
+          Ask: if there were no conductor, how would you make the potential zero on the plane $z=0$? Put a charge $-q$ at $z=-d$, the mirror point.
 
           [[fig:pair]]
 
@@ -745,7 +799,7 @@
           - **Condition 1, $V(x,y,0)=0$.** A point $(x,y,0)$ is the same distance $\sqrt{x^2+y^2+d^2}$ from both charges, so the two terms cancel.
           - **Condition 2, $V(\infty)=0$.** Each term goes to zero far away.
 
-          Every condition holds, so by uniqueness this **is** the potential of the real problem for $z\ge0$. The $-q$ is called the **image charge**: the conductor acts like a mirror for charge, with the sign flipped. (Page 2 of the notes calls it $-Q$ once; it is the same $-q$.)
+          Every condition holds, so by uniqueness this **is** the potential of the real problem for $z\ge0$. The $-q$ is called the **image charge**: the conductor acts like a mirror for charge, with the sign flipped.
 
           !!intuition Why a mirror charge works
             A grounded plane is an equipotential, so the field meets it at right angles. The field of a $\pm q$ pair crosses the plane halfway between them at right angles too, by symmetry, and that midplane is at $V=0$. So the pair already has the property that defines the real boundary. Matching the boundary is not enough on its own; uniqueness (same charge above the plane, same values on the plane and at infinity) is what makes the two fields identical everywhere above the plane.
@@ -773,7 +827,7 @@
           The induced charge cuts the potential at $P$ in half compared with $q$ alone.`,
           { figHtml: FP3 }),
 
-        Q(md`The lecture notes say the field follows from the image solution "similarly". What is $\vb E$ at the same point $P=(0,0,3d)$?`,
+        Q(md`The field follows from the image solution the same way. What is $\vb E$ at the same point $P=(0,0,3d)$?`,
           [md`$\kq\dfrac{q}{4d^2}\,\uv z$`, md`$\kq\dfrac{5q}{16d^2}\,\uv z$`, md`$\kq\dfrac{3q}{16d^2}\,\uv z$`, md`$-\kq\dfrac{3q}{16d^2}\,\uv z$`], 2,
           [md`That is $q$'s field alone, from $2d$ away. It leaves out the induced charge, whose field at $P$ is the image's field.`,
             md`You added the image's field. The image is negative, so its field at $P$ points down, toward it, and subtracts.`,
@@ -816,7 +870,7 @@
         RF(md`
           ### Two things to keep straight
 
-          !!key Starred rule from the notes: images go outside the region of interest
+          !!key The outside rule: images go outside the region of interest
             Image charges must be located outside the region where you calculate $V(\vb r)$ and $\vb E(\vb r)$. An image inside that region changes $\rho(\vb r)$ there, and then your function solves a different Poisson equation, so uniqueness no longer vouches for it.
 
           **The image is fictitious.** There is no charge at $z=-d$, and there is no charge anywhere inside the metal. What is real is the **induced surface charge** on top of the plane. It arranges itself so that, seen from above, it produces exactly the field of a point charge $-q$ at the mirror point. (Recall screening: the charges in a conductor move until $\vb E=0$ inside.)
@@ -835,7 +889,7 @@
             md`$V$ is infinite at the real charge too. The problem is that the extra source isn't in the real problem.`,
             md`The image is fictitious; it doesn't stand for charge at that spot. It just has to be outside the region you solve in.`,
             md`A finite charge anywhere still gives $V\to0$ at infinity.`],
-          md`Uniqueness compares functions with the **same** $\rho$ in the region. An image in the region adds a point charge there, so your function would solve a different problem. This is the starred rule in the notes, and it is how you reject wrong roots later (for the sphere).`,
+          md`Uniqueness compares functions with the **same** $\rho$ in the region. An image in the region adds a point charge there, so your function would solve a different problem. This is the outside rule, and it is how you reject wrong roots later (for the sphere).`,
           { figHtml: FP }),
 
         Q(md`The point $P$ is inside the metal, a distance $d/2$ below the surface. What is the actual potential at $P$?`,
@@ -865,6 +919,28 @@
           md`The image is a stand-in. The induced $\sigma$ on the surface produces, above the plane, exactly the field a point charge $-q$ at the mirror point would produce. Below the plane the two pictures disagree completely: the real field there is zero.`,
           { figHtml: FP }),
 
+        Q(md`The grounded plane is really the top face of a metal slab $5$ cm thick, and the region of interest is still $z\ge0$. Does the image answer above the slab change?`,
+          [md`Yes: the image moves down by the slab's thickness`, md`Yes: a thick slab holds more induced charge`, md`No: the region $z\ge0$ has the same charge and the same boundary conditions ($V=0$ on $z=0$, $V\to0$ far away), so it has the same solution`, md`Only if the slab is thicker than $d$`], 2,
+          [md`The image is placed by the surface where $V=0$, the top face at $z=0$. What lies below that face never enters.`,
+            md`The induced charge is $-q$ either way, and it sits on the top surface. Thickness adds no charge.`,
+            null,
+            md`Thickness never enters the conditions for $z\ge0$.`],
+          md`Uniqueness looks only at the region and its boundary. For $z\ge0$ the source is $q$, $V=0$ on $z=0$ and $V\to0$ far away, whether the metal below is a foil or a mountain. Same data, same answer. What sits **behind** a conductor's surface doesn't matter to the region in front of it.`,
+          { figHtml: fPlane({ thick: true }) }),
+
+        Q(md`Now the grounded conductor is a thin metal sheet at $z=0$, with empty space below it as well. What is the field at $P$, below the sheet?`,
+          [md`The field of $q$, slightly weakened by the sheet`, md`The field of the image pair, mirrored`, md`The field of a charge $-q$ at $z=d$`, md`Zero: the region $z<0$ has no charge, $V=0$ on the sheet and $V\to0$ far away, so $V=0$ there`], 3,
+          [md`A grounded sheet doesn't let a fraction through. The region below has its own boundary-value problem, and its answer is $V=0$.`,
+            md`The image construction is valid only on the side of the real charge.`,
+            md`Nothing puts a charge at $z=d$ into the problem below the sheet; there the data are all zeros.`,
+            null],
+          md`Treat $z<0$ as its own region. Boundary conditions:
+          1. $V=0$ on $z=0$.
+          2. $V\to0$ far away.
+
+          No charge inside. $V=0$ satisfies everything, so it is the answer: no field below. All of the induced $-q$ sits on the top side of the sheet. A grounded sheet is a perfect electrostatic screen.`,
+          { figHtml: fSheet() }),
+
         Q(md`Replace the infinite plane by a large but finite grounded plate of width $L\gg d$, with $q$ above its middle. Is the image formula exact?`,
           [md`Yes: uniqueness still applies.`, md`No. The boundary is now just the plate, not the whole plane $z=0$, so the pair's $V$ doesn't match the real boundary conditions. It is a good approximation near the middle when $L\gg d$.`, md`Yes, as long as the plate is grounded.`, md`No, because the total induced charge would be $+q$.`], 1,
           [md`Uniqueness says the solution is unique, not that the pair's function solves this new problem. Off the edges of the plate nothing forces $V=0$ on $z=0$, and the real field wraps around the edges.`,
@@ -892,6 +968,15 @@
           md`Reflect in the plane: keep $x$ and $y$, flip $z$, flip the sign of the charge. For any charge distribution $\rho(x,y,z)$ above the plane, the image is $-\rho(x,y,-z)$.`,
           { figHtml: fPlaneOff() }),
 
+        Q(md`The grounded plane is at height $z = h$ instead of $z = 0$, and $q$ sits on the $z$ axis at $z = z_0 > h$. Where is the image?`,
+          [md`$-q$ at $z = -z_0$`, md`$-q$ at $z = 2h - z_0$`, md`$-q$ at $z = h - z_0$`, md`$-q$ at $z = z_0 - 2h$`], 1,
+          [md`That's the mirror point in $z=0$, which is no longer the conducting surface.`,
+            null,
+            md`The image must be as far **below** the plane as $q$ is above it: $h - (z_0 - h)$, not $h - z_0$.`,
+            md`That's the mirror of the right answer in $z=0$.`],
+          md`Reflect in the conducting surface, not in the origin. $q$ is $z_0 - h$ above the plane, so the image is $z_0 - h$ below it: $z = h - (z_0 - h) = 2h - z_0$. Check: every point of the plane is equidistant from $z_0$ and $2h - z_0$, so the two potentials cancel there.`,
+          { figHtml: fPlaneH() }),
+
         RF(md`
           ### Worked example: $V$ along the axis
 
@@ -916,6 +1001,15 @@
             null],
           md`$\dfrac{1}{z-d} - \dfrac{1}{z+d} \approx \dfrac{2d}{z^2}$. The pair $\pm q$ separated by $2d$ is a dipole $p = 2qd$, so $V\approx\dfrac{1}{4\pi\varepsilon_0}\dfrac{2qd}{z^2}$ on the axis.`,
           { figHtml: FP3 }),
+
+        Q(md`Lower the charge toward the plane, $d\to0$, keeping $q$ fixed. What happens to $V$ at a fixed point far above?`,
+          [md`It goes to zero: the dipole moment $p = 2qd$ shrinks to nothing`, md`It approaches $\dfrac{q}{4\pi\varepsilon_0 r}$, since the charge is at the origin`, md`It grows without limit, since the charge touches the metal`, md`It doesn't change: $V$ depends only on $q$`], 0,
+          [null,
+            md`The induced $-q$ comes along: as $d\to0$ it gathers right under $q$ and cancels it.`,
+            md`The field **near** the charge grows, and the force $\propto1/d^2$ blows up, but the far potential is set by $p = 2qd\to0$.`,
+            md`The far potential is $\dfrac{1}{4\pi\varepsilon_0}\dfrac{2qd\cos\theta}{r^2}$; it depends on $d$.`],
+          md`Far away, $q$ plus its induced charge is a dipole $p = 2qd$: $V \approx \dfrac{1}{4\pi\varepsilon_0}\dfrac{2qd\cos\theta}{r^2}$. As $d\to0$ the dipole moment vanishes, and so does $V$. A charge placed **on** a grounded conductor is neutralised: the earth supplies $-q$ right where it sits.`,
+          { figHtml: FP }),
 
         P({
           title: 'Potential at a point beside the charge',
@@ -965,7 +1059,7 @@
           !!key Patterns to remember
             - An image problem is a boundary-value problem. Name the region of interest, list the boundary conditions (conductor's condition, and $V\to0$ at infinity), then find **any** function that has the right charge in the region and meets them. Uniqueness makes it the answer.
             - Grounded plane: image $-q$ at the mirror point. It is chosen to make $V=0$ on the conductor; $V\to0$ at infinity and the right $\rho$ in the region come free.
-            - Images go outside the region of interest (the starred rule). The image formula is valid only in that region; inside the metal $V=0$ and $\vb E=0$.
+            - Images go outside the region of interest (the outside rule). The image formula is valid only in that region; inside the metal $V=0$ and $\vb E=0$.
             - The image is fictitious. The real thing is the induced surface charge.
             - Far away, a charge plus its induced charge on a grounded plane looks like a dipole: $V\sim1/r^2$.
         `),
@@ -982,7 +1076,7 @@
         RF(md`
           ### From $V$ to $\sigma$
 
-          The in-class question: how is the potential related to the surface charge? The answer is the boundary condition at a charged surface, read backwards. Just outside a conductor
+          How is the potential related to the surface charge? The answer is the boundary condition at a charged surface, read backwards. Just outside a conductor
 
           $$\vb E = \frac{\sigma}{\varepsilon_0}\,\uv n,$$
 
@@ -1099,7 +1193,7 @@
         RF(md`
           ### Check: the total induced charge
 
-          The check asked in class: integrate $\sigma$ over the whole plane. Use polar coordinates in the plane, as the notes do: $r=\sqrt{x^2+y^2}$ is the distance from the foot of the charge, $\theta$ the angle around it, and $da = r\,dr\,d\theta$.
+          The check: integrate $\sigma$ over the whole plane. Use polar coordinates in the plane: $r=\sqrt{x^2+y^2}$ is the distance from the foot of the charge, $\theta$ the angle around it, and $da = r\,dr\,d\theta$.
 
           $$Q_{\text{ind}} = \int_0^{2\pi}d\theta\int_0^\infty r\,dr\,\frac{-qd}{2\pi(r^2+d^2)^{3/2}} = -qd\int_0^\infty\frac{r\,dr}{(r^2+d^2)^{3/2}}$$
 
@@ -1107,7 +1201,7 @@
 
           $$Q_{\text{ind}} = -qd\left[-\frac{1}{\sqrt{r^2+d^2}}\right]_0^\infty = \frac{qd}{\sqrt{r^2+d^2}}\bigg|_0^\infty = 0 - \frac{qd}{d} = -q.$$
 
-          The total induced charge is $-q$, the same as the image charge. (The notes write the evaluated line as $\dfrac{-qd}{(r^2+d^2)^{1/2}}\Big|_0^\infty$, which would give $+q$: the minus sign of the antiderivative was dropped. The final $-q$ is right.)
+          The total induced charge is $-q$, the same as the image charge. (Drop the minus sign of the antiderivative and you get $+q$, which is impossible: the induced charge must have the opposite sign to $q$.)
 
           **Why it had to be $-q$.** Take a Gaussian surface made of a huge hemisphere sitting on the plane, closed by a flat disk just above the plane. It encloses $q$ and nothing else. Far away the image pair's field is a dipole field, falling like $1/r^3$, so the flux through the dome goes to zero as it grows. All of $q$'s flux, $q/\varepsilon_0$, must go down through the disk into the plane. Every field line from $q$ ends on the plane, and the charge where they end totals $-q$.
 
@@ -1127,7 +1221,7 @@
 
         Q(md`Which antiderivative is right? $\displaystyle\int\frac{r\,dr}{(r^2+d^2)^{3/2}} = \;?$`,
           [md`$+\dfrac{1}{(r^2+d^2)^{1/2}}$`, md`$-\dfrac{1}{(r^2+d^2)^{1/2}}$`, md`$-\dfrac{1}{2(r^2+d^2)^{1/2}}$`, md`$\tfrac12\ln(r^2+d^2)$`], 1,
-          [md`Differentiate it: you get $-r(r^2+d^2)^{-3/2}$, the wrong sign. This is the sign slip in the notes' intermediate line.`,
+          [md`Differentiate it: you get $-r(r^2+d^2)^{-3/2}$, the wrong sign. With it the total induced charge would come out $+q$.`,
             null,
             md`With $u = r^2+d^2$, $r\,dr = \tfrac12du$ and $\int u^{-3/2}du = -2u^{-1/2}$. The $\tfrac12$ and the $-2$ combine to $-1$, not $-\tfrac12$.`,
             md`That is $\int\dfrac{r\,dr}{r^2+d^2}$, with power $1$, not $3/2$.`],
@@ -1141,6 +1235,24 @@
             md`That fixes the sign, not the amount.`,
             null],
           md`Gauss's law on a closed surface that hugs the plane and caps the region with a far-away dome: the dome contributes no flux in the limit, so the flux into the plane is all of $q/\varepsilon_0$. The plane's charge is $-q$.`,
+          { figHtml: FP }),
+
+        Q(md`$q>0$ is above the grounded plane. Is there any place on the plane where the induced $\sigma$ is **positive**?`,
+          [md`Yes, far from the foot, to balance the negative charge near it`, md`No: $\sigma = -\dfrac{qd}{2\pi(r^2+d^2)^{3/2}}$ is negative everywhere; the matching positive charge went to ground`, md`Yes, in a ring at $r = d$`, md`Only if the plane is isolated rather than grounded`], 1,
+          [md`Nothing needs balancing: the plane is grounded, so its total charge is free to end up at $-q$.`,
+            null,
+            md`$\sigma$ has one sign everywhere; it only weakens with distance. Nothing special happens at $r=d$.`,
+            md`For the infinite plane even that wouldn't do it. Positive patches appear on finite isolated conductors, such as the far side of a neutral sphere (Lesson 7).`],
+          md`Every factor in $\sigma = -\dfrac{qd}{2\pi(r^2+d^2)^{3/2}}$ is positive except the minus sign, so $\sigma<0$ everywhere. Every field line from $q$ ends on the plane, and field lines end only on negative charge. The matching $+q$ went into the ground.`,
+          { figHtml: FP }),
+
+        Q(md`Why isn't the induced charge simply a point charge $-q$ sitting on the plane right under $q$, at the foot?`,
+          [md`It would give $V\ne0$ on the plane: at a distance $r$ from the foot, $V = \kq\left(\dfrac{q}{\sqrt{r^2+d^2}} - \dfrac{q}{r}\right) < 0$`, md`Charge can't sit on the surface of a conductor`, md`A point charge on the plane would have the wrong total`, md`It would be right, but the spread-out $\sigma$ is easier to integrate`], 0,
+          [null,
+            md`Charge on a conductor sits exactly on its surface. The problem is the shape of the distribution.`,
+            md`The total, $-q$, would be right. The potential on the plane is what fails.`,
+            md`It isn't right: the potential on the plane would not be zero, and uniqueness picks the one distribution that makes it zero.`],
+          md`The induced charge must make $V=0$ at every point of the plane. A point $-q$ at the foot is closer to every point of the plane than $q$ is, so its potential wins everywhere and $V<0$ on the whole plane. The real distribution is spread out over a width of about $d$, $\sigma\propto(r^2+d^2)^{-3/2}$. Seen from above it acts like a point $-q$ a distance $d$ **below** the plane, not on it.`,
           { figHtml: FP }),
 
         Q(md`What fraction of the total induced charge lies within a distance $\sqrt3\,d$ of the foot of the charge?`,
@@ -1388,6 +1500,15 @@
           md`$F = \dfrac{q^2}{4\pi\varepsilon_0(2d)^2}\propto\dfrac{1}{d^2}$: halve $d$ and $F$ quadruples. As $q$ approaches the plane the force grows without bound, just as the image approaches it.`,
           { figHtml: FP }),
 
+        Q(md`You double the charge, from $q$ to $2q$, at the same height $d$. The force on it becomes`,
+          [md`twice as large: $F\propto q$`, md`unchanged: the plane is grounded`, md`half as large: the image is fixed`, md`four times as large: the image doubles too, so $F\propto q\cdot q$`], 3,
+          [md`That's the force on a charge in a **fixed** field. Here the field acting on $q$ comes from charge that $q$ itself induced, and that doubles too.`,
+            md`Grounding sets $V$ on the plane; it doesn't fix the induced charge, which grows with $q$.`,
+            md`The image is $-q$, tied to the real charge; it doubles, it doesn't stay fixed.`,
+            null],
+          md`$F = \dfrac{1}{4\pi\varepsilon_0}\dfrac{q^2}{(2d)^2}$. Double $q$ and the image doubles with it: $F\to4F$. Every force between a charge and its own induced charge goes like $q^2$. That is also why the sign of $q$ never matters: it is always attraction.`,
+          { figHtml: FP }),
+
         Q(md`What force does the **plane** feel?`,
           [md`None; a grounded plane is held fixed by the earth`, md`$\dfrac{q^2}{4\pi\varepsilon_0(2d)^2}$ pulling it away from $q$`, md`$\dfrac{q^2}{4\pi\varepsilon_0(2d)^2}$ pulling it toward $q$`, md`Half of that, since only half the field energy is present`], 2,
           [md`Grounding fixes its potential, not the force on it. The induced charge is pulled toward $q$.`,
@@ -1486,6 +1607,15 @@
             md`That uses the two-charge energy. Only $q$ moves; the image follows for free.`],
           md`$W_{\text{you}} = W(\infty) - W(d) = 0 - \left(-\dfrac{q^2}{16\pi\varepsilon_0d}\right) = +\dfrac{q^2}{16\pi\varepsilon_0d}$.`,
           { figHtml: FP }),
+
+        Q(md`You carry $q$ from where it is to the point $B$, also at height $d$ above the grounded plane. How much work does that take?`,
+          [md`$\dfrac{q^2L}{16\pi\varepsilon_0d^2}$, force times distance $L$`, md`Zero: the force on $q$ is perpendicular to the plane, and the energy depends only on the height`, md`$-\dfrac{q^2}{16\pi\varepsilon_0d}$, the energy of the configuration`, md`It depends on the path`], 1,
+          [md`The force $\dfrac{q^2}{16\pi\varepsilon_0d^2}$ points straight down, perpendicular to a horizontal move, so it does no work along it.`,
+            null,
+            md`That's the work to bring $q$ in from infinity. Moving between two points at the same height costs the difference of $W$, which is zero.`,
+            md`The work is the change in $W(d)$, which depends only on the end points: here both are at height $d$.`],
+          md`The energy of the system is $W(d) = -\dfrac{q^2}{16\pi\varepsilon_0 d}$. It depends only on the height, because the infinite plane looks the same from every horizontal position. Same height, same $W$, no work. The induced charge (the image) just slides along under the charge.`,
+          { figHtml: fPlane({ pts: [[1.6, 1, 'B', 'r']] }) }),
 
         Q(md`The energy $W = -\dfrac{q^2}{16\pi\varepsilon_0d}$ is negative. What does that mean physically?`,
           [md`Assembling the system releases energy: the charge is bound to the plane, and you would have to supply $|W|$ to pull it away`, md`The calculation has a sign error; energies are positive`, md`The field energy density is negative below the plane`, md`The grounded plane does negative work on the earth`], 0,
@@ -1912,6 +2042,24 @@
           [[fig:img]]`,
           { figHtml: fDipole('tilt'), figs: { img: { svg: fDipole('tilt', { img: true }), cap: md`The tilted dipole and its image: horizontal part reversed, vertical part kept.` } } }),
 
+        Q(md`A small dipole sits at height $d$ above the grounded plane, at any angle. Is it attracted to the plane, repelled, or does that depend on its orientation?`,
+          [md`Repelled when it points straight up, attracted when it lies flat`, md`Attracted, for every orientation`, md`No net force, since the dipole is neutral`, md`Attracted when it points straight up, repelled when it lies flat`], 1,
+          [md`Pointing up, its image points up too, directly below it: head-to-tail dipoles attract.`,
+            null,
+            md`Neutral isn't enough. The induced charge arranges itself so that the attraction wins, just as for a point charge.`,
+            md`Lying flat, the image points the opposite way, directly below: antiparallel dipoles stacked like that also attract.`],
+          md`Reflect: $(p_x, p_z)\to(-p_x, +p_z)$ at depth $d$. The interaction energy of the dipole and its image, a distance $2d$ apart, is $U = -\dfrac{1}{4\pi\varepsilon_0}\dfrac{p_x^2 + 2p_z^2}{8d^3}$, negative for every orientation. The true energy is half of that (the induced charge moves when the dipole moves): $W = -\dfrac{1}{4\pi\varepsilon_0}\dfrac{p_x^2+2p_z^2}{16d^3}$, so $F_z = -\dfrac{dW}{dd} = -\dfrac{1}{4\pi\varepsilon_0}\dfrac{3(p_x^2+2p_z^2)}{16d^4}$: toward the plane. A tilted dipole also feels a torque, but the net force is always attraction.`,
+          { figHtml: fDipole('tilt') }),
+
+        Q(md`A physical dipole, $+q$ above $-q$, stands above the grounded plane. What is the total charge induced on the plane?`,
+          [md`$-q$`, md`$+q$, the image of the closer charge`, md`Zero`, md`$-2q$`], 2,
+          [md`That's the induced charge for $+q$ alone. The $-q$ induces $+q$ as well.`,
+            md`Each real charge induces minus itself, not just the closer one.`,
+            null,
+            md`The two contributions have opposite signs; they don't add.`],
+          md`Each charge above an infinite grounded plane induces exactly minus itself (its image), whatever its height. So the plane's total is $-(+q) - (-q) = 0$; the images are $-q$ and $+q$. The distribution isn't zero, though: the closer $-q$ wins near the foot, so $\sigma>0$ there, and $\sigma<0$ farther out.`,
+          { figHtml: fVertDipole() }),
+
         P({
           title: 'A vertical physical dipole above the plane',
           q: md`
@@ -2009,6 +2157,15 @@
             md`"Grounded" gives $V=0$ on the plane, not the field there: the field at the surface is $\sigma/\varepsilon_0$, set by the induced charge, which you don't know in advance. (Here it turns out to be $E_0$, but only after solving.) And $V\to0$ is impossible in a uniform field.`],
           md`"Uniform field $E_0\uv z$ far away" translates to $V\to-E_0z$ (plus a constant, which $V=0$ on the plane fixes at zero), because $\vb E = -\nabla V$. Here the solution is just $V = -E_0z$: no charge in the region, $V=0$ on the plane, the right behaviour far away, so by uniqueness it is the answer. The induced charge is uniform, $\sigma = -\varepsilon_0\,\partial V/\partial z = \varepsilon_0E_0$. Put a charge $q$ above the plane as well and you add the image-pair potential to $-E_0z$; each piece takes care of its own condition.`,
           { figHtml: fPlaneField() }),
+
+        Q(md`Back to the plane in the uniform field $E_0\uv z$, now with a positive charge $q$ above it. The applied field pushes $q$ up; its image pulls it down. Is there a height where $q$ floats, and is it stable there?`,
+          [md`There's no such height: the image always wins`, md`Yes, at $d_* = \tfrac14\sqrt{q/(\pi\varepsilon_0E_0)}$, and it is stable`, md`Yes, at $d_* = \tfrac14\sqrt{q/(\pi\varepsilon_0E_0)}$, but it is unstable: a little higher and the push wins, a little lower and the pull wins`, md`It floats at every height, because the field is uniform`], 2,
+          [md`The image force falls like $1/d^2$ while the applied force is constant, so high enough up the push wins.`,
+            md`Nudge it up: the image force weakens and the push wins, so it keeps going. That's unstable.`,
+            null,
+            md`The image force depends on $d$; the two balance at one height only.`],
+          md`Net upward force: $F(d) = qE_0 - \dfrac{1}{4\pi\varepsilon_0}\dfrac{q^2}{4d^2}$. It vanishes at $d_*^2 = \dfrac{q}{16\pi\varepsilon_0E_0}$, i.e. $d_* = \tfrac14\sqrt{\dfrac{q}{\pi\varepsilon_0E_0}}$. Above $d_*$, $F>0$ and $q$ flies off; below it, $F<0$ and $q$ falls onto the plane. Unstable, as Earnshaw's theorem says it must be. (Superposition is fine here: $V = -E_0z$ plus the image pair meets every condition.)`,
+          { figHtml: fPlaneFieldQ() }),
 
         RF(md`
           ### A charge between two grounded planes: an infinite series
@@ -2370,7 +2527,7 @@
 
           [[fig:w60]]
 
-          For any other angle the construction fails. Keep reflecting and the images either never close up, or they close up with an image landing **inside** the wedge, in the region of interest. The starred rule forbids that. For a $120^\circ$ wedge, three rounds of reflection put an image of $q$ at its mirror point across the bisector of the wedge, inside the region:
+          For any other angle the construction fails. Keep reflecting and the images either never close up, or they close up with an image landing **inside** the wedge, in the region of interest. The outside rule forbids that. For a $120^\circ$ wedge, three rounds of reflection put an image of $q$ at its mirror point across the bisector of the wedge, inside the region:
 
           [[fig:w120]]
 
@@ -2413,7 +2570,7 @@
             null,
             md`Plane images always have the same size as what they reflect. The size isn't the problem.`,
             md`The number of images must be a whole number: $2n-1$ with $\pi/n$ the wedge angle.`],
-          md`Reflections in the two walls generate images at angles $\pm\phi_0 + 140^\circ k$. Since $70^\circ$ doesn't divide $180^\circ$, some of those angles fall inside the wedge. An image in the region of interest breaks the starred rule: you'd be solving Poisson's equation with the wrong $\rho$.`,
+          md`Reflections in the two walls generate images at angles $\pm\phi_0 + 140^\circ k$. Since $70^\circ$ doesn't divide $180^\circ$, some of those angles fall inside the wedge. An image in the region of interest breaks the outside rule: you'd be solving Poisson's equation with the wrong $\rho$.`,
           { figHtml: fWedge(70) }),
 
         Q(md`What goes wrong if you try images for a $120^\circ$ grounded wedge?`,
@@ -2428,6 +2585,15 @@
             [[fig:bad]]
           `,
           { figHtml: fWedge(120, { phi: 40, rq: 130 }), figs: { bad: { svg: fWedge120(), cap: md`The circled image falls inside the wedge.` } } }),
+
+        Q(md`Two grounded half-planes meet at $90^\circ$, but now $q$ sits **outside** the corner, in the $270^\circ$ region that wraps around it. Can images solve this?`,
+          [md`Yes, with the same three images as inside the corner`, md`Yes, with one image, mirrored through the corner line`, md`Yes: any angle works if you use enough images`, md`No: the region of interest is a $270^\circ$ wedge, $270^\circ$ is not $180^\circ/n$, and the reflections would put images inside the region`], 3,
+          [md`Those image positions, $(\mp a, \pm b)$-type mirror points, now land in the region where you want $V$.`,
+            md`One image can't make $V=0$ on both half-planes.`,
+            md`Only angles $180^\circ/n$ close up without putting an image in the region of interest.`,
+            null],
+          md`The image method works for a wedge of angle $180^\circ/n$, measured **in the region of interest**. Inside the corner that angle is $90^\circ$ ($n=2$). Outside it, the region spans $270^\circ$, which is not $180^\circ/n$ for any whole number $n$. The reflections never close up without landing an image in the region, which the outside rule forbids. This problem needs other methods.`,
+          { figHtml: fOutCorner() }),
 
         P({
           title: 'A charge in a 60° wedge',
@@ -2540,23 +2706,23 @@
       id: 'u5-sphere', title: 'A charge outside a grounded sphere',
       steps: [
         RF(md`
-          ### The setup (end of Lecture 10)
+          ### The setup
 
           A point charge $q$ is a distance $a$ from the center of a grounded conducting sphere of radius $R$, with $a>R$. Find the potential outside the sphere.
 
           [[fig:setup]]
 
-          The questions asked in class:
+          Answer two questions first.
 
           **What are the boundary conditions?** The region of interest is $r\ge R$, outside the sphere, where the only charge is $q$.
 
           1. $V(R) = 0$: the whole sphere is grounded.
           2. $V(\infty) = 0$.
 
-          **Where can the image go?** Inside the sphere. The region of interest is $r\ge R$, so by the starred rule the image must be in $r<R$. And the problem is symmetric under rotations about the line through the center and $q$, so the image sits on that line.
+          **Where can the image go?** Inside the sphere. The region of interest is $r\ge R$, so by the outside rule the image must be in $r<R$. And the problem is symmetric under rotations about the line through the center and $q$, so the image sits on that line.
 
           So try **one** image charge $q'$ a distance $b$ from the center, on the side toward $q$. Two unknowns: its size $q'$ and its position $b$.
-        `, { setup: { svg: FS, cap: md`The lecture's picture: $q$ a distance $a$ from the center of a grounded sphere of radius $R$.` } }),
+        `, { setup: { svg: FS, cap: md`$q$ a distance $a$ from the center of a grounded sphere of radius $R$.` } }),
 
         Q(md`What are the boundary conditions for the grounded sphere with $q$ outside it?`,
           [md`$V(R) = \dfrac{q}{4\pi\varepsilon_0(a-R)}$ and $V(\infty)=0$`, md`$V(R)=0$ and $V(\infty)=0$`, md`The total charge on the sphere is $0$, and $V(\infty)=0$`, md`$\vb E=0$ on the sphere's surface, and $V(\infty)=0$`], 1,
@@ -2573,7 +2739,7 @@
             md`A charge at the center has the same potential at every point of the sphere, so it can never cancel $q$'s potential, which varies over the sphere.`,
             null,
             md`It must also respect the symmetry: off the axis, its potential would break the rotational symmetry about the line through $q$.`],
-          md`Starred rule: outside the region of interest, so inside the sphere. Symmetry: on the axis through $q$. The lecture's green-ink answer: "inside the sphere".`,
+          md`Outside rule: outside the region of interest, so inside the sphere. Symmetry: on the axis through $q$.`,
           { figHtml: FS }),
 
         Q(md`Why must the image lie on the line through the center and $q$?`,
@@ -2601,7 +2767,7 @@
           Careful: $r$ is the distance from the **center**; $\srm$ and $\srm'$ are distances from the **charges**.
 
           $V(R)=0$ for every $\theta$ forces $q$ and $q'$ to have **opposite signs**: the two distances are positive, so the two terms can cancel only if the charges have opposite signs.
-        `, { tri: { svg: fTriangle(), cap: md`The geometry (lecture figure). $r$ from the center $O$; $\srm'$ from $q'$; $\srm$ from $q$; $\theta$ at the center.` } }),
+        `, { tri: { svg: fTriangle(), cap: md`The geometry. $r$ from the center $O$; $\srm'$ from $q'$; $\srm$ from $q$; $\theta$ at the center.` } }),
 
         Q(md`A student writes the image potential as $V = \dfrac{1}{4\pi\varepsilon_0}\left(\dfrac{q}{r} + \dfrac{q'}{r'}\right)$, with $r$ the field point's distance from the center. What is wrong?`,
           [md`Nothing; that is Eq. 3.17`, md`$r$ must be $\srm$, the distance from $q$ to the field point, $\sqrt{r^2+a^2-2ra\cos\theta}$`, md`$r$ should be replaced by $a$`, md`The $q'$ term should be $q'r$`], 1,
@@ -2618,11 +2784,20 @@
             md`Being inside the sphere is about the region of interest, not about the sign.`,
             null,
             md`The attraction is a consequence of the opposite sign, not the reason for it.`],
-          md`On the sphere $\dfrac{q}{\srm} = -\dfrac{q'}{\srm'}$. Both $\srm$ and $\srm'$ are positive, so $q$ and $q'$ have opposite signs. The lecture writes this at the bottom of the first page.`,
+          md`On the sphere $\dfrac{q}{\srm} = -\dfrac{q'}{\srm'}$. Both $\srm$ and $\srm'$ are positive, so $q$ and $q'$ have opposite signs.`,
           { figHtml: FS }),
 
+        Q(md`Forget the sphere for a moment. A charge $q$ and a charge $-q/2$ sit a fixed distance $D$ apart. What shape is the surface on which their total potential is zero?`,
+          [md`A plane, the perpendicular bisector`, md`A plane closer to $-q/2$`, md`There is no such surface`, md`A sphere enclosing $-q/2$`], 3,
+          [md`The bisector works only for equal and opposite charges.`,
+            md`$V=0$ needs $\srm_q = 2\,\srm_{-q/2}$; that set curves around the smaller charge, it isn't flat.`,
+            md`Opposite charges always have a zero-potential surface, wrapped around the weaker one.`,
+            null],
+          md`$V=0$ means $\dfrac{q}{\srm_1} = \dfrac{q/2}{\srm_2}$, i.e. $\srm_1 = 2\,\srm_2$: the points twice as far from $q$ as from $-q/2$. That set is a sphere around the weaker charge. So any two unequal, opposite charges have a spherical $V=0$ surface. Turn it around: a grounded sphere with $q$ outside can be replaced by one smaller, opposite charge inside it. The next step finds its size and position.`,
+          { figHtml: fApol() }),
+
         RF(md`
-          ### Finding $b$ and $q'$ (Lecture 11)
+          ### Finding $b$ and $q'$
 
           Set $r=R$ in $V=0$:
 
@@ -2640,7 +2815,7 @@
 
           $$a\left(R^2+b^2\right) = b\left(R^2+a^2\right)\;\Rightarrow\;aR^2 - bR^2 + ab^2 - a^2b = 0\;\Rightarrow\;(a-b)\left(R^2-ab\right) = 0.$$
 
-          - **$b=a$, $q'=-q$:** the "image" sits right on top of $q$ and cancels it, giving $V=0$ everywhere. It is in the region of interest, and it deletes the real charge: rejected by the starred rule.
+          - **$b=a$, $q'=-q$:** the "image" sits right on top of $q$ and cancels it, giving $V=0$ everywhere. It is in the region of interest, and it deletes the real charge: rejected by the outside rule.
           - **$b = R^2/a$:** then $q'^2 = \dfrac{q^2R^2}{a^2}$, and opposite sign gives
 
           $$b = \frac{R^2}{a},\qquad q' = -\frac{R}{a}\,q.$$
@@ -2663,7 +2838,7 @@
             md`$b=a$ gives $V=0$ everywhere outside: the solution of a problem with no charge at all.`,
             null,
             md`$b=0$ isn't a root of this equation.`],
-          md`The root $b=a$ "solves" the boundary conditions by deleting the source: it changes $\rho$ in the region of interest. The starred rule throws it out. Keep $b = R^2/a$, $q' = -\dfrac{R}{a}q$.`,
+          md`The root $b=a$ "solves" the boundary conditions by deleting the source: it changes $\rho$ in the region of interest. The outside rule throws it out. Keep $b = R^2/a$, $q' = -\dfrac{R}{a}q$.`,
           { figHtml: FS }),
 
         Q(md`Which pair has the right dimensions and the right values?`,
@@ -2682,7 +2857,7 @@
 
           $$V(r,\theta) = \frac{1}{4\pi\varepsilon_0}\left(\frac{q}{\sqrt{r^2+a^2-2ra\cos\theta}} - \frac{qR}{a\sqrt{r^2+b^2-2rb\cos\theta}}\right),\qquad b = \frac{R^2}{a}.$$
 
-          (The notes' final line has $2Ra\cos\theta$ in the first square root. It should be $2ra\cos\theta$, with the field point's $r$, as in the law of cosines.)
+          (The first square root has $2ra\cos\theta$, with the field point's $r$, as in the law of cosines, not the sphere's $R$.)
 
           [[fig:equiv]]
 
@@ -2710,8 +2885,17 @@
             md`That is exactly where the formula is **wrong**: the real $V$ is $0$ inside a grounded conductor.`,
             md`It is right throughout the region of interest, not only on its boundary.`,
             null],
-          md`"Is equivalent for $V(r>R)$", as the lecture writes under its picture. The equivalence is guaranteed by uniqueness only in the region where both setups have the same charge and the same boundary conditions.`,
+          md`The two setups are equivalent for $V$ in $r>R$ only. The equivalence is guaranteed by uniqueness only in the region where both setups have the same charge and the same boundary conditions.`,
           { figHtml: FS }),
+
+        Q(md`Point $F$ is just outside the grounded sphere on the far side, "in the shadow" of the sphere. What is the sign of $V$ there?`,
+          [md`Zero: the grounded sphere shields the region behind it`, md`Negative: the image is closer to $F$ than $q$ is`, md`Undefined: the image formula only works on the near side`, md`Positive, though small`], 3,
+          [md`A grounded sphere is not a closed box around the region behind it. Field lines from $q$ reach around it, so $V\ne0$ there.`,
+            md`The image is closer but smaller. Just outside the sphere the two terms nearly cancel, and $V$ can't dip below zero anywhere outside (see the solution).`,
+            md`The image formula holds everywhere in $r\ge R$, near side and far side.`,
+            null],
+          md`Use the no-extremum rule. In $r>R$ the only charge is $q>0$, and $V=0$ on the sphere and at infinity. A negative value would be a local minimum of $V$ in a charge-free region, which Laplace's equation forbids. So $V>0$ everywhere outside: small in the shadow, but not zero. Only a closed conductor shields completely.`,
+          { figHtml: FSNF }),
 
         Q(md`What happens to the image as the charge approaches the surface, $a\to R^+$?`,
           [md`$b\to0$ and $q'\to0$`, md`$b\to R$ and $q'\to-q$: it becomes the mirror image, as for a plane`, md`$b\to R$ and $q'\to-q/2$`, md`$q'\to-\infty$`], 1,
@@ -2729,6 +2913,24 @@
             null,
             md`$b = R^2/a$ shrinks toward the center as $a$ grows.`],
           md`Both $q' = -(R/a)q$ and $b = R^2/a$ go to zero like $1/a$. A far charge induces little, and what it induces is centered.`,
+          { figHtml: FS }),
+
+        Q(md`You double $q$, keeping $a$ and $R$ fixed. What happens to the image?`,
+          [md`It moves closer to the center and keeps its size`, md`Same place, twice the size: $b = R^2/a$ involves only the geometry, and $q' = -\dfrac{R}{a}q$ doubles with $q$`, md`It moves toward $q$ and doubles`, md`Nothing; the sphere is grounded`], 1,
+          [md`$b = R^2/a$ has no $q$ in it.`,
+            null,
+            md`$b$ is set by $R$ and $a$ alone.`,
+            md`Grounding fixes $V$, not the induced charge; doubling $q$ doubles everything induced.`],
+          md`$V = 0$ on the sphere is a linear condition, so doubling $q$ doubles every image charge without moving it. Position comes from geometry, size from linearity.`,
+          { figHtml: FS }),
+
+        Q(md`Now keep $q$ and $a$ fixed and double the sphere's radius $R$ (still with $2R < a$). What happens to the image?`,
+          [md`$|q'|$ halves and $b$ halves`, md`$|q'|$ doubles and $b$ doubles`, md`$|q'|$ doubles and $b$ quadruples`, md`Nothing: the image depends only on $q$`], 2,
+          [md`A bigger sphere comes closer to $q$ and collects more induced charge, not less: $|q'| = qR/a$ grows with $R$.`,
+            md`$b = R^2/a$ goes like $R^2$.`,
+            null,
+            md`$q' = -qR/a$ and $b = R^2/a$ both involve $R$.`],
+          md`$q' = -\dfrac{R}{a}q$ doubles and $b = \dfrac{R^2}{a}$ quadruples. Relative to the sphere, $b/R = R/a$ doubles: the image moves out toward the surface as the surface approaches $q$. In the limit where the gap $a - R$ is small compared with $R$, $|q'|\to q$ and the image sits just inside the surface, as for the plane.`,
           { figHtml: FS }),
 
         Q(md`Check $V=0$ at the point of the sphere **farthest** from $q$ ($\theta=\pi$). What are the distances from that point to $q$ and to $q'$?`,
@@ -2778,6 +2980,15 @@
           md`$\sigma(0)/\sigma(\pi) = \left(\dfrac{a+R}{a-R}\right)^3$: for $a = 2R$ that is $27$. The induced charge crowds onto the side facing $q$.`,
           { figHtml: FSNF }),
 
+        Q(md`At $N$, the point of the grounded sphere nearest $q$, compare the actual field with the field that $q$ alone would make at $N$.`,
+          [md`Smaller: the induced charge shields $N$`, md`Equal: the sphere is grounded, so it adds nothing at its surface`, md`Larger: $q$ pushes into the sphere and the induced negative charge pulls the same way`, md`Zero: $N$ is on a conductor`], 2,
+          [md`Shielding happens **inside** the metal. Just outside, the induced charge adds to the field: the field lines from $q$ end on it.`,
+            md`Grounded fixes $V=0$; it doesn't mean "no extra field". The induced $\sigma$ makes a field of its own.`,
+            null,
+            md`Zero is the field inside the metal. Just outside, $E = |\sigma|/\varepsilon_0$, the largest anywhere on the sphere.`],
+          md`At $N$ the field of $q$ points toward the center, and the image $q'$ (negative, between $N$ and the center) pulls toward itself, also toward the center. They add: $E_N = \kq\left[\dfrac{q}{(a-R)^2} + \dfrac{|q'|}{(R-b)^2}\right]$. With $|q'| = qR/a$ and $R - b = R(a-R)/a$, the second term is $\kq\dfrac{qa}{R(a-R)^2}$, larger than the first. A conductor near a charge **strengthens** the field at its surface; that's why $\sigma$ is large there.`,
+          { figHtml: FSNF }),
+
         Q(md`What is the total charge induced on the grounded sphere?`,
           [md`$-q$`, md`$-\dfrac{R}{a}q$`, md`$0$`, md`$-\dfrac{R^2}{a^2}q$`], 1,
           [md`That is the plane's answer. Here only part of $q$'s field lines end on the sphere.`,
@@ -2785,6 +2996,15 @@
             md`The sphere is grounded, not isolated; it draws charge from the earth.`,
             md`The induced charge equals the image charge, $-\dfrac Raq$.`],
           md`$\displaystyle\oint\sigma\,da = -\frac{qR}{a} = q'$. Fastest route: $V(\text{center}) = 0 = \frac{q}{4\pi\varepsilon_0a} + \frac{Q_{\text{ind}}}{4\pi\varepsilon_0R}$.`,
+          { figHtml: FS }),
+
+        Q(md`The induced charge on the grounded sphere totals $q' = -\dfrac{R}{a}q$. Outside a sphere, Gauss's law lets a charge on it act as if it sat at the center. So why does the image sit at $b = R^2/a$ and not at the center?`,
+          [md`Gauss's law doesn't apply to induced charge`, md`"Acts as if at the center" needs a spherically symmetric distribution, and the induced $\sigma$ crowds toward $q$`, md`An image at the center would have the wrong total`, md`It's a convention; the center works too`], 1,
+          [md`Gauss's law holds for every charge. It fixes the total flux, and the total is right; the problem is the distribution.`,
+            null,
+            md`The total would be the same $q'$. The potential on the sphere would be wrong.`,
+            md`A charge at the center gives the same potential at every point of the sphere, so it can't cancel $q$'s potential, which varies over the sphere.`],
+          md`"Charge on a sphere acts as if at its center" is true only for a uniform $\sigma$. Here $\sigma$ crowds onto the side facing $q$, so its outside field is that of a charge displaced toward $q$: exactly $q'$ at $b = R^2/a$. Gauss's law still holds: the flux of the induced charge through any surface around the sphere is $q'/\varepsilon_0$, but that only checks the total.`,
           { figHtml: FS }),
 
         Q(md`Why is the total induced charge on the grounded sphere smaller in size than $q$, when for the grounded plane it was exactly $-q$?`,
@@ -2857,6 +3077,15 @@
           **Energy.** $W = -\dfrac{q^2R}{8\pi\varepsilon_0(3R^2)} = -\dfrac{q^2}{24\pi\varepsilon_0R}$.
         `, { img: { svg: fSphereImg({ A: 2 }), cap: md`$a=2R$: image $-q/2$ at $R/2$. The metal is replaced by the image; its surface (dashed) is the $V=0$ surface of the pair.` },
           sig: { svg: fSigSphere(2), cap: md`$\sigma(\theta)$ for $a=2R$, in units of $q/R^2$.` } }),
+
+        Q(md`Same charge $q$, same gap $d$ to the nearest metal: once in front of an infinite grounded plane, once in front of a grounded sphere of radius $R$ (so $a = R + d$). Which pulls harder?`,
+          [md`The sphere: its surface curves around toward $q$`, md`They're equal: only the gap matters`, md`It depends on the sign of $q$`, md`The plane: the sphere's image is a bit closer than $2d$, but it is smaller than $q$, and the size wins`], 3,
+          [md`A sphere curves **away** from $q$: it puts less metal near $q$ than a plane does.`,
+            md`The images differ: the plane's is $-q$, the sphere's is $-qR/a$.`,
+            md`Both forces go like $q^2$: always attraction, same ratio.`,
+            null],
+          md`Plane: $F_p = \kq\dfrac{q^2}{4d^2}$. Sphere: $F_s = \kq\dfrac{q^2Ra}{(a^2-R^2)^2}$ with $a = R+d$, so $\dfrac{F_s}{F_p} = \dfrac{4R(R+d)}{(2R+d)^2} = 1 - \dfrac{d^2}{(2R+d)^2} < 1$. As $R\to\infty$ the ratio goes to $1$: the plane is the limit of a huge sphere.`,
+          { figHtml: FS }),
 
         P({
           title: 'Grounded sphere, charge at a = 3R',
@@ -2931,7 +3160,7 @@
                 md`$\dfrac{q}{4\pi\varepsilon_0}\left[\dfrac{1}{\sqrt{r^2+a^2-2ra\cos\theta}} - \dfrac{1}{\sqrt{r^2+(R^2/a)^2-2r(R^2/a)\cos\theta}}\right]$`,
                 md`$\dfrac{q}{4\pi\varepsilon_0}\left[\dfrac{1}{\sqrt{r^2+a^2-2ra\cos\theta}} + \dfrac{1}{\sqrt{R^2+(ra/R)^2-2ra\cos\theta}}\right]$`], a: 0,
               why: [null,
-                md`The first root uses $R$ where the field point's $r$ belongs (the slip in the notes). The law of cosines for $\srm$ has $2ra\cos\theta$.`,
+                md`The first root uses $R$ where the field point's $r$ belongs (an easy slip). The law of cosines for $\srm$ has $2ra\cos\theta$.`,
                 md`This drops the size of the image: $q'/q = -R/a$, not $-1$. At $r=R$ it doesn't vanish.`,
                 md`The image has the opposite sign; with a plus sign $V$ can't vanish on the sphere.`] },
             { lbl: md`(b) total induced charge`, expr: '-q*R/a', vars: { q: [1, 3], R: [1, 2], a: [3, 6] } },
@@ -3308,7 +3537,7 @@
 
           That is the whole boundary of this region; infinity is not part of it.
 
-          The algebra of Lecture 11 never used $a>R$, so the same results hold:
+          The algebra above never used $a>R$, so the same results hold:
 
           $$q' = -\frac Raq,\qquad b = \frac{R^2}{a}.$$
 
@@ -3347,7 +3576,7 @@
             md`That is the flat-mirror guess. A curved wall needs the inversion point $R^2/a$, with a different size $q' = -\dfrac Raq$.`,
             md`A center charge gives a constant on the sphere and can't cancel $q$'s varying potential.`,
             null],
-          md`Same formulas, opposite roles: $b = \dfrac{R^2}{a}$ is outside when $a<R$, which is exactly what the starred rule requires for a region of interest inside.`,
+          md`Same formulas, opposite roles: $b = \dfrac{R^2}{a}$ is outside when $a<R$, which is exactly what the outside rule requires for a region of interest inside.`,
           { figHtml: FSH }),
 
         Q(md`How big is the image for a charge inside the shell?`,
@@ -3393,6 +3622,24 @@
             md`The inner surface charge can't screen $q$ from the cavity it's in.`,
             md`The outer surface's uniform $+q$ produces no field inside the shell.`],
           md`A uniform charge on the outer surface makes a constant potential inside, so the cavity field is unchanged. The only difference: the whole inside sits at $\dfrac{q}{4\pi\varepsilon_0R_{\text{out}}}$ higher than for the grounded shell, and now there is a field $\dfrac{q}{4\pi\varepsilon_0r^2}$ outside.`,
+          { figHtml: fShell({ lab: 'Q=0' }) }),
+
+        Q(md`The charge is inside the **grounded** shell. What is the field outside the shell?`,
+          [md`The field of $q$, as if the shell weren't there`, md`Zero`, md`The field of $q + q'$ placed at the center`, md`The field of the image $q'$`], 1,
+          [md`The grounded shell carries $-q$ on its inner surface, which cancels $q$'s field beyond it.`,
+            null,
+            md`$q'$ is fictitious bookkeeping for the region inside; it says nothing about the outside.`,
+            md`The image describes only the inside region. The real outside region has its own boundary-value problem.`],
+          md`Outside region: no charge, $V = 0$ on the shell (grounded), $V\to0$ far away. $V = 0$ fits everything, so it is the answer: no field outside. Images built for one region say nothing about another.`,
+          { figHtml: FSH }),
+
+        Q(md`Now the shell is **isolated and neutral**, with $q$ still off-centre inside. What is the field outside?`,
+          [md`$\dfrac{q}{4\pi\varepsilon_0r^2}\uv r$ measured from the shell's center, as if $q$ sat at the center`, md`The field of $q$ at its actual off-centre position`, md`Zero, as for the grounded shell`, md`The field of $q$ plus that of the image`], 0,
+          [null,
+            md`The metal hides where $q$ is: the outer surface charge spreads uniformly whatever $q$ does inside.`,
+            md`Neutral is not grounded: the outer surface now carries $+q$.`,
+            md`The image belongs to the inside problem only.`],
+          md`The inner wall carries $-q$ (Gauss in the metal), so the neutral shell's outer surface carries $+q$. Outside problem: the outer sphere is an equipotential with total charge $q$, and $V\to0$ far away. A uniform $\sigma$ on the outer surface fits, so by the second uniqueness theorem it is the answer: the field of $q$ at the center. Moving $q$ around inside changes nothing outside.`,
           { figHtml: fShell({ lab: 'Q=0' }) }),
 
         P({
@@ -3593,6 +3840,15 @@
             null],
           md`As $a\to0$, $b = R^2/a\to\infty$ and $q' = -\dfrac Raq\to\infty$, with $q'/b = -q/R$ fixed: the image's potential inside becomes the constant $-\dfrac{q}{4\pi\varepsilon_0R}$ and its field vanishes. So $V = \dfrac{q}{4\pi\varepsilon_0r} - \dfrac{q}{4\pi\varepsilon_0R}$, zero on the wall, with a uniform $\sigma = -\dfrac{q}{4\pi R^2}$.`,
           { figHtml: fShell({ A: 0 }) }),
+
+        Q(md`Which statement about image charges is true in **every** image problem?`,
+          [md`Every image has the sign opposite to the real charge`, md`The images add up to $-q$`, md`Each image has the same size as the real charge`, md`Every image lies outside the region of interest`], 3,
+          [md`The right-angle corner has an image $+q$ diagonally across.`,
+            md`For a grounded sphere the image is $-qR/a$; for a neutral sphere the images add up to $0$.`,
+            md`The grounded sphere's image has size $qR/a$: smaller than $q$ for a charge outside, larger for a charge inside.`,
+            null],
+          md`The one universal rule is the outside rule: images may not change $\rho$ in the region where you want $V$. Sign, size and total vary from problem to problem and come out of the boundary conditions.`,
+          { nofig: 'a general rule across setups' }),
 
         P({
           title: 'Exam-style: charge above a grounded plane',

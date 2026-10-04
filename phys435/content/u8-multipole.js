@@ -1,5 +1,5 @@
-/* Unit 8 — Multipole expansion (Lecture 14; Griffiths 4th ed. 3.4).
-   Lecture 14 was not transcribed, so theory, notation and examples follow Griffiths 3.4 (book pp. 151–160). */
+/* Unit 8 — Multipole expansion (Griffiths 4th ed. 3.4).
+   Theory, notation and examples follow Griffiths 3.4 (book pp. 151–160). */
 (function () {
   'use strict';
   const { RF, P, Q, W } = C;
@@ -174,6 +174,54 @@
     return f.svg();
   };
 
+  // ================================================================ figures for the added conceptual questions
+  const fEq90 = () => yz([[1, 0, 1, 'q', 'r']], { labs: [[-0.14, 0.5, 'd', 'r']], P: [2.8, 90], Pat: 't', ext: [1, 3.3, 0.6, 1.6] });
+  const fStack = () => yz([], { pre: (f, X, Y) => { pArrow(f, X(0), Y(0.8), 90, 30, '\\vb p', 'r'); pArrow(f, X(0), Y(-0.8), 90, 30, '\\vb p', 'r'); },
+    labs: [[-0.14, 0.4, 's', 'r'], [-0.14, -0.4, 's', 'r']], ext: [1, 1.4, 1.6, 1.7] });
+  const fDipPlane = () => {
+    const f = PF.fig();
+    f.plane(20, 260, 140, { lab: 'V=0' });
+    pArrow(f, 140, 70, 0, 34, '\\vb p', 't');
+    f.dim(100, 70, 100, 140, 'd', { at: 'l' });
+    return f.svg();
+  };
+  const fCubeRho = () => {
+    const g = PF.fig({ proj: { ox: 60, oy: 170, s: 1 } });
+    g.box3(110, 110, 110, { shadeTop: true });
+    g.text(100, 210, 'uniform charge density, total Q, centred on the origin', 't');
+    return g.svg();
+  };
+  const fDipQ = () => {
+    const f = PF.fig();
+    pArrow(f, 0, 0, 90, 30, '\\vb p', 'l');
+    f.charge(150, 0, { q: '+', lab: 'q', at: 't' });
+    f.dim(0, 34, 150, 34, 'r', { at: 'b' });
+    return f.svg();
+  };
+  const fDipDip = () => {
+    const f = PF.fig();
+    pArrow(f, 0, 0, 90, 30, '\\vb p_1', 'l');
+    pArrow(f, 150, 0, 90, 30, '\\vb p_2', 'r');
+    f.dim(0, 34, 150, 34, 'r', { at: 'b' });
+    return f.svg();
+  };
+  const fSphE = () => {
+    const f = PF.fig(), R = 36;
+    f.hatchBand(f.arcPts(0, 0, R, R, 0, 360)); f.circle(0, 0, R, { cls: 'thick' });
+    for (const x of [-92, -64, 64, 92]) f.arrow(x, 62, x, -62);
+    f.tag(92, -62, 'E_0\\,\\uv z', 'r', 6);
+    f.label(0, R + 14, 'Q = 0', 't', 'small');
+    return f.svg();
+  };
+  const fFlat = () => {
+    const g = PF.fig({ proj: { ox: 120, oy: 110, s: 1 } });
+    const pts = [...Array(72)].map((_, i) => { const t = i / 72 * 2 * Math.PI; return g.p3(60 * Math.cos(t), 70 * Math.sin(t), 0); });
+    shadeP(g, pts); g.poly(pts);
+    g.line(120, 150, 120, 20, { cls: 'dim', arrow: 'end', hs: 6 }); g.label(124, 18, 'z', 'bl', 'small accent');
+    g.label(200, 110, '\\sigma(x,y)', 'l', 'small');
+    return g.svg();
+  };
+
   // ================================================================ Lesson 1
   const L1 = {
     id: 'u8-expansion', title: 'Far away: the multipole expansion',
@@ -246,7 +294,7 @@
 
         $$\frac{1}{\srm} = \frac1r\sum_{n=0}^{\infty}\left(\frac{r'}{r}\right)^nP_n(\cos\alpha) = \frac1r\left[1 + \frac{r'}{r}\cos\alpha + \left(\frac{r'}{r}\right)^2\frac{3\cos^2\alpha - 1}{2} + \cdots\right]\qquad (r' < r).$$
 
-        ($1/\srm$ is called the *generating function* of the Legendre polynomials. Griffiths labels the order $n$ here; it is the same index as the $\ell$ of Lectures 12–13.) Put this inside the integral. $r$ is a constant as far as the integration over the source is concerned, so it comes out:
+        ($1/\srm$ is called the *generating function* of the Legendre polynomials. Griffiths labels the order $n$ here; it is the same index as the $\ell$ of Unit 7.) Put this inside the integral. $r$ is a constant as far as the integration over the source is concerned, so it comes out:
 
         $$\boxed{V(\vb r) = \kq\sum_{n=0}^{\infty}\frac{1}{r^{n+1}}\int (r')^nP_n(\cos\alpha)\,\rho(\vb r')\,d\tau'}$$
 
@@ -375,6 +423,14 @@
           md`It is small, but nothing forces it to vanish for a general distribution. (Symmetric ones can make it zero.)`],
         md`Dipole term $\sim \dfrac{qa}{r^2}$, quadrupole term $\sim \dfrac{qa^2}{r^3}$. Their ratio is about $a/r = 1/20$. That is why the dipole formula alone is a good description of a neutral molecule a few molecular sizes away.`,
         { figHtml: fBlobN() }),
+
+      Q(md`A neutral distribution has all its charge within $r'\le a$ of the origin. You want $V$ at $r = 1.2a$. Is its leading (dipole) term alone a good approximation there?`,
+        [md`Yes: the series converges for $r>a$, so the first term is enough`, md`Usually not: each higher term is smaller only by a factor of roughly $a/r\approx0.8$, so many terms matter`, md`No, because the series diverges for $r<2a$`, md`Yes, because the quadrupole term is always smaller than the dipole term`], 1,
+        [md`Convergent doesn't mean fast. Close to the source the terms shrink slowly.`, null,
+          md`It converges for every $r > r'_{\max} = a$; it just converges slowly when $r$ is close to $a$.`,
+          md`The $n$-th term carries $(r'/r)^n$; at $r = 1.2a$ that's barely below $1$, so the quadrupole can be as big as the dipole.`],
+        md`The $n$-th term is down by roughly $(a/r)^n$ relative to the lowest one. At $r = 20a$ that's $0.05$ per order, and one or two terms do. At $r = 1.2a$ it's $0.83$ per order: the series still converges, but you'd need many terms. The multipole expansion is a far-field tool.`,
+        { figHtml: fConv() }),
 
       Q(md`A single point charge $q$ sits at the origin. Which terms of the multipole expansion are nonzero?`,
         [md`All of them, since a point charge has structure at every scale`, md`Only the monopole term, and it is exact`, md`The monopole and the dipole terms`, md`None: the expansion breaks down at $r' = 0$`], 1,
@@ -508,6 +564,30 @@
             This is two opposite physical dipoles placed tail to tail: $+q$ over $-q$ (pointing up) and $-q$ over $+q$ (pointing down), with the two $-q$'s merged into the $-2q$ at the origin. Charge and dipole moment both cancel, so $V$ falls as $1/r^3$, with the angular shape $P_2(\cos\theta)$: positive along the axis, negative around the equator.
         `,
       }),
+
+      Q(md`In the linear quadrupole ($+q$ at $z = d$, $-2q$ at the origin, $+q$ at $z = -d$), the middle charge is nudged up by a tiny $\delta\ll d$. Far enough away, which term leads?`,
+        [md`Still the quadrupole: $\delta$ is tiny`, md`The monopole`, md`The octopole`, md`The dipole, $\vb p = -2q\delta\,\uv z$: a small coefficient, but it falls off one power slower and wins at large $r$`], 3,
+        [md`At moderate distances, yes. But the dipole term $\propto\delta/r^2$ beats the quadrupole term $\propto d^2/r^3$ once $r\gg d^2/\delta$.`,
+          md`The total charge is still $q - 2q + q = 0$.`,
+          md`An octopole needs the dipole and quadrupole to vanish; here the dipole doesn't.`, null],
+        md`$Q = 0$, but $\vb p = \sum q_i\vb r_i = qd\,\uv z - 2q\delta\,\uv z - qd\,\uv z = -2q\delta\,\uv z \ne 0$. The lowest nonzero moment always wins far enough away, however small its coefficient. Symmetric arrangements kill low moments exactly; any imperfection brings them back.`,
+        { figHtml: fLinQ() }),
+
+      Q(md`Far from the (unperturbed) linear quadrupole, $V\propto\dfrac{P_2(\cos\theta)}{r^3}$. In which directions is the far potential zero?`,
+        [md`On the cone $\cos^2\theta = \tfrac13$, i.e. $\theta\approx54.7^\circ$ and $125.3^\circ$`, md`On the $xy$-plane, $\theta = 90^\circ$`, md`On the $z$ axis`, md`Nowhere: $V$ is positive in every direction`], 0,
+        [null, md`At $90^\circ$, $P_2(0) = -\tfrac12$: negative, not zero. The middle $-2q$ is closest there.`,
+          md`On the axis $P_2(1) = 1$: the end charges are closest, and $V>0$.`,
+          md`$P_2$ changes sign, so $V$ is positive near the axis and negative near the equator.`],
+        md`$P_2(x) = \tfrac12(3x^2-1) = 0$ at $x^2 = \tfrac13$. Inside that cone (near the axis) the end charges dominate and $V>0$; outside it (near the equator) the $-2q$ dominates and $V<0$. Compare a dipole, whose far potential vanishes on the plane $\theta = 90^\circ$.`,
+        { figHtml: fLinQ() }),
+
+      Q(md`A dipole's field falls off like $1/r^3$. How does the field of a linear quadrupole fall off far away?`,
+        [md`Like $1/r^3$ too`, md`Like $1/r^2$`, md`Like $1/r^5$`, md`Like $1/r^4$`], 3,
+        [md`Only if the potentials fell off alike. The quadrupole's $V$ goes like $1/r^3$, one power faster than the dipole's.`,
+          md`That's a monopole's field.`,
+          md`One power too many: the gradient takes away exactly one power of $r$.`, null],
+        md`$V_{\text{quad}}\propto 1/r^3$, and $\vb E = -\nabla V$ costs one more power: $|\vb E|\propto1/r^4$. In general the $n$-th term has $V\propto 1/r^{n+1}$ and $E\propto1/r^{n+2}$.`,
+        { figHtml: fLinQ() }),
 
       RF(md`
         !!key Patterns to remember
@@ -767,6 +847,14 @@
         md`$\vb p = qd\,\uv y + qd\,\uv z$, so $|\vb p| = \sqrt2\,qd$, pointing $45^\circ$ between $+y$ and $+z$.`,
         { figHtml: fTwoDip() }),
 
+      Q(md`A charge distribution lies entirely in the $xy$-plane (a flat sheet with some $\sigma(x,y)$, not necessarily symmetric). Which component of its dipole moment about the origin must vanish?`,
+        [md`$p_x$`, md`$p_z$`, md`All three`, md`None; it depends on $\sigma$`], 1,
+        [md`$p_x = \int x'\sigma\,da'$ can be anything if $\sigma$ is lopsided along $x$.`, null,
+          md`Only the component along the normal is forced to zero; $p_x$ and $p_y$ depend on $\sigma$.`,
+          md`One component is fixed by geometry alone.`],
+        md`$\vb p = \int\vb r'\sigma\,da'$, and every source point has $z' = 0$, so $p_z = \int z'\sigma\,da' = 0$. A flat distribution's dipole moment lies in its own plane.`,
+        { figHtml: fFlat() }),
+
       Q(md`Charges $\pm q$ alternate around a square of side $a$ centered on the origin. Which term leads far away?`,
         [md`Monopole`, md`Dipole`, md`Quadrupole, with $V \propto 1/r^3$`, md`None: $V$ is zero far away`], 2,
         [md`$Q = q - q + q - q = 0$.`,
@@ -820,6 +908,22 @@
 
       wMulti(),
 
+      Q(md`Two identical dipoles $\vb p = p\,\uv z$ sit on the $z$ axis, one at $z = s$ and one at $z = -s$ (head to tail). Far away, which term leads?`,
+        [md`The quadrupole, since the two dipoles are separated`, md`The dipole, with moment $2p\,\uv z$`, md`Nothing; they cancel`, md`The monopole`], 1,
+        [md`Separation adds a quadrupole correction, but the moments add to $2p$, and a nonzero dipole beats any quadrupole far away.`, null,
+          md`They point the same way, so they add. Opposite dipoles side by side would cancel, as in an earlier question.`,
+          md`Each dipole is neutral, so the total charge is zero.`],
+        md`Moments add: $Q = 0$ and $\vb p_{\text{tot}} = 2p\,\uv z$, so $V\approx\kq\dfrac{2p\cos\theta}{r^2}$. Compare two opposite dipoles side by side, where $\vb p_{\text{tot}} = 0$ and the quadrupole leads.`,
+        { figHtml: fStack() }),
+
+      Q(md`A pure dipole lies **parallel** to a grounded plane at height $d$, pointing along $+x$. Its image is $-p\,\uv x$ at depth $d$ (Unit 5). Far above the plane, which term leads?`,
+        [md`The dipole, with moment $2p$`, md`The dipole, with moment $p$`, md`The quadrupole: the real and image dipoles cancel, leaving $Q = 0$ and $\vb p = 0$`, md`The monopole`], 2,
+        [md`The image dipole points the other way, so the moments subtract.`,
+          md`The image's $-p$ counts too, and it cancels the real one.`, null,
+          md`Dipoles carry no net charge.`],
+        md`$Q = 0$ and $\vb p_{\text{tot}} = p\,\uv x - p\,\uv x = 0$, so the leading term is the quadrupole and $V\propto1/r^3$. A dipole pointing **up** is different: its image also points up, the moments add to $2p$, and the far field is a dipole field. The orientation decides the falloff.`,
+        { figHtml: fDipPlane() }),
+
       Q(md`Charges $q$, $q$ and $-2q$ sit at the corners of an equilateral triangle. Which term leads far away?`,
         [md`Monopole`, md`Dipole`, md`Quadrupole: the arrangement is symmetric, so the dipole moment cancels`, md`Octopole`], 1,
         [md`$Q = q + q - 2q = 0$.`,
@@ -864,6 +968,14 @@
           md`Spreading charge uniformly over a sphere centered on the origin gives exactly the outside potential of a point charge.`],
         md`Outside a uniform shell $V = \kq\dfrac{Q}{r}$ exactly (Gauss). The whole series is its first term, so every higher moment vanishes. This is about the shell's center; about any other origin the higher terms appear (next section).`,
         { figHtml: fShell() }),
+
+      Q(md`A solid cube with uniform charge density, total $Q$, is centred on the origin. Beyond the monopole, which is the first nonzero term of its far potential?`,
+        [md`The dipole`, md`The quadrupole`, md`The octopole`, md`None of those three: inversion symmetry kills the dipole and octopole, and the cube's symmetry kills the quadrupole too`], 3,
+        [md`The cube is symmetric under $\vb r\to-\vb r$, so $\vb p = \int\vb r'\rho\,d\tau' = 0$.`,
+          md`A quadrupole term needs a direction that is singled out, like a rod's axis. A cube looks the same along $x$, $y$ and $z$, and its quadrupole term cancels exactly.`,
+          md`Odd terms ($n = 1, 3, \dots$) vanish for any distribution symmetric under $\vb r\to-\vb r$.`, null],
+        md`Inversion symmetry kills every odd $n$. For $n = 2$, the moments are integrals like $\int(3z'^2 - r'^2)\rho\,d\tau'$ and $\int x'y'\rho\,d\tau'$. For a cube $\int x'^2\rho = \int y'^2\rho = \int z'^2\rho$, so the first kind is zero, and reflection symmetry kills the second kind. The first correction is $n = 4$: $V = \kq\dfrac Qr\left[1 + O\!\left(\dfrac{a^4}{r^4}\right)\right]$. A cube looks like a point charge to remarkable accuracy.`,
+        { figHtml: fCubeRho() }),
 
       RF(md`
         ### Where is the origin?
@@ -911,6 +1023,14 @@
         md`$Q = q + q - q = q \neq 0$, so $\vb p$ depends on the origin ($\bar{\vb p} = \vb p - Q\vb a$). The right response is "with respect to what origin?" (Griffiths Fig. 3.34b). About the center of charge it vanishes.`,
         { figHtml: fTriB() }),
 
+      Q(md`For the linear quadrupole ($Q = 0$ and $\vb p = 0$), you move the origin up by $c$. Does its quadrupole term change?`,
+        [md`Yes: every moment depends on the origin`, md`Yes: it picks up a term $2cp$`, md`No: when $Q = 0$ and $\vb p = 0$, the quadrupole moment is the same about every origin`, md`It vanishes`], 2,
+        [md`Only moments **above** the lowest nonzero one can change. The lowest one doesn't depend on the origin.`,
+          md`With $\vb p = 0$ that term is zero.`, null,
+          md`Moving the origin can't remove the lowest nonzero moment; it only reshuffles the higher ones.`],
+        md`For charges on the axis the $n=2$ moment is $\sum q_i z_i^2$. About the new origin: $\sum q_i(z_i - c)^2 = \sum q_iz_i^2 - 2c\sum q_iz_i + c^2\sum q_i$. The last two sums are $p$ and $Q$, both zero, so nothing changes. Same rule as for the dipole moment of a neutral distribution: the leading moment doesn't care where the origin is.`,
+        { figHtml: fLinQ() }),
+
       Q(md`A charge $q$ sits a distance $d$ from the origin (figure). Is $\kq\dfrac{q}{r}$ its exact potential?`,
         [md`Yes: a single charge is always a pure monopole`, md`Yes, as long as $r > d$`, md`No: the exact potential is $\kq\dfrac{q}{\srm}$; about $O$ it has a dipole term and every higher term`, md`No: the monopole term is zero here`], 2,
         [md`Only about its own position. About $O$ it has $\vb p = q\vb d \neq 0$.`,
@@ -919,6 +1039,14 @@
           md`$Q = q$ wherever the origin is; the monopole term is there.`],
         md`$\dfrac{1}{\srm} = \dfrac1r\displaystyle\sum_n\left(\frac dr\right)^nP_n(\cos\alpha)$, with $\alpha$ the angle between $\vb r$ and $\vb d$. Every term is present. The monopole term is the leading approximation, not the exact answer.`,
         { figHtml: fOff() }),
+
+      Q(md`A charge $q$ sits at $z = d$. At a point on the $xy$-plane ($\theta = 90^\circ$) a distance $r\gg d$ from the origin, the dipole term vanishes. What is the first nonzero correction to $\kq\dfrac{q}{r}$ there?`,
+        [md`None: $\kq\dfrac qr$ is exact on that plane`, md`$+\kq\dfrac{qd^2}{r^3}$`, md`$-\kq\dfrac{qd^2}{2r^3}$, the quadrupole term with $P_2(0) = -\tfrac12$`, md`$+\kq\dfrac{qd}{r^2}$`], 2,
+        [md`The exact potential is $\kq\dfrac{q}{\sqrt{r^2+d^2}}$, slightly smaller than $\kq\dfrac qr$.`,
+          md`Sign and factor: $P_2(\cos 90^\circ) = -\tfrac12$.`, null,
+          md`That's the dipole term, $\kq\dfrac{qd\cos\theta}{r^2}$, which vanishes at $\theta = 90^\circ$.`],
+        md`The $n=2$ term is $\kq\dfrac{qd^2P_2(\cos\theta)}{r^3}$, and $P_2(0) = -\tfrac12$. Check against the exact answer: $\dfrac{1}{\sqrt{r^2+d^2}} = \dfrac1r\left(1 - \dfrac{d^2}{2r^2}+\cdots\right)$. The point is farther from $q$ than from the origin, so $V$ is a bit below $\kq\,q/r$.`,
+        { figHtml: fEq90() }),
 
       Q(md`Charge $q$ sits at $z = 0$ and $3q$ at $z = a$. Where should the origin go to make the dipole term vanish?`,
         [md`At $z = a/2$, the midpoint`, md`At $z = a$, on the bigger charge`, md`At $z = 3a/4$`, md`Nowhere: a charged system always has a dipole moment`], 2,
@@ -937,6 +1065,14 @@
           md`That is $-Q\vb a$ alone; add the original $\vb p$.`],
         md`$\bar{\vb p} = \vb p - Q\vb a = qb\,\uv z - 2q\,(b\,\uv z) = -qb\,\uv z$. Moving the origin up by $b$ is the same as moving every charge down by $b$, which lowers $\vb p$ by $Qb$.`,
         { figHtml: fShift() }),
+
+      Q(md`A point charge $q$ and a pure dipole $\vb p = p\,\uv z$ both sit at the origin. Far away, what do the two terms $\kq\left(\dfrac qr + \dfrac{p\cos\theta}{r^2}\right)$ look like?`,
+        [md`A point charge $q$ moved to $z = p/q$`, md`A point charge $q + p$ at the origin`, md`A dipole of moment $p + q$`, md`A point charge $q$ moved to $z = -p/q$`], 0,
+        [null, md`$q$ and $p$ have different units; they can't be added.`,
+          md`Same problem: a charge and a dipole moment can't be added.`,
+          md`Sign: moving $q$ toward $+z$ raises $V$ in the $+z$ directions, which is what a $+p\,\uv z$ dipole term does.`],
+        md`A charge $q$ at $z = \delta$ has $\kq\dfrac{q}{|\vb r - \delta\uv z|} = \kq\left(\dfrac qr + \dfrac{q\delta\cos\theta}{r^2}+\cdots\right)$. Match: $q\delta = p$, so $\delta = p/q$. A dipole term on top of a monopole just says the charge is off-centre, which is why putting the origin at the "center of charge" kills the dipole term.`,
+        { nofig: 'algebra of the expansion' }),
 
       RF(md`
         ### Worked example: one pair, two origins
@@ -1245,7 +1381,7 @@
         md`$E_\theta = -\dfrac1r\dfrac{\partial}{\partial\theta}\left(\dfrac{p\cos\theta}{4\pi\varepsilon_0 r^2}\right) = -\dfrac1r\cdot\dfrac{-p\sin\theta}{4\pi\varepsilon_0 r^2} = \dfrac{p\sin\theta}{4\pi\varepsilon_0 r^3}$. It is never negative for $0 \le \theta \le \pi$.`,
         { figHtml: fDipField() }),
 
-      Q(md`Lecture 4 asked which fields could be electrostatic. Which of these could be? $\vb E_1 = \dfrac{k}{r^3}\left(2\cos\theta\,\uv r + \sin\theta\,\boldsymbol{\hat\theta}\right)$ and $\vb E_2 = \dfrac{k}{r^3}\left(2\cos\theta\,\uv r - \sin\theta\,\boldsymbol{\hat\theta}\right)$, with $k$ a constant.`,
+      Q(md`Which of these fields could be electrostatic? $\vb E_1 = \dfrac{k}{r^3}\left(2\cos\theta\,\uv r + \sin\theta\,\boldsymbol{\hat\theta}\right)$ and $\vb E_2 = \dfrac{k}{r^3}\left(2\cos\theta\,\uv r - \sin\theta\,\boldsymbol{\hat\theta}\right)$, with $k$ a constant.`,
         [md`Neither: a field that changes direction from point to point has a curl`, md`Both: they differ only in the sign of one component`, md`Only $\vb E_1$`, md`Only $\vb E_2$`], 2,
         [md`Changing direction is allowed; the test is $\nabla\times\vb E = 0$. $\vb E_1$ passes: it is the dipole field, $\vb E_1 = -\nabla\left(\dfrac{k\cos\theta}{r^2}\right)$.`,
           md`The curl is not blind to that sign. In $(\nabla\times\vb E)_\phi = \dfrac1r\left[\dfrac{\partial}{\partial r}(rE_\theta) - \dfrac{\partial E_r}{\partial\theta}\right]$ the two terms cancel for $\vb E_1$ and add for $\vb E_2$.`,
@@ -1253,7 +1389,7 @@
           md`$\vb E_2$ is the dipole field with the sign of $E_\theta$ flipped, and that sign is what makes the curl vanish. For $\vb E_2$, $(\nabla\times\vb E)_\phi = \dfrac{4k\sin\theta}{r^4} \neq 0$.`],
         md`Neither field has a $\phi$ component or depends on $\phi$, so only $(\nabla\times\vb E)_\phi = \dfrac1r\left[\dfrac{\partial}{\partial r}(rE_\theta) - \dfrac{\partial E_r}{\partial\theta}\right]$ can be nonzero (curl from the formula sheet).
 
-        - $\vb E_1$: $\dfrac{\partial}{\partial r}\left(\dfrac{k\sin\theta}{r^2}\right) = -\dfrac{2k\sin\theta}{r^3}$ and $\dfrac{\partial}{\partial\theta}\left(\dfrac{2k\cos\theta}{r^3}\right) = -\dfrac{2k\sin\theta}{r^3}$. They cancel, so $\nabla\times\vb E_1 = 0$. This is the Lecture 4 calculation: $\vb E_1$ is the dipole field with $k = \dfrac{p}{4\pi\varepsilon_0}$.
+        - $\vb E_1$: $\dfrac{\partial}{\partial r}\left(\dfrac{k\sin\theta}{r^2}\right) = -\dfrac{2k\sin\theta}{r^3}$ and $\dfrac{\partial}{\partial\theta}\left(\dfrac{2k\cos\theta}{r^3}\right) = -\dfrac{2k\sin\theta}{r^3}$. They cancel, so $\nabla\times\vb E_1 = 0$. This is the curl test of Unit 2: $\vb E_1$ is the dipole field with $k = \dfrac{p}{4\pi\varepsilon_0}$.
         - $\vb E_2$: now $\dfrac{\partial}{\partial r}(rE_\theta) = +\dfrac{2k\sin\theta}{r^3}$, so $(\nabla\times\vb E_2)_\phi = \dfrac{4k\sin\theta}{r^4} \neq 0$. No arrangement of static charges produces it.
 
         A sign slip in $E_\theta$ is not harmless: it turns the dipole field into an impossible one. Checking $\nabla\times\vb E = 0$ catches it.`,
@@ -1291,6 +1427,22 @@
         [md`$1/r^2$ is the dipole *potential*. The field has one more power of $1/r$.`, null, md`That is how the potential of a point charge scales.`, md`$1/r^4$ is a quadrupole field.`],
         md`$E_{\rm dip} \propto 1/r^3$, so the field drops to $\tfrac18$.`,
         { figHtml: fDipField() }),
+
+      Q(md`A point charge $q$ sits a distance $r$ from a pure dipole. You double $r$, keeping the direction. The force on the charge becomes`,
+        [md`$\tfrac14$ as large`, md`$\tfrac18$ as large: it is $q$ times the dipole field, which goes like $1/r^3$`, md`$\tfrac1{16}$ as large`, md`$\tfrac12$ as large`], 1,
+        [md`$1/r^2$ is for a charge near another charge. The dipole's charges nearly cancel, so its field falls faster.`, null,
+          md`That would be dipole on dipole. One of the two objects here is a single charge.`,
+          md`Nothing here falls off like $1/r$.`],
+        md`$\vb F = q\vb E_{\text{dip}}$ and $E_{\text{dip}}\propto p/r^3$, so $F\propto 1/r^3$: doubling $r$ gives $1/8$. By Newton's third law the dipole feels the same force back, also $\propto1/r^3$.`,
+        { figHtml: fDipQ() }),
+
+      Q(md`Two pure dipoles are a distance $r$ apart, with fixed orientations. You double $r$. The force between them becomes`,
+        [md`$\tfrac18$ as large`, md`$\tfrac14$ as large`, md`$\tfrac1{16}$ as large`, md`zero, since each dipole is neutral`], 2,
+        [md`That's the charge-dipole force. Here the second object is a dipole too, which costs one more power of $r$.`,
+          md`$1/r^2$ is for two single charges.`, null,
+          md`Neutral objects still push and pull when their charges are separated; the forces just fall off faster.`],
+        md`The force on dipole 2 is the difference of the forces on its two charges: $q_2\left[\vb E_1(\vb r + \vb d) - \vb E_1(\vb r)\right]\approx(\vb p_2\cdot\nabla)\vb E_1$. That is one more derivative of a $1/r^3$ field, so $F\propto1/r^4$: doubling $r$ gives $1/16$. Each extra pole on either side costs one power of $r$: charge-charge $1/r^2$, charge-dipole $1/r^3$, dipole-dipole $1/r^4$.`,
+        { figHtml: fDipDip() }),
 
       RF(md`
         ### Coordinate-free form
@@ -1358,9 +1510,9 @@
         md`Far away the dipole term dominates both, so the pictures match. Close in, the physical dipole's lines start and end on its two charges, and between them $\vb E$ points opposite to $\vb p$.`,
         { figHtml: fLines().svg }),
 
-      Q(md`The pure-dipole field lines in figure (a) look like closed loops. Lecture 4 stressed that electrostatic field lines never close on themselves. How do the two fit together?`,
+      Q(md`The pure-dipole field lines in figure (a) look like closed loops. But electrostatic field lines never close on themselves. How do the two fit together?`,
         [md`They don't: near the dipole the field has a nonzero curl`, md`The loops close only far away, where the dipole formula is an approximation anyway`, md`Field lines are allowed to close when the total charge is zero`, md`Every line starts and ends on the dipole itself: on $+q$ and $-q$ for a physical dipole, at the point $r = 0$ for a pure one. No line circulates through charge-free space.`], 3,
-        [md`$\nabla\times\vb E = 0$ everywhere except at the dipole itself. Lecture 4 checked the curl of exactly this field.`,
+        [md`$\nabla\times\vb E = 0$ everywhere except at the dipole itself. Check the curl of exactly this field and it vanishes.`,
           md`Far away the dipole formula is excellent. What matters is what happens at the center, where all the lines meet.`,
           md`$\oint\vb E\cdot d\vb l = 0$ for every loop in a charge-free region, whatever the total charge. A neutral object gets no exemption.`,
           null],
@@ -1375,6 +1527,14 @@
           null],
         md`At $M$, $+q$ pushes a positive test charge away from itself (toward $-q$) and $-q$ pulls it the same way, so $\vb E$ runs from $+q$ to $-q$, opposite to $\vb p = q\vb d$. At $F$, $+q$ is closer and wins, so $\vb E$ points up, along $\vb p$, as the dipole formula says. The pure-dipole formula does not describe the region between the charges; it needs $r \gg d$.`,
         { figHtml: fBetween() }),
+
+      Q(md`A neutral metal sphere of radius $R$ sits in a uniform field $E_0\uv z$ (Unit 7). Outside, the induced charge adds $\dfrac{E_0R^3\cos\theta}{r^2}$ to $V$. What is that, in multipole language?`,
+        [md`A pure dipole, $\vb p = 4\pi\varepsilon_0R^3E_0\,\uv z$, pointing along the applied field`, md`A pure dipole pointing against the applied field`, md`A monopole, since the sphere is charged by induction`, md`A quadrupole, since there are two induced regions`], 0,
+        [null, md`Compare with $\kq\dfrac{p\cos\theta}{r^2}$: the coefficient $E_0R^3$ is positive, so $\vb p$ points along $+z$. The field pushes the induced $+$ charge to the $+z$ side.`,
+          md`The sphere stays neutral: induction separates charge, it doesn't create any.`,
+          md`One positive region and one negative region is exactly a dipole.`],
+        md`Match $\dfrac{E_0R^3\cos\theta}{r^2} = \dfrac{1}{4\pi\varepsilon_0}\dfrac{p\cos\theta}{r^2}$: $p = 4\pi\varepsilon_0R^3E_0$. The field pushes $+$ charge toward $+z$ and $-$ charge toward $-z$, so the induced dipole points along $\vb E_0$, and it grows with the sphere's volume.`,
+        { figHtml: fSphE() }),
 
       RF(md`
         ### Worked example: a charge near a dipole (Griffiths 4th ed. Prob. 3.33)
@@ -1565,7 +1725,7 @@
         !!key Patterns to remember
           - $\vb E_{\rm dip} = \dfrac{p}{4\pi\varepsilon_0 r^3}\left(2\cos\theta\,\uv r + \sin\theta\,\boldsymbol{\hat\theta}\right) = \kq\dfrac{3(\vb p\cdot\uv r)\,\uv r - \vb p}{r^3}$. It falls as $1/r^3$.
           - On the axis (above and below) $\vb E \parallel \vb p$ with strength 2; on the equator $\vb E$ is antiparallel with strength 1; $E_z = 0$ at $54.7^\circ$ and $125.3^\circ$.
-          - $E_\theta \ge 0$: off the axis the field always has a "southward" component. Flip that sign and the field gets a curl (Lecture 4's test), so it could not be electrostatic.
+          - $E_\theta \ge 0$: off the axis the field always has a "southward" component. Flip that sign and the field gets a curl (the curl test), so it could not be electrostatic.
           - Field lines start on $+q$ and end on $-q$; a dipole's lines only look like loops because they all pass through the dipole.
           - Charged object: monopole field plus dipole field are "the two lowest orders"; the dipole part depends on the origin.
           - Pure and physical dipoles agree far away and differ near the charges.
@@ -1787,6 +1947,14 @@
         md`Moments: $\displaystyle\int_{-a}^{a}\frac{Q}{2a}\,z'^{\,n}\,dz' = \frac{Qa^n}{n+1}$ for even $n$ and $0$ for odd $n$. So $V = \kq\left[\dfrac Qr + \dfrac{Qa^2}{3}\dfrac{P_2(\cos\theta)}{r^3} + \dfrac{Qa^4}{5}\dfrac{P_4(\cos\theta)}{r^5} + \cdots\right]$ (Griffiths 4th ed. Prob. 3.44). On the axis the quadrupole correction is positive: the near half of the rod gains more than the far half loses.`,
         { figHtml: fSeg() }),
 
+      Q(md`A rod from $z=-a$ to $z=a$ carries a uniform total charge $Q$. At the same large distance $r$, is $V$ larger on the $z$ axis (end-on) or on the $xy$-plane (broadside)?`,
+        [md`On the axis: the quadrupole term $\propto P_2(\cos\theta)$ is positive there and negative broadside`, md`Broadside, where more of the rod is close by`, md`Equal: the rod looks like a point charge from far away`, md`On the axis, because the dipole term is largest there`], 0,
+        [null, md`Broadside the charge is spread to both sides and is on average **farther** than $r$; end-on the near half is closer than $r$, and $1/\srm$ rewards closeness.`,
+          md`At leading order, yes. The question is the first correction, which depends on direction.`,
+          md`A uniform rod centred on the origin has no dipole moment.`],
+        md`Exact: end-on, $V = \kq\dfrac{Q}{2a}\ln\dfrac{r+a}{r-a} = \kq\dfrac Qr\left(1 + \dfrac{a^2}{3r^2}+\cdots\right)$; broadside, $V = \kq\dfrac{Q}{a}\sinh^{-1}\dfrac ar = \kq\dfrac Qr\left(1 - \dfrac{a^2}{6r^2}+\cdots\right)$. Both corrections are the quadrupole term $\kq\dfrac{Qa^2}{3r^3}P_2(\cos\theta)$, with $P_2 = 1$ end-on and $-\tfrac12$ broadside.`,
+        { figHtml: fSeg() }),
+
       Q(md`A uniformly charged disk (HW 5 Prob. 3.24, worked in Unit 7) lies in the $xy$-plane. Which multipole terms appear in its far potential?`,
         [md`All $n$`, md`Only even $n$: $\dfrac1r$, $\dfrac{P_2}{r^3}$, $\dfrac{P_4}{r^5}$, ...`, md`Only odd $n$`, md`Only the monopole: far away a disk is a point charge`], 1,
         [md`The disk is symmetric under $z \to -z$, so the odd terms vanish.`,
@@ -1971,7 +2139,7 @@
 
   C.unit({
     id: 'u8', num: 'Unit 8', title: 'Multipole expansion',
-    blurb: 'Lecture 14 material, assigned on HW 5 (Probs. 3.27, 3.36). Hour Exam I covers Lectures 1–13, so this is lower priority for the exam, but the homework needs it: the far-field expansion, monopole and dipole moments, the dipole field.',
+    blurb: 'Assigned on HW 5 (Probs. 3.27, 3.36). Hour Exam I stops at separation of variables, so this is lower priority for the exam, but the homework needs it: the far-field expansion, monopole and dipole moments, the dipole field.',
     lessons: [L1, L2, L3, L4],
   });
 })();

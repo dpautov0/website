@@ -1,5 +1,5 @@
 /* Unit 4 — Laplace's equation and uniqueness.
-   Lecture 8 from Poisson's equation on (the capacitor recap at its start is Unit 3) and all of Lecture 9; Griffiths 3.1.
+   Poisson's and Laplace's equations, relaxation, the mean-value property, uniqueness; Griffiths 3.1.
    HW 4 & Discussion 3: Griffiths 3.1. HW 4: Griffiths 3.5. */
 (function () {
   'use strict';
@@ -225,6 +225,99 @@
   const fSlabPlot = () => PF.plot({ w: 320, h: 200, x: [0, 1], y: [0, 0.16], xl: 'x', yl: 'V', xt: [[0.5, 'd/2'], [1, 'd']],
     yt: [[0.125, '\\tfrac{\\rho d^2}{8\\varepsilon_0}']], curves: [{ f: (x) => x * (1 - x) / 2 }] });
 
+  // ================================================================== figures for the added conceptual questions
+  const fSphereCos = () => {
+    const f = PF.fig();
+    const cx = 110, cy = 96, R = 56;
+    f.line(cx, cy + R + 12, cx, cy - R - 26, { cls: 'dim dash thin', arrow: 'end', hs: 6 });
+    f.label(cx + 6, cy - R - 28, 'z', 'bl', 'small accent');
+    f.circle(cx, cy, R);
+    f.dot(cx, cy); f.tag(cx, cy, 'C', 'r', 6);
+    f.label(cx + R * 0.72 + 8, cy - R * 0.72 - 8, 'V = V_0\\cos\\theta', 'bl', 'small');
+    f.text(cx, cy + R + 22, 'no charge inside', 't');
+    return f.svg();
+  };
+  const fTwoQM = () => {
+    const f = PF.fig();
+    const y = 60;
+    f.charge(40, y, { q: '+', lab: '+Q', at: 't' });
+    f.charge(240, y, { q: '+', lab: '+Q', at: 't' });
+    f.dot(140, y); f.tag(140, y, 'M', 't', 8);
+    f.dim(40, y + 30, 240, y + 30, '2a', { at: 'b' });
+    return f.svg();
+  };
+  const cubeFaceShade = (g, a, z) => g.add(`<path class="shade nodecl" d="M${[[0, 0, z], [a, 0, z], [a, a, z], [0, a, z]].map((p) => g.p3(...p).map((v) => v.toFixed(1)).join(',')).join('L')}Z"/>`);
+  const fCube1G = () => {
+    const g = PF.fig({ proj: { ox: 60, oy: 180, s: 1 } });
+    const a = 110;
+    cubeFaceShade(g, a, 0);
+    g.box3(a, a, a);
+    const [tx, ty] = g.p3(a / 2, a / 2, a); g.label(tx, ty, 'V_0', 'c', 'small');
+    const [bx, by] = g.p3(a / 2, a / 2, 0); g.label(bx, by, 'V=0', 'c', 'small');
+    const [px, py] = g.p3(a / 2, a / 2, a / 2); g.dot(px, py); g.tag(px, py, 'C', 'r', 6);
+    return g.svg();
+  };
+  const fCubePM = () => {
+    const g = PF.fig({ proj: { ox: 60, oy: 180, s: 1 } });
+    const a = 110;
+    cubeFaceShade(g, a, 0);
+    g.box3(a, a, a, { shadeTop: true });
+    const [tx, ty] = g.p3(a / 2, a / 2, a); g.label(tx, ty, '+V_0', 'c', 'small');
+    const [bx, by] = g.p3(a / 2, a / 2, 0); g.label(bx, by, '-V_0', 'c', 'small');
+    return g.svg();
+  };
+  const fBoxN = () => {
+    const f = PF.fig();
+    const x = 24, y = 22, w = 200, h = 116;
+    f.rect(x, y, w, h, { cls: 'thick' });
+    f.charge(x + w * 0.38, y + h * 0.46, { q: '+', lab: 'q', at: 'r' });
+    f.label(x + w + 12, y + h / 2, '\\partial V/\\partial n = 0', 'l', 'small');
+    f.text(x + w / 2, y + h + 10, 'given on every face', 't');
+    return f.svg();
+  };
+  const fTwoSphBat = () => {
+    const f = PF.fig();
+    disk(f, 60, 60, 24); disk(f, 250, 60, 24);
+    f.line(84, 60, 150, 60);
+    f.line(150, 45, 150, 75, { cls: 'thick' }); f.line(159, 52, 159, 68, { cls: 'thick' });
+    f.line(159, 60, 226, 60);
+    f.label(155, 38, '9\\text{ V}', 'b', 'small');
+    f.label(60, 94, 'A', 't'); f.label(250, 94, 'B', 't');
+    return f.svg();
+  };
+  const fWiredAB = () => {
+    const f = PF.fig();
+    const x = 24, y = 22, w = 230, h = 124;
+    frame(f, x, y, w, h);
+    f.line(x + w / 2, y + h + 9, x + w / 2, y + h + 16); f.ground(x + w / 2, y + h + 16);
+    f.label(x + w + 16, y + h / 2, 'V=0', 'l', 'small');
+    f.line(x + 84, y + 53, x + 136, y + 56, { cls: 'thick' });
+    metal(f, potato(x + 62, y + 52, 30, 22, [0.08, 0.05, 0.03], [0.5, 1.5, 2.5]));
+    f.label(x + 62, y + 52 + 36, 'A', 't');
+    metal(f, potato(x + 162, y + 56, 34, 24, [0.08, 0.05, 0.03], [1.5, 0.5, 2.0]));
+    f.label(x + 162, y + 56 + 38, 'B', 't');
+    return f.svg();
+  };
+  const fBatQ = () => {
+    const f = PF.fig();
+    const cx = 60, cy = 50, r = 28, y0 = cy + r;
+    disk(f, cx, cy, r);
+    f.line(cx, y0, cx, y0 + 12);
+    f.line(cx - 11, y0 + 12, cx + 11, y0 + 12); f.line(cx - 5, y0 + 18, cx + 5, y0 + 18, { cls: 'thick' });
+    f.line(cx, y0 + 18, cx, y0 + 28); f.ground(cx, y0 + 28);
+    f.label(cx + r * 0.72 + 8, cy - r * 0.72 - 8, 'V_0', 'bl', 'small');
+    f.charge(210, cy, { q: '+', lab: 'q', at: 'r' });
+    f.arrow(196, cy + 30, 110, cy + 30, { cls: 'dim' });
+    return f.svg();
+  };
+  const fIrreg = () => {
+    const f = PF.fig();
+    metal(f, potato(150, 76, 120, 40, [0.10, 0.06, 0.03], [0.3, 1.4, 2.4]));
+    f.label(150, 140, 'Q', 't');
+    f.text(150, 12, 'isolated, nothing else nearby', 'b');
+    return f.svg();
+  };
+
   // ================================================================== Lesson 1
   const L1 = {
     id: 'u4-poisson', title: "Poisson and Laplace; the 1-D case",
@@ -247,7 +340,7 @@
 
         $$\nabla^2 V = -\frac{\rho}{\varepsilon_0}$$
 
-        Poisson's equation plus boundary conditions is equivalent to the integral. The lecture splits the job in two: deal with the **boundary conditions**, and deal with the **source** $\rho$.
+        Poisson's equation plus boundary conditions is equivalent to the integral. Split the job in two: deal with the **boundary conditions**, and deal with the **source** $\rho$.
       `, { unknown: { svg: fUnknown(false), cap: md`A point charge $q$ near a neutral metal sphere. The induced surface charge is part of the answer, so you can't put it into the Coulomb integral up front.` } }),
 
       Q(md`A point charge $q$ sits near a **grounded** metal sphere. Before solving anything, which of these do you actually know?`,
@@ -313,7 +406,7 @@
         md`$\nabla^2 V = 2C + 2C - 4C = 0$, so $\rho = -\varepsilon_0\nabla^2V = 0$. This $V$ is harmonic: the potential in an empty region produced by charges somewhere outside it.`,
         { nofig: 'formula only' }),
 
-      Q(md`A point charge $q$ sits inside a closed metal box whose walls are grounded. You want $V$ inside. In the lecture's terms, what are the boundary conditions, and what is the source?`,
+      Q(md`A point charge $q$ sits inside a closed metal box whose walls are grounded. You want $V$ inside. Split the job in two: what are the boundary conditions, and what is the source?`,
         [md`Source: none, since the box is empty except for one point. Boundary: $V = 0$ on the walls.`, md`Source: the charge induced on the walls. Boundary: $V = 0$ on the walls.`, md`Source: $q$. Boundary: $V\to 0$ at infinity.`, md`Source: $q$, the only charge in the region. Boundary: $V = 0$ on every wall.`], 3,
         [md`A point charge is a source: $\nabla^2V = -\rho/\varepsilon_0$ with $\rho$ a delta function at $q$. Without it the answer would be $V = 0$.`,
           md`The induced charge is on the walls, the boundary of the region. The condition $V = 0$ there accounts for it; you never need it in advance.`,
@@ -450,7 +543,7 @@
         (A zero second derivative at one point doesn't rule out an extremum: $x^4$ has a minimum at $0$. The averaging property, true at every point and for every $a$, does.)
       `, {
         line: { svg: fLine(), cap: md`$V = 4$ at $x=1$ and $V = 0$ at $x = 5$, no charge between: a straight line.` },
-        dip: { svg: fDip(), cap: md`The lecture's sketch of a local minimum. The bottom is lower than the average of the two dots on either side, so it can't satisfy the averaging rule.` },
+        dip: { svg: fDip(), cap: md`A local minimum. The bottom is lower than the average of the two dots on either side, so it can't satisfy the averaging rule.` },
       }),
 
       Q(md`Two large plates: $V = 6$ V at $x = 0$ and $V = -2$ V at $x = 4$ m, with no charge between them. What is $V$ at $x = 1$ m?`,
@@ -581,6 +674,22 @@
         figs: { vx: { svg: fSlabPlot(), cap: md`$V(x)$ is a downward parabola, zero on both grounded plates, with its peak $\rho d^2/(8\varepsilon_0)$ in the middle.` } },
       }),
 
+      Q(md`Between two grounded plates the space is filled with uniform charge density $\rho$, and the peak of $V$ is $V_{\max}$. You double $\rho$ everywhere, keeping both plates grounded. The new peak is`,
+        [md`$V_{\max}$: the plates still pin $V = 0$ at both ends`, md`$4V_{\max}$`, md`$2V_{\max}$`, md`$\sqrt2\,V_{\max}$`], 2,
+        [md`The plates fix the end values, not the height in between. The curvature $V'' = -\rho/\varepsilon_0$ doubles, so the parabola gets taller.`,
+          md`Energy goes like $\rho^2$, but $V$ is linear in $\rho$: Poisson's equation has $\rho$ to the first power.`, null,
+          md`No square roots anywhere: $V'' = -\rho/\varepsilon_0$ is linear in $\rho$.`],
+        md`Poisson's equation is linear. If $V$ solves $\nabla^2V = -\rho/\varepsilon_0$ with $V = 0$ on both plates, then $2V$ solves it with $2\rho$ and still vanishes on both plates. By uniqueness that is the answer, so every value of $V$ doubles, the peak included. (With nonzero plate potentials you would have to double those too for $V$ to simply double.)`,
+        { figHtml: fPlates1D({ la: 'V=0', lb: 'V=0', slab: '\\rho', ticks: [[50, '0'], [250, 'd']] }) }),
+
+      Q(md`Now the plate at $x = 0$ is grounded, the plate at $x = L$ is held at $V_0$, and the space between holds uniform charge density $\rho$. Which function solves the problem?`,
+        [md`$V_0\dfrac{x}{L} + \dfrac{\rho\,x(L-x)}{2\varepsilon_0}$`, md`$V_0\dfrac{x}{L}$`, md`$V_0\dfrac{x}{L} - \dfrac{\rho\,x(L-x)}{2\varepsilon_0}$`, md`$V_0\dfrac{x}{L} + \dfrac{\rho\,x^2}{2\varepsilon_0}$`], 0,
+        [null, md`That solves Laplace's equation, not Poisson's: it ignores the charge between the plates.`,
+          md`Right boundary values, but $V'' = +\rho/\varepsilon_0$: the sign of the source is flipped. Positive charge must make $V$ bulge **up**.`,
+          md`Two failures: $V'' = +\rho/\varepsilon_0$ (wrong sign), and at $x = L$ it gives $V_0 + \rho L^2/(2\varepsilon_0)$ instead of $V_0$.`],
+        md`Check both requirements. Equation: $\dfrac{d^2}{dx^2}\left[\dfrac{\rho\,x(L-x)}{2\varepsilon_0}\right] = -\dfrac{\rho}{\varepsilon_0}$, and the linear part contributes nothing, so $V'' = -\rho/\varepsilon_0$. Boundaries: $V(0) = 0$ and $V(L) = V_0$, because $x(L-x)$ vanishes at both plates. By uniqueness this is the answer. It is superposition at work: the Laplace solution that carries the boundary values, plus the grounded-plates Poisson solution that carries the charge.`,
+        { figHtml: fPlates1D({ la: 'V=0', lb: 'V_0', slab: '\\rho', ticks: [[50, '0'], [250, 'L']] }) }),
+
       RF(md`
         !!method Patterns from this lesson
           - $\rho$ known everywhere and a simple shape: integrate. Conductors present, or $\rho$ unknown on surfaces: solve Poisson or Laplace with boundary conditions.
@@ -669,11 +778,11 @@
     <div class="w-title">Relaxation: each interior value becomes the average of its neighbours, pass after pass</div>
     <div class="w-row">
       <label>Grid <select class="rg">
-        <option value="lec">Lecture 8 grid (unknowns A and B)</option>
+        <option value="lec">Two-cell grid (unknowns A and B)</option>
         <option value="box">Square box: 7 x 7 interior points, top edge at 100</option>
       </select></label>
       <label>Average over <select class="rs">
-        <option value="8">all 8 surrounding points (Lecture 8)</option>
+        <option value="8">all 8 surrounding points</option>
         <option value="4">the 4 nearest neighbours (Griffiths)</option>
       </select></label>
     </div>
@@ -684,7 +793,7 @@
     </div>
     <div class="rgrid" style="overflow-x:auto"></div>
     <div class="w-note rinfo"></div>
-    <div class="w-note"><p>Values update in reading order (left to right, top to bottom), and each new value is used immediately, as in the lecture. Interior cells are tinted by value. Try the box with the 4-neighbour rule and press "Run until...": the stopping rule fires while the center is still well below its converged value.</p></div>`, (el) => {
+    <div class="w-note"><p>Values update in reading order (left to right, top to bottom), and each new value is used immediately. Interior cells are tinted by value. Try the box with the 4-neighbour rule and press "Run until...": the stopping rule fires while the center is still well below its converged value.</p></div>`, (el) => {
     const $ = (s) => el.querySelector(s);
     let g = [], fx = [], pass = 0, last = null;
     const build = () => {
@@ -750,13 +859,13 @@
 
         $$\frac{\partial^2 V}{\partial x^2} + \frac{\partial^2 V}{\partial y^2} = 0.$$
 
-        Now it's a partial differential equation, and the 1-D rules break. There's no general solution with a fixed number of constants. The boundary is a whole curve (an edge, a line), and you need $V$ all along it: infinitely many boundary conditions. You'll solve such problems by separation of variables in Units 6 and 7. For now, two observations from Lecture 8:
+        Now it's a partial differential equation, and the 1-D rules break. There's no general solution with a fixed number of constants. The boundary is a whole curve (an edge, a line), and you need $V$ all along it: infinitely many boundary conditions. You'll solve such problems by separation of variables in Units 6 and 7. For now, two observations:
 
         1. **Mean value on circles.** $V$ at a point is the average of $V$ around any circle centered there, as long as there is no charge inside the circle:
         $$V(x,y) = \frac{1}{2\pi R}\oint_{\text{circle}} V\,dl.$$
         2. **No local maxima or minima** inside the region. All extremes are on the boundary. (This follows from 1, just as in 1-D.)
 
-        The lecture adds: think about the form of Laplace's equation, since the second derivatives must be well-behaved for it to hold. One way to read it: the two second derivatives must cancel. If $V$ curves up along $x$ ($\partial_x^2V>0$), it must curve down along $y$ by the same amount. A harmonic function has no bowls and no domes, only saddles (or flat stretches).
+        Think about the form of Laplace's equation, since the second derivatives must be well-behaved for it to hold. One way to read it: the two second derivatives must cancel. If $V$ curves up along $x$ ($\partial_x^2V>0$), it must curve down along $y$ by the same amount. A harmonic function has no bowls and no domes, only saddles (or flat stretches).
 
         [[fig:saddle]]
 
@@ -786,6 +895,14 @@
           md`It's exact. It follows from the averaging property, which harmonic functions satisfy exactly.`],
         md`Laplace's equation must hold at every point of the region, not at one point. $x^4$ has $f'' = 12x^2$, positive everywhere except at $0$. Griffiths makes the same point: a vanishing second derivative at a single point doesn't prevent an extremum, but the averaging property (true at every point, for every $a$) does.`,
         { nofig: 'about a formula' }),
+
+      Q(md`In a charge-free 2-D region, at some point $\partial^2V/\partial x^2 = +3\ \text{V/m}^2$. What is $\partial^2V/\partial y^2$ there?`,
+        [md`$+3\ \text{V/m}^2$`, md`$0$`, md`It can't be determined from one second derivative`, md`$-3\ \text{V/m}^2$`], 3,
+        [md`Then $\nabla^2V = 6\ \text{V/m}^2\ne0$, which needs a charge density $\rho = -\varepsilon_0\nabla^2V\ne0$ at that point.`,
+          md`Then $\nabla^2V = 3\ \text{V/m}^2\ne0$: not charge-free.`,
+          md`Laplace's equation in 2-D is one equation linking exactly these two derivatives, so the first fixes the second.`, null],
+        md`$\nabla^2V = \partial_x^2V + \partial_y^2V = 0$, so $\partial_y^2V = -3\ \text{V/m}^2$. If $V$ curves up along $x$ it must curve down along $y$ by the same amount: a saddle. That is why a harmonic function has no bowls and no domes.`,
+        { nofig: 'pure calculus' }),
 
       Q(md`Each map shows equipotentials in a square region. In which maps could the region be charge-free?`,
         [md`A and D`, md`B and C`, md`C only`, md`All four`], 1,
@@ -856,14 +973,14 @@
       RF(md`
         ### Relaxation: Laplace as averaging, done by a computer
 
-        The averaging property turns into an algorithm. Lecture 8: "this is how a computer solves Laplace's equation."
+        The averaging property turns into an algorithm. This is how a computer solves Laplace's equation.
 
         1. Lay a grid over the region and fix $V$ at the boundary points.
         2. Guess the interior values (zeros will do).
         3. Sweep through the interior, replacing each value by the average of its neighbours.
         4. Repeat until the numbers stop changing ("relax").
 
-        ### The lecture's example
+        ### A two-cell example
 
         Boundary values:
         1. Top row: $100$.
@@ -874,7 +991,7 @@
 
         [[fig:grid]]
 
-        The lecture replaces each unknown by the average of **all 8 surrounding points** (diagonals included), and uses each new value as soon as it's computed:
+        Replace each unknown by the average of **all 8 surrounding points** (diagonals included), and uses each new value as soon as it's computed:
 
         $$A_1 = \tfrac18\,(100+100+100+0+B_0+0+0+0) = \tfrac{300}{8} = 37.5$$
 
@@ -882,15 +999,15 @@
 
         $$A_2 = \tfrac18\,(300 + B_1) = 42.77,\qquad B_2 = \tfrac18\,(300 + A_2) = 42.85$$
 
-        (The notes write $A_2 = 42.75$, a rounding slip: $342.1875/8 = 42.77$.) The values settle where $A = \tfrac18(300 + B)$ and $B = \tfrac18(300+A)$ hold together: $A = B = 300/7 \approx 42.86$. Two passes already get within $0.1$.
-      `, { grid: { svg: fLecGrid(), cap: md`Lecture 8's grid. Shaded cells are fixed boundary values; $A$ and $B$ are the unknowns.` } }),
+        The values settle where $A = \tfrac18(300 + B)$ and $B = \tfrac18(300+A)$ hold together: $A = B = 300/7 \approx 42.86$. Two passes already get within $0.1$.
+      `, { grid: { svg: fLecGrid(), cap: md`The two-cell grid. Shaded cells are fixed boundary values; $A$ and $B$ are the unknowns.` } }),
 
-      Q(md`In the lecture's first pass, $A_1 = 37.5$ but $B_1 = 42.19$, although $A$ and $B$ sit symmetrically on the grid. Why is $B_1$ larger?`,
-        [md`$B$'s update already uses the new $A_1 = 37.5$. With the old $A_0 = 0$ it would also be $37.5$.`, md`$B$ is closer to the row at $100$`, md`The right end of the middle row is held higher than the left end`, md`Rounding in the notes`], 0,
+      Q(md`In the first pass with the 8-point rule, $A_1 = 37.5$ but $B_1 = 42.19$, although $A$ and $B$ sit symmetrically on the grid. Why is $B_1$ larger?`,
+        [md`$B$'s update already uses the new $A_1 = 37.5$. With the old $A_0 = 0$ it would also be $37.5$.`, md`$B$ is closer to the row at $100$`, md`The right end of the middle row is held higher than the left end`, md`Rounding error`], 0,
         [null, md`Both sit one row below the top, and each has the same three $100$s among its 8 neighbours.`,
           md`Both ends of the middle row are $0$.`,
           md`$337.5/8 = 42.1875$ exactly. Nothing is rounded in the first pass.`],
-        md`The sweep does $A$ first, then $B$, and each new value is used as soon as it exists: $A_1 = \tfrac18(300 + B_0) = 37.5$, then $B_1 = \tfrac18(300 + A_1) = 42.19$. Updating both from the old values at once would give $A_1 = B_1 = 37.5$. The update order changes the path, not the end point: both versions converge to $300/7$. To reproduce the lecture's numbers, sweep in the same order and use each new value immediately.`,
+        md`The sweep does $A$ first, then $B$, and each new value is used as soon as it exists: $A_1 = \tfrac18(300 + B_0) = 37.5$, then $B_1 = \tfrac18(300 + A_1) = 42.19$. Updating both from the old values at once would give $A_1 = B_1 = 37.5$. The update order changes the path, not the end point: both versions converge to $300/7$. To reproduce these numbers, sweep in the same order and use each new value immediately.`,
         { figHtml: fLecGrid() }),
 
       RF(md`
@@ -911,30 +1028,30 @@
         The two rules converge to different numbers, $300/7$ and $100/3$. Neither is the exact continuum potential at $A$'s location, which is about $34.3$: a grid with two interior points is very coarse. Both rules are legitimate discrete versions of $\nabla^2V = 0$, and both approach $34.3$ as the grid is refined.
 
         !!trap Read the stencil
-          "The average of the neighbours" can mean 4 or 8 points. The lecture used 8 (diagonals included); Griffiths uses the 4 nearest. Same grid, different numbers. Use the rule a problem states, and say which one you use.
+          "The average of the neighbours" can mean 4 or 8 points. The example above used 8 (diagonals included); Griffiths uses the 4 nearest. Same grid, different numbers. Use the rule a problem states, and say which one you use.
 
-        In the widget below you can run both rules on the lecture's grid and on a bigger box.
+        In the widget below you can run both rules on the two-cell grid and on a bigger box.
       `),
 
       relaxWidget(),
 
       Q(md`One relaxation update of the center cell using the **4 nearest neighbours**. What is its new value?`,
         [md`$25$`, md`$22.2$`, md`$20$`, md`$80$`], 2,
-        [md`$25$ is the 8-point average (diagonals included), the lecture's rule. This question asks for the 4 nearest: up, down, left, right.`,
+        [md`$25$ is the 8-point average (diagonals included). This question asks for the 4 nearest: up, down, left, right.`,
           md`$200/9$ averages all nine cells, counting the center itself (as $0$). The update uses only the neighbours.`, null,
           md`$80$ is the sum of the four neighbours. Divide by $4$.`],
-        md`Nearest neighbours: up $40$, left $20$, right $20$, down $0$. Average $= 80/4 = 20$. (With the lecture's 8-point rule you'd add the corners $60, 60, 0, 0$: $200/8 = 25$.)`,
+        md`Nearest neighbours: up $40$, left $20$, right $20$, down $0$. Average $= 80/4 = 20$. (With the 8-point rule you'd add the corners $60, 60, 0, 0$: $200/8 = 25$.)`,
         { figHtml: fPatchA() }),
 
-      Q(md`Now use the lecture's rule (the average of all **8** surrounding points). What is the new value of the center cell?`,
+      Q(md`Now use the 8-point rule (the average of all **8** surrounding points). What is the new value of the center cell?`,
         [md`$35$`, md`$40$`, md`$35.6$`, md`$320$`], 1,
-        [md`$35$ is the 4-nearest-neighbour average. The lecture's rule also includes the four corners.`, null,
+        [md`$35$ is the 4-nearest-neighbour average. The 8-point rule also includes the four corners.`, null,
           md`$320/9$ includes the center's old value $0$. Only the 8 surrounding points count.`,
           md`That's the sum. Divide by $8$.`],
         md`$\tfrac18(100 + 80 + 60 + 40 + 20 + 20 + 0 + 0) = \tfrac{320}{8} = 40$. The 4-neighbour rule would give $\tfrac14(80 + 40 + 20 + 0) = 35$.`,
         { figHtml: fPatchB() }),
 
-      Q(md`Relaxation on the lecture's grid has converged. Could any interior value end up above $100$ or below $0$?`,
+      Q(md`Relaxation on the two-cell grid has converged. Could any interior value end up above $100$ or below $0$?`,
         [md`Yes, if the initial guess was above $100$`, md`Yes: overshoot near the boundary is normal`, md`No: each converged value is an average of its neighbours, so the largest value must sit on the boundary`, md`Only with the 8-point rule`], 2,
         [md`The initial guess doesn't survive; the converged values are fixed by the boundary values alone.`,
           md`Averaging never overshoots: an average lies between the smallest and largest of the values averaged.`, null,
@@ -950,7 +1067,7 @@
         md`The discrete problem has a unique solution, the grid version of the uniqueness theorem (Lesson 4). A better guess needs fewer passes; it can't change where you end up.`,
         { figHtml: fGuess() }),
 
-      Q(md`In real simulations you stop when a convergence criterion is met, e.g. "no value changed by more than $0.5$ in the last pass". Lecture 8 asks: what is a possible failure mechanism? (Picture the bigger box: top edge at $100$, other edges at $0$.)`,
+      Q(md`In real simulations you stop when a convergence criterion is met, e.g. "no value changed by more than $0.5$ in the last pass". What is a possible failure mechanism? (Picture the bigger box: top edge at $100$, other edges at $0$.)`,
         [md`The rule can fire while the values are still far from converged: on a big grid each pass changes things only a little, but many passes remain.`, md`The rule can never fire, because relaxation never converges.`, md`Relaxation always overshoots the true solution, so it stops too late.`, md`The boundary values drift during the passes.`], 0,
         [null, md`It does converge: each pass shrinks the error. The question is how fast.`,
           md`Starting from zero the values creep up toward the solution; averaging doesn't overshoot.`,
@@ -961,7 +1078,7 @@
       Q(md`Square grid, top edge held at $100$, the other three edges at $0$. Using the 4-neighbour rule, what does the center cell converge to?`,
         [md`$50$`, md`$33.3$`, md`$25$`, md`$12.5$`], 2,
         [md`$50$ would be halfway between top and bottom, as for two plates. Here three of the four sides are at $0$.`,
-          md`$100/3$ was the lecture grid's answer, a different shape.`, null,
+          md`$100/3$ was the two-cell grid's answer, a different shape.`, null,
           md`Rotate the problem four times and add the results (see the solution): the center gets exactly a quarter.`],
         md`Superposition plus symmetry. Rotate the problem by $90°$: now the right edge is at $100$, and the rotated grid values solve it. Do all four rotations and add: every edge is at $100$, and the solution of that is $100$ everywhere. The center is the same cell in all four, so $4V_c = 100$ and $V_c = 25$. The same argument gives $V_0/4$ at the center of a continuous square. (With the 8-point rule the corner cells, which belong to two edges, spoil the symmetry slightly: the center comes out $25.6$.)`,
         { figHtml: fBox9({ c: true }) }),
@@ -974,7 +1091,7 @@
         md`The discrete Laplacian is $(V_{\text{up}}+V_{\text{down}}+V_{\text{left}}+V_{\text{right}} - 4V)/h^2$. Setting it equal to $-\rho/\varepsilon_0$ gives $V = \langle V\rangle_{\text{4 nb}} + \dfrac{h^2\rho}{4\varepsilon_0}$. Positive charge lifts a point above its neighbours' average, a peak, as in Lesson 1.`,
         { figHtml: fPoissonCell() }),
 
-      Q(md`On the lecture's grid the 4-neighbour rule converges to $33.3$ at $A$, but the exact potential there is about $34.3$. How do you get closer?`,
+      Q(md`On the two-cell grid the 4-neighbour rule converges to $33.3$ at $A$, but the exact potential there is about $34.3$. How do you get closer?`,
         [md`Run more passes`, md`Use a finer grid (smaller spacing)`, md`Start from a better initial guess`, md`Use a stricter stopping rule`], 1,
         [md`It has already converged; more passes won't change $33.33$.`, null,
           md`The guess only affects how fast you converge, not where.`,
@@ -990,9 +1107,17 @@
         md`With the 4-neighbour rule in reading order: the cells above and to the left of the spike are updated first and pick up a quarter of it ($250$ each); then the spike cell becomes the average of its neighbours, $125$; the cells after it get about $47$. After one pass the peak has dropped from $1000$ to $250$ and spread over several cells. Averaging is smoothing: sharp errors die fastest, smooth long-wavelength errors die slowly, which is why big grids need many passes.`,
         { figHtml: fSpike() }),
 
+      Q(md`A classmate's relaxation code also replaces the **boundary** cells by the average of their neighbours on every pass. What does that do?`,
+        [md`It speeds up convergence`, md`Nothing, since boundary cells are already averages`, md`It changes the problem: the boundary values are the boundary conditions, and once they are averaged away the grid smooths out toward a single constant`, md`It only matters with the 8-point rule`], 2,
+        [md`It does converge, but to the answer of a different problem.`,
+          md`Boundary values are given data, not averages. The top row at $100$ is not the mean of its neighbours.`, null,
+          md`Any stencil, 4 or 8 points, needs the boundary held fixed.`],
+        md`Relaxation solves "each interior value equals the average of its neighbours, with the boundary values given". The given values are what make the answer unique. If the boundary is averaged too, nothing holds it: the $100$s leak away and the grid relaxes toward one uniform value, with the boundary information lost. Fix the boundary cells and update only the interior.`,
+        { figHtml: fLecGrid() }),
+
       P({
         id: 'u4-p-relax4', title: 'Relaxation by hand: 4 neighbours',
-        q: md`Boundary values: $80$ along the top, $40$ down the left side, $0$ on the right side and the bottom. The interior points $A, B, C, D$ start at $0$. Use the **4-nearest-neighbour** average and update in the order $A, B, C, D$, using each new value as soon as you have it (as in the lecture). Find the values after the first pass, and the converged value $A_\infty$.`,
+        q: md`Boundary values: $80$ along the top, $40$ down the left side, $0$ on the right side and the bottom. The interior points $A, B, C, D$ start at $0$. Use the **4-nearest-neighbour** average and update in the order $A, B, C, D$, using each new value as soon as you have it. Find the values after the first pass, and the converged value $A_\infty$.`,
         figHtml: gridSvg([[80, 80, 80, 80], [40, 'A', 'B', 0], [40, 'C', 'D', 0], [0, 0, 0, 0]]),
         hints: [
           md`Each update: new value $=$ (up $+$ down $+$ left $+$ right)$/4$, using the newest values available.`,
@@ -1027,8 +1152,8 @@
       }),
 
       P({
-        id: 'u4-p-relax8', title: "Relaxation by hand: the lecture's rule",
-        q: md`Same shape as the lecture's grid, new numbers: top row at $60$, the left end of the middle row at $20$, the right end at $0$, bottom row at $0$. Start from $A_0 = B_0 = 0$. Using the lecture's rule (the average of all **8** surrounding points, newest values first), find $A_1$, $B_1$, $A_2$, and the converged value $A_\infty$ to four significant figures.`,
+        id: 'u4-p-relax8', title: "Relaxation by hand: the 8-point rule",
+        q: md`Same shape as the two-cell grid, new numbers: top row at $60$, the left end of the middle row at $20$, the right end at $0$, bottom row at $0$. Start from $A_0 = B_0 = 0$. Using the 8-point rule (the average of all **8** surrounding points, newest values first), find $A_1$, $B_1$, $A_2$, and the converged value $A_\infty$ to four significant figures.`,
         figHtml: gridSvg([[60, 60, 60, 60], [20, 'A', 'B', 0], [0, 0, 0, 0]]),
         hints: [
           md`List $A$'s 8 neighbours: three in the top row, left, right ($B$), and three in the bottom row. Do the same for $B$.`,
@@ -1051,7 +1176,7 @@
           - $B_1 = \tfrac18(180 + 25) = 25.625$
           - $A_2 = \tfrac18(200 + 25.625) = 28.203$
 
-          **Converged:** $64A = 1600 + 180 + A$, so $A_\infty = 1780/63 = 28.25$ (and $B_\infty = 1640/63 = 26.03$). The lecture's rule converges fast here: $A_2$ is already within $0.2\%$.
+          **Converged:** $64A = 1600 + 180 + A$, so $A_\infty = 1780/63 = 28.25$ (and $B_\infty = 1640/63 = 26.03$). The 8-point rule converges fast here: $A_2$ is already within $0.2\%$.
         `,
       }),
 
@@ -1223,8 +1348,16 @@
         md`That's Griffiths' one-line argument. The mean value theorem is the engine; "no extrema" follows from it.`,
         { figHtml: fAvg() }),
 
+      Q(md`A sphere of radius $R$ contains no charge. On its surface $V = V_0\cos\theta$ (set by charges outside). What is $V$ at its center $C$?`,
+        [md`$V_0$`, md`$0$`, md`$V_0/2$`, md`It depends on $R$`], 1,
+        [md`$V_0$ is the value at the north pole only. The south pole has $-V_0$.`, null,
+          md`$V_0/2$ is the average over the northern hemisphere alone. The southern hemisphere, where $V<0$, counts too.`,
+          md`The mean value theorem has no $R$ in it: $V$ at the center is the surface average, whatever the radius.`],
+        md`No charge inside, so $V(C)$ equals the average of $V$ over the sphere: $\dfrac{1}{4\pi}\displaystyle\int V_0\cos\theta\,\sin\theta\,d\theta\,d\phi = \dfrac{V_0}{2}\int_0^\pi\cos\theta\sin\theta\,d\theta = 0$. The positive north and the negative south cancel exactly. (Unit 7 finds the whole interior, $V = V_0\,r\cos\theta/R$, which is indeed $0$ at the center.)`,
+        { figHtml: fSphereCos() }),
+
       RF(md`
-        ### Why the average equals the center value (Lecture 8)
+        ### Why the average equals the center value
 
         Start with one point charge $q$ outside a sphere of radius $R$. Center the sphere at the origin and put $q$ on the $z$ axis at distance $z > R$.
 
@@ -1234,7 +1367,7 @@
 
         $$V_{\text{ave}} = \frac{1}{4\pi R^2}\,\frac{q}{4\pi\varepsilon_0}\int_0^{2\pi}\!\!\int_0^{\pi}\frac{R^2\sin\theta\,d\theta\,d\phi}{\sqrt{z^2+R^2-2zR\cos\theta}} = \frac{q}{4\pi\varepsilon_0}\,\frac12\int_0^{\pi}\frac{\sin\theta\,d\theta}{\sqrt{z^2+R^2-2zR\cos\theta}}.$$
 
-        Substitute $u = \cos\theta$ (the notes call it $x$), $du = -\sin\theta\,d\theta$. As $\theta$ runs from $0$ to $\pi$, $u$ runs from $1$ to $-1$, and the minus sign flips the limits back:
+        Substitute $u = \cos\theta$, $du = -\sin\theta\,d\theta$. As $\theta$ runs from $0$ to $\pi$, $u$ runs from $1$ to $-1$, and the minus sign flips the limits back:
 
         $$V_{\text{ave}} = \frac{q}{4\pi\varepsilon_0}\,\frac12\int_{-1}^{1}\frac{du}{\sqrt{z^2+R^2-2zRu}} = \frac{q}{4\pi\varepsilon_0}\,\frac12\left[-\frac{1}{zR}\sqrt{z^2+R^2-2zRu}\,\right]_{-1}^{1}$$
 
@@ -1242,10 +1375,10 @@
 
         That's the potential of $q$ at the center of the sphere. The step $\sqrt{(z-R)^2} = z - R$ is where "outside" ($z>R$) is used. By superposition the same holds for any set of charges outside: **their average potential over the sphere is the potential they produce at the center.**
 
-        !!trap Slips in the notes (L8-6)
-          - The notes write $\srm = z^2+R^2-2zR\cos\theta$; it should be $\srm^2$. The next line correctly uses the power $-\tfrac12$.
-          - After $x = \cos\theta$ the notes keep the limits as $\int_1^{-1}$ and use $+\tfrac{1}{zR}\sqrt{\cdots}$ as the antiderivative. Both signs are off: taken literally, each of those lines gives $-q/(4\pi\varepsilon_0 z)$. The final answer $+q/(4\pi\varepsilon_0z)$ is right.
-      `, { proof: { svg: fSphereZ({ detail: true }), cap: md`Lecture 8's picture: $q$ on the $z$ axis at distance $z>R$ from the center; a patch $da$ at polar angle $\theta$, a distance $\srm$ from $q$.` } }),
+        !!trap Sign traps in this integral
+          - The law of cosines gives $\srm^2 = z^2+R^2-2zR\cos\theta$, so $1/\srm$ carries the power $-\tfrac12$.
+          - After $u = \cos\theta$, either flip the limits to $\int_{-1}^{1}$ (using the minus sign of $du$) or keep $\int_1^{-1}$ with the minus sign, not both. And the antiderivative of $(z^2+R^2-2zRu)^{-1/2}$ is $-\tfrac{1}{zR}\sqrt{\cdots}$. Drop either minus sign and you get $-q/(4\pi\varepsilon_0 z)$, a negative average for a positive charge: a quick sanity check catches it.
+      `, { proof: { svg: fSphereZ({ detail: true }), cap: md`$q$ on the $z$ axis at distance $z>R$ from the center; a patch $da$ at polar angle $\theta$, a distance $\srm$ from $q$.` } }),
 
       Q(md`Which of these is **not** a solution of Laplace's equation for $r>0$? (Use the spherical Laplacian from the formula sheet.)`,
         [md`$1/r$`, md`$r\cos\theta$`, md`$\dfrac{\cos\theta}{r^2}$`, md`$r^2$`], 3,
@@ -1273,7 +1406,7 @@
         hints: [
           md`Same integral as for an outside charge: $V_{\text{ave}} = \dfrac{q}{4\pi\varepsilon_0}\,\dfrac12\displaystyle\int_{-1}^{1}\dfrac{du}{\sqrt{z^2+R^2-2zRu}}$. Exactly one step changes when $z<R$.`,
           md`The antiderivative gives $\dfrac{1}{zR}\Big[\sqrt{(z+R)^2}-\sqrt{(z-R)^2}\Big]$. A square root is never negative: for $z<R$, what is $\sqrt{(z-R)^2}$?`,
-          md`For the general result use superposition: the average of a sum is the sum of the averages. Split the charges into those outside (Lecture 8's result) and those inside (the first part).`,
+          md`For the general result use superposition: the average of a sum is the sum of the averages. Split the charges into those outside (the result above) and those inside (the first part).`,
         ],
         parts: [
           { lbl: md`For $z < R$, $\sqrt{(z-R)^2}$ equals`, mc: [md`$z - R$`, md`$R - z$`, md`$z + R$`, md`$\lvert z\rvert + R$`], a: 1,
@@ -1308,7 +1441,7 @@
           [[fig:plot]]
 
           **General case.** Averaging is linear: the average of the total potential is the sum of the averages of each charge's potential.
-          - Each charge outside contributes its potential at the center (Lecture 8). Together these give $V_{\text{center}}$, the potential at the center due to the external charges.
+          - Each charge outside contributes its potential at the center (the outside-charge result). Together these give $V_{\text{center}}$, the potential at the center due to the external charges.
           - Each charge $q_j$ inside contributes $q_j/(4\pi\varepsilon_0R)$. Together: $\Qenc/(4\pi\varepsilon_0R)$.
 
           $$V_{\text{ave}} = V_{\text{center}} + \frac{\Qenc}{4\pi\varepsilon_0 R}.\qquad\square$$
@@ -1397,6 +1530,15 @@
         md`$V$ has no minimum at $P$, so some direction must lead downhill. By symmetry the candidates are the corners, edge midpoints and face centers. Toward a corner or an edge midpoint you get closer to charges and $V$ rises. Toward a face center you head into the biggest gap between the charges, and $V$ falls: the test charge escapes through a face. (Near $P$ the change in $V$ is only fourth order in the displacement: the cube's symmetry plus $\nabla^2V = 0$ kill every second-order term. A numerical check of $V$ along each direction confirms the signs.)`,
         { figHtml: fCube8() }),
 
+      Q(md`Back to the cube of eight positive charges. This time the test charge at the center $P$ is **negative**. Is its equilibrium stable now?`,
+        [md`No: $P$ is charge-free, so $V$ has no maximum or minimum there, and neither does $U = qV$ for either sign of $q$. It is still a saddle`, md`Yes: flipping the sign turns the unstable directions into stable ones`, md`Yes, because opposite charges attract`, md`It depends on the size of the test charge`], 0,
+        [null,
+          md`Flipping the sign also turns the stable directions into unstable ones. A saddle stays a saddle.`,
+          md`Attraction pulls it toward the corner charges, which is exactly the direction it escapes in.`,
+          md`$U = qV$; the size of $q$ scales $U$ but can't turn a saddle of $V$ into a minimum.`],
+        md`The test charge's energy is $U = qV$, and $V$ is harmonic at $P$, so $V$ has no local extremum there. Multiplying by a negative $q$ turns hills into valleys and valleys into hills, but a saddle remains a saddle. The positive charge escaped through the face centers; the negative one is held in those directions and escapes along a diagonal toward a corner, where it is pulled onto one of the positive charges. Earnshaw's theorem doesn't care about the sign.`,
+        { figHtml: fCube8() }),
+
       Q(md`Two equal positive charges are fixed a distance $2a$ apart, and a positive test charge sits exactly midway. For which displacements is the equilibrium stable?`,
         [md`All directions`, md`No direction`, md`Perpendicular to the line only`, md`Along the line only`], 3,
         [md`Earnshaw: electrostatic forces alone never give stability in all directions.`,
@@ -1436,6 +1578,14 @@
           md`$V = 0$ on the walls, but not inside: near the charge $V\approx q/(4\pi\varepsilon_0 r)$.`],
         md`With charge in the region, Poisson's equation holds and peaks are allowed at positive charges. In the rest of the box (cut out a tiny ball around $q$) the max and min sit on the boundaries: the walls ($0$) and the tiny sphere around $q$ (large and positive).`,
         { figHtml: fBoxQ() }),
+
+      Q(md`Two equal charges $+Q$ are fixed a distance $2a$ apart, and $M$ is the midpoint, in charge-free space. Which of these has a local **minimum** at $M$?`,
+        [md`$V$ only`, md`Neither: a charge-free region allows no extrema of anything`, md`Both $V$ and $|\vb E|$`, md`$|\vb E|$ only`], 3,
+        [md`$V$ can't: $M$ is charge-free. Along the line of the charges $V$ has a minimum at $M$, but across it $V$ falls off: a saddle.`,
+          md`The no-extremum rule is about $V$ (and anything harmonic). $|\vb E|$ is not harmonic; here it is exactly $0$ at $M$ and positive all around.`,
+          md`$V$ is ruled out by the averaging property.`, null],
+        md`At $M$ the two fields cancel, $|\vb E| = 0$, and $|\vb E|>0$ at every nearby point: a minimum of $|\vb E|$. $V$ is different: $V(M)$ equals its average over any small sphere around $M$, so it can't be lower than all its neighbours. Along the line of the charges $V$ rises toward each $+Q$; across it $V$ falls off. That saddle is what makes the midpoint an unstable equilibrium for a test charge. (A **maximum** of $|\vb E|$ inside a charge-free region is impossible, but a minimum, even a zero, is allowed.)`,
+        { figHtml: fTwoQM() }),
 
       RF(md`
         !!method Patterns from this lesson
@@ -1545,7 +1695,7 @@
       RF(md`
         ### Is the boundary enough?
 
-        Laplace's equation alone has infinitely many solutions; you need boundary conditions to single one out (Lecture 9). Two questions: is knowing $V$ on the boundary enough to fix $V$ inside? And could a second, different solution sneak in?
+        Laplace's equation alone has infinitely many solutions; you need boundary conditions to single one out. Two questions: is knowing $V$ on the boundary enough to fix $V$ inside? And could a second, different solution sneak in?
 
         [[fig:blob]]
 
@@ -1554,7 +1704,7 @@
 
         The boundary can have several pieces: "islands" inside the region (with $V$ given on their surfaces too), and an outer surface, which may be at infinity, where the usual condition is $V\to 0$.
 
-        **Proof** (the lecture's hint: look at the difference). Suppose two functions both solve the problem,
+        **Proof** (the trick: look at the difference). Suppose two functions both solve the problem,
         $$\nabla^2V_1 = 0, \qquad \nabla^2 V_2 = 0,$$
         with the same values on the boundary. Build a third function, $V_3 = V_1 - V_2$.
 
@@ -1562,7 +1712,7 @@
         2. It vanishes on the boundary: $V_3 = V_1 - V_2 = 0$ there, since both take the given values.
         3. Laplace's equation allows no extrema except on the boundary, so the maximum and the minimum of $V_3$ are both boundary values: both $0$.
         4. A function whose maximum and minimum are both $0$ is $0$ everywhere. So $V_3 = 0$, and $V_1 = V_2$. $\square$
-      `, { blob: { svg: fBlob(), cap: md`Lecture 9's picture: $V$ is given on the closed surface, and you want $V$ in the volume.` } }),
+      `, { blob: { svg: fBlob(), cap: md`$V$ is given on the closed surface, and you want $V$ in the volume.` } }),
 
       Q(md`Step 3 of the proof says the maximum and the minimum of $V_3$ are both $0$. Which fact is it using?`,
         [md`$V_3$ is harmonic, so its extremes are on the boundary, where it is $0$`, md`$V_3$ is constant on each conductor`, md`$\nabla V_3 = 0$ everywhere`, md`$V_3$ is the difference of two equal functions`], 0,
@@ -1611,6 +1761,22 @@
         md`The corollary has two requirements: the equation (with the right $\rho$) in the region and the right values on all boundaries. Meet both and the guess is the answer.`,
         { nofig: 'logic of the theorem' }),
 
+      Q(md`Which of these does **not** follow from the first uniqueness theorem (with its Poisson corollary)?`,
+        [md`An empty cavity inside a conductor is field-free`, md`$V = 0$ everywhere inside an empty, closed, grounded box`, md`On any isolated conductor the charge spreads uniformly over the surface`, md`The image-charge potential is the true potential above a grounded plane`], 2,
+        [md`The cavity wall is at one constant $V_0$; the constant solution fits, so it is the answer.`,
+          md`$V = 0$ satisfies Laplace's equation and the wall values; by uniqueness it is the answer.`, null,
+          md`The image formula satisfies Poisson's equation with the right charge above the plane and every boundary condition; the corollary certifies it.`],
+        md`Uniform charge is true only for an isolated **sphere**, and even there the argument uses the total charge, not a given potential: that is the second theorem. On a non-spherical conductor $\sigma$ is not uniform at all; it piles up where the surface curves most sharply. The other three are textbook uses of the first theorem: guess a function, check the equation and every boundary value, done.`,
+        { nofig: 'logic of the theorem' }),
+
+      Q(md`A point charge $q$ sits inside a closed grounded box. Someone writes $V = V_q + h$, where $V_q$ is the Coulomb potential of $q$ alone and $h$ satisfies Laplace's equation inside the box with $h = -V_q$ on the walls. Is this $V$ the solution?`,
+        [md`Yes: $V$ has exactly the source $q$ inside and $V = V_q - V_q = 0$ on the walls, so uniqueness makes it the answer`, md`No: $h$ adds charge inside the box`, md`No: $V_q$ doesn't vanish on the walls, so $V$ can't either`, md`Only if the box is a sphere centred on $q$`], 0,
+        [null, md`$h$ is harmonic inside the box, so it adds no charge there. It stands for the induced charge, which sits on the walls.`,
+          md`$V_q$ alone doesn't vanish there, but $h$ cancels it on the walls by construction.`,
+          md`The shape only makes $h$ easier or harder to find. The argument works for any closed box.`],
+        md`$\nabla^2V = \nabla^2V_q + \nabla^2h = -\rho_q/\varepsilon_0 + 0$: the right source. On the walls $V = V_q + (-V_q) = 0$: the right boundary values. So $V$ is the solution. This split is the strategy behind images: $h$ is the potential of the induced charge, and the method of images writes $h$ as the potential of fictitious charges outside the region.`,
+        { figHtml: fBoxQ() }),
+
       RF(md`
         ### Guess and check
 
@@ -1653,6 +1819,18 @@
         md`Boundary conditions for the cavity: $V = V_0$ (some constant) on the wall; source: $q$. Changing $V_0$ adds a constant to $V$ and leaves $\vb E$ alone. So $\vb E$ in the cavity is fixed by $q$ and the cavity's shape alone.`,
         { figHtml: fCavity({ q: true, Q: true }) }),
 
+      Q(md`A charge $q$ sits inside a closed metal box that is **grounded**. What field does an observer outside the box measure?`,
+        [md`The field of $q$, slightly reduced by the metal`, md`The field of a charge $q$ at the box's center`, md`The field of the charge $-q$ induced on the box`, md`None: the outside field is zero`], 3,
+        [md`Metal doesn't partly transmit a static field. The question is what the outside region's boundary data are.`,
+          md`That's an isolated, neutral box (for a spherical one): then the outer surface carries $+q$. Grounding drains it.`,
+          md`The induced $-q$ sits on the inner wall and, together with $q$, makes zero field in the metal and beyond.`, null],
+        md`The outside region is bounded by the box's outer surface and by infinity. Boundary conditions:
+        1. $V = 0$ on the outer surface (grounded).
+        2. $V\to0$ far away.
+
+        There is no charge in the outside region. $V = 0$ satisfies all of it, so by uniqueness it is the outside potential and $\vb E = 0$. A grounded closed conductor shields both ways: the outside can't see in, and the inside can't see out.`,
+        { figHtml: fBoxQ() }),
+
       Q(md`A cube has two opposite faces held at $V_0$ and the other four grounded, with no charge inside. What is $V$ at the center $C$?`,
         [md`$V_0/6$`, md`$V_0/2$`, md`$V_0/3$`, md`$2V_0/3$`], 2,
         [md`$V_0/6$ is what one live face gives. Here two faces each contribute that.`,
@@ -1660,6 +1838,22 @@
           md`That's $4V_0/6$, counting the grounded faces instead of the live ones.`],
         md`One face at $V_0$ with the rest grounded gives $V_0/6$ at the center. This problem is the sum of two such problems (superposition: add the solutions, and the boundary values add), so $V_C = 2\cdot V_0/6 = V_0/3$.`,
         { figHtml: fCubeFaces(true) }),
+
+      Q(md`A cube has five faces held at $V_0$ (the top and the four sides) and the bottom face grounded (shaded), with no charge inside. What is $V$ at the center $C$?`,
+        [md`$5V_0/6$`, md`$V_0/6$`, md`$V_0$`, md`$V_0/2$`], 0,
+        [null, md`$V_0/6$ is the center value with **one** face at $V_0$. Here five are.`,
+          md`$V_0$ would need all six faces at $V_0$. The grounded face pulls the center down.`,
+          md`$V_0/2$ treats the box as two equal halves; only one face of six is at $0$.`],
+        md`Superpose: "all six faces at $V_0$" (solution: $V = V_0$ everywhere) minus "the bottom face alone at $V_0$, the rest grounded" (center value $V_0/6$). The difference has $V_0$ on five faces and $0$ on the bottom, which is this problem. Center: $V_0 - V_0/6 = 5V_0/6$.`,
+        { figHtml: fCube1G() }),
+
+      Q(md`A cube has its top face at $+V_0$, its bottom face at $-V_0$ and its four side faces grounded, with no charge inside. What is $V$ on the horizontal plane halfway between top and bottom?`,
+        [md`$0$ everywhere on it`, md`$0$ only at the center; elsewhere on that plane it varies`, md`$V_0/2$`, md`It can't be found without a Fourier series`], 0,
+        [null, md`The symmetry argument works at every point of the mid-plane, not just the center: see the solution.`,
+          md`The top and bottom contributions are equal and opposite on the mid-plane; there is no net $V_0/2$.`,
+          md`Symmetry plus uniqueness gives it without solving anything.`],
+        md`Measure $z$ from the mid-plane. Reflect the solution through the mid-plane and flip its sign: $W(x,y,z) = -V(x,y,-z)$. $W$ satisfies Laplace's equation, is $+V_0$ on the top, $-V_0$ on the bottom and $0$ on the sides: the same data. By uniqueness $W = V$, so $V(x,y,-z) = -V(x,y,z)$, and on the mid-plane $z = 0$ that says $V = -V$, i.e. $V = 0$. The mid-plane is an equipotential at $0$; you could slide in a grounded sheet without changing anything. That is the idea behind images.`,
+        { figHtml: fCubePM() }),
 
       Q(md`Region between two concentric spheres: the inner one at $V_0$, the outer one grounded, no charge between. You find $V = A + B/r$ fitting both spheres. A classmate's computer simulation gives a potential that also matches both spheres but varies slightly with $\theta$. What do you conclude?`,
         [md`Both are valid solutions`, md`Yours is wrong because it ignores $\theta$`, md`The simulation is right because it uses more information`, md`The $\theta$-dependence must be numerical error: yours satisfies everything, and the solution is unique`], 3,
@@ -1746,6 +1940,14 @@
         md`It's the 3-D version of specifying the value and the slope at both ends in 1-D: redundant at best, contradictory at worst. The right amount is one condition per piece of boundary: $V$ or $\partial V/\partial n$, not both.`,
         { figHtml: fBox3() }),
 
+      Q(md`A box contains a point charge $q$, and someone gives $\partial V/\partial n = 0$ on all six faces. What's wrong?`,
+        [md`Nothing: Neumann data fix $\vb E$`, md`The data contradict Gauss's law: zero normal derivative everywhere means zero flux out of the box, but the box encloses $q$`, md`Neumann data are only allowed when the box is empty`, md`It's under-specified: $V$ is free up to a constant`], 1,
+        [md`They would, if any solution existed. With $q$ inside, none does.`, null,
+          md`Neumann data are fine with charge inside, as long as their total flux matches $\Qenc$.`,
+          md`True of consistent Neumann data. Here it's worse: there is no solution at all.`],
+        md`$\oint\vb E\cdot d\vb a = -\oint\dfrac{\partial V}{\partial n}\,da$ must equal $q/\varepsilon_0$. Zero normal derivative on every face makes the left side zero, so no potential can meet these data. Neumann data must satisfy $\oint\dfrac{\partial V}{\partial n}\,da = -\dfrac{\Qenc}{\varepsilon_0}$; data that break it are impossible, not merely incomplete.`,
+        { figHtml: fBoxN() }),
+
       Q(md`You want $V$ everywhere outside a metal sphere held at $V_0$, out to infinity. The sphere is one piece of the boundary. What is the other?`,
         [md`Infinity, where $V\to 0$`, md`Nothing else; the sphere is the whole boundary`, md`The sphere's center`, md`A large sphere on which $\partial V/\partial n = 0$`], 0,
         [null, md`The region reaches infinity, which is part of its boundary. Without a condition there, $V = V_0$ everywhere would also fit Laplace and the sphere's value.`,
@@ -1801,7 +2003,7 @@
 
           **What about $V$ itself?** $\nabla V_3 = 0$ makes $V_3$ a constant. If $V$ is specified on at least one piece of the boundary, $V_3 = 0$ there, so the constant is $0$ and $V$ is unique too. If only $\partial V/\partial n$ is given everywhere, $V$ is unique up to an additive constant. (Pure Neumann data can't be arbitrary either: Gauss's law requires $\oint\dfrac{\partial V}{\partial n}\,da = -\dfrac{\Qenc}{\varepsilon_0}$.)
 
-          **Why this works / what to remember.** Every uniqueness proof has the same skeleton: two solutions, look at the difference, show the difference is harmonic with "zero" boundary data, then show a harmonic function with zero data vanishes. Lecture 9 did the last step two ways: the no-extrema argument (first theorem, $V_3 = 0$ on $S$) and the integral of $E_3^2$ (second theorem). This problem uses the integral, which also handles derivative data, where the no-extrema argument can't.
+          **Why this works / what to remember.** Every uniqueness proof has the same skeleton: two solutions, look at the difference, show the difference is harmonic with "zero" boundary data, then show a harmonic function with zero data vanishes. There are two ways to do the last step: the no-extrema argument (first theorem, $V_3 = 0$ on $S$) and the integral of $E_3^2$ (second theorem). This problem uses the integral, which also handles derivative data, where the no-extrema argument can't.
         `,
         figs: { proof: { svg: fHW35(), cap: md`Mixed data: $V$ given on $S_1$, $\partial V/\partial n$ given on $S_2$. At every point of the boundary one factor of $V_3\,\partial V_3/\partial n$ vanishes.` } },
       }),
@@ -1866,7 +2068,7 @@
 
         [[fig:cond]]
 
-        **Proof sketch (Lecture 9).** Suppose two fields $\vb E_1$ and $\vb E_2$ both fit.
+        **Proof sketch.** Suppose two fields $\vb E_1$ and $\vb E_2$ both fit.
         - Between the conductors both obey Gauss's law in differential form: $\nabla\cdot\vb E_1 = \nabla\cdot\vb E_2 = \rho/\varepsilon_0$.
         - For a surface enclosing conductor $i$: $\oint\vb E_1\cdot d\vb a = \oint\vb E_2\cdot d\vb a = Q_i/\varepsilon_0$.
         - For the outer boundary: $\oint\vb E\cdot d\vb a = Q_{\text{tot}}/\varepsilon_0$ for both, where $Q_{\text{tot}} = \sum_n Q_n + \int\rho\,d\tau$.
@@ -1881,13 +2083,13 @@
         $$-\int_{\mathcal V} E_3^2\,d\tau = \oint_{\text{all boundaries}} V_3\,\vb E_3\cdot d\vb a = \sum_{\text{surfaces}} V_3\oint\vb E_3\cdot d\vb a = 0.$$
         $V_3$ comes out of each surface integral because it is constant on that surface (and $V_3\to 0$ at infinity), and each remaining flux is zero. Since $E_3^2\ge 0$, $\int E_3^2\,d\tau = 0$ forces $\vb E_3 = 0$ everywhere: $\vb E_1 = \vb E_2$. $\square$
 
-        !!trap Slips in the notes (L9-4)
-          - The last line reads $= \int (E_3)^2\,d\tau$; the product rule gives $-\int E_3^2\,d\tau$. The conclusion is the same, since the integral is zero either way.
-          - The surface integral should run over every boundary (each conductor and the outer surface), not only $S_{\text{outer}}$, and the $\vb E$ in the second line should be $\vb E_3$.
+        !!trap Two easy slips in this proof
+          - The product rule gives $-\int E_3^2\,d\tau$, with a minus sign from $\nabla V_3 = -\vb E_3$. Here the sign doesn't change the conclusion, since the integral is zero either way.
+          - The surface integral runs over every boundary (each conductor and the outer surface), not only the outer one, and the field inside it is the difference field $\vb E_3$.
 
         !!key What the second theorem fixes
           $\vb E$ everywhere, and with it each conductor's surface charge $\sigma = \varepsilon_0E_n$ ($\hat{\mathbf n}$ out of the metal). $V$ is fixed up to one additive constant. Pin $V$ anywhere ($V\to 0$ at infinity, or a grounded conductor) and $V$ is fixed too, including each conductor's potential.
-      `, { cond: { svg: fCond4(), cap: md`Lecture 9's picture: conductors (hatched) with total charges $Q_a,\dots,Q_d$ and a given $\rho$ between them. Thick line: the outer boundary. Dashed: Gaussian surfaces around each conductor and just inside the outer boundary.` } }),
+      `, { cond: { svg: fCond4(), cap: md`Conductors (hatched) with total charges $Q_a,\dots,Q_d$ and a given $\rho$ between them. Thick line: the outer boundary. Dashed: Gaussian surfaces around each conductor and just inside the outer boundary.` } }),
 
       Q(md`Conductors with given total charges $Q_a, \dots, Q_d$, a given $\rho$ between them, and $V\to 0$ at infinity. What does the second uniqueness theorem guarantee?`,
         [md`The charge distribution on each conductor, but not the field`, md`The field $\vb E$ everywhere in the region (and so $V$, given $V\to0$ at infinity)`, md`Only the potential of each conductor`, md`Nothing, unless the conductors' potentials are given too`], 1,
@@ -1910,7 +2112,7 @@
         [null, md`Nothing makes the field vanish there. Only the two fluxes have to agree.`,
           md`$Q_{\text{tot}}$ can be anything. What matters is that it is the same for both solutions.`,
           md`That's what lets $V_3$ come out of the surface integral. It says nothing about the flux.`],
-        md`Lecture 9 (in green): $Q_{\text{tot}} = \sum_n Q_n + \int\rho\,d\tau$. Every term is part of the given data, so $\oint\vb E_1\cdot d\vb a = \oint\vb E_2\cdot d\vb a = Q_{\text{tot}}/\varepsilon_0$ over the outer boundary, and $\vb E_3 = \vb E_1 - \vb E_2$ has zero flux there. Same logic as for each conductor, applied to everything at once.`,
+        md`$Q_{\text{tot}} = \sum_n Q_n + \int\rho\,d\tau$. Every term is part of the given data, so $\oint\vb E_1\cdot d\vb a = \oint\vb E_2\cdot d\vb a = Q_{\text{tot}}/\varepsilon_0$ over the outer boundary, and $\vb E_3 = \vb E_1 - \vb E_2$ has zero flux there. Same logic as for each conductor, applied to everything at once.`,
         { figHtml: fCond4() }),
 
       Q(md`Why can $V_3$ be pulled out of each surface integral $\oint V_3\,\vb E_3\cdot d\vb a$?`,
@@ -1923,11 +2125,19 @@
 
       Q(md`The product rule gives $\nabla\cdot(V_3\vb E_3) = V_3(\nabla\cdot\vb E_3) + \vb E_3\cdot\nabla V_3$. In the region between the conductors this equals:`,
         [md`$+E_3^2$`, md`$0$`, md`$V_3E_3^2$`, md`$-E_3^2$`], 3,
-        [md`$\nabla V_3 = -\vb E_3$, so $\vb E_3\cdot\nabla V_3 = -E_3^2$. (The lecture notes drop this minus sign on L9-4; the conclusion survives because the integral is zero either way.)`,
+        [md`$\nabla V_3 = -\vb E_3$, so $\vb E_3\cdot\nabla V_3 = -E_3^2$. (A dropped sign wouldn't change the conclusion here, since the integral is zero either way, but the sign is $-$.)`,
           md`The first term is $0$, since $\nabla\cdot\vb E_3 = 0$, but the second isn't.`,
           md`$V_3$ multiplies only the divergence term, which is zero.`, null],
         md`$\nabla\cdot\vb E_3 = 0$ and $\vb E_3\cdot\nabla V_3 = \vb E_3\cdot(-\vb E_3) = -E_3^2$. Integrating, $-\int E_3^2\,d\tau = \sum_i V_3\oint\vb E_3\cdot d\vb a = 0$, and an integral of a square that vanishes means the square is zero everywhere.`,
         { nofig: 'algebra step' }),
+
+      Q(md`Replace each conductor in the second-theorem proof by a plastic object carrying the same total charge. Which step of the proof breaks?`,
+        [md`$\nabla\cdot\vb E_3 = 0$ between the objects`, md`Taking $V_3$ out of each surface integral $\oint V_3\,\vb E_3\cdot d\vb a$`, md`Zero flux of $\vb E_3$ around each object`, md`$\int E_3^2\,d\tau\ge0$`], 1,
+        [md`That uses only $\rho$ between the objects, which is still given.`, null,
+          md`Gauss's law with the same total charge on each object still gives zero flux of $\vb E_3$.`,
+          md`A square is never negative, conductor or not.`],
+        md`$V_3$ comes out of the surface integral only because it is constant over each surface, which holds because each conductor is an equipotential. Plastic isn't: its charge stays where it was put, $V$ varies over its surface, and $\oint V_3\,\vb E_3\cdot d\vb a$ need not vanish even though $\oint\vb E_3\cdot d\vb a = 0$. That is why a total charge is enough data for a conductor but not for an insulator.`,
+        { figHtml: fCond4() }),
 
       Q(md`The second theorem shows $\vb E_1 = \vb E_2$. What does that say about $V_1$ and $V_2$?`,
         [md`$V_1 = V_2$ always`, md`$V_1 - V_2$ is a constant; it's zero if $V$ is pinned somewhere (a grounded conductor, or $V\to0$ at infinity)`, md`Nothing`, md`$V_1 = -V_2$`], 1,
@@ -1936,6 +2146,14 @@
           md`Then $\vb E_1 = -\vb E_2$, which contradicts $\vb E_1 = \vb E_2$ unless both vanish.`],
         md`$\nabla(V_1-V_2) = 0$ in a connected region, so $V_1 - V_2 = c$. Any reference point fixes $c = 0$.`,
         { nofig: 'logic of the theorem' }),
+
+      Q(md`For conductors with given charges $Q_a, \dots, Q_d$ and a given $\rho$ between them, you know the field $\vb E$. Now every conductor's charge and $\rho$ are all doubled. What is the new field?`,
+        [md`Something new: the charges may rearrange on each conductor`, md`$4\vb E$`, md`$\vb E$, since the shapes didn't change`, md`Exactly $2\vb E$ everywhere`], 3,
+        [md`They can't rearrange in a new way: $2\vb E$ already fits all the new data, and the second theorem says the field that fits is unique.`,
+          md`Fields are linear in the charges; energies go like the square.`,
+          md`The field is proportional to the charges that make it.`, null],
+        md`Check $2\vb E$ against the new data: $\nabla\cdot(2\vb E) = 2\rho/\varepsilon_0$; each conductor is still an equipotential (at twice its old potential); the flux around conductor $i$ is $2Q_i/\varepsilon_0$; it still dies off far away. All the data fit, so by the second theorem $2\vb E$ **is** the field, and each $\sigma$ simply doubles. This is the fine print behind "$V\propto Q$" for a capacitor (Unit 3).`,
+        { figHtml: fCond4() }),
 
       Q(md`Which of these problems needs the **second** theorem (the first alone doesn't cover it)?`,
         [md`Isolated conductors with known total charges, and $V\to0$ far away`, md`Conductors all held at known potentials`, md`A point charge inside a grounded box`, md`An empty cavity inside a conductor`], 0,
@@ -1965,6 +2183,26 @@
           md`Gauss's law gives the total flux; it can't tell a uniform distribution from a lopsided one.`, null],
         md`Symmetry arguments quietly use uniqueness. A uniform $\sigma$ meets all the conditions: Laplace's equation outside, the sphere an equipotential, total charge $Q$, $V\to0$ at infinity. If a lopsided arrangement also worked there would be two solutions, and there can't be.`,
         { figHtml: fSphereIso() }),
+
+      Q(md`An isolated metal object shaped like an elongated potato carries charge $Q$. A student guesses that $\sigma$ is uniform over its surface, "by the same uniqueness argument that works for a sphere". What's wrong?`,
+        [md`Nothing: total charge plus uniqueness fixes the field, and uniform is the simplest choice`, md`A uniform $\sigma$ would put the wrong total charge on it`, md`A uniform $\sigma$ on this shape doesn't make the surface an equipotential, so it fails a condition and isn't the solution`, md`Uniqueness doesn't apply to isolated conductors`], 2,
+        [md`Simplicity isn't a condition. The guess has to meet every condition, and "the conductor is an equipotential" is one of them.`,
+          md`Any $\sigma$ with $\oint\sigma\,da = Q$ has the right total, uniform or not.`, null,
+          md`The second theorem is exactly about isolated conductors with known charges.`],
+        md`For the sphere, uniform $\sigma$ passed every test: total charge $Q$, $V\to0$ far away, **and** the surface an equipotential (by symmetry). On a potato a uniform layer gives a surface potential that varies from place to place (for a long shape it is higher in the middle than near the ends), so it fails the equipotential condition. The true $\sigma$ piles up at the sharply curved ends.`,
+        { figHtml: fIrreg() }),
+
+      Q(md`An isolated conductor with total charge $Q$ has a cavity containing a charge $q$. You move $q$ around inside the cavity. What guarantees that the field **outside** the conductor doesn't change?`,
+        [md`The first theorem, because the conductor's potential is fixed`, md`Nothing in general; it holds only for symmetric shapes`, md`The second theorem: the outside region sees an equipotential outer surface with total charge $Q + q$ and $V\to0$ far away, and none of that depends on where $q$ is`, md`Gauss's law alone`], 2,
+        [md`The conductor's potential isn't given: it is isolated. Its total charge is what's known.`,
+          md`It holds for any shapes of conductor and cavity.`, null,
+          md`Gauss's law gives the outer surface's total charge, not how it spreads. Uniqueness fixes the spread.`],
+        md`Outside problem, boundary conditions:
+        1. The outer surface is an equipotential carrying total charge $Q + q$ (the cavity wall holds $-q$, by Gauss with a surface in the metal).
+        2. $V\to0$ far away.
+
+        No charge in the outside region. Nothing here mentions where $q$ sits in the cavity, so by the second theorem the outside field is the same for every position of $q$.`,
+        { figHtml: fCavity({ q: true }) }),
 
       P({
         id: 'u4-p-shell', title: 'A charged sphere inside a grounded shell',
@@ -2219,6 +2457,30 @@
         md`Each conductor gets one condition and the other quantity is an output. A: $V = 9$ V, charge unknown (the battery supplies whatever it takes). B: total charge $5$ nC, potential unknown.`,
         { figHtml: fTwoSpheresBat() }),
 
+      Q(md`Two metal spheres, both initially uncharged, are joined through a $9$ V battery, with no connection to ground anywhere. Which conditions describe them?`,
+        [md`$V_A = 9$ V and $V_B = 0$`, md`$V_A - V_B = 9$ V and $Q_A + Q_B = 0$, each sphere an equipotential`, md`$Q_A = Q_B = 0$`, md`$V_A - V_B = 9$ V only`], 1,
+        [md`Nothing is grounded, so neither potential is fixed on its own. Only the difference is.`, null,
+          md`The battery moves charge from one sphere to the other; each ends up charged.`,
+          md`One condition short. Two conductors need two conditions; the second is charge conservation, since the pair started neutral and nothing else touches it.`],
+        md`Count: two conductors, two unknown potentials. The battery fixes one combination, $V_A - V_B = 9$ V. The other comes from charge conservation: the pair is isolated from everything else, so $Q_A + Q_B = 0$. With $V\to0$ far away the set is complete. (For two equal spheres far apart this gives $V_A = +4.5$ V and $V_B = -4.5$ V.)`,
+        { figHtml: fTwoSphBat() }),
+
+      Q(md`Inside a grounded box, conductors $A$ and $B$ are joined by a thin wire; together they carry total charge $Q$. What conditions do $A$ and $B$ supply?`,
+        [md`Four: $V_A$, $V_B$, $Q_A$ and $Q_B$`, md`$Q_A = Q_B = Q/2$`, md`$V_A = V_B = 0$`, md`They form one conductor: $V_A = V_B$ (one unknown constant) and $Q_A + Q_B = Q$`], 3,
+        [md`Never both $V$ and $Q$ for the same conductor, and the wire ties the two together.`,
+          md`Charge flows until the potentials match; the split depends on the shapes, not on a fifty-fifty rule.`,
+          md`Nothing connects them to the box or to ground.`, null],
+        md`A wire makes two pieces of metal into one conductor: one potential, unknown; one total charge, known. That is one complete condition for the pair (second theorem), plus $V = 0$ on the box walls. How $Q$ splits between $A$ and $B$ is an output of the solution.`,
+        { figHtml: fWiredAB() }),
+
+      Q(md`A metal sphere is held at $V_0$ by a battery to ground. A charge $+q$ is brought near it. What changes on the sphere?`,
+        [md`Its potential rises above $V_0$; its charge stays fixed`, md`Its charge decreases (the battery takes some back) while its potential stays $V_0$`, md`Nothing; the battery shields it`, md`Both its charge and its potential change`], 1,
+        [md`That's what an **isolated** sphere does. The battery holds $V = V_0$ whatever happens nearby.`, null,
+          md`The battery fixes $V$, not the total charge or its distribution.`,
+          md`$V_0$ is held by the battery; only the charge can adjust.`],
+        md`Condition on the sphere: $V = V_0$, held. Bringing $+q$ near would raise the sphere's potential, so the battery takes back positive charge until $V$ is back at $V_0$. For a sphere of radius $R$ with $q$ a distance $a$ from its center, the charge drops by $qR/a$ (the image charge, Unit 5). Compare an isolated sphere: its $Q$ is fixed and its potential rises instead.`,
+        { figHtml: fBatQ() }),
+
       Q(md`A typical Griffiths statement: "a long metal pipe of square cross-section; three sides are grounded, and the fourth side, **insulated from the others**, is held at $V_0$." What does "insulated" tell you about the fourth side?`,
         [md`It carries no charge: $Q = 0$ on that side`, md`$\partial V/\partial n = 0$ on that side, like an insulated edge in a heat problem`, md`Nothing; it cancels "held at $V_0$"`, md`Only that thin insulating gaps separate it from the grounded sides, so it can sit at a different potential: the condition there is $V = V_0$`], 3,
         [md`Its charge is whatever it takes to hold it at $V_0$. "Insulated" refers to the joints, not to its charge.`,
@@ -2367,7 +2629,7 @@
       RF(md`
         ### The licence to guess
 
-        Lecture 9's conclusion: the uniqueness theorems mean you can guess. Given a charge distribution $\rho$ and a set of boundary conditions, if you guess a potential that satisfies Poisson's equation with that $\rho$ in the region and meets every boundary condition, it must be the correct solution, however you came up with it.
+        The payoff: the uniqueness theorems mean you can guess. Given a charge distribution $\rho$ and a set of boundary conditions, if you guess a potential that satisfies Poisson's equation with that $\rho$ in the region and meets every boundary condition, it must be the correct solution, however you came up with it.
 
         The next units are two systematic ways of guessing:
         - **Method of images (Unit 5).** Build $V$ from the real charges plus fictitious charges placed **outside** the region of interest. Charges outside the region don't change $\rho$ inside it, so Poisson's equation in the region is untouched; the fictitious charges only have to make the boundary conditions come out right.
@@ -2375,14 +2637,14 @@
 
         ### The classic image problem: the setup
 
-        Lecture 9 ends here. A point charge $q$ sits at $(0, 0, d)$, a height $d$ above an infinite grounded conducting plane at $z = 0$. What is $V$ in the region $z > 0$?
+        A point charge $q$ sits at $(0, 0, d)$, a height $d$ above an infinite grounded conducting plane at $z = 0$. What is $V$ in the region $z > 0$?
 
         [[fig:img]]
 
-        It isn't just $q/(4\pi\varepsilon_0\srm)$: $q$ induces negative charge on the plane, and that charge contributes too. You don't know how much is induced or where, so you can't integrate. Instead, list the conditions. Lecture 9 asks exactly this in class: what are the boundary conditions? Decide before the next question.
-      `, { img: { svg: fImg3D(), cap: md`Lecture 9's picture: $q$ at height $d$ above an infinite grounded conducting plane.` } }),
+        It isn't just $q/(4\pi\varepsilon_0\srm)$: $q$ induces negative charge on the plane, and that charge contributes too. You don't know how much is induced or where, so you can't integrate. Instead, list the conditions. What are the boundary conditions? Decide before the next question.
+      `, { img: { svg: fImg3D(), cap: md`$q$ at height $d$ above an infinite grounded conducting plane.` } }),
 
-      Q(md`Lecture 9's in-class question: for the charge above the grounded plane, solving in the region $z > 0$, what are the boundary conditions?`,
+      Q(md`For the charge above the grounded plane, solving in the region $z > 0$, what are the boundary conditions?`,
         [md`$V = 0$ at $z = 0$ only`, md`$V = q/(4\pi\varepsilon_0 d)$ at the point of the plane right below $q$`, md`$\partial V/\partial z = 0$ at $z = 0$`, md`$V = 0$ at $z = 0$ for every $(x, y)$, and $V\to0$ far away`], 3,
         [md`The region $z>0$ is unbounded; its boundary also includes infinity, where $V\to 0$.`,
           md`The plane is grounded: $V = 0$ at every point of it, including right below $q$.`,

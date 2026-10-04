@@ -1,5 +1,5 @@
 /* Unit 3 — Work, energy and conductors.
-   Lecture 6 (from "moving a charge" on), Lecture 7, Lecture 8 (parallel plates, energy of a capacitor);
+   Work and energy, conductors, parallel plates and the energy of a capacitor;
    Griffiths 2.4–2.5. HW 3: Griffiths 2.39, Hybrid 2.40. HW 4: Griffiths 2.43, 2.44. */
 (function () {
   'use strict';
@@ -202,11 +202,11 @@
         RF(md`
           ### From force to energy
 
-          Lecture 6 finishes the chain force → field → potential with **energy**. Put a test charge $q$ in a static field $\vb E(\vb r)$ made by other charges that are held fixed. The field pushes on $q$ with $\vb F = q\vb E$. To move $q$ without letting it speed up, you push back with
+          This unit finishes the chain force → field → potential with **energy**. Put a test charge $q$ in a static field $\vb E(\vb r)$ made by other charges that are held fixed. The field pushes on $q$ with $\vb F = q\vb E$. To move $q$ without letting it speed up, you push back with
 
           $$\vb F_{\text{ext}} = -q\vb E .$$
 
-          (The notes call $-q\vb E$ "the work we must exert"; it is the **force** you exert. The work comes next.)
+          ($-q\vb E$ is the **force** you exert, not the work. The work comes next.)
 
           [[fig:path]]
 
@@ -218,7 +218,7 @@
 
           !!key The work you do is $W = q\,\Delta V$
             It depends only on the charge and on the potential at the two ends. The field does the opposite amount of work, $W_{\text{field}} = -q\,\Delta V$. "Slowly" means no kinetic energy is gained, so the two cancel.
-        `, { path: { svg: fPath(), cap: 'Lecture 6: carry $q$ from $a$ to $b$ through a field (here a uniform one). The path is arbitrary.' } }),
+        `, { path: { svg: fPath(), cap: 'Carry $q$ from $a$ to $b$ through a field (here a uniform one). The path is arbitrary.' } }),
 
         Q(md`A uniform field $\vb E = E_0\uv x$ with $E_0>0$. You carry a charge $+q$ slowly from $a$ to $b$, a distance $d$ along the field. How much work do **you** do?`,
           [md`$+qE_0d$`, md`$-qE_0d$`, md`$0$, because $q$ starts and ends at rest`, md`It depends on the path you take from $a$ to $b$`], 1,
@@ -247,7 +247,7 @@
         RF(md`
           ### What $W = q\,\Delta V$ tells you
 
-          The lecture draws two conclusions.
+          Two conclusions follow.
 
           1. **Electrostatic forces are conservative.** The energy change of the system depends only on the end points, not on the path. Around any closed loop the work is zero.
           2. **The potential is energy per unit charge:** $V(b)-V(a) = W/q$. With the reference point at infinity, $W(\vb r) = q\,[V(\vb r)-V(\infty)]$, and since we usually take $V(\infty)=0$,
@@ -340,6 +340,30 @@
             md`A large field at the end point does not make the work infinite. The work is $qV(M)$, and $V(M) = 0$.`],
           md`$V(M) = \dfrac{Q}{4\pi\varepsilon_0 d} - \dfrac{Q}{4\pi\varepsilon_0 d} = 0$, so $W = qV(M) = 0$. The field at $M$ is large (both charges push $q$ the same way), but the work depends on $V$, not on $\vb E$ at the end point. Compare with the previous question: there $\vb E = 0$ and $V\neq0$; here $\vb E\neq0$ and $V=0$.`,
           { figHtml: fDip() }),
+
+        Q(md`You carry $q$ slowly from $a$ to $b$ against the field of fixed charges, doing positive work. The charge ends at rest, as it started. Where did your work go?`,
+          [md`Into the kinetic energy of $q$`, md`Into heat`, md`Into the electrostatic energy of the system ($q$ plus the fixed charges), stored in the field`, md`Into the fixed charges, which speed up`], 2,
+          [md`"Slowly" means no kinetic energy is gained: you push with $-q\vb E$, just enough to balance the field.`,
+            md`Nothing rubs; there is no friction anywhere. The process is reversible: let go, and the field gives the work back as kinetic energy.`, null,
+            md`They are held fixed. Whatever holds them does no work, since they don't move.`],
+          md`$W = q[V(b) - V(a)]$ is stored as potential energy of the whole configuration. Release $q$ at $b$ and the field pushes it back, turning that energy into kinetic energy. The field picture says the same thing: the energy sits in $\tfrac{\varepsilon_0}{2}E^2$, which changed when $q$ moved (Lesson 3).`,
+          { figHtml: fUniAB() }),
+
+        Q(md`Back to the $\pm Q$ pair a distance $2d$ apart: $V(M) = 0$ at the midpoint. What is the field at $M$?`,
+          [md`Zero, since $V = 0$ there`, md`$\dfrac{2Q}{4\pi\varepsilon_0d^2}$, pointing from $+Q$ toward $-Q$`, md`$\dfrac{2Q}{4\pi\varepsilon_0d^2}$, pointing from $-Q$ toward $+Q$`, md`$\dfrac{Q}{4\pi\varepsilon_0 d^2}$: the two fields partly cancel`], 1,
+          [md`$\vb E$ is the slope of $V$, not its value. $V$ passes through zero at $M$ while dropping steeply from the $+Q$ side to the $-Q$ side.`, null,
+            md`Fields point away from $+Q$ and toward $-Q$; at $M$ both point from $+Q$ to $-Q$.`,
+            md`They add: $+Q$ pushes away from itself and $-Q$ pulls toward itself, the same direction at $M$.`],
+          md`Each charge gives $\dfrac{Q}{4\pi\varepsilon_0d^2}$ at $M$, both pointing toward $-Q$: total $\dfrac{2Q}{4\pi\varepsilon_0d^2}$. $V = 0$ and $\vb E\ne0$ at the same point: the value of $V$ and its slope are separate pieces of information. (The opposite case, $\vb E = 0$ with $V\ne0$, is the midpoint of two equal charges.)`,
+          { figHtml: fDip() }),
+
+        Q(md`How much work does it take to bring a charge $q$ in from infinity to a distance $s$ from an infinite line charge $\lambda$ of the same sign?`,
+          [md`$\dfrac{q\lambda}{2\pi\varepsilon_0 s}$`, md`$\dfrac{q\lambda}{2\pi\varepsilon_0}\ln s$`, md`Zero, since the line is neutral far away`, md`Infinitely much: the field falls off only like $1/s$, so the potential difference between $s$ and infinity diverges`], 3,
+          [md`That is $q$ times the field: a force, not a work.`,
+            md`$\ln s$ means nothing without a reference length, and measured from $s = \infty$ it is infinite.`,
+            md`The line isn't neutral; it carries charge all the way out, and its field $\lambda/(2\pi\varepsilon_0 s)$ falls off slowly.`, null],
+          md`$\displaystyle\int_s^\infty\frac{q\lambda}{2\pi\varepsilon_0 s'}\,ds' = \frac{q\lambda}{2\pi\varepsilon_0}\ln\frac{\infty}{s}$ diverges. An infinite line has infinite total charge, and its field falls only like $1/s$. "Work from infinity" ($W = qV$ with $V(\infty) = 0$) needs a localized source; for a line, use differences between finite distances, $\dfrac{q\lambda}{2\pi\varepsilon_0}\ln\dfrac{s_1}{s_2}$.`,
+          { figHtml: fLineQ() }),
 
         P({
           title: 'Moving a charge closer to a fixed charge',
@@ -551,10 +575,10 @@
         RF(md`
           ### What does it cost to assemble charges?
 
-          Start with empty space: no charges, no field. Bring point charges in from far away one at a time and nail each one down where it belongs. The lecture's in-class questions:
+          Start with empty space: no charges, no field. Bring point charges in from far away one at a time and nail each one down where it belongs. What does each step cost?
 
           - **The first charge** costs nothing. There is no field yet to push against.
-          - **The second charge** costs $q_2V_1(\vb r_2)$, where $V_1(\vb r) = \dfrac{q_1}{4\pi\varepsilon_0\srm_1}$ is the potential of the first, so $W_2 = \dfrac{q_1q_2}{4\pi\varepsilon_0\srm_{12}}$. (The notes write $qV_1(\vb r_2)$; the charge is $q_2$.)
+          - **The second charge** costs $q_2V_1(\vb r_2)$, where $V_1(\vb r) = \dfrac{q_1}{4\pi\varepsilon_0\srm_1}$ is the potential of the first, so $W_2 = \dfrac{q_1q_2}{4\pi\varepsilon_0\srm_{12}}$.
           - **The third** pushes against both: $W_3 = \dfrac{q_3}{4\pi\varepsilon_0}\left(\dfrac{q_1}{\srm_{13}}+\dfrac{q_2}{\srm_{23}}\right)$.
 
           [[fig:build]]
@@ -597,7 +621,7 @@
         RF(md`
           ### Counting every pair twice: $W = \tfrac12\sum q_iV(\vb r_i)$
 
-          A tidier way is to count each pair **twice** and divide by 2 (the notes: "we have deliberately double counted and used ½ to divide it out"):
+          A tidier way is to count each pair **twice** and divide by 2 (the double counting is deliberate, and the ½ undoes it):
 
           $$W = \frac12\,\kq\sum_{i=1}^{n}\sum_{j\ne i}\frac{q_iq_j}{\srm_{ij}} = \frac12\sum_{i=1}^{n} q_i\underbrace{\left(\sum_{j\ne i}\frac{1}{4\pi\varepsilon_0}\frac{q_j}{\srm_{ij}}\right)}_{V(\vb r_i)} = \frac12\sum_{i=1}^{n} q_i\,V(\vb r_i).$$
 
@@ -609,7 +633,7 @@
           | $q_2V(\vb r_2)$ | $q_2q_1/\srm_{12}$ | (left out) | $q_2q_3/\srm_{23}$ |
           | $q_3V(\vb r_3)$ | $q_3q_1/\srm_{13}$ | $q_3q_2/\srm_{23}$ | (left out) |
 
-          Each pair appears twice, once in each partner's row. (The notes' upper limits switch between $n$ and $N$; both mean the number of charges.)
+          Each pair appears twice, once in each partner's row.
 
           !!trap Two traps in $\tfrac12\sum q_iV(\vb r_i)$
             1. $V(\vb r_i)$ leaves out charge $i$'s own potential, which is infinite at its own position.
@@ -730,6 +754,14 @@
             Slightly negative: the central charge more than pays for the corner repulsion, so the whole thing is (barely) bound.
           `,
         }),
+
+        Q(md`The five-charge square ($+q$ at the corners, $-q$ at the centre) has $W = (4 - 3\sqrt2)\dfrac{q^2}{4\pi\varepsilon_0 a}\approx-0.24\,\dfrac{q^2}{4\pi\varepsilon_0 a}$. Released from rest, do the five charges stay put?`,
+          [md`Yes: negative energy means the arrangement is bound and stable`, md`Yes, because the forces on every charge cancel by symmetry`, md`No: $W<0$ only says that pulling everything apart to infinity costs energy. Each corner charge feels a net pull toward the centre`, md`No: the corners fly outward, since like charges repel`], 2,
+          [md`"Bound" compares the assembled state with the dispersed one; it says nothing about forces. No arrangement of charges is held in stable equilibrium by electrostatic forces alone (Earnshaw).`,
+            md`Symmetry cancels the force on the centre charge, not on the corners: see the solution.`, null,
+            md`The centre charge's pull beats the corners' mutual push, so the corners move **in**.`],
+          md`Force on a corner along its diagonal, in units of $\dfrac{q^2}{4\pi\varepsilon_0a^2}$: the two neighbours push it out with $2\cdot\tfrac{1}{\sqrt2} = 1.41$, the far corner with $\tfrac12$, and the centre pulls it in with $\dfrac{a^2}{(a/\sqrt2)^2} = 2$. Net: $0.09$ inward, so the square collapses. The sign of $W$ compares the assembled state with the dispersed one; it doesn't tell you whether the assembled state is in equilibrium.`,
+          { figHtml: fFour(true) }),
 
         Q(md`Three equal charges $+q$ are arranged either (1) on a line with spacing $a$ or (2) at the corners of an equilateral triangle of side $a$. Which arrangement stores more energy?`,
           [md`The triangle: $3$ versus $2.5$ (units of $q^2/(4\pi\varepsilon_0 a)$)`, md`The line: its charges are spread out over a longer distance`, md`They are equal: both have three pairs`, md`The line: $3.5$ versus $3$`], 0,
@@ -921,7 +953,7 @@
         RF(md`
           ### From sums to integrals
 
-          In-class question: what is the energy in the continuous case? Replace each $q_i$ by a bit of charge $\rho\,d\tau$ and the sum by an integral:
+          What is the energy in the continuous case? Replace each $q_i$ by a bit of charge $\rho\,d\tau$ and the sum by an integral:
 
           $$W = \frac12\int\rho(\vb r)\,V(\vb r)\,d\tau$$
 
@@ -941,7 +973,7 @@
 
           [[fig:S]]
 
-          In-class question: **why is the surface term zero?** Push $S$ out to a sphere of radius $r\to\infty$. From far away the charges look like a point charge, so $V\sim 1/r$ and $E\sim 1/r^2$, while the area grows like $r^2$. The surface term goes like $\dfrac1r\cdot\dfrac1{r^2}\cdot r^2 = \dfrac1r\to0$. Over all space,
+          **Why is the surface term zero?** Push $S$ out to a sphere of radius $r\to\infty$. From far away the charges look like a point charge, so $V\sim 1/r$ and $E\sim 1/r^2$, while the area grows like $r^2$. The surface term goes like $\dfrac1r\cdot\dfrac1{r^2}\cdot r^2 = \dfrac1r\to0$. Over all space,
 
           $$W = \frac{\varepsilon_0}{2}\int_{\text{all space}} E^2\,d\tau .$$
 
@@ -1095,6 +1127,14 @@
           figs: { plots: Object.assign(plotBall(), { cap: '' }) },
         }),
 
+        Q(md`A small ball with charge $q$ sits (A) alone, (B) at the centre of a neutral thick metal shell with radii $a<b$, (C) at the centre of the same shell, grounded. Rank the total field energy.`,
+          [md`A = B = C: the charge is the same`, md`A > B > C`, md`C > B > A: the metal stores extra energy`, md`A > C > B`], 1,
+          [md`The field energy is $\tfrac{\varepsilon_0}{2}\int E^2\,d\tau$, and the metal changes where $\vb E$ is.`, null,
+            md`Metal stores no field energy: $\vb E = 0$ inside it. Adding metal only removes field.`,
+            md`Grounding removes the outside field as well, so C has the least.`],
+          md`Compare the fields. A: $\dfrac{q}{4\pi\varepsilon_0r^2}$ everywhere. B: the same, except $\vb E = 0$ in the metal $a<r<b$, so B is lower by $\dfrac{q^2}{8\pi\varepsilon_0}\left(\dfrac1a - \dfrac1b\right)$. C: also $\vb E = 0$ for $r>b$, so it is lower than A by $\dfrac{q^2}{8\pi\varepsilon_0 a}$. Each piece of field you remove takes its energy with it.`,
+          { figHtml: fShellRank() }),
+
         Q(md`A uniformly charged solid ball and a uniformly charged thin shell have the same charge $q$ and radius $R$. Which stores more energy?`,
           [md`The shell, because all its charge is at the largest radius`, md`They are equal, because the fields outside are identical`, md`The solid ball, by a factor $6/5$, because it also has field inside`, md`The solid ball, by a factor of 2`], 2,
           [md`Charge at a larger radius is **lower** energy (less crowded). The shell is the low-energy arrangement.`, md`The outside fields are identical, but the ball also has field inside, $E\propto r$, which stores extra energy.`, null, md`The ball's inside field adds $\tfrac{q^2}{40\pi\varepsilon_0R}$, a fifth of the shell's $\tfrac{q^2}{8\pi\varepsilon_0R}$, not a whole extra copy.`],
@@ -1242,7 +1282,7 @@
         RF(md`
           ### Energy is quadratic, so it does not superpose
 
-          Lecture 7 opens with a warning: the energy does **not** obey the superposition principle, because it is quadratic in the field. If $\vb E = \vb E_1 + \vb E_2$,
+          A warning first: the energy does **not** obey the superposition principle, because it is quadratic in the field. If $\vb E = \vb E_1 + \vb E_2$,
 
           $$W_{\text{tot}} = \frac{\varepsilon_0}{2}\int(\vb E_1+\vb E_2)^2\,d\tau = \frac{\varepsilon_0}{2}\int\left(E_1^2 + E_2^2 + 2\,\vb E_1\cdot\vb E_2\right)d\tau = W_1 + W_2 + \varepsilon_0\int\vb E_1\cdot\vb E_2\,d\tau .$$
 
@@ -1449,6 +1489,73 @@
     return f;
   }
 
+  // ===================================================================================== figures for the added conceptual questions
+  // an infinite line charge and a charge brought in from far away
+  const fLineQ = () => {
+    const f = PF.fig();
+    f.line(20, 40, 300, 40, { cls: 'thick' }); f.label(306, 40, '\\lambda', 'l');
+    f.charge(160, 130, { q: '+', lab: 'q', at: 'r' });
+    f.dim(128, 40, 128, 130, 's', { at: 'l' });
+    f.arrow(160, 214, 160, 146, { cls: 'dash' });
+    f.text(170, 206, 'from far away', 'l');
+    return f.svg();
+  };
+  // (A) a small charged ball alone, (B) inside a neutral thick shell, (C) inside the same shell, grounded
+  const fShellRank = () => {
+    const mk = (kind) => {
+      const f = PF.fig(), cx = 70, cy = 70;
+      if (kind !== 'A') ringMetal(f, cx, cy, 30, 48);
+      else f.circle(cx, cy, 48, { cls: 'dim dash thin' });
+      f.charge(cx, cy, { q: '+', lab: 'q', at: 'b' });
+      if (kind === 'C') { f.line(cx, cy + 48, cx, cy + 60); f.ground(cx, cy + 60); }
+      return f.svg();
+    };
+    return PF.row([{ svg: mk('A'), cap: '(A) alone' }, { svg: mk('B'), cap: '(B) neutral shell' }, { svg: mk('C'), cap: '(C) grounded shell' }]).svg;
+  };
+  // a charged conductor with a proposed field line that leaves it and lands on it again
+  const fLoopLine = () => {
+    const f = PF.fig(), cx = 120, cy = 110;
+    const pts = shape(cx, cy, 80, 40, { h: [[2, 0.08, 0], [3, 0.1, 270]] });
+    metal(f, [pts]);
+    const A = pts[at(pts, cx, cy, 140)], B = pts[at(pts, cx, cy, 40)], Cp = [cx, cy - 150];
+    const path = [];
+    for (let k = 0; k <= 60; k++) { const t = k / 60, u = 1 - t; path.push([u * u * A[0] + 2 * t * u * Cp[0] + t * t * B[0], u * u * A[1] + 2 * t * u * Cp[1] + t * t * B[1]]); }
+    f.pl(path, { cls: 'dash' }); headOn(f, path, 0.8);
+    f.text(cx + 96, cy - 66, 'proposed field line', 'l');
+    f.label(cx, cy + 60, 'Q', 't');
+    return f.svg();
+  };
+  // an isolated, irregular conductor carrying Q (no signs drawn)
+  const fIrregQ = () => {
+    const f = PF.fig(), cx = 130, cy = 80;
+    metal(f, [shape(cx, cy, 100, 46, { h: [[2, 0.1, 30], [3, 0.12, 0], [5, 0.04, 0]] })]);
+    f.label(cx, cy + 74, 'Q > 0', 't');
+    f.text(cx, cy - 74, 'isolated, nothing else nearby', 'b');
+    return f.svg();
+  };
+  // a charged capacitor about to be connected to an identical uncharged one
+  const fTwoCaps = () => {
+    const f = PF.fig();
+    metal(f, [[[20, 40], [120, 40], [120, 47], [20, 47]]]); metal(f, [[[20, 90], [120, 90], [120, 97], [20, 97]]]);
+    metal(f, [[[200, 40], [300, 40], [300, 47], [200, 47]]]); metal(f, [[[200, 90], [300, 90], [300, 97], [200, 97]]]);
+    f.label(14, 43, '+Q', 'r'); f.label(14, 93, '-Q', 'r');
+    f.label(306, 43, '0', 'l'); f.label(306, 93, '0', 'l');
+    f.line(120, 43.5, 200, 43.5, { cls: 'dash' }); f.line(120, 93.5, 200, 93.5, { cls: 'dash' });
+    f.text(160, 30, 'connect', 'b');
+    return f.svg();
+  };
+  // parallel plates with a metal slab in the gap (part: slab only partly inserted)
+  const fSlabCap = (part) => {
+    const f = PF.fig();
+    metal(f, [[[20, 30], [260, 30], [260, 38], [20, 38]]]); metal(f, [[[20, 140], [260, 140], [260, 148], [20, 148]]]);
+    f.label(266, 34, '+Q', 'l'); f.label(266, 144, '-Q', 'l');
+    f.dim(8, 38, 8, 140, 'd', { at: 'l' });
+    const x0 = part ? 170 : 80, x1 = part ? 330 : 200;
+    metal(f, [[[x0, 72], [x1, 72], [x1, 104], [x0, 104]]]);
+    f.dim(x0 - 12, 72, x0 - 12, 104, 't', { at: 'l' });
+    return f.svg();
+  };
+
   // ===================================================================================== Lesson 5
   const L5 = () => {
     const fBlock = () => {
@@ -1632,7 +1739,7 @@
         RF(md`
           ### Insulators and conductors
 
-          Lecture 7 sorts materials by how freely their charges can move.
+          Sort materials by how freely their charges can move.
 
           - **Insulator:** electrons are tightly bound to their atoms and cannot move (glass, rubber).
           - **Conductor:** one or more charges per atom are free to move: electrons in metals such as aluminium or gold, ions in salt water.
@@ -1641,7 +1748,7 @@
 
           ### Property 1: $\vb E = 0$ inside
 
-          Put a conductor into an external field $\vb E_0$. The field pushes on the free charges: electrons drift upstream and pile up on the left face, leaving the right face positive. These induced charges make a field of their own, $\vb E_1$, which inside the metal points from $+$ to $-$, **against** $\vb E_0$. While any field remains inside, charge keeps flowing, so the flow stops only when $\vb E_1$ cancels $\vb E_0$ exactly. In the notes' words: the charges separate and create a compensating field that cancels any net field.
+          Put a conductor into an external field $\vb E_0$. The field pushes on the free charges: electrons drift upstream and pile up on the left face, leaving the right face positive. These induced charges make a field of their own, $\vb E_1$, which inside the metal points from $+$ to $-$, **against** $\vb E_0$. While any field remains inside, charge keeps flowing, so the flow stops only when $\vb E_1$ cancels $\vb E_0$ exactly. In short: the charges separate and create a compensating field that cancels any net field.
 
           [[fig:slab]]
 
@@ -1682,7 +1789,7 @@
 
           Gauss's law in differential form: $\divg\vb E = \rho/\varepsilon_0$. With $\vb E = 0$ throughout the metal, $\divg\vb 0 = 0$, so $\rho = 0$. There is still plenty of charge (nuclei and electrons), but exactly as much $+$ as $-$ in every small volume.
 
-          The lecture's picture: imagine a positive point charge placed inside the conductor. Free electrons crowd around it until their charge cancels its field. This is called **screening**. The conductor's net $+q$ ends up on its outer surface.
+          Picture it: imagine a positive point charge placed inside the conductor. Free electrons crowd around it until their charge cancels its field. This is called **screening**. The conductor's net $+q$ ends up on its outer surface.
 
           [[fig:screen]]
 
@@ -1723,7 +1830,7 @@
 
           $$V(b)-V(a) = -\int_a^b\vb E\cdot d\vb l = 0\quad\Longrightarrow\quad V(b) = V(a).$$
 
-          (The notes drop the minus sign; that's harmless here because the integral is zero.) The whole conductor, interior and surface, sits at **one** potential. That potential need not be zero, and the surface charge need not be uniform.
+          The whole conductor, interior and surface, sits at **one** potential. That potential need not be zero, and the surface charge need not be uniform.
 
           [[fig:eqp]]
 
@@ -1758,10 +1865,26 @@
           md`The conductor's surface is itself an equipotential. Nearby equipotentials are slightly displaced copies of it, crowded together where $E$ is large (sharp points) and spread out where $E$ is small. Far away they round off into spheres.`,
           { figHtml: fBlobQ(false) }),
 
+        Q(md`Could a field line leave a charged conductor at one point and land on the same conductor at another point?`,
+          [md`Yes, on a strongly curved conductor`, md`Yes, if the conductor is neutral`, md`Only on a conductor with a cavity`, md`No: $V$ drops along a field line, so its two ends would be at different potentials, but a conductor is an equipotential`], 3,
+          [md`Shape doesn't matter: the potential argument works for every shape.`,
+            md`A neutral conductor near a charge has lines arriving on one side and leaving the other, but each line connects to something else (the charge, or infinity), never back to the same conductor.`,
+            md`An empty cavity has no field at all; with a charge inside, the lines run from that charge to the wall.`, null],
+          md`Along a field line, $dV = -\vb E\cdot d\vb l = -E\,dl<0$: $V$ strictly decreases. A line from the conductor back to itself would join two points at different potentials on one equipotential. Impossible. The same argument shows that an empty cavity is field-free.`,
+          { figHtml: fLoopLine() }),
+
+        Q(md`An isolated conductor of irregular shape carries charge $Q>0$, with nothing else anywhere. Can $\sigma$ be negative somewhere on its surface?`,
+          [md`No: a field line ending on a negative patch would have to start somewhere at a higher potential, and nothing is above the conductor's potential`, md`Yes, in hollows of the surface, where the charge is pushed out`, md`Yes, if the shape is sharp enough`, md`Only if $Q$ is small`], 0,
+          [null, md`Hollows get **less** positive charge, not negative charge.`,
+            md`Sharp points get more charge of the same sign, not a sign change.`,
+            md`Scaling $Q$ scales $\sigma$ everywhere by the same factor; it can't flip a sign.`],
+          md`Lines leaving the positive charge can't come back to the conductor (the previous question) and there are no other charges, so they run to infinity: $V_c > V(\infty) = 0$. $V$ has no maximum in empty space, so nothing anywhere is at a potential above $V_c$. A line ending on a negative patch would have to start at a higher potential than $V_c$. There is no such place, so $\sigma\ge0$ everywhere. With other charges nearby, negative patches are possible (induction).`,
+          { figHtml: fIrregQ() }),
+
         RF(md`
           ### Induced charge and attraction
 
-          Hold a charge $+q$ near an uncharged conductor. It pulls electrons to the near side and leaves the far side positive (equivalently: the conductor's charge rearranges to kill the field of $q$ inside the metal). The induced $-$ charge is closer to $q$ than the induced $+$, so the attraction wins. For ordinary shapes (spheres, planes) a charge and a neutral conductor attract, whatever the sign of $q$. The method of images (Lecture 10) computes this force exactly.
+          Hold a charge $+q$ near an uncharged conductor. It pulls electrons to the near side and leaves the far side positive (equivalently: the conductor's charge rearranges to kill the field of $q$ inside the metal). The induced $-$ charge is closer to $q$ than the induced $+$, so the attraction wins. For ordinary shapes (spheres, planes) a charge and a neutral conductor attract, whatever the sign of $q$. The method of images (Unit 5) computes this force exactly.
 
           [[fig:ind]]
         `, { ind: { svg: fInduced(), cap: 'A charge $+q$ near a neutral conductor induces $-$ on the near side and $+$ on the far side.' } }),
@@ -1770,6 +1893,14 @@
           [md`repulsive, since the sign changed`, md`zero, since the conductor is neutral`, md`attractive again: the induced charges also flip`, md`attractive only if the conductor is grounded`], 2,
           [md`Flipping $q$ flips the induced charges too: now $+$ is on the near side.`, md`Neutral overall, but the induced charge is not evenly placed: the near side carries the opposite sign and is closer.`, null, md`An isolated neutral conductor also attracts; grounding just makes the attraction stronger (extra charge flows in).`],
           md`Everything flips together: the near side now has induced $+$, the far side $-$. The closer opposite charge still wins. The force depends on $q^2$, not on $q$.`,
+          { figHtml: fInduced() }),
+
+        Q(md`A neutral, isolated conductor sits near a charge $+q$. Taking $V(\infty) = 0$, the conductor's potential is`,
+          [md`zero, because it's neutral`, md`negative, because negative charge gathers on the side facing $q$`, md`positive`, md`positive on the far side and negative on the near side`], 2,
+          [md`Neutral fixes the total charge, not the potential. $q$'s potential reaches it.`,
+            md`The induced $-$ charge is there, but field lines also leave the far side and run to infinity, so the conductor is above zero.`, null,
+            md`The whole conductor is one equipotential; $\sigma$ changes sign across it, $V$ doesn't.`],
+          md`Field lines from the induced $+$ charge on the far side run off to infinity, and $V$ drops along every field line, so $V_c > V(\infty) = 0$. For a sphere you can get the number: the induced charge totals zero and all sits at distance $R$ from the centre, so it adds nothing to $V$ at the centre, and $V_c = \dfrac{q}{4\pi\varepsilon_0 d}$, the potential of $q$ at the centre ($d$ the distance from $q$ to the centre).`,
           { figHtml: fInduced() }),
 
         RF(md`
@@ -1929,7 +2060,7 @@
       } else f.text(194, 104, 'empty', 'c');
       return f.svg();
     };
-    // peanut-shaped conductor with a cavity holding +q (lecture figure); options: gauss, ground
+    // peanut-shaped conductor with a cavity holding +q; options: gauss, ground
     const fCav = (o = {}) => {
       const f = PF.fig(), cx = 170, cy = 100;
       const outer = shape(cx, cy, 96, 72, { h: [[2, 0.2, 0], [4, 0.07, 0]] });
@@ -2044,7 +2175,7 @@
 
           If a conductor with an empty cavity is placed in an external field, the field in the cavity is zero.
 
-          The lecture's argument. Suppose not. Then some field line runs through the cavity. There is no charge in the cavity, so the line has to start and end on the cavity wall (on $+$ and $-$ wall charge). Close it into a loop by returning through the metal (dashed). Along the field line, $\vb E\cdot d\vb l>0$ at every step; through the metal, $\vb E = 0$. So $\oint\vb E\cdot d\vb l>0$, which is impossible: $\oint\vb E\cdot d\vb l = 0$ for every electrostatic field. Hence $\vb E = 0$ in the cavity, and the cavity wall carries no charge at all ($\sigma = 0$ everywhere on it, not just zero in total).
+          The argument. Suppose not. Then some field line runs through the cavity. There is no charge in the cavity, so the line has to start and end on the cavity wall (on $+$ and $-$ wall charge). Close it into a loop by returning through the metal (dashed). Along the field line, $\vb E\cdot d\vb l>0$ at every step; through the metal, $\vb E = 0$. So $\oint\vb E\cdot d\vb l>0$, which is impossible: $\oint\vb E\cdot d\vb l = 0$ for every electrostatic field. Hence $\vb E = 0$ in the cavity, and the cavity wall carries no charge at all ($\sigma = 0$ everywhere on it, not just zero in total).
 
           [[fig:far]]
 
@@ -2092,7 +2223,7 @@
 
           [[fig:cav]]
 
-          The notes: "We have lost all information about the charge location." Move $q$ around inside the cavity, and the $-q$ on the wall rearranges to follow it, but nothing outside changes.
+          From outside, all information about where the charge sits is lost. Move $q$ around inside the cavity, and the $-q$ on the wall rearranges to follow it, but nothing outside changes.
 
           ### Griffiths Ex. 2.10: what does the outside see?
 
@@ -2105,7 +2236,7 @@
           [[fig:ex]]
 
           (Is it obvious that $q$ and the wall's $-q$ cancel by themselves outside? Griffiths admits it isn't quite. The uniqueness theorem of Chapter 3 settles it: there is only one way to arrange the charge so that $\vb E = 0$ in the metal, and the arrangement above works.)
-        `, { cav: { svg: fCav({ gauss: true }), cap: 'Lecture 7: $+q$ in a cavity. The wall carries $-q$ (Gauss, with the dashed surface in the metal); the outer surface carries $+q$.' }, ex: { svg: fEx210(), cap: 'Griffiths Ex. 2.10: an odd cavity with $q$ off-centre in a neutral metal sphere. Outside, the field is that of $q$ at the centre of the sphere.' } }),
+        `, { cav: { svg: fCav({ gauss: true }), cap: '$+q$ in a cavity. The wall carries $-q$ (Gauss, with the dashed surface in the metal); the outer surface carries $+q$.' }, ex: { svg: fEx210(), cap: 'Griffiths Ex. 2.10: an odd cavity with $q$ off-centre in a neutral metal sphere. Outside, the field is that of $q$ at the centre of the sphere.' } }),
 
         Q(md`A neutral conductor has a cavity containing a point charge $+q$. The total charge on the cavity wall is`,
           [md`$0$, since the conductor is neutral`, md`$+q$`, md`$-q/2$`, md`$-q$`], 3,
@@ -2128,7 +2259,7 @@
         Q(md`In Griffiths Ex. 2.10 the cavity is irregular and $q$ is off-centre. The surface charge on the **cavity wall** is`,
           [md`uniform, $-q/A_{\text{wall}}$`, md`denser where the wall is closest to $q$`, md`zero, as in an empty cavity`, md`positive near $q$`], 1,
           [md`Uniform would cancel $q$'s field in the metal only for a spherical cavity with $q$ at its centre.`, null, md`The cavity isn't empty: it must carry $-q$ in total.`, md`Near $q$ the wall charge is attracted: it's negative, and densest there.`],
-          md`The $-q$ on the wall has to cancel $q$'s field everywhere in the metal, so it crowds toward $q$, like the induced charge under a point charge near a plane (images, Lecture 10). Only a centred charge in a spherical cavity gives a uniform wall charge.`,
+          md`The $-q$ on the wall has to cancel $q$'s field everywhere in the metal, so it crowds toward $q$, like the induced charge under a point charge near a plane (images, Unit 5). Only a centred charge in a spherical cavity gives a uniform wall charge.`,
           { figHtml: fEx210(true) }),
 
         Q(md`In the same example, the charge on the **outer** surface of the sphere is`,
@@ -2195,6 +2326,14 @@
           [md`the charge on the inner surface, from $-q$ to $0$`, md`the field in the cavity`, md`the charge on the outer surface (from $+q$ to $0$) and the field outside`, md`nothing, since the shell was neutral already`], 2,
           [md`The inner surface keeps $-q$: Gauss with a surface in the metal still demands it.`, md`The cavity potential shifts by a constant, which changes no field.`, null, md`Neutral is not the same as $V = 0$. The isolated shell sits at $q/(4\pi\varepsilon_0 b)$; grounding pulls it to 0 by draining the outer $+q$.`],
           md`Isolated: outer $+q$, field outside $\dfrac{q}{4\pi\varepsilon_0r^2}$, shell at $V_c = \dfrac{q}{4\pi\varepsilon_0b}$. Grounded: outer charge $0$, field outside $0$, $V_c = 0$. Inner surface and cavity field: unchanged.`,
+          { figHtml: fShellQ(true) }),
+
+        Q(md`In the worked example the shell around $q$ is grounded. Now you cut the ground wire, and after that remove $q$ through a tiny hole. What charge does the shell carry now, and where?`,
+          [md`None: it was grounded, so it's neutral`, md`$-q$, still on the inner wall`, md`$-q$, spread uniformly over the outer surface`, md`$+q$ on the outer surface`], 2,
+          [md`While grounded, the shell drew $-q$ from the earth (to cancel $q$'s field outside). Cutting the wire traps that charge.`,
+            md`With $q$ gone, Gauss with a surface in the metal needs zero charge on the wall, so the $-q$ moves out.`, null,
+            md`Grounding removed the outer $+q$; the shell's total is $-q$.`],
+          md`Grounded with $q$ inside: wall $-q$, outer surface $0$, total $-q$. Cut the wire: the total stays $-q$. Remove $q$: the cavity is empty, so the wall carries no charge, and all of $-q$ goes to the outer surface, uniformly on a sphere. Outside, the field is now that of $-q$ at the centre. This is charging by induction.`,
           { figHtml: fShellQ(true) }),
 
         P({
@@ -2548,11 +2687,11 @@
         RF(md`
           ### The field just outside a conductor
 
-          The boundary condition from Lecture 5 holds across any surface charge, with $\hat{\vb n}$ pointing from "below" to "above":
+          The boundary condition at a charged surface (Griffiths 2.3.5) holds across any surface charge, with $\hat{\vb n}$ pointing from "below" to "above":
 
           $$\vb E_{\text{above}} - \vb E_{\text{below}} = \frac{\sigma}{\varepsilon_0}\,\hat{\vb n}.$$
 
-          In-class question: what is the field just outside a conductor? Take "below" to be inside the metal, where $\vb E_{\text{below}} = 0$:
+          What is the field just outside a conductor? Take "below" to be inside the metal, where $\vb E_{\text{below}} = 0$:
 
           $$\vb E = \frac{\sigma}{\varepsilon_0}\,\hat{\vb n}\qquad\text{(just outside; } \hat{\vb n}\text{ the outward normal).}$$
 
@@ -2714,6 +2853,14 @@
           [null, md`The pressure $\sigma^2/(2\varepsilon_0)$ is outward, not inward.`, md`The pressure acts outward at every point of the surface; forces on opposite sides add up to a stretching, not a cancellation of the effect.`, md`$\sigma^2$: either sign pushes outward.`],
           md`Like charges on the film repel; the pressure $P = \sigma^2/(2\varepsilon_0)$ acts outward everywhere and helps the gas inside, so the bubble grows a little. (That's the next practice problem.)`,
           { figHtml: fBubble() }),
+
+        Q(md`You double the charge on an isolated metal sphere. The outward electrostatic pressure on its surface becomes`,
+          [md`four times as large`, md`twice as large`, md`unchanged`, md`half as large`], 0,
+          [null, md`The pressure is $\sigma$ times the average field, and **both** double.`,
+            md`Pressure grows with charge: $P = \sigma^2/(2\varepsilon_0)$.`,
+            md`More charge pushes harder, not less.`],
+          md`$P = \dfrac{\sigma^2}{2\varepsilon_0}$, so doubling $\sigma$ quadruples $P$. Same reason the energy density $\tfrac{\varepsilon_0}{2}E^2$ quadruples: the charge sits in a field that it helps make.`,
+          { figHtml: shellFig({ lab: 'Q' }).svg() }),
 
         RF(md`
           ### Worked example: pressure on a charged sphere
@@ -2994,7 +3141,7 @@
 
           [[fig:two]]
 
-          In-class question: how does $V$ change with the charge? Poisson's equation $\lap V = -\rho/\varepsilon_0$ is **linear**: multiply every charge by the same factor and $V$ and $\vb E$ get multiplied by that factor. (Griffiths flags the fine print: doubling $Q$ really does double $\rho$ everywhere rather than rearranging it. That's a uniqueness theorem, next unit.) So $V\propto Q$, and the constant
+          How does $V$ change with the charge? Poisson's equation $\lap V = -\rho/\varepsilon_0$ is **linear**: multiply every charge by the same factor and $V$ and $\vb E$ get multiplied by that factor. (Griffiths flags the fine print: doubling $Q$ really does double $\rho$ everywhere rather than rearranging it. That's a uniqueness theorem, next unit.) So $V\propto Q$, and the constant
 
           $$C = \frac{Q}{V}\qquad\left[\frac{\text{coulomb}}{\text{volt}} = \text{farad}\right]$$
 
@@ -3004,7 +3151,7 @@
 
           !!key Boundary conditions for capacitor problems
             Each plate is an equipotential. Either the **charges** $\pm Q$ are given (an isolated capacitor) and you compute $V$, or the **voltage** is given (a battery: $V = V_0$ on one plate, $0$ on the other) and you compute $Q$. $C$ links the two either way.
-        `, { two: { svg: fTwoCond(), cap: 'Lecture 7: two conductors with charges $+Q$ and $-Q$. Field lines run from one to the other.' } }),
+        `, { two: { svg: fTwoCond(), cap: 'Two conductors with charges $+Q$ and $-Q$. Field lines run from one to the other.' } }),
 
         Q(md`The charges on the two conductors are doubled, to $\pm2Q$. The capacitance`,
           [md`doubles`, md`halves`, md`quadruples, since the energy quadruples`, md`stays the same; $V$ doubles`], 3,
@@ -3031,21 +3178,21 @@
           { figHtml: fPPside() }),
 
         RF(md`
-          ### The parallel-plate capacitor (Lecture 8)
+          ### The parallel-plate capacitor
 
           Two plates of area $A$, a distance $d$ apart, with $+Q$ on the top plate and $-Q$ on the bottom. Take $\sqrt A\gg d$ so that fringing (edge effects) can be neglected; then $\sigma = Q/A$.
 
           [[fig:pp]]
 
-          **One sheet**, by a pillbox: $2EA' = \sigma A'/\varepsilon_0$, so $E = \dfrac{\sigma}{2\varepsilon_0}$, pointing away from a positive sheet on both sides. (The notes write $+\tfrac{\sigma}{2\varepsilon_0}\hat{\vb z}$ below the sheet too; below a positive sheet the field points down, $-\tfrac{\sigma}{2\varepsilon_0}\hat{\vb z}$. Their drawing has it right.)
+          **One sheet**, by a pillbox: $2EA' = \sigma A'/\varepsilon_0$, so $E = \dfrac{\sigma}{2\varepsilon_0}$, pointing away from a positive sheet on both sides: $+\tfrac{\sigma}{2\varepsilon_0}\hat{\vb z}$ above it and $-\tfrac{\sigma}{2\varepsilon_0}\hat{\vb z}$ below it.
 
-          **Two plates** (in-class question): superpose. Above the top plate and below the bottom plate the two contributions cancel; between the plates they add.
+          **Two plates**: superpose. Above the top plate and below the bottom plate the two contributions cancel; between the plates they add.
 
           [[fig:sup]]
 
           $$\lvert\vb E\rvert = \frac{\sigma}{\varepsilon_0}\ \text{between the plates, pointing from } + \text{ to } -;\qquad \vb E = 0\ \text{outside}.$$
 
-          (The notes write $\vb E = \tfrac{\sigma}{\varepsilon_0}\hat{\vb z}$ between the plates. With $+Q$ on top the field points down, $-\tfrac{\sigma}{\varepsilon_0}\hat{\vb z}$. The magnitude, and everything below, is unaffected.)
+          (With $+Q$ on the top plate the field between the plates points down: $\vb E = -\tfrac{\sigma}{\varepsilon_0}\hat{\vb z}$.)
 
           **Integrate $\vb E$ to get $V$:** $V = V_+ - V_- = \dfrac{\sigma}{\varepsilon_0}d = \dfrac{Q}{A\varepsilon_0}d$, so
 
@@ -3054,7 +3201,7 @@
           Example: plates $1\ \text{cm}\times1\ \text{cm}$, $1$ mm apart: $C = \dfrac{(8.85\times10^{-12})(10^{-4})}{10^{-3}} = 8.9\times10^{-13}$ F, about $0.9$ pF.
 
           Since $\vb E = 0$ outside, the conductor rule $\sigma = \varepsilon_0E_{\text{outside}}$ says the outer faces carry no charge: all of $\pm Q$ sits on the **inner** faces, facing each other.
-        `, { pp: { svg: fPP3D(), cap: 'Lecture 7–8: parallel plates of area $A$, separation $d$, charges $\\pm Q$.' }, sup: { svg: fSup(), cap: 'Solid arrows: the field of the $+$ plate, $\\sigma/(2\\varepsilon_0)$ each side. Dashed: the $-$ plate. They cancel outside and add in between.' } }),
+        `, { pp: { svg: fPP3D(), cap: 'Parallel plates of area $A$, separation $d$, charges $\\pm Q$.' }, sup: { svg: fSup(), cap: 'Solid arrows: the field of the $+$ plate, $\\sigma/(2\\varepsilon_0)$ each side. Dashed: the $-$ plate. They cancel outside and add in between.' } }),
 
         Q(md`For an ideal parallel-plate capacitor (fringing neglected), the field just above the top plate, on the outside, is`,
           [md`$\sigma/(2\varepsilon_0)$, from the top plate alone`, md`$\sigma/\varepsilon_0$, as just outside any conductor`, md`zero`, md`$2\sigma/\varepsilon_0$`], 2,
@@ -3083,7 +3230,7 @@
         RF(md`
           ### Energy stored in a capacitor
 
-          To charge a capacitor, move charge from the $-$ plate to the $+$ plate a little at a time. When the plates hold $\pm q$, the potential difference is $q/C$, so moving the next $dq$ costs (the notes' green line) $dW = V\,dq$:
+          To charge a capacitor, move charge from the $-$ plate to the $+$ plate a little at a time. When the plates hold $\pm q$, the potential difference is $q/C$, so moving the next $dq$ costs $dW = V\,dq$:
 
           $$dW = \frac{q}{C}\,dq\qquad\Longrightarrow\qquad W = \int_0^Q\frac{q}{C}\,dq = \frac{Q^2}{2C} = \frac12CV^2 = \frac12QV.$$
 
@@ -3121,6 +3268,38 @@
           [null, md`Each plate is a large sheet whose field doesn't depend on distance.`, md`That uses the full field at the plate; the plate's own charge can't push itself. Use the other plate's field, $\sigma/(2\varepsilon_0)$, which is the average field.`, md`The field outside is zero, but each plate feels the other plate's field in the gap.`],
           md`Force per area on the plate's surface charge: $\dfrac{\sigma^2}{2\varepsilon_0}$, so $F = \dfrac{\sigma^2}{2\varepsilon_0}A = \dfrac{Q^2}{2\varepsilon_0A}$. Energy check: $W = \dfrac{Q^2x}{2\varepsilon_0A}$ at separation $x$, and $F = dW/dx = \dfrac{Q^2}{2\varepsilon_0A}$: constant, so pulling the plates from $d$ to $2d$ costs $Fd = W_0$, the doubling of the previous question.`,
           { figHtml: fPPside() }),
+
+        Q(md`A capacitor $C$ with charge $Q$ is connected by wires to an identical, uncharged capacitor ($+$ plate to one plate, $-$ plate to the other). After the charge settles, the total stored energy is`,
+          [md`half the original: $2\times\dfrac{(Q/2)^2}{2C} = \dfrac{Q^2}{4C}$`, md`the same, since charge is conserved`, md`twice the original, since there are two capacitors now`, md`a quarter of the original`], 0,
+          [null, md`Charge is conserved; field energy isn't. The rest goes to heat in the wires (and radiation) as the charge sloshes over.`,
+            md`Each capacitor holds only $Q/2$, and energy goes like the square of the charge.`,
+            md`Each one holds a quarter of the original energy, but there are two of them.`],
+          md`Before: $\dfrac{Q^2}{2C}$. After: each holds $Q/2$, so $2\times\dfrac{(Q/2)^2}{2C} = \dfrac{Q^2}{4C}$, half. Half the energy is lost however good the wires are: lower the resistance and the current gets bigger, and the loss stays the same. Energy is quadratic in charge, so sharing charge always costs energy.`,
+          { figHtml: fTwoCaps() }),
+
+        Q(md`An uncharged metal slab of thickness $t$ is slid all the way into the gap of a parallel-plate capacitor (area $A$, gap $d$), parallel to the plates. The capacitance becomes`,
+          [md`$\dfrac{\varepsilon_0A}{d-t}$, wherever the slab sits in the gap`, md`$\dfrac{\varepsilon_0A}{d}$, unchanged: the slab is neutral`, md`$\dfrac{\varepsilon_0A}{d+t}$`, md`$\dfrac{\varepsilon_0A}{d-t}$, but only if the slab is centred`], 0,
+          [null, md`Neutral overall, but induced $\mp\sigma$ on its faces cancel the field inside it. The field now fills only $d-t$ of the gap.`,
+            md`The slab removes field from the gap; it doesn't lengthen it.`,
+            md`Position doesn't matter: the two field-filled gaps always add up to $d - t$.`],
+          md`With $\pm Q$ on the plates, the field is $\sigma/\varepsilon_0$ in the empty parts of the gap and $0$ in the metal. $V = \dfrac{\sigma}{\varepsilon_0}(d - t)$, so $C = \dfrac{Q}{V} = \dfrac{\varepsilon_0A}{d-t}$. The slab acts as if it shortened the gap by its own thickness.`,
+          { figHtml: fSlabCap(false) }),
+
+        Q(md`The capacitor is isolated (charge $Q$ fixed) and the slab is partly inserted. Does the field pull the slab in or push it out?`,
+          [md`Pushes it out: the slab's induced charges repel the plates`, md`Neither: the slab is neutral`, md`Pushes it out, because inserting it raises the energy`, md`Pulls it in: at fixed $Q$, $W = \dfrac{Q^2}{2C}$ falls as the slab goes in and $C$ grows`], 3,
+          [md`Each face of the slab carries charge **opposite** to the plate it faces, so they attract.`,
+            md`Neutral conductors are pulled toward strong field; the fringing field at the plate edges does the pulling.`,
+            md`At fixed $Q$ it **lowers** the energy, because $C$ goes up.`, null],
+          md`At fixed charge the system moves toward lower $W = Q^2/(2C)$. Inserting the slab raises $C$, so it lowers $W$: the slab is pulled in. The force comes from the fringing field at the edge of the plates, which the ideal-capacitor picture leaves out; the energy argument gets the direction without it.`,
+          { figHtml: fSlabCap(true) }),
+
+        Q(md`Now the capacitor stays connected to a battery at voltage $V$ while the slab is slid all the way in. The charge on the plates`,
+          [md`stays at $\dfrac{\varepsilon_0AV}{d}$`, md`grows to $\dfrac{\varepsilon_0AV}{d-t}$: the battery pushes more charge on`, md`falls to $\dfrac{\varepsilon_0AV}{d+t}$`, md`drops to zero`], 1,
+          [md`$V$ is held fixed while $C$ grows, so $Q = CV$ must grow.`, null,
+            md`The capacitance goes up, not down.`,
+            md`The battery keeps $V$ across the plates, so they stay charged.`],
+          md`$Q = CV$ with $C = \dfrac{\varepsilon_0A}{d-t}$. The extra charge comes from the battery. Compare the isolated case: there $Q$ stays put and $V$ drops to $\dfrac{Q(d-t)}{\varepsilon_0A}$.`,
+          { figHtml: fSlabCap(false) }),
 
         P({
           title: 'Spherical capacitor (Griffiths Ex. 2.12)',
@@ -3292,6 +3471,14 @@
           `,
           figs: { g: { svg: fCoaxEnd(true), cap: 'Cross-section: inner tube $+\\lambda$, outer tube $-\\lambda$, Gaussian cylinder of radius $s$ (dashed); $\\vb E$ is radial in the gap.' } },
         }),
+
+        Q(md`For coaxial tubes, $\dfrac CL = \dfrac{2\pi\varepsilon_0}{\ln(b/a)}$. For the spherical capacitor, letting $b\to\infty$ left the isolated sphere's $4\pi\varepsilon_0a$. What happens here as $b\to\infty$?`,
+          [md`$C/L\to2\pi\varepsilon_0a$, an "isolated cylinder"`, md`$C/L$ stays finite and depends on $a$ only`, md`$C/L$ grows without bound`, md`$C/L\to0$: the field falls off only like $1/s$, so the potential of the inner tube relative to a far-away outer tube grows without limit`], 3,
+          [md`$\ln(b/a)$ diverges as $b\to\infty$; there is no finite isolated-cylinder value.`,
+            md`It goes to zero, slowly.`,
+            md`The denominator grows, so $C/L$ shrinks.`, null],
+          md`$\ln(b/a)\to\infty$ (slowly), so $C/L\to0$. The field $\lambda/(2\pi\varepsilon_0 s)$ falls off so slowly that $V = \int_a^b E\,ds$ diverges: any charge on an infinitely long tube puts it at an infinite potential relative to a conductor far away. A sphere's field falls like $1/r^2$, the integral converges, and the isolated sphere has a finite capacitance.`,
+          { figHtml: fCoaxEnd(false) }),
 
         RF(md`
           !!key Patterns to remember
