@@ -343,3 +343,6 @@ math-field.mf:focus-within { border-color: var(--fg); outline: none; }
 .part.bad math-field.mf { border-color: var(--bad); }
 math-field.mf::part(menu-toggle) { display: none; }
 math-field.mf::part(virtual-keyboard-toggle) { color: var(--dim); }
+
+/* the cheat-sheet link only fits in the top bar on wider screens; the home page has a button for it */
+@media (max-width: 640px) { .top-link.top-cs { display: none; } }

@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>PHYS 435 Cheat Sheet</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/contrib/auto-render.min.js"></script>
+<style>
+  :root { --ink: #111; --head: #1d4f91; --rule: #b9c3cf; --soft: #5a6470; --paper: #fff; }
+  @page { size: letter; margin: 0.28in; }
+  * { box-sizing: border-box; }
+  html, body { background: var(--paper); color: var(--ink); margin: 0; }
+  body { font: 8.6pt/1.25 "Segoe UI", Arial, sans-serif; }
+  .page { width: 7.94in; margin: 0 auto; padding: 0; }
+  .top { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1.2px solid var(--ink); margin-bottom: 3px; padding-bottom: 1px; }
+  .top b { font-size: 9pt; }
+  .top span { color: var(--soft); }
+  .cols { column-count: 3; column-gap: 9px; column-rule: 0.6px solid var(--rule); }
+  section { break-inside: avoid; margin: 0 0 3.5px; }
+  h2 { font-size: 8.4pt; margin: 0 0 1px; color: var(--head); border-bottom: 0.6px solid var(--rule); }
+  p { margin: 0 0 1.4px; }
+  ul { margin: 0 0 1.4px; padding: 0; list-style: none; }
+  li { margin: 0 0 0.8px; padding-left: 8px; position: relative; }
+  li::before { content: "\2022"; position: absolute; left: 0; color: var(--soft); }
+  .t { color: #a4453b; font-weight: 600; }
+  .katex { font-size: 1.0em; }
+  .katex-display { margin: 1px 0; }
+  @media screen { body { padding: 16px; } .page { max-width: 100%; } }
+  @media screen and (max-width: 760px) { .cols { column-count: 1; } }
+</style>
+</head>
+<body>
+<div class="page">
+<div class="top"><b>PHYS 435 · Exam I cheat sheet</b><span>only what the official sheet doesn't have · $k\equiv\frac{1}{4\pi\epsilon_0}$</span></div>
+<div class="cols">
+
+<section><h2>1 · Gauss (+ superposition)</h2>
+<ul>
+<li>$\oint\vec E\cdot d\vec a=Q_{enc}/\epsilon_0$. Pick a sphere, a coaxial cylinder or a pillbox so $E$ is constant and $\parallel d\vec a$.</li>
+<li>Uniform ball: $\vec E=\frac{\rho}{3\epsilon_0}\vec r$ inside, $\frac{kQ}{r^2}\hat r$ outside. $V_{in}=\frac{kQ}{2R^3}(3R^2-r^2)$, so $V(0)=\tfrac32V(R)$.</li>
+<li>Infinite cylinder: $\vec E=\frac{\rho}{2\epsilon_0}s\,\hat s$ inside, $\frac{\lambda}{2\pi\epsilon_0 s}\hat s$ outside, with $\lambda=\rho\pi a^2$. Line: $V=-\frac{\lambda}{2\pi\epsilon_0}\ln\frac{s}{s_0}$. <b>Only</b> $\Delta V$ (it diverges at $\infty$).</li>
+<li>Shell: $E=0$ inside. Slab/sheet: $\sigma/2\epsilon_0$. Conductor surface: $\sigma/\epsilon_0$.</li>
+<li><b>Hole = $+\rho$ + $(-\rho)$.</b> Use each piece's field from <b>its own</b> center/axis, then add the vectors.</li>
+<li>Spherical cavity in a ball, offset $\vec d$: $\vec E=\frac{\rho}{3\epsilon_0}\vec d$ (uniform). In a cylinder it is <b>not</b> uniform: $\frac{\rho}{\epsilon_0}(\frac x6,\frac y6,-\frac z3)$.</li>
+<li>Ring (axis): $E_z=\frac{kqz}{(z^2+R^2)^{3/2}}$. Disk: $E_z=\frac{\sigma}{2\epsilon_0}\big(1-\frac{z}{\sqrt{z^2+R^2}}\big)$, $V=\frac{\sigma}{2\epsilon_0}(\sqrt{z^2+R^2}-z)$.</li>
+</ul></section>
+
+<section><h2>2 · Given E (or V), find ρ: check the origin</h2>
+<ul>
+<li>$\rho=\frac{\epsilon_0}{r^2}\frac{d}{dr}(r^2E_r)$ for $r\neq0$. Then $Q_{enc}(r)=4\pi\epsilon_0r^2E_r$.</li>
+<li>If $\lim_{r\to0}4\pi\epsilon_0r^2E_r=q\neq0$: point charge, $\rho\supset q\,\delta^3(\vec r)$. ($E\sim1/r^2$ near 0 ⇒ there is a δ.)</li>
+<li>$\nabla\cdot\frac{\hat r}{r^2}=4\pi\delta^3(\vec r)$, $\nabla^2\frac1r=-4\pi\delta^3(\vec r)$, Poisson $\nabla^2V=-\rho/\epsilon_0$.</li>
+<li>$Q_{tot}=\lim_{r\to\infty}4\pi\epsilon_0r^2E_r$. Check: $Q_{tot}=q+\int\rho\,d\tau$ (+ any $\sigma$ from jumps in $E_r$).</li>
+<li>$V=\frac{Ae^{-\lambda r}}{r}$ ⇒ $\rho=\epsilon_0A\big[4\pi\delta^3(\vec r)-\lambda^2\frac{e^{-\lambda r}}{r}\big]$.</li>
+<li>$E\propto r^{-4}$ all the way to $r=0$ ⇒ infinite charge (not a δ). A sensible version has $1/r^4$ only for $r>R$, or a mix like $\frac A{r^2}+\dots$</li>
+<li>$\int f\delta(x-a)dx=f(a)$, $\delta(kx)=\delta(x)/|k|$. Shell: $\rho=\sigma\,\delta(r-R)$.</li>
+</ul></section>
+
+<section><h2>3 · Boundary conditions (number them!)</h2>
+<ul>
+<li>Across $\sigma$: $E^\perp_{above}-E^\perp_{below}=\sigma/\epsilon_0$. $E^\parallel$ and $V$ continuous. $\frac{\partial V_{out}}{\partial n}-\frac{\partial V_{in}}{\partial n}=-\frac{\sigma}{\epsilon_0}$.</li>
+<li>Conductor: $E=0$ and $\rho=0$ inside, $V$ const, $\sigma=-\epsilon_0\frac{\partial V}{\partial n}$, $\vec E_{out}=\frac{\sigma}{\epsilon_0}\hat n$, pressure $\frac{\sigma^2}{2\epsilon_0}$.</li>
+<li>Checklist: (1) each surface: $V$ given, or $V$=const with $Q$ given. (2) Finite at $r=0$ / $s=0$. (3) $V\to0$ at $\infty$ (or $\to-E_0r\cos\theta$). (4) Continuity + jump at each shell. (5) Symmetry.</li>
+<li>"Grounded" = $V=0$. "Isolated, neutral" = $V$ unknown const + $\oint\sigma=0$. "Held at $V_0$" = battery: $Q$ free.</li>
+<li>Uniqueness: $V$ (or $Q$ on each conductor) on every boundary + $\rho$ ⇒ unique. Any guess that fits <b>is</b> the answer.</li>
+<li>Laplace: no max/min inside, $V(\text{center})$ = average over a sphere. Earnshaw: no stable equilibrium.</li>
+</ul></section>
+
+<section><h2>4 · Images</h2>
+<ul>
+<li>Plane, $q$ at height $d$: $-q$ at $-d$. $\sigma=\frac{-qd}{2\pi(s^2+d^2)^{3/2}}$, total $-q$; $F=\frac{kq^2}{(2d)^2}$ (attract). Half the charge lies within $s=\sqrt3d$.</li>
+<li><b>Energy = half</b> of the real + image pair: $W=-\frac{kq^2}{4d}$. Work to pull $q$ off: $+\frac{kq^2}{4d}$.</li>
+<li>90° corner: 3 images ($-q,-q,+q$). Wedge $\pi/n$: $2n-1$. Two parallel planes: ∞ row. Line $\lambda$ over a plane: $-\lambda$.</li>
+<li><b>Grounded sphere</b> ($q$ at $a>R$): $q'=-\frac Ra q$ at $b=\frac{R^2}{a}$. $F=\frac{kq^2Ra}{(a^2-R^2)^2}$ (attract).<br>$\sigma(\theta)=\frac{-q(a^2-R^2)}{4\pi R(R^2+a^2-2aR\cos\theta)^{3/2}}$, total $-qR/a$.</li>
+<li>Twists = add a charge at the <b>center</b>: held at $V_0$: $+4\pi\epsilon_0RV_0$. Neutral: $+\frac Raq$. Total charge $Q$: $Q+\frac Raq$.</li>
+<li>$q$ <b>inside</b> a shell at distance $d$: image $-\frac Rdq$ at $\frac{R^2}{d}$ (outside). Shell at $V_0$: just add $V_0$ inside (no force change).</li>
+<li>Image valid <b>only</b> in the region of interest (outside the metal). Images never sit in that region.</li>
+</ul></section>
+
+<section><h2>5 · Energy, capacitors</h2>
+<ul>
+<li>$W=\tfrac12\sum q_iV_i$ ($V$ from the <b>others</b>) $=\tfrac12\int\rho V d\tau=\frac{\epsilon_0}2\int E^2d\tau$. Not superposable (cross terms).</li>
+<li>Uniform ball: $\frac35\frac{kQ^2}{R}$. Shell: $\frac12\frac{kQ^2}{R}$. Pair: $\frac{kq_1q_2}{r}$.</li>
+<li>$C=Q/\Delta V$, $W=\tfrac12CV^2=\frac{Q^2}{2C}$. Plates $\frac{\epsilon_0A}{d}$; spheres $\frac{4\pi\epsilon_0ab}{b-a}$; coax $\frac{2\pi\epsilon_0L}{\ln(b/a)}$.</li>
+</ul></section>
+
+<section><h2>6 · Separation: Cartesian</h2>
+<ul>
+<li>Direction with <b>two zero</b> BCs ⇒ $\sin\frac{n\pi y}{a}$ (oscillates); the other ⇒ $e^{\pm kx}$, $\sinh$, $\cosh$, with $k=\frac{n\pi}a$.</li>
+<li>Open to $\infty$: $e^{-kx}$. Zero at $x=b$: $\sinh k(b-x)$. Zero at 0: $\sinh kx$. Symmetric: $\cosh k(x-\frac b2)$.</li>
+<li>Fourier: $\int_0^a\sin\frac{n\pi y}a\sin\frac{m\pi y}a dy=\frac a2\delta_{nm}$. $C_n=\frac2a\int_0^aV_0(y)\sin\frac{n\pi y}{a}dy$. Const $V_0$: $\frac{4V_0}{n\pi}$, odd $n$.</li>
+<li>Live face at $x=b$: $V=\sum C_n\sin\frac{n\pi y}a\frac{\sinh(n\pi x/a)}{\sinh(n\pi b/a)}$. Several live faces: superpose one per face.</li>
+<li>Slot: $V=\frac{4V_0}\pi\sum_{odd}\frac1ne^{-n\pi x/a}\sin\frac{n\pi y}a=\frac{2V_0}\pi\tan^{-1}\frac{\sin(\pi y/a)}{\sinh(\pi x/a)}$.</li>
+<li>3-D: $\sin\sin\times\sinh(\pi\sqrt{n^2/a^2+m^2/b^2}\,z)$; const: $C_{nm}=\frac{16V_0}{\pi^2nm}$ (odd, odd).</li>
+<li>Series → $V_0/2$ at a discontinuity; Gibbs overshoot only in the partial sum.</li>
+</ul></section>
+
+<section><h2>7 · Separation: polar (2-D, no z)</h2>
+<ul>
+<li>$\nabla^2=\frac1s\partial_s(s\partial_s)+\frac1{s^2}\partial_\phi^2$. Try $R=s^\lambda$ ⇒ $\lambda=\pm k$.</li>
+<li>$V=a_0+b_0\ln s+\sum_k\big[s^k(a_k\cos k\phi+b_k\sin k\phi)+s^{-k}(c_k\cos k\phi+d_k\sin k\phi)\big]$.</li>
+<li>Full circle ⇒ $k$ integer, no $\phi$ term. Origin in region ⇒ drop $s^{-k}$ and $\ln s$. $\infty$ ⇒ drop $s^k$ ($\ln s$ ↔ net $\lambda$).</li>
+<li><b>Wedge</b> walls $\theta=0,\alpha$ at 0: $\sin\frac{n\pi\theta}\alpha$, $k=\frac{n\pi}\alpha$. Zero arc at $r=a$: $(\frac ra)^k-(\frac ar)^k$. Live arc $r=b$ at $V_0$: $C_n=\frac{2V_0(1-(-1)^n)}{n\pi[(b/a)^k-(a/b)^k]}$ (Spring '26).</li>
+<li>One wall at $V_0$, the other 0, no arcs: $V=V_0\theta/\alpha$. Tip field $\propto r^{\pi/\alpha-1}$ (blows up if $\alpha>\pi$).</li>
+<li>Pipe in $E_0\hat x$: $V=-E_0(s-\frac{R^2}s)\cos\phi$, $\sigma=2\epsilon_0E_0\cos\phi$.</li>
+</ul></section>
+
+<section><h2>8 · Separation: spherical / Legendre</h2>
+<ul>
+<li>$V=\sum(A_\ell r^\ell+\frac{B_\ell}{r^{\ell+1}})P_\ell(\cos\theta)$. Inside: $A$ only. Outside: $B$ only (+ $-E_0r\cos\theta$). <span class="t">$r^{-(\ell+1)}$, not $r^{-\ell}$.</span></li>
+<li>$P_0=1$, $P_1=x$, $P_2=\frac{3x^2-1}2$, $P_3=\frac{5x^3-3x}2$, $P_4=\frac{35x^4-30x^2+3}8$. $P_\ell(1)=1$, $P_\ell(-1)=(-1)^\ell$, $P_2(0)=-\frac12$, $P_4(0)=\frac38$.</li>
+<li>$x^2=\frac13+\frac23P_2$, $x^3=\frac35P_1+\frac25P_3$, $x^4=\frac15+\frac47P_2+\frac8{35}P_4$, $\cos2\theta=-\frac13+\frac43P_2$, $\sin^2\theta=\frac23-\frac23P_2$.</li>
+<li>$\int_{-1}^1P_\ell P_m dx=\frac{2\delta_{\ell m}}{2\ell+1}$ ⇒ $c_\ell=\frac{2\ell+1}2\int_{-1}^1f(x)P_\ell dx$ ($dx=\sin\theta d\theta$).</li>
+<li>Shell at $V_0(\theta)=\sum c_\ell P_\ell$: in $c_\ell(\frac rR)^\ell$, out $c_\ell(\frac Rr)^{\ell+1}$. $\sigma=\frac{\epsilon_0}R\sum(2\ell+1)c_\ell P_\ell$, $Q=4\pi\epsilon_0Rc_0$.</li>
+<li>Given $\sigma=\sum\sigma_\ell P_\ell$: $A_\ell=\frac{\sigma_\ell}{(2\ell+1)\epsilon_0R^{\ell-1}}$, $B_\ell=A_\ell R^{2\ell+1}$.</li>
+<li>Metal sphere in $E_0\hat z$: $V=-E_0(r-\frac{R^3}{r^2})\cos\theta$, $\sigma=3\epsilon_0E_0\cos\theta$ (+$\frac{RV_0}r$ if at $V_0$).</li>
+<li><b>Axis trick</b>: know $V(z)$ on the axis, expand in $z^\ell$ or $z^{-(\ell+1)}$, replace by $r^\ell P_\ell$ or $r^{-(\ell+1)}P_\ell$.</li>
+<li>$\frac1{|\vec r-\vec r'|}=\sum\frac{r_<^\ell}{r_>^{\ell+1}}P_\ell(\cos\gamma)$.</li>
+</ul></section>
+
+<section><h2>9 · Multipoles</h2>
+<ul>
+<li>$V=k\big[\frac Qr+\frac{\vec p\cdot\hat r}{r^2}+\dots\big]$, $V_\ell=\frac{k}{r^{\ell+1}}\int r'^\ell P_\ell(\cos\theta')\rho\,d\tau'$. $\vec p=\int\rho\vec r'd\tau'=\sum q_i\vec r_i$.</li>
+<li>$\vec E_{dip}=\frac{kp}{r^3}(2\cos\theta\,\hat r+\sin\theta\,\hat\theta)=\frac k{r^3}[3(\vec p\cdot\hat r)\hat r-\vec p]$.</li>
+<li>$\rho(\phi)$-free ⇒ only $p_z=2\pi\iint\rho\,r'^3\sin\theta'\cos\theta'dr'd\theta'$ (Spring '26: $\pm\rho_0$ halves ⇒ $\frac{\pi R^4\rho_0}2$).</li>
+<li>Odd in $z$ ⇒ only odd $\ell$. Even ⇒ even $\ell$. $Q\ne0$ ⇒ $\vec p$ depends on origin: $\vec p\,'=\vec p-Q\vec a$.</li>
+<li>$\vec N=\vec p\times\vec E$, $U=-\vec p\cdot\vec E$, $\vec F=(\vec p\cdot\nabla)\vec E$. $V$ falls as $r^{-1},r^{-2},r^{-3}$; $E$ one power faster.</li>
+</ul></section>
+
+<section><h2>10 · Classic results</h2>
+<ul>
+<li>Shell $\sigma=k\cos\theta$: $V_{in}=\frac{k}{3\epsilon_0}r\cos\theta$ (uniform $\vec E=-\frac{k}{3\epsilon_0}\hat z$); outside a pure dipole $p=\frac43\pi R^3k$.</li>
+<li>Nested metal shells: inner surface carries $-q_{enc}$, outer surface carries $Q_{shell}+q_{enc}$. A cavity's field depends only on the charge inside it.</li>
+<li>Edge at $V_0\frac ya$: $C_n=\frac{2V_0(-1)^{n+1}}{n\pi}$. Const: $\frac{4V_0}{n\pi}$ (odd). $\int_0^a\sin^2=\frac a2$.</li>
+<li>Line $\lambda$ at height $d$ over a grounded plane: $V=\frac{\lambda}{2\pi\epsilon_0}\ln\frac{s_-}{s_+}$ ($s_\pm$ = distance to $\pm\lambda$).</li>
+<li>Dipole: $V=\frac{kp\cos\theta}{r^2}$. Ball $\rho_0\cos\theta$ and shell $k\cos\theta$: exact dipole outside.</li>
+</ul></section>
+
+<section><h2>11 · Which method? Traps</h2>
+<ul>
+<li>High symmetry ⇒ Gauss. Charge + flat/spherical metal ⇒ images. Box/slot ⇒ Cartesian. Sphere with $V(\theta)$ or $\sigma(\theta)$ ⇒ Legendre. Wedge/pipe ⇒ polar.</li>
+<li>Setup gets most of the points: region, numbered BCs, general solution <b>first</b>.</li>
+<li class="t">$d\tau=r^2\sin\theta\,dr\,d\theta\,d\phi$; $\sigma/\epsilon_0$ (metal) vs $\sigma/2\epsilon_0$ (sheet); images half energy; check units and limits.</li>
+<li>$\int\frac{dx}{(x^2+a^2)^{3/2}}=\frac{x}{a^2\sqrt{x^2+a^2}}$, $\int\frac{x\,dx}{(x^2+a^2)^{3/2}}=\frac{-1}{\sqrt{x^2+a^2}}$, $\int\frac{dx}{\sqrt{x^2+a^2}}=\ln(x+\sqrt{x^2+a^2})$, $\int_0^\pi\sin^3=\frac43$, $\int_0^\pi\sin\theta\cos^2\theta=\frac23$.</li>
+</ul></section>
+
+</div>
+</div>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    renderMathInElement(document.body, { delimiters: [{ left: '$', right: '$', display: false }], throwOnError: false });
+    document.body.setAttribute('data-ready', '1');
+  });
+</script>
+</body>
+</html>
