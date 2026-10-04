@@ -1,4 +1,4 @@
-/* Unit 0 — Vector calculus toolkit (Griffiths Ch. 1; the vector-calculus parts of Lectures 2–3). */
+/* Unit 0 — Vector calculus toolkit (Griffiths Ch. 1). */
 (function () {
   'use strict';
   const { RF, P, Q } = C;
@@ -277,7 +277,7 @@
     id: 'u0-vectors', title: 'Vectors, products and the separation vector',
     steps: [
       RF(md`
-        This unit is the math the whole course runs on: Griffiths Chapter 1 and the vector-calculus parts of Lectures 2–3. The exam's formula sheet lists the curvilinear formulas and the three fundamental theorems, so the goal is to know what each object *means*, when to reach for it, and how to use the sheet without dropping a factor. Physics appears wherever it helps; the physics of Gauss's law is Unit 1.
+        This unit is the math the whole course runs on: Griffiths Chapter 1, plus the vector calculus that Gauss's law and the curl of $\vb E$ need. The exam's formula sheet lists the curvilinear formulas and the three fundamental theorems, so the goal is to know what each object *means*, when to reach for it, and how to use the sheet without dropping a factor. Physics appears wherever it helps; the physics of Gauss's law is Unit 1.
 
         ### Components and unit vectors
 
@@ -373,10 +373,26 @@
         md`Area = base × height $= 3\times4 = 12$. The determinant agrees: $(\vb A\times\vb B)_z = A_xB_y-A_yB_x = 12$. Only the part of $\vb B$ perpendicular to $\vb A$ (the $4$) matters, just as only the parallel part matters for the dot product.`,
         { figHtml: fPara() }),
 
+      Q(md`Two unit vectors $\hat{\vb A}$ and $\hat{\vb B}$ make a $30^\circ$ angle. Which is larger, $|\hat{\vb A}\cdot\hat{\vb B}|$ or $|\hat{\vb A}\times\hat{\vb B}|$?`,
+        [md`The dot product: $\cos30^\circ\approx0.87$ beats $\sin30^\circ = 0.5$`, md`The cross product, because it is a vector and the dot product is only a number`, md`They are equal at $30^\circ$`, md`It depends on how long the vectors are`], 0,
+        [null, md`Being a vector doesn't make it bigger. Compare magnitudes: $\sin30^\circ = 0.5$ against $\cos30^\circ\approx0.87$.`,
+          md`They are equal at $45^\circ$, where $\sin\theta = \cos\theta$.`,
+          md`Both are unit vectors, so only the angle matters.`],
+        md`Nearly parallel vectors have a big dot product and a small cross product; nearly perpendicular ones the reverse. The crossover is at $45^\circ$. That is why a flux $\vb E\cdot d\vb a$ is largest when the field runs along the normal, and the work $\vb F\cdot d\vb l$ largest when the force runs along the path.`,
+        { nofig: 'comparing cos and sin at one angle' }),
+
+      Q(md`Three nonzero vectors satisfy $\vb A\cdot(\vb B\times\vb C) = 0$. What does that tell you?`,
+        [md`Two of them must be parallel`, md`All three are mutually perpendicular`, md`All three lie in one plane`, md`$\vb A$ is perpendicular to both $\vb B$ and $\vb C$`], 2,
+        [md`A parallel pair does give zero, but so do three vectors in one plane with no two parallel, such as $\uv x$, $\uv y$ and $\uv x+\uv y$.`,
+          md`Mutually perpendicular vectors span the *largest* box: $\uv x\cdot(\uv y\times\uv z) = 1$.`, null,
+          md`Then $\vb A$ is parallel to $\vb B\times\vb C$, and the triple product is $\pm A\,|\vb B\times\vb C|$, which is not zero unless $\vb B\parallel\vb C$.`],
+        md`The triple product is the signed volume of the box the three vectors span. Zero volume means a flat box: $\vb B\times\vb C$ is normal to the plane of $\vb B$ and $\vb C$, and $\vb A\cdot(\vb B\times\vb C) = 0$ says $\vb A$ has no component along that normal, so it lies in the same plane.`,
+        { nofig: 'geometric meaning of a formula' }),
+
       RF(md`
         ### Source point, field point, separation vector
 
-        Electrostatics always involves two points: a **source point** $\vb r'$, where a charge sits, and a **field point** $\vb r$, where you want $\vb E$ or $V$. Griffiths and the lectures call the vector from source to field point "script r":
+        Electrostatics always involves two points: a **source point** $\vb r'$, where a charge sits, and a **field point** $\vb r$, where you want $\vb E$ or $V$. Griffiths calls the vector from source to field point "script r":
 
         $$\sr \equiv \vb r-\vb r',\qquad \srm = |\vb r-\vb r'|,\qquad \srh = \frac{\sr}{\srm}.$$
 
@@ -393,11 +409,11 @@
         Two conventions to lock in now:
 
         - Primed coordinates $(x',y',z')$ label source points. They are the integration variables in $\int\rho(\vb r')\,\dfrac{\srh}{\srm^2}\,d\tau'$.
-        - Unprimed coordinates label the field point. They are held fixed during that integral, and $\nabla$ acts on them only (Lecture 2).
+        - Unprimed coordinates label the field point. They are held fixed during that integral, and $\nabla$ acts on them only.
 
         !!trap Three different r's
           $\uv r$ points away from the **origin**; $\srh$ points away from the **source**. They agree only when the source is at the origin. And $\srm\neq r-r'$: magnitudes don't subtract. The distance depends on the angle between $\vb r$ and $\vb r'$.
-      `, { sep: { svg: fSep(), cap: 'Source point $\\vb r\'$, field point $\\vb r$, and the separation vector $\\sr = \\vb r-\\vb r\'$ from the source to the field point (as in Lecture 1).' } }),
+      `, { sep: { svg: fSep(), cap: 'Source point $\\vb r\'$, field point $\\vb r$, and the separation vector $\\sr = \\vb r-\\vb r\'$ from the source to the field point.' } }),
 
       Q(md`The figure shows the origin $O$, a charge at $\vb r'$ and a field point $P$ at $\vb r$. In Coulomb's law $\vb E = \kq\dfrac{q}{\srm^2}\srh$, which vector is $\sr$?`,
         [md`$\vb r'-\vb r$, from the field point to the charge`, md`$\vb r-\vb r'$, from the charge to the field point`, md`$\vb r$, from the origin to the field point`, md`$\vb r'$, from the origin to the charge`], 1,
@@ -430,20 +446,20 @@
         md`$\sr = \vb r-\vb r' = -R\cos\phi'\,\uv x-R\sin\phi'\,\uv y+z\,\uv z$, so $\srm^2 = R^2(\cos^2\phi'+\sin^2\phi')+z^2 = R^2+z^2$. It is the same for every point on the ring, which is what makes the ring of HW 1 easy: $\srm$ comes out of the integral. The $x$ and $y$ parts of $\sr$ contain $\cos\phi'$ and $\sin\phi'$, which integrate to zero around the ring. That is the symmetry cancellation, done by algebra.`,
         { figHtml: fRing() }),
 
-      Q(md`A uniformly charged segment lies on the $x$-axis (Lecture 1). A source point on it is $x'\,\uv x$ and the field point is $P = z\,\uv z$ (figure). What is $\srh$?`,
+      Q(md`A uniformly charged segment lies on the $x$-axis. A source point on it is $x'\,\uv x$ and the field point is $P = z\,\uv z$ (figure). What is $\srh$?`,
         [md`$\uv z$`, md`$\dfrac{x'\uv x-z\uv z}{\sqrt{x'^2+z^2}}$`, md`$\dfrac{-x'\uv x+z\uv z}{\sqrt{x'^2+z^2}}$`, md`$\dfrac{-x'\uv x+z\uv z}{x'^2+z^2}$`], 2,
         [md`Only the element at $x' = 0$ is straight below $P$. Every other element's $\srh$ tilts sideways.`,
           md`That is $(\vb r'-\vb r)/\srm$: it points from $P$ to the charge, the wrong way.`, null,
           md`Dividing by $\srm^2$ doesn't give a unit vector. It gives $\sr/\srm^2$, which has length $1/\srm$.`],
-        md`$\sr = z\,\uv z-x'\,\uv x$ and $\srm = \sqrt{x'^2+z^2}$, so $\srh = \dfrac{-x'\uv x+z\uv z}{\sqrt{x'^2+z^2}}$. Its $z$-component $z/\srm$ is the $\cos\theta$ that Lecture 1 keeps after the $x$-components from $\pm x'$ cancel.`,
+        md`$\sr = z\,\uv z-x'\,\uv x$ and $\srm = \sqrt{x'^2+z^2}$, so $\srh = \dfrac{-x'\uv x+z\uv z}{\sqrt{x'^2+z^2}}$. Its $z$-component $z/\srm$ is the $\cos\theta$ that survives after the $x$-components from $\pm x'$ cancel.`,
         { figHtml: fSegment() }),
 
       Q(md`In $\vb E(\vb r) = \kq\displaystyle\int\rho(\vb r')\,\frac{\srh}{\srm^2}\,d\tau'$, which statement is right?`,
         [md`$\vb r$ is integrated over and $\vb r'$ is held fixed`, md`Both $\vb r$ and $\vb r'$ are integrated over`, md`$\nabla$ acts on $\vb r'$, because that is where the charge is`, md`$\vb r'$ runs over the charge distribution; $\vb r$ is fixed, and $\nabla$ (as in $\nabla\cdot\vb E$) acts on $\vb r$`], 3,
         [md`Swapped. The prime marks the source points, and $d\tau'$ tells you which variable is integrated.`,
           md`The result is a function of $\vb r$: the field *at* the field point. Only $\vb r'$ is integrated out.`,
-          md`$\vb E(\vb r)$ is a field over field points, so its divergence and curl differentiate with respect to $\vb r$. Lecture 2 stresses that $\nabla$ acts on $\vb r$ only.`, null],
-        md`Read the integral as "add up the contributions from every source point $\vb r'$ to the field at one fixed point $\vb r$". Afterwards $\vb r'$ is gone and $\vb E$ depends on $\vb r$ alone. That is why Lecture 2 can move $\nabla$ inside the integral and let it act on $\srh/\srm^2$ only.`,
+          md`$\vb E(\vb r)$ is a field over field points, so its divergence and curl differentiate with respect to $\vb r$: $\nabla$ acts on $\vb r$ only.`, null],
+        md`Read the integral as "add up the contributions from every source point $\vb r'$ to the field at one fixed point $\vb r$". Afterwards $\vb r'$ is gone and $\vb E$ depends on $\vb r$ alone. That is why you can move $\nabla$ inside the integral and let it act on $\srh/\srm^2$ only.`,
         { nofig: 'notation question' }),
 
       RF(md`
@@ -721,7 +737,18 @@
     f.text(R + 8, -R * 0.75, 'cap θ ≤ 60°', 'l');
     return f.svg();
   };
-  // Lecture 2's flux question: a point charge at the centre of a sphere of radius r
+  // upper hemisphere in a uniform vertical field
+  const fHemiUnif = () => {
+    const f = PF.fig(), R = 80;
+    f.arc(0, 0, R, 0, 180, {});
+    f.ellipse(0, 0, R, R * 0.28, { half: 'back', cls: 'dash dim' });
+    f.ellipse(0, 0, R, R * 0.28, { half: 'front', cls: 'dim' });
+    for (const x of [-104, -52, 0, 52, 104]) f.arrow(x, 44, x, -122, { cls: 'dim' });
+    f.label(112, -112, `${B('E')} = E_0\\,${H('z')}`, 'l', 'small');
+    f.text(0, 56, 'upper hemisphere, radius R', 't');
+    return f.svg();
+  };
+  // flux question: a point charge at the centre of a sphere of radius r
   const fGaussSph = () => {
     const f = PF.fig(), R = 80, a = 35 * DEG;
     f.circle(0, 0, R, {});
@@ -792,6 +819,14 @@
         md`$r = \sqrt{1+1+2} = 2$; $\cos\theta = z/r = \sqrt2/2$, so $\theta = \pi/4$; $\tan\phi = y/x = 1$ in the first quadrant, so $\phi = \pi/4$. Check: $x = 2\sin\tfrac\pi4\cos\tfrac\pi4 = 1$.`,
         { nofig: 'coordinate conversion arithmetic' }),
 
+      Q(md`At the point $(0,0,1)$ a vector is $\vb A = 2\,\uv r$. At the point $(1,0,0)$ another vector is $\vb B = 3\,\uv r$. What is $\vb A\cdot\vb B$?`,
+        [md`$6$`, md`$0$`, md`$5$`, md`$-6$`], 1,
+        [md`That treats $\uv r$ as one fixed vector. At $(0,0,1)$, $\uv r = \uv z$; at $(1,0,0)$, $\uv r = \uv x$.`, null,
+          md`A dot product multiplies matching components; it never adds them. And the two $\uv r$'s differ anyway.`,
+          md`No sign flip appears: the two $\uv r$'s are perpendicular, not opposite.`],
+        md`Convert first: $\vb A = 2\,\uv z$ and $\vb B = 3\,\uv x$, so $\vb A\cdot\vb B = 0$. Multiplying curvilinear components ($A_rB_r$) is only allowed when both vectors sit at the *same* point, where they share one set of unit vectors.`,
+        { nofig: 'the point is to work it out from the coordinates' }),
+
       RF(md`
         ### Cylindrical coordinates $(s,\phi,z)$
 
@@ -803,7 +838,7 @@
 
         [[fig:cyl]]
 
-        $s = r\sin\theta$, so the two "radial" distances agree only in the $xy$-plane. Lecture 2 calls the distance from a line charge $r$, with $\uv r$ pointing away from the line; Griffiths and this site call it $s$ to keep it apart from the spherical $r$.
+        $s = r\sin\theta$, so the two "radial" distances agree only in the $xy$-plane. Some books call the distance from a line charge $r$, with $\uv r$ pointing away from the line; Griffiths and this site call it $s$ to keep it apart from the spherical $r$.
       `, { cyl: Object.assign(PF.row([{ svg: fCyl3d(), cap: 'The coordinates $s,\\phi,z$ of $P$.' }, { svg: fCylTop(), cap: 'Seen from above: $\\uv s$ and $\\hat{\\boldsymbol\\phi}$ in the page, $\\uv z$ out of it.' }]), { cap: '' }) }),
 
       Q(md`For the point $(3,4,12)$ shown, what are the spherical $r$ and the cylindrical $s$?`,
@@ -874,6 +909,22 @@
         md`On the cap $z = h$ is fixed while $s$ and $\phi$ vary. The patch is $ds$ by $s\,d\phi$, and the outward normal is $+\uv z$: $d\vb a = s\,ds\,d\phi\;\uv z$. Check: $\int_0^{2\pi}\!\int_0^R s\,ds\,d\phi = \pi R^2$.`,
         { figHtml: fCylCap() }),
 
+      Q(md`Which of these cannot be a volume element?`,
+        [md`$dx\,dy\,dz$`, md`$r^2\sin\theta\,dr\,d\theta\,d\phi$`, md`$s\,ds\,d\phi\,dz$`, md`$r\,dr\,d\theta\,d\phi$`], 3,
+        [md`Three lengths multiplied: a volume.`,
+          md`$dr$, $r\,d\theta$ and $r\sin\theta\,d\phi$ are three lengths, so their product is a volume.`,
+          md`$ds$, $s\,d\phi$ and $dz$ are three lengths.`, null],
+        md`Angles carry no units, so a volume element needs three powers of length. $r\,dr\,d\theta\,d\phi$ has only two: it is an area (in fact the area element of the plane in polar coordinates, with a stray $d\phi$). Counting lengths catches a missing $r$ or $s$ instantly.`,
+        { nofig: 'units count' }),
+
+      Q(md`On a sphere of radius $R$, what is the circumference of the circle of latitude at $\theta = 60^\circ$ (figure)?`,
+        [md`$\pi R$`, md`$\sqrt3\,\pi R$`, md`$2\pi R$`, md`$\dfrac{\pi R}{3}$`], 1,
+        [md`That uses $\cos60^\circ$. The circle's radius is its distance from the $z$-axis, $R\sin\theta$.`, null,
+          md`Only the equator ($\theta = 90^\circ$) has the full circumference $2\pi R$.`,
+          md`$R\theta = \pi R/3$ is the distance from the north pole along a meridian, not the distance around the circle.`],
+        md`The circle's radius is $s = R\sin\theta = \tfrac{\sqrt3}{2}R$, so its circumference is $2\pi s = \sqrt3\,\pi R\approx5.4R$. A step $d\phi$ moves you $R\sin\theta\,d\phi$ along it, which is the $\sin\theta$ in $da$ and $d\tau$.`,
+        { figHtml: fLat({ labels: false }) }),
+
       RF(md`
         ### Line, surface and volume integrals
 
@@ -901,10 +952,10 @@
 
         $$\oint\vb v\cdot d\vb a = \int_0^{2\pi}\!\!\int_0^\pi\sin\theta\,d\theta\,d\phi = 4\pi,$$
 
-        the same for every $R$. With $\vb E = \dfrac{q}{4\pi\varepsilon_0}\dfrac{\uv r}{r^2}$ this is Lecture 2's $\Phi_E = q/\varepsilon_0$. It is also the seed of the Dirac delta function (last lesson).
+        the same for every $R$. With $\vb E = \dfrac{q}{4\pi\varepsilon_0}\dfrac{\uv r}{r^2}$ this is Gauss's law for a point charge, $\Phi_E = q/\varepsilon_0$. It is also the seed of the Dirac delta function (last lesson).
       `, { paths: { svg: fPaths3(), cap: 'Paths from $\\vb a = (1,0)$ to $\\vb b = (0,1)$: (1) quarter circle, (2) straight segment, (3) via the corner $(1,1)$.' } }),
 
-      Q(md`Lecture 2 finds the flux of a point charge's field $\vb E = \dfrac{q}{4\pi\varepsilon_0}\dfrac{\uv r}{r^2}$ through a sphere of radius $r$ centred on the charge (figure), and first asks: "What coordinate system should we use?" Which setup is right?`,
+      Q(md`You want the flux of a point charge's field $\vb E = \dfrac{q}{4\pi\varepsilon_0}\dfrac{\uv r}{r^2}$ through a sphere of radius $r$ centred on the charge (figure). The first decision is the coordinate system. Which setup is right?`,
         [md`Cartesian, with $d\vb a = dx\,dy\;\uv z$`, md`Spherical, with $d\vb a = r^2\sin\theta\,d\theta\,d\phi\;\uv r$ at fixed $r$`, md`Cylindrical, with $d\vb a = s\,d\phi\,dz\;\uv s$`, md`Spherical, with $d\vb a = r^2\,d\theta\,d\phi\;\uv r$`], 1,
         [md`On a sphere the normal is $\uv r$, which changes from point to point; $dx\,dy\;\uv z$ is the area element of a horizontal plane.`,
           null,
@@ -936,6 +987,14 @@
           md`No symmetry lets you pull a position-dependent vector out of an integral.`, null],
         md`Write $\uv r = \sin\theta\cos\phi\,\uv x+\sin\theta\sin\phi\,\uv y+\cos\theta\,\uv z$ and integrate each Cartesian component. The $\cos\phi$ and $\sin\phi$ terms vanish over $0\to2\pi$; the $z$-part gives $R^2\int_0^{2\pi}\!\int_0^{\pi/2}\cos\theta\sin\theta\,d\theta\,d\phi = \pi R^2$. So $\int\uv r\,da = \pi R^2\,\uv z$, half the naive size, because the arrows are tilted.`,
         { figHtml: fHemi() }),
+
+      Q(md`A uniform field $\vb E = E_0\,\uv z$ passes through the upper hemisphere of radius $R$ (figure), with $d\vb a$ pointing outward. What is the flux $\int\vb E\cdot d\vb a$?`,
+        [md`$2\pi R^2E_0$`, md`$0$`, md`$\pi R^2E_0$`, md`$4\pi R^2E_0$`], 2,
+        [md`Field times area assumes $\vb E$ runs along the normal everywhere. On the dome the normal is $\uv r$, tilted away from $\uv z$ except at the top.`,
+          md`Zero is the flux through the *closed* surface, dome plus flat base. The dome alone passes everything that comes up through the base.`, null,
+          md`That is a whole sphere's area times $E_0$, and even for a whole sphere a uniform field's flux is zero.`],
+        md`$\vb E\cdot d\vb a = E_0\cos\theta\,R^2\sin\theta\,d\theta\,d\phi$, and $\int_0^{2\pi}\!\int_0^{\pi/2}\cos\theta\sin\theta\,d\theta\,d\phi = \pi$, so the flux is $\pi R^2E_0$. Faster: the closed surface dome-plus-disk encloses no source, so what leaves through the dome equals what enters through the disk, $E_0\cdot\pi R^2$. A uniform field's flux through any surface is $E_0$ times the area of the surface's shadow on a plane perpendicular to $\vb E$.`,
+        { figHtml: fHemiUnif() }),
 
       P({
         title: 'Charge in a sphere with angular dependence',
@@ -1090,6 +1149,17 @@
     const m3 = g.p3(1, 1, 1); g.label(m3[0] + 9, m3[1], '3', 'l', 'small');
     return g.svg();
   };
+  // equipotentials of a linear potential V = -E0 z
+  const fLinV = () => {
+    const f = PF.fig();
+    f.arrow(-24, 24, -24, -112, { cls: 'dim', hs: 6 }); f.label(-20, -115, 'z', 'bl', 'small accent');
+    [[0, 'V = 0', '0'], [-45, 'V = -E_0a', 'a'], [-90, 'V = -2E_0a', '2a']].forEach(([y, t, zl]) => {
+      f.line(0, y, 170, y, {});
+      f.label(176, y, t, 'l', 'small');
+      f.label(-30, y, zl, 'r', 'small accent');
+    });
+    return f.svg();
+  };
   // a point P at polar angle theta from the z-axis
   const fPolar = (o = {}) => {
     const f = PF.fig();
@@ -1164,6 +1234,22 @@
         md`$\nabla V$ is perpendicular to equipotentials and points toward higher $V$; the minus sign turns $\vb E$ toward lower $V$. Field lines cross equipotentials at right angles, running from high potential to low.`,
         { figHtml: fEquip() }),
 
+      Q(md`On the contour map of the hill (numbers are values of $T$), what is $\nabla T$ at the summit, the dot at the centre?`,
+        [md`$\vb 0$`, md`The largest gradient on the map, because $T$ is highest there`, md`A vector pointing straight up, out of the map`, md`Undefined, because every direction leads downhill`], 0,
+        [null, md`The size of $\nabla T$ is the slope, not the height. At the top the ground is level.`,
+          md`$T(x,y)$ is defined on the plane, so $\nabla T$ lies in the plane. "Up" on a hill is the value of $T$, not a direction in space.`,
+          md`$T$ is smooth at the top. Every first derivative is zero there, so the gradient exists and is the zero vector.`],
+        md`At a smooth maximum all first derivatives vanish, so $\nabla T = 0$: a small step in any direction changes $T$ only at second order. For a potential: wherever $V$ has a smooth peak or pit, $\vb E = -\nabla V = 0$.`,
+        { figHtml: fContour({}) }),
+
+      Q(md`The equipotentials of $V = -E_0z$ (with $E_0>0$) are the horizontal planes shown. What is $\vb E$?`,
+        [md`$-E_0\,\uv z$`, md`$+E_0\,\uv z$`, md`$-E_0z\,\uv z$`, md`$\vb 0$, because $V$ is linear`], 1,
+        [md`That is $\nabla V$. The minus sign in $\vb E = -\nabla V$ flips it back.`, null,
+          md`The gradient differentiates: $\partial(-E_0z)/\partial z = -E_0$, a constant. No $z$ survives.`,
+          md`A linear function has a constant, nonzero slope. Only a constant $V$ gives zero field.`],
+        md`$\nabla V = -E_0\,\uv z$, so $\vb E = +E_0\,\uv z$. Check with the figure: $V$ drops as $z$ increases, and $\vb E$ points toward lower $V$, so up. A uniform field always has a linear potential, with equally spaced equipotential planes.`,
+        { figHtml: fLinV() }),
+
       RF(md`
         ### The del operator
 
@@ -1177,7 +1263,7 @@
         | $\nabla\cdot\vb v$ | a vector | a scalar | divergence |
         | $\nabla\times\vb v$ | a vector | a vector | curl |
 
-        Type-checking catches many errors: a "divergence of a scalar" means something got mixed up. (Lecture 3 writes $\nabla\cdot\dfrac{\sigma}{\varepsilon_0}$ for the capacitor gap; the intended object is the vector $\dfrac{\sigma}{\varepsilon_0}\uv z$.)
+        Type-checking catches many errors: a "divergence of a scalar" means something got mixed up. For example, in a capacitor gap you take the divergence of the vector field $\dfrac{\sigma}{\varepsilon_0}\uv z$, never of the number $\dfrac{\sigma}{\varepsilon_0}$.
       `),
 
       Q(md`Which expression is meaningless?`,
@@ -1194,6 +1280,14 @@
           md`That is $\nabla\times(\nabla T)$. The Laplacian of $T = x^2$ is $2$.`],
         md`$\nabla\cdot\nabla T = \dfrac{\partial^2T}{\partial x^2}+\dfrac{\partial^2T}{\partial y^2}+\dfrac{\partial^2T}{\partial z^2}\equiv\nabla^2T$. With $T\to V$ and $\vb E = -\nabla V$, Gauss's law becomes Poisson's equation $\nabla^2V = -\rho/\varepsilon_0$, the starting point for Laplace's equation later in the course.`,
         { nofig: 'type-checking of operators' }),
+
+      Q(md`$T$ is a temperature in kelvin and positions are in metres. What are the units of $\nabla T$ and of $\nabla^2T$?`,
+        [md`K and K`, md`K/m and K`, md`K·m and K·m²`, md`K/m and K/m²`], 3,
+        [md`Each $\partial/\partial x$ divides by a length.`,
+          md`The Laplacian has two derivatives, so two factors of 1/m.`,
+          md`Derivatives divide by lengths; they don't multiply.`, null],
+        md`Every $\nabla$ brings a 1/m. For the potential: $\vb E = -\nabla V$ is in V/m, and $\nabla^2V$ is in V/m². That matches $\rho/\varepsilon_0$: $\dfrac{\text{C/m}^3}{\text{C/(V·m)}} = \text{V/m}^2$. A units check like this catches a lost derivative or a lost $\varepsilon_0$.`,
+        { nofig: 'units' }),
 
       RF(md`
         ### The gradient in spherical and cylindrical coordinates
@@ -1553,17 +1647,33 @@
         [md`Gauss's law in differential form involves *derivatives* of $\vb E$. A uniform field has zero divergence however strong it is.`,
           md`The sign of $\rho$ follows the divergence, which is zero here.`,
           md`$\nabla\cdot\vb E = \rho/\varepsilon_0$ holds at every point, for every charge distribution.`, null],
-        md`$\vb E = (\sigma/\varepsilon_0)\,\uv z$ is constant, so $\nabla\cdot\vb E = 0$ and $\rho = \varepsilon_0\nabla\cdot\vb E = 0$ in the gap. The charge sits on the plates, where $\vb E$ jumps and the divergence is not zero (Lecture 3).`,
+        md`$\vb E = (\sigma/\varepsilon_0)\,\uv z$ is constant, so $\nabla\cdot\vb E = 0$ and $\rho = \varepsilon_0\nabla\cdot\vb E = 0$ in the gap. The charge sits on the plates, where $\vb E$ jumps and the divergence is not zero.`,
         { figHtml: fCapacitor() }),
+
+      Q(md`The figure shows $\vb v = +\uv x$ for $x>0$ and $\vb v = -\uv x$ for $x<0$ (dashed: the plane $x = 0$). Where is $\nabla\cdot\vb v$ nonzero?`,
+        [md`Everywhere, because the arrows point away from the plane`, md`Nowhere, because every arrow has the same length`, md`Only on the plane $x = 0$, where it is a positive spike`, md`Only on the plane $x = 0$, where it is negative`], 2,
+        [md`Away from the plane $\vb v$ is constant, so all its derivatives vanish there.`,
+          md`Same length on each side, but $v_x$ jumps from $-1$ to $+1$ across the plane. A thin box straddling the plane loses flux through both faces.`, null,
+          md`The arrows point away from the plane on both sides: a source, not a sink.`],
+        md`Off the plane, $\vb v$ is uniform and $\nabla\cdot\vb v = 0$. A thin box of face area $A$ straddling the plane has outflow $2A$ while its volume shrinks to zero, so the divergence is a spike: $\nabla\cdot\vb v = 2\,\delta(x)$. This is the shape of a charged sheet's field, $\vb E = \pm\dfrac{\sigma}{2\varepsilon_0}\uv x$, whose divergence $\dfrac{\sigma}{\varepsilon_0}\delta(x)$ is just the sheet's charge.`,
+        { figHtml: fieldFig((x) => [Math.sign(x), 0], { skip: (x) => Math.abs(x) < 0.1, extra: (f, X, Y) => f.line(X(0), Y(2.2), X(0), Y(-2.2), { cls: 'dash dim' }) }) }),
+
+      Q(md`At a point $P$, $\nabla\cdot\vb E>0$. Which statement must be true?`,
+        [md`The charge density at $P$ is positive`, md`$\vb E$ points away from $P$ in every direction`, md`$|\vb E|$ is large at $P$`, md`$\vb E\neq0$ at $P$`], 0,
+        [null, md`Add a strong uniform field: the divergence doesn't change, yet every arrow near $P$ now points the same way.`,
+          md`Divergence measures how $\vb E$ *changes*, not how big it is. A weak field can have a large divergence.`,
+          md`At the centre of a uniformly charged ball $\vb E = 0$, yet $\nabla\cdot\vb E = \rho/\varepsilon_0>0$.`],
+        md`$\nabla\cdot\vb E = \rho/\varepsilon_0$ is a statement about $\rho$ and nothing else. A positive divergence means a tiny box around $P$ has more flux leaving than entering. That says nothing about the size of $\vb E$ or the direction of individual arrows.`,
+        { nofig: 'conceptual' }),
 
       RF(md`
         ### Divergence in electrostatics
 
-        Lecture 2 turned Gauss's law into a statement about each point:
+        Gauss's law, turned into a statement about each point:
 
         $$\nabla\cdot\vb E = \frac{\rho}{\varepsilon_0}.$$
 
-        Read it as: lines of $\vb E$ begin on positive charge and end on negative charge (or run off to infinity); in empty space they never begin or end. Because it is local, you can run it backwards: given $\vb E$, the charge that made it is $\rho = \varepsilon_0\nabla\cdot\vb E$. (In the middle step of that derivation Lecture 2 writes $\int\rho\,d\tau$ where $\int\rho\,d\tau/\varepsilon_0$ is meant; the next line restores the $\varepsilon_0$.) Unit 1 does the physics; here, practise the derivative.
+        Read it as: lines of $\vb E$ begin on positive charge and end on negative charge (or run off to infinity); in empty space they never begin or end. Because it is local, you can run it backwards: given $\vb E$, the charge that made it is $\rho = \varepsilon_0\nabla\cdot\vb E$. Unit 1 does the physics; here, practise the derivative.
       `),
 
       Q(md`In some region $\vb E = k\,(x\,\uv x+y\,\uv y+z\,\uv z)$ with $k$ constant. What is the charge density there?`,
@@ -1571,7 +1681,7 @@
         [md`All three terms count: $\nabla\cdot\vb E = k+k+k$.`, null,
           md`$\rho = \varepsilon_0\nabla\cdot\vb E$: multiply by $\varepsilon_0$, don't divide.`,
           md`The divergence of $k\vb r$ is the constant $3k$; no $r$ survives.`],
-        md`$\nabla\cdot\vb E = 3k$, so $\rho = 3\varepsilon_0k$, uniform. This is Lecture 3's field inside a uniformly charged ball, $\vb E = \dfrac{\rho}{3\varepsilon_0}\vb r$, read backwards.`,
+        md`$\nabla\cdot\vb E = 3k$, so $\rho = 3\varepsilon_0k$, uniform. This is the field inside a uniformly charged ball, $\vb E = \dfrac{\rho}{3\varepsilon_0}\vb r$, read backwards.`,
         { nofig: 'one-line derivative' }),
 
       RF(md`
@@ -1654,7 +1764,7 @@
 
         To **test** the theorem (a standard homework task), compute the left side as one volume integral and the right side face by face, listing every face, including those that turn out to be zero, and check that they agree.
 
-        Applied to $\vb E$ with $\nabla\cdot\vb E = \rho/\varepsilon_0$, the theorem turns $\int\rho\,d\tau/\varepsilon_0$ into $\oint\vb E\cdot d\vb a$: the integral form of Gauss's law (Lecture 2).
+        Applied to $\vb E$ with $\nabla\cdot\vb E = \rho/\varepsilon_0$, the theorem turns $\int\rho\,d\tau/\varepsilon_0$ into $\oint\vb E\cdot d\vb a$: the integral form of Gauss's law.
       `, { cells: { svg: fCells(), cap: 'Across each shared wall, what leaves one cell enters the next (thin arrows), so interior faces cancel. Only flux through the outer boundary (thick arrows) is left.' } }),
 
       Q(md`$\nabla\cdot\vb v = 0$ everywhere inside the closed surface $S$, and $\vb v$ is smooth there (figure). What is the outward flux through $S$?`,
@@ -1680,6 +1790,14 @@
           md`For a closed surface the convention is fixed (outward), and the sign decides that face's contribution.`],
         md`Outward from the bottom is down: $d\vb a = -\uv z\,dx\,dy$, so the bottom contributes $-\int v_z(x,y,0)\,dx\,dy$. Getting this sign wrong is the most common mistake in divergence-theorem checks.`,
         { figHtml: fCubeBottom() }),
+
+      Q(md`The net outward flux of $\vb v$ through the closed surface $S$ shown is $-3$. Which statement must be true?`,
+        [md`$\nabla\cdot\vb v = -3$ everywhere inside $S$`, md`$\vb v$ points inward everywhere on $S$`, md`$\nabla\cdot\vb v<0$ everywhere inside $S$`, md`$\int_V\nabla\cdot\vb v\,d\tau = -3$, so $\nabla\cdot\vb v<0$ somewhere inside`], 3,
+        [md`$-3$ is the *integral* of the divergence over the volume, not its value at each point, and it need not be uniform.`,
+          md`A net inflow still allows outflow through part of the surface.`,
+          md`Sources and sinks can both sit inside; only their total is fixed.`, null],
+        md`By the divergence theorem $\int_V\nabla\cdot\vb v\,d\tau = \oint_S\vb v\cdot d\vb a = -3$. A negative total needs a sink somewhere, though sources may be present too. For $\vb E$: a net inward flux means net negative charge inside, $Q_{\text{enc}} = \varepsilon_0\oint\vb E\cdot d\vb a<0$.`,
+        { figHtml: fBlob() }),
 
       RF(md`
         ### Worked example: testing the divergence theorem on a cube
@@ -1956,7 +2074,7 @@
         [md`Curl measures circulation, and a radial field never pushes around a loop.`,
           md`Growing or shrinking along the radius doesn't create rotation.`,
           md`That isn't even a vector.`, null],
-        md`In the spherical curl every term contains $v_\theta$, $v_\phi$, or an angle derivative of $v_r$; for $v_r = f(r)$ they all vanish. This is Lecture 3's calculation for a point charge. Around any small loop, a radial field helps on one side exactly as much as it opposes on the other.`,
+        md`In the spherical curl every term contains $v_\theta$, $v_\phi$, or an angle derivative of $v_r$; for $v_r = f(r)$ they all vanish. This is the calculation for a point charge. Around any small loop, a radial field helps on one side exactly as much as it opposes on the other.`,
         { figHtml: fieldFig((x, y) => { const r = Math.hypot(x, y); return [x / r ** 3, y / r ** 3]; }, { skip: near0(0.3) }) }),
 
       Q(md`The field lines of a dipole (figure) are curved. Does that mean the field has a curl?`,
@@ -1964,7 +2082,7 @@
         [md`Curvature of the lines is not circulation: $\hat{\boldsymbol\phi}/s$ has circular lines and no curl, $y\,\uv x$ has straight lines and a curl.`,
           md`Even circular lines can be curl-free (the vortex).`, null,
           md`Every static $\vb E$ is curl-free, including between the charges.`],
-        md`An electrostatic field is a superposition of point-charge fields, each curl-free (Lecture 3), so $\nabla\times\vb E = 0$. Curl is a local property (would a tiny paddle wheel spin?), not a property of the shape of the field lines.`,
+        md`An electrostatic field is a superposition of point-charge fields, each curl-free, so $\nabla\times\vb E = 0$. Curl is a local property (would a tiny paddle wheel spin?), not a property of the shape of the field lines.`,
         { figHtml: fDipole() }),
 
       Q(md`Could a static electric field have a field line that closes on itself, like the loop drawn?`,
@@ -1974,6 +2092,14 @@
           md`Inside a conductor in equilibrium $\vb E = 0$.`, null],
         md`Along a field line $\vb E$ is parallel to $d\vb l$, so the integrand is positive everywhere. Static fields have zero curl, hence (Stokes) zero circulation. So electrostatic field lines begin on positive charge and end on negative charge or at infinity; they never close. Magnetic field lines do.`,
         { figHtml: fClosed() }),
+
+      Q(md`Water flows along $+y$ (figure), fastest in the middle of the channel and slower toward the banks: $\vb v = v_0\big(1-x^2/b^2\big)\uv y$. Which way does a small paddle wheel at $P$, left of the centre line, spin (seen from $+z$, out of the page)?`,
+        [md`Clockwise`, md`Counter-clockwise`, md`It doesn't spin: the arrows are all parallel`, md`It doesn't spin; only a wheel on the centre line would`], 1,
+        [md`The wheel's right side, nearer the centre, is pushed up harder than its left side. That turns it counter-clockwise.`, null,
+          md`Parallel arrows can circulate. What matters is that the speed changes *across* the flow.`,
+          md`Backwards: on the centre line the speed is at its maximum, $\partial v_y/\partial x = 0$, and that is the one place a wheel does *not* spin.`],
+        md`$(\nabla\times\vb v)_z = \partial v_y/\partial x = -2v_0x/b^2$. At $P$, $x<0$, so the curl points along $+\uv z$: counter-clockwise. Right of the centre the wheel turns clockwise, and on the centre line not at all. Shear flow is the classic case of straight lines with a nonzero curl.`,
+        { figHtml: fieldFig((x) => [0, 1 - x * x / 5], { skip: (x, y) => Math.abs(x + 1) < 0.3 && Math.abs(y) < 0.6, extra: (f, X, Y) => { f.dot(X(-1), Y(0), 3.2); f.tag(X(-1), Y(0), 'P', 'r', 9); } }) }),
 
       RF(md`
         ### Curl in cylindrical and spherical coordinates
@@ -1988,7 +2114,7 @@
 
         Rigid rotation $s\,\hat{\boldsymbol\phi}$ ($n=1$) has curl $2\,\uv z$; $\hat{\boldsymbol\phi}/s$ ($n=-1$, the shape of the magnetic field of a wire) has zero curl except on the axis.
 
-        Spherical, as in Lecture 3: for the point charge, $E_r = \dfrac{q}{4\pi\varepsilon_0r^2}$ and $E_\theta = E_\phi = 0$. Every term of the spherical curl contains $E_\theta$, $E_\phi$, or an angle derivative of $E_r$, so $\nabla\times\vb E = 0$. By superposition, **every static charge distribution has $\nabla\times\vb E = 0$**. (The notes drop a $1/r$ in front of the $\hat{\boldsymbol\theta}$ term in the last line; harmless, since the term is zero.)
+        Spherical, for the point charge: $E_r = \dfrac{q}{4\pi\varepsilon_0r^2}$ and $E_\theta = E_\phi = 0$. Every term of the spherical curl contains $E_\theta$, $E_\phi$, or an angle derivative of $E_r$, so $\nabla\times\vb E = 0$. By superposition, **every static charge distribution has $\nabla\times\vb E = 0$**.
       `),
 
       Q(md`What is $\nabla\times\big(s^2\,\hat{\boldsymbol\phi}\big)$? (Figure: the field in the $xy$-plane.)`,
@@ -2005,7 +2131,7 @@
         md`In $x\,\uv x$ the only component depends only on its own coordinate, so every cross-derivative vanishes. It is $\nabla(x^2/2)$, a gradient, and gradients never curl. (It does have divergence $1$.)`,
         { nofig: 'quick component check' }),
 
-      Q(md`Lecture 3 asks: "What is $\nabla\times\vb E$ of a point charge?" In the spherical curl from the formula sheet, the $\hat{\boldsymbol\theta}$ component is $\dfrac1r\Big[\dfrac{1}{\sin\theta}\dfrac{\partial E_r}{\partial\phi}-\dfrac{\partial}{\partial r}\big(rE_\phi\big)\Big]$. Why is it zero for $\vb E = \dfrac{q}{4\pi\varepsilon_0r^2}\,\uv r$?`,
+      Q(md`What is $\nabla\times\vb E$ of a point charge? In the spherical curl from the formula sheet, the $\hat{\boldsymbol\theta}$ component is $\dfrac1r\Big[\dfrac{1}{\sin\theta}\dfrac{\partial E_r}{\partial\phi}-\dfrac{\partial}{\partial r}\big(rE_\phi\big)\Big]$. Why is it zero for $\vb E = \dfrac{q}{4\pi\varepsilon_0r^2}\,\uv r$?`,
         [md`Because $E_r$ falls off as $1/r^2$`, md`Because $\dfrac{1}{\sin\theta}$ vanishes`, md`Because $E_r$ depends only on $r$, so $\partial E_r/\partial\phi = 0$, and $E_\phi = 0$`, md`It isn't zero: it equals $-\dfrac1r\dfrac{\partial E_r}{\partial r}$`], 2,
         [md`The power law plays no role: any $E_r = f(r)$ gives zero. What matters is that $E_r$ has no angle dependence.`,
           md`$1/\sin\theta$ never vanishes; it blows up at the poles. The bracket is zero because both terms inside it are.`,
@@ -2014,13 +2140,13 @@
         md`Read off the components first: $E_r = \dfrac{q}{4\pi\varepsilon_0r^2}$, $E_\theta = E_\phi = 0$. Every term of the spherical curl is then a derivative of $E_\theta$ or $E_\phi$ (zero) or an *angle* derivative of $E_r$ (zero, since $E_r$ depends on $r$ alone). All three components vanish: $\nabla\times\vb E = 0$, for the point charge and for any radial $f(r)\,\uv r$.`,
         { nofig: 'reading the formula-sheet curl' }),
 
-      Q(md`Lecture 3's follow-up: "What does this tell us about the curl of the electric field for any static charge distribution? And tell me how to prove it." Which answer and proof are right?`,
+      Q(md`The curl of a point charge's field is zero. What does that tell you about the curl of the electric field of **any** static charge distribution, and how do you prove it? Which answer and proof are right?`,
         [md`Nothing general; each distribution needs its own calculation`, md`It is zero, by Gauss's law $\nabla\cdot\vb E = \rho/\varepsilon_0$`, md`It is zero only for spherically symmetric distributions, whose fields are radial`, md`It is zero: by superposition $\vb E = \sum_i\vb E_{q_i}$; the curl of a sum is the sum of the curls, and each point-charge field is curl-free`], 3,
         [md`Superposition settles every distribution at once; no new calculation is needed.`,
           md`Gauss's law fixes the divergence, not the curl. A field can have any divergence and still swirl.`,
           md`A dipole's field is not radial about any single point, yet it is curl-free. Each point charge's field is radial about its *own* charge, and that is all the proof needs.`,
           null],
-        md`Break any static distribution into point charges (or elements $\rho\,d\tau'$). Each one's field is radial about its own position, so its curl is zero. The curl is linear, so $\nabla\times\vb E = \nabla\times\vb E_{q_1}+\nabla\times\vb E_{q_2}+\dots = 0$. Stokes then gives $\oint\vb E\cdot d\vb l = 0$ around every loop. This needs *static* charges: a changing magnetic field adds $-\partial\vb B/\partial t$ (Lecture 3's warning).`,
+        md`Break any static distribution into point charges (or elements $\rho\,d\tau'$). Each one's field is radial about its own position, so its curl is zero. The curl is linear, so $\nabla\times\vb E = \nabla\times\vb E_{q_1}+\nabla\times\vb E_{q_2}+\dots = 0$. Stokes then gives $\oint\vb E\cdot d\vb l = 0$ around every loop. This needs *static* charges: a changing magnetic field adds $-\partial\vb B/\partial t$.`,
         { nofig: 'proof strategy; no particular configuration' }),
 
       RF(md`
@@ -2028,7 +2154,7 @@
 
         $$\int_S(\nabla\times\vb v)\cdot d\vb a = \oint_{\mathcal P}\vb v\cdot d\vb l$$
 
-        $S$ is an **open** surface and $\mathcal P$ its boundary, a closed loop. (Lecture 3 calls $S$ "an open boundary"; it means an open surface.) Tile $S$ with tiny loops all circulating the same way. Every interior edge is traversed twice in opposite directions and cancels, leaving only the rim.
+        $S$ is an **open** surface and $\mathcal P$ its boundary, a closed loop. Tile $S$ with tiny loops all circulating the same way. Every interior edge is traversed twice in opposite directions and cancels, leaving only the rim.
 
         **Orientation.** The direction of $d\vb a$ and the direction around $\mathcal P$ are tied by the right-hand rule: curl the fingers of your right hand along $\mathcal P$, and your thumb gives $d\vb a$. Counter-clockwise seen from above goes with $d\vb a$ up. Flip one and you must flip the other.
 
@@ -2038,7 +2164,7 @@
 
         - The flux of a curl depends only on the rim: every surface with the same boundary gives the same $\int(\nabla\times\vb v)\cdot d\vb a$. Pick the easiest one, usually flat.
         - For a closed surface (no rim), $\oint(\nabla\times\vb v)\cdot d\vb a = 0$.
-        - If $\nabla\times\vb E = 0$ (electrostatics), then $\oint\vb E\cdot d\vb l = 0$ around every loop (Lecture 3).
+        - If $\nabla\times\vb E = 0$ (electrostatics), then $\oint\vb E\cdot d\vb l = 0$ around every loop.
 
         To **test** Stokes: compute the flux of the curl through the surface with a chosen normal, then the line integral around the rim in the matching direction, one smooth piece at a time.
       `, { st: { svg: fStokes(), cap: 'An open surface $S$ (a dome) with rim $\\mathcal P$. Counter-clockwise around the rim, seen from above, goes with $d\\vb a$ pointing up (right-hand rule).' } }),
@@ -2072,6 +2198,14 @@
           md`Circumference times $v_\phi$ is $2\pi R\cdot\frac1R$.`, null],
         md`$\oint\vb v\cdot d\vb l = v_\phi\cdot2\pi R = \frac1R\cdot2\pi R = 2\pi$, the same for every $R$. As with $\uv r/r^2$ and the divergence, all the curl sits on the axis: $\nabla\times(\hat{\boldsymbol\phi}/s) = 2\pi\,\delta(x)\,\delta(y)\,\uv z$. This is the magnetic field of a wire (Ampère's law, later in the course).`,
         { figHtml: fVortexLoop() }),
+
+      Q(md`Near some point, $(\nabla\times\vb v)_z = 4$ and $\vb v$ is smooth. About how large is $\oint\vb v\cdot d\vb l$, counter-clockwise around a small circle of radius $\varepsilon$ in the $xy$-plane centred there?`,
+        [md`$4$`, md`$8\pi\varepsilon$`, md`$4\pi\varepsilon^2$`, md`$0$`], 2,
+        [md`The curl is circulation *per unit area*. Multiply by the area $\pi\varepsilon^2$.`,
+          md`That multiplies by the circumference. Stokes multiplies the curl by an area.`, null,
+          md`Zero only if the curl is zero. A small loop has a small but nonzero circulation.`],
+        md`Stokes: $\oint\vb v\cdot d\vb l = \int(\nabla\times\vb v)\cdot d\vb a\approx4\cdot\pi\varepsilon^2$, since the curl is nearly constant over a small disk. Read backwards, this is the definition of the curl: circulation divided by area, as the loop shrinks.`,
+        { nofig: 'definition of curl as circulation per area' }),
 
       RF(md`
         ### Worked example: Stokes on a square
@@ -2369,7 +2503,7 @@
 
         "Everywhere" matters. $\hat{\boldsymbol\phi}/s$ has zero curl except on the $z$-axis, yet its circulation around the axis is $2\pi$. Every surface spanning such a loop is pierced by the axis, so Stokes gives no protection.
 
-        **Why $\nabla\times\vb E = 0$ matters.** Lecture 3 showed that every static charge distribution has $\nabla\times\vb E = 0$ (superpose point-charge fields, each curl-free). So electrostatic fields are conservative: $\oint\vb E\cdot d\vb l = 0$, and there is a potential with $\vb E = -\nabla V$, $V(\vb r) = -\int_{\mathcal O}^{\vb r}\vb E\cdot d\vb l$. It also gives a quick **test**: a proposed static $\vb E$ with a nonzero curl anywhere is impossible. Unit 2's HW 2.21 asks exactly this. Lecture 3 stresses that this holds only for **static** charges: a changing magnetic field gives $\nabla\times\vb E = -\partial\vb B/\partial t$.
+        **Why $\nabla\times\vb E = 0$ matters.** Every static charge distribution has $\nabla\times\vb E = 0$ (superpose point-charge fields, each curl-free). So electrostatic fields are conservative: $\oint\vb E\cdot d\vb l = 0$, and there is a potential with $\vb E = -\nabla V$, $V(\vb r) = -\int_{\mathcal O}^{\vb r}\vb E\cdot d\vb l$. It also gives a quick **test**: a proposed static $\vb E$ with a nonzero curl anywhere is impossible. Unit 2's HW 2.21 asks exactly this. It holds only for **static** charges: a changing magnetic field gives $\nabla\times\vb E = -\partial\vb B/\partial t$.
       `, { thm: { svg: fThm1(), cap: 'The four equivalent statements: (1) zero curl, (2) path-independent line integrals, (3) zero circulation around every loop, (4) a potential exists. Arrows show the arguments that link them.' } }),
 
       Q(md`Someone proposes the static field $\vb E = k\,(y\,\uv x-x\,\uv y)$ (figure). Is it possible?`,
@@ -2406,10 +2540,18 @@
         md`Gradients ignore added constants. Choosing a reference point $\mathcal O$ with $V(\mathcal O) = 0$ removes the freedom: $V(\vb r) = -\int_{\mathcal O}^{\vb r}\vb F\cdot d\vb l$, the formula-sheet definition, usually with $\mathcal O$ at infinity.`,
         { nofig: 'definition' }),
 
+      Q(md`In the dipole field shown, pick any field line and move along it in the direction of $\vb E$, from a point $\vb a$ to a point $\vb b$ farther along. How does $V(\vb b)$ compare with $V(\vb a)$?`,
+        [md`$V(\vb b)>V(\vb a)$`, md`They are equal: a field line is an equipotential`, md`It depends on the path`, md`$V(\vb b)<V(\vb a)$`], 3,
+        [md`$\vb E = -\nabla V$ points downhill in $V$, not uphill.`,
+          md`Field lines cross equipotentials at right angles; they are never equipotentials themselves.`,
+          md`For a static field $V(\vb b)-V(\vb a)$ is path-independent.`, null],
+        md`$V(\vb b)-V(\vb a) = -\int_{\vb a}^{\vb b}\vb E\cdot d\vb l$, and along a field line $\vb E\cdot d\vb l>0$ at every step, so $V$ falls. Field lines run from high potential to low, from the $+$ charge toward the $-$ charge.`,
+        { figHtml: fDipole() }),
+
       Q(md`A magnetic field that changes in time is present. Is $\nabla\times\vb E = 0$ still true?`,
         [md`Yes, always`, md`Only far from the magnetic field`, md`No: $\nabla\times\vb E = -\partial\vb B/\partial t$`, md`Only in vacuum`], 2,
-        [md`Lecture 3: it holds only for *static* charges.`, md`Faraday's law holds everywhere, not just near the field.`, null, md`Vacuum doesn't rescue it.`],
-        md`Lecture 3 proved $\nabla\times\vb E = 0$ by superposing Coulomb fields of static charges. With a changing magnetic field, Faraday's law gives $\nabla\times\vb E = -\partial\vb B/\partial t$, and $V$ alone no longer describes $\vb E$. Everything on this exam is static.`,
+        [md`The proof superposes Coulomb fields, so it holds only for *static* charges.`, md`Faraday's law holds everywhere, not just near the field.`, null, md`Vacuum doesn't rescue it.`],
+        md`The proof of $\nabla\times\vb E = 0$ superposes Coulomb fields of static charges. With a changing magnetic field, Faraday's law gives $\nabla\times\vb E = -\partial\vb B/\partial t$, and $V$ alone no longer describes $\vb E$. Everything on this exam is static.`,
         { nofig: 'conceptual' }),
 
       RF(md`
@@ -2493,6 +2635,14 @@
           md`Helmholtz says exactly that they agree.`],
         md`The difference $\vb D$ has $\nabla\cdot\vb D = 0$, $\nabla\times\vb D = 0$ and $\vb D\to0$ far away, so $\vb D = 0$. This is why $\nabla\cdot\vb E = \rho/\varepsilon_0$ and $\nabla\times\vb E = 0$ (plus the boundary condition) contain all of electrostatics.`,
         { nofig: 'statement of a theorem' }),
+
+      Q(md`All you know about a field is that $\nabla\cdot\vb F = 0$ everywhere. Which follows?`,
+        [md`Its flux through every closed surface is zero`, md`It is curl-free`, md`$\vb F = 0$ everywhere`, md`$\vb F = -\nabla V$ for some $V$`], 0,
+        [null, md`Divergence and curl are independent: $-y\,\uv x+x\,\uv y$ has zero divergence and curl $2\,\uv z$.`,
+          md`A uniform field and the vortex $\hat{\boldsymbol\phi}/s$ are divergence-free and not zero.`,
+          md`A potential needs zero *curl*. The divergence says nothing about it.`],
+        md`The divergence theorem gives $\oint\vb F\cdot d\vb a = \int\nabla\cdot\vb F\,d\tau = 0$ for every closed surface (and $\vb F = \nabla\times\vb A$ for some $\vb A$). Divergence and curl are separate pieces of information; Helmholtz needs both, plus the behaviour at infinity.`,
+        { nofig: 'logic of the theorems' }),
 
       RF(md`
         !!key Patterns to remember
@@ -2635,7 +2785,7 @@
 
         [[fig:par]]
 
-        The $4\pi$ is the full solid angle. The field falls as $1/R^2$ exactly as fast as the sphere's area $4\pi R^2$ grows, so every sphere catches the same flux. With $\vb E = \dfrac{q}{4\pi\varepsilon_0}\dfrac{\uv r}{r^2}$ this is Lecture 2's $\Phi_E = q/\varepsilon_0$.
+        The $4\pi$ is the full solid angle. The field falls as $1/R^2$ exactly as fast as the sphere's area $4\pi R^2$ grows, so every sphere catches the same flux. With $\vb E = \dfrac{q}{4\pi\varepsilon_0}\dfrac{\uv r}{r^2}$ this is Gauss's law for a point charge, $\Phi_E = q/\varepsilon_0$.
       `, { par: { svg: fParadox(), cap: 'A slice through $\\uv r/r^2$. Both dashed spheres catch the same flux, $4\\pi$, so the region between them has no net source: the source is all at the centre.' } }),
 
       Q(md`What is the flux of $\uv r/r^2$ through the sphere of radius $3$ centred on the origin (figure)?`,
@@ -2728,19 +2878,19 @@
 
         $$\delta^3(\vb r) = \delta(x)\,\delta(y)\,\delta(z),\qquad\int_{\text{all space}}\delta^3(\vb r)\,d\tau = 1,\qquad\int f(\vb r)\,\delta^3(\vb r-\vb a)\,d\tau = f(\vb a).$$
 
-        It has units of 1/volume. The charge density of a point charge $q$ at $\vb r'$ is $\rho(\vb r) = q\,\delta^3(\vb r-\vb r')$: zero everywhere except at the charge, with total $\int\rho\,d\tau = q$. ("Point charges are a useful tool but make no sense in real life", Lecture 2.)
+        It has units of 1/volume. The charge density of a point charge $q$ at $\vb r'$ is $\rho(\vb r) = q\,\delta^3(\vb r-\vb r')$: zero everywhere except at the charge, with total $\int\rho\,d\tau = q$. (A true point charge is an idealisation, but a very useful one.)
 
         Now the paradox has a name. $\nabla\cdot(\uv r/r^2)$ is zero for $r\neq0$, and its integral over any volume containing the origin is $4\pi$. That is exactly $4\pi\delta^3(\vb r)$:
 
         $$\nabla\cdot\Big(\frac{\uv r}{r^2}\Big) = 4\pi\,\delta^3(\vb r),\qquad\qquad\nabla\cdot\Big(\frac{\srh}{\srm^2}\Big) = 4\pi\,\delta^3(\sr).$$
 
-        In the second form $\sr = \vb r-\vb r'$, and $\nabla$ acts on $\vb r$ with $\vb r'$ held fixed (Lecture 2). Since $\nabla(1/\srm) = -\srh/\srm^2$, the same fact reads $\nabla^2\dfrac1\srm = -4\pi\,\delta^3(\sr)$.
+        In the second form $\sr = \vb r-\vb r'$, and $\nabla$ acts on $\vb r$ with $\vb r'$ held fixed. Since $\nabla(1/\srm) = -\srh/\srm^2$, the same fact reads $\nabla^2\dfrac1\srm = -4\pi\,\delta^3(\sr)$.
 
-        **The payoff (Lectures 2–3).** For a point charge at the origin, $\rho = \varepsilon_0\nabla\cdot\vb E = \varepsilon_0\cdot\dfrac{q}{4\pi\varepsilon_0}\cdot4\pi\delta^3(\vb r) = q\,\delta^3(\vb r)$. For any distribution, take the divergence inside Coulomb's integral:
+        **The payoff.** For a point charge at the origin, $\rho = \varepsilon_0\nabla\cdot\vb E = \varepsilon_0\cdot\dfrac{q}{4\pi\varepsilon_0}\cdot4\pi\delta^3(\vb r) = q\,\delta^3(\vb r)$. For any distribution, take the divergence inside Coulomb's integral:
 
         $$\nabla\cdot\vb E = \kq\int\rho(\vb r')\,\nabla\cdot\Big(\frac{\srh}{\srm^2}\Big)d\tau' = \kq\int\rho(\vb r')\,4\pi\delta^3(\vb r-\vb r')\,d\tau' = \frac{\rho(\vb r)}{\varepsilon_0}.$$
 
-        That is Gauss's law in differential form, derived from Coulomb's law. (The notes write this step as $\nabla\cdot(\sr/\srm^2)$, without the hat; it should be $\srh/\srm^2 = \sr/\srm^3$.)
+        That is Gauss's law in differential form, derived from Coulomb's law. Note the hat: the integrand is $\srh/\srm^2 = \sr/\srm^3$, not $\sr/\srm^2$.
       `),
 
       Q(md`What is the charge density of a point charge $q$ at $(0,0,d)$ (figure)?`,
@@ -2749,6 +2899,22 @@
           md`That puts the charge at the origin.`, md`That is a thin spherical shell of radius $d$ carrying total charge $q$.`],
         md`$\rho(\vb r) = q\,\delta^3(\vb r-d\,\uv z) = q\,\delta(x)\,\delta(y)\,\delta(z-d)$. It vanishes except at $(0,0,d)$, has units of charge per volume, and integrates to $q$.`,
         { figHtml: fPointZd() }),
+
+      Q(md`A uniform line charge $\lambda$ lies along the whole $z$-axis. Which volume charge density describes it?`,
+        [md`$\lambda\,\delta^3(\vb r)$`, md`$\lambda\,\delta(x)\,\delta(y)$`, md`$\lambda\,\delta(z)$`, md`$\lambda\,\delta(s)$`], 1,
+        [md`That is a single point at the origin, and its units are C/m$^4$, not C/m$^3$.`, null,
+          md`$\delta(z)$ confines charge to the plane $z = 0$, not to the axis, and $\lambda\,\delta(z)$ has units C/m$^2$.`,
+          md`One delta factor gives units C/m$^2$. A line needs two delta factors, one for each direction across it.`],
+        md`$\delta(x)\,\delta(y)$ pins the charge to $x = y = 0$ for every $z$. Units: (C/m)(1/m)(1/m) = C/m$^3$. Check: the charge in a length $L$ is $\int\lambda\,\delta(x)\,\delta(y)\,dx\,dy\,dz = \lambda L$. Pattern: a point needs three delta factors, a line two, a sheet one ($\sigma\,\delta(z)$).`,
+        { nofig: 'writing a density' }),
+
+      Q(md`A thin spherical shell of radius $R$ carries total charge $Q$, spread uniformly (figure). Which $\rho(\vb r)$ describes it?`,
+        [md`$Q\,\delta(r-R)$`, md`$\dfrac{Q}{4\pi R^2}\,\delta^3(\vb r)$`, md`$\dfrac{3Q}{4\pi R^3}$ for $r<R$, and $0$ outside`, md`$\dfrac{Q}{4\pi R^2}\,\delta(r-R)$`], 3,
+        [md`Integrate it: $\int Q\,\delta(r-R)\,r^2\sin\theta\,dr\,d\theta\,d\phi = 4\pi R^2Q$. Too big by the shell's area.`,
+          md`$\delta^3(\vb r)$ puts everything at the centre.`,
+          md`That is a uniformly filled ball, not a shell.`, null],
+        md`The surface density is $\sigma = Q/(4\pi R^2)$, and the radial delta pins it to $r = R$: $\rho = \sigma\,\delta(r-R)$. Check: $\int\rho\,d\tau = \sigma\,R^2\cdot4\pi = Q$. Same pattern as a sheet: surface density times a delta in the coordinate normal to the surface.`,
+        { figHtml: fBallR() }),
 
       Q(md`What is $\nabla\cdot(\uv r/r^2)$ at the point $(1,2,2)$?`,
         [md`$0$`, md`$4\pi$`, md`$4\pi/9$`, md`Infinite`], 0,
@@ -2775,7 +2941,7 @@
         [md`$2\pi L$`, md`$2\pi RL$`, md`$0$`, md`$4\pi$`], 0,
         [null, md`On the side $v_s = 1/R$, which cancels the $R$ in the area $2\pi RL$.`,
           md`The axis, where the source sits, is inside the cylinder.`, md`$4\pi$ is the spherical (point-charge) version.`],
-        md`Side: $\frac1R\cdot2\pi RL = 2\pi L$; ends: $\vb v\perp\uv z$, so zero. The flux doesn't depend on $R$, so all the divergence sits on the axis: $\nabla\cdot(\uv s/s) = 2\pi\,\delta(x)\,\delta(y)$. Multiply by $\dfrac{\lambda}{2\pi\varepsilon_0}$ and you have Gauss's law for a line charge, $\Phi = \lambda L/\varepsilon_0$ (Lecture 2).`,
+        md`Side: $\frac1R\cdot2\pi RL = 2\pi L$; ends: $\vb v\perp\uv z$, so zero. The flux doesn't depend on $R$, so all the divergence sits on the axis: $\nabla\cdot(\uv s/s) = 2\pi\,\delta(x)\,\delta(y)$. Multiply by $\dfrac{\lambda}{2\pi\varepsilon_0}$ and you have Gauss's law for a line charge, $\Phi = \lambda L/\varepsilon_0$.`,
         { figHtml: fLineCyl() }),
 
       RF(md`

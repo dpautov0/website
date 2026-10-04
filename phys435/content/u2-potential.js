@@ -488,7 +488,7 @@
           Put a tiny paddle wheel in the field. If it spins, the curl is nonzero there. Field lines that swirl around in closed loops fail the test. So do straight, parallel field lines whose strength changes as you move sideways across them: the push on one side of the wheel is stronger than on the other. Static field lines never close on themselves; they start on positive charges and end on negative charges (or at infinity).
       `),
       WG.fields({ f: 'swirl' }),
-      Q(md`**Lecture 4 in-class question, field 1.** Could $\vb E = C\,(-y\,\uv x + x\,\uv y)$, with $C$ a constant, be the field of some static charge distribution? Its arrows are drawn below.`,
+      Q(md`**Field 1.** Could $\vb E = C\,(-y\,\uv x + x\,\uv y)$, with $C$ a constant, be the field of some static charge distribution? Its arrows are drawn below.`,
         [md`Yes. Its divergence is zero, so it is the field in a charge-free region.`,
           md`Yes. It is the field of a uniform line charge along the $z$ axis.`,
           md`No. $\curl\vb E = 2C\,\uv z \neq 0$, so no static charges can make it.`,
@@ -504,7 +504,7 @@
 
           The field lines are circles around the $z$ axis (counter-clockwise seen from $+z$ when $C>0$). Going once around a circle of radius $s$ you always move with the field, so $\oint\vb E\cdot d\vb l = (Cs)(2\pi s)\neq0$. Stokes agrees: $\int(\curl\vb E)\cdot d\vb a=2C\cdot\pi s^2$. A static field can never circulate like this.
         `, { figHtml: figSwirl(), title: 'A swirling field' }),
-      Q(md`**Field 2 from the same question:** $\vb E = E_0\sin(kz)\,\uv y$. All its field lines are straight and parallel to $\uv y$ (drawn below in the $yz$ plane). Is it an electrostatic field?`,
+      Q(md`**Field 2.** $\vb E = E_0\sin(kz)\,\uv y$. All its field lines are straight and parallel to $\uv y$ (drawn below in the $yz$ plane). Is it an electrostatic field?`,
         [md`Yes. Straight, parallel field lines cannot circulate.`,
           md`Yes, because $\divg\vb E = 0$.`,
           md`No, because $\divg\vb E \neq 0$.`,
@@ -538,8 +538,8 @@
 
           [[fig:dip]]
 
-          !!trap The lecture sketch
-            In the Lecture 4 sketch the upper arcs point from $+q$ to $-q$ but the lower arcs point back from $-q$ to $+q$, so the lines would form closed loops. That is exactly what a curl-free field cannot do. In a correct sketch every line leaves $+q$ and ends on $-q$, on both sides.
+          !!trap A common wrong sketch
+            A tempting sketch has the upper arcs pointing from $+q$ to $-q$ but the lower arcs pointing back from $-q$ to $+q$, so the lines would form closed loops. That is exactly what a curl-free field cannot do. In a correct sketch every line leaves $+q$ and ends on $-q$, on both sides.
         `, { figHtml: figSph(), figs: { dip: { svg: figDipole(), cap: md`Dipole field lines, $+q$ above $-q$ ($\vb p$ along $+\uv z$).` } }, title: 'The dipole field' }),
       Q(md`Which of these could be an electrostatic field? ($k$ is a constant.)`,
         [md`$k\,(y\,\uv x - x\,\uv y)$`,
@@ -624,7 +624,7 @@
           Move along $\vb E$ and $V$ drops. Move against $\vb E$ and $V$ rises. Move perpendicular to $\vb E$ and $V$ does not change.
 
         !!trap Which way the logic runs
-          The notes say $\curl(\nabla V)=0$ "implies that any irrotational vector field can be written as the gradient of a scalar function". As worded, that runs backwards: $\curl(\nabla V)=0$ shows that every **gradient** is curl-free. The converse (curl-free ⇒ gradient) is what the Stokes and path-independence argument above proves. Both statements are true in a region without holes; just know which argument proves which.
+          It is tempting to say that $\curl(\nabla V)=0$ "implies that any irrotational vector field can be written as the gradient of a scalar function". As worded, that runs backwards: $\curl(\nabla V)=0$ shows that every **gradient** is curl-free. The converse (curl-free ⇒ gradient) is what the Stokes and path-independence argument above proves. Both statements are true in a region without holes; just know which argument proves which.
       `),
       Q(md`You move a short distance $d\vb l$ in the direction $\vb E$ points, from point 1 to point 2. The potential`,
         [md`increases`,
@@ -648,6 +648,14 @@
           md`The $h$ step is perpendicular to $\vb E$ and changes nothing.`],
         md`$V(\vb r)=-\int_{\mathcal O}^{\vb r}\vb E\cdot d\vb l=-\int_0^d E_0\,dx=-E_0d$, for any path. In a uniform field $V=-E_0x+\text{const}$, so the equipotentials are the planes $x=\text{const}$, perpendicular to $\vb E$.`,
         { figHtml: figUniform('q') }),
+      Q(md`In a static field, $\displaystyle\int_a^b\vb E\cdot d\vb l=-3$ V. Which point is at the higher potential?`,
+        [md`$a$, by $3$ V`, md`$b$, by $3$ V`, md`Neither: they are at the same potential`, md`It can't be told without knowing the path`], 1,
+        [md`$V(b)-V(a)=-\displaystyle\int_a^b\vb E\cdot d\vb l=+3$ V. The minus sign in the definition flips it.`, null,
+          md`Equal potentials would need the line integral to be zero.`,
+          md`In a static field the integral is the same along every path from $a$ to $b$.`],
+        md`$V(b)-V(a)=-\displaystyle\int_a^b\vb E\cdot d\vb l=+3$ V, so $b$ is $3$ V higher. A negative line integral means the path ran mostly *against* $\vb E$, and going against the field is going uphill in $V$.`,
+        { nofig: 'sign bookkeeping' }),
+
       P({
         title: 'Two paths in a uniform field',
         q: md`The field in a region is uniform, $\vb E=(250\un{V/m})\,\uv x$. Point $A$ is at the origin, $B$ at $(0.40\un{m},\,0.30\un{m})$, and $C$ at $(0,\,0.30\un{m})$. Find $V_B-V_A$ along the straight path 1, and $V_C-V_A$. Then say what path 2 (the dashed L) gives.`,
@@ -812,7 +820,7 @@
       RF(md`
         ### The landscape picture
 
-        Think of $V(\vb r)$ as the height of a landscape (Lecture 4's "mountain range"). Then $-\nabla V$ points in the direction of steepest descent, so
+        Think of $V(\vb r)$ as the height of a landscape (a "mountain range"). Then $-\nabla V$ points in the direction of steepest descent, so
 
         - $\vb E$ points **downhill**, from high $V$ to low $V$;
         - $|\vb E|$ is the **steepness**: large where the contour lines crowd together;
@@ -863,6 +871,14 @@
           null],
         md`$\int_P^Q\vb E\cdot d\vb l=V(P)-V(Q)=0$, for any path between them, because both points have the same potential. Along the chord the integrand is not zero everywhere: it is negative on the first half (moving inward against the outward field) and positive on the second, and the two halves cancel.`,
         { figHtml: figChordMap() }),
+      Q(md`In the uniform field $\vb E=E_0\,\uv x$, what do the equipotential surfaces look like?`,
+        [md`Planes $x=$ const, equally spaced for equal steps of $V$`, md`Spheres centred on the origin`, md`Planes $y=$ const`, md`Planes $x=$ const, crowding together as $x$ grows`], 0,
+        [null, md`Spheres belong to a point charge. Here $V=-E_0x+C$ depends on $x$ alone.`,
+          md`Equipotentials are perpendicular to $\vb E$. The planes $y=$ const contain the field direction.`,
+          md`Crowding equipotentials mean a field that grows with $x$. This one is uniform.`],
+        md`$V=-E_0x+C$, so the equipotentials are the planes $x=$ const. Equal steps $\Delta V$ correspond to equal steps $\Delta x=\Delta V/E_0$. In general the spacing of equipotentials (for equal $\Delta V$) is inversely proportional to $|\vb E|$: crowded where the field is strong, sparse where it is weak.`,
+        { nofig: 'the field is given as a formula' }),
+
       RF(md`
         ### Only differences matter: the reference point
 
@@ -883,7 +899,7 @@
           md`The shift is one constant added everywhere: $V'=V-50$ V, including far away, where the classmate gets $V'(\infty)=-50$ V.`,
           null,
           md`$V'-V=-\int_{\mathcal O'}^{\mathcal O}\vb E\cdot d\vb l$ does not depend on the field point. A constant shift leaves $\vb E=-\nabla V$ unchanged.`],
-        md`$V'(\vb r)=V(\vb r)+K$, and $V'(\mathcal O')=0$ fixes $K=-50$ V. So $V'=V-50$ V everywhere and $\vb E'=-\nabla V'=-\nabla V=\vb E$. This is the Lecture 4 in-class question: does the constant change the electric field? No.`,
+        md`$V'(\vb r)=V(\vb r)+K$, and $V'(\mathcal O')=0$ fixes $K=-50$ V. So $V'=V-50$ V everywhere and $\vb E'=-\nabla V'=-\nabla V=\vb E$. Adding a constant to $V$ never changes the electric field.`,
         { figHtml: figRefShift() }),
       Q(md`Two students use different reference points for the same charges. At $A$ they get $V_A=12$ V and $V'_A=-3$ V. At $B$ the first student gets $V_B=20$ V. What does the second student get at $B$?`,
         [md`$20$ V`, md`$35$ V`, md`$5$ V`, md`$-11$ V`], 2,
@@ -896,7 +912,7 @@
       RF(md`
         ### The potential of a point charge
 
-        Lecture 4 example. Put $q$ at the origin, where $\vb E=\dfrac{q}{4\pi\ep}\dfrac{\uv r}{r^2}$. In-class question: what should $\mathcal O$ be? Infinity, where the field dies off. Integrate inward along a radial line, $d\vb l=dr'\,\uv r$:
+        Example. Put $q$ at the origin, where $\vb E=\dfrac{q}{4\pi\ep}\dfrac{\uv r}{r^2}$. First question: what should $\mathcal O$ be? Infinity, where the field dies off. Integrate inward along a radial line, $d\vb l=dr'\,\uv r$:
 
         $$V(r)=-\int_\infty^r\frac{q}{4\pi\ep}\frac{dr'}{r'^2}=\frac{q}{4\pi\ep}\left[\frac1{r'}\right]_\infty^r=\frac{q}{4\pi\ep r}.$$
 
@@ -905,7 +921,7 @@
         [[fig:pv]]
 
         !!trap $V$ is a scalar
-          The notes write "$\vec V=-\int\dots$" with an arrow on $V$. The potential has no direction: $\vb E\cdot d\vb l$ is a dot product, so $V$ is a plain number at each point.
+          Never write "$\vec V=-\int\dots$" with an arrow on $V$. The potential has no direction: $\vb E\cdot d\vb l$ is a dot product, so $V$ is a plain number at each point.
       `, { pv: { svg: figPointV(), cap: 'Potential of $+q$ (a hill) and $-q$ (a pit), with $V(\\infty)=0$.' } }),
       Q(md`What is the potential a distance $r$ from a point charge $-q$ ($q>0$), with $V(\infty)=0$?`,
         [md`$+\dfrac{q}{4\pi\ep r}$, since a potential is a magnitude`,
@@ -929,6 +945,14 @@
           md`Swapped: $V\propto1/r$ and $E\propto1/r^2$.`],
         md`$V=\dfrac{q}{4\pi\ep r}\propto\dfrac1r$ and $E=\left|\dfrac{dV}{dr}\right|=\dfrac{q}{4\pi\ep r^2}\propto\dfrac1{r^2}$. Differentiating lowers the power by one.`,
         { figHtml: figPointQ('+', true) }),
+      Q(md`Which statement about $V$ and $\vb E$ at a single point is true in general?`,
+        [md`$\vb E=0$ there implies $V=0$ there`, md`$V=0$ there implies $\vb E=0$ there`, md`Both: $V$ and $\vb E$ always vanish together`, md`Neither: $\vb E$ depends on how $V$ changes, not on its value`], 3,
+        [md`At the centre of four equal charges on a square, $\vb E=0$ but $V\neq0$.`,
+          md`At the midpoint between $+q$ and $-q$, $V=0$ but $\vb E\neq0$.`,
+          md`Both counterexamples above rule this out.`, null],
+        md`$\vb E=-\nabla V$ is a slope. The value of $V$ also depends on the reference point; its slope does not. A flat spot ($\vb E=0$) can sit at any height, and a place where $V$ crosses zero can be steep.`,
+        { nofig: 'conceptual' }),
+
       P({
         title: 'Point-charge potentials with numbers',
         q: md`A point charge $q=2.0$ nC sits at the origin. Use $\dfrac{1}{4\pi\ep}=8.99\times10^9\ \text{N·m}^2/\text{C}^2$ and $V(\infty)=0$. Find the potential at $P_1$, 10 cm away, and at $P_2$, 30 cm away, and the difference $V(P_1)-V(P_2)$.`,
@@ -1041,6 +1065,14 @@
 
         The name "potential" invites confusion with "potential energy". They are different: $V$ is a property of the source charges, with no test charge anywhere in its definition. Unit 3 shows that the work needed to bring a charge $Q$ from the reference point to $\vb r$ is $Q\,V(\vb r)$; that is where the two connect.
       `),
+      Q(md`You carry a charge $Q$ slowly from $a$ to $b$ in a static field, so its kinetic energy doesn't change. How much work do *you* do?`,
+        [md`$Q\,[V(a)-V(b)]$`, md`$Q\displaystyle\int_a^b\vb E\cdot d\vb l$`, md`$Q\,[V(b)-V(a)]$`, md`It depends on the path you take`], 2,
+        [md`That is the work done by the *field*. You push against it, so your work has the opposite sign.`,
+          md`That is also the field's work: $Q\displaystyle\int_a^b\vb E\cdot d\vb l=Q\,[V(a)-V(b)]$.`, null,
+          md`The field is conservative, so the work depends only on the endpoints.`],
+        md`Your force is $-Q\vb E$, so $W=-Q\displaystyle\int_a^b\vb E\cdot d\vb l=Q\,[V(b)-V(a)]$. Carrying $+1$ C uphill through $1$ V costs $1$ J. That is the sense in which $V$ is potential energy *per unit charge*.`,
+        { nofig: 'definition' }),
+
       Q(md`Which of these is **not** a correct unit for the potential $V$?`,
         [md`J/C`, md`N·m/C`, md`V`, md`N/C`], 3,
         [md`J/C is the definition of the volt.`, md`N·m $=$ J, so N·m/C $=$ J/C $=$ V.`, md`The volt is the unit of potential.`, null],
@@ -1189,7 +1221,7 @@
       RF(md`
         ### The equation runs "backwards"
 
-        Lecture 5 opens with a complaint: Poisson's equation is backwards from what you usually want. Given $V$, it hands you $\rho$ by differentiating. Usually you know $\rho$ and want $V$. Inverting $\lap$ properly takes Green's functions (graduate E&M). Lesson 4 does it physically, by adding up point charges:
+        One complaint about Poisson's equation: it is backwards from what you usually want. Given $V$, it hands you $\rho$ by differentiating. Usually you know $\rho$ and want $V$. Inverting $\lap$ properly takes Green's functions (graduate E&M). Lesson 4 does it physically, by adding up point charges:
 
         $$V(\vb r)=\kq\int\frac{\rho(\vb r\,')}{\srm}\,d\tau' .$$
 
@@ -1263,6 +1295,14 @@
           **Check with Gauss:** $Q_{\text{enc}}(r)=\int_0^r\rho\,4\pi r'^2dr'=-\dfrac{12\ep V_0}{R^3}\cdot\pi r^4$, and $\ep\oint\vb E\cdot d\vb a=\ep\left(-\dfrac{3V_0r^2}{R^3}\right)4\pi r^2=-\dfrac{12\pi\ep V_0r^4}{R^3}$. They agree.
         `,
       }),
+      Q(md`Inside some ball, $V(r)=V_0-kr^2$ with $k>0$. What is $\rho$ there?`,
+        [md`$0$, because $V$ is smooth`, md`$-6\ep k$`, md`$2\ep k$`, md`$6\ep k$`], 3,
+        [md`Smoothness is irrelevant: $\lap V=-6k\neq0$, so there is charge.`,
+          md`Sign: $\lap V=-6k$ and $\rho=-\ep\lap V=+6\ep k$.`,
+          md`That is $-\ep\,d^2V/dr^2$, the one-dimensional habit. The spherical Laplacian has the $r^2$ inside the derivative.`, null],
+        md`$\lap V=\dfrac{1}{r^2}\dfrac{d}{dr}\big(r^2\cdot(-2kr)\big)=-6k$, so $\rho=-\ep\lap V=6\ep k$: uniform and positive. (Cartesian check: $\lap(x^2+y^2+z^2)=6$.) This is the inside of a uniformly charged ball, $V=\dfrac{\rho\,(3R^2-r^2)}{6\ep}$, with $k=\dfrac{\rho}{6\ep}$. A potential that curves down like a hilltop means positive charge.`,
+        { nofig: 'the potential is given as a formula' }),
+
       Q(md`The infinite-line potential $V(s)=-\dfrac{\lambda}{2\pi\ep}\ln\dfrac sa$ is valid for $s>0$. What is $\lap V$ there?`,
         [md`$-\dfrac{\lambda}{2\pi\ep s^2}$`, md`$-\dfrac{\lambda}{\ep}$`, md`$0$`, md`$\dfrac{\lambda}{2\pi\ep s}$`], 2,
         [md`That is $\dfrac{d^2V}{ds^2}$ alone. The cylindrical Laplacian is $\dfrac1s\dfrac{d}{ds}\left(s\dfrac{dV}{ds}\right)$, and $s\,dV/ds$ is constant.`,
@@ -1299,8 +1339,24 @@
           md`Add any solution of Laplace's equation to $V$ and $\rho$ is unchanged. The boundary values pick out the right one.`,
           md`The total charge is far too little information to fix $V(\vb r)$.`,
           null],
-        md`Poisson's equation determines $V$ only up to a solution of $\lap V=0$. Boundary conditions remove that freedom (the uniqueness theorems of Unit 4 make this precise). Lecture 4: "Poisson's eqⁿ + boundary conditions allows us to find $V$ directly from a charge distribution."`,
+        md`Poisson's equation determines $V$ only up to a solution of $\lap V=0$. Boundary conditions remove that freedom (the uniqueness theorems of Unit 4 make this precise). Poisson's equation plus boundary conditions lets you find $V$ directly from a charge distribution.`,
         { nofig: 'statement about numerical methods' }),
+      Q(md`In a charge-free region, can $V$ have a local maximum, a point where $V$ is higher than at all its neighbours?`,
+        [md`Yes, at a point equidistant from several positive charges`, md`No: at a peak $V$ curves down in every direction, so $\lap V<0$, which needs $\rho>0$`, md`Yes, wherever $\vb E=0$`, md`Only in one dimension`], 1,
+        [md`Such a point may have $\vb E=0$, but there $V$ is a saddle: it rises in some directions and falls in others (like the zeros inside the polygon of charges in Unit 1).`, null,
+          md`$\vb E=0$ makes a flat spot, not a peak. In charge-free space a flat spot is always a saddle.`,
+          md`In one dimension Laplace's equation is $V''=0$: a straight line, with no peak at all.`],
+        md`With $\rho=0$, $\lap V=\dfrac{\partial^2V}{\partial x^2}+\dfrac{\partial^2V}{\partial y^2}+\dfrac{\partial^2V}{\partial z^2}=0$, so the curvatures can't all be negative. (Unit 4 makes this exact: a solution of Laplace's equation equals its average over any sphere around a point, so it has no local maxima or minima.) Consequence: no static arrangement of charges can hold a test charge in stable equilibrium in empty space (Earnshaw's theorem).`,
+        { nofig: 'conceptual' }),
+
+      Q(md`In a charge-free region, $V$ depends only on $x$. What can $V(x)$ be?`,
+        [md`$a+bx^2$`, md`$a\sin(kx)$`, md`$a+bx$`, md`Any smooth function of $x$`], 2,
+        [md`$\dfrac{d^2}{dx^2}(bx^2)=2b\neq0$: that needs a uniform charge density $\rho=-2\ep b$.`,
+          md`$\dfrac{d^2}{dx^2}\sin(kx)=-k^2\sin(kx)\neq0$, so this also needs charge.`, null,
+          md`Laplace's equation restricts it: $V''=0$.`],
+        md`$V''(x)=0$ forces a straight line, $V=a+bx$: a uniform field $E_x=-b$ (or zero). The gap of a parallel-plate capacitor is the standard example.`,
+        { nofig: 'one-dimensional Laplace equation' }),
+
       RF(md`
         !!method Reading the charge off a given potential
           1. **Field:** $\vb E=-\nabla V$. For $V(r)$ only, $\vb E=-\dfrac{dV}{dr}\uv r$.
@@ -1605,13 +1661,13 @@
       RF(md`
         ### Potentials add as plain numbers
 
-        Fields superpose, $\vb E=\vb E_1+\vb E_2+\dots$ Integrate each from the common reference point (Lecture 4):
+        Fields superpose, $\vb E=\vb E_1+\vb E_2+\dots$ Integrate each from the common reference point:
 
         $$V=-\int_{\mathcal O}^{\vb r}\vb E_1\cdot d\vb l-\int_{\mathcal O}^{\vb r}\vb E_2\cdot d\vb l-\dots=V_1+V_2+\dots$$
 
         This is an ordinary sum of numbers: no components, no unit vectors, no geometry to resolve. That is the main practical reason to find $V$ first and take $\vb E=-\nabla V$ at the end.
 
-        Lecture 5 builds the general formula step by step. A charge $q$ at $\vb r\,'$ gives, at the field point $\vb r$,
+        Build the general formula step by step. A charge $q$ at $\vb r\,'$ gives, at the field point $\vb r$,
 
         $$V(\vb r)=\frac{q}{4\pi\ep\srm},\qquad \srm=|\vb r-\vb r\,'|,$$
 
@@ -1682,6 +1738,14 @@
           No vectors at all: the negative charge simply enters with a minus sign. Getting $\vb E$ at $P$ the same way would need three vectors broken into components.
         `,
       }),
+      Q(md`For a continuous charge distribution, why is it often easier to find $V$ first and then take $\vb E=-\nabla V$, rather than integrate for $\vb E$ directly?`,
+        [md`The $V$ integral adds scalars, so there are no components or directions to track`, md`The $V$ integrand falls off faster with distance, so the integral converges better`, md`$V$ does not depend on the reference point`, md`$V$ is always zero somewhere convenient`], 0,
+        [null, md`It falls off *slower*: $1/\srm$ against $1/\srm^2$.`,
+          md`$V$ does depend on the reference point; only differences of $V$ don't.`,
+          md`There is no such guarantee, and it wouldn't help with the integral anyway.`],
+        md`$\vb E$ needs three integrals (one per component), each with its own direction factor. $V$ needs one integral of $dq/\srm$. You pay with one differentiation at the end, which is easy, but you must know $V$ near the point, not just on one line, to get every component of $\vb E$.`,
+        { nofig: 'method comparison' }),
+
       RF(md`
         ### Continuous distributions
 
@@ -1698,7 +1762,7 @@
           4. If you need $\vb E$, take $-\nabla V$, with care about which variables $V$ is known in.
       `),
       RF(md`
-        ### Worked example (Lecture 5): a line segment, by potential
+        ### Worked example: a line segment, by potential
 
         A uniform line charge $\lambda$ runs along the $x$ axis from $-L$ to $L$. Find $V$, then $\vb E$, at height $z$ above the center.
 
@@ -1725,8 +1789,8 @@
         **Check.** Far away ($z\gg L$): $V\to\kq\dfrac{2\lambda L}{z}$ and $E\to\kq\dfrac{2\lambda L}{z^2}$: a point charge $Q=2\lambda L$.
 
         !!trap You cannot get $E_x$ from $V(z)$
-          The notes write $\vb E=(0,0,\text{not }0)$ "as we found previously". But $V(z)$ was computed only on the $z$ axis. It says nothing about how $V$ changes when you step off the axis in $x$ or $y$, so $\partial V/\partial x$ cannot be read off it. Here $E_x=E_y=0$ because of the symmetry of the segment, not because "$V(z)$ has no $x$ in it". Without such symmetry you need $V$ at general points before you differentiate. (The notes also set the scalar $-\partial V/\partial z$ equal to a vector; it should read $\vb E=-\dfrac{\partial V}{\partial z}\uv z$.)
-      `, { seg: { svg: figSegment(), cap: 'Lecture 5: a segment from $-L$ to $L$; the piece $dx$ at $x$ is $\\mathfrak r=\\sqrt{x^2+z^2}$ from P.' } }),
+          It is tempting to write $\vb E=(0,0,\text{not }0)$ straight from $V(z)$. But $V(z)$ was computed only on the $z$ axis. It says nothing about how $V$ changes when you step off the axis in $x$ or $y$, so $\partial V/\partial x$ cannot be read off it. Here $E_x=E_y=0$ because of the symmetry of the segment, not because "$V(z)$ has no $x$ in it". Without such symmetry you need $V$ at general points before you differentiate. And keep the vector: on the axis $\vb E=-\dfrac{\partial V}{\partial z}\uv z$, not the scalar $-\partial V/\partial z$.
+      `, { seg: { svg: figSegment(), cap: 'A segment from $-L$ to $L$; the piece $dx$ at $x$ is $\\mathfrak r=\\sqrt{x^2+z^2}$ from P.' } }),
       Q(md`You have $V(z)$ for points on the $z$ axis only. Which components of $\vb E$ on the axis can you compute from it?`,
         [md`All three: $E_x=-\partial V/\partial x=0$ because $V(z)$ contains no $x$.`,
           md`Only $E_z$. $E_x$ and $E_y$ need $V$ off the axis.`,
@@ -1759,7 +1823,7 @@
         q: md`A segment of length $L$ with uniform $\lambda$ lies on the $x$ axis from $0$ to $L$. Find $V(z)$ at height $z$ directly above the left end, then $E_z=-\partial V/\partial z$ there. (Compare Discussion 1 · Griffiths 2.3, which finds $\vb E$ at this point directly.)`,
         figHtml: figSegEnd(),
         hints: [
-          md`Same steps as the Lecture 5 example: $dq=\lambda\,dx$ and $\srm=\sqrt{x^2+z^2}$, but now $x$ runs from $0$ to $L$.`,
+          md`Same steps as the worked segment example: $dq=\lambda\,dx$ and $\srm=\sqrt{x^2+z^2}$, but now $x$ runs from $0$ to $L$.`,
           md`$V=\dfrac{\lambda}{4\pi\ep}\ln\dfrac{L+\sqrt{L^2+z^2}}{z}$. Differentiate the log: $\dfrac{d}{dz}\ln\left(L+\sqrt{L^2+z^2}\right)=\dfrac{z/\sqrt{L^2+z^2}}{L+\sqrt{L^2+z^2}}$.`,
           md`Think about $E_x$: is there any symmetry that kills it here?`,
         ],
@@ -1777,11 +1841,19 @@
 
           since $z^2-sL-s^2=-L(L+s)$. So $E_z=\dfrac{\lambda}{4\pi\ep}\dfrac{L}{z\sqrt{z^2+L^2}}$, which matches the $\uv z$ part of Griffiths 2.3.
 
-          **The trap.** Griffiths 2.3 also has $E_x=\dfrac{\lambda}{4\pi\ep z}\left(\dfrac{z}{\sqrt{z^2+L^2}}-1\right)\neq0$. Your $V(z)$ cannot produce it: to get $E_x$ you would need $V(x,z)$ near $x=0$. This is the general warning from the lecture example, and here it bites.
+          **The trap.** Griffiths 2.3 also has $E_x=\dfrac{\lambda}{4\pi\ep z}\left(\dfrac{z}{\sqrt{z^2+L^2}}-1\right)\neq0$. Your $V(z)$ cannot produce it: to get $E_x$ you would need $V(x,z)$ near $x=0$. This is the general warning from the worked segment example, and here it bites.
 
-          **Checks.** $z\gg L$: $V\approx\dfrac{\lambda L}{4\pi\ep z}$, a point charge $\lambda L$. Half of the Lecture 5 segment gives half of its $V$ at the center height, as it should.
+          **Checks.** $z\gg L$: $V\approx\dfrac{\lambda L}{4\pi\ep z}$, a point charge $\lambda L$. Half of the worked example's segment gives half of its $V$ at the center height, as it should.
         `,
       }),
+      Q(md`Far from a finite charge distribution whose net charge is zero (but whose dipole moment is not), how does $V$ fall off with distance $r$?`,
+        [md`$1/r$`, md`$1/r^2$`, md`$1/r^3$`, md`It doesn't fall off`], 1,
+        [md`The $1/r$ term is $\kq\,Q_{\text{net}}/r$, and here $Q_{\text{net}}=0$.`, null,
+          md`$1/r^3$ is how the dipole's *field* falls off. $V$ goes one power slower.`,
+          md`With $V(\infty)=0$, the potential of any finite distribution goes to zero far away.`],
+        md`The net-charge term $\kq\dfrac{Q}{r}$ vanishes, so the leading term is the dipole term $\propto\dfrac{p\cos\theta}{r^2}$. Then $\vb E=-\nabla V$ falls as $1/r^3$, as for the $\pm q$ pair in Unit 1. (The multipole expansion makes this systematic later in the course.)`,
+        { nofig: 'limiting behaviour' }),
+
       RF(md`
         ### A ring of charge: no integral needed
 
@@ -1841,7 +1913,7 @@
         figHtml: fig234(),
         hints: [
           md`(a) Both charges are $\sqrt{z^2+(d/2)^2}$ from $P$. Just add.`,
-          md`(b) is the Lecture 5 example. (c) Slice the disk into rings of radius $r'$ and width $dr'$: $dq=\sigma\,2\pi r'\,dr'$, all at $\srm=\sqrt{r'^2+z^2}$.`,
+          md`(b) is the worked segment example. (c) Slice the disk into rings of radius $r'$ and width $dr'$: $dq=\sigma\,2\pi r'\,dr'$, all at $\srm=\sqrt{r'^2+z^2}$.`,
           md`For the fields: on the axis only $E_z=-\partial V/\partial z$ can be found, and here symmetry kills $E_x,E_y$.`,
           md`The twist: with $-q$ on the right, $V=0$ on the whole $z$ axis, so $-\partial V/\partial z=0$. But $\vb E$ is not zero (Prob. 2.2). Write $V$ at an off-axis point $(x,0,z)$ and differentiate with respect to $x$.`,
         ],
@@ -1861,7 +1933,7 @@
 
           matching Ex. 2.1. ($E_x=E_y=0$ by the left-right symmetry.)
 
-          **(b) Segment of length $2L$.** This is the Lecture 5 example:
+          **(b) Segment of length $2L$.** This is the worked segment example:
 
           $$V=\frac{\lambda}{4\pi\ep}\ln\left(\frac{L+\sqrt{L^2+z^2}}{-L+\sqrt{L^2+z^2}}\right),\qquad E_z=\frac{1}{4\pi\ep}\frac{2\lambda L}{z\sqrt{z^2+L^2}},$$
 
@@ -1942,6 +2014,14 @@
           md`The divergence is at every $z$: each value carries the same infinite constant $\tfrac{\sigma R}{2\ep}$.`],
         md`$V(z)=\dfrac{\sigma}{2\ep}\left(\sqrt{R^2+z^2}-z\right)\approx\dfrac{\sigma R}{2\ep}-\dfrac{\sigma z}{2\ep}$ for $R\gg z$. The huge constant $\dfrac{\sigma R}{2\ep}$ is an artifact of the reference at infinity. Drop it (move the reference to the plane) and you get $V=-\dfrac{\sigma z}{2\ep}$, the result from Lesson 2.`,
         { nofig: 'limit of a formula; the disk is drawn above' }),
+      Q(md`A ring and a flat disk have the same radius $R$ and the same total charge $Q$, each spread uniformly. Which has the larger potential at its centre (with $V(\infty)=0$)?`,
+        [md`The ring: all of its charge is the same distance away`, md`They are equal: same charge, same radius`, md`The disk, by a factor of $4$`, md`The disk, by a factor of $2$`], 3,
+        [md`For the ring, $R$ is the distance of *every* piece; for the disk it is the largest distance. The disk's charge is closer on average, which raises $V$.`,
+          md`$V$ adds $\kq\,dq/\srm$. The same $Q$ at smaller distances gives a larger sum.`,
+          md`The average of $1/r'$ over the disk is $2/R$, which gives a factor $2$, not $4$.`, null],
+        md`Ring: $V=\kq\dfrac{Q}{R}$. Disk: $V(0)=\dfrac{\sigma R}{2\ep}$ with $\sigma=\dfrac{Q}{\pi R^2}$, so $V(0)=\dfrac{Q}{2\pi\ep R}=2\kq\dfrac{Q}{R}$. Equivalently, the average of $1/r'$ over the disk is $\dfrac{1}{\pi R^2}\displaystyle\int_0^R\dfrac{2\pi r'\,dr'}{r'}=\dfrac2R$.`,
+        { nofig: 'comparison of two results' }),
+
       P({
         title: 'A flat annulus',
         q: md`A flat ring (annulus) has inner radius $a$, outer radius $b$, and uniform surface charge $\sigma$. Find $V(z)$ on its axis, a height $z>0$ above the center, and then $E_z$.`,
@@ -2136,7 +2216,7 @@
         [[fig:ev]]
 
         Inside, $V$ is **constant, not zero**: $\vb E=-\nabla V=0$ only needs $V$ to be flat. The constant is whatever $V$ was when you arrived at the shell. Griffiths: you must always work your way in from the reference point, because that is where the potential is "nailed down". The potential inside depends on everything outside too.
-      `, { ev: { svg: figShellEV(), cap: 'Spherical shell, with $V_R=\\tfrac{q}{4\\pi\\varepsilon_0R}$. Lecture 5 draws the same $E(r)$ graph.' } }),
+      `, { ev: { svg: figShellEV(), cap: 'Spherical shell, with $V_R=\\tfrac{q}{4\\pi\\varepsilon_0R}$.' } }),
       Q(md`Inside a uniformly charged spherical shell (radius $R$, charge $q$, $V(\infty)=0$), at a point $P_1$ the potential is`,
         [md`zero, since $\vb E=0$ inside`, md`$\dfrac{q}{4\pi\ep R}$, the same everywhere inside`, md`$\dfrac{q}{4\pi\ep r}$, as if all the charge were at the center`, md`undefined, since there is no charge at $P_1$`], 1,
         [md`$\vb E=0$ means $V$ does not change inside, not that it is zero. You arrive at the shell with $V=\tfrac{q}{4\pi\ep R}$ and stay there.`,
@@ -2169,6 +2249,14 @@
           md`Both formulas give $V(R)=\tfrac{q}{4\pi\ep R}$; it is perfectly defined.`],
         md`$V$ is continuous everywhere (a finite field integrated over a vanishing distance gives nothing), but $dV/dr=-E_r$ jumps where $E$ jumps, at the surface charge. So surface charge shows up as a **kink** in $V$. Lessons 6 and 7 make this the general rule.`,
         { figHtml: figShell() }),
+      Q(md`Inside the uniformly charged (insulating) shell, $\vb E=0$. Now a point charge is placed outside the shell. Is the field inside still zero?`,
+        [md`No: the shell's own field is still zero inside, but the outside charge's field passes straight through`, md`Yes: a charged shell shields its interior`, md`Yes, as long as the shell's charge is larger than the outside charge`, md`The potential inside changes, but the field stays zero`], 0,
+        [null, md`Shielding is a property of *conductors*, whose charges rearrange. This shell's charge is fixed and uniform.`,
+          md`Sizes don't matter. Superposition simply adds the outside charge's field to the shell's (zero) field.`,
+          md`The outside charge's field is nonzero inside, so $V$ is no longer constant there and $\vb E\neq0$.`],
+        md`Superposition: $\vb E_{\text{inside}}=\vb E_{\text{shell}}+\vb E_q=0+\vb E_q$. The shell theorem says only that the shell's *own* field vanishes inside. A conducting shell would be different: its charge would move to cancel $\vb E_q$ inside (Unit 3).`,
+        { nofig: 'conceptual' }),
+
       RF(md`
         ### The same shell from the integral (Griffiths Ex. 2.8)
 
@@ -2291,6 +2379,22 @@
           md`A jump in $\rho$ makes $V''$ jump (Poisson), not $V'$. A kink in $V$ needs surface charge.`],
         md`$E$ is continuous at $R$ ($\tfrac{qr}{4\pi\ep R^3}\to\tfrac{q}{4\pi\ep R^2}$), so the slope of $V$ is continuous. Only a sheet of charge (finite charge in zero thickness) makes the field, and hence the slope of $V$, jump. A jump in volume density only changes the curvature.`,
         { figHtml: figSolidSphere() }),
+      Q(md`For the uniformly charged solid sphere (charge $q$, radius $R$, $V(\infty)=0$), how does $V$ at the centre compare with $V$ at the surface?`,
+        [md`They are equal: the ball is an equipotential`, md`$V(0)=0$, because $\vb E=0$ at the centre`, md`$V(0)=\tfrac32V(R)$`, md`$V(0)=2V(R)$`], 2,
+        [md`Only a conductor is an equipotential. Inside a charged insulating ball $\vb E\neq0$ (it points outward), so $V$ keeps rising as you go in.`,
+          md`$\vb E=0$ means the slope of $V$ is zero there, not its value.`, null,
+          md`Integrate $E=\kq\dfrac{qr}{R^3}$ from $R$ in to $0$: the rise is $\kq\dfrac{q}{2R}$, half of $V(R)$, not all of it.`],
+        md`$V(r)=\kq\dfrac{q\,(3R^2-r^2)}{2R^3}$ inside, so $V(R)=\kq\dfrac qR$ and $V(0)=\tfrac32\kq\dfrac qR$. The extra $\kq\dfrac{q}{2R}$ is the area under $E(r)$ between $0$ and $R$.`,
+        { nofig: 'follows from the problem above' }),
+
+      Q(md`For the uniformly charged solid sphere, where is the graph of $V(r)$ steepest?`,
+        [md`At the centre`, md`Far away`, md`Everywhere equally`, md`At the surface $r=R$`], 3,
+        [md`At the centre $\vb E=0$, so the graph is flat there.`,
+          md`Far away $E\propto1/r^2\to0$: the graph flattens out.`,
+          md`The slope is $-E_r$, which changes with $r$.`, null],
+        md`$|dV/dr|=|E_r|$, which grows linearly inside ($\propto r$) and falls as $1/r^2$ outside, so it peaks at $r=R$. Reading slopes off a $V(r)$ graph is reading $E$.`,
+        { nofig: 'reading slopes' }),
+
       P({
         id: 'HW2-2.25', src: 'HW 2 · Griffiths 2.25', title: 'Coaxial cable: axis to outer cylinder', big: true,
         q: md`For the configuration shown below, find the potential difference between a point on the axis and a point on the outer cylinder. Note that it is not necessary to commit yourself to a particular reference point, if you use Eq. 2.22.
@@ -2536,9 +2640,9 @@
     id: 'u2-bc', title: 'Boundary conditions I: the jump in E',
     steps: [
       RF(md`
-        ### Where the field jumps: the charged shell (Lecture 5)
+        ### Where the field jumps: the charged shell
 
-        Lecture 5 introduces boundary conditions with the uniformly charged spherical shell. Gauss's law on a sphere inside ($Q_{\text{enc}}=0$) and on one outside gives
+        The uniformly charged spherical shell is the simplest place to see a boundary condition. Gauss's law on a sphere inside ($Q_{\text{enc}}=0$) and on one outside gives
 
         $$E=0\quad(r<R),\qquad E=\frac{\sigma R^2}{\ep r^2}\quad(r>R).$$
 
@@ -2556,7 +2660,7 @@
           4. $V_{\text{above}}=V_{\text{below}}$ and $\dfrac{\partial V_{\text{above}}}{\partial n}-\dfrac{\partial V_{\text{below}}}{\partial n}=-\dfrac{\sigma}{\ep}$ (Lesson 7)
 
           These are **not** on the formula sheet. Know them, and know where each comes from.
-      `, { jump: { svg: figShellEjump(), cap: 'Lecture 5: the shell\'s field jumps by $\\sigma/\\varepsilon_0$ at $r=R$.' } }),
+      `, { jump: { svg: figShellEjump(), cap: 'The shell\'s field jumps by $\\sigma/\\varepsilon_0$ at $r=R$.' } }),
       Q(md`From the graph, by how much does $E$ jump at the shell?`,
         [md`$\dfrac{\sigma}{2\ep}$`, md`$\dfrac{\sigma}{\ep}$`, md`$\dfrac{\sigma R}{\ep}$`, md`$\dfrac{4\pi R^2\sigma}{\ep}$`], 1,
         [md`$\tfrac{\sigma}{2\ep}$ is the field on **one** side of an isolated flat sheet. The jump from one side to the other is twice that.`,
@@ -2587,7 +2691,7 @@
       RF(md`
         ### $E^\perp$: the pillbox
 
-        Take a tiny patch of any charged surface; close up it looks flat. Straddle it with a Gaussian pillbox: lids of area $A$ just above and just below, height $\epsilon$. (Lecture 5 draws it on a tilted sheet; here it is side-on.)
+        Take a tiny patch of any charged surface; close up it looks flat. Straddle it with a Gaussian pillbox: lids of area $A$ just above and just below, height $\epsilon$. (Here it is drawn side-on.)
 
         [[fig:pb]]
 
@@ -2599,7 +2703,7 @@
 
         $$\boxed{E^\perp_{\text{above}}-E^\perp_{\text{below}}=\frac{\sigma}{\ep}}$$
 
-        In the lecture's words: $\vb E$ points the same way on both lids but $d\vb a$ points in opposite directions, which is where the minus sign comes from. "Evidently the result for the spherical shell is general." Where $\sigma=0$, $E^\perp$ is continuous, even where the volume charge density jumps (the surface of a uniformly charged solid sphere, for example).
+        In words: $\vb E$ points the same way on both lids but $d\vb a$ points in opposite directions, which is where the minus sign comes from. The result for the spherical shell is general. Where $\sigma=0$, $E^\perp$ is continuous, even where the volume charge density jumps (the surface of a uniformly charged solid sphere, for example).
       `, { pb: { svg: figPillbox(), cap: 'Side view of the Gaussian pillbox. Its height $\\epsilon$ is exaggerated; it shrinks to zero.' } }),
       Q(md`Why does $E^\parallel$ drop out of the pillbox calculation?`,
         [md`$E^\parallel=0$ at any charged surface.`,
@@ -2621,7 +2725,7 @@
           md`The sign of the charge enters through $\sigma$ on the right side, not through this minus sign.`,
           null,
           md`Nothing is being subtracted on purpose; it is just the direction of the bottom lid's area vector.`],
-        md`Outward area vectors: $+A\uv n$ on top, $-A\uv n$ on the bottom. With both $E^\perp$'s measured along $+\uv n$, the fluxes are $+E^\perp_{\text{above}}A$ and $-E^\perp_{\text{below}}A$. Lecture: "$\vb E$ points in the same direction but $d\vb A$ points in opposite directions on the surface."`,
+        md`Outward area vectors: $+A\uv n$ on top, $-A\uv n$ on the bottom. With both $E^\perp$'s measured along $+\uv n$, the fluxes are $+E^\perp_{\text{above}}A$ and $-E^\perp_{\text{below}}A$. $\vb E$ points the same way on both lids, but $d\vb a$ points in opposite directions.`,
         { figHtml: figPillbox() }),
       Q(md`As the pillbox height $\epsilon\to0$, what charge does it enclose?`,
         [md`$\sigma A$ plus $\rho A\epsilon$ from any volume charge, which stays finite`,
@@ -2634,6 +2738,14 @@
           md`Only charge inside the closed surface counts in Gauss's law.`],
         md`That is why only **surface** charge makes $E^\perp$ jump. A jump in volume density $\rho$ (like the edge of a solid sphere) leaves $\vb E$ continuous; it only changes how fast $E$ varies.`,
         { figHtml: figPillbox() }),
+      Q(md`At the surface of a uniformly charged solid ball (no surface charge), which of these is discontinuous?`,
+        [md`$E_r$, which jumps by $\rho R/\ep$`, md`Nothing: everything is smooth`, md`$dE_r/dr$, which jumps by $-\rho/\ep$`, md`Both $E_r$ and $dE_r/dr$`], 2,
+        [md`$E^\perp$ jumps only across a *surface* charge. Here the charge is spread through the volume, so $E_r$ is continuous.`,
+          md`$E_r$ has a corner at $R$: it rises as $r$ inside and falls as $1/r^2$ outside.`, null,
+          md`$E_r$ itself is continuous, since $\sigma=0$.`],
+        md`Inside, $\dfrac{dE_r}{dr}=\dfrac{\rho}{3\ep}$; just outside, $\dfrac{dE_r}{dr}=-\dfrac{2\kq q}{R^3}=-\dfrac{2\rho}{3\ep}$. The jump is $-\dfrac{\rho}{\ep}$, exactly what $\divg\vb E=\dfrac{dE_r}{dr}+\dfrac{2E_r}{r}=\dfrac{\rho}{\ep}$ demands when $\rho$ drops to $0$ and $E_r$ is continuous. The ladder: a surface charge makes $E$ jump; a jump in volume charge makes only the slope of $E$ jump.`,
+        { nofig: 'follows from the ball field' }),
+
       RF(md`
         ### $E^\parallel$: the thin loop
 
@@ -2646,7 +2758,7 @@
         $$\oint\vb E\cdot d\vb l=E^\parallel_{\text{above}}\,l-E^\parallel_{\text{below}}\,l=0\quad\Longrightarrow\quad\boxed{E^\parallel_{\text{above}}=E^\parallel_{\text{below}}}$$
 
         (minus because the loop runs the opposite way along the lower side). Turn the loop to face any tangent direction and the same holds: **every** tangential component is continuous. Physically: up close, a patch of surface charge pushes straight away from itself, along $\pm\uv n$, so it can change only the normal component.
-      `, { loop: { svg: figLoopBC(), cap: 'Side view of the thin loop (Lecture 5, blue in the notes). Its height $\\epsilon$ shrinks to zero.' } }),
+      `, { loop: { svg: figLoopBC(), cap: 'Side view of the thin loop. Its height $\\epsilon$ shrinks to zero.' } }),
       Q(md`Which law gives the continuity of $E^\parallel$ across a surface charge?`,
         [md`$\oint\vb E\cdot d\vb l=0$, i.e. $\curl\vb E=0$`, md`Gauss's law`, md`the superposition principle`, md`Poisson's equation`], 0,
         [null,
@@ -2666,7 +2778,7 @@
       RF(md`
         ### One vector equation, and which way $\uv n$ points
 
-        Combine the two (Lecture 6). With $\uv n$ the unit normal pointing from "below" to "above",
+        Combine the two. With $\uv n$ the unit normal pointing from "below" to "above",
 
         $$\boxed{\vb E_{\text{above}}-\vb E_{\text{below}}=\frac{\sigma}{\ep}\,\uv n}$$
 
@@ -2770,6 +2882,14 @@
           **$P_2$:** $\sigma=\ep(-1.0-3.0)\text{ kV/m}=-4.0\times10^3\,\ep=-35.4$ nC/m². Both fields point toward the sheet: field lines end there, negative charge.
         `,
       }),
+      Q(md`At a small patch of a charged surface carrying $\sigma$, other charges nearby are moved around. Does the jump in $E^\perp$ across the patch change?`,
+        [md`No: the jump is always $\sigma/\ep$, set by the local $\sigma$ alone`, md`Yes: the nearby charges change the field on both sides, so the jump changes`, md`Only if the surface is curved`, md`It stays $\sigma/\ep$ only for a conductor`], 0,
+        [null, md`Other charges do change $\vb E$ on both sides, but by the same amount: their field is continuous at the patch, so it cancels in the difference.`,
+          md`Any surface looks flat on a small enough patch, and the pillbox argument works there.`,
+          md`The pillbox argument never used a conductor. For a conductor one side simply has $\vb E=0$.`],
+        md`Split the field into the patch's own field ($\pm\tfrac{\sigma}{2\ep}\uv n$) and everything else ($\vb E_{\text{other}}$, continuous at the patch). Only the patch's own part differs between the two sides, so $\vb E_{\text{above}}-\vb E_{\text{below}}=\tfrac{\sigma}{\ep}\uv n$ whatever the other charges do.`,
+        { nofig: 'conceptual' }),
+
       RF(md`
         ### An isolated sheet versus the surface of a conductor
 
@@ -2998,7 +3118,7 @@
 
         ### Its normal derivative jumps
 
-        $\vb E=-\nabla V$ turns the field condition into one on $\nabla V$ (Lecture 6):
+        $\vb E=-\nabla V$ turns the field condition into one on $\nabla V$:
 
         $$\nabla V_{\text{above}}-\nabla V_{\text{below}}=-\frac{\sigma}{\ep}\,\uv n,\qquad\text{or}\qquad\boxed{\frac{\partial V_{\text{above}}}{\partial n}-\frac{\partial V_{\text{below}}}{\partial n}=-\frac{\sigma}{\ep}},\qquad \frac{\partial V}{\partial n}\equiv\nabla V\cdot\uv n .$$
 
@@ -3248,7 +3368,7 @@
           md`Backwards: $V$ is the continuous one.`,
           md`$dV/dr=-E_r$, so it jumps exactly when $E_r$ does.`,
           null],
-        md`$E_r$ jumps by $\sigma/\ep$; $dV/dr=-E_r$ jumps by $-\sigma/\ep$; $V$ is continuous with a corner. Lecture 5's $E(r)$ graph and Lesson 5's $V(r)$ graph show both.`,
+        md`$E_r$ jumps by $\sigma/\ep$; $dV/dr=-E_r$ jumps by $-\sigma/\ep$; $V$ is continuous with a corner. The shell's $E(r)$ and $V(r)$ graphs show both.`,
         { figHtml: figShell() }),
       Q(md`Along a line crossing a plane at $x=0$, $V(x)$ is a single straight line with the same slope on both sides. What is $\sigma$ on the plane?`,
         [md`It depends on the slope.`, md`It depends on the value of $V$ at $x=0$.`, md`$0$`, md`$\ep$ times the slope`], 2,
@@ -3391,6 +3511,30 @@
           **What to remember.** Same four moves as the sphere. Only the far-field condition changes: for charge that reaches infinity, a finite reference point replaces $V(\infty)=0$. The graph is the Lesson 5 one: flat inside, a corner at $R$, then a logarithmic fall.
         `,
       }),
+      Q(md`A conductor is "held at potential $V_0$" by a battery. Which boundary condition does that phrase give?`,
+        [md`$E=V_0/d$ at the surface`, md`$V=V_0$ everywhere on its surface`, md`$\sigma=\ep V_0$ on its surface`, md`$\partial V/\partial n=V_0$ on its surface`], 1,
+        [md`No distance $d$ appears in the statement. The field at the surface comes out of the solution; it isn't given.`,
+          null, md`The units don't even match: $\ep V_0$ is in C/m, not C/m². $\sigma$ is found after solving, from $-\ep\,\partial V/\partial n$.`,
+          md`That would fix the normal field (a Neumann condition), which is a different statement.`],
+        md`"Held at $V_0$" is a statement about $V$: the whole surface is at $V_0$ (a conductor is an equipotential). "Grounded" is the special case $V=0$. The surface charge comes afterwards, $\sigma=-\ep\,\partial V/\partial n$.`,
+        { nofig: 'translating words into a boundary condition' }),
+
+      Q(md`An *isolated* conductor carries total charge $Q$; its potential is not given. Which conditions describe its surface?`,
+        [md`$V=0$ on its surface`, md`$\sigma=Q/A$ everywhere on it ($A$ its area)`, md`$\vb E=0$ just outside it`, md`$V=$ const on the surface (value unknown), with $-\ep\displaystyle\oint\dfrac{\partial V}{\partial n}\,da=Q$`], 3,
+        [md`$V=0$ means grounded, and a grounded conductor takes whatever charge it needs, not a prescribed $Q$.`,
+          md`Charge on a conductor is generally not uniform: it piles up where the surface curves sharply. Only an isolated sphere has uniform $\sigma$.`,
+          md`Just outside, $\vb E=\dfrac{\sigma}{\ep}\uv n\neq0$. It is *inside* the conductor that $\vb E=0$.`, null],
+        md`Being a conductor makes the surface an equipotential, but with an unknown constant $V_c$. The extra unknown is fixed by the total charge, $Q=\displaystyle\oint\sigma\,da=-\ep\oint\dfrac{\partial V}{\partial n}\,da$. "Held at $V_0$" fixes $V_c$; "isolated with charge $Q$" fixes the integral instead.`,
+        { nofig: 'translating words into a boundary condition' }),
+
+      Q(md`A charge distribution is localized (finite in size). Which condition is normally imposed far away?`,
+        [md`$\vb E\to$ a nonzero constant`, md`None is needed`, md`$V\to0$ as $r\to\infty$`, md`$V\to\infty$, since charge is present`], 2,
+        [md`A constant field far away means sources at infinity, such as an external uniform field. A localized distribution's field dies off.`,
+          md`Without a condition at infinity you could add any solution of Laplace's equation (a constant, $E_0z$, ...) and the answer would not be unique.`, null,
+          md`The potential of a finite distribution falls off at least as fast as $1/r$.`],
+        md`$V\to0$ at infinity is the reference, and together with the conditions on the surfaces it makes the solution unique. Contrast "uniform field $E_0\uv z$ far away", where $V\to-E_0z$ (plus a constant), used for objects placed in an external field.`,
+        { nofig: 'translating words into a boundary condition' }),
+
       RF(md`
         ### Summary: every boundary condition
 
