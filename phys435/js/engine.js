@@ -262,7 +262,7 @@
           <a class="btn primary" href="#/l/${(last || next).id}">${last ? 'Continue: ' + last.title : 'Start: ' + next.title}</a>
           ${BYID.has('x-quiz') ? '<a class="btn" href="#/l/x-quiz">Concept quiz</a>' : ''}
           ${BYID.has('x-sheet') ? '<a class="btn" href="#/l/x-sheet">Formula sheet</a>' : ''}
-          <a class="btn" href="cheatsheet.html">Cheat sheet (1 page)</a>
+          <a class="btn" href="cheatsheet.html">Cheat sheet (front + back)</a>
         </div>
         <section class="plan">
           <h2>Before Monday</h2>
