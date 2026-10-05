@@ -13,271 +13,240 @@
   @page { size: letter; margin: 0.26in; }
   * { box-sizing: border-box; }
   html, body { background: var(--paper); color: var(--ink); margin: 0; }
-  body { font: 8.6pt/1.22 "Segoe UI", Arial, sans-serif; }
+  body { font: 9.7pt/1.25 "Segoe UI", Arial, sans-serif; }
   .page { width: 7.98in; margin: 0 auto; }
   .page + .page { break-before: page; }
   .top { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1.2px solid var(--ink); margin-bottom: 3px; padding-bottom: 1px; }
-  .top b { font-size: 9pt; }
+  .top b { font-size: 9.5pt; }
   .top span { color: var(--soft); }
-  .cols { column-count: 3; column-gap: 8px; column-rule: 0.6px solid var(--rule); }
-  section { break-inside: avoid; margin: 0 0 3px; }
+  .cols { column-count: 3; column-gap: 9px; column-rule: 0.6px solid var(--rule); }
+  section { break-inside: avoid; margin: 0 0 4px; }
   section.ex { background: var(--ex); padding: 1px 3px 2px; border-radius: 2px; }
-  h2 { font-size: 8pt; margin: 0 0 1px; color: var(--head); border-bottom: 0.6px solid var(--rule); }
-  p { margin: 0 0 1.2px; }
-  ul { margin: 0 0 1.2px; padding: 0; list-style: none; }
-  li { margin: 0 0 0.6px; padding-left: 7px; position: relative; }
+  h2 { font-size: 9pt; margin: 0 0 1px; color: var(--head); border-bottom: 0.6px solid var(--rule); }
+  p { margin: 0 0 1.4px; }
+  ul { margin: 0 0 1.4px; padding: 0; list-style: none; }
+  li { margin: 0 0 0.8px; padding-left: 7px; position: relative; }
   li::before { content: "\2022"; position: absolute; left: 0; color: var(--soft); }
   .t { color: var(--red); font-weight: 600; }
-  .d { color: var(--soft); }
   .katex { font-size: 1.0em; }
-  .fig { float: right; width: 92px; margin: 1px 0 1px 4px; }
+  .fig { float: right; width: 118px; margin: 1px 0 2px 5px; }
   .fig svg { display: block; width: 100%; height: auto; }
   .fig svg text { font: italic 10px "Times New Roman", serif; fill: #111; }
-  .fig svg text.s { font-size: 8.5px; }
+  .fig svg text.s { font-size: 9px; }
   @media screen { body { padding: 16px; } .page { max-width: 100%; margin-bottom: 28px; } .page + .page { border-top: 2px dashed var(--rule); padding-top: 12px; } }
   @media screen and (max-width: 760px) { .cols { column-count: 1; } }
 </style>
 </head>
 <body>
 
-<!-- ============================== FRONT: equations and concepts ============================== -->
+<!-- ============================== FRONT: most important first ============================== -->
 <div class="page">
-<div class="top"><b>PHYS 435 · Exam I cheat sheet · FRONT: equations + concepts</b><span>$k\equiv\frac{1}{4\pi\epsilon_0}$ · <span class="d">grey = how to derive it</span></span></div>
+<div class="top"><b>PHYS 435 · Exam I · FRONT (most important first)</b><span>$k=\frac{1}{4\pi\epsilon_0}$ · all fields are magnitudes; direction in words</span></div>
 <div class="cols">
 
-<section><h2>1 · Gauss + superposition</h2>
+<section><h2>1 · Set up first (most of the points)</h2><span class="fig" data-f="pill"></span>
 <ul>
-<li>$\oint\vec E\cdot d\vec a=Q_{enc}/\epsilon_0$. Sphere / coaxial cylinder / pillbox so $E$ is constant and $\parallel d\vec a$.</li>
-<li>Ball: $\vec E=\frac{\rho}{3\epsilon_0}\vec r$ in, $\frac{kQ}{r^2}\hat r$ out. $V_{in}=\frac{kQ}{2R^3}(3R^2-r^2)$, $V(0)=\tfrac32V(R)$.</li>
-<li>Cylinder: $\frac{\rho}{2\epsilon_0}s\,\hat s$ in, $\frac{\lambda}{2\pi\epsilon_0s}\hat s$ out ($\lambda=\rho\pi a^2$). Line: $V=-\frac{\lambda}{2\pi\epsilon_0}\ln\frac{s}{s_0}$; only $\Delta V$.</li>
-<li>Shell: $E=0$ in. Sheet: $\frac{\sigma}{2\epsilon_0}$. Metal surface: $\frac{\sigma}{\epsilon_0}$.</li>
-<li><b>Hole = $+\rho$ plus $-\rho$.</b> Each piece's field from <b>its own</b> center/axis; add vectors.</li>
-<li>Ball cavity offset $\vec d$: $\vec E=\frac{\rho}{3\epsilon_0}\vec d$ uniform. Spherical cavity in a cylinder: $\frac{\rho}{\epsilon_0}(\frac x6,\frac y6,-\frac z3)$, not uniform.</li>
-<li>Ring axis $E_z=\frac{kqz}{(z^2+R^2)^{3/2}}$. Disk $V=\frac{\sigma}{2\epsilon_0}(\sqrt{z^2+R^2}-z)$.</li>
+<li>Write: region, coordinates, <b>numbered BCs</b>, general solution. Then solve.</li>
+<li>Grounded: $V=0$. Held at $V_0$: $V=V_0$. Isolated + neutral: $V$ = unknown const, total charge 0. Far away: $V\to0$ (uniform field: $V\to-E_0r\cos\theta$).</li>
+<li>Always: $V$ finite at the center; $V$ continuous everywhere.</li>
+<li>Across a charged surface: $E_\perp$ jumps by $\sigma/\epsilon_0$. Same thing: $\partial_nV_{out}-\partial_nV_{in}=-\sigma/\epsilon_0$.</li>
+<li>On metal: $\sigma=-\epsilon_0\,\partial V/\partial n$. Field just outside $=\sigma/\epsilon_0$, straight out.</li>
 </ul></section>
 
-<section><h2>2 · Delta functions, E → ρ</h2>
+<section><h2>2 · Method of images</h2><span class="fig" data-f="gsphere"></span>
 <ul>
-<li>$\int f\,\delta(x-a)dx=f(a)$, $\delta(kx)=\frac{\delta(x)}{|k|}$, $\delta^3(\vec r)$ has units 1/vol. Shell: $\rho=\sigma\,\delta(r-R)$.</li>
-<li>$\nabla\cdot\frac{\hat r}{r^2}=4\pi\delta^3(\vec r)$, $\nabla^2\frac1r=-4\pi\delta^3(\vec r)$. <span class="d">Flux of $\hat r/r^2$ through any sphere is $4\pi$, but the divergence is 0 for $r\ne0$, so it is all at the origin.</span></li>
-<li>$\rho=\frac{\epsilon_0}{r^2}\frac{d}{dr}(r^2E_r)$ ($r\ne0$). $Q_{enc}(r)=4\pi\epsilon_0r^2E_r$.</li>
-<li><b>Origin:</b> $\lim_{r\to0}4\pi\epsilon_0r^2E_r=q\ne0$ ⇒ $+q\,\delta^3(\vec r)$. (→0: none. →∞: infinite charge, unphysical.)</li>
-<li>Jump in $E_r$ at $R$ ⇒ $\sigma=\epsilon_0(E_{out}-E_{in})$. $Q_{tot}=\lim_{\infty}4\pi\epsilon_0r^2E_r$ = point + volume + surface.</li>
-<li>Poisson $\nabla^2V=-\rho/\epsilon_0$. $V=\frac{Ae^{-\lambda r}}{r}$ ⇒ $\rho=\epsilon_0A[4\pi\delta^3-\lambda^2\frac{e^{-\lambda r}}{r}]$.</li>
+<li><b>Plane</b>, $q$ at height $d$: image $-q$ at depth $d$. Force $\frac{kq^2}{(2d)^2}$ toward plane. Energy $-\frac{kq^2}{4d}$ (<b>half</b> the pair).</li>
+<li>$\sigma=-\frac{qd}{2\pi(s^2+d^2)^{3/2}}$, total $-q$.</li>
+<li><b>Grounded sphere</b> $R$, $q$ at distance $a$: image $q'=-\frac{qR}{a}$ at $\frac{R^2}{a}$ from center. Force $\frac{kq^2Ra}{(a^2-R^2)^2}$ (pull).</li>
+<li>Twist = extra charge at the <b>center</b>: held at $V_0$ → $4\pi\epsilon_0RV_0$; neutral → $+\frac{qR}{a}$; charge $Q$ → $Q+\frac{qR}{a}$.</li>
+<li>$q$ <b>inside</b> grounded shell at $d$: image $-\frac{qR}{d}$ at $\frac{R^2}{d}$ (outside).</li>
+<li>90° corner: 3 images ($-q,-q,+q$). Line charge: image $-\lambda$.</li>
+<li>Only valid outside the metal. Check every BC → uniqueness says it's right.</li>
 </ul></section>
 
-<section><h2>3 · Boundary conditions</h2><span class="fig" data-f="pill"></span>
+<section><h2>3 · Separation: boxes (Cartesian)</h2><span class="fig" data-f="slot"></span>
 <ul>
-<li>$E^\perp_{above}-E^\perp_{below}=\frac{\sigma}{\epsilon_0}$; $E^\parallel$ and $V$ continuous. $\frac{\partial V_{out}}{\partial n}-\frac{\partial V_{in}}{\partial n}=-\frac{\sigma}{\epsilon_0}$. <span class="d">Pillbox: flux $(E_a-E_b)A=\sigma A/\epsilon_0$. Thin loop: $\oint E\cdot dl=0$ ⇒ $E^\parallel$ same.</span></li>
-<li>Conductor: $E=0$, $\rho=0$ inside, $V$ const, $\sigma=-\epsilon_0\frac{\partial V}{\partial n}$, $\vec E_{out}=\frac{\sigma}{\epsilon_0}\hat n$, pressure $\frac{\sigma^2}{2\epsilon_0}$.</li>
-<li>Words: grounded ⇒ $V=0$. Isolated neutral ⇒ $V$ = unknown const, $\oint\sigma=0$. Held at $V_0$ ⇒ battery, $Q$ free. Far away ⇒ $V\to0$ or $\to-E_0r\cos\theta$. Insulated wall ⇒ $\partial V/\partial n=0$.</li>
-<li>Always also: finite at $r=0$ / $s=0$; continuity + jump at every shell.</li>
-<li>Count: each region's unknown constants = number of conditions.</li>
+<li>$V=X(x)Y(y)$. Direction with <b>two zero walls</b> gets $\sin\frac{n\pi y}{a}$.</li>
+<li>Other direction: $e^{-n\pi x/a}$ (open to ∞), $\sinh\frac{n\pi(b-x)}{a}$ (zero at $x=b$), $\cosh$ (symmetric).</li>
+<li>$C_n=\frac2a\int_0^aV_0(y)\sin\frac{n\pi y}{a}dy$. Constant $V_0$: $C_n=\frac{4V_0}{n\pi}$, odd $n$ only.</li>
+<li>Live face at $x=b$: divide by $\sinh\frac{n\pi b}{a}$. Two live faces: solve each, add.</li>
+<li>At a jump in the edge value, the series gives the average.</li>
 </ul></section>
 
-<section><h2>3b · Conductors (the review's 7 facts) + capacitance</h2><span class="fig" data-f="cavity"></span>
+<section><h2>4 · Separation: spheres (Legendre)</h2><span class="fig" data-f="leg"></span>
 <ul>
-<li>(1) $\vec E=0$ inside; (2) $\rho=0$ inside; (3) net charge only on the surface; (4) equipotential; (5) $\vec E\perp$ surface just outside, $=\frac{\sigma}{\epsilon_0}\hat n$; (6) empty cavity: $\vec E=0$ inside it, even in an external field; (7) charge $q$ in a cavity ⇒ $-q$ on the cavity wall, $+q$ (+ any net $Q$) on the outside: the conductor "looks charged".</li>
-<li>$C=\frac{Q}{\Delta V}$ (geometry only). Plates $\frac{\epsilon_0A}{d}$; spheres $\frac{4\pi\epsilon_0ab}{b-a}$ (isolated: $4\pi\epsilon_0R$); coax $\frac{2\pi\epsilon_0L}{\ln(b/a)}$. <span class="d">Recipe: put $\pm Q$, Gauss for $E$, $\Delta V=-\int E\cdot dl$, divide.</span></li>
+<li>$V=\sum\big(A_\ell r^\ell+\frac{B_\ell}{r^{\ell+1}}\big)P_\ell(\cos\theta)$.</li>
+<li>Inside: only $A_\ell r^\ell$. Outside: only $\frac{B_\ell}{r^{\ell+1}}$. <span class="t">Not $r^{-\ell}$.</span></li>
+<li>$x=\cos\theta$: $P_0=1$, $P_1=x$, $P_2=\frac{3x^2-1}{2}$, $P_3=\frac{5x^3-3x}{2}$. Every $P_\ell(1)=1$.</li>
+<li>$\cos^2\theta=\frac13+\frac23P_2$. $\cos^3\theta=\frac35P_1+\frac25P_3$.</li>
+<li>Anything else: $c_\ell=\frac{2\ell+1}{2}\int_{-1}^{1}f(x)P_\ell(x)dx$.</li>
+<li>Shell at $V(\theta)=\sum c_\ell P_\ell$: inside $c_\ell(\frac rR)^\ell P_\ell$, outside $c_\ell(\frac Rr)^{\ell+1}P_\ell$, $\sigma=\frac{\epsilon_0}{R}\sum(2\ell+1)c_\ell P_\ell$.</li>
+<li>Shell with $\sigma=\sum\sigma_\ell P_\ell$: inside $A_\ell=\frac{\sigma_\ell}{(2\ell+1)\epsilon_0R^{\ell-1}}$, outside $B_\ell=A_\ell R^{2\ell+1}$.</li>
+<li>Metal sphere in uniform $E_0$ (up): $V=-E_0\big(r-\frac{R^3}{r^2}\big)\cos\theta$, $\sigma=3\epsilon_0E_0\cos\theta$.</li>
 </ul></section>
 
-<section><h2>4 · Laplace, uniqueness</h2>
+<section><h2>5 · Separation: wedges and pipes (polar)</h2><span class="fig" data-f="wedge"></span>
 <ul>
-<li>$\nabla^2V=0$ where $\rho=0$: no local max/min; $V(\text{center})$ = average over any sphere/circle. Earnshaw: no stable equilibrium in empty space.</li>
-<li><b>1st theorem:</b> $\rho$ inside + $V$ on every boundary ⇒ unique. <b>2nd:</b> conductors with given $Q$ each ⇒ $\vec E$ unique.</li>
-<li>So any guess (images, separated series) that satisfies Laplace + every BC <b>is</b> the answer. <span class="d">Proof: difference $V_3=V_1-V_2$ obeys Laplace with 0 on boundary ⇒ no max/min ⇒ $V_3=0$.</span></li>
+<li>Long in $z$. $\Theta=\sin k\theta,\cos k\theta$; $R=r^k,\ r^{-k}$ ($k=0$: $\ln r$, $\theta$).</li>
+<li>Walls at $\theta=0,\alpha$ grounded: $\sin\frac{n\pi\theta}{\alpha}$, $k=\frac{n\pi}{\alpha}$.</li>
+<li>Has the center: only $r^k$. Goes to ∞: only $r^{-k}$. Zero arc at $a$: $(\frac ra)^k-(\frac ar)^k$.</li>
+<li>Full circle: $k=1,2,3,\dots$ One wall at $V_0$, other 0, no arcs: $V=V_0\theta/\alpha$.</li>
 </ul></section>
 
-<section><h2>5 · Images</h2>
+<section><h2>6 · Conductors and capacitors</h2><span class="fig" data-f="cavity"></span>
 <ul>
-<li>Plane, $q$ at $d$: $-q$ at $-d$. $\sigma=\frac{-qd}{2\pi(s^2+d^2)^{3/2}}$, total $-q$, half within $s=\sqrt3d$. $F=\frac{kq^2}{(2d)^2}$ (attract).</li>
-<li>Energy: $W=-\frac{kq^2}{4d}$ = <b>half</b> the 2-charge value (field only exists on one side). Work to pull off: $+\frac{kq^2}{4d}$.</li>
-<li>Corner 90°: images $-q,-q,+q$. Wedge $\pi/n$: $2n-1$ images ($180°/\alpha$ must be an integer). Two parallel planes: infinite row. Line $\lambda$: image $-\lambda$.</li>
-<li><b>Grounded sphere</b>: $q'=-\frac Raq$ at $b=\frac{R^2}{a}$. <span class="d">Derive: $V=0$ at the near point $a-R$ and far point $a+R$ ⇒ 2 equations.</span> $F=\frac{kq^2Ra}{(a^2-R^2)^2}$.</li>
-<li>$\sigma(\theta)=\frac{-q(a^2-R^2)}{4\pi R(R^2+a^2-2aR\cos\theta)^{3/2}}$, total $-\frac{qR}{a}$.</li>
-<li>Twists: add charge at the <b>center</b>. At $V_0$: $+4\pi\epsilon_0RV_0$. Neutral: $+\frac{qR}{a}$. Net $Q$: $Q+\frac{qR}{a}$.</li>
-<li>$q$ inside a shell at $d$: image $-\frac Rdq$ at $\frac{R^2}{d}$ (outside). At $V_0$: add $V_0$ inside.</li>
-<li>Valid only in the region of interest; images never sit in it.</li>
+<li>Inside metal: $E=0$, no charge, one value of $V$. Charge sits on the surface.</li>
+<li>Empty cavity: $E=0$ inside it. Charge $q$ in cavity: $-q$ on the cavity wall, $+q$ (+ net $Q$) outside.</li>
+<li>$C=Q/\Delta V$. Plates $\frac{\epsilon_0A}{d}$. Spheres $\frac{4\pi\epsilon_0ab}{b-a}$. One sphere $4\pi\epsilon_0R$. Coax $\frac{2\pi\epsilon_0L}{\ln(b/a)}$. Energy $\frac12CV^2$.</li>
 </ul></section>
 
-<section><h2>6 · Energy</h2>
+<section><h2>7 · Gauss fields (magnitudes, outward)</h2><span class="fig" data-f="sup"></span>
 <ul>
-<li>$W=\frac12\sum q_iV_i$ ($V$ from the others) $=\frac12\int\rho V\,d\tau=\frac{\epsilon_0}{2}\int E^2d\tau$ (last includes self-energy). Not superposable.</li>
-<li>Ball $\frac35\frac{kQ^2}{R}$, shell $\frac12\frac{kQ^2}{R}$, pair $\frac{kq_1q_2}{r}$. $C=\frac{Q}{\Delta V}$, $W=\frac12CV^2=\frac{Q^2}{2C}$; plates $\frac{\epsilon_0A}{d}$, spheres $\frac{4\pi\epsilon_0ab}{b-a}$.</li>
-<li>Force: $F=-\frac{dW}{dx}$ at fixed $Q$. At fixed $V$ the battery does work: $F=+\frac{dW}{dx}$.</li>
+<li>Outside a ball or point: $\frac{kQ}{r^2}$. Inside uniform ball: $\frac{\rho r}{3\epsilon_0}$. Inside a shell: 0.</li>
+<li>Line: $\frac{\lambda}{2\pi\epsilon_0s}$. Inside uniform cylinder: $\frac{\rho s}{2\epsilon_0}$.</li>
+<li>Sheet: $\frac{\sigma}{2\epsilon_0}$ each side. Metal surface: $\frac{\sigma}{\epsilon_0}$.</li>
+<li>Hole = full shape + a negative piece. Each field from <b>its own</b> center, then add.</li>
+<li>Ball potential inside: $V=\frac{kQ(3R^2-r^2)}{2R^3}$.</li>
 </ul></section>
 
-<section><h2>7 · Separation: Cartesian</h2>
+<section><h2>8 · Given E, find ρ (delta at the origin)</h2><span class="fig" data-f="eR"></span>
 <ul>
-<li>$V=X(x)Y(y)$ ⇒ $\frac{X''}X+\frac{Y''}Y=0$ ⇒ $X''=k^2X$, $Y''=-k^2Y$.</li>
-<li>Direction with <b>two zero</b> BCs oscillates: $\sin\frac{n\pi y}a$, $k=\frac{n\pi}a$. Other direction: $e^{\pm kx}$, $\sinh$, $\cosh$.</li>
-<li>To ∞: $e^{-kx}$. Zero at $x=b$: $\sinh k(b-x)$. Zero at 0: $\sinh kx$. Symmetric: $\cosh k(x-\frac b2)$. Insulated walls: $\cos$, plus a $k=0$ term.</li>
-<li>Fourier: $\int_0^a\sin\frac{n\pi y}a\sin\frac{m\pi y}a dy=\frac a2\delta_{nm}$ ⇒ $C_n=\frac2a\int_0^aV_0(y)\sin\frac{n\pi y}ady$. Const: $\frac{4V_0}{n\pi}$ odd $n$. Linear $V_0\frac ya$: $\frac{2V_0(-1)^{n+1}}{n\pi}$.</li>
-<li>Several live faces: one problem per face, add. 3-D: $\sin\sin\sinh(\pi\sqrt{\frac{n^2}{a^2}+\frac{m^2}{b^2}}z)$, const $C_{nm}=\frac{16V_0}{\pi^2nm}$.</li>
-<li>Series → $V_0/2$ at a jump; Gibbs overshoot only in partial sums.</li>
+<li>Away from 0: $\rho=\frac{\epsilon_0}{r^2}\frac{d}{dr}(r^2E)$.</li>
+<li>Charge inside radius $r$: $4\pi\epsilon_0r^2E$. If it tends to $q\ne0$ as $r\to0$: point charge $q\,\delta^3$ at the origin.</li>
+<li>$E$ jumps at $R$: $\sigma=\epsilon_0(E_{out}-E_{in})$. Total: $4\pi\epsilon_0r^2E$ as $r\to\infty$.</li>
+<li>$\nabla^2\frac1r=-4\pi\delta^3$. $\int f(x)\delta(x-a)dx=f(a)$.</li>
 </ul></section>
 
-<section><h2>8 · Separation: polar (2-D, no $z$)</h2>
+<section><h2>9 · Energy</h2>
 <ul>
-<li>$\nabla^2=\frac1s\partial_s(s\partial_s)+\frac1{s^2}\partial_\phi^2$. <span class="d">Try $R=s^\lambda$: $s(sR')'=\lambda^2R$ ⇒ $\lambda=\pm k$.</span></li>
-<li>$V=a_0+b_0\ln s+\sum[s^k(a_k\cos k\phi+b_k\sin k\phi)+s^{-k}(c_k\cos k\phi+d_k\sin k\phi)]$.</li>
-<li>Full circle ⇒ $k$ integer, no $\phi$ term. Origin in region: drop $s^{-k}$, $\ln s$. $\infty$: drop $s^k$ ($\ln s$ = net $\lambda$).</li>
-<li>Wedge walls 0 at $\theta=0,\alpha$: $\sin\frac{n\pi\theta}\alpha$, $k=\frac{n\pi}\alpha$. Zero arc at $a$: $(\frac ra)^k-(\frac ar)^k$. Fourier: $\frac2\alpha\int_0^\alpha$.</li>
-<li>One wall $V_0$, other 0, no arcs: $V_0\theta/\alpha$. Tip $|E|\propto r^{\pi/\alpha-1}$ (dies if $\alpha\lt \pi$, blows up if $\alpha>\pi$).</li>
-<li>Pipe in $E_0\hat x$: $-E_0(s-\frac{R^2}{s})\cos\phi$, $\sigma=2\epsilon_0E_0\cos\phi$.</li>
+<li>Charges: $W=\frac12\sum q_iV_i$ ($V$ from the others). Spread out: $W=\frac12\int\rho V=\frac{\epsilon_0}{2}\int E^2$.</li>
+<li>Ball $\frac35\frac{kQ^2}{R}$. Shell $\frac12\frac{kQ^2}{R}$. Pair $\frac{kq_1q_2}{r}$. Not additive.</li>
 </ul></section>
 
-<section><h2>9 · Separation: spherical / Legendre</h2>
+<section><h2>10 · Laplace and uniqueness</h2>
 <ul>
-<li>$V=\sum(A_\ell r^\ell+\frac{B_\ell}{r^{\ell+1}})P_\ell(\cos\theta)$. <span class="d">Try $r^n$: $n(n+1)=\ell(\ell+1)$ ⇒ $n=\ell$ or $-(\ell+1)$.</span> <span class="t">Not $r^{-\ell}$.</span></li>
-<li>Inside: $A$ only. Outside: $B$ only (+$-E_0r\cos\theta$). Shell region $a\lt r\lt b$: both.</li>
-<li>$P_0=1$, $P_1=x$, $P_2=\frac{3x^2-1}2$, $P_3=\frac{5x^3-3x}2$, $P_4=\frac{35x^4-30x^2+3}8$; $P_\ell(1)=1$, $P_\ell(-1)=(-1)^\ell$, $P_2(0)=-\frac12$.</li>
-<li>$x^2=\frac13+\frac23P_2$, $x^3=\frac35P_1+\frac25P_3$, $\cos2\theta=-\frac13+\frac43P_2$, $\sin^2\theta=\frac23-\frac23P_2$.</li>
-<li>$c_\ell=\frac{2\ell+1}2\int_{-1}^1f(x)P_\ell dx$ ($x=\cos\theta$). Shell at $V_0(\theta)=\sum c_\ell P_\ell$: in $c_\ell(\frac rR)^\ell$, out $c_\ell(\frac Rr)^{\ell+1}$; $\sigma=\frac{\epsilon_0}R\sum(2\ell+1)c_\ell P_\ell$; $Q=4\pi\epsilon_0Rc_0$.</li>
-<li>$\sigma=\sum\sigma_\ell P_\ell$ given: $A_\ell=\frac{\sigma_\ell}{(2\ell+1)\epsilon_0R^{\ell-1}}$, $B_\ell=A_\ell R^{2\ell+1}$.</li>
-<li>Axis trick: $V(z)$ on axis → expand in $z^\ell$ or $z^{-(\ell+1)}$ → replace with $r^\ell P_\ell$, $r^{-(\ell+1)}P_\ell$.</li>
-<li>Total $Q$ only from $\ell=0$; $\vec E(0)$ only from $\ell=1$; far field from lowest nonzero $\ell$.</li>
+<li>No charge: $\nabla^2V=0$. No max or min inside; $V$ = average over a sphere around the point.</li>
+<li>$V$ given on every boundary (or $Q$ on each metal) → only one answer. Anything that fits is right.</li>
+</ul></section>
+
+<section><h2>11 · Traps + integrals</h2>
+<ul>
+<li class="t">$d\tau=r^2\sin\theta\,dr\,d\theta\,d\phi$. Metal $\sigma/\epsilon_0$, sheet $\sigma/2\epsilon_0$. Use $\cos\theta$ inside $P_\ell$.</li>
+<li>$\int\frac{dx}{(x^2+a^2)^{3/2}}=\frac{x}{a^2\sqrt{x^2+a^2}}$. $\int\frac{x\,dx}{(x^2+a^2)^{3/2}}=\frac{-1}{\sqrt{x^2+a^2}}$.</li>
+<li>$\int_0^a\sin^2\frac{n\pi y}{a}dy=\frac a2$. $\int_0^\pi\sin^3\theta\,d\theta=\frac43$.</li>
 </ul></section>
 
 </div>
 </div>
 
-<!-- ============================== BACK: recipes and worked examples ============================== -->
+<!-- ============================== BACK: worked examples ============================== -->
 <div class="page">
-<div class="top"><b>PHYS 435 · Exam I cheat sheet · BACK: recipes + worked examples</b><span>pattern-match, then copy the steps</span></div>
+<div class="top"><b>PHYS 435 · Exam I · BACK (worked examples)</b><span>copy the drawing, then the steps</span></div>
 <div class="cols">
 
-<section><h2>Recipes (setup is most of the points)</h2>
+<section class="ex"><h2>Ex 1 · Slot (Cartesian)</h2><span class="fig" data-f="slot"></span>
 <ul>
-<li><b>Which method:</b> symmetry ⇒ Gauss; charge + flat/round metal ⇒ images; box/slot ⇒ Cartesian; long wedge/pipe ⇒ polar; sphere with $V(\theta)$ or $\sigma(\theta)$ ⇒ Legendre; $\vec E$ given ⇒ divergence + origin check.</li>
-<li><b>Separation:</b> (1) region; (2) numbered BCs; (3) ansatz + sign of constant; (4) zero BCs ⇒ basis, quantized $k$; (5) superpose; (6) Fourier/Legendre on the live boundary; (7) check a limit / symmetry / corner.</li>
-<li><b>Images:</b> region; BCs on the metal; place images outside the region; verify every BC ⇒ uniqueness; $\sigma=-\epsilon_0\partial_nV$; force = images on $q$; energy = half.</li>
-<li><b>Write partial results even if stuck:</b> BC list + general solution earn most of the credit.</li>
+<li>BCs: (1) $V=0$ at $y=0$; (2) $V=0$ at $y=a$; (3) $V\to0$ as $x\to\infty$; (4) $V=V_0$ at $x=0$.</li>
+<li>(1)(2) → $\sin\frac{n\pi y}{a}$. (3) → $e^{-n\pi x/a}$. (4) → $C_n=\frac{4V_0}{n\pi}$, odd $n$.</li>
+<li>$V=\frac{4V_0}{\pi}\sum_{odd}\frac1n e^{-n\pi x/a}\sin\frac{n\pi y}{a}$.</li>
+<li>Closed at $x=b$: use $\frac{\sinh(n\pi(b-x)/a)}{\sinh(n\pi b/a)}$ instead.</li>
 </ul></section>
 
-<section class="ex"><h2>Ex 1 · Given $\vec E$, find $\rho$ and $V$</h2><span class="fig" data-f="eR"></span>
-<p>$\vec E=\frac{A}{r^2}\hat r$ ($r\lt R$), $\frac{AR^2}{r^4}\hat r$ ($r>R$).</p>
+<section class="ex"><h2>Ex 2 · Box, top and bottom at $V_0$</h2><span class="fig" data-f="box"></span>
 <ul>
-<li>$r\lt R$: $r^2E_r=A$ const ⇒ $\rho=0$ for $r\ne0$, but $4\pi\epsilon_0r^2E_r\to4\pi\epsilon_0A$ ⇒ $\rho\supset4\pi\epsilon_0A\,\delta^3(\vec r)$.</li>
-<li>$r>R$: $\rho=\frac{\epsilon_0}{r^2}\frac{d}{dr}\frac{AR^2}{r^2}=-\frac{2\epsilon_0AR^2}{r^5}$. At $R$: $E$ continuous ⇒ $\sigma=0$.</li>
-<li>Check: cloud $=\int_R^\infty\rho\,4\pi r^2dr=-4\pi\epsilon_0A$ ⇒ total 0, matches $r^2E\to0$.</li>
-<li>$V_{out}=\int_r^\infty E=\frac{AR^2}{3r^3}$; $V_{in}=V(R)+\int_r^RE=\frac Ar-\frac{2A}{3R}$.</li>
+<li>Sides zero → $\sin\frac{n\pi x}{a}$. Symmetric top/bottom → $\cosh\frac{n\pi(y-a/2)}{a}$.</li>
+<li>$C_n\cosh\frac{n\pi}{2}=\frac{4V_0}{n\pi}$, odd $n$.</li>
+<li>Center: $V_0/2$ (this + the turned-sideways problem = every face at $V_0$).</li>
 </ul></section>
 
-<section class="ex"><h2>Ex 2 · Superposed Gauss</h2><span class="fig" data-f="sup"></span>
-<p>Infinite cylinder radius $a$ (+ρ, along $z$) through a ball radius $R>a$ (−ρ).</p>
+<section class="ex"><h2>Ex 3 · Wedge (Spring '26 exam)</h2><span class="fig" data-f="wedge"></span>
 <ul>
-<li>Pieces: cyl $\frac{\rho}{2\epsilon_0}(x,y,0)$ inside; ball $-\frac{\rho}{3\epsilon_0}(x,y,z)$ inside.</li>
-<li>Overlap: $\frac{\rho}{\epsilon_0}(\frac x6,\frac y6,-\frac z3)$; check $\nabla\cdot\vec E=0$ ✓.</li>
-<li>$z=0$, $a\lt s\lt R$: $E_s=\frac{\rho a^2}{2\epsilon_0s}-\frac{\rho s}{3\epsilon_0}$, zero at $s=\sqrt{3/2}\,a$.</li>
-<li>Axis $z>R$: cylinder gives 0 ⇒ $E_z=-\frac{\rho R^3}{3\epsilon_0z^2}$.</li>
+<li>$a\lt r\lt b$. BCs: $V=0$ on both walls and on $r=a$; $V=V_0$ on $r=b$.</li>
+<li>Walls → $\sin\frac{n\pi\theta}{\alpha}$, $k=\frac{n\pi}{\alpha}$. Zero at $a$ → $(\frac ra)^k-(\frac ar)^k$.</li>
+<li>$C_n=\frac{4V_0}{n\pi[(b/a)^k-(a/b)^k]}$, odd $n$.</li>
 </ul></section>
 
-<section class="ex"><h2>Ex 3 · Charge over a grounded plane</h2><span class="fig" data-f="plane"></span>
+<section class="ex"><h2>Ex 4 · Shell at $V_0\cos^2\theta$</h2><span class="fig" data-f="leg"></span>
 <ul>
-<li>BCs: $V=0$ on $z=0$; $V\to0$ far. Image $-q$ at $z=-d$.</li>
-<li>$V=kq\big[\frac{1}{\sqrt{s^2+(z-d)^2}}-\frac{1}{\sqrt{s^2+(z+d)^2}}\big]$, $\sigma=-\epsilon_0\partial_zV|_0=\frac{-qd}{2\pi(s^2+d^2)^{3/2}}$.</li>
-<li>$\int\sigma\,da=-q$. $F=\frac{kq^2}{4d^2}$ down. $W=\int_\infty^dF\,dz=-\frac{kq^2}{4d}$ (half of $-\frac{kq^2}{2d}$).</li>
+<li>$\cos^2\theta=\frac13+\frac23P_2$.</li>
+<li>Inside: $V_0\big[\frac13+\frac23\frac{r^2}{R^2}P_2\big]$.</li>
+<li>Outside: $V_0\big[\frac{R}{3r}+\frac23\frac{R^3}{r^3}P_2\big]$.</li>
+<li>$\sigma=\frac{\epsilon_0V_0}{R}\big[\frac13+\frac{10}{3}P_2\big]$.</li>
 </ul></section>
 
-<section class="ex"><h2>Ex 4 · Sphere held at $V_0$ + charge $q$ at $a$</h2><span class="fig" data-f="v0"></span>
+<section class="ex"><h2>Ex 5 · Metal sphere in a uniform field</h2><span class="fig" data-f="field"></span>
 <ul>
-<li>BCs: (1) $V=V_0$ on $r=R$; (2) $V\to0$ at ∞.</li>
-<li>Images: $q'=-\frac{qR}a$ at $\frac{R^2}a$, plus $q_0=4\pi\epsilon_0RV_0$ at the center ($V_0$ everywhere on the sphere).</li>
-<li>$Q_{sphere}=4\pi\epsilon_0RV_0-\frac{qR}{a}$; $\sigma$ = grounded $\sigma$ + $\frac{\epsilon_0V_0}{R}$.</li>
-<li>$F=\frac{qRV_0}{a^2}-\frac{kq^2Ra}{(a^2-R^2)^2}$ (+ = away). $F=0$ at $a=2R$ ⇒ $V_0=\frac89\frac{kq}{R}$; unstable.</li>
+<li>BCs: $V=0$ on sphere; far away $V\to-E_0r\cos\theta$.</li>
+<li>Only $\ell=1$: $V=-E_0r\cos\theta+\frac{B\cos\theta}{r^2}$. $V(R)=0$ → $B=E_0R^3$.</li>
+<li>$\sigma=3\epsilon_0E_0\cos\theta$: + on top, − on bottom.</li>
 </ul></section>
 
-<section class="ex"><h2>Ex 5 · Cartesian slot</h2><span class="fig" data-f="slot"></span>
-<p>Plates $y=0,a$ grounded; end $x=0$ at $V_0$; open to $x\to\infty$.</p>
+<section class="ex"><h2>Ex 6 · Shell with $\sigma=k\cos\theta$</h2><span class="fig" data-f="shellk"></span>
 <ul>
-<li>BCs: (1) $V(x,0)=0$ (2) $V(x,a)=0$ (3) $V\to0$, $x\to\infty$ (4) $V(0,y)=V_0$.</li>
-<li>(1)(2) ⇒ $\sin\frac{n\pi y}a$; (3) ⇒ $e^{-n\pi x/a}$; (4) Fourier ⇒ $C_n=\frac{4V_0}{n\pi}$ odd.</li>
-<li>$V=\frac{4V_0}\pi\sum_{odd}\frac1ne^{-n\pi x/a}\sin\frac{n\pi y}a=\frac{2V_0}{\pi}\tan^{-1}\frac{\sin(\pi y/a)}{\sinh(\pi x/a)}$.</li>
-<li>Closed at $x=b$ (grounded): replace $e^{-kx}$ by $\frac{\sinh k(b-x)}{\sinh kb}$.</li>
+<li>Inside $Ar\cos\theta$; outside $\frac{AR^3\cos\theta}{r^2}$ (matches at $R$).</li>
+<li>Jump: $-2A-A=-\frac{k}{\epsilon_0}$ → $A=\frac{k}{3\epsilon_0}$.</li>
+<li>Inside: uniform field $\frac{k}{3\epsilon_0}$ pointing down.</li>
 </ul></section>
 
-<section class="ex"><h2>Ex 6 · Polar wedge (Spring '26 P1)</h2><span class="fig" data-f="wedge"></span>
-<p>$a\lt r\lt b$, $0\lt \theta\lt \alpha$; walls + inner arc grounded, $r=b$ at $V_0$.</p>
+<section class="ex"><h2>Ex 7 · Charge over a grounded plane</h2><span class="fig" data-f="plane"></span>
 <ul>
-<li>BCs: $R(a)=0$, $\Theta(0)=0$, $\Theta(\alpha)=0$, $\Phi(b,\theta)=V_0$.</li>
-<li>$\Theta''=-k^2\Theta$ ⇒ $\sin k\theta$, $k=\frac{n\pi}\alpha$; $R=Cr^k+Dr^{-k}$, $R(a)=0$ ⇒ $(\frac ra)^k-(\frac ar)^k$.</li>
-<li>$\Phi=\sum C_n\sin\frac{n\pi\theta}\alpha[(\frac ra)^k-(\frac ar)^k]$, $C_n=\frac{4V_0}{n\pi[(b/a)^k-(a/b)^k]}$, odd $n$.</li>
-<li><span class="d">Polar = Cartesian with $u=\ln r$: the bracket is $2\sinh(k\ln\frac ra)$.</span></li>
+<li>$V=kq\big[\frac1{\text{dist to }q}-\frac1{\text{dist to image}}\big]$.</li>
+<li>$\sigma=-\frac{qd}{2\pi(s^2+d^2)^{3/2}}$, total $-q$; half lies within $s=\sqrt3d$.</li>
+<li>Force $\frac{kq^2}{4d^2}$ down. Energy $-\frac{kq^2}{4d}$.</li>
 </ul></section>
 
-<section class="ex"><h2>Ex 7 · Shell at $V_0\cos^2\theta$ (Legendre)</h2><span class="fig" data-f="leg"></span>
+<section class="ex"><h2>Ex 8 · Sphere held at $V_0$, charge $q$ at $a$</h2><span class="fig" data-f="v0"></span>
 <ul>
-<li>$\cos^2\theta=\frac13P_0+\frac23P_2$.</li>
-<li>$V_{in}=V_0[\frac13+\frac23\frac{r^2}{R^2}P_2]$, $V_{out}=V_0[\frac{R}{3r}+\frac23\frac{R^3}{r^3}P_2]$.</li>
-<li>$\sigma=\frac{\epsilon_0V_0}{R}[\frac13+\frac{10}3P_2]$, $Q=\frac43\pi\epsilon_0RV_0$. $\vec E(0)=0$ (no $\ell=1$).</li>
+<li>Images: $q'=-\frac{qR}{a}$ at $\frac{R^2}{a}$, plus $q_0=4\pi\epsilon_0RV_0$ at center.</li>
+<li>Sphere's charge: $q_0-\frac{qR}{a}$.</li>
+<li>Force on $q$: $\frac{qRV_0}{a^2}$ (push) $-\frac{kq^2Ra}{(a^2-R^2)^2}$ (pull).</li>
+<li>Zero at $a=2R$ when $V_0=\frac89\frac{kq}{R}$. Unstable.</li>
 </ul></section>
 
-<section class="ex"><h2>Ex 8 · Metal sphere in $E_0\hat z$</h2><span class="fig" data-f="field"></span>
+<section class="ex"><h2>Ex 9 · Neutral sphere, charge $q$ at $a$</h2><span class="fig" data-f="neutral"></span>
 <ul>
-<li>BCs: $V(R)=0$; $V\to-E_0r\cos\theta$ far.</li>
-<li>Far field is pure $\ell=1$ ⇒ $V=-E_0r\cos\theta+\frac{B_1\cos\theta}{r^2}$; $V(R)=0$ ⇒ $B_1=E_0R^3$.</li>
-<li>$\sigma=-\epsilon_0\partial_rV|_R=3\epsilon_0E_0\cos\theta$. Held at $V_0$: add $\frac{RV_0}{r}$. Pipe version: $R^2/s$, factor 2.</li>
+<li>Images: $-\frac{qR}{a}$ at $\frac{R^2}{a}$ and $+\frac{qR}{a}$ at center.</li>
+<li>Always pulls $q$ in. Sphere's $V=\frac{kq}{a}$.</li>
 </ul></section>
 
-<section class="ex"><h2>Ex 9 · Shell with $\sigma=k\cos\theta$</h2><span class="fig" data-f="shellk"></span>
+<section class="ex"><h2>Ex 10 · Charge in a 90° corner</h2><span class="fig" data-f="corner"></span>
 <ul>
-<li>BCs: finite at 0; $\to0$ at ∞; $V$ continuous; $\partial_rV_{out}-\partial_rV_{in}=-\frac{k\cos\theta}{\epsilon_0}$.</li>
-<li>$V_{in}=Ar\cos\theta$, $V_{out}=\frac{AR^3\cos\theta}{r^2}$; jump: $-2A-A=-\frac{k}{\epsilon_0}$ ⇒ $A=\frac{k}{3\epsilon_0}$.</li>
-<li>Inside: uniform $\vec E=-\frac{k}{3\epsilon_0}\hat z$.</li>
+<li>$q$ at $(x_0,y_0)$. Images: $-q$ at $(-x_0,y_0)$, $-q$ at $(x_0,-y_0)$, $+q$ at $(-x_0,-y_0)$.</li>
+<li>Force: add the three pulls/pushes as vectors.</li>
 </ul></section>
 
-<section class="ex"><h2>Ex 10 · Energy of a uniform ball, two ways</h2><span class="fig" data-f="energy"></span>
+<section class="ex"><h2>Ex 11 · Charge inside a grounded shell</h2><span class="fig" data-f="inside"></span>
 <ul>
-<li>$\frac{\epsilon_0}2\int E^2$: $\frac{\epsilon_0}{2}\big[\int_0^R(\frac{kQr}{R^3})^2+\int_R^\infty(\frac{kQ}{r^2})^2\big]4\pi r^2dr=\frac35\frac{kQ^2}R$.</li>
-<li>$\frac12\int\rho V$ with $V_{in}=\frac{kQ}{2R^3}(3R^2-r^2)$: same.</li>
+<li>Image $-\frac{qR}{d}$ at $\frac{R^2}{d}$ (outside).</li>
+<li>Force $\frac{kq^2Rd}{(R^2-d^2)^2}$ toward the near wall. Inner wall holds $-q$.</li>
 </ul></section>
 
-<section class="ex"><h2>Ex 11 · Neutral isolated sphere + $q$ at $a$</h2><span class="fig" data-f="neutral"></span>
+<section class="ex"><h2>Ex 12 · Given E, find ρ and V</h2><span class="fig" data-f="eR"></span>
+<p>$E=\frac{A}{r^2}$ inside $R$, $\frac{AR^2}{r^4}$ outside, outward.</p>
 <ul>
-<li>BCs: $V$ = const (unknown) on the sphere; $\oint\sigma=0$; $V\to0$ far.</li>
-<li>Images: $-\frac{qR}a$ at $\frac{R^2}a$ (makes $V=0$) and $+\frac{qR}a$ at the center (restores $Q=0$, keeps $V$ const).</li>
-<li>$F=\frac{kq^2R}{a}\big[\frac{a^2}{(a^2-R^2)^2}-\frac1{a^2}\big]$ toward the sphere; sphere's $V=\frac{kq}{a}$.</li>
+<li>Inside: $r^2E=A$ constant → no $\rho$ for $r>0$; point charge $4\pi\epsilon_0A$ at origin.</li>
+<li>Outside: $\rho=-\frac{2\epsilon_0AR^2}{r^5}$. $E$ continuous at $R$ → $\sigma=0$. Total 0.</li>
+<li>$V_{out}=\frac{AR^2}{3r^3}$, $V_{in}=\frac{A}{r}-\frac{2A}{3R}$.</li>
 </ul></section>
 
-<section class="ex"><h2>Ex 12 · Charge in a 90° grounded corner</h2><span class="fig" data-f="corner"></span>
+<section class="ex"><h2>Ex 13 · Cylinder through a ball</h2><span class="fig" data-f="sup"></span>
+<p>Cylinder $+\rho$ (radius $a$, along $z$), ball $-\rho$ (radius $R$).</p>
 <ul>
-<li>$q$ at $(x_0,y_0)$; walls $x=0$, $y=0$. Images: $-q$ at $(-x_0,y_0)$, $-q$ at $(x_0,-y_0)$, $+q$ at $(-x_0,-y_0)$.</li>
-<li>$F_x=kq^2\big[-\frac1{4x_0^2}+\frac{x_0}{4(x_0^2+y_0^2)^{3/2}}\big]$ (same with $x\leftrightarrow y$). Valid only in $x,y>0$.</li>
+<li>Inside both: sideways $\frac{\rho s}{6\epsilon_0}$ out, along $z$: $\frac{\rho z}{3\epsilon_0}$ toward center.</li>
+<li>Plane $z=0$, $a\lt s\lt R$: $\frac{\rho a^2}{2\epsilon_0s}-\frac{\rho s}{3\epsilon_0}$, zero at $s=1.22a$.</li>
 </ul></section>
 
-<section class="ex"><h2>Ex 13 · Charge inside a grounded shell</h2><span class="fig" data-f="inside"></span>
+<section class="ex"><h2>Ex 14 · Energy of a uniform ball</h2><span class="fig" data-f="energy"></span>
 <ul>
-<li>$q$ at $d\lt R$: image $-\frac{qR}{d}$ at $\frac{R^2}{d}$ (outside). $F=\frac{kq^2Rd}{(R^2-d^2)^2}$ toward the nearest wall.</li>
-<li>Inner surface carries $-q$ total. Shell at $V_0$: same inside plus $V_0$ (same force).</li>
-</ul></section>
-
-<section class="ex"><h2>Ex 14 · Box with two live faces</h2><span class="fig" data-f="box"></span>
-<ul>
-<li>Square pipe $0\le x,y\le a$: $y=0$ and $y=a$ at $V_0$, sides grounded.</li>
-<li>Sides zero ⇒ $\sin\frac{n\pi x}a$. Symmetric in $y$ ⇒ $\cosh\frac{n\pi(y-a/2)}{a}$. $C_n\cosh\frac{n\pi}2=\frac{4V_0}{n\pi}$ (odd).</li>
-<li>Center: by symmetry $V_0/2$ (this + the rotated problem = all faces at $V_0$).</li>
-</ul></section>
-
-<section><h2>Classic results to quote</h2>
-<ul>
-<li>Nested metal shells: inner surface $-q_{enc}$, outer $Q_{shell}+q_{enc}$. A cavity's field depends only on its own charge.</li>
-<li>Line $\lambda$ at $d$ over a grounded plane: $V=\frac{\lambda}{2\pi\epsilon_0}\ln\frac{s_-}{s_+}$.</li>
-<li>$\frac1{|\vec r-\vec r'|}=\sum\frac{r_\lt ^\ell}{r_>^{\ell+1}}P_\ell(\cos\gamma)$ (on the axis this is the axis trick).</li>
-</ul></section>
-
-<section><h2>Traps + integrals</h2>
-<ul>
-<li class="t">$d\tau=r^2\sin\theta\,dr\,d\theta\,d\phi$; $\sigma/\epsilon_0$ (metal) vs $\sigma/2\epsilon_0$ (sheet); $r^{-(\ell+1)}$; images = half energy; sinh in the non-zero direction; check units and limits.</li>
-<li>$\int\frac{dx}{(x^2+a^2)^{3/2}}=\frac{x}{a^2\sqrt{x^2+a^2}}$, $\int\frac{x\,dx}{(x^2+a^2)^{3/2}}=\frac{-1}{\sqrt{x^2+a^2}}$, $\int\frac{dx}{\sqrt{x^2+a^2}}=\ln(x+\sqrt{x^2+a^2})$, $\int\frac{dx}{x^2+a^2}=\frac1a\tan^{-1}\frac xa$.</li>
-<li>$\int_0^\pi\sin^3=\frac43$, $\int_0^\pi\sin\theta\cos^2\theta=\frac23$, $\int_0^a\sin^2\frac{n\pi y}a=\frac a2$, $\int_0^a\sin\frac{n\pi y}a\,dy=\frac{a(1-(-1)^n)}{n\pi}$.</li>
+<li>Inside $E=\frac{kQr}{R^3}$, outside $\frac{kQ}{r^2}$.</li>
+<li>$\frac{\epsilon_0}{2}\int E^2\,4\pi r^2dr=\frac35\frac{kQ^2}{R}$.</li>
 </ul></section>
 
 </div>
 </div>
 
 <script>
-  // hand-drawable sketches: one per worked example. Dashed = image charge or imaginary surface; hatched = metal.
+  // hand-drawable sketches. Dashed = image charge or imaginary surface; hatched/thick = metal.
   (function () {
     const W = 120, H = 80;
     const ln = (x1, y1, x2, y2, o = '') => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#111" stroke-width="${/thick/.test(o) ? 2 : 1.1}" ${/dash/.test(o) ? 'stroke-dasharray="3 2"' : ''}/>`;
@@ -290,20 +259,21 @@
     const arc = (cx, cy, r, a0, a1, o = '') => { const p = (a) => [cx + r * Math.cos(a * Math.PI / 180), cy - r * Math.sin(a * Math.PI / 180)]; const [x0, y0] = p(a0), [x1, y1] = p(a1); return `<path d="M${x0},${y0}A${r},${r} 0 0 0 ${x1},${y1}" fill="none" stroke="#111" stroke-width="${/thick/.test(o) ? 2 : 1.1}" ${/dash/.test(o) ? 'stroke-dasharray="3 2"' : ''}/>`; };
     const sphereImg = (labC, vlab) => ci(30, 40, 26, 'thick fill:#eef1f5') + ln(30, 40, 12, 22) + tx(13, 33, 'R', 'end', 's') + tx(2, 10, vlab || 'V=0', 'start', 's') + q(108, 40, '+') + tx(108, 31, 'q', 'middle') + q(50, 40, '-', true) + tx(50, 55, "q′", 'middle', 's') + (labC ? q(30, 40, '+', true) + tx(30, 55, labC, 'middle', 's') : '') + ln(30, 76, 108, 76, 'dash') + tx(78, 74, 'a', 'middle', 's');
     const F = {
-      eR: () => ci(60, 40, 28, 'dash') + `<circle cx="60" cy="40" r="2" fill="#111"/>` + tx(64, 37, 'qδ³', 'start', 's') + tx(60, 58, 'A/r²', 'middle', 's') + tx(118, 12, 'AR²/r⁴', 'end', 's') + ln(60, 40, 80, 20) + tx(74, 26, 'R', 'start', 's'),
+      gsphere: () => sphereImg(null, 'V=0'),
+      eR: () => ci(60, 40, 28, 'dash') + `<circle cx="60" cy="40" r="2" fill="#111"/>` + tx(64, 37, 'q', 'start', 's') + tx(60, 58, 'A/r²', 'middle', 's') + tx(118, 12, 'AR²/r⁴', 'end', 's') + ln(60, 40, 80, 20) + tx(74, 26, 'R', 'start', 's'),
       sup: () => `<circle cx="60" cy="42" r="32" fill="#f3d6d2" stroke="#111"/><rect x="51" y="2" width="18" height="78" fill="#cfdcf3" stroke="#111"/>` + tx(60, 12, '+ρ', 'middle', 's') + tx(36, 46, '−ρ', 'middle', 's') + tx(98, 22, 'R', 'start', 's') + tx(60, 78, 'a', 'middle', 's'),
       plane: () => hatchH(4, 116, 46, true) + tx(112, 42, 'V=0', 'end', 's') + q(60, 18, '+') + tx(67, 17, 'q') + ln(60, 23, 60, 46, 'dash') + tx(55, 37, 'd', 'end', 's') + q(60, 72, '-', true) + tx(67, 75, '−q'),
-      v0: () => sphereImg('q₀', 'V₀'),
+      v0: () => sphereImg('q₀', 'V=V₀'),
       slot: () => hatchH(20, 112, 14, false) + hatchH(20, 112, 58, true) + ln(20, 14, 20, 58, 'thick') + tx(16, 40, 'V₀', 'end') + tx(66, 30, 'V=0', 'middle', 's') + tx(66, 52, 'V=0', 'middle', 's') + arr(92, 36, 116, 36) + tx(96, 47, '→∞', 'start', 's') + tx(24, 76, 'x', 'start', 's') + tx(4, 12, 'y=a', 'start', 's'),
       wedge: () => { const o = [10, 72], a = 30, b = 90, al = 48, c = Math.cos(al * Math.PI / 180), s = Math.sin(al * Math.PI / 180); return ln(o[0], o[1], o[0] + a, o[1], 'dash') + ln(o[0] + a, o[1], o[0] + b, o[1], 'thick') + ln(o[0], o[1], o[0] + a * c, o[1] - a * s, 'dash') + ln(o[0] + a * c, o[1] - a * s, o[0] + b * c, o[1] - b * s, 'thick') + arc(o[0], o[1], a, 0, al, 'thick') + arc(o[0], o[1], b, 0, al, 'thick') + arc(o[0], o[1], 12, 0, al) + tx(o[0] + 14, o[1] - 3, 'α', 'start', 's') + tx(o[0] + b * 0.93 + 4, o[1] - b * 0.36, 'V₀', 'start') + tx(o[0] + 60, o[1] + 9, '0', 'middle', 's') + tx(o[0] + a + 2, o[1] - 10, '0', 'start', 's') + tx(o[0] + 60 * c - 6, o[1] - 60 * s, '0', 'end', 's') + tx(o[0] + a, o[1] + 9, 'a', 'middle', 's') + tx(o[0] + b, o[1] + 9, 'b', 'middle', 's'); },
-      leg: () => ci(60, 40, 28, 'thick') + arr(60, 76, 60, 4) + tx(64, 9, 'z', 'start', 's') + arc(60, 40, 14, 90, 60) + tx(70, 22, 'θ', 'start', 's') + tx(118, 72, 'V₀cos²θ', 'end', 's'),
+      leg: () => ci(60, 40, 28, 'thick') + arr(60, 76, 60, 4) + tx(64, 9, 'z', 'start', 's') + arc(60, 40, 14, 90, 60) + tx(70, 22, 'θ', 'start', 's') + tx(118, 72, 'V(θ)', 'end', 's') + tx(10, 40, 'R', 'start', 's'),
       field: () => arr(14, 78, 14, 4) + arr(106, 78, 106, 4) + arr(60, 78, 60, 62) + arr(60, 18, 60, 4) + ci(60, 40, 20, 'thick fill:#eef1f5') + tx(60, 34, '+', 'middle') + tx(60, 54, '−', 'middle') + tx(20, 12, 'E₀', 'start', 's') + tx(100, 44, 'V=0', 'end', 's'),
       shellk: () => ci(55, 40, 28, 'thick') + tx(55, 18, '+ + +', 'middle', 's') + tx(55, 68, '− − −', 'middle', 's') + arr(55, 78, 55, 2) + tx(59, 8, 'z', 'start', 's') + tx(118, 44, 'k cosθ', 'end', 's'),
       energy: () => `<circle cx="50" cy="40" r="30" fill="#cfdcf3" stroke="#111"/>` + ci(50, 40, 16, 'dash') + tx(50, 44, 'ρ', 'middle') + tx(86, 18, 'R', 'start', 's') + tx(70, 50, 'r', 'start', 's'),
       neutral: () => sphereImg('qR/a', 'Q=0'),
-      corner: () => hatchH(40, 118, 46, true) + hatchV(40, 4, 46, true) + q(82, 20, '+') + tx(90, 19, 'q') + q(4 + 4, 20, '-', true) + tx(12, 12, '−q', 'start', 's') + q(82, 72, '-', true) + tx(90, 76, '−q', 'start', 's') + q(8, 72, '+', true) + tx(14, 78, '+q', 'start', 's') + ln(82, 20, 82, 46, 'dash') + ln(40, 20, 82, 20, 'dash') + tx(61, 17, 'x₀', 'middle', 's') + tx(86, 36, 'y₀', 'start', 's'),
+      corner: () => hatchH(40, 118, 46, true) + hatchV(40, 4, 46, true) + q(82, 20, '+') + tx(90, 19, 'q') + q(8, 20, '-', true) + tx(12, 12, '−q', 'start', 's') + q(82, 72, '-', true) + tx(90, 76, '−q', 'start', 's') + q(8, 72, '+', true) + tx(14, 78, '+q', 'start', 's') + ln(82, 20, 82, 46, 'dash') + ln(40, 20, 82, 20, 'dash') + tx(61, 17, 'x₀', 'middle', 's') + tx(86, 36, 'y₀', 'start', 's'),
       inside: () => ci(48, 40, 32, 'thick') + tx(2, 78, 'V=0', 'start', 's') + `<circle cx="48" cy="40" r="2" fill="#111"/>` + q(66, 40, '+') + tx(66, 32, 'q', 'middle') + ln(48, 46, 66, 46, 'dash') + tx(57, 55, 'd', 'middle', 's') + q(108, 40, '-', true) + tx(108, 56, "q′", 'middle', 's') + tx(104, 30, 'R²/d', 'middle', 's'),
-      box: () => `<rect x="34" y="8" width="56" height="56" fill="none" stroke="#111" stroke-width="1.8"/>` + tx(62, 6, 'V₀', 'middle', 's') + tx(62, 76, 'V₀', 'middle', 's') + tx(30, 40, '0', 'end', 's') + tx(94, 40, '0', 'start', 's') + `<circle cx="62" cy="36" r="2" fill="#111"/>` + tx(66, 34, 'V₀/2?', 'start', 's'),
+      box: () => `<rect x="34" y="8" width="56" height="56" fill="none" stroke="#111" stroke-width="1.8"/>` + tx(62, 6, 'V₀', 'middle', 's') + tx(62, 76, 'V₀', 'middle', 's') + tx(30, 40, '0', 'end', 's') + tx(94, 40, '0', 'start', 's') + `<circle cx="62" cy="36" r="2" fill="#111"/>` + tx(66, 34, 'V₀/2', 'start', 's'),
       pill: () => hatchH(4, 116, 40, false).replace(/stroke-width="2"/, 'stroke-width="1.6"') + `<rect x="44" y="30" width="32" height="20" fill="none" stroke="#111" stroke-dasharray="3 2"/>` + arr(60, 30, 60, 6) + arr(60, 50, 60, 74) + tx(64, 12, 'E above', 'start', 's') + tx(64, 72, 'E below', 'start', 's') + tx(112, 36, 'σ', 'end'),
       cavity: () => `<ellipse cx="60" cy="40" rx="54" ry="36" fill="#e3e7ee" stroke="#111" stroke-width="1.6"/><ellipse cx="54" cy="40" rx="22" ry="16" fill="#fff" stroke="#111"/>` + q(54, 40, '+') + tx(54, 32, 'q', 'middle', 's') + tx(54, 70, '−q on wall', 'middle', 's') + tx(116, 12, '+q', 'end', 's') + tx(96, 44, 'E=0', 'middle', 's'),
     };
