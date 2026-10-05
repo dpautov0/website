@@ -13,7 +13,7 @@
   @page { size: letter; margin: 0.26in; }
   * { box-sizing: border-box; }
   html, body { background: var(--paper); color: var(--ink); margin: 0; }
-  body { font: 9.3pt/1.24 "Segoe UI", Arial, sans-serif; }
+  body { font: 8.6pt/1.22 "Segoe UI", Arial, sans-serif; }
   .page { width: 7.98in; margin: 0 auto; }
   .page + .page { break-before: page; }
   .top { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1.2px solid var(--ink); margin-bottom: 3px; padding-bottom: 1px; }
@@ -30,6 +30,10 @@
   .t { color: var(--red); font-weight: 600; }
   .d { color: var(--soft); }
   .katex { font-size: 1.0em; }
+  .fig { float: right; width: 92px; margin: 1px 0 1px 4px; }
+  .fig svg { display: block; width: 100%; height: auto; }
+  .fig svg text { font: italic 10px "Times New Roman", serif; fill: #111; }
+  .fig svg text.s { font-size: 8.5px; }
   @media screen { body { padding: 16px; } .page { max-width: 100%; margin-bottom: 28px; } .page + .page { border-top: 2px dashed var(--rule); padding-top: 12px; } }
   @media screen and (max-width: 760px) { .cols { column-count: 1; } }
 </style>
@@ -62,7 +66,7 @@
 <li>Poisson $\nabla^2V=-\rho/\epsilon_0$. $V=\frac{Ae^{-\lambda r}}{r}$ ⇒ $\rho=\epsilon_0A[4\pi\delta^3-\lambda^2\frac{e^{-\lambda r}}{r}]$.</li>
 </ul></section>
 
-<section><h2>3 · Boundary conditions</h2>
+<section><h2>3 · Boundary conditions</h2><span class="fig" data-f="pill"></span>
 <ul>
 <li>$E^\perp_{above}-E^\perp_{below}=\frac{\sigma}{\epsilon_0}$; $E^\parallel$ and $V$ continuous. $\frac{\partial V_{out}}{\partial n}-\frac{\partial V_{in}}{\partial n}=-\frac{\sigma}{\epsilon_0}$. <span class="d">Pillbox: flux $(E_a-E_b)A=\sigma A/\epsilon_0$. Thin loop: $\oint E\cdot dl=0$ ⇒ $E^\parallel$ same.</span></li>
 <li>Conductor: $E=0$, $\rho=0$ inside, $V$ const, $\sigma=-\epsilon_0\frac{\partial V}{\partial n}$, $\vec E_{out}=\frac{\sigma}{\epsilon_0}\hat n$, pressure $\frac{\sigma^2}{2\epsilon_0}$.</li>
@@ -71,7 +75,7 @@
 <li>Count: each region's unknown constants = number of conditions.</li>
 </ul></section>
 
-<section><h2>3b · Conductors (the review's 7 facts) + capacitance</h2>
+<section><h2>3b · Conductors (the review's 7 facts) + capacitance</h2><span class="fig" data-f="cavity"></span>
 <ul>
 <li>(1) $\vec E=0$ inside; (2) $\rho=0$ inside; (3) net charge only on the surface; (4) equipotential; (5) $\vec E\perp$ surface just outside, $=\frac{\sigma}{\epsilon_0}\hat n$; (6) empty cavity: $\vec E=0$ inside it, even in an external field; (7) charge $q$ in a cavity ⇒ $-q$ on the cavity wall, $+q$ (+ any net $Q$) on the outside: the conductor "looks charged".</li>
 <li>$C=\frac{Q}{\Delta V}$ (geometry only). Plates $\frac{\epsilon_0A}{d}$; spheres $\frac{4\pi\epsilon_0ab}{b-a}$ (isolated: $4\pi\epsilon_0R$); coax $\frac{2\pi\epsilon_0L}{\ln(b/a)}$. <span class="d">Recipe: put $\pm Q$, Gauss for $E$, $\Delta V=-\int E\cdot dl$, divide.</span></li>
@@ -151,7 +155,7 @@
 <li><b>Write partial results even if stuck:</b> BC list + general solution earn most of the credit.</li>
 </ul></section>
 
-<section class="ex"><h2>Ex 1 · Given $\vec E$, find $\rho$ and $V$</h2>
+<section class="ex"><h2>Ex 1 · Given $\vec E$, find $\rho$ and $V$</h2><span class="fig" data-f="eR"></span>
 <p>$\vec E=\frac{A}{r^2}\hat r$ ($r\lt R$), $\frac{AR^2}{r^4}\hat r$ ($r>R$).</p>
 <ul>
 <li>$r\lt R$: $r^2E_r=A$ const ⇒ $\rho=0$ for $r\ne0$, but $4\pi\epsilon_0r^2E_r\to4\pi\epsilon_0A$ ⇒ $\rho\supset4\pi\epsilon_0A\,\delta^3(\vec r)$.</li>
@@ -160,7 +164,7 @@
 <li>$V_{out}=\int_r^\infty E=\frac{AR^2}{3r^3}$; $V_{in}=V(R)+\int_r^RE=\frac Ar-\frac{2A}{3R}$.</li>
 </ul></section>
 
-<section class="ex"><h2>Ex 2 · Superposed Gauss</h2>
+<section class="ex"><h2>Ex 2 · Superposed Gauss</h2><span class="fig" data-f="sup"></span>
 <p>Infinite cylinder radius $a$ (+ρ, along $z$) through a ball radius $R>a$ (−ρ).</p>
 <ul>
 <li>Pieces: cyl $\frac{\rho}{2\epsilon_0}(x,y,0)$ inside; ball $-\frac{\rho}{3\epsilon_0}(x,y,z)$ inside.</li>
@@ -169,14 +173,14 @@
 <li>Axis $z>R$: cylinder gives 0 ⇒ $E_z=-\frac{\rho R^3}{3\epsilon_0z^2}$.</li>
 </ul></section>
 
-<section class="ex"><h2>Ex 3 · Charge over a grounded plane</h2>
+<section class="ex"><h2>Ex 3 · Charge over a grounded plane</h2><span class="fig" data-f="plane"></span>
 <ul>
 <li>BCs: $V=0$ on $z=0$; $V\to0$ far. Image $-q$ at $z=-d$.</li>
 <li>$V=kq\big[\frac{1}{\sqrt{s^2+(z-d)^2}}-\frac{1}{\sqrt{s^2+(z+d)^2}}\big]$, $\sigma=-\epsilon_0\partial_zV|_0=\frac{-qd}{2\pi(s^2+d^2)^{3/2}}$.</li>
 <li>$\int\sigma\,da=-q$. $F=\frac{kq^2}{4d^2}$ down. $W=\int_\infty^dF\,dz=-\frac{kq^2}{4d}$ (half of $-\frac{kq^2}{2d}$).</li>
 </ul></section>
 
-<section class="ex"><h2>Ex 4 · Sphere held at $V_0$ + charge $q$ at $a$</h2>
+<section class="ex"><h2>Ex 4 · Sphere held at $V_0$ + charge $q$ at $a$</h2><span class="fig" data-f="v0"></span>
 <ul>
 <li>BCs: (1) $V=V_0$ on $r=R$; (2) $V\to0$ at ∞.</li>
 <li>Images: $q'=-\frac{qR}a$ at $\frac{R^2}a$, plus $q_0=4\pi\epsilon_0RV_0$ at the center ($V_0$ everywhere on the sphere).</li>
@@ -184,7 +188,7 @@
 <li>$F=\frac{qRV_0}{a^2}-\frac{kq^2Ra}{(a^2-R^2)^2}$ (+ = away). $F=0$ at $a=2R$ ⇒ $V_0=\frac89\frac{kq}{R}$; unstable.</li>
 </ul></section>
 
-<section class="ex"><h2>Ex 5 · Cartesian slot</h2>
+<section class="ex"><h2>Ex 5 · Cartesian slot</h2><span class="fig" data-f="slot"></span>
 <p>Plates $y=0,a$ grounded; end $x=0$ at $V_0$; open to $x\to\infty$.</p>
 <ul>
 <li>BCs: (1) $V(x,0)=0$ (2) $V(x,a)=0$ (3) $V\to0$, $x\to\infty$ (4) $V(0,y)=V_0$.</li>
@@ -193,7 +197,7 @@
 <li>Closed at $x=b$ (grounded): replace $e^{-kx}$ by $\frac{\sinh k(b-x)}{\sinh kb}$.</li>
 </ul></section>
 
-<section class="ex"><h2>Ex 6 · Polar wedge (Spring '26 P1)</h2>
+<section class="ex"><h2>Ex 6 · Polar wedge (Spring '26 P1)</h2><span class="fig" data-f="wedge"></span>
 <p>$a\lt r\lt b$, $0\lt \theta\lt \alpha$; walls + inner arc grounded, $r=b$ at $V_0$.</p>
 <ul>
 <li>BCs: $R(a)=0$, $\Theta(0)=0$, $\Theta(\alpha)=0$, $\Phi(b,\theta)=V_0$.</li>
@@ -202,53 +206,53 @@
 <li><span class="d">Polar = Cartesian with $u=\ln r$: the bracket is $2\sinh(k\ln\frac ra)$.</span></li>
 </ul></section>
 
-<section class="ex"><h2>Ex 7 · Shell at $V_0\cos^2\theta$ (Legendre)</h2>
+<section class="ex"><h2>Ex 7 · Shell at $V_0\cos^2\theta$ (Legendre)</h2><span class="fig" data-f="leg"></span>
 <ul>
 <li>$\cos^2\theta=\frac13P_0+\frac23P_2$.</li>
 <li>$V_{in}=V_0[\frac13+\frac23\frac{r^2}{R^2}P_2]$, $V_{out}=V_0[\frac{R}{3r}+\frac23\frac{R^3}{r^3}P_2]$.</li>
 <li>$\sigma=\frac{\epsilon_0V_0}{R}[\frac13+\frac{10}3P_2]$, $Q=\frac43\pi\epsilon_0RV_0$. $\vec E(0)=0$ (no $\ell=1$).</li>
 </ul></section>
 
-<section class="ex"><h2>Ex 8 · Metal sphere in $E_0\hat z$</h2>
+<section class="ex"><h2>Ex 8 · Metal sphere in $E_0\hat z$</h2><span class="fig" data-f="field"></span>
 <ul>
 <li>BCs: $V(R)=0$; $V\to-E_0r\cos\theta$ far.</li>
 <li>Far field is pure $\ell=1$ ⇒ $V=-E_0r\cos\theta+\frac{B_1\cos\theta}{r^2}$; $V(R)=0$ ⇒ $B_1=E_0R^3$.</li>
 <li>$\sigma=-\epsilon_0\partial_rV|_R=3\epsilon_0E_0\cos\theta$. Held at $V_0$: add $\frac{RV_0}{r}$. Pipe version: $R^2/s$, factor 2.</li>
 </ul></section>
 
-<section class="ex"><h2>Ex 9 · Shell with $\sigma=k\cos\theta$</h2>
+<section class="ex"><h2>Ex 9 · Shell with $\sigma=k\cos\theta$</h2><span class="fig" data-f="shellk"></span>
 <ul>
 <li>BCs: finite at 0; $\to0$ at ∞; $V$ continuous; $\partial_rV_{out}-\partial_rV_{in}=-\frac{k\cos\theta}{\epsilon_0}$.</li>
 <li>$V_{in}=Ar\cos\theta$, $V_{out}=\frac{AR^3\cos\theta}{r^2}$; jump: $-2A-A=-\frac{k}{\epsilon_0}$ ⇒ $A=\frac{k}{3\epsilon_0}$.</li>
 <li>Inside: uniform $\vec E=-\frac{k}{3\epsilon_0}\hat z$.</li>
 </ul></section>
 
-<section class="ex"><h2>Ex 10 · Energy of a uniform ball, two ways</h2>
+<section class="ex"><h2>Ex 10 · Energy of a uniform ball, two ways</h2><span class="fig" data-f="energy"></span>
 <ul>
 <li>$\frac{\epsilon_0}2\int E^2$: $\frac{\epsilon_0}{2}\big[\int_0^R(\frac{kQr}{R^3})^2+\int_R^\infty(\frac{kQ}{r^2})^2\big]4\pi r^2dr=\frac35\frac{kQ^2}R$.</li>
 <li>$\frac12\int\rho V$ with $V_{in}=\frac{kQ}{2R^3}(3R^2-r^2)$: same.</li>
 </ul></section>
 
-<section class="ex"><h2>Ex 11 · Neutral isolated sphere + $q$ at $a$</h2>
+<section class="ex"><h2>Ex 11 · Neutral isolated sphere + $q$ at $a$</h2><span class="fig" data-f="neutral"></span>
 <ul>
 <li>BCs: $V$ = const (unknown) on the sphere; $\oint\sigma=0$; $V\to0$ far.</li>
 <li>Images: $-\frac{qR}a$ at $\frac{R^2}a$ (makes $V=0$) and $+\frac{qR}a$ at the center (restores $Q=0$, keeps $V$ const).</li>
 <li>$F=\frac{kq^2R}{a}\big[\frac{a^2}{(a^2-R^2)^2}-\frac1{a^2}\big]$ toward the sphere; sphere's $V=\frac{kq}{a}$.</li>
 </ul></section>
 
-<section class="ex"><h2>Ex 12 · Charge in a 90° grounded corner</h2>
+<section class="ex"><h2>Ex 12 · Charge in a 90° grounded corner</h2><span class="fig" data-f="corner"></span>
 <ul>
 <li>$q$ at $(x_0,y_0)$; walls $x=0$, $y=0$. Images: $-q$ at $(-x_0,y_0)$, $-q$ at $(x_0,-y_0)$, $+q$ at $(-x_0,-y_0)$.</li>
 <li>$F_x=kq^2\big[-\frac1{4x_0^2}+\frac{x_0}{4(x_0^2+y_0^2)^{3/2}}\big]$ (same with $x\leftrightarrow y$). Valid only in $x,y>0$.</li>
 </ul></section>
 
-<section class="ex"><h2>Ex 13 · Charge inside a grounded shell</h2>
+<section class="ex"><h2>Ex 13 · Charge inside a grounded shell</h2><span class="fig" data-f="inside"></span>
 <ul>
 <li>$q$ at $d\lt R$: image $-\frac{qR}{d}$ at $\frac{R^2}{d}$ (outside). $F=\frac{kq^2Rd}{(R^2-d^2)^2}$ toward the nearest wall.</li>
 <li>Inner surface carries $-q$ total. Shell at $V_0$: same inside plus $V_0$ (same force).</li>
 </ul></section>
 
-<section class="ex"><h2>Ex 14 · Box with two live faces</h2>
+<section class="ex"><h2>Ex 14 · Box with two live faces</h2><span class="fig" data-f="box"></span>
 <ul>
 <li>Square pipe $0\le x,y\le a$: $y=0$ and $y=a$ at $V_0$, sides grounded.</li>
 <li>Sides zero ⇒ $\sin\frac{n\pi x}a$. Symmetric in $y$ ⇒ $\cosh\frac{n\pi(y-a/2)}{a}$. $C_n\cosh\frac{n\pi}2=\frac{4V_0}{n\pi}$ (odd).</li>
@@ -273,6 +277,42 @@
 </div>
 
 <script>
+  // hand-drawable sketches: one per worked example. Dashed = image charge or imaginary surface; hatched = metal.
+  (function () {
+    const W = 120, H = 80;
+    const ln = (x1, y1, x2, y2, o = '') => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#111" stroke-width="${/thick/.test(o) ? 2 : 1.1}" ${/dash/.test(o) ? 'stroke-dasharray="3 2"' : ''}/>`;
+    const ci = (x, y, r, o = '') => `<circle cx="${x}" cy="${y}" r="${r}" fill="${/fill:([#\w]+)/.test(o) ? o.match(/fill:([#\w]+)/)[1] : 'none'}" stroke="#111" stroke-width="${/thick/.test(o) ? 1.8 : 1.1}" ${/dash/.test(o) ? 'stroke-dasharray="3 2"' : ''}/>`;
+    const tx = (x, y, t, a = 'start', c = '') => `<text x="${x}" y="${y}" text-anchor="${a}" class="${c}">${t}</text>`;
+    const q = (x, y, sgn, img) => ci(x, y, 4.2, img ? 'dash fill:#fff' : 'fill:#fff') + (sgn ? ln(x - 2.4, y, x + 2.4, y) : '') + (sgn === '+' ? ln(x, y - 2.4, x, y + 2.4) : '');
+    const arr = (x1, y1, x2, y2) => { const a = Math.atan2(y2 - y1, x2 - x1), h = 4; return ln(x1, y1, x2, y2) + `<path d="M${x2},${y2}L${x2 - h * Math.cos(a - 0.45)},${y2 - h * Math.sin(a - 0.45)}L${x2 - h * Math.cos(a + 0.45)},${y2 - h * Math.sin(a + 0.45)}Z" fill="#111"/>`; };
+    const hatchH = (x1, x2, y, down) => { let s = ln(x1, y, x2, y, 'thick'); for (let x = x1 + 3; x < x2; x += 6) s += ln(x, y, x - 4, y + (down ? 5 : -5)); return s; };
+    const hatchV = (x, y1, y2, left) => { let s = ln(x, y1, x, y2, 'thick'); for (let y = y1 + 3; y < y2; y += 6) s += ln(x, y, x + (left ? -5 : 5), y + 4); return s; };
+    const arc = (cx, cy, r, a0, a1, o = '') => { const p = (a) => [cx + r * Math.cos(a * Math.PI / 180), cy - r * Math.sin(a * Math.PI / 180)]; const [x0, y0] = p(a0), [x1, y1] = p(a1); return `<path d="M${x0},${y0}A${r},${r} 0 0 0 ${x1},${y1}" fill="none" stroke="#111" stroke-width="${/thick/.test(o) ? 2 : 1.1}" ${/dash/.test(o) ? 'stroke-dasharray="3 2"' : ''}/>`; };
+    const sphereImg = (labC, vlab) => ci(30, 40, 26, 'thick fill:#eef1f5') + ln(30, 40, 12, 22) + tx(13, 33, 'R', 'end', 's') + tx(2, 10, vlab || 'V=0', 'start', 's') + q(108, 40, '+') + tx(108, 31, 'q', 'middle') + q(50, 40, '-', true) + tx(50, 55, "q′", 'middle', 's') + (labC ? q(30, 40, '+', true) + tx(30, 55, labC, 'middle', 's') : '') + ln(30, 76, 108, 76, 'dash') + tx(78, 74, 'a', 'middle', 's');
+    const F = {
+      eR: () => ci(60, 40, 28, 'dash') + `<circle cx="60" cy="40" r="2" fill="#111"/>` + tx(64, 37, 'qδ³', 'start', 's') + tx(60, 58, 'A/r²', 'middle', 's') + tx(118, 12, 'AR²/r⁴', 'end', 's') + ln(60, 40, 80, 20) + tx(74, 26, 'R', 'start', 's'),
+      sup: () => `<circle cx="60" cy="42" r="32" fill="#f3d6d2" stroke="#111"/><rect x="51" y="2" width="18" height="78" fill="#cfdcf3" stroke="#111"/>` + tx(60, 12, '+ρ', 'middle', 's') + tx(36, 46, '−ρ', 'middle', 's') + tx(98, 22, 'R', 'start', 's') + tx(60, 78, 'a', 'middle', 's'),
+      plane: () => hatchH(4, 116, 46, true) + tx(112, 42, 'V=0', 'end', 's') + q(60, 18, '+') + tx(67, 17, 'q') + ln(60, 23, 60, 46, 'dash') + tx(55, 37, 'd', 'end', 's') + q(60, 72, '-', true) + tx(67, 75, '−q'),
+      v0: () => sphereImg('q₀', 'V₀'),
+      slot: () => hatchH(20, 112, 14, false) + hatchH(20, 112, 58, true) + ln(20, 14, 20, 58, 'thick') + tx(16, 40, 'V₀', 'end') + tx(66, 30, 'V=0', 'middle', 's') + tx(66, 52, 'V=0', 'middle', 's') + arr(92, 36, 116, 36) + tx(96, 47, '→∞', 'start', 's') + tx(24, 76, 'x', 'start', 's') + tx(4, 12, 'y=a', 'start', 's'),
+      wedge: () => { const o = [10, 72], a = 30, b = 90, al = 48, c = Math.cos(al * Math.PI / 180), s = Math.sin(al * Math.PI / 180); return ln(o[0], o[1], o[0] + a, o[1], 'dash') + ln(o[0] + a, o[1], o[0] + b, o[1], 'thick') + ln(o[0], o[1], o[0] + a * c, o[1] - a * s, 'dash') + ln(o[0] + a * c, o[1] - a * s, o[0] + b * c, o[1] - b * s, 'thick') + arc(o[0], o[1], a, 0, al, 'thick') + arc(o[0], o[1], b, 0, al, 'thick') + arc(o[0], o[1], 12, 0, al) + tx(o[0] + 14, o[1] - 3, 'α', 'start', 's') + tx(o[0] + b * 0.93 + 4, o[1] - b * 0.36, 'V₀', 'start') + tx(o[0] + 60, o[1] + 9, '0', 'middle', 's') + tx(o[0] + a + 2, o[1] - 10, '0', 'start', 's') + tx(o[0] + 60 * c - 6, o[1] - 60 * s, '0', 'end', 's') + tx(o[0] + a, o[1] + 9, 'a', 'middle', 's') + tx(o[0] + b, o[1] + 9, 'b', 'middle', 's'); },
+      leg: () => ci(60, 40, 28, 'thick') + arr(60, 76, 60, 4) + tx(64, 9, 'z', 'start', 's') + arc(60, 40, 14, 90, 60) + tx(70, 22, 'θ', 'start', 's') + tx(118, 72, 'V₀cos²θ', 'end', 's'),
+      field: () => arr(14, 78, 14, 4) + arr(106, 78, 106, 4) + arr(60, 78, 60, 62) + arr(60, 18, 60, 4) + ci(60, 40, 20, 'thick fill:#eef1f5') + tx(60, 34, '+', 'middle') + tx(60, 54, '−', 'middle') + tx(20, 12, 'E₀', 'start', 's') + tx(100, 44, 'V=0', 'end', 's'),
+      shellk: () => ci(55, 40, 28, 'thick') + tx(55, 18, '+ + +', 'middle', 's') + tx(55, 68, '− − −', 'middle', 's') + arr(55, 78, 55, 2) + tx(59, 8, 'z', 'start', 's') + tx(118, 44, 'k cosθ', 'end', 's'),
+      energy: () => `<circle cx="50" cy="40" r="30" fill="#cfdcf3" stroke="#111"/>` + ci(50, 40, 16, 'dash') + tx(50, 44, 'ρ', 'middle') + tx(86, 18, 'R', 'start', 's') + tx(70, 50, 'r', 'start', 's'),
+      neutral: () => sphereImg('qR/a', 'Q=0'),
+      corner: () => hatchH(40, 118, 46, true) + hatchV(40, 4, 46, true) + q(82, 20, '+') + tx(90, 19, 'q') + q(4 + 4, 20, '-', true) + tx(12, 12, '−q', 'start', 's') + q(82, 72, '-', true) + tx(90, 76, '−q', 'start', 's') + q(8, 72, '+', true) + tx(14, 78, '+q', 'start', 's') + ln(82, 20, 82, 46, 'dash') + ln(40, 20, 82, 20, 'dash') + tx(61, 17, 'x₀', 'middle', 's') + tx(86, 36, 'y₀', 'start', 's'),
+      inside: () => ci(48, 40, 32, 'thick') + tx(2, 78, 'V=0', 'start', 's') + `<circle cx="48" cy="40" r="2" fill="#111"/>` + q(66, 40, '+') + tx(66, 32, 'q', 'middle') + ln(48, 46, 66, 46, 'dash') + tx(57, 55, 'd', 'middle', 's') + q(108, 40, '-', true) + tx(108, 56, "q′", 'middle', 's') + tx(104, 30, 'R²/d', 'middle', 's'),
+      box: () => `<rect x="34" y="8" width="56" height="56" fill="none" stroke="#111" stroke-width="1.8"/>` + tx(62, 6, 'V₀', 'middle', 's') + tx(62, 76, 'V₀', 'middle', 's') + tx(30, 40, '0', 'end', 's') + tx(94, 40, '0', 'start', 's') + `<circle cx="62" cy="36" r="2" fill="#111"/>` + tx(66, 34, 'V₀/2?', 'start', 's'),
+      pill: () => hatchH(4, 116, 40, false).replace(/stroke-width="2"/, 'stroke-width="1.6"') + `<rect x="44" y="30" width="32" height="20" fill="none" stroke="#111" stroke-dasharray="3 2"/>` + arr(60, 30, 60, 6) + arr(60, 50, 60, 74) + tx(64, 12, 'E above', 'start', 's') + tx(64, 72, 'E below', 'start', 's') + tx(112, 36, 'σ', 'end'),
+      cavity: () => `<ellipse cx="60" cy="40" rx="54" ry="36" fill="#e3e7ee" stroke="#111" stroke-width="1.6"/><ellipse cx="54" cy="40" rx="22" ry="16" fill="#fff" stroke="#111"/>` + q(54, 40, '+') + tx(54, 32, 'q', 'middle', 's') + tx(54, 70, '−q on wall', 'middle', 's') + tx(116, 12, '+q', 'end', 's') + tx(96, 44, 'E=0', 'middle', 's'),
+    };
+    document.querySelectorAll('.fig[data-f]').forEach((el) => {
+      const f = F[el.dataset.f];
+      if (f) el.innerHTML = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">${f()}</svg>`;
+    });
+  })();
+
   document.addEventListener('DOMContentLoaded', function () {
     renderMathInElement(document.body, { delimiters: [{ left: '$', right: '$', display: false }], throwOnError: false });
     document.body.setAttribute('data-ready', '1');
