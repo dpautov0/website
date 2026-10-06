@@ -73,7 +73,10 @@
     };
     [...svg.children].forEach(addEl);
 
-    const labs = [...svg.querySelectorAll('foreignObject')].map((fo) => ({ fo, sp: fo.querySelector('div > span') }))
+    // labels sit in the HTML layer over the drawing (figlabels.js); positions are kept in SVG units in data-x/y
+    const lifted = window.FigLabels ? FigLabels.labels(svg) : [];
+    const labs = (lifted.length ? lifted.map((o) => ({ fo: o.el, sp: o.sp, html: true }))
+      : [...svg.querySelectorAll('foreignObject')].map((fo) => ({ fo, sp: fo.querySelector('div > span') })))
       .filter((o) => o.sp && o.sp.textContent.trim());
     const placed = [];
     let moved = false;
@@ -86,8 +89,8 @@
       else for (const c of CANDS) if (free(at(c[0], c[1]))) { best = c; break; }
       if (!best) best = [0, 0];
       if (best[0] || best[1]) {
-        L.fo.setAttribute('x', +L.fo.getAttribute('x') + best[0]);
-        L.fo.setAttribute('y', +L.fo.getAttribute('y') + best[1]);
+        if (L.html) { L.fo.dataset.x = +L.fo.dataset.x + best[0]; L.fo.dataset.y = +L.fo.dataset.y + best[1]; }
+        else { L.fo.setAttribute('x', +L.fo.getAttribute('x') + best[0]); L.fo.setAttribute('y', +L.fo.getAttribute('y') + best[1]); }
         moved = true;
       }
       placed.push(at(best[0], best[1]));
@@ -105,6 +108,7 @@
         if (wa) svg.setAttribute('width', Math.round(wa * (r - l) / oldW));
       }
     }
+    if (moved || placed.length) { if (window.FigLabels) FigLabels.relayout(svg); }
   }
 
   function declutter(root) {

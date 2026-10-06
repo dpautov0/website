@@ -143,6 +143,7 @@
   }
 
   function renderMath(el) {
+    if (window.FigLabels) window.FigLabels.lift(el);        // labels out of the SVG before KaTeX touches them
     if (window.renderMathInElement) {
       window.renderMathInElement(el, {
         delimiters: [{ left: '$$', right: '$$', display: true }, { left: '$', right: '$', display: false }],
@@ -153,13 +154,81 @@
     fitMath(el);
   }
 
-  // A display equation wider than the column is scaled down to fit (not below 70%); the rest still scrolls.
+  // On a phone, an equation chain too wide for the column is re-typeset as stacked lines: a new line at each
+  // top-level = (aligned on it), or at each \qquad between separate equations. Wide screens get the original back.
+  function stackTeX(tex) {
+    const at = [];                     // [index, kind, length] of top-level break points
+    let depth = 0;
+    for (let i = 0; i < tex.length; i++) {
+      const c = tex[i];
+      if (c === '\\') {
+        const m = /^\\([A-Za-z]+|.)/.exec(tex.slice(i));
+        const w = m[1];
+        if (w === 'left' || w === 'begin') depth++;
+        else if (w === 'right' || w === 'end') depth--;
+        else if (depth === 0 && w === 'qquad') at.push([i, 'q', m[0].length]);
+        else if (depth === 0 && w === 'approx') at.push([i, '=', m[0].length]);
+        i += m[0].length - 1;
+        continue;
+      }
+      if (c === '{') depth++;
+      else if (c === '}') depth--;
+      else if (c === '=' && depth === 0) at.push([i, '=', 1]);
+    }
+    const quads = at.filter((a) => a[1] === 'q');
+    const cut = (marks, keep) => {
+      const out = [];
+      let s = 0;
+      for (const [i, , n] of marks) { out.push(tex.slice(s, keep ? i : i)); s = keep ? i : i + n; }
+      out.push(tex.slice(s));
+      return out.map((t) => t.trim().replace(/^,|,$/g, '').trim()).filter(Boolean);
+    };
+    if (quads.length) {
+      const g = cut(quads, false);
+      return g.length > 1 ? `\\begin{gathered}${g.join('\\\\')}\\end{gathered}` : null;
+    }
+    const rel = at.filter((a) => a[1] === '=');
+    if (rel.length < 2) return null;
+    const parts = cut(rel, true);      // each part after the first starts with its = (or \approx)
+    return `\\begin{aligned}${parts[0]}&${parts.slice(1).join('\\\\&')}\\end{aligned}`;
+  }
+  function stackMath(d, narrow) {
+    if (!window.katex) return d;
+    const orig = d.dataset.tex;
+    let tex = null;
+    if (narrow && !orig) {
+      const src = (d.querySelector('annotation') || {}).textContent;
+      tex = src && stackTeX(src);
+      if (!tex) return d;
+    } else if (!narrow && orig) tex = orig;
+    else return d;
+    let html;
+    try { html = window.katex.renderToString(tex, { displayMode: true, macros: MACROS, throwOnError: true, strict: 'ignore' }); } catch (e) { return d; }
+    const t = document.createElement('div');
+    t.innerHTML = html;
+    const nd = t.firstChild;
+    if (narrow) nd.dataset.tex = (d.querySelector('annotation') || {}).textContent;
+    d.replaceWith(nd);
+    return nd;
+  }
+
+  // A display equation wider than the column is scaled down to fit (not below 70%, 60% on a phone); the rest still scrolls.
   function fitMath(el) {
+    const floor = window.innerWidth < 600 ? 0.6 : 0.7;
+    const narrow = window.innerWidth < 600;
     (el || document).querySelectorAll('.katex-display').forEach((d) => {
       if (!d.clientWidth) return;                     // hidden: fitted when revealed
       d.style.fontSize = '';
+      if (d.dataset.tex && !narrow) d = stackMath(d, false);
+      else if (narrow && d.scrollWidth > d.clientWidth * 1.01) d = stackMath(d, true);
       const over = d.scrollWidth / d.clientWidth;
-      if (over > 1.01) d.style.fontSize = `${Math.max(0.7, 1 / over) * 100}%`;
+      if (over > 1.01) d.style.fontSize = `${Math.max(floor, 1 / over) * 100}%`;
+    });
+    (el || document).querySelectorAll('.katex').forEach((k) => {
+      if (k.closest('.katex-display, .figov')) return;
+      k.classList.remove('kwide');
+      const host = k.parentElement && k.parentElement.closest('p, li, div, td, button');
+      if (host && host.clientWidth && k.getBoundingClientRect().width > host.clientWidth) k.classList.add('kwide');
     });
   }
   let fitTimer = null;

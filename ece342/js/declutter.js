@@ -42,11 +42,25 @@
     const ctm = svg.getScreenCTM();
     if (!ctm || !ctm.a) return;
     const toUser = (r) => ({ l: (r.left - ctm.e) / ctm.a, r: (r.right - ctm.e) / ctm.a, t: (r.top - ctm.f) / ctm.d, b: (r.bottom - ctm.f) / ctm.d });
-    const seg = ([x1, y1, x2, y2]) => ({ l: Math.min(x1, x2) - 1.2, r: Math.max(x1, x2) + 1.2, t: Math.min(y1, y2) - 1.2, b: Math.max(y1, y2) + 1.2 });
+    // A line is kept as a true segment (a slanted edge's bounding box would cover a triangle's whole inside).
+    const seg = ([x1, y1, x2, y2]) => ({ seg: [x1, y1, x2, y2] });
+    const segHits = (s, b) => {                    // does segment s cross box b (grown by 1.2)? Liang-Barsky clip
+      const B = { l: b.l - 1.2, r: b.r + 1.2, t: b.t - 1.2, b: b.b + 1.2 };
+      const [x1, y1, x2, y2] = s, dx = x2 - x1, dy = y2 - y1;
+      const P = [-dx, dx, -dy, dy], Q = [x1 - B.l, B.r - x1, y1 - B.t, B.b - y1];
+      let t0 = 0, t1 = 1;
+      for (let k = 0; k < 4; k++) {
+        if (Math.abs(P[k]) < 1e-12) { if (Q[k] < 0) return false; continue; }
+        const t = Q[k] / P[k];
+        if (P[k] < 0) { if (t > t1) return false; if (t > t0) t0 = t; } else { if (t < t0) return false; if (t < t1) t1 = t; }
+      }
+      return t1 - t0 > 1e-9;
+    };
     const obs = [];
     const addEl = (el) => {
       const tag = el.tagName.toLowerCase();
       if (tag === 'foreignobject') return;
+      if (el.classList && el.classList.contains('nodecl')) return;
       if (tag === 'g') { [...el.children].forEach(addEl); return; }
       if (tag === 'path' && !el.closest('[transform]')) { pathSegs(el.getAttribute('d') || '').forEach((s) => obs.push(seg(s))); return; }
       if (tag === 'rect' && !el.closest('[transform]')) {
@@ -59,27 +73,30 @@
     };
     [...svg.children].forEach(addEl);
 
-    const labs = [...svg.querySelectorAll('foreignObject')].map((fo) => ({ fo, sp: fo.querySelector('div > span') }))
+    // labels sit in the HTML layer over the drawing (figlabels.js); positions are kept in SVG units in data-x/y
+    const lifted = window.FigLabels ? FigLabels.labels(svg) : [];
+    const labs = (lifted.length ? lifted.map((o) => ({ fo: o.el, sp: o.sp, html: true }))
+      : [...svg.querySelectorAll('foreignObject')].map((fo) => ({ fo, sp: fo.querySelector('div > span') })))
       .filter((o) => o.sp && o.sp.textContent.trim());
     const placed = [];
     let moved = false;
     for (const L of labs) {
       const r0 = toUser(L.sp.getBoundingClientRect());
       const at = (dx, dy) => ({ l: r0.l + dx, r: r0.r + dx, t: r0.t + dy, b: r0.b + dy });
-      const free = (b) => !obs.some((o) => hit(b, o)) && !placed.some((p) => hit(b, p, 0.5));
+      const free = (b) => !obs.some((o) => (o.seg ? segHits(o.seg, b) : hit(b, o))) && !placed.some((p) => hit(b, p, 0.5));
       let best = null;
       if (free(at(0, 0))) best = [0, 0];
       else for (const c of CANDS) if (free(at(c[0], c[1]))) { best = c; break; }
       if (!best) best = [0, 0];
       if (best[0] || best[1]) {
-        L.fo.setAttribute('x', +L.fo.getAttribute('x') + best[0]);
-        L.fo.setAttribute('y', +L.fo.getAttribute('y') + best[1]);
+        if (L.html) { L.fo.dataset.x = +L.fo.dataset.x + best[0]; L.fo.dataset.y = +L.fo.dataset.y + best[1]; }
+        else { L.fo.setAttribute('x', +L.fo.getAttribute('x') + best[0]); L.fo.setAttribute('y', +L.fo.getAttribute('y') + best[1]); }
         moved = true;
       }
       placed.push(at(best[0], best[1]));
     }
-    // grow the view box if a label moved past the edge
-    if (moved) {
+    // grow the view box if any label (moved or not) pokes past the edge: real KaTeX widths beat the estimate
+    if (placed.length) {
       const vb = svg.viewBox.baseVal;
       let { x, y, width: w, height: h } = vb;
       const l = Math.min(x, ...placed.map((p) => p.l - 3)), t = Math.min(y, ...placed.map((p) => p.t - 3));
@@ -91,6 +108,7 @@
         if (wa) svg.setAttribute('width', Math.round(wa * (r - l) / oldW));
       }
     }
+    if (moved || placed.length) { if (window.FigLabels) FigLabels.relayout(svg); }
   }
 
   function declutter(root) {

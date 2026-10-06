@@ -360,3 +360,50 @@ math-field.mf::part(virtual-keyboard-toggle) { color: var(--dim); }
 .extras h2 { font-size: 15px; color: var(--dim); margin: 0 0 6px; }
 .extras ul { margin: 0; padding-left: 18px; }
 .extras li { margin: 3px 0; }
+
+/* ---------- figure labels: an HTML layer over the drawing (figlabels.js) ---------- */
+.figbox { position: relative; max-width: 100%; margin: 0 auto; }
+.fig .figbox > svg, .figbox > svg { display: block; width: 100%; max-width: none; height: auto; margin: 0; }
+.figov { position: absolute; left: 0; top: 0; transform-origin: 0 0; pointer-events: none; }
+.figov .flab { position: absolute; }
+.figov .lbl .katex, .figov .lbl .ptxt { text-shadow: 0 0 2px var(--bg), 0 0 2px var(--bg), 0 0 3px var(--bg), 0 0 4px var(--bg); }
+.figrow > div > .figbox { margin: 0 auto; }
+
+/* ---------- phones ---------- */
+.part > *, .opts, .opt, .mc-q { min-width: 0; }
+.opt, .mc-q, .p-q, .read, .p-sol, .hint-item, .call, .p-fb { overflow-wrap: anywhere; }
+.widget select, .widget input, .widget canvas { max-width: 100%; }
+.katex-display { -webkit-overflow-scrolling: touch; }
+@media (max-width: 600px) {
+  .topbar { gap: 10px; padding-inline: 10px; }
+  .top-link, .top-link:visited { font-size: 13.5px; }
+  .brand, .brand:visited { font-size: 14px; gap: 6px; }
+  .read, .p-q, .p-sol, .hint-item, .call, .opt, .mc-q, .pp { font-size: 15.5px; }
+  .read ul, .read ol, .p-q ul, .p-q ol, .p-sol ul, .p-sol ol, .call ul, .call ol { padding-left: 18px; }
+  .call { padding-left: 10px; }
+  .opt { padding: 9px 10px; }                         /* a finger-sized target */
+  .btn, .btn:visited { padding: 7px 12px; }
+  .part input { width: min(150px, 100%); }
+  math-field.mf { min-width: min(150px, 100%); }
+  .l-nav .btn { max-width: 100%; }
+  table { font-size: 13.5px; }
+  th, td { padding-right: 8px; }
+}
+@media (max-width: 380px) {
+  .top-progress #top-pct { display: none; }
+}
+
+/* a wrapping column flexbox sizes its line to the widest item: keep multiple choice to one column line */
+.part.mc { flex-wrap: nowrap; }
+/* label boxes are larger than their text; the drawing's box clips them as the SVG used to */
+.figbox { overflow: hidden; }
+/* inline math too long for the line (a list of numbers) scrolls inside itself */
+.katex.kwide { display: inline-block; max-width: 100%; overflow-x: auto; overflow-y: hidden; vertical-align: middle; }
+.widget .w-row label { flex-wrap: wrap; max-width: 100%; }
+/* top bar on a phone: one line, short names */
+.brand, .top-link { white-space: nowrap; }
+.top-link .narrow { display: none; }
+@media (max-width: 480px) {
+  .top-link .wide { display: none; }
+  .top-link .narrow { display: inline; }
+}
