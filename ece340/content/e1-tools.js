@@ -57,7 +57,7 @@
 
             $$v_d = \mu\mathscr{E} \qquad \mu = \frac{q\bar t}{m^*} \qquad J = q(n\mu_n + p\mu_p)\mathscr{E} = \sigma\mathscr{E} \qquad \rho = \frac1\sigma \qquad R = \frac{\rho L}{A}$$
             $$\frac1\mu = \frac{1}{\mu_L} + \frac{1}{\mu_I} \qquad \mu_L \propto T^{-3/2} \qquad \mu_I \propto \frac{T^{3/2}}{N_d^+ + N_a^-}$$
-            Velocity saturates near $10^7$ cm/s at high field. Hall: $p_0 = \dfrac{I_xB_z}{qtV_{AB}}$, $\mu_p = \dfrac{1}{q\rho p_0}$.
+            Velocity saturates near $10^7$ cm/s at high field. Hall: $p_0 = \dfrac{I_xB_z}{qtV_{AB}}$, $\mu_p = \dfrac{1}{q\rho p_0}$ ($B$ in Wb/cm² with $t$ in cm: $1\,\text{T} = 10^{-4}$ Wb/cm²).
 
             ### Equilibrium Fermi level (3.5)
 
@@ -73,7 +73,8 @@
             ### Diffusion and continuity (4.4)
 
             $$J_n = q\mu_nn\mathscr{E} + qD_n\frac{dn}{dx} \qquad J_p = q\mu_pp\mathscr{E} - qD_p\frac{dp}{dx} \qquad \frac{D}{\mu} = \frac{kT}{q}$$
-            $$\text{equilibrium, graded: } \mathscr{E} = -\frac{kT}{q}\frac1n\frac{dn}{dx} \;\;(N_0e^{-x/L}:\ \mathscr{E} = \tfrac{kT}{qL}) \qquad J_n = \mu_nn\frac{dF_n}{dx}$$
+            $$\text{graded, equilibrium: } \mathscr{E} = -\frac{kT}{q}\frac1n\frac{dn}{dx} = +\frac{kT}{q}\frac1p\frac{dp}{dx} \qquad N_d = N_0e^{-x/L}:\ \mathscr{E} = +\tfrac{kT}{qL} \qquad N_a = N_0e^{-x/L}:\ \mathscr{E} = -\tfrac{kT}{qL}$$
+            $$J_n = \mu_nn\frac{dF_n}{dx} \qquad J_p = \mu_pp\frac{dF_p}{dx}$$
             $$\frac{\partial p}{\partial t} = -\frac1q\frac{\partial J_p}{\partial x} - \frac{\delta p}{\tau_p} \qquad \frac{\partial\,\delta p}{\partial t} = D_p\frac{\partial^2\delta p}{\partial x^2} - \frac{\delta p}{\tau_p}$$
             $$L_p = \sqrt{D_p\tau_p} \qquad \delta p(x) = \Delta p\,e^{-x/L_p} \qquad J_p(x) = \frac{qD_p}{L_p}\Delta p\,e^{-x/L_p} \qquad \text{short bar: } J_p = \frac{qD_p\Delta p}{W}$$
           `),

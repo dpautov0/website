@@ -44,7 +44,7 @@
 
             A photon can break a bond and make an electron–hole pair only if it brings at least the gap energy:
             $$h\nu \ge E_g \qquad E\,[\text{eV}] = \frac{1.24}{\lambda\,[\mu\text{m}]}$$
-            Below the gap the material is **transparent** (Si is transparent beyond 1.12 μm, which is why fiber links use 1.3–1.55 μm). Above it, light is absorbed; any energy beyond $E_g$ goes to the electron (or hole) as kinetic energy and is handed to the lattice as **heat** within picoseconds (thermalization). The pair then lives on near the band edges until it recombines, which in a direct-gap material can emit a photon of energy $\approx E_g$.
+            Below the gap the material is **transparent** (Si is transparent beyond 1.12 μm, so Si detectors are blind to the 1.3–1.55 μm fiber-optic bands). Above it, light is absorbed; any energy beyond $E_g$ goes to the electron (or hole) as kinetic energy and is handed to the lattice as **heat** within picoseconds (thermalization). The pair then lives on near the band edges until it recombines, which in a direct-gap material can emit a photon of energy $\approx E_g$.
 
             [[fig:abs]]
 
@@ -243,7 +243,7 @@
 
             [[fig:qf]]
 
-            Low-level light on n-type material: the electrons barely change ($n_0 + \delta n \approx n_0$), so $F_n$ sits essentially where $E_F$ was. The holes rise by many orders of magnitude, so $F_p$ drops far below $E_F$, toward $E_i$. **The minority quasi-Fermi level is the one that moves.**
+            Low-level light on n-type material: the electrons barely change ($n_0 + \delta n \approx n_0$), so $F_n$ sits essentially where $E_F$ was. The holes rise by many orders of magnitude, so $F_p$ drops far below $E_F$, toward and often past $E_i$. **The minority quasi-Fermi level is the one that moves.**
 
             ### Photoconductivity
 

@@ -113,7 +113,7 @@
           q: md`Si has $n_i = 1.0\times10^{10}\,\text{cm}^{-3}$ at 300 K and $E_g = 1.11$ eV (take it constant). Find $n_i$ at 600 K. Then, for a sample with $N_d = 1.0\times10^{15}\,\text{cm}^{-3}$ at 600 K, find $n_0$.`,
           parts: [{ lbl: md`n_i(600\,\text{K})`, ans: 1.294e15, unit: 'cm^{-3}', tol: { rel: 0.03 } }, { lbl: md`n_0`, ans: 1.887e15, unit: 'cm^{-3}', tol: { rel: 0.03 } }],
           hints: [md`$\dfrac{n_i(600)}{n_i(300)} = 2^{3/2}\exp\!\left[-\dfrac{1.11}{2(8.62\times10^{-5})}\left(\dfrac{1}{600} - \dfrac{1}{300}\right)\right]$.`, md`$n_i$ is now bigger than $N_d$: use the full neutrality formula.`],
-          sol: md`$$n_i(600) = \left(10^{10}\,\text{cm}^{-3}\right)(2)^{3/2}\exp\!\left[\frac{1.11\,\text{eV}}{2\left(8.62\times10^{-5}\,\text{eV/K}\right)}\cdot\frac{1}{600\,\text{K}}\right] = \left(10^{10}\right)(2.83)(4.57\times10^{4}) = 1.29\times10^{15}\,\text{cm}^{-3}$$ $$n_0 = \frac{N_d}{2} + \sqrt{\frac{N_d^2}{4} + n_i^2} = 5.0\times10^{14} + \sqrt{2.5\times10^{29} + 1.67\times10^{30}}\,\text{cm}^{-3} = 1.89\times10^{15}\,\text{cm}^{-3}$$ The sample is close to intrinsic: $p_0 = n_i^2/n_0 = 8.9\times10^{14}\,\text{cm}^{-3}$.`,
+          sol: md`$$n_i(600) = \left(10^{10}\,\text{cm}^{-3}\right)\left(\frac{600}{300}\right)^{3/2}\exp\!\left[-\frac{1.11\,\text{eV}}{2\left(8.62\times10^{-5}\,\text{eV/K}\right)}\left(\frac{1}{600\,\text{K}} - \frac{1}{300\,\text{K}}\right)\right] = \left(10^{10}\right)(2.83)(4.57\times10^{4}) = 1.29\times10^{15}\,\text{cm}^{-3}$$ $$n_0 = \frac{N_d}{2} + \sqrt{\frac{N_d^2}{4} + n_i^2} = 5.0\times10^{14} + \sqrt{2.5\times10^{29} + 1.67\times10^{30}}\,\text{cm}^{-3} = 1.89\times10^{15}\,\text{cm}^{-3}$$ The sample is close to intrinsic: $p_0 = n_i^2/n_0 = 8.9\times10^{14}\,\text{cm}^{-3}$.`,
         }),
         Q(md`A Si sample has $N_d = N_a = 10^{16}\,\text{cm}^{-3}$ at 300 K. Compared with pure Si, it has…`,
           ['the same $n_0$ and $p_0$ ($= n_i$), but lower mobility', 'twice as many electrons', 'no carriers at all', 'the same carriers and the same mobility'], 0,
@@ -183,7 +183,7 @@
 
           **High fields.** Above roughly $10^3$–$10^4$ V/cm, carriers gain energy faster than they can lose it and $v_d$ stops growing: it **saturates** near $10^7$ cm/s in Si. Then $\mu$ is no longer constant and $J$ is no longer proportional to $\mathscr{E}$ (Ohm's law fails).
 
-          **Hall effect (3.4.5).** A magnetic field $B_z$ across a current $I_x$ pushes carriers sideways until a Hall voltage balances it. Its sign tells the carrier type, and its size gives the density: $p_0 = \dfrac{I_xB_z}{q\,t\,V_{AB}}$ ($t$ the thickness along $B$); then $\mu_p = \dfrac{1}{q\rho p_0}$.
+          **Hall effect (3.4.5).** A magnetic field $B_z$ across a current $I_x$ pushes carriers sideways until a Hall voltage balances it. Its sign tells the carrier type, and its size gives the density: $p_0 = \dfrac{I_xB_z}{q\,t\,V_{AB}}$ ($t$ the thickness along $B$); then $\mu_p = \dfrac{1}{q\rho p_0}$. Units trap: with $t$ in cm, $B$ must be in Wb/cm² ($1\,\text{T} = 10^{-4}\,\text{Wb/cm}^2$).
         `, { bar: { svg: BD.bar({ label: 'n\\text{-Si}' }), cap: 'Current I flows from the + terminal through the bar; the field points the same way; electrons drift the other way.' } }),
         R(md`
           ### Worked example

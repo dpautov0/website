@@ -31,6 +31,7 @@
     const sp = m === 'GaAs' ? (donor ? pick(['Se', 'Te']) : pick(['Zn', 'Be'])) : (donor ? pick(['P', 'As', 'Sb']) : pick(['B', 'Al', 'Ga']));
     const lo = Math.max(14, Math.ceil(Math.log10(M.ni * 1000)));
     const N = dec(lo, 17);
+    if (0.0259 * ln((donor ? M.Nc : M.Nv) / N) < 3 * 0.0259) return GENS.semi_doped();   // degenerate: n0p0 = ni² fails
     const maj = N, min = M.ni * M.ni / N;
     const [mj, mn] = donor ? ['n_0', 'p_0'] : ['p_0', 'n_0'];
     return {
@@ -149,6 +150,7 @@
     }
     const lo = Math.max(13, Math.ceil(Math.log10(M.ni * 1000)));
     const Nn = dec(lo, 18), d = 0.0259 * ln(Nn / M.ni) * (donor ? 1 : -1);
+    if (0.0259 * ln((donor ? M.Nc : M.Nv) / Nn) < 3 * 0.0259) return GENS.semi_ef_from_n();   // E_F within 3kT of a band: Boltzmann fails
     return {
       title: 'Fermi level from the doping',
       q: md`${m} at 300 K ($n_i = ${p(M.ni)}${CM3}$, $kT = 0.0259$ eV) has ${donor ? `$N_d = ${p(Nn)}${CM3}$` : `$N_a = ${p(Nn)}${CM3}$`}. Find $E_F - E_i$ (positive if $E_F$ is above $E_i$).`,
@@ -179,12 +181,12 @@
       };
     }
     const m = pick(['Si', 'Si', 'GaAs', 'Ge']), M = S.mat[m];
-    const d = +(U.rand(0.08, 0.45) * pick([1, -1])).toFixed(2);
+    const d = +(U.rand(0.08, Math.min(0.45, M.Eg / 2 - 0.1)) * pick([1, -1])).toFixed(2);   // E_F stays >3kT from both band edges
     const n0 = M.ni * exp(d / 0.0259), p0 = M.ni * exp(-d / 0.0259);
     return {
       title: 'Carriers from the Fermi level',
       q: md`${m} at 300 K ($n_i = ${p(M.ni)}${CM3}$, $kT = 0.0259$ eV): $E_F$ is $${Math.abs(d)}$ eV ${d > 0 ? 'above' : 'below'} $E_i$. Find $n_0$ and $p_0$.`,
-      figHtml: bandFig(M.Eg, M.Eg / 2 + d * (M.Eg / 2 > Math.abs(d) + 0.05 ? 1 : 0.8), { dims: [{ x: 0.2, a: 'EF', b: 'Ei', tex: `${Math.abs(d)}\\,\\text{eV}`, at: 'r' }] }),
+      figHtml: bandFig(M.Eg, M.Eg / 2 + d, { dims: [{ x: 0.2, a: 'EF', b: 'Ei', tex: `${Math.abs(d)}\\,\\text{eV}`, at: 'r' }] }),
       parts: [T({ lbl: 'n_0', ans: n0, unit: 'cm^{-3}', tol: { rel: 0.02 } }), T({ lbl: 'p_0', ans: p0, unit: 'cm^{-3}', tol: { rel: 0.02 } })],
       hints: ['$n_0 = n_ie^{(E_F - E_i)/kT}$, $p_0 = n_ie^{(E_i - E_F)/kT}$.', `Here $E_F - E_i = ${d}$ eV.`],
       sol: G4('$n_0 = n_i\\,e^{(E_F - E_i)/kT}$, $\\;p_0 = n_i\\,e^{(E_i - E_F)/kT}$.', `$E_F - E_i = ${d}$ eV.`,
@@ -219,7 +221,7 @@
         { lbl: 'Type', mc: ['n-type', 'p-type'], a: ntype ? 0 : 1, why: ntype ? [null, 'There are more donors than acceptors.'] : ['There are more acceptors than donors.', null] },
         T({ lbl: 'n_0', ans: n0, unit: 'cm^{-3}' }), T({ lbl: 'p_0', ans: p0, unit: 'cm^{-3}' }),
       ],
-      hints: ['Space-charge neutrality: $p_0 + N_d = n_0 + N_a$, with $n_0p_0 = n_i^2$.', full ? `$|N_d - N_a| = ${p(net)}$ is **not** much bigger than $n_i$: use the full quadratic.` : `$|N_d - N_a| = ${p(net)} \\gg n_i$, so the majority is just the net doping.`],
+      hints: ['Space-charge neutrality: $p_0 + N_d = n_0 + N_a$, with $n_0p_0 = n_i^2$.', full ? `$|N_d - N_a| = ${p(net)}$ is within about 30× of $n_i$, so keep $n_i$: use the full quadratic.` : `$|N_d - N_a| = ${p(net)} \\gg n_i$, so the majority is just the net doping.`],
       sol: G4('$p_0 + N_d^+ = n_0 + N_a^-$ and $n_0p_0 = n_i^2$.',
         full ? `$$${mj} = \\frac{${D}}{2} + \\sqrt{\\left(\\frac{${D}}{2}\\right)^2 + n_i^2}, \\qquad ${mn} = \\frac{n_i^2}{${mj}}$$` : `$${D} \\gg n_i$: $\\;${mj} \\approx ${D}$, $\\;${mn} = n_i^2/${mj}$.`,
         full ? `$$${mj} = ${p(net / 2)}${CM3} + \\sqrt{\\left(${p(net / 2)}${CM3}\\right)^2 + \\left(${p(ni)}${CM3}\\right)^2}$$ $$${mn} = \\frac{\\left(${p(ni)}${CM3}\\right)^2}{${f(ntype ? n0 : p0)}${CM3}}$$`
@@ -260,7 +262,7 @@
     const S1 = [
       { q: md`Two Si samples at 300 K: A has $N_d = ${lo}$, B has $N_d = ${hi}\,\text{cm}^{-3}$. Which has the higher electron mobility?`, o: ['A', 'B', 'The same', 'Can\'t tell without the temperature dependence'], a: 0, w: [null, 'More ionized donors scatter more: B is lower.', 'Mobility depends on doping through impurity scattering.', 'At fixed $T$, more ionized impurities always lower $\\mu$.'], s: md`Ionized-impurity scattering grows with $N_I$; $\mu_I \propto 1/N_I$.` },
       { q: md`Lightly doped Si ($N_d = ${lo}\,\text{cm}^{-3}$) is heated from 300 K to 400 K. The electron mobility…`, o: ['decreases (lattice scattering grows)', 'increases (impurity scattering fades)', 'stays the same', 'doubles'], a: 0, w: [null, 'At light doping impurity scattering is already negligible; lattice scattering rules.', 'Phonon scattering depends strongly on $T$.', 'No: $\\mu_L \\propto T^{-3/2}$ gives a factor of $(4/3)^{-3/2} = 0.65$.'], s: md`$\mu \approx \mu_L \propto T^{-3/2}$.` },
-      { q: md`Heavily doped Si ($N_d = ${hi}\,\text{cm}^{-3}$) is cooled from 200 K to 50 K. The mobility…`, o: ['decreases (ionized-impurity scattering takes over)', 'increases (less lattice scattering)', 'stays the same', 'goes to zero'], a: 0, w: [null, 'True for light doping; with this many ions, slow cold carriers are scattered strongly by impurities.', 'Both mechanisms depend on $T$.', 'It falls but stays finite (until freeze-out, carriers still move).'], s: md`$\mu_I \propto T^{3/2}/N_I$ shrinks on cooling and is the smaller term at low $T$ and high $N_I$.` },
+      { q: md`Heavily doped Si ($N_d = ${pick(['10^{17}', '3\times10^{17}', '10^{18}'])}\,\text{cm}^{-3}$) is cooled from 200 K to 50 K. The mobility…`, o: ['decreases (ionized-impurity scattering takes over)', 'increases (less lattice scattering)', 'stays the same', 'goes to zero'], a: 0, w: [null, 'True for light doping; with this many ions, slow cold carriers are scattered strongly by impurities.', 'Both mechanisms depend on $T$.', 'Mobility gets smaller but not zero; it describes how freely the remaining carriers move.'], s: md`$\mu_I \propto T^{3/2}/N_I$ shrinks on cooling and is the smaller term at low $T$ and high $N_I$.` },
       { q: md`n-type Si with $N_d = ${hi}$ gets an extra $0.9N_d$ of acceptors. Compared with before, $n_0$ and $\mu_n$…`, o: ['$n_0$ falls tenfold and $\\mu_n$ falls', '$n_0$ falls and $\\mu_n$ rises', 'both unchanged', '$n_0$ unchanged, $\\mu_n$ falls'], a: 0, w: [null, 'Compensation removes carriers but adds scattering ions: $N_I$ nearly doubles.', 'Both change.', 'The acceptors capture 90% of the electrons.'], s: md`$n_0 = N_d - N_a = 0.1N_d$; $N_I = N_d + N_a = 1.9N_d$.` },
       { q: md`The field in a Si sample is raised from $10^2$ to $10^5$ V/cm. The electron drift velocity…`, o: ['rises about 1000× ', 'saturates near $10^7$ cm/s, far less than 1000×', 'falls', 'is unchanged'], a: 1, w: ['Only if $\\mu$ stayed constant; at high fields it doesn\'t.', null, 'It doesn\'t fall in Si.', 'It certainly increases at first.'], s: md`At $10^2$ V/cm, $v_d \approx 1.35\times10^5$ cm/s; it saturates near $10^7$ cm/s.` },
       { q: md`At low temperature in a heavily doped sample, which scattering mechanism limits the mobility?`, o: ['ionized-impurity scattering', 'lattice (phonon) scattering', 'carrier–carrier scattering', 'surface scattering'], a: 0, w: [null, 'Phonons are frozen out at low $T$.', 'Minor.', 'Not in bulk.'], s: md`$\mu_I \propto T^{3/2}/N_I$ is small at low $T$ and high $N_I$.` },
@@ -361,7 +363,7 @@
       title: 'Drift and diffusion components',
       q: md`At 300 K the ${car === 'n' ? 'electron' : 'hole'} concentration in a region is ${desc}, and there is a uniform field $\mathscr{E} = ${Ef}$ V/cm (positive along $+x$). With $\mu_${car} = ${mu}\,\text{cm}^2/\text{V·s}$, find at $x = ${+(x * 1e4).toPrecision(3)}\,\mu$m the drift current density, the diffusion current density, and their sum (signs: $+$ along $+x$).`,
       figHtml: BD.prof({ w: 280, h: 160, x: [0, shape === 'exp' ? 2.2 : 2], y: [0, 1.1], xl: 'x', yl: `${car}(x)`, curves: [{ f: prof }], vlines: [[x / Lc, `x = ${+(x * 1e4).toPrecision(3)}\\,\\mu\\text{m}`]] }),
-      parts: [T({ lbl: `J_${car}^{\\text{drift}}`, ans: Jdr, unit: 'A/cm^2' }), T({ lbl: `J_${car}^{\\text{diff}}`, ans: Jdf, unit: 'A/cm^2' }), T({ lbl: `J_${car}`, ans: Jdr + Jdf, unit: 'A/cm^2', tol: { rel: 0.02, abs: 1e-3 * Math.max(Math.abs(Jdr), Math.abs(Jdf)) } })],
+      parts: [T({ lbl: `J_${car}^{\\text{drift}}`, ans: Jdr, unit: 'A/cm^2' }), T({ lbl: `J_${car}^{\\text{diff}}`, ans: Jdf, unit: 'A/cm^2' }), T({ lbl: `J_${car}`, ans: Jdr + Jdf, unit: 'A/cm^2', tol: { rel: 0.02, abs: 5e-3 * Math.max(Math.abs(Jdr), Math.abs(Jdf)) } })],      // parts rounded to 3 s.f. may nearly cancel
       hints: [`$D_${car} = (kT/q)\\mu_${car}$.`, car === 'n' ? '$J_n = q\\mu_nn\\mathscr{E} + qD_n\\,dn/dx$.' : '$J_p = q\\mu_pp\\mathscr{E} - qD_p\\,dp/dx$.', `At the point: $${car} = ${f(c)}${CM3}$, $d${car}/dx = ${f(dc)}\\,\\text{cm}^{-4}$.`],
       sol: G4(car === 'n' ? '$J_n = q\\mu_nn\\mathscr{E} + qD_n\\dfrac{dn}{dx}$, $D_n = \\dfrac{kT}{q}\\mu_n$.' : '$J_p = q\\mu_pp\\mathscr{E} - qD_p\\dfrac{dp}{dx}$, $D_p = \\dfrac{kT}{q}\\mu_p$.',
         `$D_${car} = (0.0259\\,\\text{V})(${mu}${CMS}) = ${f(D)}\\,\\text{cm}^2/\\text{s}$; at the point $${car} = ${f(c)}${CM3}$, $\\dfrac{d${car}}{dx} = ${f(dc)}\\,\\text{cm}^{-4}$.`,
@@ -414,7 +416,7 @@
 
   GENS.semi_decay_low = () => {
     const v = pick(['ar', 'ar', 'tau']);
-    const ntype = Math.random() < 0.5, maj = dec(15, 17), car = ntype ? 'p' : 'n', min = ntype ? '\\delta p' : '\\delta n';
+    const ntype = Math.random() < 0.5, maj = ntype ? Math.min(dec(15, 17), 1e17) : dec(15, 17), car = ntype ? 'p' : 'n', min = ntype ? '\\delta p' : '\\delta n';
     const D0 = maj * pick([1e-4, 1e-3, 5e-3, 1e-2]);
     if (v === 'tau') {
       const tau = pick([0.5, 1, 2, 5, 10]) * 1e-6, target = D0 * pick([0.5, 0.1, 0.01, 0.001]);

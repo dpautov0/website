@@ -64,6 +64,8 @@
 
           For an exponential profile $n(x) \approx N_d(x) = N_0e^{-x/L}$, $\frac1n\frac{dn}{dx} = -\frac1L$, so the field is **uniform**: $\mathscr{E} = \dfrac{kT}{qL}$, pointing toward the lightly doped side.
 
+          **p-type** works the same way with $J_p = 0$: $\mathscr{E} = +\dfrac{kT}{q}\dfrac1p\dfrac{dp}{dx}$, so $N_a = N_0e^{-x/L}$ gives $\mathscr{E} = -\dfrac{kT}{qL}$, pointing toward the **heavier** doping (it holds the holes back there).
+
           In the band diagram: $E_F$ is flat (Topic 7), $E_c - E_F$ grows where the doping falls, so the bands tilt; the field is the slope, $\mathscr{E} = \dfrac{1}{q}\dfrac{dE_c}{dx}$. Electrons roll down the band slope (toward the heavy side) by drift exactly as fast as they diffuse up it.
 
           The same idea out of equilibrium: $J_n = \mu_n n\,\dfrac{dF_n}{dx}$ and $J_p = \mu_p p\,\dfrac{dF_p}{dx}$. A carrier's total current is zero exactly when its quasi-Fermi level is flat.
@@ -91,7 +93,7 @@
             - Using $kT$ in eV where $kT/q$ in volts is wanted: numerically the same 0.0259, but the units must read V.
             - Gradients with $x$ in μm and $D$ in cm²/s: convert $x$ to cm.
             - Saying "no current, so no field" in a graded sample: there is a field; drift and diffusion cancel.
-            - Field direction: it points from heavy to light doping for n-type (it holds the electrons back on the heavy side).
+            - Field direction: n-type, it points from heavy to light doping (holding electrons back on the heavy side); p-type, from light to heavy (holding holes back).
 
           ### Check questions
         `),
