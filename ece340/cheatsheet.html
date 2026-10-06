@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>ECE 340 Cheat Sheet</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/contrib/auto-render.min.js"></script>
+<style>
+  :root { --ink: #111; --head: #1d4f91; --rule: #b9c3cf; --soft: #5a6470; --paper: #fff; --ex: #f3f6fa; --red: #a4453b; }
+  @page { size: letter; margin: 0.26in; }
+  * { box-sizing: border-box; }
+  html, body { background: var(--paper); color: var(--ink); margin: 0; }
+  body { font: 10.4pt/1.27 "Segoe UI", Arial, sans-serif; }
+  .page { width: 7.98in; margin: 0 auto; }
+  .page + .page { break-before: page; }
+  .top { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1.2px solid var(--ink); margin-bottom: 3px; padding-bottom: 1px; }
+  .top b { font-size: 9.5pt; }
+  .top span { color: var(--soft); }
+  .cols { column-count: 3; column-gap: 9px; column-rule: 0.6px solid var(--rule); }
+  section { break-inside: avoid; margin: 0 0 4px; }
+  section.ex { background: var(--ex); padding: 1px 3px 2px; border-radius: 2px; }
+  h2 { font-size: 9pt; margin: 0 0 1px; color: var(--head); border-bottom: 0.6px solid var(--rule); }
+  p { margin: 0 0 1.4px; }
+  ul { margin: 0 0 1.4px; padding: 0; list-style: none; }
+  li { margin: 0 0 0.8px; padding-left: 7px; position: relative; }
+  li::before { content: "\2022"; position: absolute; left: 0; color: var(--soft); }
+  .t { color: var(--red); font-weight: 600; }
+  .katex { font-size: 1.0em; }
+  .fig { float: right; width: 116px; margin: 1px 0 2px 5px; }
+  .fig svg { display: block; width: 100%; height: auto; }
+  .fig svg text { font: italic 10px "Times New Roman", serif; fill: #111; }
+  .fig svg text.s { font-size: 9px; }
+  table { border-collapse: collapse; width: 100%; margin: 1px 0 2px; }
+  td, th { border-bottom: 0.5px solid var(--rule); padding: 0 2px; text-align: left; font-weight: 400; }
+  th { color: var(--soft); }
+  @media screen { body { padding: 16px; } .page { max-width: 100%; margin-bottom: 28px; } .page + .page { border-top: 2px dashed var(--rule); padding-top: 12px; } }
+  @media screen and (max-width: 760px) { body { padding: 10px; font-size: 10.5pt; } .cols { column-count: 1; } .fig { width: 130px; } .top { flex-direction: column; } }
+</style>
+</head>
+<body>
+
+<!-- ============================== FRONT: most important first ============================== -->
+<div class="page">
+<div class="top"><b>ECE 340 · Exam 1 · FRONT (most important first)</b><span>$kT = 0.0259$ eV · $q = 1.6\times10^{-19}$ C · Si $n_i = 10^{10}\,\text{cm}^{-3}$ · cm, not m</span></div>
+<div class="cols">
+
+<section><h2>1 · Carriers at equilibrium</h2><span class="fig" data-f="nband"></span>
+<ul>
+<li>$n_0p_0 = n_i^2$ always at equilibrium. Majority = doping; minority $= n_i^2/\text{majority}$.</li>
+<li>$n_0 = n_ie^{(E_F - E_i)/kT}$, $p_0 = n_ie^{(E_i - E_F)/kT}$.</li>
+<li>$E_F - E_i = kT\ln\frac{n_0}{n_i}$ (<b>ln</b>). ×10 in $n_0$ → $E_F$ up 0.0596 eV.</li>
+<li>$n_0 = N_ce^{-(E_c - E_F)/kT}$, $p_0 = N_ve^{-(E_F - E_v)/kT}$. Si: $N_c = 2.8\times10^{19}$, $N_v = 1.04\times10^{19}$.</li>
+<li>$n_i = \sqrt{N_cN_v}e^{-E_g/2kT}$; $N_c \propto T^{3/2}$. Valid if $E_F$ is >3kT from both band edges.</li>
+<li>Donors: col. V (P, As, Sb). Acceptors: col. III (B, Al, Ga). All ionized at 300 K.</li>
+</ul></section>
+
+<section><h2>2 · Fermi function</h2><span class="fig" data-f="fermi"></span>
+<ul>
+<li>$f(E) = \frac{1}{1 + e^{(E - E_F)/kT}}$: probability a state is full. Empty: $1 - f$.</li>
+<li>$f(E_F) = \frac12$ at every $T$. $T = 0$: step.</li>
+<li>Symmetric: full at $E_F + \Delta$ = empty at $E_F - \Delta$.</li>
+<li>$E - E_F > 3kT$: $f \approx e^{-(E - E_F)/kT}$.</li>
+</ul></section>
+
+<section><h2>3 · Compensation, neutrality, temperature</h2><span class="fig" data-f="temp"></span>
+<ul>
+<li>$p_0 + N_d^+ = n_0 + N_a^-$ → $n_0 = \frac{N_d - N_a}{2} + \sqrt{\left(\frac{N_d - N_a}{2}\right)^2 + n_i^2}$.</li>
+<li>$|N_d - N_a| \gg n_i$: $n_0 = N_d - N_a$. <span class="t">Else (Ge, hot Si, $N_d \approx N_a$) use the root.</span></li>
+<li>$\frac{n_i(T_2)}{n_i(T_1)} = \left(\frac{T_2}{T_1}\right)^{3/2}e^{-\frac{E_g}{2k}\left(\frac1{T_2} - \frac1{T_1}\right)}$, $k = 8.62\times10^{-5}$ eV/K.</li>
+<li>Freeze-out (cold, $n_0 < N_d$) → extrinsic ($n_0 = N_d$) → intrinsic (hot, $n_0 \to n_i$).</li>
+</ul></section>
+
+<section><h2>4 · Drift, conductivity, resistance</h2><span class="fig" data-f="bar"></span>
+<ul>
+<li>$v_d = \mu\mathscr{E}$; $J = q(n\mu_n + p\mu_p)\mathscr{E} = \sigma\mathscr{E}$; $\rho = 1/\sigma$; $R = \rho L/A$.</li>
+<li>Both carriers' currents point along $\mathscr{E}$: they add.</li>
+<li>$\frac1\mu = \frac1{\mu_L} + \frac1{\mu_I}$; $\mu_L \propto T^{-3/2}$; $\mu_I \propto T^{3/2}/(N_d + N_a)$.</li>
+<li>Light doping: $\mu$ falls with $T$. Heavy: rises then falls. More doping (even compensating): lower $\mu$.</li>
+<li>High field: $v_d$ saturates ≈ $10^7$ cm/s. Hall: $p_0 = \frac{I_xB_z}{qtV_H}$.</li>
+<li>Si: $\mu_n = 1350$, $\mu_p = 480$ cm²/V·s (light doping).</li>
+</ul></section>
+
+<section><h2>5 · Diffusion, total current, built-in field</h2><span class="fig" data-f="graded"></span>
+<ul>
+<li>$J_n = q\mu_nn\mathscr{E} + qD_n\frac{dn}{dx}$; $J_p = q\mu_pp\mathscr{E} - qD_p\frac{dp}{dx}$.</li>
+<li>Electrons diffuse down the gradient, so their current points <b>up</b> it.</li>
+<li>Einstein: $D = \frac{kT}{q}\mu$. Si: $D_n = 35$, $D_p = 12.4$ cm²/s.</li>
+<li>Equilibrium: $E_F$ flat, $J_n = J_p = 0$. Graded: $\mathscr{E} = -\frac{kT}{q}\frac1n\frac{dn}{dx}$; $N_0e^{-x/L}$ → $\mathscr{E} = \frac{kT}{qL}$.</li>
+<li>$\mathscr{E} = \frac1q\frac{dE_c}{dx}$ (field points uphill in $E_c$). Contact: $qV_0 = kT\ln\frac{N_aN_d}{n_i^2}$.</li>
+</ul></section>
+
+<section><h2>6 · Excess carriers, quasi-Fermi levels</h2><span class="fig" data-f="qfl"></span>
+<ul>
+<li>Low level ($\delta n \ll n_0 + p_0$): $\delta n = \Delta n\,e^{-t/\tau}$, $\tau_n = \frac{1}{\alpha_r(n_0 + p_0)} \approx \frac{1}{\alpha_rp_0}$ (p-type).</li>
+<li>High level: $\delta n = \frac{\Delta n}{1 + \alpha_r\Delta n\,t}$, halves at $t = \frac{1}{\alpha_r\Delta n}$.</li>
+<li>Steady light: $\delta n = g_{op}\tau_n$, $\delta p = g_{op}\tau_p$. $g(T) = \alpha_rn_i^2$.</li>
+<li>$n = n_ie^{(F_n - E_i)/kT}$, $p = n_ie^{(E_i - F_p)/kT}$. Use $n_0 + \delta n$! Minority QFL moves.</li>
+<li>$\Delta\sigma = qg_{op}(\tau_n\mu_n + \tau_p\mu_p)$. $np = n_i^2$ is <span class="t">equilibrium only</span>.</li>
+</ul></section>
+
+<section><h2>7 · Continuity, diffusion length</h2><span class="fig" data-f="prof"></span>
+<ul>
+<li>$\frac{\partial p}{\partial t} = -\frac1q\frac{\partial J_p}{\partial x} - \frac{\delta p}{\tau_p}$; $\frac{\partial n}{\partial t} = +\frac1q\frac{\partial J_n}{\partial x} - \frac{\delta n}{\tau_n}$.</li>
+<li>No field: $\frac{\partial\delta p}{\partial t} = D_p\frac{\partial^2\delta p}{\partial x^2} - \frac{\delta p}{\tau_p}$. Steady: $L_p = \sqrt{D_p\tau_p}$.</li>
+<li>Long bar: $\delta p = \Delta p\,e^{-x/L_p}$, $J_p = \frac{qD_p}{L_p}\Delta p\,e^{-x/L_p}$.</li>
+<li>Short bar ($W \ll L$): linear, $J_p = qD_p\Delta p/W$.</li>
+</ul></section>
+
+<section><h2>8 · Optical absorption</h2><span class="fig" data-f="slab"></span>
+<ul>
+<li>$E\,[\text{eV}] = 1.24/\lambda\,[\mu\text{m}]$. Absorbed only if $h\nu \ge E_g$.</li>
+<li>$I = I_0e^{-\alpha x}$; absorbed $1 - e^{-\alpha d}$. Heat fraction $\frac{h\nu - E_g}{h\nu}$. Photons/s $= P/h\nu$ (J).</li>
+</ul></section>
+
+<section><h2>9 · Bands, effective mass</h2><span class="fig" data-f="ek"></span>
+<ul>
+<li>$m^* = \hbar^2/\frac{d^2E}{dk^2}$; $E = E_c + Ak^2$ → $m^* = \frac{\hbar^2}{2A}$ (J, m).</li>
+<li>Direct (GaAs): emits light. Indirect (Si, Ge): needs phonon.</li>
+<li>Metal: partly filled band. Semi: $E_g \sim 1$ eV. Insulator: $\gtrsim 5$ eV.</li>
+<li>Gaps: Si 1.11, GaAs 1.43, Ge 0.67 eV.</li>
+</ul></section>
+
+<section><h2>10 · Crystals</h2><span class="fig" data-f="cell"></span>
+<ul>
+<li>Atoms/cell: sc 1, bcc 2, fcc 4, diamond 8. $N = \#/a^3$. Si $a = 5.43$ Å → $5.00\times10^{22}$.</li>
+<li>Miller: intercepts → reciprocals → integers. $[hkl] \perp (hkl)$ (cubic). $(100)$ fcc/diamond: $2/a^2$.</li>
+</ul></section>
+
+<section><h2>11 · Traps</h2>
+<ul>
+<li class="t">μm → cm: ×$10^{-4}$. Å → cm: ×$10^{-8}$. Use ln, not log.</li>
+<li class="t">Minority is $n_i^2/N$, not $n_i$. Lifetime uses the <b>majority</b> concentration.</li>
+<li class="t">$L = \sqrt{D\tau}$. Sign of $J_n^{\text{diff}}$: $+qD_n\,dn/dx$.</li>
+</ul></section>
+
+</div>
+</div>
+
+<!-- ============================== BACK: worked examples ============================== -->
+<div class="page">
+<div class="top"><b>ECE 340 · Exam 1 · BACK (worked examples)</b><span>equation → symbols → numbers with units → 3 s.f.</span></div>
+<div class="cols">
+
+<section class="ex"><h2>Ex 1 · Doped Si: $n_0$, $p_0$, $E_F$</h2><span class="fig" data-f="nband"></span>
+<p>Si, $N_d = 10^{16}$, 300 K.</p>
+<ul>
+<li>$n_0 = 10^{16}$; $p_0 = \frac{10^{20}}{10^{16}} = 1.00\times10^4\,\text{cm}^{-3}$.</li>
+<li>$E_F - E_i = 0.0259\ln10^6 = 0.358$ eV.</li>
+<li>$E_c - E_F = 0.0259\ln\frac{2.8\times10^{19}}{10^{16}} = 0.206$ eV.</li>
+</ul></section>
+
+<section class="ex"><h2>Ex 2 · Fermi probability, $n_0$ from $N_c$</h2><span class="fig" data-f="ef02"></span>
+<p>Si, $E_F$ 0.20 eV below $E_c$.</p>
+<ul>
+<li>$f(E_c + kT) = \frac{1}{1 + e^{0.2259/0.0259}} = 1.63\times10^{-4}$.</li>
+<li>$n_0 = 2.8\times10^{19}e^{-7.72} = 1.24\times10^{16}$.</li>
+<li>$p_0 = 1.04\times10^{19}e^{-0.91/0.0259} = 5.73\times10^3$.</li>
+</ul></section>
+
+<section class="ex"><h2>Ex 3 · Compensated Ge ($n_i$ not negligible)</h2><span class="fig" data-f="comp"></span>
+<p>$N_d = 3\times10^{13}$, $N_a = 10^{13}$, $n_i = 2.5\times10^{13}$.</p>
+<ul>
+<li>$n_0 = 10^{13} + \sqrt{10^{26} + 6.25\times10^{26}} = 3.69\times10^{13}$.</li>
+<li>$p_0 = n_i^2/n_0 = 1.69\times10^{13}$. Check: $p_0 + N_d = n_0 + N_a$ ✓.</li>
+<li>Shortcut $N_d - N_a$ would be 46% low.</li>
+</ul></section>
+
+<section class="ex"><h2>Ex 4 · Hot Si</h2><span class="fig" data-f="temp"></span>
+<p>$n_i(600) = 10^{10}\cdot2^{3/2}e^{\frac{1.11}{2(8.62\times10^{-5})}\cdot\frac{1}{600}} = 1.29\times10^{15}$.</p>
+<ul>
+<li>$N_d = 10^{15}$: $n_0 = 5\times10^{14} + \sqrt{2.5\times10^{29} + 1.67\times10^{30}} = 1.89\times10^{15}$.</li>
+</ul></section>
+
+<section class="ex"><h2>Ex 5 · Bar resistance</h2><span class="fig" data-f="bar"></span>
+<p>n-Si $10^{16}$, $\mu_n = 1350$, $L = 1$ mm, $A = 100\times10\,\mu$m², 5 V.</p>
+<ul>
+<li>$\sigma = qN_d\mu_n = 2.16\,(\Omega\text{cm})^{-1}$, $\rho = 0.463\,\Omega$cm.</li>
+<li>$A = 10^{-5}$ cm²: $R = \frac{0.463(0.1)}{10^{-5}} = 4.63$ kΩ, $I = 1.08$ mA.</li>
+<li>$J = 108$ A/cm², $v_d = 1350(50) = 6.75\times10^4$ cm/s.</li>
+</ul></section>
+
+<section class="ex"><h2>Ex 6 · Mobility at another $T$</h2><span class="fig" data-f="mob"></span>
+<p>300 K: $\mu_L = 1500$, $\mu_I = 3000$ → $\mu = 1000$.</p>
+<ul>
+<li>400 K: $\mu_L = 1500(4/3)^{-3/2} = 974$, $\mu_I = 3000(4/3)^{3/2} = 4620$.</li>
+<li>$\mu = (1/974 + 1/4620)^{-1} = 805$ cm²/V·s.</li>
+</ul></section>
+
+<section class="ex"><h2>Ex 7 · Two regions in contact</h2><span class="fig" data-f="contact"></span>
+<p>$N_a = 10^{16}$ meets $N_d = 10^{17}$.</p>
+<ul>
+<li>n: $E_F - E_i = 0.0259\ln10^7 = 0.417$; p: $E_i - E_F = 0.358$ eV.</li>
+<li>$E_F$ lines up; bands step $qV_0 = 0.775$ eV.</li>
+</ul></section>
+
+<section class="ex"><h2>Ex 8 · Graded doping</h2><span class="fig" data-f="graded"></span>
+<p>$N_d = 10^{17}e^{-x/L}$, $L = 0.5\,\mu$m, $\mu_n = 1000$.</p>
+<ul>
+<li>$\mathscr{E} = \frac{kT}{qL} = \frac{0.0259}{0.5\times10^{-4}} = 518$ V/cm, $+x$.</li>
+<li>$D_n = 25.9$. At 0: drift $+8.29\times10^3$, diffusion $-8.29\times10^3$ A/cm²: sum 0.</li>
+</ul></section>
+
+<section class="ex"><h2>Ex 9 · Light into thin GaAs</h2><span class="fig" data-f="slab"></span>
+<p>0.5 μm, $\alpha = 3\times10^4$, 10 mW at 2.00 eV, $E_g = 1.43$.</p>
+<ul>
+<li>$\alpha d = 1.5$: $P_{\text{abs}} = 10(1 - e^{-1.5}) = 7.77$ mW.</li>
+<li>Heat $= 7.77\cdot\frac{0.57}{2.00} = 2.21$ mW. Photons $\frac{7.77\times10^{-3}}{3.2\times10^{-19}} = 2.43\times10^{16}$/s.</li>
+</ul></section>
+
+<section class="ex"><h2>Ex 10 · Pulse decay, low level</h2><span class="fig" data-f="decay"></span>
+<p>p-GaAs $10^{17}$, $\alpha_r = 7.2\times10^{-10}$, $\Delta n = 10^{14}$.</p>
+<ul>
+<li>$\tau_n = \frac{1}{\alpha_rp_0} = 13.9$ ns. At 20 ns: $10^{14}e^{-20/13.9} = 2.37\times10^{13}$.</li>
+<li>To $10^{12}$: $t = 13.9\ln100 = 64.0$ ns.</li>
+</ul></section>
+
+<section class="ex"><h2>Ex 11 · High level</h2>
+<p>$n_0 + p_0 \approx 0$, $\alpha_r = 10^{-10}$, $\Delta n = 10^{17}$.</p>
+<ul>
+<li>$\delta n(100\,\text{ns}) = \frac{10^{17}}{1 + (10^{-10})(10^{17})(10^{-7})} = 5.00\times10^{16}$.</li>
+</ul></section>
+
+<section class="ex"><h2>Ex 12 · Quasi-Fermi levels, photoconductivity</h2><span class="fig" data-f="qfl"></span>
+<p>n-Si $10^{15}$, $g_{op} = 10^{19}$, $\tau = 2\,\mu$s.</p>
+<ul>
+<li>$\delta p = g_{op}\tau = 2.00\times10^{13}$ (low level).</li>
+<li>$F_n - E_i = 0.0259\ln(1.02\times10^5) = 0.299$; $E_i - F_p = 0.0259\ln2000 = 0.197$ eV.</li>
+<li>$\Delta\sigma = q\,\delta p(\mu_n + \mu_p) = 5.86\times10^{-3}\,(\Omega\text{cm})^{-1}$.</li>
+</ul></section>
+
+<section class="ex"><h2>Ex 13 · Steady-state injection</h2><span class="fig" data-f="prof"></span>
+<p>Holes into n-Si: $\Delta p = 10^{14}$, $\mu_p = 480$, $\tau_p = 1\,\mu$s.</p>
+<ul>
+<li>$D_p = 12.4$, $L_p = \sqrt{12.4\times10^{-6}} = 35.3\,\mu$m.</li>
+<li>$\delta p(50\,\mu\text{m}) = 10^{14}e^{-50/35.3} = 2.42\times10^{13}$.</li>
+<li>$J_p(0) = \frac{qD_p\Delta p}{L_p} = 56.4$ mA/cm², toward $+x$.</li>
+</ul></section>
+
+<section class="ex"><h2>Ex 14 · Drift + diffusion components</h2><span class="fig" data-f="dd"></span>
+<p>$p = 10^{16}e^{-x/2\mu\text{m}}$, $\mathscr{E} = +20$ V/cm, $\mu_p = 480$; at $x = 0$:</p>
+<ul>
+<li>Drift $q\mu_pp\mathscr{E} = 15.4$ A/cm².</li>
+<li>Diffusion $-qD_p\frac{dp}{dx} = +\frac{qD_pp}{L} = 99.5$ A/cm². Total $114.8 \to 115$ A/cm².</li>
+</ul></section>
+
+<section class="ex"><h2>Ex 15 · Atoms per cm³ and per cm²</h2><span class="fig" data-f="cell"></span>
+<ul>
+<li>Si: $8/(5.43\times10^{-8})^3 = 5.00\times10^{22}$ cm⁻³; $\rho_m = \frac{NM}{N_A} = 2.33$ g/cm³.</li>
+<li>$(100)$: $2/a^2 = 6.78\times10^{14}$ cm⁻².</li>
+</ul></section>
+
+</div>
+</div>
+
+<script>
+  // hand-drawable sketches: band edges solid, EF long dashes, Ei and quasi-Fermi levels short dashes
+  (function () {
+    const W = 120, H = 80;
+    const ln = (x1, y1, x2, y2, o = '') => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#111" stroke-width="${/thick/.test(o) ? 1.8 : 1.1}" ${/dash/.test(o) ? 'stroke-dasharray="6 3"' : /dot/.test(o) ? 'stroke-dasharray="2 2"' : ''}/>`;
+    const pl = (pts, o = '') => `<polyline fill="none" points="${pts.map((p) => p.join(',')).join(' ')}" stroke="#111" stroke-width="${/thick/.test(o) ? 1.8 : 1.1}" ${/dash/.test(o) ? 'stroke-dasharray="6 3"' : /dot/.test(o) ? 'stroke-dasharray="2 2"' : ''}/>`;
+    const tx = (x, y, t, a = 'start', c = '') => `<text x="${x}" y="${y}" text-anchor="${a}" class="${c}">${t}</text>`;
+    const arr = (x1, y1, x2, y2) => { const a = Math.atan2(y2 - y1, x2 - x1), h = 4; return ln(x1, y1, x2, y2) + `<path d="M${x2},${y2}L${x2 - h * Math.cos(a - 0.45)},${y2 - h * Math.sin(a - 0.45)}L${x2 - h * Math.cos(a + 0.45)},${y2 - h * Math.sin(a + 0.45)}Z" fill="#111"/>`; };
+    const curve = (fn, x0, x1, n = 40) => { const pts = []; for (let i = 0; i <= n; i++) { const x = x0 + (x1 - x0) * i / n; pts.push([x.toFixed(1), fn(x).toFixed(1)]); } return pts; };
+    const bands = (ef, o = {}) => ln(6, 12, 96, 12, 'thick') + ln(6, 70, 96, 70, 'thick') + ln(6, 41, 96, 41, 'dot') + (ef !== null ? ln(6, ef, 96, ef, 'dash') : '') + tx(99, 15, 'Ec', 'start', 's') + tx(99, 73, 'Ev', 'start', 's') + tx(99, 44, 'Ei', 'start', 's') + (ef !== null ? tx(99, ef + (o.efUp ? -2 : 4), o.efl || 'EF', 'start', 's') : '');
+    const F = {
+      nband: () => bands(24) + arr(30, 24, 30, 41) + tx(33, 35, 'kT ln(n/nᵢ)', 'start', 's'),
+      ef02: () => bands(26) + arr(70, 12, 70, 26) + tx(66, 22, '0.20', 'end', 's'),
+      fermi: () => ln(20, 76, 20, 4) + ln(20, 76, 116, 76) + pl([[20, 4], [20, 40], [100, 40], [100, 76]], 'thick') + pl(Array.from({ length: 41 }, (_, i) => { const y = 4 + 72 * i / 40, e = (40 - y) / 10; return [(20 + 80 / (1 + Math.exp(e))).toFixed(1), y.toFixed(1)]; }), 'dash') + tx(16, 43, 'EF', 'end', 's') + tx(60, 87, '½', 'middle', 's') + tx(100, 87, '1', 'middle', 's') + tx(24, 10, 'E', 'start', 's') + tx(116, 72, 'f', 'end', 's'),
+      temp: () => ln(10, 74, 116, 74) + ln(10, 74, 10, 4) + pl([[14, 66], [22, 40], [30, 34], [80, 34]], 'thick') + pl(curve((x) => 34 - 600 / ((118 - x) * 3 + 10), 80, 116), 'thick') + pl(curve((x) => 74 - Math.max(0, (x - 52) * 1.05), 52, 116), 'dot') + tx(18, 30, 'Nd', 'start', 's') + tx(112, 70, 'T', 'end', 's') + tx(86, 60, 'nᵢ', 'start', 's'),
+      bar: () => `<rect x="16" y="22" width="80" height="22" fill="#eef1f5" stroke="#111"/>` + ln(16, 22, 26, 14) + ln(96, 22, 106, 14) + ln(26, 14, 106, 14) + ln(106, 14, 106, 36) + ln(106, 36, 96, 44) + pl([[16, 33], [8, 33], [8, 66], [50, 66]]) + pl([[106, 25], [114, 25], [114, 66], [60, 66]]) + ln(50, 58, 50, 74, 'thick') + ln(60, 62, 60, 70, 'thick') + tx(44, 60, '+', 'end', 's') + arr(40, 52, 76, 52) + tx(80, 55, 'L', 'start', 's') + arr(36, 33, 76, 33) + tx(56, 30, 'E', 'middle', 's'),
+      graded: () => ln(6, 10, 96, 22, 'thick') + ln(6, 62, 96, 74, 'thick') + ln(6, 30, 96, 30, 'dash') + tx(99, 25, 'Ec', 'start', 's') + tx(99, 76, 'Ev', 'start', 's') + tx(99, 33, 'EF', 'start', 's') + arr(36, 50, 70, 50) + tx(53, 46, 'E', 'middle', 's') + tx(10, 46, 'heavy', 'start', 's'),
+      qfl: () => bands(20) + ln(6, 54, 96, 54, 'dot') + tx(99, 57, 'Fp', 'start', 's') + tx(50, 31, 'Fn ≈ EF', 'middle', 's'),
+      prof: () => ln(10, 72, 116, 72) + ln(10, 72, 10, 6) + pl(curve((x) => 72 - 60 * Math.exp(-(x - 10) / 26), 10, 116), 'thick') + ln(36, 72, 36, 50, 'dot') + tx(36, 80, 'Lp', 'middle', 's') + tx(14, 12, 'Δp', 'start', 's') + tx(112, 68, 'x', 'end', 's'),
+      slab: () => `<rect x="40" y="6" width="36" height="68" fill="#eef1f5" stroke="#111"/>` + arr(4, 20, 38, 20) + arr(4, 40, 38, 40) + pl(curve((x) => 74 - 52 * Math.exp(-(x - 40) / 18), 40, 76), 'thick') + arr(78, 60, 112, 60) + tx(58, 84, 'd', 'middle', 's') + tx(6, 14, 'I₀', 'start', 's') + tx(112, 56, 'I₀e^(-αd)', 'end', 's'),
+      ek: () => ln(10, 76, 116, 76) + ln(40, 76, 40, 4) + pl(curve((x) => 60 + 0.012 * (x - 40) ** 2, 10, 70)) + pl(curve((x) => 22 + 0.012 * (x - 80) ** 2, 46, 116)) + arr(40, 58, 40, 30) + arr(42, 30, 78, 23) + tx(44, 46, 'hν', 'start', 's') + tx(70, 36, 'phonon', 'middle', 's') + tx(112, 72, 'k', 'end', 's'),
+      cell: () => { const a = 46, o = [22, 70], d = [18, -14], P = (x, y, z) => [o[0] + x * a + y * d[0], o[1] - z * a + y * d[1]]; let s = ''; const e = [[[0, 0, 0], [1, 0, 0]], [[0, 0, 0], [0, 0, 1]], [[1, 0, 0], [1, 0, 1]], [[0, 0, 1], [1, 0, 1]], [[1, 0, 0], [1, 1, 0]], [[1, 0, 1], [1, 1, 1]], [[0, 0, 1], [0, 1, 1]], [[0, 1, 1], [1, 1, 1]], [[1, 1, 0], [1, 1, 1]]]; for (const [p, q] of e) { const A = P(...p), B = P(...q); s += ln(A[0], A[1], B[0], B[1]); } for (const p of [[0, 1, 0]]) { const A = P(0, 0, 0), B = P(...p), C = P(1, 1, 0), D = P(0, 1, 1); s += ln(A[0], A[1], B[0], B[1], 'dot') + ln(B[0], B[1], C[0], C[1], 'dot') + ln(B[0], B[1], D[0], D[1], 'dot'); } for (const p of [[0, 0, 0], [1, 0, 0], [0, 0, 1], [1, 0, 1], [1, 1, 0], [1, 1, 1], [0, 1, 1], [0.5, 0, 0.5], [1, 0.5, 0.5], [0.5, 0.5, 1]]) { const [x, y] = P(...p); s += `<circle cx="${x}" cy="${y}" r="3" fill="#fff" stroke="#111"/>`; } for (const p of [[0.25, 0.25, 0.25], [0.75, 0.75, 0.25], [0.75, 0.25, 0.75], [0.25, 0.75, 0.75]]) { const [x, y] = P(...p); s += `<circle cx="${x}" cy="${y}" r="2.6" fill="#8a96a6" stroke="#111"/>`; } return s + tx(45, 79, 'a', 'middle', 's'); },
+      comp: () => bands(34) + Array.from({ length: 5 }, (_, i) => ln(12 + i * 18, 19, 22 + i * 18, 19) + tx(25 + i * 18, 21, '+', 'start', 's')).join('') + Array.from({ length: 2 }, (_, i) => ln(30 + i * 30, 63, 40 + i * 30, 63) + tx(43 + i * 30, 66, '−', 'start', 's')).join(''),
+      mob: () => ln(10, 72, 116, 72) + ln(10, 72, 10, 6) + pl(curve((x) => 10 + 60 * Math.pow((x - 6) / 110, 1.4), 12, 116)) + pl(curve((x) => { const t = (x - 6) / 110; return 72 - 1 / (1 / (55 * Math.pow(t + 0.05, -1.2) * 0.2) + 1 / (220 * Math.pow(t, 1.5) + 1e-3)); }, 14, 116), 'dash') + tx(112, 68, 'T', 'end', 's') + tx(14, 12, 'μ', 'start', 's') + tx(100, 14, 'light', 'end', 's') + tx(60, 64, 'heavy', 'middle', 's'),
+      contact: () => ln(4, 12, 46, 12, 'thick') + pl(curve((x) => 12 + 24 / (1 + Math.exp(-(x - 60) / 5)), 46, 74), 'thick') + ln(74, 36, 96, 36, 'thick') + ln(4, 62, 46, 62, 'thick') + pl(curve((x) => 62 + 24 / (1 + Math.exp(-(x - 60) / 5)) - 0 * x, 46, 74).map(([x, y]) => [x, Math.min(+y, 80).toFixed(1)]), 'thick') + ln(4, 54, 96, 54, 'dash') + tx(99, 57, 'EF', 'start', 's') + tx(10, 8, 'p', 'start', 's') + tx(90, 30, 'n', 'end', 's') + arr(110, 12, 110, 36) + tx(112, 28, 'qV₀', 'end', 's'),
+      decay: () => ln(10, 72, 116, 72) + ln(10, 72, 10, 6) + pl(curve((x) => 72 - 60 * Math.exp(-(x - 10) / 22), 10, 116), 'thick') + ln(32, 72, 32, 50, 'dot') + tx(32, 80, 'τ', 'middle', 's') + tx(14, 12, 'δn', 'start', 's') + tx(112, 68, 't', 'end', 's'),
+      dd: () => ln(10, 72, 116, 72) + ln(10, 72, 10, 6) + pl(curve((x) => 72 - 60 * Math.exp(-(x - 10) / 30), 10, 116), 'thick') + arr(40, 14, 76, 14) + tx(58, 10, 'diffusion', 'middle', 's') + arr(40, 26, 76, 26) + tx(80, 29, 'E', 'start', 's') + tx(14, 12, 'p', 'start', 's'),
+    };
+    document.querySelectorAll('.fig[data-f]').forEach((el) => {
+      const f = F[el.dataset.f];
+      if (f) el.innerHTML = `<svg viewBox="0 0 ${W} ${H + 10}" xmlns="http://www.w3.org/2000/svg">${f()}</svg>`;
+    });
+  })();
+
+  document.addEventListener('DOMContentLoaded', function () {
+    renderMathInElement(document.body, { delimiters: [{ left: '$', right: '$', display: false }], throwOnError: false });
+    document.body.setAttribute('data-ready', '1');
+  });
+</script>
+</body>
+</html>
