@@ -3,7 +3,7 @@
   'use strict';
 
   // ---------------------------------------------------------------- storage
-  const KEY = 'ece342.trainer.v1';
+  const KEY = 'ece340.trainer.v1';
   const Store = {
     s: { done: {}, gen: {}, last: null },
     load() { try { const raw = localStorage.getItem(KEY); if (raw) this.s = Object.assign(this.s, JSON.parse(raw)); } catch (e) { /* private mode */ } },
@@ -18,11 +18,11 @@
 
   // ---------------------------------------------------------------- markdown
   const MACROS = {
-    '\\pl': '\\mathbin{\\|}',
-    '\\VTH': 'V_{\\mathrm{TH}}', '\\RTH': 'R_{\\mathrm{TH}}',
-    '\\IN': 'I_{\\mathrm{N}}', '\\RN': 'R_{\\mathrm{N}}',
-    '\\Vov': 'V_{ov}', '\\kO': '\\,\\text{k}\\Omega', '\\Ohm': '\\,\\Omega',
-    '\\un': '\\,\\text{#1}', '\\WL': '\\tfrac{W}{L}',
+    '\\vb': '\\mathbf{#1}', '\\uv': '\\hat{\\mathbf{#1}}', '\\ep': '\\varepsilon_0',
+    '\\kq': '\\dfrac{1}{4\\pi\\varepsilon_0}', '\\dd': '\\,\\mathrm{d}', '\\divg': '\\nabla\\cdot', '\\curl': '\\nabla\\times',
+    '\\lap': '\\nabla^2', '\\sr': '\\boldsymbol{\\mathfrak{r}}', '\\srh': '\\hat{\\boldsymbol{\\mathfrak{r}}}', '\\srm': '\\mathfrak{r}',
+    '\\Qenc': 'Q_{\\text{enc}}', '\\un': '\\,\\text{#1}',
+    '\\cmm': '\\,\\text{cm}^{-3}', '\\cms': '\\,\\text{cm}^2/\\text{V·s}', '\\eV': '\\,\\text{eV}',
   };
 
   function escMath(s) { return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
@@ -134,7 +134,7 @@
   // Text with drawings: a line "[[fig:key]]" is replaced by figs[key] = {fig | svg, cap}.
   function figureHtml(F) {
     if (!F) return '';
-    const body = F.svg || (typeof F.fig === 'string' ? F.fig : Schem.render(F.fig, F.opts || {}));
+    const body = F.svg || (typeof F.fig === 'string' ? F.fig : String(F.fig || ''));
     return `<figure class="fig">${body}${F.cap ? `<figcaption>${inline(F.cap)}</figcaption>` : ''}</figure>`;
   }
   function rich(src, figs) {
@@ -242,8 +242,9 @@
     return U.esc(t);
   }
 
+  // units next to an answer box, as TeX: letters upright (cm, V·s), Ω and μ as symbols, ^{…} and _{…} kept
   function unitTeX(u) {
-    return u.split(/(Ω|µ|²)/).filter(Boolean).map((t) => (t === 'Ω' ? '\\Omega' : t === 'µ' ? '\\mu' : t === '²' ? '^2' : `\\text{${t}}`)).join('');
+    return String(u).replace(/(\\[a-zA-Z]+)|([ΩΩ])|([μµ])|(·)|([A-Za-z]+)/g, (m, cmd, om, mu, dot, w) => (cmd || (om ? '\\Omega ' : mu ? '\\mu ' : dot ? '{\\cdot}' : `\\text{${w}}`)));
   }
 
   // ---------------------------------------------------------------- course index
@@ -276,15 +277,27 @@
     u.lessons.forEach((l) => { const p = lessonProgress(l); tot += p.tot || 1; got += p.tot ? p.got : p.pct; });
     return tot ? got / tot : 0;
   }
+  // Exams: COURSE.exams lists them in order; each unit says which one it belongs to (unit.exam). The current exam is
+  // COURSE.meta.current, else the first one that has units. Progress, the home page and #/sheet, #/quiz, #/drill follow it.
+  const EXAMS = () => COURSE.exams || [];
+  const examOf = (id) => EXAMS().find((e) => e.id === id);
+  function current() {
+    const m = COURSE.meta || {};
+    return examOf(m.current) || EXAMS().find((e) => COURSE.units.some((u) => u.exam === e.id)) || { id: null, title: '' };
+  }
+  const examUnits = (e) => COURSE.units.filter((u) => u.exam === e.id && !u.extra);
   function courseProgress() {
     let tot = 0, got = 0;
-    LESSONS.forEach((l) => { const p = lessonProgress(l); tot += p.tot || 1; got += p.tot ? p.got : p.pct; });
+    const cur = current();
+    LESSONS.filter((l) => !l.unit.extra && (!cur.id || l.unit.exam === cur.id)).forEach((l) => { const p = lessonProgress(l); tot += p.tot || 1; got += p.tot ? p.got : p.pct; });
     return tot ? got / tot : 0;
   }
+  const NAME = () => (COURSE.meta && COURSE.meta.name) || 'Course';
 
   const KIND = {
     lesson: 'Lesson', checkpoint: 'Checkpoint', pset: 'Problem Set', exam: 'Past midterm',
     mock: 'Mock exam', review: 'Mixed review', read: 'Reference', paper: 'Typed exam',
+    hw: 'Homework', disc: 'Discussion', quiz: 'Concept quiz', lecture: 'Lecture walkthrough',
   };
 
   // ---------------------------------------------------------------- sidebar
@@ -298,14 +311,24 @@
   function buildSidebar(activeId) {
     const sb = document.getElementById('sidebar');
     const openUnit = activeId ? BYID.get(activeId)?.unit : null;
-    sb.innerHTML = `<nav aria-label="Course">${COURSE.units.map((u) => {
+    const unitHtml = (u) => {
       const pct = Math.round(unitProgress(u) * 100);
       const open = openUnit === u || (!openUnit && u === COURSE.units[0]);
       return `<details class="unit" ${open ? 'open' : ''}><summary><span class="u-num">${u.num}</span><span class="u-title">${u.title}</span><span class="u-pct">${pct}%</span></summary><ol>${u.lessons.map((l) => {
         const p = lessonProgress(l);
         return `<li class="${l.id === activeId ? 'active' : ''} k-${l.kind || 'lesson'}"><a href="#/l/${l.id}">${statusIcon(p)}<span class="l-title">${l.title}</span>${l.kind && l.kind !== 'lesson' ? `<span class="l-kind">${KIND[l.kind]}</span>` : ''}</a></li>`;
       }).join('')}</ol></details>`;
-    }).join('')}</nav>`;
+    };
+    const cur = current();
+    const extras = COURSE.units.filter((u) => u.extra);
+    const extraOpen = openUnit && openUnit.extra;
+    // the current exam's units first; every other exam that has units sits in its own collapsed group
+    const others = EXAMS().filter((e) => e.id !== cur.id && examUnits(e).length).map((e) => {
+      const open = openUnit && openUnit.exam === e.id;
+      return `<details class="extra-group" ${open ? 'open' : ''}><summary>${e.title}: ${e.scope || ''}</summary>${examUnits(e).map(unitHtml).join('')}</details>`;
+    }).join('');
+    const mine = COURSE.units.filter((u) => !u.extra && (!cur.id || u.exam === cur.id || !u.exam));
+    sb.innerHTML = `<nav aria-label="Course">${cur.id ? `<p class="sb-exam">${cur.title}</p>` : ''}${mine.map(unitHtml).join('')}${others}${extras.length ? `<details class="extra-group" ${extraOpen ? 'open' : ''}><summary>Extra: not needed for the exam</summary>${extras.map(unitHtml).join('')}</details>` : ''}</nav>`;
     renderMath(sb);
     const act = sb.querySelector('li.active');
     if (act) act.scrollIntoView({ block: 'nearest' });
@@ -318,29 +341,51 @@
   }
 
   // ---------------------------------------------------------------- home
+  function daysTo(iso) {
+    if (!iso) return '';
+    const ms = new Date(iso) - new Date();
+    if (ms < -3 * 3600e3) return 'done';
+    const d = Math.ceil(ms / 86400e3);
+    return d <= 0 ? 'today' : d === 1 ? 'tomorrow' : `in ${d} days`;
+  }
   function renderHome() {
     const main = document.getElementById('main');
-    const next = LESSONS.find((l) => { const p = lessonProgress(l); return p.tot && p.got < p.tot; }) || LESSONS[0];
+    const cur = current();
+    const units = examUnits(cur);
+    const topics = units.filter((u) => !u.tools);
+    const tools = units.filter((u) => u.tools);
+    const mineL = LESSONS.filter((l) => units.includes(l.unit));
+    const next = mineL.find((l) => { const p = lessonProgress(l); return p.tot && p.got < p.tot; }) || mineL[0] || LESSONS[0];
     const last = Store.s.last && BYID.get(Store.s.last);
+    const pctAll = Math.round(courseProgress() * 100);
+    const row = (l, num) => {
+      const p = lessonProgress(l), pct = Math.round(p.pct * 100);
+      return `<a class="topic${p.tot && p.got >= p.tot ? ' done' : ''}" href="#/l/${l.id}">
+        <span class="t-num">${num ?? ''}</span>
+        <span class="t-main"><span class="t-title">${l.title}</span>${l.sec ? `<span class="t-sec">§${l.sec}</span>` : ''}</span>
+        <span class="t-pct">${p.tot ? pct + '%' : ''}</span>
+        <span class="meter t-meter"><span style="width:${pct}%"></span></span></a>`;
+    };
+    const later = EXAMS().filter((e) => e.id !== cur.id);
+    const days = daysTo(cur.date);
+    const M = COURSE.meta || {};
     main.innerHTML = `
       <section class="home">
-        <h1>ECE 342 · Exam 1</h1>
-        <p class="lede">Thu Sep 24, 7–8 PM, 1002 ECEB. HW 1–3, through MOSFET DC analysis. Calculators allowed.</p>
+        <h1>${NAME()} · ${cur.title}</h1>
+        <p class="lede">${cur.when || ''}${days && days !== 'done' ? ` <b class="when">(${days})</b>` : ''}. ${cur.blurb || ''}</p>
         <div class="home-actions">
-          <a class="btn primary" href="#/l/${(last || next).id}">${last ? 'Continue: ' + last.title : 'Start: ' + next.title}</a>
-          <a class="btn" href="#/l/u5-bank">Question bank</a>
-          ${BYID.has('u5-s26-paper') ? '<a class="btn" href="#/sp26">SP26 Exam</a>' : ''}
+          <a class="btn primary" href="#/l/${(last && units.includes(last.unit) ? last : next).id}">${last && units.includes(last.unit) ? 'Continue: ' + last.title : 'Start: ' + next.title}</a>
+          ${cur.drill ? '<a class="btn" href="#/drill">Drill</a>' : ''}
+          ${cur.quiz ? '<a class="btn" href="#/quiz">Concept quiz</a>' : ''}
+          ${cur.sheet ? '<a class="btn" href="#/sheet">Formula sheet</a>' : ''}
+          ${M.cheatsheet ? `<a class="btn" href="${M.cheatsheet}">Cheat sheet (front + back)</a>` : ''}
         </div>
-        <div class="units">${COURSE.units.map((u) => {
-          const pct = Math.round(unitProgress(u) * 100);
-          return `<a class="unit-card" href="#/l/${u.lessons[0].id}">
-            <div class="uc-top"><span class="u-num">${u.num}</span><span class="uc-pct">${pct}%</span></div>
-            <h2>${u.title}</h2>
-            <div class="meter"><span style="width:${pct}%"></span></div></a>`;
-        }).join('')}</div>
-        <section class="howto">
-          <p>Numbers: in the unit shown, arithmetic allowed (<code>19/3</code>, <code>sqrt(0.04)</code>), within 1.5%. Expressions: <code>gm*RD</code> or <code>gm RD</code>; <code>||</code> is parallel. A drill doesn't count once you open its solution. Progress is saved in this browser.</p>
-        </section>
+        <div class="overall"><span>${cur.title} progress</span><div class="meter"><span style="width:${pctAll}%"></span></div><span class="o-pct">${pctAll}%</span></div>
+        ${cur.plan ? `<section class="plan"><h2>${cur.planTitle || 'Plan'}</h2><ol>${cur.plan.map((x) => `<li>${x}</li>`).join('')}</ol></section>` : ''}
+        ${topics.map((u) => `<section class="topics"><h2><span class="u-num">${u.num}</span> ${u.title}</h2>${u.lessons.map((l) => row(l, l.topic)).join('')}</section>`).join('')}
+        ${tools.map((u) => `<section class="topics"><h2>${u.title}</h2>${u.lessons.filter((l) => !l.hideHome).map((l) => row(l, '')).join('')}</section>`).join('')}
+        ${later.length ? `<section class="extras"><h2>Later</h2><ul>${later.map((e) => `<li>${e.title}${e.when ? `, ${e.when}` : ''}: ${e.scope || ''}${examUnits(e).length ? '' : ' (not added yet)'}</li>`).join('')}</ul></section>` : ''}
+        ${M.howto ? `<section class="howto"><p>${M.howto}</p></section>` : ''}
         <p class="reset-row"><button class="btn subtle" id="reset">Reset progress</button></p>
       </section>`;
     main.querySelector('#reset').addEventListener('click', () => {
@@ -349,7 +394,7 @@
     renderMath(main);
     buildSidebar(null);
     updateTopProgress();
-    document.title = 'ECE 342';
+    document.title = NAME();
   }
 
   // ---------------------------------------------------------------- lesson page
@@ -361,7 +406,7 @@
     main.innerHTML = `
       <article class="lesson k-${l.kind || 'lesson'}">
         <header class="l-head">
-          <p class="eyebrow">${l.unit.num} · ${l.unit.title}</p>
+          <p class="eyebrow">${l.unit.num} · ${l.unit.title}${l.topic ? ` · Topic ${l.topic}` : ''}${l.sec ? ` · §${l.sec}` : ''}</p>
           <h1>${l.title}</h1>
           ${l.kind && l.kind !== 'lesson' ? `<span class="kind-pill">${KIND[l.kind]}</span>` : ''}
           <div class="l-progress"><div class="meter"><span></span></div><span class="l-count"></span></div>
@@ -387,15 +432,22 @@
       wrap.appendChild(bar);
     }
     let pnum = 0;
+    const inits = [];
     for (const s of l.steps) {
       if (s.t === 'paper') {
         wrap.appendChild(paperBlock(s));
       } else if (s.t === 'read') {
         const d = document.createElement('section');
         d.className = 'read';
-        const figHtml = s.fig ? `<figure class="fig">${typeof s.fig === 'string' ? s.fig : Schem.render(s.fig)}</figure>` : '';
+        const figHtml = s.fig ? `<figure class="fig">${String(s.fig)}</figure>` : '';
         d.innerHTML = rich(s.md, s.figs) + figHtml + (s.after ? rich(s.after, s.figs) : '');
         wrap.appendChild(d);
+      } else if (s.t === 'widget') {
+        const d = document.createElement('section');
+        d.className = 'widget';
+        d.innerHTML = s.html || '';
+        wrap.appendChild(d);
+        if (s.init) inits.push([s.init, d]);
       } else if (s.t === 'prob') {
         pnum++;
         wrap.appendChild(staticCard(s, pnum, l));
@@ -405,11 +457,12 @@
       }
     }
     if (!l.steps.some((s) => s.t === 'prob' || s.t === 'gen')) Store.markDone('visit:' + l.id);
+    for (const [fn, el] of inits) { try { fn(el); } catch (e) { el.insertAdjacentHTML('beforeend', `<p class="err">Widget error: ${U.esc(e.message)}</p>`); } }
     renderMath(main);
     refreshLessonProgress(l);
     buildSidebar(l.id);
     updateTopProgress();
-    document.title = `${l.title} · ECE 342`;
+    document.title = `${l.title} · ${NAME()}`;
     window.scrollTo(0, 0);
   }
 
@@ -491,7 +544,7 @@
 
   function mountProblem(host, p, ctx) {
     const parts = p.parts || [];
-    const S = (p.fig && parts.some((pt) => typeof pt.ans === 'function')) ? Schem.solve(p.fig) : null;
+    const S = null;
     parts.forEach((pt) => { if (typeof pt.ans === 'function') pt._ans = pt.ans(S); else pt._ans = pt.ans; });
 
     const tag = ctx.gen ? 'Practice' : (p.src ? '' : 'Practice');
@@ -501,7 +554,7 @@
     host.innerHTML = `
       <header class="p-head"><span class="p-num">${ctx.n}</span>${srcHtml}${p.title ? `<span class="p-title">${p.title}</span>` : ''}${genMeter}<span class="p-status" aria-live="polite"></span></header>
       <div class="p-q">${rich(p.q, p.figs)}</div>
-      ${p.fig ? `<figure class="fig">${Schem.render(p.fig, p.figOpts || {})}</figure>` : ''}
+      ${p.fig ? `<figure class="fig">${typeof p.fig === 'string' ? p.fig : ''}</figure>` : ''}
       ${p.figHtml ? `<figure class="fig">${p.figHtml}</figure>` : ''}
       ${p.q2 ? `<div class="p-q">${mdToHtml(p.q2)}</div>` : ''}
       <div class="parts">${parts.map((pt, i) => partHtml(pt, i)).join('')}</div>
@@ -515,6 +568,7 @@
       <div class="p-hints"></div>
       <div class="p-sol" hidden>${p.sol ? `<div class="sol-h">Worked solution</div>${rich(p.sol, p.figs)}` : ''}</div>`;
     if (ctx.solved) host.querySelector('.p-status').innerHTML = '<span class="ok-badge">Solved</span>';
+    if (window.MathInput) window.MathInput.upgrade(host);          // Desmos-style math boxes over the text inputs
 
     let hintIx = 0, viewedSol = false, attempts = 0;
     const fb = host.querySelector('.p-fb');
@@ -523,7 +577,7 @@
     // expression previews
     parts.forEach((pt, i) => {
       if (pt.expr === undefined) return;
-      const inp = host.querySelector(`[data-part="${i}"] input`);
+      const inp = host.querySelector(`[data-part="${i}"] input.ans`);
       const pv = host.querySelector(`[data-part="${i}"] .preview`);
       const upd = () => {
         const v = inp.value.trim();
@@ -541,7 +595,7 @@
       grp.classList.remove('bad', 'good');
     }));
 
-    host.querySelectorAll('input').forEach((inp) => inp.addEventListener('keydown', (e) => {
+    host.querySelectorAll('input.ans').forEach((inp) => inp.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') { e.preventDefault(); chk && chk.click(); }
     }));
 
@@ -556,7 +610,7 @@
         box.classList.toggle('bad', !r.ok);
         if (!r.ok) {
           allOk = false;
-          const lbl = parts.length > 1 && pt.lbl && !pt.mc ? `${pt.lbl.includes('$') ? pt.lbl : `$${pt.lbl}$`}: ` : '';
+          const lbl = parts.length > 1 && pt.lbl && !pt.mc ? `${lblTex(pt.lbl)}: ` : '';
           if (r.msg || r.err) msgs.push(lbl + (r.err || r.msg));
         }
       });
@@ -613,16 +667,19 @@
     return s + (c > need ? `<em>+${c - need}</em>` : '');
   }
 
+  // answer-box label: TeX unless it is plain words (no TeX characters, a space, a 4+ letter word)
+  const lblTex = (l) => (l.includes('$') || (!/[\\_^{}]/.test(l) && /\s/.test(l) && /[A-Za-z]{4,}/.test(l)) ? l : `$${l}$`);
+
   function partHtml(pt, i) {
-    const lbl = pt.lbl ? `<span class="pl">${pt.lbl.includes('$') ? pt.lbl : `$${pt.lbl}$`}${pt.mc ? '' : ' ='}</span>` : '';
+    const lbl = pt.lbl ? `<span class="pl">${inline(lblTex(pt.lbl))}${pt.mc ? '' : ' ='}</span>` : '';
     if (pt.mc) {
       return `<div class="part mc" data-part="${i}">${pt.lbl ? `<div class="mc-q">${inline(pt.lbl)}</div>` : ''}<div class="opts">${pt.mc.map((o, j) => `<button type="button" class="opt" data-j="${j}">${inline(o)}</button>`).join('')}</div><span class="mark"></span></div>`;
     }
     if (pt.expr !== undefined) {
       const vars = Object.keys(pt.vars).map((v) => `<code>${v}</code>`).join(' ');
-      return `<div class="part expr" data-part="${i}">${lbl}<input type="text" autocomplete="off" spellcheck="false" aria-label="${U.esc(pt.lbl || 'answer')}"><span class="mark"></span><div class="expr-meta"><span class="vars">Variables: ${vars}</span><span class="preview"></span></div></div>`;
+      return `<div class="part expr" data-part="${i}">${lbl}<input class="ans" type="text" autocomplete="off" spellcheck="false" aria-label="${U.esc(pt.lbl || 'answer')}"><span class="mark"></span><div class="expr-meta"><span class="vars">Variables: ${vars}</span><span class="preview"></span></div></div>`;
     }
-    return `<div class="part num" data-part="${i}">${lbl}<input type="text" inputmode="decimal" autocomplete="off" spellcheck="false" aria-label="${U.esc(pt.lbl || 'answer')}">${pt.unit ? `<span class="unit">$${unitTeX(pt.unit)}$</span>` : ''}<span class="mark"></span></div>`;
+    return `<div class="part num" data-part="${i}">${lbl}<input class="ans" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" aria-label="${U.esc(pt.lbl || 'answer')}">${pt.unit ? `<span class="unit">$${unitTeX(pt.unit)}$</span>` : ''}<span class="mark"></span></div>`;
   }
 
   function checkPart(pt, box) {
@@ -632,7 +689,9 @@
       const j = +sel.dataset.j;
       return j === pt.a ? { ok: true } : { ok: false, msg: pt.why && pt.why[j] ? pt.why[j] : 'Not that one.' };
     }
-    const v = box.querySelector('input').value;
+    const ansEl = box.querySelector('input.ans');
+    if (ansEl._mf && window.MathInput) ansEl.value = window.MathInput.latexToExpr(ansEl._mf.value);   // read the math box itself
+    const v = ansEl.value;
     if (!v.trim()) return { ok: false, msg: 'Enter an answer.' };
     if (pt.expr !== undefined) return Expr.checkExpr(v, pt.expr, pt);
     let u;
@@ -645,10 +704,13 @@
   function route() {
     const h = location.hash || '#/';
     const m = /^#\/l\/(.+)$/.exec(h);
-    const id = h === '#/sp26' ? 'u5-s26-paper' : m && m[1];
+    // #/sheet, #/quiz, #/drill open the current exam's pages; #/<exam>/sheet etc. open another exam's
+    const cur = current();
+    const ALIAS = { '#/sheet': cur.sheet, '#/quiz': cur.quiz, '#/drill': cur.drill };
+    const em = /^#\/([\w-]+)\/(sheet|quiz|drill)$/.exec(h);
+    const id = ALIAS[h] || (em && examOf(em[1]) && examOf(em[1])[em[2]]) || (m && m[1]);
     document.body.classList.remove('nav-open');
-    const tl = document.querySelector('.top-link');
-    if (tl) tl.classList.toggle('on', id === 'u5-s26-paper');
+    document.querySelectorAll('.top-link').forEach((tl) => tl.classList.toggle('on', ALIAS[tl.getAttribute('href')] === id));
     if (id && BYID.has(id)) renderLesson(BYID.get(id));
     else renderHome();
   }
@@ -656,14 +718,14 @@
   // ---------------------------------------------------------------- theme
   function initTheme() {
     let t = null;
-    try { t = localStorage.getItem('ece342.theme'); } catch (e) { /* ignore */ }
+    try { t = localStorage.getItem('ece340.theme'); } catch (e) { /* ignore */ }
     document.documentElement.dataset.theme = t || 'dark';
     document.getElementById('theme').addEventListener('click', () => {
       const cur = document.documentElement.dataset.theme
         || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
       const nt = cur === 'dark' ? 'light' : 'dark';
       document.documentElement.dataset.theme = nt;
-      try { localStorage.setItem('ece342.theme', nt); } catch (e) { /* ignore */ }
+      try { localStorage.setItem('ece340.theme', nt); } catch (e) { /* ignore */ }
     });
   }
 
@@ -678,5 +740,5 @@
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { const m = document.getElementById('main'); if (window.declutter) window.declutter(m); fitMath(m); });
   });
 
-  window.Engine = { mdToHtml, rich, renderMath, Store, LESSONS, BYID };
+  window.Engine = { mdToHtml, rich, renderMath, Store, LESSONS, BYID, texInline };
 })();

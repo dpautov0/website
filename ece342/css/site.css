@@ -330,3 +330,5 @@ tr:last-child td { border-bottom: none; }
   .top-link .wide { display: none; }
   .top-link .narrow { display: inline; }
 }
+/* table cells keep numbers and words whole; a wide table scrolls inside its own box */
+.read td, .read th, .p-sol td, .p-sol th { overflow-wrap: normal; }

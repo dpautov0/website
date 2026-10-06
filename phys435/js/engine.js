@@ -166,7 +166,7 @@
         const w = m[1];
         if (w === 'left' || w === 'begin') depth++;
         else if (w === 'right' || w === 'end') depth--;
-        else if (depth === 0 && w === 'qquad') at.push([i, 'q', m[0].length]);
+        else if (depth === 0 && (w === 'qquad' || w === 'quad')) at.push([i, 'q', m[0].length]);
         else if (depth === 0 && w === 'approx') at.push([i, '=', m[0].length]);
         i += m[0].length - 1;
         continue;
@@ -183,9 +183,11 @@
       out.push(tex.slice(s));
       return out.map((t) => t.trim().replace(/^,|,$/g, '').trim()).filter(Boolean);
     };
+    // separate equations side by side (a = b, \quad c = d): one per line. A piece with no = of its own, like
+    // "\quad (r < R)", stays on the line before it.
     if (quads.length) {
-      const g = cut(quads, false);
-      return g.length > 1 ? `\\begin{gathered}${g.join('\\\\')}\\end{gathered}` : null;
+      const g = cut(quads, false).reduce((acc, t) => { if (acc.length && !/=|\\approx/.test(t)) acc[acc.length - 1] += `\\quad ${t}`; else acc.push(t); return acc; }, []);
+      if (g.length > 1) return `\\begin{gathered}${g.join('\\\\')}\\end{gathered}`;
     }
     const rel = at.filter((a) => a[1] === '=');
     if (rel.length < 2) return null;
