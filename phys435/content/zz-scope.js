@@ -41,7 +41,7 @@
   const extra = [
     { id: 'e1', num: 'Extra', title: 'ECE 329 review: vectors, Gauss, potential, conductors', blurb: 'Material you already know from ECE 329, with every PHYS 435 homework problem worked.', lessons: take(rest.filter(R329)) },
     { id: 'e2', num: 'Extra', title: 'More practice on the same topics', blurb: 'Repeats and extra practice for Units 1–8. Only if you have time left.', lessons: take(rest.filter((id) => !R329(id) && !L14(id))) },
-    { id: 'e3', num: 'Extra', title: 'Multipoles (Lecture 14, not on Exam I)', blurb: 'Not on Hour Exam I: the multipole expansion is Lecture 14. Kept for Exam II.', lessons: take(rest.filter(L14)) },
+    { id: 'e3', num: 'Extra', title: 'Multipoles (not on Exam I)', blurb: 'Not on Hour Exam I. Kept for Exam II.', lessons: take(rest.filter(L14)) },
   ];
   extra.forEach((u) => { u.extra = true; });
   extra[2].lessons.forEach((l) => { l.noBank = true; });

@@ -5,7 +5,7 @@
   const { R, RF, P, Q } = C;
   const unit = COURSE.units.find((u) => u.id === 'ch4');
 
-  const graded = BD.diagram({ w: 260, h: 150, E: [-1.05, 0.55], Ec: (x) => 0.12 + 0.3 * x, Ev: (x) => 0.12 + 0.3 * x - 1.11, Ei: (x) => 0.12 + 0.3 * x - 0.555, EF: 0, xl: 'x', field: 'right', lab: { Ei: '' } });
+  const graded = BD.diagram({ w: 260, h: 150, E: [-1.05, 0.55], Ec: (x) => 0.12 + 0.3 * x, Ev: (x) => 0.12 + 0.3 * x - 1.12, Ei: (x) => 0.12 + 0.3 * x - 0.56, EF: 0, xl: 'x', field: 'right', lab: { Ei: '' } });
   const gradedN = BD.prof({ w: 260, h: 170, x: [0, 1], y: [0, 1.1], xl: 'x', yl: 'N_d(x)', curves: [{ f: (x) => Math.exp(-2.3 * x), lab: 'N_0e^{-x/L}', labAt: 0.45, dy: -10 }], xt: [], yt: [[1, 'N_0']] });
 
   const profFig = BD.prof({

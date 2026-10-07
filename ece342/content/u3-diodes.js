@@ -132,7 +132,7 @@ $$v_{out} = \frac{2r_d}{R_1 + R_2 + 2r_d}\,(v_{in} - R_1i_{in}) = \frac{v_{in} -
       ...nodeOut(5.4, -0.4, 'V_{OUT}+v_{out}'),
     ],
     parts: [{ lbl: 'I_{OUT}', unit: 'mA', ans: 19.6 }, { lbl: 'r_d', unit: 'Ω', ans: 25 }, { lbl: '|v_{out}|', unit: 'mV', ans: 21, accept: [20] }],
-    hints: [md`DC: diodes clamp $V_X = 1.4\,\text{V}$ (current $\dfrac{2.4 - 1.4}{1\}text{k} = 1\,\text{mA}$). $V_{OUT} = A(1.4)^3$.`, md`Small signal: $v_x = v_{in}\frac{2r_d}{R_y + 2r_d}$. The VCVS gain is $dV/dv_X = 3AV_{X0}^2$.`],
+    hints: [md`DC: diodes clamp $V_X = 1.4\,\text{V}$ (current $\dfrac{2.4 - 1.4}{1\,\text{k}} = 1\,\text{mA}$). $V_{OUT} = A(1.4)^3$.`, md`Small signal: $v_x = v_{in}\frac{2r_d}{R_y + 2r_d}$. The VCVS gain is $dV/dv_X = 3AV_{X0}^2$.`],
     sol: md`**DC:** $V_X = 1.4\,\text{V}$, diode current $1\,\text{mA}$ (> 0 ✓). $V_{OUT} = \dfrac{1.4^3}{0.14} = \dfrac{2.744}{0.14} = 19.6\,\text{V}$, $I_{OUT} = 19.6/1\text{k} = 19.6\,\text{mA}$.
 
 **Linearise:** $r_d = 25\,\Omega$ (pair $50\,\Omega$). VCVS gain $= 3AV_{X0}^2 = \dfrac{3(1.96)}{0.14} = 42$.

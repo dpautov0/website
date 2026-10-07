@@ -44,7 +44,7 @@
 
 <!-- ============================== FRONT: most important first ============================== -->
 <div class="page">
-<div class="top"><b>ECE 340 · Exam 1 · FRONT (most important first)</b><span>$kT = 0.0259$ eV · $q = 1.6\times10^{-19}$ C · Si $n_i = 10^{10}\,\text{cm}^{-3}$ · cm, not m</span></div>
+<div class="top"><b>ECE 340 · Exam 1 · FRONT</b><span>$kT = 0.0259$ eV · $q = 1.6\times10^{-19}$ C · Si $n_i = 1.5\times10^{10}\,\text{cm}^{-3}$, $E_g = 1.12$ eV · cm, not m</span></div>
 <div class="cols">
 
 <section><h2>1 · Carriers at equilibrium</h2><span class="fig" data-f="nband"></span>
@@ -120,7 +120,7 @@
 <li>$m^* = \hbar^2/\frac{d^2E}{dk^2}$; $E = E_c + Ak^2$ → $m^* = \frac{\hbar^2}{2A}$ (J, m).</li>
 <li>Direct (GaAs): emits light. Indirect (Si, Ge): needs phonon.</li>
 <li>Metal: partly filled band. Semi: $E_g \sim 1$ eV. Insulator: $\gtrsim 5$ eV.</li>
-<li>Gaps: Si 1.11, GaAs 1.43, Ge 0.67 eV.</li>
+<li>Gaps: Si 1.12, GaAs 1.43, Ge 0.67 eV.</li>
 </ul></section>
 
 <section><h2>10 · Crystals</h2><span class="fig" data-f="cell"></span>
@@ -147,8 +147,8 @@
 <section class="ex"><h2>Ex 1 · Doped Si: $n_0$, $p_0$, $E_F$</h2><span class="fig" data-f="nband"></span>
 <p>Si, $N_d = 10^{16}$, 300 K.</p>
 <ul>
-<li>$n_0 = 10^{16}$; $p_0 = \frac{10^{20}}{10^{16}} = 1.00\times10^4\,\text{cm}^{-3}$.</li>
-<li>$E_F - E_i = 0.0259\ln10^6 = 0.358$ eV.</li>
+<li>$n_0 = 10^{16}$; $p_0 = \frac{2.25\times10^{20}}{10^{16}} = 2.25\times10^4\,\text{cm}^{-3}$.</li>
+<li>$E_F - E_i = 0.0259\ln\frac{10^{16}}{1.5\times10^{10}} = 0.347$ eV.</li>
 <li>$E_c - E_F = 0.0259\ln\frac{2.8\times10^{19}}{10^{16}} = 0.206$ eV.</li>
 </ul></section>
 
@@ -157,7 +157,7 @@
 <ul>
 <li>$f(E_c + kT) = \frac{1}{1 + e^{0.2259/0.0259}} = 1.63\times10^{-4}$.</li>
 <li>$n_0 = 2.8\times10^{19}e^{-7.72} = 1.24\times10^{16}$.</li>
-<li>$p_0 = 1.04\times10^{19}e^{-0.91/0.0259} = 5.73\times10^3$.</li>
+<li>$p_0 = 1.04\times10^{19}e^{-0.92/0.0259} = 3.89\times10^3$.</li>
 </ul></section>
 
 <section class="ex"><h2>Ex 3 · Compensated Ge ($n_i$ not negligible)</h2><span class="fig" data-f="comp"></span>
@@ -169,9 +169,9 @@
 </ul></section>
 
 <section class="ex"><h2>Ex 4 · Hot Si</h2><span class="fig" data-f="temp"></span>
-<p>$n_i(600) = 10^{10}\cdot2^{3/2}e^{\frac{1.11}{2(8.62\times10^{-5})}\cdot\frac{1}{600}} = 1.29\times10^{15}$.</p>
+<p>$n_i(600) = 1.5\times10^{10}\cdot2^{3/2}e^{\frac{1.12}{2(8.62\times10^{-5})}\cdot\frac{1}{600}} = 2.14\times10^{15}$.</p>
 <ul>
-<li>$N_d = 10^{15}$: $n_0 = 5\times10^{14} + \sqrt{2.5\times10^{29} + 1.67\times10^{30}} = 1.89\times10^{15}$.</li>
+<li>$N_d = 10^{15}$: $n_0 = 5\times10^{14} + \sqrt{2.5\times10^{29} + 4.57\times10^{30}} = 2.70\times10^{15}$.</li>
 </ul></section>
 
 <section class="ex"><h2>Ex 5 · Bar resistance</h2><span class="fig" data-f="bar"></span>
@@ -192,8 +192,8 @@
 <section class="ex"><h2>Ex 7 · Two regions in contact</h2><span class="fig" data-f="contact"></span>
 <p>$N_a = 10^{16}$ meets $N_d = 10^{17}$.</p>
 <ul>
-<li>n: $E_F - E_i = 0.0259\ln10^7 = 0.417$; p: $E_i - E_F = 0.358$ eV.</li>
-<li>$E_F$ lines up; bands step $qV_0 = 0.775$ eV.</li>
+<li>n: $E_F - E_i = 0.0259\ln(6.67\times10^6) = 0.407$; p: $E_i - E_F = 0.347$ eV.</li>
+<li>$E_F$ lines up; bands step $qV_0 = 0.754$ eV.</li>
 </ul></section>
 
 <section class="ex"><h2>Ex 8 · Graded doping</h2><span class="fig" data-f="graded"></span>
@@ -227,7 +227,7 @@
 <p>n-Si $10^{15}$, $g_{op} = 10^{19}$, $\tau = 2\,\mu$s.</p>
 <ul>
 <li>$\delta p = g_{op}\tau = 2.00\times10^{13}$ (low level).</li>
-<li>$F_n - E_i = 0.0259\ln(1.02\times10^5) = 0.299$; $E_i - F_p = 0.0259\ln2000 = 0.197$ eV.</li>
+<li>$F_n - E_i = 0.0259\ln(6.80\times10^4) = 0.288$; $E_i - F_p = 0.0259\ln1333 = 0.186$ eV.</li>
 <li>$\Delta\sigma = q\,\delta p(\mu_n + \mu_p) = 5.86\times10^{-3}\,(\Omega\text{cm})^{-1}$.</li>
 </ul></section>
 

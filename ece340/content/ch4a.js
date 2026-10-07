@@ -29,8 +29,8 @@
     curves: [{ f: (t) => Math.exp(-t), lab: '\\text{low level}', labAt: 2.4, dy: -14 }, { f: (t) => 1 / (1 + 3 * t), cls: 'dash', lab: '\\text{high level}', labAt: 3.1, dy: -10 }],
   });
 
-  const dark = BD.diagram({ w: 150, h: 140, E: [-0.1, 1.25], Ec: 1.11, Ev: 0, Ei: 0.555, EF: 0.853, axis: false });
-  const lit = BD.diagram({ w: 150, h: 140, E: [-0.1, 1.25], Ec: 1.11, Ev: 0, Ei: 0.555, Fn: 0.854, Fp: 0.358, axis: false, dims: [{ x: 0.25, a: 'Ei', b: 'Fp', tex: '0.197\\,\\text{eV}', at: 'r' }] });
+  const dark = BD.diagram({ w: 150, h: 140, E: [-0.1, 1.25], Ec: 1.12, Ev: 0, Ei: 0.56, EF: 0.848, axis: false });
+  const lit = BD.diagram({ w: 150, h: 140, E: [-0.1, 1.25], Ec: 1.12, Ev: 0, Ei: 0.56, Fn: 0.849, Fp: 0.374, axis: false, dims: [{ x: 0.25, a: 'Ei', b: 'Fp', tex: '0.186\\,\\text{eV}', at: 'r' }] });
 
   C.unit({
     id: 'ch4', exam: 'e1', num: 'Ch. 4', title: 'Excess carriers in semiconductors',
@@ -44,7 +44,7 @@
 
             A photon can break a bond and make an electron–hole pair only if it brings at least the gap energy:
             $$h\nu \ge E_g \qquad E\,[\text{eV}] = \frac{1.24}{\lambda\,[\mu\text{m}]}$$
-            Below the gap the material is **transparent** (Si is transparent beyond 1.12 μm, so Si detectors are blind to the 1.3–1.55 μm fiber-optic bands). Above it, light is absorbed; any energy beyond $E_g$ goes to the electron (or hole) as kinetic energy and is handed to the lattice as **heat** within picoseconds (thermalization). The pair then lives on near the band edges until it recombines, which in a direct-gap material can emit a photon of energy $\approx E_g$.
+            Below the gap the material is **transparent** (Si is transparent beyond 1.11 μm, so Si detectors are blind to the 1.3–1.55 μm fiber-optic bands). Above it, light is absorbed; any energy beyond $E_g$ goes to the electron (or hole) as kinetic energy and is handed to the lattice as **heat** within picoseconds (thermalization). The pair then lives on near the band edges until it recombines, which in a direct-gap material can emit a photon of energy $\approx E_g$.
 
             [[fig:abs]]
 
@@ -90,10 +90,10 @@
           `),
           P({
             title: 'Cutoff wavelength of Si',
-            q: md`What is the longest wavelength silicon ($E_g = 1.11$ eV) can absorb to create electron–hole pairs?`,
-            parts: [{ lbl: md`\lambda_{\max}`, ans: 1.117, unit: 'μm' }],
+            q: md`What is the longest wavelength silicon ($E_g = 1.12$ eV) can absorb to create electron–hole pairs?`,
+            parts: [{ lbl: md`\lambda_{\max}`, ans: 1.107, unit: 'μm' }],
             hints: [md`$\lambda = 1.24/E_g$ (μm, eV).`],
-            sol: md`$$\lambda_{\max} = \frac{1.24\,\mu\text{m·eV}}{1.11\,\text{eV}} = 1.12\,\mu\text{m}$$ Longer wavelengths pass through.`,
+            sol: md`$$\lambda_{\max} = \frac{1.24\,\mu\text{m·eV}}{1.12\,\text{eV}} = 1.11\,\mu\text{m}$$ Longer wavelengths pass through.`,
           }),
           P({
             title: 'Thickness for 90% absorption',
@@ -110,7 +110,7 @@
             sol: md`$$\frac{I_t}{I_0} = e^{-\alpha d} = e^{-0.50} = 0.607$$`,
           }),
           Q(md`Why can a silicon wafer look opaque in visible light yet transmit 1.55 μm infrared?`,
-            ['1.55 μm photons (0.80 eV) are below Si\'s 1.11 eV gap, so they can\'t create pairs', 'Infrared photons are faster', 'Si is indirect, so it never absorbs', 'Visible light is reflected, not absorbed'], 0,
+            ['1.55 μm photons (0.80 eV) are below Si\'s 1.12 eV gap, so they can\'t create pairs', 'Infrared photons are faster', 'Si is indirect, so it never absorbs', 'Visible light is reflected, not absorbed'], 0,
             [null, 'All photons travel at the same speed in vacuum; in Si the issue is energy.', 'Si absorbs visible light strongly; indirectness only weakens absorption near the gap.', 'Some is reflected, but most visible light is absorbed.'],
             md`$h\nu = 1.24/1.55 = 0.80\,\text{eV} < E_g$: transparent.`),
         ],
@@ -255,18 +255,18 @@
             ### Worked example
 
             !!graded Problem
-              n-type Si at 300 K ($N_d = 1.0\times10^{15}\,\text{cm}^{-3}$, $n_i = 1.0\times10^{10}\,\text{cm}^{-3}$, $\mu_n = 1350$, $\mu_p = 480\,\text{cm}^2/\text{V·s}$) is lit uniformly with $g_{op} = 1.0\times10^{19}\,\text{cm}^{-3}\text{s}^{-1}$; $\tau_n = \tau_p = 2.0\,\mu$s. Find (a) $\delta n = \delta p$, (b) $F_n - E_i$ and $E_i - F_p$, (c) $\Delta\sigma$ and compare with the dark $\sigma_0$.
+              n-type Si at 300 K ($N_d = 1.0\times10^{15}\,\text{cm}^{-3}$, $n_i = 1.5\times10^{10}\,\text{cm}^{-3}$, $\mu_n = 1350$, $\mu_p = 480\,\text{cm}^2/\text{V·s}$) is lit uniformly with $g_{op} = 1.0\times10^{19}\,\text{cm}^{-3}\text{s}^{-1}$; $\tau_n = \tau_p = 2.0\,\mu$s. Find (a) $\delta n = \delta p$, (b) $F_n - E_i$ and $E_i - F_p$, (c) $\Delta\sigma$ and compare with the dark $\sigma_0$.
 
             **1. Diagram and governing equations.** The lit band diagram above.
             $$\delta p = g_{op}\tau_p, \quad F_n - E_i = kT\ln\frac{n_0 + \delta n}{n_i}, \quad E_i - F_p = kT\ln\frac{p_0 + \delta p}{n_i}, \quad \Delta\sigma = q\,\delta p\left(\mu_n + \mu_p\right)$$
 
             **2–3. Substitute, with units.**
             $$\delta p = \left(1.0\times10^{19}\,\text{cm}^{-3}\text{s}^{-1}\right)\left(2.0\times10^{-6}\,\text{s}\right) = 2.0\times10^{13}\,\text{cm}^{-3} \;(\ll n_0\text{: low level})$$
-            $$F_n - E_i = (0.0259\,\text{eV})\ln\frac{1.02\times10^{15}\,\text{cm}^{-3}}{1.0\times10^{10}\,\text{cm}^{-3}}, \qquad E_i - F_p = (0.0259\,\text{eV})\ln\frac{2.0\times10^{13}\,\text{cm}^{-3}}{1.0\times10^{10}\,\text{cm}^{-3}}$$
-            ($p_0 = 10^5\,\text{cm}^{-3}$ is negligible next to $\delta p$.)
+            $$F_n - E_i = (0.0259\,\text{eV})\ln\frac{1.02\times10^{15}\,\text{cm}^{-3}}{1.5\times10^{10}\,\text{cm}^{-3}}, \qquad E_i - F_p = (0.0259\,\text{eV})\ln\frac{2.0\times10^{13}\,\text{cm}^{-3}}{1.5\times10^{10}\,\text{cm}^{-3}}$$
+            ($p_0 = 2.25\times10^5\,\text{cm}^{-3}$ is negligible next to $\delta p$.)
             $$\Delta\sigma = \left(1.6\times10^{-19}\,\text{C}\right)\left(2.0\times10^{13}\,\text{cm}^{-3}\right)\left(1350 + 480\right)\tfrac{\text{cm}^2}{\text{V·s}}, \qquad \sigma_0 = \left(1.6\times10^{-19}\right)\left(10^{15}\right)(1350)$$
 
-            **4. Answers.** (a) $\delta n = \delta p = 2.00\times10^{13}\,\text{cm}^{-3}$; (b) $F_n - E_i = 0.299$ eV (dark $E_F - E_i = 0.298$ eV: it hardly moved), $E_i - F_p = 0.197$ eV (dark: $E_F$ was $0.298$ eV **above** $E_i$, so $F_p$ moved down by almost 0.5 eV); (c) $\Delta\sigma = 5.86\times10^{-3}\,(\Omega\cdot\text{cm})^{-1}$, about 2.7% of $\sigma_0 = 0.216\,(\Omega\cdot\text{cm})^{-1}$.
+            **4. Answers.** (a) $\delta n = \delta p = 2.00\times10^{13}\,\text{cm}^{-3}$; (b) $F_n - E_i = 0.288$ eV (dark $E_F - E_i = 0.288$ eV: it hardly moved), $E_i - F_p = 0.186$ eV (dark: $E_F$ was $0.288$ eV **above** $E_i$, so $F_p$ moved down by about 0.47 eV); (c) $\Delta\sigma = 5.86\times10^{-3}\,(\Omega\cdot\text{cm})^{-1}$, about 2.7% of $\sigma_0 = 0.216\,(\Omega\cdot\text{cm})^{-1}$.
 
             !!mistake Common mistakes
               - Using $\delta p$ alone for $F_p$ when $p_0$ is not negligible (use $p_0 + \delta p$), or $\delta n$ alone for $F_n$ (it is $n_0 + \delta n$, dominated by $n_0$).
@@ -286,10 +286,10 @@
           }),
           P({
             title: 'Quasi-Fermi levels in p-type Si',
-            q: md`p-type Si at 300 K ($N_a = 1.0\times10^{16}\,\text{cm}^{-3}$, $n_i = 1.0\times10^{10}\,\text{cm}^{-3}$) is lit so that $\delta n = \delta p = 1.0\times10^{14}\,\text{cm}^{-3}$. Find $F_n - E_i$ and $E_i - F_p$.`,
-            parts: [{ lbl: md`F_n - E_i`, ans: 0.2385, unit: 'eV', tol: { abs: 0.002 } }, { lbl: md`E_i - F_p`, ans: 0.3581, unit: 'eV', tol: { abs: 0.002 } }],
-            hints: [md`$n = n_0 + \delta n \approx \delta n$ ($n_0 = 10^4$); $p = p_0 + \delta p = 1.01\times10^{16}$.`],
-            sol: md`$$F_n - E_i = (0.0259\,\text{eV})\ln\frac{1.0\times10^{14}}{1.0\times10^{10}} = 0.239\,\text{eV}, \qquad E_i - F_p = (0.0259\,\text{eV})\ln\frac{1.01\times10^{16}}{1.0\times10^{10}} = 0.358\,\text{eV}$$ $F_n$ jumped from $0.358$ eV **below** $E_i$ (in the dark) to $0.239$ eV above it; $F_p$ barely moved.`,
+            q: md`p-type Si at 300 K ($N_a = 1.0\times10^{16}\,\text{cm}^{-3}$, $n_i = 1.5\times10^{10}\,\text{cm}^{-3}$) is lit so that $\delta n = \delta p = 1.0\times10^{14}\,\text{cm}^{-3}$. Find $F_n - E_i$ and $E_i - F_p$.`,
+            parts: [{ lbl: md`F_n - E_i`, ans: 0.2280, unit: 'eV', tol: { abs: 0.002 } }, { lbl: md`E_i - F_p`, ans: 0.3476, unit: 'eV', tol: { abs: 0.002 } }],
+            hints: [md`$n = n_0 + \delta n \approx \delta n$ ($n_0 = 2.25\times10^4$); $p = p_0 + \delta p = 1.01\times10^{16}$.`],
+            sol: md`$$F_n - E_i = (0.0259\,\text{eV})\ln\frac{1.0\times10^{14}}{1.5\times10^{10}} = 0.228\,\text{eV}, \qquad E_i - F_p = (0.0259\,\text{eV})\ln\frac{1.01\times10^{16}}{1.5\times10^{10}} = 0.348\,\text{eV}$$ $F_n$ jumped from $0.347$ eV **below** $E_i$ (in the dark) to $0.228$ eV above it; $F_p$ barely moved.`,
           }),
           P({
             title: 'Photoconductivity',

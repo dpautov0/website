@@ -61,7 +61,7 @@ $R_{D,max}$: $V_D \le V_G + 1 = 1.8 \Rightarrow R_{D,max} = 1.8/2\text{m} = 900\
 
 **$2X$:** gate at $N_3 = 1.2$ V, so $V_{ov} = 0.2$, $I = \tfrac12(100\mu)(1000)(0.04) = 2\,\text{mA}$.
 
-**$M_X$:** $I_{1\text{k}} = \dfrac{5-2}{1\}text{k} = 3\,\text{mA}$, so $I_X = 3 - 2 = 1\,\text{mA}$. $V_S = 1.1\,\text{V}$, $V_G = N_2 = 2.3$, so $V_{GS} = 1.2$ and $V_{ov} = 0.2$: $W/L = \dfrac{2(1\text{m})}{(100\mu)(0.04)} = 500 = 1X$. Saturation: $V_D = 2 \ge V_G - V_T = 1.3$. ✓`,
+**$M_X$:** $I_{1\text{k}} = \dfrac{5-2}{1\,\text{k}} = 3\,\text{mA}$, so $I_X = 3 - 2 = 1\,\text{mA}$. $V_S = 1.1\,\text{V}$, $V_G = N_2 = 2.3$, so $V_{GS} = 1.2$ and $V_{ov} = 0.2$: $W/L = \dfrac{2(1\text{m})}{(100\mu)(0.04)} = 500 = 1X$. Saturation: $V_D = 2 \ge V_G - V_T = 1.3$. ✓`,
   });
 
   X.PS34 = P({

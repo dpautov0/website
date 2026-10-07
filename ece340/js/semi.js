@@ -13,9 +13,9 @@
     m0: 9.11e-31,          // kg
     eps0: 8.85e-14,        // F/cm
     c: 3e8,                // m/s
-    // 300 K values used on this site (Streetman & Banerjee 7e, Appendix III style). ni(Si) is the one to confirm in class.
+    // 300 K values used on this site. Si nᵢ = 1.5×10¹⁰ cm⁻³ and E_g = 1.12 eV are the values the course's homework uses.
     mat: {
-      Si: { name: 'Si', Eg: 1.11, ni: 1e10, Nc: 2.8e19, Nv: 1.04e19, mun: 1350, mup: 480, er: 11.8, a: 5.43, gap: 'indirect' },
+      Si: { name: 'Si', Eg: 1.12, ni: 1.5e10, Nc: 2.8e19, Nv: 1.04e19, mun: 1350, mup: 480, er: 11.8, a: 5.43, gap: 'indirect' },
       Ge: { name: 'Ge', Eg: 0.67, ni: 2.5e13, Nc: 1.04e19, Nv: 6.0e18, mun: 3900, mup: 1900, er: 16, a: 5.65, gap: 'indirect' },
       GaAs: { name: 'GaAs', Eg: 1.43, ni: 2e6, Nc: 4.7e17, Nv: 7.0e18, mun: 8500, mup: 400, er: 13.2, a: 5.65, gap: 'direct' },
     },

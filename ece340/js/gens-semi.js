@@ -199,14 +199,14 @@
     const v = pick(['big', 'Ge', 'Ge', 'hot']);
     let m, ni, Nd, Na, Tk = 300, note = '';
     if (v === 'big') {
-      m = 'Si'; ni = 1e10;
+      m = 'Si'; ni = S.mat.Si.ni;
       do { Nd = dec(15, 17); Na = dec(15, 17); } while (Math.abs(Nd - Na) < 0.2 * Math.max(Nd, Na));
     } else if (v === 'Ge') {
       m = 'Ge'; ni = 2.5e13;
       do { Nd = mant() * 1e13; Na = mant() * 1e13; } while (Math.abs(Nd - Na) < 0.5e13 || Math.abs(Nd - Na) > 6e13);
     } else {
       m = 'Si'; Tk = pick([450, 500, 550, 600]);
-      ni = +(1e10 * Math.pow(Tk / 300, 1.5) * exp(-(1.11 / (2 * 8.62e-5)) * (1 / Tk - 1 / 300))).toPrecision(2);
+      ni = +(S.mat.Si.ni * Math.pow(Tk / 300, 1.5) * exp(-(S.mat.Si.Eg / (2 * 8.62e-5)) * (1 / Tk - 1 / 300))).toPrecision(2);
       do { Nd = dec(Math.floor(Math.log10(ni)) - 1, Math.floor(Math.log10(ni)) + 1); Na = dec(Math.floor(Math.log10(ni)) - 1, Math.floor(Math.log10(ni)) + 1); } while (Math.abs(Nd - Na) < 0.2 * Math.max(Nd, Na));
       note = ' (at this temperature)';
     }
@@ -216,17 +216,18 @@
     const mj = ntype ? 'n_0' : 'p_0', mn = ntype ? 'p_0' : 'n_0', D = ntype ? 'N_d - N_a' : 'N_a - N_d';
     return {
       title: 'Compensated sample',
-      q: md`${m} at ${Tk} K has $N_d = ${p(Nd)}$ and $N_a = ${p(Na)}${CM3}$, all ionized; $n_i = ${p(ni)}${CM3}$${note}. Find $n_0$ and $p_0$.`,
+      q: md`${m} at ${Tk} K has $N_d = ${p(Nd)}$ and $N_a = ${p(Na)}${CM3}$, all ionized; $n_i = ${p(ni)}${CM3}$${note}, $kT = ${kTt(Tk)}$ eV. Find $n_0$, $p_0$, and $E_F - E_i$.`,
       parts: [
         { lbl: 'Type', mc: ['n-type', 'p-type'], a: ntype ? 0 : 1, why: ntype ? [null, 'There are more donors than acceptors.'] : ['There are more acceptors than donors.', null] },
         T({ lbl: 'n_0', ans: n0, unit: 'cm^{-3}' }), T({ lbl: 'p_0', ans: p0, unit: 'cm^{-3}' }),
+        T({ lbl: 'E_F - E_i', ans: kTof(Tk) * ln(n0 / ni), unit: 'eV', tol: { abs: 0.002 } }),
       ],
       hints: ['Space-charge neutrality: $p_0 + N_d = n_0 + N_a$, with $n_0p_0 = n_i^2$.', full ? `$|N_d - N_a| = ${p(net)}$ is within about 30× of $n_i$, so keep $n_i$: use the full quadratic.` : `$|N_d - N_a| = ${p(net)} \\gg n_i$, so the majority is just the net doping.`],
       sol: G4('$p_0 + N_d^+ = n_0 + N_a^-$ and $n_0p_0 = n_i^2$.',
         full ? `$$${mj} = \\frac{${D}}{2} + \\sqrt{\\left(\\frac{${D}}{2}\\right)^2 + n_i^2}, \\qquad ${mn} = \\frac{n_i^2}{${mj}}$$` : `$${D} \\gg n_i$: $\\;${mj} \\approx ${D}$, $\\;${mn} = n_i^2/${mj}$.`,
         full ? `$$${mj} = ${p(net / 2)}${CM3} + \\sqrt{\\left(${p(net / 2)}${CM3}\\right)^2 + \\left(${p(ni)}${CM3}\\right)^2}$$ $$${mn} = \\frac{\\left(${p(ni)}${CM3}\\right)^2}{${f(ntype ? n0 : p0)}${CM3}}$$`
           : `$$${mj} = ${p(Math.max(Nd, Na))}${CM3} - ${p(Math.min(Nd, Na))}${CM3}, \\qquad ${mn} = \\frac{\\left(${p(ni)}${CM3}\\right)^2}{${f(net)}${CM3}}$$`,
-        `${ntype ? 'n' : 'p'}-type: $n_0 = ${f(n0)}${CM3}$, $p_0 = ${f(p0)}${CM3}$. Check: $p_0 + N_d = ${f(p0 + Nd)}$, $n_0 + N_a = ${f(n0 + Na)}$ ✓.`),
+        `${ntype ? 'n' : 'p'}-type: $n_0 = ${f(n0)}${CM3}$, $p_0 = ${f(p0)}${CM3}$. Check: $p_0 + N_d = ${f(p0 + Nd)}$, $n_0 + N_a = ${f(n0 + Na)}$ ✓. $E_F - E_i = kT\\ln\\dfrac{n_0}{n_i} = ${f(kTof(Tk) * ln(n0 / ni))}$ eV (${ntype ? 'above' : 'below'} $E_i$).`),
     };
   };
 
@@ -239,9 +240,9 @@
     const type = pick(['n', 'p']), N = dec(14, 18), mu = muFor(type, N);
     const L = pick([0.1, 0.2, 0.5, 1, 2, 5]) * 1e-1, w = pick([10, 20, 50, 100, 200, 500]) * 1e-4, t = pick([1, 2, 5, 10, 20, 50]) * 1e-4, V = pick([1, 2, 2.5, 3, 5, 10]);
     const A = w * t;
-    const sigma = intrinsic ? S.q * 1e10 * (1350 + 480) : S.q * N * mu;
+    const sigma = intrinsic ? S.q * S.mat.Si.ni * (1350 + 480) : S.q * N * mu;
     const rho = 1 / sigma, R = rho * L / A, I = V / R, J = I / A;
-    const desc = intrinsic ? 'intrinsic Si ($n_i = 10^{10}\\,\\text{cm}^{-3}$, $\\mu_n = 1350$, $\\mu_p = 480\\,\\text{cm}^2/\\text{V·s}$)'
+    const desc = intrinsic ? 'intrinsic Si ($n_i = 1.5\\times10^{10}\\,\\text{cm}^{-3}$, $\\mu_n = 1350$, $\\mu_p = 480\\,\\text{cm}^2/\\text{V·s}$)'
       : `${type}-type Si with $${type === 'n' ? 'N_d' : 'N_a'} = ${p(N)}${CM3}$ and $\\mu_${type} = ${mu}\\,\\text{cm}^2/\\text{V·s}$`;
     const Lmm = +(L * 10).toPrecision(3), wum = +(w * 1e4).toPrecision(3), tum = +(t * 1e4).toPrecision(3);
     return {
@@ -252,7 +253,7 @@
       hints: [intrinsic ? '$\\sigma = qn_i(\\mu_n + \\mu_p)$: both carriers count.' : `Majority carriers only: $\\sigma = q${type === 'n' ? 'N_d\\mu_n' : 'N_a\\mu_p'}$.`, 'Convert to cm first: 1 mm = 0.1 cm, 1 μm = $10^{-4}$ cm.', '$R = \\rho L/A$, $I = V/R$, $J = I/A$.'],
       sol: G4(`$\\sigma = q(n\\mu_n + p\\mu_p)$, $\\rho = 1/\\sigma$, $R = \\rho L/A$, $I = V/R$, $J = I/A$.`,
         intrinsic ? '$\\sigma = qn_i(\\mu_n + \\mu_p)$.' : `Minority carriers negligible: $\\sigma = q${type === 'n' ? 'N_d\\mu_n' : 'N_a\\mu_p'}$. $L = ${f(L)}$ cm, $A = (${f(w)}\\,\\text{cm})(${f(t)}\\,\\text{cm}) = ${f(A)}\\,\\text{cm}^2$.`,
-        `$$\\sigma = \\left(${Q}\\right)${intrinsic ? '\\left(10^{10}\\,\\text{cm}^{-3}\\right)\\left(1830' + CMS + '\\right)' : `\\left(${p(N)}${CM3}\\right)\\left(${mu}${CMS}\\right)`} = ${f(sigma)}\\,(\\Omega\\cdot\\text{cm})^{-1}$$ $$R = \\frac{(${f(rho)}\\,\\Omega\\cdot\\text{cm})(${f(L)}\\,\\text{cm})}{${f(A)}\\,\\text{cm}^2}, \\quad I = \\frac{${V}\\,\\text{V}}{${f(R)}\\,\\Omega}, \\quad J = \\frac{${f(I)}\\,\\text{A}}{${f(A)}\\,\\text{cm}^2}$$`,
+        `$$\\sigma = \\left(${Q}\\right)${intrinsic ? '\\left(1.5\\times10^{10}\\,\\text{cm}^{-3}\\right)\\left(1830' + CMS + '\\right)' : `\\left(${p(N)}${CM3}\\right)\\left(${mu}${CMS}\\right)`} = ${f(sigma)}\\,(\\Omega\\cdot\\text{cm})^{-1}$$ $$R = \\frac{(${f(rho)}\\,\\Omega\\cdot\\text{cm})(${f(L)}\\,\\text{cm})}{${f(A)}\\,\\text{cm}^2}, \\quad I = \\frac{${V}\\,\\text{V}}{${f(R)}\\,\\Omega}, \\quad J = \\frac{${f(I)}\\,\\text{A}}{${f(A)}\\,\\text{cm}^2}$$`,
         `$\\rho = ${f(rho)}\\,\\Omega\\cdot\\text{cm}$, $R = ${f(R)}\\,\\Omega$, $I = ${f(I * 1e3)}$ mA, $J = ${f(J)}\\,\\text{A/cm}^2$.`),
     };
   };
@@ -460,17 +461,17 @@
     const ntype = Math.random() < 0.5, N = dec(14, 17), gop = dec(18, 21), tau = pick([0.1, 0.5, 1, 2, 5, 10]) * 1e-6;
     const d = gop * tau;
     if (d > 0.1 * N || d < 1e11) return GENS.semi_qfl();
-    const ni = 1e10, n0 = ntype ? N : ni * ni / N, p0 = ntype ? ni * ni / N : N;
+    const ni = S.mat.Si.ni, n0 = ntype ? N : ni * ni / N, p0 = ntype ? ni * ni / N : N;
     const n = n0 + d, pp = p0 + d, Fn = 0.0259 * ln(n / ni), Fp = 0.0259 * ln(pp / ni);
     return {
       title: 'Quasi-Fermi levels under uniform light',
-      q: md`${ntype ? 'n' : 'p'}-type Si at 300 K ($${ntype ? 'N_d' : 'N_a'} = ${p(N)}${CM3}$, $n_i = 10^{10}${CM3}$) is lit uniformly: $g_{op} = ${p(gop)}\,\text{cm}^{-3}\text{s}^{-1}$, $\tau_n = \tau_p = ${+(tau * 1e6).toPrecision(3)}\,\mu$s. Find the excess carrier concentration, $F_n - E_i$, and $E_i - F_p$.`,
-      figHtml: bandFig(1.11, 0.555 + (ntype ? 1 : -1) * 0.0259 * ln(N / ni), { lab: { EF: 'E_F\\ (\\text{dark})' } }),
+      q: md`${ntype ? 'n' : 'p'}-type Si at 300 K ($${ntype ? 'N_d' : 'N_a'} = ${p(N)}${CM3}$, $n_i = ${p(ni)}${CM3}$) is lit uniformly: $g_{op} = ${p(gop)}\,\text{cm}^{-3}\text{s}^{-1}$, $\tau_n = \tau_p = ${+(tau * 1e6).toPrecision(3)}\,\mu$s. Find the excess carrier concentration, $F_n - E_i$, and $E_i - F_p$.`,
+      figHtml: bandFig(S.mat.Si.Eg, S.mat.Si.Eg / 2 + (ntype ? 1 : -1) * 0.0259 * ln(N / ni), { lab: { EF: 'E_F\\ (\\text{dark})' } }),
       parts: [T({ lbl: '\\delta n = \\delta p', ans: d, unit: 'cm^{-3}' }), T({ lbl: 'F_n - E_i', ans: Fn, unit: 'eV', tol: { abs: 0.002 } }), T({ lbl: 'E_i - F_p', ans: Fp, unit: 'eV', tol: { abs: 0.002 } })],
       hints: ['$\\delta n = \\delta p = g_{op}\\tau$.', '$n = n_0 + \\delta n = n_ie^{(F_n - E_i)/kT}$ and $p = p_0 + \\delta p = n_ie^{(E_i - F_p)/kT}$.', `The minority equilibrium value is $${p(ntype ? p0 : n0)}$: negligible next to the excess.`],
       sol: G4('$\\delta n = \\delta p = g_{op}\\tau$; $\\;n = n_i\\,e^{(F_n - E_i)/kT}$, $\\;p = n_i\\,e^{(E_i - F_p)/kT}$.',
         '$F_n - E_i = kT\\ln\\dfrac{n_0 + \\delta n}{n_i}$, $\\;E_i - F_p = kT\\ln\\dfrac{p_0 + \\delta p}{n_i}$.',
-        `$$\\delta n = \\left(${p(gop)}\\,\\text{cm}^{-3}\\text{s}^{-1}\\right)\\left(${f(tau)}\\,\\text{s}\\right) = ${f(d)}${CM3}$$ $$F_n - E_i = (0.0259\\,\\text{eV})\\ln\\frac{${f(n)}${CM3}}{10^{10}${CM3}}, \\qquad E_i - F_p = (0.0259\\,\\text{eV})\\ln\\frac{${f(pp)}${CM3}}{10^{10}${CM3}}$$`,
+        `$$\\delta n = \\left(${p(gop)}\\,\\text{cm}^{-3}\\text{s}^{-1}\\right)\\left(${f(tau)}\\,\\text{s}\\right) = ${f(d)}${CM3}$$ $$F_n - E_i = (0.0259\\,\\text{eV})\\ln\\frac{${f(n)}${CM3}}{${p(ni)}${CM3}}, \\qquad E_i - F_p = (0.0259\\,\\text{eV})\\ln\\frac{${f(pp)}${CM3}}{${p(ni)}${CM3}}$$`,
         `$\\delta n = ${f(d)}${CM3}$, $F_n - E_i = ${f(Fn)}$ eV, $E_i - F_p = ${f(Fp)}$ eV. The ${ntype ? 'hole' : 'electron'} (minority) level moved; the majority one barely did.`),
     };
   };
@@ -542,6 +543,82 @@
       hints: ['$m^* = \\hbar^2/(d^2E/dk^2)$ and $d^2E/dk^2 = 2A$.'],
       sol: G4('$m^* = \\dfrac{\\hbar^2}{d^2E/dk^2}$.', '$d^2E/dk^2 = 2A$, so $\\dfrac{m^*}{m_0} = \\dfrac{\\hbar^2}{2Am_0}$.',
         `$$\\frac{m^*}{m_0} = \\frac{\\left(1.055\\times10^{-34}\\,\\text{J·s}\\right)^2}{2\\left(${p(Ar)}\\,\\text{J·m}^2\\right)\\left(9.11\\times10^{-31}\\,\\text{kg}\\right)}$$`, `$m^* = ${f(m)}\\,m_0$.`),
+    };
+  };
+
+  // ======================================================================== added: units, contact potential, minimum conductivity
+  GENS.semi_units = () => {
+    if (Math.random() < 0.5) {
+      const toNm = Math.random() < 0.5;
+      const E = pick([0.8, 1.2, 1.42, 1.9, 2.4, 3.1]), lam = pick([400, 532, 650, 850, 980, 1310, 1550]);
+      return toNm ? {
+        title: 'Photon energy and wavelength',
+        q: md`What is the wavelength of a photon of energy $${E}$ eV? Answer in nm.`,
+        parts: [T({ lbl: '\\lambda', ans: 1240 / E, unit: 'nm' })],
+        hints: ['$E = hc/\\lambda$; $hc = 1240$ eV·nm $= 1.24$ eV·μm.'],
+        sol: G4('$E = h\\nu = \\dfrac{hc}{\\lambda}$.', '$\\lambda = \\dfrac{hc}{E}$ with $hc = 1240$ eV·nm.', `$$\\lambda = \\frac{1240\\,\\text{eV·nm}}{${E}\\,\\text{eV}}$$`, `$\\lambda = ${f(1240 / E)}$ nm.`),
+      } : {
+        title: 'Photon energy and wavelength',
+        q: md`What is the energy of a ${lam} nm photon, in eV? Could it make electron–hole pairs in Si ($E_g = 1.12$ eV)?`,
+        parts: [T({ lbl: 'E', ans: 1240 / lam, unit: 'eV' }), { lbl: 'In Si', mc: ['Yes, it is above the gap', 'No, it is below the gap'], a: 1240 / lam >= 1.12 ? 0 : 1, why: 1240 / lam >= 1.12 ? [null, 'It is above 1.12 eV.'] : ['It is below 1.12 eV.', null] }],
+        hints: ['$E\\,[\\text{eV}] = 1240/\\lambda\\,[\\text{nm}]$.'],
+        sol: G4('$E = hc/\\lambda$.', '$E = \\dfrac{1240\\,\\text{eV·nm}}{\\lambda}$.', `$$E = \\frac{1240\\,\\text{eV·nm}}{${lam}\\,\\text{nm}}$$`, `$E = ${f(1240 / lam)}$ eV: ${1240 / lam >= 1.12 ? 'above' : 'below'} Si's gap.`),
+      };
+    }
+    const Tk = pick([4, 77, 120, 250, 350, 400, 500]);
+    return {
+      title: 'Thermal voltage',
+      q: md`Find the thermal energy $kT$ (in meV) at ${Tk} K, using $k = 8.62\times10^{-5}$ eV/K.`,
+      parts: [T({ lbl: 'kT', ans: 8.62e-5 * Tk * 1000, unit: 'meV' })],
+      hints: ['$kT = (8.62\\times10^{-5}\\,\\text{eV/K})\\,T$; 300 K gives 25.9 meV.'],
+      sol: G4('$kT$ with $k = 8.62\\times10^{-5}$ eV/K.', '$kT = kT$; in volts, $kT/q$ is the same number.', `$$kT = \\left(8.62\\times10^{-5}\\,\\tfrac{\\text{eV}}{\\text{K}}\\right)(${Tk}\\,\\text{K})$$`, `$kT = ${f(8.62e-5 * Tk * 1000)}$ meV.`),
+    };
+  };
+
+  GENS.semi_contact = () => {
+    const ni = S.mat.Si.ni, v = pick(['pn', 'pn', 'nn', 'ef']);
+    if (v === 'ef') {
+      const a = +U.rand(0.1, 0.42).toFixed(2), b = +U.rand(0.1, 0.42).toFixed(2), sa = pick([1, -1]), sb = sa === 1 ? pick([-1, 1]) : -1;
+      const d = Math.abs(sa * a - sb * b);
+      return {
+        title: 'Two samples in contact',
+        q: md`Sample 1 has $E_F - E_i = ${sa * a > 0 ? '+' : ''}${sa * a}$ eV; sample 2 has $E_F - E_i = ${sb * b > 0 ? '+' : ''}${sb * b}$ eV (same material). They are joined. At equilibrium, how big is the step in the bands between them?`,
+        parts: [T({ lbl: '\\Delta E_c', ans: d, unit: 'eV', tol: { abs: 0.002 } })],
+        hints: ['$E_F$ must line up. Each sample keeps its own $E_F - E_i$, so the bands shift by the difference.'],
+        sol: G4('At equilibrium $E_F$ is flat.', '$\\Delta E_c = \\Delta E_i = |(E_F - E_i)_1 - (E_F - E_i)_2|$.', `$$\\Delta E_c = |(${sa * a}) - (${sb * b})|\\,\\text{eV}$$`, `$\\Delta E_c = ${f(d)}$ eV; the bands sit higher on the side whose $E_F$ was lower (more p-like).`),
+      };
+    }
+    if (v === 'nn') {
+      const N1 = dec(14, 16), N2 = N1 * pick([10, 20, 50, 100, 1000]), d = 0.0259 * ln(N2 / N1);
+      return {
+        title: 'n–n⁺ step',
+        q: md`Two n-type Si regions at 300 K, $N_d = ${p(N1)}$ and $${p(N2)}${CM3}$, touch. Find the step in $E_c$ at equilibrium.`,
+        parts: [T({ lbl: '\\Delta E_c', ans: d, unit: 'eV', tol: { abs: 0.002 } })],
+        hints: ['$E_c - E_F = kT\\ln(N_c/n_0)$ on each side; subtract.'],
+        sol: G4('$E_F$ flat; $E_c - E_F = kT\\ln\\dfrac{N_c}{n_0}$ on each side.', '$\\Delta E_c = kT\\ln\\dfrac{N_{d2}}{N_{d1}}$.', `$$\\Delta E_c = (0.0259\\,\\text{eV})\\ln\\frac{${p(N2)}}{${p(N1)}}$$`, `$\\Delta E_c = ${f(d)}$ eV, with $E_c$ lower on the heavily doped side.`),
+      };
+    }
+    const Na = dec(14, 17), Nd = dec(14, 17), V0 = 0.0259 * ln(Na * Nd / (ni * ni));
+    return {
+      title: 'Contact potential',
+      q: md`p-type Si ($N_a = ${p(Na)}$) meets n-type Si ($N_d = ${p(Nd)}${CM3}$) at 300 K, $n_i = ${p(ni)}${CM3}$. Find the contact potential $V_0$.`,
+      parts: [T({ lbl: 'V_0', ans: V0, unit: 'V', tol: { abs: 0.002 } })],
+      hints: ['$qV_0 = (E_F - E_i)_n + (E_i - E_F)_p$.', '$V_0 = \\dfrac{kT}{q}\\ln\\dfrac{N_aN_d}{n_i^2}$.'],
+      sol: G4('$E_F$ lines up, so the bands step by the difference of the two Fermi levels.', '$V_0 = \\dfrac{kT}{q}\\ln\\dfrac{N_aN_d}{n_i^2}$.', `$$V_0 = (0.0259\\,\\text{V})\\ln\\frac{\\left(${p(Na)}\\right)\\left(${p(Nd)}\\right)}{\\left(${p(ni)}\\right)^2}$$`, `$V_0 = ${f(V0)}$ V.`),
+    };
+  };
+
+  GENS.semi_mincond = () => {
+    const m = pick(['Si', 'Si', 'GaAs', 'Ge']), M = S.mat[m];
+    const n0 = M.ni * Math.sqrt(M.mup / M.mun), smin = 2 * S.q * M.ni * Math.sqrt(M.mun * M.mup), sint = S.q * M.ni * (M.mun + M.mup);
+    return {
+      title: 'Minimum conductivity',
+      q: md`For ${m} at 300 K ($n_i = ${p(M.ni)}${CM3}$, $\mu_n = ${M.mun}$, $\mu_p = ${M.mup}\,\text{cm}^2/\text{V·s}$, mobilities taken as constant), find the electron concentration that gives the lowest conductivity, that conductivity, and the intrinsic conductivity.`,
+      parts: [T({ lbl: 'n_0', ans: n0, unit: 'cm^{-3}' }), T({ lbl: '\\sigma_{\\min}', ans: smin, unit: '(Ω·cm)^{-1}' }), T({ lbl: '\\sigma_i', ans: sint, unit: '(Ω·cm)^{-1}' })],
+      hints: ['$\\sigma(n_0) = q\\left(n_0\\mu_n + \\dfrac{n_i^2}{n_0}\\mu_p\\right)$: set $d\\sigma/dn_0 = 0$.', '$n_0 = n_i\\sqrt{\\mu_p/\\mu_n}$, then $\\sigma_{\\min} = 2qn_i\\sqrt{\\mu_n\\mu_p}$.'],
+      sol: G4('$\\sigma = q(n_0\\mu_n + p_0\\mu_p)$ with $p_0 = n_i^2/n_0$.', '$\\dfrac{d\\sigma}{dn_0} = q\\left(\\mu_n - \\dfrac{n_i^2}{n_0^2}\\mu_p\\right) = 0 \\Rightarrow n_0 = n_i\\sqrt{\\dfrac{\\mu_p}{\\mu_n}}$, $\;\\sigma_{\\min} = 2qn_i\\sqrt{\\mu_n\\mu_p}$.',
+        `$$n_0 = \\left(${p(M.ni)}${CM3}\\right)\\sqrt{\\frac{${M.mup}}{${M.mun}}}, \\qquad \\sigma_{\\min} = 2\\left(${Q}\\right)\\left(${p(M.ni)}${CM3}\\right)\\sqrt{(${M.mun})(${M.mup})}${CMS}$$`,
+        `$n_0 = ${f(n0)}${CM3}$ (slightly p-type), $\\sigma_{\\min} = ${f(smin)}$, $\\sigma_i = ${f(sint)}\\,(\\Omega\\cdot\\text{cm})^{-1}$: the minimum sits a little on the p side because holes are less mobile.`),
     };
   };
 })();

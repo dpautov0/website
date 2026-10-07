@@ -64,7 +64,7 @@ The handwritten Handout 2 writes $y_{22} = 2\alpha_2V_{IN} + 2\beta_2V_{OUT}$. T
       id: 'HO2-EX', src: 'Lecture example · Handout 2', title: 'Incremental analysis, 5 V → 5.1 V', cat: 'nl', kind: 'lec',
       q: md`A $5\,\text{V}$ source drives a diode through $2.15\kO$. Use $V_{D0} = 0.7\,\text{V}$ and $V_T = 25\,\text{mV}$. The source then rises to $5.1\,\text{V}$. Using the incremental model, find the original current $I_1$, $r_d$, the change $\Delta I$, and the new total current.`,
       parts: [{ lbl: 'I_1', unit: 'mA', ans: 2 }, { lbl: 'r_d', unit: 'Ω', ans: 12.5 }, { lbl: '\\Delta I', unit: 'µA', ans: 0.1 / 2162.5 * 1e6 }, { lbl: 'I_2', unit: 'mA', ans: 2 + 0.1 / 2162.5 * 1e3 }],
-      sol: md`$I_1 = \dfrac{5 - 0.7}{2.15\}text{k} = 2\,\text{mA}$, $r_d = 25/2 = 12.5\,\Omega$. Incremental circuit: $\Delta V = 0.1\,\text{V}$ across $2.15\kO + r_d$, so $\Delta I = 0.1/2162.5 = 46.2\,\mu\text{A}$ and $I_2 = 2.046\,\text{mA}$. The diode voltage moves by only $\Delta I\,r_d = 0.58\,\text{mV}$.`,
+      sol: md`$I_1 = \dfrac{5 - 0.7}{2.15\,\text{k}} = 2\,\text{mA}$, $r_d = 25/2 = 12.5\,\Omega$. Incremental circuit: $\Delta V = 0.1\,\text{V}$ across $2.15\kO + r_d$, so $\Delta I = 0.1/2162.5 = 46.2\,\mu\text{A}$ and $I_2 = 2.046\,\text{mA}$. The diode voltage moves by only $\Delta I\,r_d = 0.58\,\text{mV}$.`,
     }),
   );
 
@@ -177,7 +177,7 @@ Lecture 8 has $R_2 = 9.6\kO$ (correct). Lecture 9 writes $7.6\kO$ (it used $5 - 
     fig: FIGS.blackbox({ src: 'V' }),
     parts: [{ lbl: 'V_{OC}', unit: 'V', ans: 9 }, { lbl: '\\RTH', unit: 'kΩ', ans: 2 }, { lbl: 'I_2', unit: 'mA', ans: 2.25 }, { lbl: 'V_2', unit: 'V', ans: 4.5 }],
     hints: [md`With an internal source, $V_{OC}$ and $I_{SC}$ are **affine** in $V_1$: $aV_1 + b$. Two measurements fix each line. Don't scale proportionally.`],
-    sol: md`$V_{OC} = 2V_1 + 1$ and $I_{SC} = V_1 + 0.5\,\text{mA}$. At $V_1 = 4$: $V_{OC} = 9\,\text{V}$, $I_{SC} = 4.5\,\text{mA}$, $\RTH = 2\kO$ (the same at every $V_1$, as it must be). $I_2 = \dfrac{9}{2 + 2\}text{k} = 2.25\,\text{mA}$, $V_2 = 4.5\,\text{V}$. Pure proportional scaling from $V_1 = 1$ would have given $V_{OC} = 12\,\text{V}$: the affine trap.`,
+    sol: md`$V_{OC} = 2V_1 + 1$ and $I_{SC} = V_1 + 0.5\,\text{mA}$. At $V_1 = 4$: $V_{OC} = 9\,\text{V}$, $I_{SC} = 4.5\,\text{mA}$, $\RTH = 2\kO$ (the same at every $V_1$, as it must be). $I_2 = \dfrac{9}{2 + 2\,\text{k}} = 2.25\,\text{mA}$, $V_2 = 4.5\,\text{V}$. Pure proportional scaling from $V_1 = 1$ would have given $V_{OC} = 12\,\text{V}$: the affine trap.`,
   });
   X.NXP1c = O({
     id: 'NX-P1c', title: 'Two inputs, two slopes', src: 'Original · P1 style (short answer)', cat: 'nl',

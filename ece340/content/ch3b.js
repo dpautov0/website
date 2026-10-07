@@ -7,13 +7,13 @@
 
   // n0 versus T for Si with Nd = 1e15 (Ed 0.045 eV below Ec): neutrality n = p + Nd+, solved for EF by bisection
   function nOfT(T, Nd = 1e15) {
-    const kT = 8.62e-5 * T, Eg = 1.11, Ed = Eg - 0.045, Nc = 2.8e19 * Math.pow(T / 300, 1.5), Nv = 1.04e19 * Math.pow(T / 300, 1.5);
+    const kT = 8.62e-5 * T, Eg = 1.12, Ed = Eg - 0.045, Nc = 2.8e19 * Math.pow(T / 300, 1.5), Nv = 1.04e19 * Math.pow(T / 300, 1.5);
     const bal = (EF) => Nc * Math.exp(-(Eg - EF) / kT) - Nv * Math.exp(-EF / kT) - Nd / (1 + 2 * Math.exp((EF - Ed) / kT));
     let lo = -0.5, hi = Eg + 0.5;
     for (let i = 0; i < 200; i++) { const m = (lo + hi) / 2; if (bal(m) > 0) hi = m; else lo = m; }
     return Nc * Math.exp(-(Eg - (lo + hi) / 2) / kT);
   }
-  const niT = (T) => Math.sqrt(2.8e19 * 1.04e19) * Math.pow(T / 300, 1.5) * Math.exp(-1.11 / (2 * 8.62e-5 * T));
+  const niT = (T) => Math.sqrt(2.8e19 * 1.04e19) * Math.pow(T / 300, 1.5) * Math.exp(-1.12 / (2 * 8.62e-5 * T));
   const Ts = []; for (let T = 40; T <= 720; T += 5) Ts.push(T);
   const tempFig = PF.plot({
     w: 360, h: 220, x: [0, 720], y: [12, 17], xl: 'T\\,(\\text{K})', yl: 'n_0\\,(\\text{cm}^{-3})',
@@ -27,9 +27,9 @@
 
   // two pieces before and after contact
   const sm = (x, a, b) => a + (b - a) * (1 + Math.tanh((x - 0.5) / 0.07)) / 2;
-  const sepP = BD.diagram({ w: 120, h: 130, E: [-0.15, 1.3], Ec: 1.11, Ev: 0, Ei: 0.555, EF: 0.2, lab: { Ei: '' }, axis: false });
-  const sepN = BD.diagram({ w: 120, h: 130, E: [-0.15, 1.3], Ec: 1.11, Ev: 0, Ei: 0.555, EF: 0.97, lab: { Ei: '' }, axis: false });
-  const joined = BD.diagram({ w: 280, h: 150, E: [-0.15 - 0.77, 1.3], Ec: (x) => sm(x, 1.11, 1.11 - 0.77), Ev: (x) => sm(x, 0, -0.77), Ei: (x) => sm(x, 0.555, 0.555 - 0.77), EF: 0.2, lab: { Ei: '' }, xl: 'x', dims: [{ x: 0.06, a: 'Ec', b: 1.11 - 0.77, tex: 'qV_0' }] });
+  const sepP = BD.diagram({ w: 120, h: 130, E: [-0.15, 1.3], Ec: 1.12, Ev: 0, Ei: 0.56, EF: 0.2, lab: { Ei: '' }, axis: false });
+  const sepN = BD.diagram({ w: 120, h: 130, E: [-0.15, 1.3], Ec: 1.12, Ev: 0, Ei: 0.56, EF: 0.97, lab: { Ei: '' }, axis: false });
+  const joined = BD.diagram({ w: 280, h: 150, E: [-0.15 - 0.754, 1.3], Ec: (x) => sm(x, 1.12, 1.12 - 0.754), Ev: (x) => sm(x, 0, -0.754), Ei: (x) => sm(x, 0.56, 0.56 - 0.754), EF: 0.2, lab: { Ei: '' }, xl: 'x', dims: [{ x: 0.06, a: 'Ec', b: 1.12 - 0.754, tex: 'qV_0' }] });
 
   unit.lessons.push(
     // ======================================================================== Topic 5
@@ -43,7 +43,7 @@
 
           **Temperature.** Put the $T^{3/2}$ of $N_c$ and $N_v$ into $n_i^2 = N_cN_ve^{-E_g/kT}$:
           $$n_i(T) = \sqrt{N_cN_v}\,e^{-E_g/2kT} \;\propto\; T^{3/2}e^{-E_g/2kT}$$
-          The exponential wins: in Si, $n_i$ goes from $10^{10}$ at 300 K to about $10^{15}\,\text{cm}^{-3}$ at 600 K. (The gap also shrinks a little as $T$ rises; problems usually say to ignore that.) To scale from a known value,
+          The exponential wins: in Si, $n_i$ goes from $1.5\times10^{10}$ at 300 K to about $2\times10^{15}\,\text{cm}^{-3}$ at 600 K. (The gap also shrinks a little as $T$ rises; problems usually say to ignore that.) To scale from a known value,
           $$\frac{n_i(T_2)}{n_i(T_1)} = \left(\frac{T_2}{T_1}\right)^{3/2}\exp\!\left[-\frac{E_g}{2k}\left(\frac{1}{T_2} - \frac{1}{T_1}\right)\right]$$
           with $k = 8.62\times10^{-5}$ eV/K.
         `),
@@ -103,17 +103,17 @@
         `),
         P({
           title: 'A compensated Si sample',
-          q: md`Si at 300 K ($n_i = 1.0\times10^{10}\,\text{cm}^{-3}$) contains $N_d = 5.0\times10^{16}$ and $N_a = 2.0\times10^{16}\,\text{cm}^{-3}$. Find $n_0$ and $p_0$.`,
-          parts: [{ lbl: md`n_0`, ans: 3e16, unit: 'cm^{-3}' }, { lbl: md`p_0`, ans: 3333.3, unit: 'cm^{-3}' }],
+          q: md`Si at 300 K ($n_i = 1.5\times10^{10}\,\text{cm}^{-3}$) contains $N_d = 5.0\times10^{16}$ and $N_a = 2.0\times10^{16}\,\text{cm}^{-3}$. Find $n_0$ and $p_0$.`,
+          parts: [{ lbl: md`n_0`, ans: 3e16, unit: 'cm^{-3}' }, { lbl: md`p_0`, ans: 7500, unit: 'cm^{-3}' }],
           hints: [md`$N_d - N_a = 3\times10^{16} \gg n_i$, so $n_0 \approx N_d - N_a$.`],
-          sol: md`$$n_0 \approx N_d - N_a = 3.00\times10^{16}\,\text{cm}^{-3}, \qquad p_0 = \frac{n_i^2}{n_0} = \frac{10^{20}\,\text{cm}^{-6}}{3.00\times10^{16}\,\text{cm}^{-3}} = 3.33\times10^{3}\,\text{cm}^{-3}$$`,
+          sol: md`$$n_0 \approx N_d - N_a = 3.00\times10^{16}\,\text{cm}^{-3}, \qquad p_0 = \frac{n_i^2}{n_0} = \frac{2.25\times10^{20}\,\text{cm}^{-6}}{3.00\times10^{16}\,\text{cm}^{-3}} = 7.50\times10^{3}\,\text{cm}^{-3}$$`,
         }),
         P({
           title: 'Hot silicon',
-          q: md`Si has $n_i = 1.0\times10^{10}\,\text{cm}^{-3}$ at 300 K and $E_g = 1.11$ eV (take it constant). Find $n_i$ at 600 K. Then, for a sample with $N_d = 1.0\times10^{15}\,\text{cm}^{-3}$ at 600 K, find $n_0$.`,
-          parts: [{ lbl: md`n_i(600\,\text{K})`, ans: 1.294e15, unit: 'cm^{-3}', tol: { rel: 0.03 } }, { lbl: md`n_0`, ans: 1.887e15, unit: 'cm^{-3}', tol: { rel: 0.03 } }],
-          hints: [md`$\dfrac{n_i(600)}{n_i(300)} = 2^{3/2}\exp\!\left[-\dfrac{1.11}{2(8.62\times10^{-5})}\left(\dfrac{1}{600} - \dfrac{1}{300}\right)\right]$.`, md`$n_i$ is now bigger than $N_d$: use the full neutrality formula.`],
-          sol: md`$$n_i(600) = \left(10^{10}\,\text{cm}^{-3}\right)\left(\frac{600}{300}\right)^{3/2}\exp\!\left[-\frac{1.11\,\text{eV}}{2\left(8.62\times10^{-5}\,\text{eV/K}\right)}\left(\frac{1}{600\,\text{K}} - \frac{1}{300\,\text{K}}\right)\right] = \left(10^{10}\right)(2.83)(4.57\times10^{4}) = 1.29\times10^{15}\,\text{cm}^{-3}$$ $$n_0 = \frac{N_d}{2} + \sqrt{\frac{N_d^2}{4} + n_i^2} = 5.0\times10^{14} + \sqrt{2.5\times10^{29} + 1.67\times10^{30}}\,\text{cm}^{-3} = 1.89\times10^{15}\,\text{cm}^{-3}$$ The sample is close to intrinsic: $p_0 = n_i^2/n_0 = 8.9\times10^{14}\,\text{cm}^{-3}$.`,
+          q: md`Si has $n_i = 1.5\times10^{10}\,\text{cm}^{-3}$ at 300 K and $E_g = 1.12$ eV (take it constant). Find $n_i$ at 600 K. Then, for a sample with $N_d = 1.0\times10^{15}\,\text{cm}^{-3}$ at 600 K, find $n_0$.`,
+          parts: [{ lbl: md`n_i(600\,\text{K})`, ans: 2.1378e+15, unit: 'cm^{-3}', tol: { rel: 0.03 } }, { lbl: md`n_0`, ans: 2.6955e+15, unit: 'cm^{-3}', tol: { rel: 0.03 } }],
+          hints: [md`$\dfrac{n_i(600)}{n_i(300)} = 2^{3/2}\exp\!\left[-\dfrac{1.12}{2(8.62\times10^{-5})}\left(\dfrac{1}{600} - \dfrac{1}{300}\right)\right]$.`, md`$n_i$ is now bigger than $N_d$: use the full neutrality formula.`],
+          sol: md`$$n_i(600) = \left(10^{10}\,\text{cm}^{-3}\right)\left(\frac{600}{300}\right)^{3/2}\exp\!\left[-\frac{1.12\,\text{eV}}{2\left(8.62\times10^{-5}\,\text{eV/K}\right)}\left(\frac{1}{600\,\text{K}} - \frac{1}{300\,\text{K}}\right)\right] = \left(1.5\times10^{10}\right)(2.83)(5.04\times10^{4}) = 2.14\times10^{15}\,\text{cm}^{-3}$$ $$n_0 = \frac{N_d}{2} + \sqrt{\frac{N_d^2}{4} + n_i^2} = 5.0\times10^{14} + \sqrt{2.5\times10^{29} + 4.57\times10^{30}}\,\text{cm}^{-3} = 2.70\times10^{15}\,\text{cm}^{-3}$$ The sample is close to intrinsic: $p_0 = n_i^2/n_0 = 1.70\times10^{15}\,\text{cm}^{-3}$.`,
         }),
         Q(md`A Si sample has $N_d = N_a = 10^{16}\,\text{cm}^{-3}$ at 300 K. Compared with pure Si, it has…`,
           ['the same $n_0$ and $p_0$ ($= n_i$), but lower mobility', 'twice as many electrons', 'no carriers at all', 'the same carriers and the same mobility'], 0,
@@ -129,7 +129,7 @@
           ['Only intrinsic or fully compensated.', null, 'That is the mass-action law, a separate equation.', 'Doping can be anything.'], md`Total positive charge = total negative charge.`),
         Q(md`In the freeze-out region of an n-type sample…`, ['$n_0 < N_d$ because donors are not all ionized', '$n_0 = n_i$', '$n_0 > N_d$', 'there are no donors'], 0,
           [null, 'That is the intrinsic region.', 'Only at high $T$.', 'The donors are still there, holding their electrons.'], md`Low $T$: $kT$ too small to free the donor electrons.`),
-        Q(md`Which semiconductor stays extrinsic to the highest temperature for the same doping?`, ['Ge ($E_g = 0.67$ eV)', 'Si (1.11 eV)', 'GaAs (1.43 eV)', 'All the same'], 2,
+        Q(md`Which semiconductor stays extrinsic to the highest temperature for the same doping?`, ['Ge ($E_g = 0.67$ eV)', 'Si (1.12 eV)', 'GaAs (1.43 eV)', 'All the same'], 2,
           ['Smallest gap: largest $n_i$, goes intrinsic first.', 'In between.', null, '$n_i$ depends exponentially on $E_g$.'], md`Largest gap, smallest $n_i(T)$.`),
         Q(md`$n_i$ depends on temperature mainly through…`, ['$e^{-E_g/2kT}$', '$T^{3/2}$', '$T$', '$1/T$'], 0,
           [null, 'Present, but the exponential dominates.', 'No.', 'No.'], md`The exponential changes by orders of magnitude.`),
@@ -191,7 +191,7 @@
           !!graded Problem
             An n-type Si bar ($N_d = 1.0\times10^{16}\,\text{cm}^{-3}$, $\mu_n = 1350\,\text{cm}^2/\text{V·s}$) is $L = 1.0$ mm long with a $100\,\mu\text{m}\times10\,\mu\text{m}$ cross-section. $5.0$ V is applied across it. Find $\sigma$, $\rho$, $R$, $I$, $J$, and the electron drift velocity.
 
-          **1. Diagram and governing equations.** The bar above. Minority holes ($p_0 = 10^4\,\text{cm}^{-3}$) don't matter.
+          **1. Diagram and governing equations.** The bar above. Minority holes ($p_0 = 2.25\times10^4\,\text{cm}^{-3}$) don't matter.
           $$\sigma = qN_d\mu_n, \quad \rho = \frac1\sigma, \quad R = \frac{\rho L}{A}, \quad I = \frac VR, \quad J = \frac IA, \quad v_d = \mu_n\frac VL$$
 
           **2. Units.** $L = 0.10$ cm; $A = (100\times10^{-4}\,\text{cm})(10\times10^{-4}\,\text{cm}) = 1.0\times10^{-5}\,\text{cm}^2$.
@@ -293,16 +293,16 @@
           ### Worked example
 
           !!graded Problem
-            A Si region with $N_a = 1.0\times10^{16}\,\text{cm}^{-3}$ is joined to one with $N_d = 1.0\times10^{17}\,\text{cm}^{-3}$ at 300 K ($n_i = 1.0\times10^{10}\,\text{cm}^{-3}$). How far is $E_F$ from $E_i$ on each side before contact, and what is the band step $qV_0$ after?
+            A Si region with $N_a = 1.0\times10^{16}\,\text{cm}^{-3}$ is joined to one with $N_d = 1.0\times10^{17}\,\text{cm}^{-3}$ at 300 K ($n_i = 1.5\times10^{10}\,\text{cm}^{-3}$). How far is $E_F$ from $E_i$ on each side before contact, and what is the band step $qV_0$ after?
 
           **1. Diagram and governing equations.** The pictures above.
           $$\left(E_F - E_i\right)_n = kT\ln\frac{N_d}{n_i}, \qquad \left(E_i - E_F\right)_p = kT\ln\frac{N_a}{n_i}, \qquad qV_0 = \text{their sum}$$
 
           **2–3. Substitute, with units.**
-          $$\left(E_F - E_i\right)_n = (0.0259\,\text{eV})\ln\frac{1.0\times10^{17}\,\text{cm}^{-3}}{1.0\times10^{10}\,\text{cm}^{-3}} = (0.0259\,\text{eV})(16.1)$$
-          $$\left(E_i - E_F\right)_p = (0.0259\,\text{eV})\ln\frac{1.0\times10^{16}\,\text{cm}^{-3}}{1.0\times10^{10}\,\text{cm}^{-3}} = (0.0259\,\text{eV})(13.8)$$
+          $$\left(E_F - E_i\right)_n = (0.0259\,\text{eV})\ln\frac{1.0\times10^{17}\,\text{cm}^{-3}}{1.5\times10^{10}\,\text{cm}^{-3}} = (0.0259\,\text{eV})(15.7)$$
+          $$\left(E_i - E_F\right)_p = (0.0259\,\text{eV})\ln\frac{1.0\times10^{16}\,\text{cm}^{-3}}{1.5\times10^{10}\,\text{cm}^{-3}} = (0.0259\,\text{eV})(13.4)$$
 
-          **4. Answers.** $0.417$ eV above $E_i$ (n side), $0.358$ eV below $E_i$ (p side), $qV_0 = 0.775$ eV ($V_0 = 0.775$ V).
+          **4. Answers.** $0.407$ eV above $E_i$ (n side), $0.347$ eV below $E_i$ (p side), $qV_0 = 0.754$ eV ($V_0 = 0.754$ V).
 
           !!mistake Common mistakes
             - Drawing $E_F$ with a step or slope at equilibrium. It is flat; the **bands** bend.

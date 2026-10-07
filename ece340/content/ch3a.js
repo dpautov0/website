@@ -4,11 +4,11 @@
   const { R, RF, P, Q } = C;
 
   // band diagrams used below (energies in eV; dopant levels drawn farther from the band edge than to scale)
-  const intrinsic = BD.diagram({ w: 240, h: 130, Ec: 1.11, Ev: 0, Ei: 0.555, EF: 0.555, lab: { EF: 'E_F = E_i', Ei: '' }, el: 4, holes: 4 });
-  const ntype = BD.diagram({ w: 240, h: 130, Ec: 1.11, Ev: 0, Ei: 0.555, EF: 0.93, donors: { E: 1.0, n: 6, ionized: true, lab: 'E_d' }, el: 6, holes: 1 });
-  const ptype = BD.diagram({ w: 240, h: 130, Ec: 1.11, Ev: 0, Ei: 0.555, EF: 0.18, acceptors: { E: 0.11, n: 6, ionized: true, lab: 'E_a' }, el: 1, holes: 6 });
+  const intrinsic = BD.diagram({ w: 240, h: 130, Ec: 1.12, Ev: 0, Ei: 0.56, EF: 0.56, lab: { EF: 'E_F = E_i', Ei: '' }, el: 4, holes: 4 });
+  const ntype = BD.diagram({ w: 240, h: 130, Ec: 1.12, Ev: 0, Ei: 0.56, EF: 0.93, donors: { E: 1.0, n: 6, ionized: true, lab: 'E_d' }, el: 6, holes: 1 });
+  const ptype = BD.diagram({ w: 240, h: 130, Ec: 1.12, Ev: 0, Ei: 0.56, EF: 0.18, acceptors: { E: 0.11, n: 6, ionized: true, lab: 'E_a' }, el: 1, holes: 6 });
   const fermiFig = BD.fermi({ E: [-0.2, 0.2], T: [0, 0.0259, 0.06] });
-  const ef4 = BD.diagram({ w: 260, h: 150, Ec: 1.11, Ev: 0, Ei: 0.555, EF: 0.91, dims: [{ x: 0.15, a: 'Ec', b: 'EF', tex: '0.20\\,\\text{eV}', at: 'r' }, { x: 0.55, a: 'EF', b: 'Ev', tex: '0.91\\,\\text{eV}', at: 'r' }] });
+  const ef4 = BD.diagram({ w: 260, h: 150, Ec: 1.12, Ev: 0, Ei: 0.56, EF: 0.92, dims: [{ x: 0.15, a: 'Ec', b: 'EF', tex: '0.20\\,\\text{eV}', at: 'r' }, { x: 0.55, a: 'EF', b: 'Ev', tex: '0.92\\,\\text{eV}', at: 'r' }] });
 
   C.unit({
     id: 'ch3', exam: 'e1', num: 'Ch. 3', title: 'Energy bands and charge carriers',
@@ -25,7 +25,7 @@
             At absolute zero the lower band (the **valence band**) is exactly full and the upper one (the **conduction band**) exactly empty. A full band carries no current (every electron moving one way is matched by one moving the other way), and an empty one has nothing to carry. Conduction needs a band that is **partly** filled. That one fact sorts every solid:
 
             - **Metal**: a band is partly filled (or two bands overlap), so there are empty states right next to the filled ones. Conducts at any temperature.
-            - **Semiconductor**: full valence band, empty conduction band, small gap (Si $1.11$ eV, GaAs $1.43$ eV, Ge $0.67$ eV). At room temperature heat lifts a few electrons across, so it conducts a little, and doping changes that enormously.
+            - **Semiconductor**: full valence band, empty conduction band, small gap (Si $1.12$ eV, GaAs $1.43$ eV, Ge $0.67$ eV). At room temperature heat lifts a few electrons across, so it conducts a little, and doping changes that enormously.
             - **Insulator**: the same picture with a big gap (SiO₂ about 9 eV, diamond about 5 eV): essentially no electrons get across.
 
             **Bonding** decides the bands: ionic (NaCl, electrons transferred), metallic (electrons shared by the whole crystal), covalent (Si, Ge: each atom shares one electron pair with each of its 4 neighbors), and mixed (GaAs: covalent with some ionic character).
@@ -42,7 +42,7 @@
 
             The photon emitted (or needed) across a gap $E_g$ has wavelength
             $$\lambda = \frac{hc}{E_g} \quad\Longrightarrow\quad \lambda\,[\mu\text{m}] = \frac{1.24}{E_g\,[\text{eV}]}$$
-            so Si's gap corresponds to $1.12\,\mu$m and GaAs's to $0.867\,\mu$m.
+            so Si's gap corresponds to $1.11\,\mu$m and GaAs's to $0.867\,\mu$m.
           `, { ek: PF.row([{ svg: BD.ek({ kind: 'direct' }), cap: 'direct (GaAs)' }, { svg: BD.ek({ kind: 'indirect' }), cap: 'indirect (Si)' }]) }),
           RF(md`
             ### Effective mass from the curvature
@@ -86,7 +86,7 @@
           `),
           Q(md`Why is silicon a poor light emitter?`,
             ['Its band gap is too small', 'Its gap is indirect: the conduction-band minimum and valence-band maximum are at different $k$', 'It has no valence electrons in the conduction band', 'Its electrons are too heavy'],
-            1, ['1.11 eV is plenty (near infrared emission). GaAs at 1.43 eV glows fine.', null, 'Every semiconductor has few electrons in the conduction band; GaAs still emits.', 'Mass changes the curvature, not whether a photon alone can conserve momentum.'],
+            1, ['1.12 eV is plenty (near infrared emission). GaAs at 1.43 eV glows fine.', null, 'Every semiconductor has few electrons in the conduction band; GaAs still emits.', 'Mass changes the curvature, not whether a photon alone can conserve momentum.'],
             md`An electron at the conduction-band minimum (at $k_0 \ne 0$) needs a phonon to reach the valence-band top at $k = 0$; those three-body events are rare compared with non-radiative recombination.`),
           P({
             title: 'Effective mass from a measurement',
@@ -106,7 +106,7 @@
         ],
         bank: [
           Q(md`What wavelength corresponds to GaAs's gap of 1.43 eV?`, ['0.867 μm', '1.12 μm', '1.43 μm', '0.43 μm'], 0,
-            [null, 'That is Si (1.11 eV).', 'μm and eV are not the same number: λ = 1.24/E.', 'Arithmetic slip: 1.24/1.43 = 0.867.'], md`$\lambda = 1.24/1.43 = 0.867\,\mu$m.`),
+            [null, 'That is Si (1.12 eV).', 'μm and eV are not the same number: λ = 1.24/E.', 'Arithmetic slip: 1.24/1.43 = 0.867.'], md`$\lambda = 1.24/1.43 = 0.867\,\mu$m.`),
           Q(md`At $T = 0$ K, a pure semiconductor…`, ['conducts like a metal', 'is an insulator: full valence band, empty conduction band', 'has half its electrons in the conduction band', 'has no band gap'], 1,
             ['Nothing is thermally excited at 0 K.', null, 'No: all valence states are filled.', 'The gap is a property of the bands, not of temperature.'], md`No thermal energy, so nothing crosses the gap.`),
           Q(md`Silicon's bonding is…`, ['ionic', 'metallic', 'covalent', 'van der Waals'], 2,
@@ -134,7 +134,7 @@
 
             **Intrinsic** material is perfectly pure. Every electron came from a broken bond, so
             $$n = p = n_i$$
-            where $n_i$ is the **intrinsic carrier concentration** (Si at 300 K: $n_i \approx 10^{10}\,\text{cm}^{-3}$; GaAs $\approx 2\times10^6$; Ge $\approx 2.5\times10^{13}$). That is one free electron per $5\times10^{12}$ Si atoms: pure Si is a poor conductor.
+            where $n_i$ is the **intrinsic carrier concentration** (Si at 300 K: $n_i = 1.5\times10^{10}\,\text{cm}^{-3}$; GaAs $\approx 2\times10^6$; Ge $\approx 2.5\times10^{13}$). That is one free electron per $3\times10^{12}$ Si atoms: pure Si is a poor conductor.
 
             **Extrinsic** material is doped:
             - A **donor** from column V (P, As, Sb in Si) has a fifth electron that doesn't fit a bond. It is held by only about $0.03$–$0.05$ eV, so at room temperature essentially every donor gives it up to the conduction band, leaving a fixed **positive ion**. Result: **n-type**, $n_0 \approx N_d$.
@@ -165,20 +165,20 @@
             ### Worked example
 
             !!graded Problem
-              Silicon at 300 K ($n_i = 1.0\times10^{10}\,\text{cm}^{-3}$, $5.0\times10^{22}$ atoms/cm³) is doped with $2.0\times10^{16}\,\text{cm}^{-3}$ boron. Find (a) $p_0$, (b) $n_0$, and (c) the fraction of Si atoms replaced by boron.
+              Silicon at 300 K ($n_i = 1.5\times10^{10}\,\text{cm}^{-3}$, $5.0\times10^{22}$ atoms/cm³) is doped with $2.0\times10^{16}\,\text{cm}^{-3}$ boron. Find (a) $p_0$, (b) $n_0$, and (c) the fraction of Si atoms replaced by boron.
 
             **1. Governing equations.** Boron is column III: an acceptor, all ionized at 300 K, and $N_a \gg n_i$, so
             $$p_0 \approx N_a, \qquad n_0 = \frac{n_i^2}{p_0}, \qquad \text{fraction} = \frac{N_a}{N_{\text{Si}}}$$
 
             **2–3. Substitute, with units.**
             $$p_0 = 2.0\times10^{16}\,\text{cm}^{-3}$$
-            $$n_0 = \frac{\left(1.0\times10^{10}\,\text{cm}^{-3}\right)^2}{2.0\times10^{16}\,\text{cm}^{-3}} = \frac{1.0\times10^{20}\,\text{cm}^{-6}}{2.0\times10^{16}\,\text{cm}^{-3}}$$
+            $$n_0 = \frac{\left(1.5\times10^{10}\,\text{cm}^{-3}\right)^2}{2.0\times10^{16}\,\text{cm}^{-3}} = \frac{2.25\times10^{20}\,\text{cm}^{-6}}{2.0\times10^{16}\,\text{cm}^{-3}}$$
             $$\text{fraction} = \frac{2.0\times10^{16}\,\text{cm}^{-3}}{5.0\times10^{22}\,\text{cm}^{-3}}$$
 
-            **4. Answers.** (a) $p_0 = 2.00\times10^{16}\,\text{cm}^{-3}$ (holes are the majority: p-type); (b) $n_0 = 5.00\times10^{3}\,\text{cm}^{-3}$; (c) $4.00\times10^{-7}$, one boron per 2.5 million Si atoms.
+            **4. Answers.** (a) $p_0 = 2.00\times10^{16}\,\text{cm}^{-3}$ (holes are the majority: p-type); (b) $n_0 = 1.13\times10^{4}\,\text{cm}^{-3}$; (c) $4.00\times10^{-7}$, one boron per 2.5 million Si atoms.
 
             !!mistake Common mistakes
-              - Adding the dopant to the minority carrier or forgetting that the minority carrier **drops**: in n-type Si with $N_d = 10^{16}$, $p_0 = 10^4$, not $10^{10}$.
+              - Adding the dopant to the minority carrier or forgetting that the minority carrier **drops**: in n-type Si with $N_d = 10^{16}$, $p_0 = 2.25\times10^4$, not $1.5\times10^{10}$.
               - Mixing up donors and acceptors: column **V** donates (n-type), column **III** accepts (p-type). Memory hook: "**P**hosphorus is not **p**-type."
               - Treating ionized dopants as carriers. The ions are fixed in the lattice; only electrons and holes move.
               - Using $n_0 \approx N_d$ when $N_d$ is not much larger than $n_i$ (hot samples, or small-gap Ge). Then you need Topic 5's full formula.
@@ -190,10 +190,10 @@
             md`Phosphorus (column V) has one more valence electron than it needs for 4 bonds.`),
           P({
             title: 'Minority carriers in n-type Si',
-            q: md`Si at 300 K ($n_i = 1.0\times10^{10}\,\text{cm}^{-3}$) is doped with $5.0\times10^{15}\,\text{cm}^{-3}$ arsenic. Find the equilibrium hole concentration.`,
-            parts: [{ lbl: md`p_0`, ans: 2.0e4, unit: 'cm^{-3}' }],
+            q: md`Si at 300 K ($n_i = 1.5\times10^{10}\,\text{cm}^{-3}$) is doped with $5.0\times10^{15}\,\text{cm}^{-3}$ arsenic. Find the equilibrium hole concentration.`,
+            parts: [{ lbl: md`p_0`, ans: 4.5e4, unit: 'cm^{-3}' }],
             hints: [md`Arsenic is a donor, so $n_0 \approx N_d$.`, md`$p_0 = n_i^2/n_0$.`],
-            sol: md`$$p_0 = \frac{n_i^2}{N_d} = \frac{\left(1.0\times10^{10}\,\text{cm}^{-3}\right)^2}{5.0\times10^{15}\,\text{cm}^{-3}} = 2.00\times10^{4}\,\text{cm}^{-3}$$`,
+            sol: md`$$p_0 = \frac{n_i^2}{N_d} = \frac{\left(1.5\times10^{10}\,\text{cm}^{-3}\right)^2}{5.0\times10^{15}\,\text{cm}^{-3}} = 4.50\times10^{4}\,\text{cm}^{-3}$$`,
           }),
           Q(md`A hole in the valence band…`,
             ['is a positron that entered the crystal', 'is an empty valence state; it moves as neighboring electrons fill it, and acts like a $+q$ particle', 'is a fixed positive ion', 'only exists in p-type material'], 1,
@@ -210,18 +210,18 @@
         bank: [
           Q(md`In intrinsic material…`, ['$n > p$', '$n = p = n_i$', '$n = p = 0$', '$n p = 0$'], 1,
             ['Only if donors are present.', null, 'Thermal generation always creates some pairs above 0 K.', 'The product is $n_i^2$.'], md`Every electron came from a broken bond, leaving a hole.`),
-          Q(md`Doping Si with $10^{17}$ acceptors per cm³ makes $n_0$…`, ['$10^{17}$', '$10^{3}\\,\\text{cm}^{-3}$', '$10^{10}\\,\\text{cm}^{-3}$', 'zero'], 1,
-            ['That is $p_0$.', null, 'That is intrinsic; doping pushes the minority below $n_i$.', 'The product $n_0p_0 = n_i^2$ is never zero.'], md`$n_0 = 10^{20}/10^{17} = 10^3$.`),
+          Q(md`Doping Si with $10^{17}$ acceptors per cm³ makes $n_0$…`, ['$10^{17}$', '$2.25\\times10^{3}\\,\\text{cm}^{-3}$', '$1.5\\times10^{10}\\,\\text{cm}^{-3}$', 'zero'], 1,
+            ['That is $p_0$.', null, 'That is intrinsic; doping pushes the minority below $n_i$.', 'The product $n_0p_0 = n_i^2$ is never zero.'], md`$n_0 = 2.25\times10^{20}/10^{17} = 2.25\times10^3$.`),
           Q(md`Why are nearly all donors ionized at 300 K?`, ['Their binding energy (~0.03–0.05 eV) is comparable to $kT$ = 0.026 eV, and there are vastly more conduction states than donors', 'Room light ionizes them', 'The electric field of the lattice pulls the electron off', 'They aren\'t; only about 1% are'], 0,
             [null, 'Happens in the dark too.', 'No applied field is needed.', 'At 300 K and moderate doping, ionization is essentially complete.'], md`Small binding energy plus a huge number of empty conduction states.`),
           Q(md`Which change makes $n_i$ larger?`, ['A larger band gap', 'A higher temperature', 'More donors', 'More acceptors'], 1,
             ['Larger gap means fewer thermally broken bonds.', null, 'Doping changes $n_0$ and $p_0$, not $n_i$.', 'Doping changes $n_0$ and $p_0$, not $n_i$.'], md`$n_i \propto T^{3/2}e^{-E_g/2kT}$.`),
           Q(md`An ionized acceptor carries charge…`, ['$+q$, and it moves', '$-q$, fixed in place', '$+q$, fixed in place', 'none'], 1,
             ['It is an atom in the lattice; it doesn\'t move.', null, 'It took an electron: negative.', 'It took an electron: $-q$.'], md`The acceptor captured an electron (making a hole elsewhere).`),
-          Q(md`Why is GaAs's $n_i$ so much smaller than Si's?`, ['Larger band gap (1.43 vs 1.11 eV)', 'Smaller lattice constant', 'It is a compound', 'It is direct-gap'], 0,
+          Q(md`Why is GaAs's $n_i$ so much smaller than Si's?`, ['Larger band gap (1.43 vs 1.12 eV)', 'Smaller lattice constant', 'It is a compound', 'It is direct-gap'], 0,
             [null, 'Its lattice constant is larger, and that is not the reason anyway.', 'Being a compound doesn\'t set $n_i$.', 'Direct vs indirect affects optics, not $n_i$.'], md`$n_i$ falls exponentially with $E_g$.`),
           Q(md`Silicon doped with $10^{16}$ P and nothing else, at 300 K: $p_0/n_0$ is about…`, ['$10^{-12}$', '$10^{-6}$', '$1$', '$10^{6}$'], 0,
-            [null, 'That is $p_0/n_i$.', 'Only intrinsic.', 'Backwards.'], md`$p_0 = 10^4$, $n_0 = 10^{16}$.`),
+            [null, 'That is $p_0/n_i$.', 'Only intrinsic.', 'Backwards.'], md`$p_0 = 2.25\times10^4$, $n_0 = 10^{16}$.`),
         ],
       },
 
@@ -273,7 +273,7 @@
             ### Worked example
 
             !!graded Problem
-              In Si at 300 K, $E_F$ is $0.20$ eV below $E_c$. Use $E_g = 1.11$ eV, $N_c = 2.8\times10^{19}$, $N_v = 1.04\times10^{19}\,\text{cm}^{-3}$, $kT = 0.0259$ eV. Find (a) the probability that a state at $E_c + kT$ is occupied, (b) $n_0$, (c) $p_0$.
+              In Si at 300 K, $E_F$ is $0.20$ eV below $E_c$. Use $E_g = 1.12$ eV, $N_c = 2.8\times10^{19}$, $N_v = 1.04\times10^{19}\,\text{cm}^{-3}$, $kT = 0.0259$ eV. Find (a) the probability that a state at $E_c + kT$ is occupied, (b) $n_0$, (c) $p_0$.
 
             **1. Diagram and governing equations.**
 
@@ -286,11 +286,11 @@
             **3. Substitute, with units.**
             $$f = \frac{1}{1 + \exp\!\left(\dfrac{0.20\,\text{eV} + 0.0259\,\text{eV}}{0.0259\,\text{eV}}\right)} = \frac{1}{1 + e^{8.72}}$$
             $$n_0 = \left(2.8\times10^{19}\,\text{cm}^{-3}\right)\exp\!\left(-\frac{0.20\,\text{eV}}{0.0259\,\text{eV}}\right) = \left(2.8\times10^{19}\,\text{cm}^{-3}\right)e^{-7.72}$$
-            $$p_0 = \left(1.04\times10^{19}\,\text{cm}^{-3}\right)\exp\!\left(-\frac{1.11\,\text{eV} - 0.20\,\text{eV}}{0.0259\,\text{eV}}\right) = \left(1.04\times10^{19}\,\text{cm}^{-3}\right)e^{-35.1}$$
+            $$p_0 = \left(1.04\times10^{19}\,\text{cm}^{-3}\right)\exp\!\left(-\frac{1.12\,\text{eV} - 0.20\,\text{eV}}{0.0259\,\text{eV}}\right) = \left(1.04\times10^{19}\,\text{cm}^{-3}\right)e^{-35.5}$$
 
-            **4. Answers.** (a) $f = 1.63\times10^{-4}$; (b) $n_0 = 1.24\times10^{16}\,\text{cm}^{-3}$; (c) $p_0 = 5.73\times10^{3}\,\text{cm}^{-3}$.
+            **4. Answers.** (a) $f = 1.63\times10^{-4}$; (b) $n_0 = 1.24\times10^{16}\,\text{cm}^{-3}$; (c) $p_0 = 3.89\times10^{3}\,\text{cm}^{-3}$.
 
-            Check: $n_0p_0 = 7.1\times10^{19}\,\text{cm}^{-6}$, so $n_i = 8.4\times10^{9}\,\text{cm}^{-3}$ with these $N_c$, $N_v$. Tables differ slightly; that is why problems state $n_i$ or $N_c$, $N_v$. Use what is given.
+            Check: $n_0p_0 = 4.8\times10^{19}\,\text{cm}^{-6}$, so $n_i = 6.9\times10^{9}\,\text{cm}^{-3}$ with these $N_c$, $N_v$, not the $1.5\times10^{10}$ the course uses. Different tables give different values, which is why every problem states $n_i$ or $N_c$, $N_v$: use what the problem gives.
           `, { ex: { svg: ef4, cap: 'Si, EF 0.20 eV below Ec.' } }),
           R(md`
             !!mistake Common mistakes
@@ -312,17 +312,17 @@
           }),
           P({
             title: 'Carriers from the Fermi level',
-            q: md`Si at 300 K, $n_i = 1.0\times10^{10}\,\text{cm}^{-3}$: the Fermi level is $0.30$ eV above $E_i$. Find $n_0$ and $p_0$.`,
-            parts: [{ lbl: md`n_0`, ans: 1.0726e15, unit: 'cm^{-3}' }, { lbl: md`p_0`, ans: 9.323e4, unit: 'cm^{-3}' }],
+            q: md`Si at 300 K, $n_i = 1.5\times10^{10}\,\text{cm}^{-3}$: the Fermi level is $0.30$ eV above $E_i$. Find $n_0$ and $p_0$.`,
+            parts: [{ lbl: md`n_0`, ans: 1.6089e+15, unit: 'cm^{-3}' }, { lbl: md`p_0`, ans: 1.3985e+05, unit: 'cm^{-3}' }],
             hints: [md`$n_0 = n_i e^{(E_F - E_i)/kT}$, and $p_0 = n_i^2/n_0$ (or $n_i e^{-(E_F - E_i)/kT}$).`],
-            sol: md`$$n_0 = \left(1.0\times10^{10}\,\text{cm}^{-3}\right)e^{0.30/0.0259} = \left(1.0\times10^{10}\,\text{cm}^{-3}\right)e^{11.58} = 1.07\times10^{15}\,\text{cm}^{-3}$$ $$p_0 = \frac{n_i^2}{n_0} = \frac{10^{20}\,\text{cm}^{-6}}{1.07\times10^{15}\,\text{cm}^{-3}} = 9.32\times10^{4}\,\text{cm}^{-3}$$`,
+            sol: md`$$n_0 = \left(1.5\times10^{10}\,\text{cm}^{-3}\right)e^{0.30/0.0259} = \left(1.5\times10^{10}\,\text{cm}^{-3}\right)e^{11.58} = 1.61\times10^{15}\,\text{cm}^{-3}$$ $$p_0 = \frac{n_i^2}{n_0} = \frac{2.25\times10^{20}\,\text{cm}^{-6}}{1.61\times10^{15}\,\text{cm}^{-3}} = 1.40\times10^{5}\,\text{cm}^{-3}$$`,
           }),
           P({
             title: 'Fermi level from the doping',
-            q: md`Si at 300 K ($n_i = 1.0\times10^{10}\,\text{cm}^{-3}$) has $n_0 = 1.0\times10^{17}\,\text{cm}^{-3}$. How far above $E_i$ is $E_F$?`,
-            parts: [{ lbl: md`E_F - E_i`, ans: 0.4175, unit: 'eV', tol: { abs: 0.002 } }],
+            q: md`Si at 300 K ($n_i = 1.5\times10^{10}\,\text{cm}^{-3}$) has $n_0 = 1.0\times10^{17}\,\text{cm}^{-3}$. How far above $E_i$ is $E_F$?`,
+            parts: [{ lbl: md`E_F - E_i`, ans: 0.4070, unit: 'eV', tol: { abs: 0.002 } }],
             hints: [md`$E_F - E_i = kT\ln(n_0/n_i)$; natural log.`],
-            sol: md`$$E_F - E_i = kT\ln\frac{n_0}{n_i} = (0.0259\,\text{eV})\ln\frac{1.0\times10^{17}\,\text{cm}^{-3}}{1.0\times10^{10}\,\text{cm}^{-3}} = (0.0259\,\text{eV})(16.12) = 0.417\,\text{eV}$$`,
+            sol: md`$$E_F - E_i = kT\ln\frac{n_0}{n_i} = (0.0259\,\text{eV})\ln\frac{1.0\times10^{17}\,\text{cm}^{-3}}{1.5\times10^{10}\,\text{cm}^{-3}} = (0.0259\,\text{eV})(15.71) = 0.407\,\text{eV}$$`,
           }),
           Q(md`A state lies $0.15$ eV **below** $E_F$. The probability that it is **empty** equals…`,
             ['the probability that a state 0.15 eV above $E_F$ is full', 'the probability that a state 0.15 eV below $E_F$ is full', '½', 'zero at any temperature'], 0,

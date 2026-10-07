@@ -1,13 +1,16 @@
-/* engine.js — renders the course: sidebar, lessons, problem cards, progress. */
+/* engine.js — the one engine behind every course site (ECE 340, ECE 342, PHYS 435): sidebar, home page, lessons,
+   problem cards, progress, theme, and the phone tab bar. Each site describes itself in COURSE.meta (name, storage key,
+   home text, extra routes) and registers its units with C.unit; nothing site-specific lives here. */
 (function () {
   'use strict';
 
   // ---------------------------------------------------------------- storage
-  const KEY = 'ece340.trainer.v1';
+  const META = () => (window.COURSE && COURSE.meta) || {};
+  const KEY = () => `${META().key || 'course'}.trainer.v1`;
   const Store = {
     s: { done: {}, gen: {}, last: null },
-    load() { try { const raw = localStorage.getItem(KEY); if (raw) this.s = Object.assign(this.s, JSON.parse(raw)); } catch (e) { /* private mode */ } },
-    save() { try { localStorage.setItem(KEY, JSON.stringify(this.s)); } catch (e) { /* ignore */ } },
+    load() { try { const raw = localStorage.getItem(KEY()); if (raw) this.s = Object.assign(this.s, JSON.parse(raw)); } catch (e) { /* private mode */ } },
+    save() { try { localStorage.setItem(KEY(), JSON.stringify(this.s)); } catch (e) { /* ignore */ } },
     isDone(id) { return !!this.s.done[id]; },
     markDone(id) { this.s.done[id] = 1; this.save(); },
     gen(id) { return this.s.gen[id] || 0; },
@@ -17,7 +20,10 @@
   };
 
   // ---------------------------------------------------------------- markdown
+  // every site's TeX shorthands in one table (a site can add more in COURSE.meta.macros)
   const MACROS = {
+    '\\pl': '\\mathbin{\\|}', '\\VTH': 'V_{\\mathrm{TH}}', '\\RTH': 'R_{\\mathrm{TH}}', '\\IN': 'I_{\\mathrm{N}}', '\\RN': 'R_{\\mathrm{N}}',
+    '\\Vov': 'V_{ov}', '\\kO': '\\,\\text{k}\\Omega', '\\Ohm': '\\,\\Omega', '\\WL': '\\tfrac{W}{L}',
     '\\vb': '\\mathbf{#1}', '\\uv': '\\hat{\\mathbf{#1}}', '\\ep': '\\varepsilon_0',
     '\\kq': '\\dfrac{1}{4\\pi\\varepsilon_0}', '\\dd': '\\,\\mathrm{d}', '\\divg': '\\nabla\\cdot', '\\curl': '\\nabla\\times',
     '\\lap': '\\nabla^2', '\\sr': '\\boldsymbol{\\mathfrak{r}}', '\\srh': '\\hat{\\boldsymbol{\\mathfrak{r}}}', '\\srm': '\\mathfrak{r}',
@@ -132,9 +138,11 @@
   }
 
   // Text with drawings: a line "[[fig:key]]" is replaced by figs[key] = {fig | svg, cap}.
+  // a figure is an SVG string, or a circuit netlist that the site's Schem kit draws
+  const figOf = (fig, opts) => (typeof fig === 'string' ? fig : (fig && window.Schem ? Schem.render(fig, opts || {}) : String(fig || '')));
   function figureHtml(F) {
     if (!F) return '';
-    const body = F.svg || (typeof F.fig === 'string' ? F.fig : String(F.fig || ''));
+    const body = F.svg || figOf(F.fig, F.opts);
     return `<figure class="fig">${body}${F.cap ? `<figcaption>${inline(F.cap)}</figcaption>` : ''}</figure>`;
   }
   function rich(src, figs) {
@@ -348,53 +356,65 @@
     const d = Math.ceil(ms / 86400e3);
     return d <= 0 ? 'today' : d === 1 ? 'tomorrow' : `in ${d} days`;
   }
+  // a small progress ring (a check when complete)
+  function ring(f) {
+    const r = 9, c = 2 * Math.PI * r, done = f >= 0.999;
+    return `<svg class="ring${done ? ' full' : ''}" viewBox="0 0 24 24" aria-label="${Math.round(f * 100)}% complete"><circle class="ring-bg" cx="12" cy="12" r="${r}"/>${f > 0 ? `<circle class="ring-fg" cx="12" cy="12" r="${r}" stroke-dasharray="${(c * Math.min(f, 1)).toFixed(1)} ${c.toFixed(1)}" transform="rotate(-90 12 12)"/>` : ''}${done ? '<path class="ring-ok" d="M8 12.3l2.6 2.6L16 9.6"/>' : ''}</svg>`;
+  }
+  // Home: what to do next, overall progress, an optional plan, then the units as grouped lists.
+  // COURSE.meta.home = 'lessons' lists every lesson under its unit (short courses); 'units' lists one row per unit.
   function renderHome() {
     const main = document.getElementById('main');
-    const cur = current();
-    const units = examUnits(cur);
-    const topics = units.filter((u) => !u.tools);
-    const tools = units.filter((u) => u.tools);
-    const mineL = LESSONS.filter((l) => units.includes(l.unit));
-    const next = mineL.find((l) => { const p = lessonProgress(l); return p.tot && p.got < p.tot; }) || mineL[0] || LESSONS[0];
-    const last = Store.s.last && BYID.get(Store.s.last);
-    const pctAll = Math.round(courseProgress() * 100);
-    const row = (l, num) => {
-      const p = lessonProgress(l), pct = Math.round(p.pct * 100);
-      return `<a class="topic${p.tot && p.got >= p.tot ? ' done' : ''}" href="#/l/${l.id}">
-        <span class="t-num">${num ?? ''}</span>
-        <span class="t-main"><span class="t-title">${l.title}</span>${l.sec ? `<span class="t-sec">§${l.sec}</span>` : ''}</span>
-        <span class="t-pct">${p.tot ? pct + '%' : ''}</span>
-        <span class="meter t-meter"><span style="width:${pct}%"></span></span></a>`;
-    };
-    const later = EXAMS().filter((e) => e.id !== cur.id);
+    const M = META(), cur = current();
+    const units = cur.id ? examUnits(cur) : COURSE.units.filter((u) => !u.extra);
+    const study = units.filter((u) => !u.tools), tools = units.filter((u) => u.tools);
+    const mine = LESSONS.filter((l) => units.includes(l.unit));
+    const next = mine.find((l) => { const p = lessonProgress(l); return p.tot && p.got < p.tot; }) || mine[0] || LESSONS[0];
+    const lastL = Store.s.last && BYID.get(Store.s.last);
+    const last = lastL && units.includes(lastL.unit) ? lastL : null;
+    const pct = Math.round(courseProgress() * 100);
     const days = daysTo(cur.date);
-    const M = COURSE.meta || {};
+    const title = M.title || `${NAME()}${cur.title ? ` · ${cur.title}` : ''}`;
+    const lede = M.lede || [cur.when ? `${cur.when}${days && days !== 'done' ? ` <b class="when">${days}</b>` : ''}` : '', cur.blurb || ''].filter(Boolean).join('<br>');
+    const plan = cur.plan ? { title: cur.planTitle, items: cur.plan } : M.plan;
+    const row = (href, num, t, sub, f, done) => `<a class="row${done ? ' done' : ''}" href="${href}"><span class="row-num">${num ?? ''}</span><span class="row-main"><span class="row-title">${t}</span>${sub ? `<span class="row-sub">${sub}</span>` : ''}</span><span class="row-end">${f === null ? '<span class="chev"></span>' : ring(f)}</span></a>`;
+    const lessonRow = (l) => { const p = lessonProgress(l); return row(`#/l/${l.id}`, l.topic, l.title, l.sec ? `§${l.sec}` : '', p.tot ? p.pct : null, p.tot && p.got >= p.tot); };
+    const unitRow = (u) => { const f = unitProgress(u); return row(`#/l/${u.lessons[0].id}`, String(u.num).replace(/^Unit /, ''), u.title, u.blurb || '', f, f >= 0.999); };
+    const group = (h, rows, cls = '') => `<section class="group ${cls}">${h ? `<h2 class="group-h">${h}</h2>` : ''}<div class="list">${rows}</div></section>`;
+    const lists = M.home === 'units'
+      ? group(M.unitsTitle || 'Study path', study.map(unitRow).join(''))
+      : study.map((u) => group(`<span class="u-num">${u.num}</span> ${u.title}`, u.lessons.map(lessonRow).join(''))).join('');
+    const toolLists = tools.map((u) => group(u.title, u.lessons.filter((l) => !l.hideHome).map((l) => { const p = lessonProgress(l); return row(`#/l/${l.id}`, '', l.title, l.sub || '', p.tot ? p.pct : null, p.tot && p.got >= p.tot); }).join(''))).join('');
+    const extras = COURSE.units.filter((u) => u.extra);
+    const later = EXAMS().filter((e) => e.id !== cur.id);
     main.innerHTML = `
       <section class="home">
-        <h1>${NAME()} · ${cur.title}</h1>
-        <p class="lede">${cur.when || ''}${days && days !== 'done' ? ` <b class="when">(${days})</b>` : ''}. ${cur.blurb || ''}</p>
-        <div class="home-actions">
-          <a class="btn primary" href="#/l/${(last && units.includes(last.unit) ? last : next).id}">${last && units.includes(last.unit) ? 'Continue: ' + last.title : 'Start: ' + next.title}</a>
-          ${cur.drill ? '<a class="btn" href="#/drill">Drill</a>' : ''}
-          ${cur.quiz ? '<a class="btn" href="#/quiz">Concept quiz</a>' : ''}
-          ${cur.sheet ? '<a class="btn" href="#/sheet">Formula sheet</a>' : ''}
-          ${M.cheatsheet ? `<a class="btn" href="${M.cheatsheet}">Cheat sheet (front + back)</a>` : ''}
-        </div>
-        <div class="overall"><span>${cur.title} progress</span><div class="meter"><span style="width:${pctAll}%"></span></div><span class="o-pct">${pctAll}%</span></div>
-        ${cur.plan ? `<section class="plan"><h2>${cur.planTitle || 'Plan'}</h2><ol>${cur.plan.map((x) => `<li>${x}</li>`).join('')}</ol></section>` : ''}
-        ${topics.map((u) => `<section class="topics"><h2><span class="u-num">${u.num}</span> ${u.title}</h2>${u.lessons.map((l) => row(l, l.topic)).join('')}</section>`).join('')}
-        ${tools.map((u) => `<section class="topics"><h2>${u.title}</h2>${u.lessons.filter((l) => !l.hideHome).map((l) => row(l, '')).join('')}</section>`).join('')}
-        ${later.length ? `<section class="extras"><h2>Later</h2><ul>${later.map((e) => `<li>${e.title}${e.when ? `, ${e.when}` : ''}: ${e.scope || ''}${examUnits(e).length ? '' : ' (not added yet)'}</li>`).join('')}</ul></section>` : ''}
-        ${M.howto ? `<section class="howto"><p>${M.howto}</p></section>` : ''}
-        <p class="reset-row"><button class="btn subtle" id="reset">Reset progress</button></p>
+        <header class="hero">
+          ${M.eyebrow ? `<p class="eyebrow">${M.eyebrow}</p>` : ''}
+          <h1>${title}</h1>
+          ${lede ? `<p class="lede">${lede}</p>` : ''}
+          <div class="hero-actions">
+            <a class="btn primary" href="#/l/${(last || next).id}">${last ? 'Continue' : 'Start'}<span class="btn-sub">${(last || next).title}</span></a>
+            ${(M.actions || []).map((a) => `<a class="btn" href="${a.href}">${a.label}</a>`).join('')}
+          </div>
+        </header>
+        <div class="overall card"><div class="overall-top"><span>${cur.title || 'Course'} progress</span><b>${pct}%</b></div><div class="meter"><span style="width:${pct}%"></span></div></div>
+        ${plan ? `<section class="plan card"><h2>${plan.title || 'Plan'}</h2><ol>${plan.items.map((x) => `<li>${x}</li>`).join('')}</ol>${plan.note ? `<p class="plan-note">${plan.note}</p>` : ''}</section>` : ''}
+        ${lists}${toolLists}
+        ${extras.length ? group(M.extraTitle || 'Extra', extras.map(unitRow).join(''), 'muted') : ''}
+        ${later.length ? `<section class="group muted"><h2 class="group-h">Later</h2><div class="list">${later.map((e) => `<div class="row static"><span class="row-num"></span><span class="row-main"><span class="row-title">${e.title}</span><span class="row-sub">${e.scope || ''}${examUnits(e).length ? '' : ' · not added yet'}</span></span></div>`).join('')}</div></section>` : ''}
+        ${M.howto ? `<p class="howto">${M.howto}</p>` : ''}
+        <p class="reset-row"><button class="btn subtle" id="reset">Reset progress</button><span class="reset-ask" hidden>Erase all progress on this device? <button class="btn danger" id="reset-yes">Erase</button> <button class="btn subtle" id="reset-no">Keep</button></span></p>
       </section>`;
-    main.querySelector('#reset').addEventListener('click', () => {
-      if (confirm('Erase all progress on this device?')) { Store.reset(); route(); }
-    });
+    const ask = main.querySelector('.reset-ask');
+    main.querySelector('#reset').addEventListener('click', () => { ask.hidden = false; });
+    main.querySelector('#reset-no').addEventListener('click', () => { ask.hidden = true; });
+    main.querySelector('#reset-yes').addEventListener('click', () => { Store.reset(); route(); });
     renderMath(main);
     buildSidebar(null);
     updateTopProgress();
     document.title = NAME();
+    window.scrollTo(0, 0);
   }
 
   // ---------------------------------------------------------------- lesson page
@@ -439,7 +459,7 @@
       } else if (s.t === 'read') {
         const d = document.createElement('section');
         d.className = 'read';
-        const figHtml = s.fig ? `<figure class="fig">${String(s.fig)}</figure>` : '';
+        const figHtml = s.fig ? `<figure class="fig">${figOf(s.fig)}</figure>` : '';
         d.innerHTML = rich(s.md, s.figs) + figHtml + (s.after ? rich(s.after, s.figs) : '');
         wrap.appendChild(d);
       } else if (s.t === 'widget') {
@@ -544,7 +564,7 @@
 
   function mountProblem(host, p, ctx) {
     const parts = p.parts || [];
-    const S = null;
+    const S = (p.fig && window.Schem && parts.some((pt) => typeof pt.ans === 'function')) ? Schem.solve(p.fig) : null;
     parts.forEach((pt) => { if (typeof pt.ans === 'function') pt._ans = pt.ans(S); else pt._ans = pt.ans; });
 
     const tag = ctx.gen ? 'Practice' : (p.src ? '' : 'Practice');
@@ -554,7 +574,7 @@
     host.innerHTML = `
       <header class="p-head"><span class="p-num">${ctx.n}</span>${srcHtml}${p.title ? `<span class="p-title">${p.title}</span>` : ''}${genMeter}<span class="p-status" aria-live="polite"></span></header>
       <div class="p-q">${rich(p.q, p.figs)}</div>
-      ${p.fig ? `<figure class="fig">${typeof p.fig === 'string' ? p.fig : ''}</figure>` : ''}
+      ${p.fig ? `<figure class="fig">${figOf(p.fig, p.figOpts)}</figure>` : ''}
       ${p.figHtml ? `<figure class="fig">${p.figHtml}</figure>` : ''}
       ${p.q2 ? `<div class="p-q">${mdToHtml(p.q2)}</div>` : ''}
       <div class="parts">${parts.map((pt, i) => partHtml(pt, i)).join('')}</div>
@@ -704,35 +724,63 @@
   function route() {
     const h = location.hash || '#/';
     const m = /^#\/l\/(.+)$/.exec(h);
-    // #/sheet, #/quiz, #/drill open the current exam's pages; #/<exam>/sheet etc. open another exam's
+    // #/sheet, #/quiz, #/drill open the current exam's pages; #/<exam>/sheet etc. another exam's; meta.aliases adds more
     const cur = current();
-    const ALIAS = { '#/sheet': cur.sheet, '#/quiz': cur.quiz, '#/drill': cur.drill };
+    const ALIAS = Object.assign({}, cur.sheet ? { '#/sheet': cur.sheet } : {}, cur.quiz ? { '#/quiz': cur.quiz } : {}, cur.drill ? { '#/drill': cur.drill } : {}, META().aliases || {});
     const em = /^#\/([\w-]+)\/(sheet|quiz|drill)$/.exec(h);
     const id = ALIAS[h] || (em && examOf(em[1]) && examOf(em[1])[em[2]]) || (m && m[1]);
     document.body.classList.remove('nav-open');
-    document.querySelectorAll('.top-link').forEach((tl) => tl.classList.toggle('on', ALIAS[tl.getAttribute('href')] === id));
+    document.querySelectorAll('.top-link, .tab[href]').forEach((tl) => {
+      const href = tl.getAttribute('href');
+      tl.classList.toggle('on', (href === '#/' && !(id && BYID.has(id))) || (!!ALIAS[href] && ALIAS[href] === id));
+    });
     if (id && BYID.has(id)) renderLesson(BYID.get(id));
     else renderHome();
   }
 
-  // ---------------------------------------------------------------- theme
+  // ---------------------------------------------------------------- theme: follows the system until the toggle is used
   function initTheme() {
+    const k = `${META().key || 'course'}.theme`;
     let t = null;
-    try { t = localStorage.getItem('ece340.theme'); } catch (e) { /* ignore */ }
-    document.documentElement.dataset.theme = t || 'dark';
-    document.getElementById('theme').addEventListener('click', () => {
-      const cur = document.documentElement.dataset.theme
-        || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-      const nt = cur === 'dark' ? 'light' : 'dark';
+    try { t = localStorage.getItem(k); } catch (e) { /* ignore */ }
+    if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+    const btn = document.getElementById('theme');
+    if (btn) btn.addEventListener('click', () => {
+      const now = document.documentElement.dataset.theme || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      const nt = now === 'dark' ? 'light' : 'dark';
       document.documentElement.dataset.theme = nt;
-      try { localStorage.setItem('ece340.theme', nt); } catch (e) { /* ignore */ }
+      try { localStorage.setItem(k, nt); } catch (e) { /* ignore */ }
     });
+  }
+
+  // ---------------------------------------------------------------- phone tab bar (built from the top-bar links)
+  const ICON = {
+    home: '<path d="M4 11 12 4.5 20 11v9h-5.5v-5.5h-5V20H4z"/>',
+    topics: '<path d="M9 6.5h11M9 12h11M9 17.5h11"/><circle cx="4.8" cy="6.5" r="1.1"/><circle cx="4.8" cy="12" r="1.1"/><circle cx="4.8" cy="17.5" r="1.1"/>',
+    sheet: '<path d="M7 3.5h7l4 4V20.5H7z"/><path d="M14 3.5v4h4M10 12h5M10 15.5h5"/>',
+    quiz: '<circle cx="12" cy="12" r="8.5"/><path d="M9.7 9.6a2.4 2.4 0 1 1 3.3 2.2c-.7.3-1 .8-1 1.5v.5M12 16.8v.2"/>',
+    practice: '<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1"/>',
+    exam: '<path d="M6 3.5h9l3 3v14H6z"/><path d="m9 12.5 2 2 4-4"/>',
+    print: '<path d="M7 8V3.5h10V8M7 17H4v-7.5h16V17h-3"/><path d="M7 14h10v6.5H7z"/>',
+  };
+  const svgIcon = (k) => `<svg viewBox="0 0 24 24" aria-hidden="true">${ICON[k] || ICON.sheet}</svg>`;
+  function buildTabbar() {
+    if (document.querySelector('.tabbar')) return;
+    const links = [...document.querySelectorAll('.topbar .top-link[data-tab]')].slice(0, 3);
+    const nav = document.createElement('nav');
+    nav.className = 'tabbar';
+    nav.setAttribute('aria-label', 'Sections');
+    nav.innerHTML = `<a class="tab" href="#/">${svgIcon('home')}<span>Home</span></a><button type="button" class="tab" id="tab-topics">${svgIcon('topics')}<span>Topics</span></button>`
+      + links.map((a) => `<a class="tab" href="${a.getAttribute('href')}">${svgIcon(a.dataset.tab)}<span>${a.dataset.label || a.textContent.trim()}</span></a>`).join('');
+    document.body.appendChild(nav);
+    nav.querySelector('#tab-topics').addEventListener('click', () => document.body.classList.toggle('nav-open'));
   }
 
   document.addEventListener('DOMContentLoaded', () => {
     Store.load();
     indexCourse();
     initTheme();
+    buildTabbar();
     document.getElementById('navtoggle').addEventListener('click', () => document.body.classList.toggle('nav-open'));
     window.addEventListener('hashchange', route);
     route();
