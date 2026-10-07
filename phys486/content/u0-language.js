@@ -242,26 +242,29 @@
             | $\vec E = E_x\hat x + E_y\hat y + E_z\hat z$ | $\ket\psi = c_1\ket{e_1} + c_2\ket{e_2} + \cdots = \sum_nc_n\ket{e_n}$ |
             | real components | complex components $c_n$ |
             | 3 directions | any number, even infinitely many |
-            | $\vec A\cdot\vec B = \sum A_iB_i$ | $\braket\phi\psi = \sum_n\phi_n^*\psi_n$ (note the conjugate) |
-            | $E_x = \hat x\cdot\vec E$ | $c_n = \braket{e_n}{\psi}$ |
-            | $\hat x\cdot\hat y = 0$, $\hat x\cdot\hat x = 1$ | $\braket{e_m}{e_n} = \delta_{mn}$ |
+            | $\vec A\cdot\vec B = \sum A_iB_i$ | $\braket{\phi\vert \psi} = \sum_n\phi_n^*\psi_n$ (note the conjugate) |
+            | $E_x = \hat x\cdot\vec E$ | $c_n = \braket{e_n\vert \psi}$ |
+            | $\hat x\cdot\hat y = 0$, $\hat x\cdot\hat x = 1$ | $\braket{e_m\vert e_n} = \delta_{mn}$ |
 
             **Notation, piece by piece:**
             - $\ket\psi$, a **ket**, is the state vector. The symbol inside is just a name: $\ket\psi$, $\ket{3}$, $\ket{+}$, $\ket{E_2}$ are all labels. Think of it as a column of components.
             - $\bra\psi$, a **bra**, is the same vector turned into a row **and complex-conjugated**: components $c_n^*$.
-            - $\braket\phi\psi$ (bra times ket, a "bra-ket") is the **inner product**, a single complex number: row times column, $\sum_n\phi_n^*\psi_n$.
-            - $\delta_{mn}$ (the **Kronecker delta**) is 1 if $m = n$ and 0 otherwise. "$\braket{e_m}{e_n} = \delta_{mn}$" says the basis vectors are perpendicular unit vectors: an **orthonormal basis**.
+            - $\braket{\phi|\psi}$ (bra times ket, a "bra-ket") is the **inner product**, a single complex number: row times column, $\sum_n\phi_n^*\psi_n$.
+            - $\delta_{mn}$ (the **Kronecker delta**) is 1 if $m = n$ and 0 otherwise. "$\braket{e_m|e_n} = \delta_{mn}$" says the basis vectors are perpendicular unit vectors: an **orthonormal basis**.
 
-            **Why the conjugate?** So that the length squared $\braket\psi\psi = \sum|c_n|^2$ is real and positive. Without it, $(1, i)\cdot(1, i) = 1 - 1 = 0$, a nonzero vector with zero length. Consequences: $\braket\phi\psi^* = \braket\psi\phi$ (swapping conjugates), and a constant pulled out of a bra gets conjugated.
+            **Why the conjugate?** So that the length squared $\braket{\psi|\psi} = \sum|c_n|^2$ is real and positive. Without it, $(1, i)\cdot(1, i) = 1 - 1 = 0$, a nonzero vector with zero length. Consequences: $\braket{\phi|\psi}^* = \braket{\psi|\phi}$ (swapping conjugates), and a constant pulled out of a bra gets conjugated.
 
-            **Normalized** means $\braket\psi\psi = 1$. A **Hilbert space** is the name for such a complex vector space with this inner product (plus a technical completeness condition); in this course it just means "the space the states live in".
+            **Normalized** means $\braket{\psi|\psi} = 1$. A **Hilbert space** is the name for such a complex vector space with this inner product (plus a technical completeness condition); in this course it just means "the space the states live in".
+
+            !!key Two kinds of angle brackets
+              With a bar inside, $\braket{\phi|\psi}$ is the **inner product** of two vectors: one complex number. With no bar, $\langle A\rangle$ is the **average** of measured values (Lesson B). They are connected on purpose: the average of $A$ in state $\ket\psi$ is the "sandwich" $\langle A\rangle = \bra\psi\hat A\ket\psi$ (below).
           `),
           R(md`
             ### Functions are vectors too
 
             A function $f(x)$ is a vector with one component for each point $x$: infinitely many, labeled continuously. The sum in the inner product becomes an integral:
-            $$\braket fg = \int f^*(x)\,g(x)\,dx, \qquad \braket ff = \int|f|^2dx$$
-            You already did linear algebra with functions in E&M: separation of variables expanded a boundary potential in $\sin(n\pi x/a)$ and found the coefficients with "Fourier's trick" (multiply by $\sin(m\pi x/a)$ and integrate). That *is* $c_m = \braket{e_m}{f}$ with the orthonormal basis $e_n(x) = \sqrt{2/a}\sin(n\pi x/a)$. Wavefunctions are exactly this.
+            $$\braket{f|g} = \int f^*(x)\,g(x)\,dx, \qquad \braket{f|f} = \int|f|^2dx$$
+            You already did linear algebra with functions in E&M: separation of variables expanded a boundary potential in $\sin(n\pi x/a)$ and found the coefficients with "Fourier's trick" (multiply by $\sin(m\pi x/a)$ and integrate). That *is* $c_m = \braket{e_m|f}$ with the orthonormal basis $e_n(x) = \sqrt{2/a}\sin(n\pi x/a)$. Wavefunctions are exactly this.
 
             ### Operators
 
@@ -279,7 +282,7 @@
           R(md`
             ### Adjoint and Hermitian
 
-            The **adjoint** $\hat A^\dagger$ ("A dagger") is the operator that does the same job acting to the left: $\braket{\phi}{\hat A\psi} = \braket{\hat A^\dagger\phi}{\psi}$ for all vectors. For a matrix, it is the **conjugate transpose** ($A^\dagger_{mn} = A_{nm}^*$). The bra of $\hat A\ket\psi$ is $\bra\psi\hat A^\dagger$, and $(\hat A\hat B)^\dagger = \hat B^\dagger\hat A^\dagger$.
+            The **adjoint** $\hat A^\dagger$ ("A dagger") is the operator that does the same job acting to the left: $\braket{\phi|\hat A\psi} = \braket{\hat A^\dagger\phi|\psi}$ for all vectors. For a matrix, it is the **conjugate transpose** ($A^\dagger_{mn} = A_{nm}^*$). The bra of $\hat A\ket\psi$ is $\bra\psi\hat A^\dagger$, and $(\hat A\hat B)^\dagger = \hat B^\dagger\hat A^\dagger$.
 
             An operator with $\hat A^\dagger = \hat A$ is **Hermitian** (self-adjoint). The theorem that makes QM work: a Hermitian operator has
             1. **real** eigenvalues,
@@ -298,7 +301,7 @@
 
             ### Outer products
 
-            $\ket a\bra b$ (ket times bra, column times row) is an **operator**: acting on $\ket\psi$ it gives $\ket a\,\braket b\psi$, the vector $\ket a$ scaled by a number. With a unit vector, $\ket e\bra e$ is the **projector** onto $\ket e$: it keeps the component along $\ket e$ (like $\hat x(\hat x\cdot\vec E)$). Summing projectors over a whole orthonormal basis gives the identity, $\sum_n\ket{e_n}\bra{e_n} = \hat 1$ (**completeness**).
+            $\ket a\bra b$ (ket times bra, column times row) is an **operator**: acting on $\ket\psi$ it gives $\ket a\,\braket{b|\psi}$, the vector $\ket a$ scaled by a number. With a unit vector, $\ket e\bra e$ is the **projector** onto $\ket e$: it keeps the component along $\ket e$ (like $\hat x(\hat x\cdot\vec E)$). Summing projectors over a whole orthonormal basis gives the identity, $\sum_n\ket{e_n}\bra{e_n} = \hat 1$ (**completeness**).
           `),
           L(1, 'recognize'),
           Q(md`$\ket\psi = \begin{pmatrix}1\\ i\end{pmatrix}$. Then $\bra\psi$ is…`, [md`$(1,\ -i)$`, md`$(1,\ i)$`, md`$\begin{pmatrix}1\\ -i\end{pmatrix}$`, md`$(-1,\ -i)$`], 0,
@@ -313,7 +316,7 @@
           L(2, 'set up'),
           P({
             title: 'Length of a complex vector',
-            q: md`$\ket\psi = \begin{pmatrix}1\\ 2i\end{pmatrix}$. Find $\braket\psi\psi$, and the constant $N$ that makes $N\ket\psi$ normalized.`,
+            q: md`$\ket\psi = \begin{pmatrix}1\\ 2i\end{pmatrix}$. Find $\braket{\psi|\psi}$, and the constant $N$ that makes $N\ket\psi$ normalized.`,
             parts: [{ lbl: '\\langle\\psi|\\psi\\rangle', ans: 5 }, { lbl: 'N', ans: 1 / Math.sqrt(5) }],
             hints: [md`$|1|^2 + |2i|^2$.`],
             sol: md`$1 + 4 = 5$; $N = 1/\sqrt5$.`,
@@ -322,12 +325,12 @@
             [null, md`Eigenvalue $-9$.`, md`Eigenvalue $4$.`, md`Eigenvalue $-k^2$.`],
             md`$(x^2)'' = 2$, not a multiple of $x^2$.`),
           L(3, 'standard'),
-          Q(md`$\ket\psi = \tfrac15\left(3\ket{e_1} + 4i\ket{e_2}\right)$ with orthonormal $\ket{e_n}$. $\braket{e_2}{\psi} = $?`, [md`$4i/5$`, md`$-4i/5$`, md`$4/5$`, md`$16/25$`], 0,
+          Q(md`$\ket\psi = \tfrac15\left(3\ket{e_1} + 4i\ket{e_2}\right)$ with orthonormal $\ket{e_n}$. $\braket{e_2|\psi} = $?`, [md`$4i/5$`, md`$-4i/5$`, md`$4/5$`, md`$16/25$`], 0,
             [null, md`The conjugate acts on the bra $\bra{e_2}$, whose components are real here.`, 'Keep the i.', 'That is a probability, |c₂|².'],
             md`Orthonormality kills the $\ket{e_1}$ term: $c_2 = \tfrac{4i}{5}$.`),
           P({
             title: 'Inner product of functions',
-            q: md`Compute $\braket fg = \int_0^\pi f^*g\,dx$ for $f = g = \sin x$.`,
+            q: md`Compute $\braket{f|g} = \int_0^\pi f^*g\,dx$ for $f = g = \sin x$.`,
             parts: [{ lbl: '\\langle f|g\\rangle', ans: Math.PI / 2 }],
             hints: [md`$\sin^2 = \tfrac12(1 - \cos 2x)$.`],
             sol: md`$\pi/2$. So $\sqrt{2/\pi}\sin x$ is normalized on $[0, \pi]$, the pattern behind $\sqrt{2/a}$.`,
@@ -352,17 +355,17 @@
           }),
           L(6, 'harder than the exam'),
           Q(md`Why must a Hermitian operator have real eigenvalues? Take $\hat A\ket v = \lambda\ket v$ and compute $\bra v\hat A\ket v$ two ways.`,
-            [md`$\lambda\braket vv = \lambda^*\braket vv$, and $\braket vv > 0$, so $\lambda = \lambda^*$`, md`because $\braket vv = 1$`, md`because $\hat A$ is a real matrix`, md`because $\lambda = \bra v\hat A\ket v$ is a length`], 0,
+            [md`$\lambda\braket{v|v} = \lambda^*\braket{v|v}$, and $\braket{v|v} > 0$, so $\lambda = \lambda^*$`, md`because $\braket{v|v} = 1$`, md`because $\hat A$ is a real matrix`, md`because $\lambda = \bra v\hat A\ket v$ is a length`], 0,
             [null, 'Normalization alone does not do it.', 'Hermitian matrices can have complex entries.', 'Not an argument.'],
-            md`Acting right: $\lambda\braket vv$. Acting left with $\hat A^\dagger = \hat A$: $\lambda^*\braket vv$.`),
+            md`Acting right: $\lambda\braket{v|v}$. Acting left with $\hat A^\dagger = \hat A$: $\lambda^*\braket{v|v}$.`),
           Q(md`Which is the classical-to-quantum Hamiltonian for a particle of mass $m$ in a uniform gravitational field?`, [md`$-\tfrac{\hbar^2}{2m}\tfrac{d^2}{dx^2} + mgx$`, md`$\tfrac{\hbar^2}{2m}\tfrac{d^2}{dx^2} + mgx$`, md`$-i\hbar\tfrac{d}{dx} + mgx$`, md`$-\tfrac{\hbar^2}{2m}\tfrac{d^2}{dx^2} - mg$`], 0,
             [null, md`$\hat p^2 = (-i\hbar)^2d^2/dx^2 = -\hbar^2d^2/dx^2$.`, 'That is p, not p²/2m.', 'V is the potential energy mgx, not the force.'],
             md`$H = p^2/2m + mgx$ with $\hat p = -i\hbar\,d/dx$.`),
         ],
         bank: [
-          Q(md`$\braket\phi\psi^* = $?`, [md`$\braket\psi\phi$`, md`$\braket\phi\psi$`, md`$-\braket\phi\psi$`, md`$\braket{\phi^*}{\psi^*}$`], 0, [null, 'Only if real.', 'No.', 'Not notation used here.'], 'Swap = conjugate.'),
-          Q(md`$\ket a\bra b$ is…`, ['an operator (a matrix)', 'a number', 'a ket', 'a bra'], 0, [null, md`$\braket ba$ is the number.`, 'It acts on kets.', 'No.'], 'Column × row.'),
-          Q(md`An orthonormal basis satisfies…`, [md`$\braket{e_m}{e_n} = \delta_{mn}$`, md`$\braket{e_m}{e_n} = 1$`, md`$\ket{e_m}\bra{e_n} = \delta_{mn}$`, md`$\braket{e_m}{e_n} = 0$`], 0, [null, 'Only for m = n.', 'That is an operator.', 'Only for m ≠ n.'], 'Perpendicular unit vectors.'),
+          Q(md`$\braket{\phi|\psi}^* = $?`, [md`$\braket{\psi|\phi}$`, md`$\braket{\phi|\psi}$`, md`$-\braket{\phi|\psi}$`, md`$\braket{\phi^*|\psi^*}$`], 0, [null, 'Only if real.', 'No.', 'Not notation used here.'], 'Swap = conjugate.'),
+          Q(md`$\ket a\bra b$ is…`, ['an operator (a matrix)', 'a number', 'a ket', 'a bra'], 0, [null, md`$\braket{b|a}$ is the number.`, 'It acts on kets.', 'No.'], 'Column × row.'),
+          Q(md`An orthonormal basis satisfies…`, [md`$\braket{e_m|e_n} = \delta_{mn}$`, md`$\braket{e_m|e_n} = 1$`, md`$\ket{e_m}\bra{e_n} = \delta_{mn}$`, md`$\braket{e_m|e_n} = 0$`], 0, [null, 'Only for m = n.', 'That is an operator.', 'Only for m ≠ n.'], 'Perpendicular unit vectors.'),
           Q(md`A Hermitian matrix's diagonal entries are…`, ['real', 'zero', 'imaginary', 'equal'], 0, [null, 'Not necessarily.', md`$A_{nn} = A_{nn}^*$.`, 'No.'], md`$A_{nn} = A_{nn}^*$.`),
         ],
       },
@@ -402,7 +405,7 @@
 
             ### Two kinds of delta, one idea
 
-            For a discrete orthonormal basis, $\braket{e_m}{e_n} = \delta_{mn}$ (Kronecker). For a continuous basis, labeled by a real number like position $x$, the same statement is $\braket{x}{x'} = \delta(x - x')$ (Dirac), and sums become integrals. These continuous basis vectors cannot be normalized to 1 (a particle at exactly one point, or a plane wave of exactly one $k$, is an idealization), which is exactly why physical states are always packets.
+            For a discrete orthonormal basis, $\braket{e_m|e_n} = \delta_{mn}$ (Kronecker). For a continuous basis, labeled by a real number like position $x$, the same statement is $\braket{x|x'} = \delta(x - x')$ (Dirac), and sums become integrals. These continuous basis vectors cannot be normalized to 1 (a particle at exactly one point, or a plane wave of exactly one $k$, is an idealization), which is exactly why physical states are always packets.
 
             !!mistake Common mistakes
               - Thinking $\delta(0) = 1$. It is infinite; only its area is 1.
@@ -439,7 +442,7 @@
             [null, md`The slope jumps from $+\lambda$ to $-\lambda$: a drop of $2\lambda$.`, 'Away from 0 yes, but the slope jumps at 0.', 'The jump is in the slope, size 2λ.'],
             md`$f' = -\lambda\,\text{sgn}(x)f$; the jump of $-2\lambda$ at 0 gives $-2\lambda\delta(x)$ in $f''$. This is why $\langle p^2\rangle$ is safer as $\hbar^2\int|f'|^2$.`),
           L(5, 'exam level'),
-          Q(md`Why can't $e^{ikx}$ be normalized, and what replaces $\braket{k}{k'} = 1$?`, [md`$\int|e^{ikx}|^2dx = \infty$; instead $\int e^{-ikx}e^{ik'x}dx = 2\pi\delta(k - k')$`, md`It can be normalized with a factor $1/\sqrt{2\pi}$`, md`Its integral is 0`, md`It is normalized because $|e^{ikx}| = 1$`], 0,
+          Q(md`Why can't $e^{ikx}$ be normalized, and what replaces $\braket{k|k'} = 1$?`, [md`$\int|e^{ikx}|^2dx = \infty$; instead $\int e^{-ikx}e^{ik'x}dx = 2\pi\delta(k - k')$`, md`It can be normalized with a factor $1/\sqrt{2\pi}$`, md`Its integral is 0`, md`It is normalized because $|e^{ikx}| = 1$`], 0,
             [null, md`That factor makes the delta come out with coefficient 1, but the integral of $|e^{ikx}|^2$ is still infinite.`, 'It is the modulus squared that matters, and that is 1 everywhere.', 'Pointwise 1, integrated ∞.'],
             'Delta normalization: orthogonal for k ≠ k′, infinite at k = k′.'),
           L(6, 'harder than the exam'),

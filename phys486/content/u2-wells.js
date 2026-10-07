@@ -51,7 +51,7 @@
             Because the equation is linear and the $\psi_n$ form a complete orthonormal set, *any* initial state can be built from them, and each piece just spins its own phase:
 
             1. **Solve** $\hat H\psi_n = E_n\psi_n$ for the stationary states and energies.
-            2. **Decompose** the initial state: $\Psi(x,0) = \sum_n c_n\psi_n(x)$, with $c_n = \braket{\psi_n}{\Psi(0)} = \int\psi_n^*(x)\Psi(x,0)\,dx$.
+            2. **Decompose** the initial state: $\Psi(x,0) = \sum_n c_n\psi_n(x)$, with $c_n = \braket{\psi_n|\Psi(0)} = \int\psi_n^*(x)\Psi(x,0)\,dx$.
             3. **Evolve**: $\Psi(x,t) = \sum_n c_n\psi_n(x)e^{-iE_nt/\hbar}$.
 
             Read off from step 2: $P(E_n) = |c_n|^2$, $\langle H\rangle = \sum|c_n|^2E_n$. Both are **constant in time**: the phases do not touch $|c_n|$.
@@ -171,7 +171,7 @@
         ],
         bank: [
           Q(md`$c_n$ in the recipe is found from…`, [md`$\int\psi_n^*(x)\Psi(x,0)\,dx$`, md`$\int\psi_n(x)\Psi^*(x,0)\,dx$`, md`$\Psi(x_n,0)$`, md`$\int|\psi_n|^2dx$`], 0,
-            [null, 'That is $c_n^*$.', 'Not a projection.', 'That is 1.'], md`Project onto $\psi_n$: $c_n = \braket{\psi_n}{\Psi(0)}$.`),
+            [null, 'That is $c_n^*$.', 'Not a projection.', 'That is 1.'], md`Project onto $\psi_n$: $c_n = \braket{\psi_n|\Psi(0)}$.`),
           Q(md`$\sum_n|c_n|^2$ equals…`, ['1', md`$\langle H\rangle$`, '0', 'the number of states'], 0,
             [null, 'That weights by $E_n$.', 'Probabilities sum to 1.', 'No.'], 'Total probability.'),
           Q(md`The time-independent Schrödinger equation is…`, ['an eigenvalue equation for the energy', 'an equation for the probability current', 'Newton\'s law for the average position', 'only valid in an infinite well'], 0,

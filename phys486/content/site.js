@@ -7,7 +7,7 @@
     actions: [{ href: '#/quiz', label: 'Mixed practice' }, { href: '#/sheet', label: 'Formula sheet' }, { href: '#/mock', label: 'Mock exam' }, { href: '#/notation', label: 'Notation' }],
     aliases: { '#/mock': 'm1-mock', '#/notation': 'm1-notation' },
     macros: {
-      '\\ket': '\\left|#1\\right\\rangle', '\\bra': '\\left\\langle #1\\right|', '\\braket': '\\left\\langle #1\\middle|#2\\right\\rangle',
+      '\\ket': '\\left|#1\\right\\rangle', '\\bra': '\\left\\langle #1\\right|',   // \braket{a|b} is KaTeX's own (one argument)
       '\\ev': '\\left\\langle #1\\right\\rangle', '\\op': '\\hat{#1}',
     },
     howto: 'Answers: the boxes work like Desmos. Type <code>/</code> for a fraction, <code>^</code> for a power, <code>sqrt</code>, <code>pi</code>, <code>hbar</code>, <code>omega</code>, <code>theta</code>, <code>alpha</code> for Greek, and use the arrow keys to leave a fraction or power. Symbols are case-sensitive. Each symbolic box lists the variables it knows. Numbers count within about 1%. Multiple choice explains every wrong option. A problem doesn\'t count once you open its solution. Progress is saved in this browser.',

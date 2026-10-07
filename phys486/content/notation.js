@@ -17,18 +17,44 @@
       - **Amplitude**: a complex number whose modulus squared is a probability. Lesson ${A} covers complex numbers, $|z|^2 = z^*z$ and interference.
     `,
     't2-postulates': md`
-      Lesson ${Cv} builds all of this from 3-D vectors; here is the short version.
-      - **State**: everything that can be known about the system, represented by a vector $\ket\psi$ (a **ket**). The space of all such vectors is the **Hilbert space**: a complex vector space with an inner product.
-      - **Basis and components**: $\ket\psi = \sum_nc_n\ket{a_n}$ with complex $c_n$. **Orthonormal**: $\braket{a_m}{a_n} = \delta_{mn}$ (Kronecker delta: 1 if equal, else 0). Then $c_n = \braket{a_n}\psi$, like $E_x = \hat x\cdot\vec E$.
-      - $\bra\phi$ (a **bra**) is the conjugate-transposed vector; $\braket\phi\psi$ is the **inner product** (a complex number); $\braket\psi\psi = \sum|c_n|^2 = 1$ means **normalized**.
-      - **Operator** $\hat A$ (hat): a linear map on vectors, a matrix in a basis. **Eigenvector/eigenvalue**: $\hat A\ket{a_n} = a_n\ket{a_n}$.
-      - **Hermitian** ($\hat A^\dagger = \hat A$, where $\dagger$ is the conjugate transpose): real eigenvalues, orthogonal eigenvectors that form a basis.
-      - $\bra\psi\hat A\ket\psi$: apply $\hat A$ to $\ket\psi$, then take the inner product with $\ket\psi$. Expanding, $\hat A\ket\psi = \sum c_na_n\ket{a_n}$, so $\bra\psi\hat A\ket\psi = \sum a_n|c_n|^2$.
-      - $\langle A\rangle$ (average), $\sigma_A$ (standard deviation) and "ensemble" are from ${B}.
-      - $\hat H$, the **Hamiltonian**, is the energy operator: classical $H = p^2/2m + V$ with $x, p$ promoted to operators. The Schrödinger equation is first order in time: knowing $\ket\psi$ now fixes it forever (no "initial velocity" as in Newton).
+      This lesson is written in **Dirac notation**. Here it is from the ground up, in the order you need it, using a system with two possible outcomes so every object is a small column or matrix.
+
+      **1. Ket.** $\ket\psi$ is a **column vector** with complex entries. Whatever sits inside the $|\ \rangle$ is only a name tag: $\ket\psi$, $\ket3$, $\ket+$, $\ket{E_2}$ are all just labels for vectors.
+      $$\ket\psi = \begin{pmatrix}c_1\\ c_2\end{pmatrix}$$
+
+      **2. Bra.** $\bra\psi$ is the same vector laid on its side as a **row**, with every entry **complex-conjugated**: $\bra\psi = (c_1^*,\ c_2^*)$.
+
+      **3. Bra-ket (inner product).** A bra followed by a ket, $\braket{\phi|\psi}$, is row times column: **one complex number**, the complex version of a dot product. Note the vertical bar in the middle.
+      $$\braket{\phi|\psi} = \phi_1^*\psi_1 + \phi_2^*\psi_2$$
+      - $\braket{\psi|\psi} = |c_1|^2 + |c_2|^2$ is the length squared, real and positive (that is what the conjugate is for). **Normalized** means $\braket{\psi|\psi} = 1$.
+      - $\braket{\phi|\psi} = 0$ means **orthogonal** (perpendicular).
+      - Reversing the order conjugates: $\braket{\psi|\phi} = \braket{\phi|\psi}^*$.
+
+      Example: $\ket\phi = \begin{pmatrix}1\\ 0\end{pmatrix}$, $\ket\psi = \tfrac{1}{\sqrt2}\begin{pmatrix}1\\ i\end{pmatrix}$. Then $\bra\psi = \tfrac1{\sqrt2}(1,\ -i)$, $\braket{\psi|\psi} = \tfrac12(1 + 1) = 1$, and $\braket{\phi|\psi} = \tfrac{1}{\sqrt2}$.
+
+      **4. Orthonormal basis.** A set of unit vectors $\ket{a_1}, \ket{a_2}, \ldots$ that are mutually perpendicular, like $\hat x, \hat y, \hat z$:
+      $$\braket{a_m|a_n} = \delta_{mn}$$
+      $\delta_{mn}$, the **Kronecker delta**, is 1 when $m = n$ and 0 otherwise. Example: $\ket{a_1} = \begin{pmatrix}1\\ 0\end{pmatrix}$, $\ket{a_2} = \begin{pmatrix}0\\ 1\end{pmatrix}$.
+
+      **5. Components.** Any state is a combination of basis vectors, $\ket\psi = \sum_nc_n\ket{a_n}$, and you get each coefficient by taking the inner product with that basis vector:
+      $$c_n = \braket{a_n|\psi}$$
+      exactly like $E_x = \hat x\cdot\vec E$. The $c_n$ are complex numbers called **amplitudes**.
+
+      **6. Operator.** $\hat A$ (the hat marks an operator) turns a ket into another ket, linearly: in a basis, it is a **matrix** multiplying the column. An **eigenvector** of $\hat A$ is a ket it only stretches, $\hat A\ket{a_n} = a_n\ket{a_n}$; the stretch factor $a_n$ is the **eigenvalue**.
+
+      **7. Dagger and Hermitian.** $\hat A^\dagger$ ("A dagger") is the **conjugate transpose** of the matrix. If $\hat A^\dagger = \hat A$ the operator is **Hermitian**, which guarantees real eigenvalues and eigenvectors that form an orthonormal basis.
+
+      **8. Sandwich.** $\bra\phi\hat A\ket\psi$ means: apply $\hat A$ to $\ket\psi$ (a new column), then take the inner product with $\bra\phi$. One number.
+
+      !!key Two kinds of angle brackets
+        With a bar inside, $\braket{\phi|\psi}$ is an **inner product** of two vectors. With no bar, $\langle A\rangle$ is the **average** of the measured values of $A$ (the "expectation value", Lesson ${B}). The notation is built so the two connect: the average of $A$ in the state $\ket\psi$ is the sandwich
+        $$\langle A\rangle = \bra\psi\hat A\ket\psi$$
+        Check it: $\hat A\ket\psi = \sum_nc_na_n\ket{a_n}$, and the inner product with $\bra\psi$ gives $\sum_na_n|c_n|^2$, which is each value times its probability, summed.
+
+      **Also used below.** The **Hilbert space** is the space these vectors live in. $\sigma_A$ is the standard deviation of the results (Lesson ${B}); an **ensemble** is many identically prepared copies. $\hat H$, the **Hamiltonian**, is the energy operator: the classical $H = p^2/2m + V$ with $x$ and $p$ made into operators. The Schrödinger equation $i\hbar\frac{d}{dt}\ket\psi = \hat H\ket\psi$ is first order in time, so the state now fixes the state later (no "initial velocity" needed, unlike Newton).
     `,
     't3-wavefunction': md`
-      - **What $\braket x\psi$ means.** $\ket x$ is the state "particle exactly at $x$" (a position eigenstate). These form a basis labeled by a continuous number, so the components of $\ket\psi$ along them form a function: $\Psi(x) = \braket x\psi$, the **wavefunction**. It is the continuous version of $c_n$, and $|\Psi(x)|^2dx$ is Born's rule for position. Sums over $n$ become integrals over $x$: $\braket\phi\psi = \int\phi^*\psi\,dx$. (Lessons ${Cv}, ${D}.)
+      - **What $\braket{x|\psi}$ means.** $\ket x$ is the state "particle exactly at $x$" (a position eigenstate). These form a basis labeled by a continuous number, so the components of $\ket\psi$ along them form a function: $\Psi(x) = \braket{x|\psi}$, the **wavefunction**. It is the continuous version of $c_n$, and $|\Psi(x)|^2dx$ is Born's rule for position. Sums over $n$ become integrals over $x$: $\braket{\phi|\psi} = \int\phi^*\psi\,dx$. (Lessons ${Cv}, ${D}.)
       - $\Psi(x,t)$ (capital) is the full time-dependent wavefunction; $\psi(x)$ (lowercase) is usually a spatial part. $\partial/\partial x$, $\partial/\partial t$ are partial derivatives because $\Psi$ depends on both.
       - **Operators on functions**: $\hat x$ multiplies by $x$; $\hat p = -i\hbar\,\partial/\partial x$ (why the $i$: ${Cv}). $\langle p\rangle = \bra\Psi\hat p\ket\Psi = \int\Psi^*(\hat p\Psi)\,dx$: the operator acts on $\Psi$ first, then multiply by $\Psi^*$ and integrate. The order matters.
       - $V(x)$ is the **potential energy** (not voltage); the force is $F = -dV/dx = -V'$.
@@ -74,9 +100,9 @@
       - **Trace** $\text{tr}A$: sum of the diagonal. **Determinant** $\det A$. **Inverse** $A^{-1}$: $AA^{-1} = I$ ($I$, or $\hat 1$, the identity).
       - **Unitary** $U^\dagger U = I$: the complex version of a rotation matrix ($R^TR = I$): it preserves lengths and angles.
       - **Gram–Schmidt**: turn any basis into an orthonormal one by subtracting projections and normalizing.
-      - **Cauchy–Schwarz**: $|\braket vw|^2 \le \braket vv\braket ww$, the complex version of $|\vec a\cdot\vec b| \le |\vec a||\vec b|$.
+      - **Cauchy–Schwarz**: $|\braket{v|w}|^2 \le \braket{v|v}\braket{w|w}$, the complex version of $|\vec a\cdot\vec b| \le |\vec a||\vec b|$.
       - **Function of an operator**: by power series ($e^{\hat A} = \sum\hat A^n/n!$) or, equivalently, apply $f$ to each eigenvalue in the eigenbasis.
-      - $\ket p$: the momentum eigenstate. In position space it is the plane wave $e^{ipx/\hbar}$ (the eigenfunction of $-i\hbar\,d/dx$), and $\Phi(p) = \braket p\psi$ is the **momentum-space wavefunction**. It is the Fourier transform (${D}) written in $p = \hbar k$ instead of $k$: $\Phi(p) = \phi(p/\hbar)/\sqrt\hbar$.
+      - $\ket p$: the momentum eigenstate. In position space it is the plane wave $e^{ipx/\hbar}$ (the eigenfunction of $-i\hbar\,d/dx$), and $\Phi(p) = \braket{p|\psi}$ is the **momentum-space wavefunction**. It is the Fourier transform (${D}) written in $p = \hbar k$ instead of $k$: $\Phi(p) = \phi(p/\hbar)/\sqrt\hbar$.
     `,
     't9-uncertainty': md`
       - $\sigma_A$ is the standard deviation of $A$ (${B}). **Do not** confuse it with the Pauli matrices $\sigma_x, \sigma_y, \sigma_z$ of Topic 10: same letter, different object.
@@ -133,9 +159,9 @@
         |---|---|---|
         | $\ket\psi$ | ket: the state vector (the label inside is just a name) | ${Cv}, 2 |
         | $\bra\psi$ | bra: conjugate transpose of the ket | ${Cv} |
-        | $\braket\phi\psi$ | inner product: $\sum\phi_n^*\psi_n$ or $\int\phi^*\psi\,dx$ | ${Cv} |
-        | $c_n = \braket{e_n}\psi$ | component (amplitude) along a basis vector | ${Cv}, 2 |
-        | $\Psi(x, t) = \braket x{\psi(t)}$ | wavefunction: component along "particle at $x$" | 3 |
+        | $\braket{\phi\vert \psi}$ | inner product: $\sum\phi_n^*\psi_n$ or $\int\phi^*\psi\,dx$ | ${Cv} |
+        | $c_n = \braket{e_n\vert \psi}$ | component (amplitude) along a basis vector | ${Cv}, 2 |
+        | $\Psi(x, t) = \braket{x\vert \psi(t)}$ | wavefunction: component along "particle at $x$" | 3 |
         | $\psi_n(x)$, $E_n$ | stationary state and its energy | 4 |
         | $\phi(k)$, $\Phi(p)$ | wavefunction in wavenumber / momentum space (Fourier transform) | ${D}, 6, 8 |
         | $\lvert\Psi\rvert^2$ | probability density | ${B}, 3 |

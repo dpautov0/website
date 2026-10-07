@@ -14,7 +14,7 @@
 
             ### Postulates
 
-            $$\ket\psi = \sum_nc_n\ket{a_n},\quad c_n = \braket{a_n}\psi,\quad P(a_n) = |c_n|^2,\quad \langle A\rangle = \bra\psi\hat A\ket\psi = \sum a_n|c_n|^2,\quad \sigma_A^2 = \langle A^2\rangle - \langle A\rangle^2$$
+            $$\ket\psi = \sum_nc_n\ket{a_n},\quad c_n = \braket{a_n|\psi},\quad P(a_n) = |c_n|^2,\quad \langle A\rangle = \bra\psi\hat A\ket\psi = \sum a_n|c_n|^2,\quad \sigma_A^2 = \langle A^2\rangle - \langle A\rangle^2$$
             Outcomes are eigenvalues of Hermitian $\hat A$; after the measurement the state is $\ket{a_n}$. Global phases are unphysical, relative phases are not. $i\hbar\tfrac{d}{dt}\ket\psi = \hat H\ket\psi$.
 
             ### Wavefunctions
@@ -44,8 +44,8 @@
 
             ### Linear algebra
 
-            $\braket\phi\psi = \braket\psi\phi^*$, $\sum\ket{e_n}\bra{e_n} = \hat 1$, $A_{mn} = \bra{e_m}\hat A\ket{e_n}$, $(\hat A\hat B)^\dagger = \hat B^\dagger\hat A^\dagger$, $f(\hat A) = \sum f(a_n)\ket{a_n}\bra{a_n}$, $|\braket vw|^2 \le \braket vv\braket ww$.
-            $$\braket{x}{x'} = \delta(x - x'),\quad \braket xp = \frac{e^{ipx/\hbar}}{\sqrt{2\pi\hbar}},\quad \Phi(p) = \frac{1}{\sqrt{2\pi\hbar}}\int e^{-ipx/\hbar}\Psi(x)dx,\quad [\hat x, \hat p] = i\hbar$$
+            $\braket{\phi|\psi} = \braket{\psi|\phi}^*$, $\sum\ket{e_n}\bra{e_n} = \hat 1$, $A_{mn} = \bra{e_m}\hat A\ket{e_n}$, $(\hat A\hat B)^\dagger = \hat B^\dagger\hat A^\dagger$, $f(\hat A) = \sum f(a_n)\ket{a_n}\bra{a_n}$, $|\braket{v|w}|^2 \le \braket{v|v}\braket{w|w}$.
+            $$\braket{x|x'} = \delta(x - x'),\quad \braket{x|p} = \frac{e^{ipx/\hbar}}{\sqrt{2\pi\hbar}},\quad \Phi(p) = \frac{1}{\sqrt{2\pi\hbar}}\int e^{-ipx/\hbar}\Psi(x)dx,\quad [\hat x, \hat p] = i\hbar$$
 
             ### Uncertainty
 

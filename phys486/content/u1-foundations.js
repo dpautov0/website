@@ -140,11 +140,11 @@
             1. **State.** A system is described by a normalized vector $\ket{\psi}$ in a Hilbert space. Multiplying by a global phase $e^{i\alpha}$ changes nothing physical.
             2. **Observables** are Hermitian operators $\hat A$. Hermitian guarantees real eigenvalues and an orthonormal basis of eigenvectors: $\hat A\ket{a_n} = a_n\ket{a_n}$.
             3. **Outcomes.** A measurement of $A$ can only return one of the eigenvalues $a_n$. Nothing in between.
-            4. **Born's rule.** The probability of $a_n$ is $P(a_n) = |\braket{a_n}{\psi}|^2$. Immediately afterward the state *is* $\ket{a_n}$ (collapse), so measuring again at once gives $a_n$ again.
+            4. **Born's rule.** The probability of $a_n$ is $P(a_n) = |\braket{a_n|\psi}|^2$. Immediately afterward the state *is* $\ket{a_n}$ (collapse), so measuring again at once gives $a_n$ again.
             5. **Time evolution** between measurements: $i\hbar\,\dfrac{d}{dt}\ket{\psi} = \hat H\ket{\psi}$ (Schrödinger).
 
             The picture to hold onto: **expand the state in the eigenbasis of whatever you measure.** The coefficients are amplitudes; their squared magnitudes are the probabilities.
-            $$\ket\psi = \sum_n c_n\ket{a_n}, \qquad c_n = \braket{a_n}{\psi}, \qquad P(a_n) = |c_n|^2, \qquad \sum_n|c_n|^2 = 1$$
+            $$\ket\psi = \sum_n c_n\ket{a_n}, \qquad c_n = \braket{a_n|\psi}, \qquad P(a_n) = |c_n|^2, \qquad \sum_n|c_n|^2 = 1$$
           `),
           R(md`
             ### Expectation value and spread
@@ -184,7 +184,7 @@
             q: md`A state is written (unnormalized) as $3\ket a + 4i\ket b$, with $\ket a$, $\ket b$ orthonormal eigenstates of $\hat B$. What is the probability of the outcome belonging to $\ket b$?`,
             parts: [{ lbl: 'P(b)', ans: 0.64 }],
             hints: [md`The norm squared is $|3|^2 + |4i|^2$.`],
-            sol: md`$\braket\psi\psi = 9 + 16 = 25$, so $P(b) = 16/25 = 0.64$.`,
+            sol: md`$\braket{\psi|\psi} = 9 + 16 = 25$, so $P(b) = 16/25 = 0.64$.`,
           }),
           L(3, 'standard'),
           P({
@@ -232,7 +232,7 @@
           Q(md`If $\sigma_A = 0$ in a state, the state is…`, [md`an eigenstate of $\hat A$`, 'normalized', 'a stationary state', md`an eigenstate of every observable`], 0,
             [null, 'Every state is normalized; that says nothing about spread.', 'Only if A is the Hamiltonian.', 'Only of A (and things compatible with it).'], md`Zero spread means one outcome with probability 1.`),
           Q(md`Eigenvectors of a Hermitian operator with different eigenvalues are…`, ['orthogonal', 'parallel', 'complex conjugates of each other', 'not related'], 0,
-            [null, 'Different eigenvalues cannot share a direction.', 'No such rule.', 'They are always orthogonal.'], md`$a_m\braket{a_n}{a_m} = \bra{a_n}\hat A\ket{a_m} = a_n\braket{a_n}{a_m}$, so $(a_m - a_n)\braket{a_n}{a_m} = 0$.`),
+            [null, 'Different eigenvalues cannot share a direction.', 'No such rule.', 'They are always orthogonal.'], md`$a_m\braket{a_n|a_m} = \bra{a_n}\hat A\ket{a_m} = a_n\braket{a_n|a_m}$, so $(a_m - a_n)\braket{a_n|a_m} = 0$.`),
           Q(md`The Schrödinger equation governs…`, ['how the state changes between measurements', 'what happens during a measurement', 'which eigenvalue a measurement returns', 'only the energy of the system'], 0,
             [null, 'Collapse is a separate postulate.', 'That is Born\'s rule (random).', 'It evolves the whole state.'], 'Smooth, deterministic evolution between measurements.'),
         ],
@@ -245,7 +245,7 @@
           R(md`
             ### The idea
 
-            The wavefunction is the state written in the position basis: $\Psi(x,t) = \braket{x}{\psi(t)}$. Its job is to give probabilities.
+            The wavefunction is the state written in the position basis: $\Psi(x,t) = \braket{x|\psi(t)}$. Its job is to give probabilities.
             $$P(a < x < b) = \int_a^b|\Psi(x,t)|^2\,dx, \qquad \int_{-\infty}^{\infty}|\Psi|^2\,dx = 1$$
             $|\Psi|^2$ is a probability **density** (units 1/length in 1-D), so $\Psi$ has units $\text{length}^{-1/2}$. Big $|\Psi|^2$: the particle is often found there. $\Psi$ itself is complex and not directly measured.
 
