@@ -121,6 +121,7 @@
         return pw ? ` (${f}(${a}))${pw}` : ` ${f}(${a})`;
       }
       if (GREEK[c]) return ` ${GREEK[c]}${subscript()} `;
+      if (c === 'hbar') return ' hbar ';
       if (c === 'infty') return ' Infinity ';
       if (c === '{' || c === '}') return '';
       if (c === 'lbrace' || c === 'rbrace') return '';

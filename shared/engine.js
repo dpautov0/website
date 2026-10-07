@@ -30,6 +30,7 @@
     '\\Qenc': 'Q_{\\text{enc}}', '\\un': '\\,\\text{#1}',
     '\\cmm': '\\,\\text{cm}^{-3}', '\\cms': '\\,\\text{cm}^2/\\text{V·s}', '\\eV': '\\,\\text{eV}',
   };
+  Object.assign(MACROS, (window.COURSE && COURSE.meta && COURSE.meta.macros) || {});
 
   function escMath(s) { return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
 
