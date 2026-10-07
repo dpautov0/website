@@ -176,6 +176,16 @@
       mf.addEventListener('input', sync);
       mf.addEventListener('change', sync);         // fires on blur too: only Enter (below) runs the check
       mf.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); sync(); const chk = host.querySelector('.chk'); if (chk) chk.click(); } });
+      // Phones: tapping inside a field that already has focus (say, into a denominator) refocuses MathLive's
+      // keyboard and iOS jumps the page. The field was just tapped, so it is on screen: hold the scroll still.
+      mf.addEventListener('pointerdown', () => {
+        if (!mf.hasFocus || !mf.hasFocus()) return;
+        const y = window.scrollY;
+        const hold = () => { if (Math.abs(window.scrollY - y) > 2) window.scrollTo(0, y); };
+        window.addEventListener('scroll', hold, { passive: true });
+        [0, 60, 200, 400, 650].forEach((ms) => setTimeout(hold, ms));
+        setTimeout(() => window.removeEventListener('scroll', hold), 700);
+      }, { capture: true });
     });
   }
 
