@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>PHYS 486 Cheat Sheet</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/contrib/auto-render.min.js"></script>
+<style>
+  :root { --ink: #111; --head: #1d4f91; --rule: #b9c3cf; --soft: #5a6470; --paper: #fff; --box: #f3f6fa; --red: #a4453b; }
+  @page { size: letter; margin: 0.17in 0.2in; }
+  * { box-sizing: border-box; }
+  html, body { background: var(--paper); color: var(--ink); margin: 0; }
+  body { font: 7.8pt/1.2 "Segoe UI", Arial, sans-serif; }
+  .page { width: 8.1in; margin: 0 auto; }
+  .top { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1.1px solid var(--ink); margin-bottom: 2px; }
+  .top b { font-size: 9pt; }
+  .top span { color: var(--soft); }
+  .cols { column-count: 3; column-gap: 7px; column-rule: 0.6px solid var(--rule); }
+  section { margin: 0 0 3px; }
+  section.box, li, .fig { break-inside: avoid; }
+  h2 { break-after: avoid; }
+  section.box { background: var(--box); padding: 1px 3px 2px; border-radius: 2px; }
+  h2 { font-size: 8pt; margin: 0 0 1px; color: var(--head); border-bottom: 0.6px solid var(--rule); }
+  p { margin: 0 0 1px; }
+  ul { margin: 0 0 1px; padding: 0; list-style: none; }
+  li { margin: 0 0 0.6px; padding-left: 6px; position: relative; }
+  li::before { content: "\2022"; position: absolute; left: 0; color: var(--soft); }
+  .t { color: var(--red); font-weight: 600; }
+  .k { color: var(--head); font-weight: 600; }
+  .katex { font-size: 1.02em; }
+  .fig { float: right; width: 92px; margin: 0 0 1px 4px; }
+  .fig svg { display: block; width: 100%; height: auto; }
+  .fig text { font: italic 9px "Times New Roman", serif; fill: #111; }
+  .fig .thin { stroke: #111; stroke-width: 0.7; fill: none; }
+  .fig .thick { stroke: #1d4f91; stroke-width: 1.3; fill: none; }
+  .fig .acc { stroke: #a4453b; stroke-width: 1.2; fill: none; }
+  .fig .dash { stroke: #777; stroke-width: 0.6; fill: none; stroke-dasharray: 2 2; }
+  @media screen { body { padding: 14px; font-size: 9pt; } .page { max-width: 100%; } }
+  @media screen and (max-width: 760px) { body { padding: 10px; font-size: 10.5pt; } .cols { column-count: 1; } .top { flex-direction: column; } }
+</style>
+</head>
+<body>
+<div class="page">
+<div class="top"><b>PHYS 486 · Midterm 1 cheat sheet</b><span>Lectures 1–9 · Griffiths ch. 1–3 · HW 1–4 · Discussions 1–4</span></div>
+<div class="cols">
+
+<section><h2>1 · Postulates and measurement</h2>
+<ul>
+<li>State: normalized $\ket\psi=\sum_n c_n\ket{a_n}$, $c_n=\braket{a_n|\psi}$, $\sum|c_n|^2=1$. Global phase unphysical; relative phases physical.</li>
+<li>Outcomes = eigenvalues of Hermitian $\hat A$. Born: $P(a_n)=|\braket{a_n|\psi}|^2$. Degenerate: add over the eigenspace.</li>
+<li>Collapse: after $a_n$ the state is $\ket{a_n}$ (degenerate: project onto the eigenspace, renormalize). Repeat at once → same result. Measuring prepares states; $N$-dim space ⇒ ≤ $N$ outcomes.</li>
+<li>$\langle A\rangle=\bra\psi\hat A\ket\psi=\sum a_n|c_n|^2$ (ensemble average, need not be an eigenvalue). $\sigma_A^2=\langle A^2\rangle-\langle A\rangle^2$; $\sigma_A=0$ ⇔ eigenstate.</li>
+<li>$\braket{\phi|\psi}$ (bar) = inner product; $\langle A\rangle$ (no bar) = average.</li>
+<li>Superposition: add amplitudes, then square (cross term $2\,\mathrm{Re}(c_1^*c_2\ldots)$). Mixture: add probabilities. Only observables not commuting with the prep basis tell them apart.</li>
+</ul></section>
+
+<section><h2>2 · Dirac notation and linear algebra</h2>
+<ul>
+<li>Ket = column, bra = conjugate-transposed row. $\braket{\phi|\psi}=\sum\phi_n^*\psi_n=\int\phi^*\psi\,dx$; $\braket{\psi|\phi}=\braket{\phi|\psi}^*$.</li>
+<li>Orthonormal $\braket{e_m|e_n}=\delta_{mn}$; completeness $\sum\ket{e_n}\bra{e_n}=\hat 1$; $A_{mn}=\bra{e_m}\hat A\ket{e_n}$ (row $m$, col $n$).</li>
+<li>$A^\dagger=(A^T)^*$; $(AB)^\dagger=B^\dagger A^\dagger$, $(AB)^{-1}=B^{-1}A^{-1}$, $(\ket a\bra b)^\dagger=\ket b\bra a$.</li>
+<li>Hermitian: real eigenvalues, orthogonal eigenvectors, complete basis, real averages. $AB$ Hermitian ⇔ $[A,B]=0$; $i[A,B]$ always Hermitian.</li>
+<li>Unitary $U^\dagger U=1$: keeps lengths; $|\lambda|=1$; products unitary, sums not. $e^{i\theta\hat A}$ unitary for Hermitian $\hat A$.</li>
+<li>Spectral: $\hat A=\sum a_n\ket{a_n}\bra{a_n}$, $f(\hat A)=\sum f(a_n)\ket{a_n}\bra{a_n}$. Projector $P=\ket e\bra e$: $P^2=P$, eigenvalues 0, 1.</li>
+<li>2×2: $\lambda=\tfrac12\left(\mathrm{tr}\pm\sqrt{\mathrm{tr}^2-4\det}\right)$; tr = Σλ, det = Πλ. Rows dependent ⇒ det 0 ⇒ no inverse.</li>
+<li>Gram–Schmidt: $\ket{e_k'}\propto\ket{e_k}-\sum_{j\lt k}\braket{e_j'|e_k}\ket{e_j'}$ (conjugate on the bra). Cauchy–Schwarz $|\braket{v|w}|^2\le\braket{v|v}\braket{w|w}$.</li>
+<li>$[A,BC]=[A,B]C+B[A,C]$. $[\hat x,\hat p]=i\hbar$, $[\hat x,\hat p^2]=2i\hbar\hat p$, $[f(\hat x),\hat p]=i\hbar f'$, $[\hat H,\hat x]=-\tfrac{i\hbar}{m}\hat p$.</li>
+<li>Continuous: $\braket{x|x'}=\delta(x-x')$, $\Psi(x)=\braket{x|\psi}$, $\braket{x|p}=\tfrac{e^{ipx/\hbar}}{\sqrt{2\pi\hbar}}$, $\Phi(p)=\tfrac{1}{\sqrt{2\pi\hbar}}\int e^{-ipx/\hbar}\Psi\,dx$. $\hat p\to-i\hbar\partial_x$ ($x$-space), $\hat x\to i\hbar\partial_p$ ($p$-space).</li>
+</ul></section>
+
+<section><h2>3 · Wavefunctions</h2>
+<ul>
+<li>$\int|\Psi|^2dx=1$ ($[\Psi]=L^{-1/2}$). $\langle f(x)\rangle=\int f|\Psi|^2$; $\langle p\rangle=\int\Psi^*(-i\hbar\Psi')$; <span class="k">$\langle p^2\rangle=\hbar^2\int|\Psi'|^2$</span> (safe at kinks).</li>
+<li><span class="k">Shortcuts:</span> $|\Psi|^2$ symmetric about $x_0$ ⇒ $\langle x\rangle=x_0$; real Ψ (× const phase) ⇒ $\langle p\rangle=0$; factor $e^{ik_0x}$ adds $\hbar k_0$ to $\langle p\rangle$; time phases drop out of $|\Psi|^2$.</li>
+<li>Current $J=\tfrac{\hbar}{m}\mathrm{Im}(\Psi^*\Psi')$; $\partial_t|\Psi|^2+\partial_xJ=0$; $Ae^{ikx}$: $J=|A|^2\hbar k/m$; real Ψ: $J=0$.</li>
+<li>$\tfrac{d}{dt}\langle Q\rangle=\tfrac i\hbar\langle[\hat H,\hat Q]\rangle+\langle\partial_t\hat Q\rangle$. Ehrenfest: $\tfrac{d\langle x\rangle}{dt}=\tfrac{\langle p\rangle}{m}$, $\tfrac{d\langle p\rangle}{dt}=-\langle V'\rangle$ (exact Newton only if $V$ ≤ quadratic).</li>
+</ul></section>
+
+<section class="box"><h2>Exam moves: see this → do this</h2>
+<ul>
+<li><b>$P(E_n)$, $\Psi(x,t)$, $\langle H\rangle$</b> → recipe; symmetry kills $c_n$; trig-polynomial Ψ: expand by identity; $\langle H\rangle$ via $\int|\Psi'|^2$.</li>
+<li><b>Sudden change</b> → Ψ unchanged; overlaps with the new $\psi_n'$.</li>
+<li><b>Free packet</b> → Fourier; shift rules; complete the square; $\sigma_p$ fixed.</li>
+<li><b>Wells, steps</b> → match ψ, ψ′, divide; count branches; $T$ as flux.</li>
+<li><b>Matrix observable</b> → eigen by tr/det; Born with the conjugated eigenvector; degenerate → project.</li>
+<li><b>Prove an identity</b> → insert $\hat1=\sum\ket n\bra n$; or $\tfrac{d}{dt}\langle Q\rangle$ by commutator.</li>
+<li><b>Qubit</b> → Bloch vector; $\hat H=\vec a\cdot\vec\sigma$ is an axis; time = rotation.</li>
+<li><b>Always</b> → strategy first (points); units, $\sum P=1$, limits.</li>
+</ul></section>
+
+<section class="box"><h2>Integrals and identities</h2>
+<ul>
+<li>$\int_0^\infty x^ne^{-\alpha x}dx=\tfrac{n!}{\alpha^{n+1}}$ · $\int e^{-\alpha x^2-\beta x}dx=\sqrt{\tfrac\pi\alpha}e^{\beta^2/4\alpha}$ · $\int x^2e^{-\alpha x^2}=\tfrac{1}{2\alpha}\sqrt{\tfrac\pi\alpha}$</li>
+<li>$\int_{-\infty}^\infty\tfrac{du}{(1+u^2)^2}=\int\tfrac{u^2du}{(1+u^2)^2}=\tfrac\pi2$; antiderivative $\tfrac12\left[\tfrac{u}{1+u^2}+\arctan u\right]$</li>
+<li>$\int_0^a\sin^2\tfrac{n\pi x}a=\tfrac a2$ · $\int_0^ax\sin^2=\tfrac{a^2}4$ · $\int_0^ax^2\sin^2=a^3\left(\tfrac16-\tfrac{1}{4n^2\pi^2}\right)$</li>
+<li>$\int_0^ax(a-x)\sin\tfrac{n\pi x}{a}dx=\tfrac{2a^3}{(n\pi)^3}[1-(-1)^n]$ · $\int_0^ax\,\psi_1\psi_2\,dx=-\tfrac{16a}{9\pi^2}$</li>
+<li>$\sin A\sin B=\tfrac12[\cos(A-B)-\cos(A+B)]$ · $\sin^3u=\tfrac34\sin u-\tfrac14\sin3u$ · $\sin u\cos^2u=\tfrac14(\sin u+\sin3u)$</li>
+<li>$|z_1+z_2|^2=|z_1|^2+|z_2|^2+2\mathrm{Re}(z_1^*z_2)$ · $e^{i\theta}=\cos\theta+i\sin\theta$ · $Ae^{ikx}+Be^{-ikx}=(A+B)\cos kx+i(A-B)\sin kx$</li>
+</ul></section>
+
+<section><h2>4 · Stationary states and the recipe</h2>
+<ul>
+<li>$\Psi=\psi(x)e^{-iEt/\hbar}$, $\hat H\psi=E\psi$, $\hat H=-\tfrac{\hbar^2}{2m}\partial_x^2+V$. Stationary: $|\Psi|^2$ and all $\langle Q\rangle$ frozen, $\sigma_H=0$.</li>
+<li><span class="k">Recipe:</span> (1) solve $\hat H\psi_n=E_n\psi_n$; (2) $c_n=\int\psi_n^*\Psi(x,0)dx$; (3) $\Psi(x,t)=\sum c_n\psi_ne^{-iE_nt/\hbar}$. $P(E_n)=|c_n|^2$, $\langle H\rangle=\sum|c_n|^2E_n$: <b>constant</b> for any state.</li>
+<li>$\langle H\rangle$ shortcut: $\tfrac{\hbar^2}{2m}\int|\Psi'|^2+\int V|\Psi|^2$. Jumps in Ψ ⇒ $\langle H\rangle=\infty$; kinks ⇒ finite $\langle H\rangle$ but maybe $\sigma_H=\infty$.</li>
+<li>Two energies ⇒ density beats at $\omega=(E_m-E_n)/\hbar$. Phase $e^{i\varphi}$ on $c_2$ shifts $\cos(\omega t)\to\cos(\omega t-\varphi)$.</li>
+<li>$\psi$ continuous; $\psi'$ continuous unless $V=\infty$ (or δ). $E>V_{\min}$. Bound states: real, non-degenerate (1-D), $n$-th has $n-1$ nodes; even $V$ ⇒ even/odd, ground state even.</li>
+<li>$\psi''=\tfrac{2m}{\hbar^2}(V-E)\psi$: $E>V$ oscillates (bigger $E-V$ ⇒ shorter λ, smaller amplitude); $E&lt;V$ decays.</li>
+<li>Inverse: $V(x)=E+\tfrac{\hbar^2}{2m}\tfrac{\psi''}{\psi}$; use the node-free ground state. $V(x_0)=E$ where $\psi''=0$.</li>
+</ul></section>
+
+<section><h2>5 · Infinite square well $[0,a]$</h2>
+<span class="fig" data-f="isw"></span>
+<ul>
+<li>$\psi_n=\sqrt{\tfrac2a}\sin\tfrac{n\pi x}a$, $E_n=\tfrac{n^2\pi^2\hbar^2}{2ma^2}=n^2E_1$, $E_{n+1}-E_n=(2n+1)E_1$.</li>
+<li>$\langle x\rangle=\tfrac a2$, $\langle x^2\rangle=a^2\left(\tfrac13-\tfrac1{2n^2\pi^2}\right)$, $\langle p^2\rangle=\left(\tfrac{n\pi\hbar}a\right)^2$, $\sigma_x\sigma_p=\tfrac\hbar2\sqrt{\tfrac{n^2\pi^2}3-2}$ (0.568ħ at $n=1$).</li>
+<li>Centered $[-\tfrac a2,\tfrac a2]$: $\cos$ for odd $n$, $\sin$ for even; same $E_n$.</li>
+<li><span class="k">Symmetry:</span> Ψ symmetric about $a/2$ ⇒ only odd $n$; antisymmetric ⇒ only even $n$.</li>
+<li>$\tfrac1{\sqrt2}(\psi_1+\psi_2)$: $\langle x\rangle=\tfrac a2-\tfrac{16a}{9\pi^2}\cos\omega t$, $\omega=\tfrac{3\pi^2\hbar}{2ma^2}$. Revival $T=\tfrac{4ma^2}{\pi\hbar}$.</li>
+<li>Sudden change: Ψ unchanged, expand in new states; $\langle H\rangle$ unchanged. Ground state, wall $a\to2a$: $P(E_1')=\tfrac{32}{9\pi^2}$, $P(E_2')=\tfrac12$; both walls out symmetrically: $\tfrac{64}{9\pi^2}$.</li>
+<li>Known $c_n$: $x(a-x)$: $\tfrac{8\sqrt{15}}{(n\pi)^3}$ (odd); triangle: $\tfrac{4\sqrt6}{(n\pi)^2}\sin\tfrac{n\pi}2$; left half flat: $\tfrac{2}{n\pi}(1-\cos\tfrac{n\pi}2)$.</li>
+</ul></section>
+
+<section><h2>6 · Free particle, Fourier, δ</h2>
+<ul>
+<li>$e^{ikx}$, $E=\tfrac{\hbar^2k^2}{2m}$: not normalizable. $\Psi(x,t)=\tfrac1{\sqrt{2\pi}}\int\phi(k)e^{i(kx-\hbar k^2t/2m)}dk$, $\phi(k)=\tfrac1{\sqrt{2\pi}}\int\Psi(x,0)e^{-ikx}dx$; $\int|\phi|^2=\int|\Psi|^2$.</li>
+<li>$v_g=\tfrac{d\omega}{dk}=\tfrac{\hbar k}{m}$ (particle), $v_{ph}=\tfrac{v_g}2$. $\sigma_p$ constant; packet spreads at $\sigma_p/m$.</li>
+<li>Gaussian $(\tfrac{2a}\pi)^{1/4}e^{-ax^2}$: $\sigma_x=\tfrac1{2\sqrt a}$, $\sigma_p=\hbar\sqrt a$ (minimum), $\langle H\rangle=\tfrac{a\hbar^2}{2m}$ (+$\tfrac{\hbar^2k_0^2}{2m}$ if $e^{ik_0x}$); $\sigma(t)=\sigma_0\sqrt{1+(\tfrac{\hbar t}{2m\sigma_0^2})^2}$; $w=\sqrt a/\sqrt{1+(2\hbar at/m)^2}$, $|\Psi|^2=\sqrt{\tfrac2\pi}we^{-2w^2x^2}$.</li>
+<li>Pairs: Gaussian↔Gaussian; box half-width $L$ ↔ $\tfrac{\sin kL}k$ (zeros $k=n\pi/L$); $\sqrt\kappa e^{-\kappa|x|}$ ↔ $\sqrt{\tfrac\kappa{2\pi}}\tfrac{2\kappa}{\kappa^2+k^2}$. $f e^{ik_0x}\leftrightarrow F(k-k_0)$; $f(x-x_0)\leftrightarrow e^{-ikx_0}F$. Narrow ⇔ wide.</li>
+<li>$\int f\delta(x-a)=f(a)$; $\delta(cx)=\tfrac{\delta(x)}{|c|}$; $\tfrac1{2\pi}\int e^{ik(x-x')}dk=\delta(x-x')$; $(|x|)''=2\delta(x)$.</li>
+</ul></section>
+
+<section><h2>7 · Finite well ($-V_0$, $|x|&lt;a$) and scattering</h2>
+<span class="fig" data-f="fsw"></span>
+<ul>
+<li>$\ell=\tfrac{\sqrt{2m(E+V_0)}}\hbar$, $\kappa=\tfrac{\sqrt{-2mE}}\hbar$, $z=\ell a$, $z_0=\tfrac a\hbar\sqrt{2mV_0}$, $E=-V_0+\tfrac{\hbar^2z^2}{2ma^2}$.</li>
+<li>Even: $\kappa=\ell\tan\ell a$ ⇒ $\tan z=\sqrt{z_0^2/z^2-1}$. Odd: $\kappa=-\ell\cot\ell a$ ⇒ $-\cot z=\sqrt{\cdot}$ (needs $z_0>\tfrac\pi2$).</li>
+<li>$N=\lceil2z_0/\pi\rceil$; always ≥1 even state. Deep: $E_n+V_0\approx\tfrac{n^2\pi^2\hbar^2}{2m(2a)^2}$ (slightly lower: leakage). $P_{\text{out}}=\tfrac{\cos^2z/\kappa a}{1+\frac{\sin2z}{2z}+\cos^2z/\kappa a}$.</li>
+<li>Penetration $1/\kappa$; electron, 1 eV below rim: 0.195 nm.</li>
+<li>Well, $E>0$: $T^{-1}=1+\tfrac{V_0^2}{4E(E+V_0)}\sin^2(2a\ell)$; $T=1$ when $2a\ell=n\pi$.</li>
+<li>Step ($E>V_0$) or drop: $R=\left(\tfrac{k-k'}{k+k'}\right)^2$, $T=\tfrac{4kk'}{(k+k')^2}=\tfrac{k'}k|t|^2$ (flux). $E&lt;V_0$ step: $R=1$, evanescent tail, $J=0$.</li>
+<li>Barrier $E&lt;V_0$: $T^{-1}=1+\tfrac{V_0^2\sinh^2\kappa L}{4E(V_0-E)}$; $\kappa L\gg1$: $T\approx\tfrac{16E(V_0-E)}{V_0^2}e^{-2\kappa L}$. $E>V_0$: $\sinh\to\sin$, $\kappa\to k'$; $T=1$ at $k'L=n\pi$. Compare $L$ with $1/\kappa$ (or $1/k'$).</li>
+</ul></section>
+
+<section><h2>8 · Uncertainty</h2>
+<ul>
+<li>$\sigma_A^2\sigma_B^2\ge\left(\tfrac1{2i}\langle[\hat A,\hat B]\rangle\right)^2$ (uses the <i>average</i> commutator: can vanish). $\sigma_x\sigma_p\ge\tfrac\hbar2$ always. Commuting ⇒ common eigenbasis.</li>
+<li>Equality: Gaussians, at minimum width. Spreads of the state, not measurement kicks.</li>
+<li>$\sigma_H\Delta t\ge\tfrac\hbar2$, $\Delta t=\sigma_Q/|d\langle Q\rangle/dt|$; time is not an operator. $\tfrac1{\sqrt2}(\psi_1+\psi_2)$: $\sigma_H=\tfrac{E_2-E_1}2$.</li>
+<li>Estimate: $\langle H\rangle\gtrsim\tfrac{\hbar^2}{8m\sigma^2}+\langle V\rangle$, minimize. HO → $\tfrac12\hbar\omega$ (exact); H atom → $a_0$, −13.6 eV.</li>
+<li>$\sigma_x\sigma_H\ge\tfrac\hbar{2m}|\langle p\rangle|$. Free: $\sigma_x^2(t)=\sigma_x^2(0)+\tfrac{\sigma_p^2t^2}{m^2}$ (no initial $x$–$p$ correlation).</li>
+</ul></section>
+
+<section><h2>9 · Qubit / spin-½</h2>
+<span class="fig" data-f="bloch"></span>
+<ul>
+<li>$\sigma_x=\begin{pmatrix}0&1\\1&0\end{pmatrix}$, $\sigma_y=\begin{pmatrix}0&-i\\i&0\end{pmatrix}$, $\sigma_z=\begin{pmatrix}1&0\\0&-1\end{pmatrix}$: Hermitian, unitary, traceless, $\sigma^2=1$, eigenvalues ±1. $\vec S=\tfrac\hbar2\vec\sigma$.</li>
+<li>$\sigma_j\sigma_k=\delta_{jk}+i\epsilon_{jkl}\sigma_l$; $[\sigma_j,\sigma_k]=2i\epsilon_{jkl}\sigma_l$; $(\vec a\cdot\vec\sigma)(\vec b\cdot\vec\sigma)=\vec a\cdot\vec b+i(\vec a\times\vec b)\cdot\vec\sigma$.</li>
+<li>$\ket\psi=\cos\tfrac\theta2\ket0+e^{i\varphi}\sin\tfrac\theta2\ket1$ ↔ $\hat n$; $\langle\vec\sigma\rangle=\hat n$; orthogonal = antipodal. $\ket\pm=\tfrac{\ket0\pm\ket1}{\sqrt2}$, $\ket{\pm y}=\tfrac{\ket0\pm i\ket1}{\sqrt2}$.</li>
+<li>$P(+\hat m)=\tfrac12(1+\hat n\cdot\hat m)=\cos^2\tfrac\gamma2$. $\Delta\sigma_j=\sqrt{1-\langle\sigma_j\rangle^2}$.</li>
+<li>$H=a_0+\vec a\cdot\vec\sigma$: $E=a_0\pm|\vec a|$, eigenstates along $\pm\hat a$. $e^{i\alpha\hat n\cdot\vec\sigma}=\cos\alpha+i\sin\alpha\,\hat n\cdot\vec\sigma$; $2\pi$ rotation = −1.</li>
+<li>$\hat U=e^{-i\hat Ht/\hbar}$. $\hat H=\tfrac\hbar2\vec\Omega\cdot\vec\sigma$ precesses $\hat n$ about $\vec\Omega$ at rate $|\vec\Omega|$. From $\ket0$ with $\hbar\omega(\alpha\sigma_z+\beta\sigma_x)$: $P_1=\tfrac{\beta^2}{R^2}\sin^2(\omega Rt)$, $R=\sqrt{\alpha^2+\beta^2}$. $\tfrac{\hbar\Omega}2\sigma_x$: $P_1=\sin^2\tfrac{\Omega t}2$. Ramsey: $P_1=\cos^2\tfrac{\omega T}2$.</li>
+</ul></section>
+
+<section class="box"><h2>Traps</h2>
+<ul>
+<li><span class="t">$|z|^2=z^*z$</span>, not $z^2$. Conjugate when forming a bra.</li>
+<li>Normalize first; keep $\sqrt{2/a}$ in $c_n$; each $E_n$ its own phase.</li>
+<li>Cusp: $\langle p^2\rangle$ from $\int|\Psi'|^2$, not $\Psi''$ (δ at the kink).</li>
+<li>Bloch angles are doubled: $\cos^2(\gamma/2)$, antipodal = orthogonal.</li>
+<li>$T$ is a flux ratio ($k'/k$); thick-barrier formula needs $\kappa L\gg1$. A "probability" with units ⇒ non-normalizable state.</li>
+</ul></section>
+
+<section><h2>Constants</h2>
+<p>$\hbar=1.055\times10^{-34}$ J·s $=6.582\times10^{-16}$ eV·s · $hc=1240$ eV·nm · $\hbar c=197.3$ eV·nm · $m_e=9.109\times10^{-31}$ kg $=0.511$ MeV/c² · $m_p/m_e=1836$ · $\tfrac{\hbar^2}{2m_e}=0.0381$ eV·nm² · $\lambda_e=\tfrac{1.226\text{ nm}}{\sqrt{K[\text{eV}]}}$ · 1 eV $=1.602\times10^{-19}$ J · electron in 1 nm box: $E_1=0.376$ eV</p></section>
+
+</div>
+</div>
+<script>
+  (function () {
+    const W = 120, H = 80;
+    const ln = (x1, y1, x2, y2, c = 'thin') => `<line class="${c}" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"/>`;
+    const pl = (pts, c) => `<polyline class="${c}" points="${pts.map((p) => p.join(',')).join(' ')}"/>`;
+    const tx = (x, y, s, a = 'start') => `<text x="${x}" y="${y}" text-anchor="${a}">${s}</text>`;
+    const curve = (f, a, b, n = 80) => Array.from({ length: n + 1 }, (_, i) => { const x = a + (b - a) * i / n; return [x.toFixed(1), f(x).toFixed(1)]; });
+    const F = {
+      // infinite well: psi_1..3 drawn at their energies (1:4:9)
+      isw: () => ln(20, 4, 20, 76) + ln(100, 4, 100, 76) + ln(20, 76, 100, 76) +
+        [1, 2, 3].map((n) => { const y0 = 74 - n * n * 7; return ln(20, y0, 100, y0, 'dash') + pl(curve((x) => y0 - 6 * Math.sin(n * Math.PI * (x - 20) / 80), 20, 100), 'thick') + tx(104, y0 + 3, `E${'₁₂₃'[n - 1]}`); }).join(''),
+      // finite well graphical solution, z0 = 4: tan z, -cot z, sqrt(z0^2/z^2 - 1)
+      fsw: () => { const X = (z) => 8 + z * 24, Y = (v) => 74 - v * 11, z0 = 4;
+        const br = (f, a, b) => pl(curve((z) => Y(Math.min(Math.max(f(z), 0), 6.4)), a, b).map(([z, y]) => [X(+z).toFixed(1), y]), 'thick');
+        return ln(8, 74, 116, 74) + ln(8, 74, 8, 2) +
+          br(Math.tan, 0, 1.5) + br(Math.tan, Math.PI, 4.5) + br((z) => -1 / Math.tan(z), 1.65, 3.08) +
+          pl(curve((z) => Y(Math.min(Math.sqrt(Math.max(z0 * z0 / (z * z) - 1, 0)), 6.4)), 0.6, 4).map(([z, y]) => [X(+z).toFixed(1), y]), 'acc') +
+          ln(X(Math.PI / 2), 74, X(Math.PI / 2), 70) + ln(X(Math.PI), 74, X(Math.PI), 70) + tx(X(Math.PI / 2), 82, 'π/2', 'middle') + tx(X(Math.PI), 82, 'π', 'middle') + tx(X(4), 82, 'z₀', 'middle') + tx(60, 10, 'tan, −cot vs √(z₀²/z²−1)', 'middle'); },
+      // Bloch cross-section
+      bloch: () => `<circle class="thin" cx="60" cy="40" r="30"/>` + ln(60, 4, 60, 76, 'dash') + ln(24, 40, 96, 40, 'dash') +
+        `<line class="thick" x1="60" y1="40" x2="${(60 + 30 * Math.sin(0.9)).toFixed(1)}" y2="${(40 - 30 * Math.cos(0.9)).toFixed(1)}"/>` +
+        tx(63, 9, '|0⟩') + tx(63, 78, '|1⟩') + tx(98, 43, '|+⟩') + tx(85, 18, 'n̂') + tx(64, 30, 'θ'),
+    };
+    document.querySelectorAll('.fig[data-f]').forEach((el) => { el.innerHTML = `<svg viewBox="0 0 ${W} ${H + 6}" xmlns="http://www.w3.org/2000/svg">${F[el.dataset.f]()}</svg>`; });
+  })();
+  document.addEventListener('DOMContentLoaded', function () {
+    renderMathInElement(document.body, { delimiters: [{ left: '$', right: '$', display: false }], throwOnError: false });
+    document.body.setAttribute('data-ready', '1');
+  });
+</script>
+</body>
+</html>

@@ -4,7 +4,7 @@
   COURSE.meta = {
     name: 'PHYS 486', key: 'phys486', current: 'm1',
     eyebrow: 'Quantum Physics I',
-    actions: [{ href: '#/quiz', label: 'Mixed practice' }, { href: '#/sheet', label: 'Formula sheet' }, { href: '#/mock', label: 'Practice midterms' }, { href: '#/notation', label: 'Notation' }],
+    actions: [{ href: '#/quiz', label: 'Mixed practice' }, { href: '#/sheet', label: 'Formula sheet' }, { href: '#/mock', label: 'Practice midterms' }, { href: 'cheatsheet.html', label: 'Cheat sheet' }, { href: '#/notation', label: 'Notation' }],
     aliases: { '#/mock': 'pm1', '#/notation': 'm1-notation' },
     macros: {
       '\\ket': '\\left|#1\\right\\rangle', '\\bra': '\\left\\langle #1\\right|',   // \braket{a|b} is KaTeX's own (one argument)

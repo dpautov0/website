@@ -10,6 +10,8 @@
         id: 'm1-sheet', title: 'Formula sheet', kind: 'read',
         steps: [
           R(md`
+            **Printable one-page version:** [cheat sheet](cheatsheet.html) ([PDF](cheatsheet.pdf)): every formula below plus the shortcuts, exam moves and traps, sized to fill one letter page.
+
             Everything below is used on the homework. Know the **ideas** behind each line; the exam tests whether you can pick the right one.
 
             ### Postulates
