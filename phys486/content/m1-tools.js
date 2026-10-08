@@ -67,9 +67,9 @@
         id: 'm1-mix', title: 'Mixed practice', kind: 'review',
         steps: [
           R(md`
-            Conceptual questions from all ten topics in random order, with nothing telling you which topic they belong to. That is how the exam asks them. Every card links back to its lesson; reread the section behind any miss.
+            Conceptual questions from all ten topics and the homework and discussion pages in random order, with nothing telling you which topic they belong to. That is how the exam asks them. Every card links back to its lesson; reread the section behind any miss.
           `),
-          G('concept', { need: 25, units: ['u1', 'u2', 'u3'] }),
+          G('concept', { need: 25, units: ['u1', 'u2', 'u3', 'u4', 'u5'] }),
         ],
       },
       {

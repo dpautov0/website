@@ -129,6 +129,25 @@
     if (PRE[l.id]) l.steps.unshift(R(md`### Notation and background` + '\n\n' + PRE[l.id].replace(/^\n/, '').replace(/^ {6}/gm, '') + '\n\nNew to these? Unit 0 teaches the language from scratch: ' + `${A} complex numbers, ${B} probability, ${Cv} vectors and operators, ${D} Fourier and delta.`));
   }));
 
+  // where each topic shows up on the homework and in discussion (Units 4–5), appended to the end of each lesson
+  const H1 = '[HW 1](#/l/hw1)', H2 = '[HW 2](#/l/hw2)', H3 = '[HW 3](#/l/hw3)', H4 = '[HW 4](#/l/hw4)';
+  const D1 = '[Discussion 1](#/l/disc1)', D2 = '[Discussion 2](#/l/disc2)', D3 = '[Discussion 3](#/l/disc3)', D4 = '[Discussion 4](#/l/disc4)';
+  const ON_HW = {
+    't1-quanta': [`${D1} #2(e): when is a particle's behavior quantum?`],
+    't2-postulates': [`${D1} #1: Alice's photons (ensembles, collapse, orthogonality, preparation)`, `${D4} #1(a, b): energy conservation; superposition vs mixture`],
+    't3-wavefunction': [`${H1} #1, #4: normalize, ⟨x⟩, ⟨x²⟩, σ, probability outside ±σ`, `${H1} #2: Ehrenfest's theorem`, `${D1} #2: reading a momentum distribution`],
+    't4-stationary': [`${H1} #3: only energy differences are physical`, `${D3} #2: inverting the Schrödinger equation`, `${D4} #1(a): the energy distribution is conserved`],
+    't5-isw': [`${H2} #1: the full 3-step recipe on a quartic state`, `${H2} #2: uncertainty in ψₙ`, `${D2} (a, b, d): moving the origin, symmetry, reading a density`, `${D4} #1(c, d): the position-measurement paradox`],
+    't6-free': [`${H2} #3, #4: traveling vs standing waves; the spreading Gaussian`, `${D1} #2: sinc momentum distribution`, `${D2} (c): a neutron beam`, `${D3} #1(a–d): three plane waves`],
+    't7-fsw': [`${H3} #1: odd bound states`, `${H3}: the numerical wells`, `${D3} #1(e, f): length scales of tunneling`],
+    't8-dirac': [`${H1} #5: spectral decomposition`, `${H4} #1–4: Gram–Schmidt, matrices, products, Cauchy–Schwarz`],
+    't9-uncertainty': [`${H2} #2, #4(e): checking the uncertainty principle`, `${D1} #2(k)`, `${D4} #1(c, d): x and H are incompatible`],
+    't10-qubit': [`${H4} #5: Pauli matrices`, `${D4} #2: qubit geometry`],
+  };
+  COURSE.units.forEach((u) => u.lessons.forEach((l) => {
+    if (ON_HW[l.id]) l.steps.push(R('### On the homework\n\nThis topic is exactly what these problems use. Each is worked step by step:\n\n' + ON_HW[l.id].map((s) => `- ${s}`).join('\n')));
+  }));
+
   // the glossary page
   const tools = COURSE.units.find((u) => u.id === 'm1-x');
   tools.lessons.unshift({

@@ -16,12 +16,13 @@
   C.exam({
     id: 'm1', title: 'Midterm 1',
     scope: 'Lectures 1–9: postulates, wave mechanics, wells, formalism, uncertainty, the qubit',
-    blurb: 'Everything up to the uncertainty relation and the two-level system (Lecture 9). It starts with Unit 0, the language: complex phases, probability notation, vectors and operators (Dirac notation), Fourier transforms and the delta function. Then ten topics. Each opens by defining its notation, builds the intuition first, works an exam-style problem, then drills you with questions that climb from recognition to harder than the exam.',
+    blurb: 'Everything up to the uncertainty relation and the two-level system (Lecture 9). It starts with Unit 0, the language: complex phases, probability notation, vectors and operators (Dirac notation), Fourier transforms and the delta function. Then ten topics. Each opens by defining its notation, builds the intuition first, works an exam-style problem, then drills you with questions that climb from recognition to harder than the exam. Units 4–5 work every homework and discussion problem.',
     sheet: 'm1-sheet', quiz: 'm1-mix',
     planTitle: 'How to use it',
     plan: [
       '<b>Unit 0 first (A–D).</b> It assumes only classical mechanics, E&amp;M and calculus, and teaches every symbol the course uses. Skip a lesson only if its Level 5–6 questions are easy for you. The <b>Notation</b> page is a glossary of every symbol.',
       '<b>Then Topics 1–10 in order.</b> Every lesson climbs in levels: <b>1</b> recognize, <b>2</b> set up, <b>3</b> standard, <b>4</b> one twist, <b>5</b> exam level, <b>6</b> harder than the exam. If a level goes badly, reread the section above it.',
+      '<b>Units 4–5: every homework and discussion problem, worked.</b> Try each on paper, then reveal the approach and solution; new-number practice follows. Each topic lesson ends with links to the problems that use it.',
       '<b>Weight.</b> The homework is the exam: normalizing and expectation values, the 3-step recipe in the infinite well, the finite well, Dirac notation and matrices, the uncertainty relation, Pauli matrices.',
       '<b>Mixed practice</b> pulls questions from every topic at random. Then the <b>mock exam</b> on paper, timed, with only the formula sheet.',
     ],
