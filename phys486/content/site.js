@@ -5,7 +5,7 @@
     name: 'PHYS 486', key: 'phys486', current: 'm1',
     eyebrow: 'Quantum Physics I',
     actions: [{ href: '#/quiz', label: 'Mixed practice' }, { href: '#/sheet', label: 'Formula sheet' }, { href: '#/mock', label: 'Practice midterms' }, { href: 'cheatsheet.html', label: 'Cheat sheet' }, { href: '#/notation', label: 'Notation' }],
-    aliases: { '#/mock': 'pm1', '#/notation': 'm1-notation' },
+    aliases: { '#/mock': 'past2022', '#/notation': 'm1-notation' },
     macros: {
       '\\ket': '\\left|#1\\right\\rangle', '\\bra': '\\left\\langle #1\\right|',   // \braket{a|b} is KaTeX's own (one argument)
       '\\ev': '\\left\\langle #1\\right\\rangle', '\\op': '\\hat{#1}',
@@ -25,7 +25,7 @@
       '<b>Units 4–5: every homework and discussion problem, worked.</b> Try each on paper, then reveal the approach and solution; new-number practice follows. Each topic lesson ends with links to the problems that use it.',
       '<b>Weight.</b> The homework is the exam: normalizing and expectation values, the 3-step recipe in the infinite well, the finite well, Dirac notation and matrices, the uncertainty relation, Pauli matrices.',
       '<b>Mixed practice</b> pulls questions from every topic at random.',
-      '<b>Unit 6: ten practice midterms</b>, timed, on paper, with only the formula sheet. 1–3 are exam level, 4–7 harder, 8–10 harder than the exam. Grade yourself from the solutions and redo anything under 20/25.',
+      '<b>Unit 6: start with the real October 2022 midterm</b> (timed, ~55 min) to see the level, then its two variants, then ten practice midterms, timed, on paper, with only the formula sheet. 1–3 are exam level, 4–7 harder, 8–10 harder than the exam. Grade yourself from the solutions and redo anything under 20/25.',
     ],
   });
 })();
