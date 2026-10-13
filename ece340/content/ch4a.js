@@ -130,7 +130,7 @@
 
       // ======================================================================== Topic 9
       {
-        id: 't9-recomb', topic: 9, sec: '4.3.1', title: 'Direct recombination, lifetime, low- and high-level injection',
+        id: 't9-recomb', topic: 9, sec: '4.3.1–4.3.2', title: 'Recombination: direct and through traps, lifetime, low- and high-level injection',
         steps: [
           R(md`
             ### The idea

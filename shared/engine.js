@@ -265,7 +265,7 @@
         l.unit = u; l.ui = ui; l.li = li;
         l.steps.forEach((s, si) => {
           if (s.t === 'prob') s.key = s.id || `${l.id}.p${si}`;
-          if (s.t === 'gen') s.key = `${l.id}.g${si}`;
+          if (s.t === 'gen') s.key = s.id || `${l.id}.g${si}`;
         });
         LESSONS.push(l);
         BYID.set(l.id, l);

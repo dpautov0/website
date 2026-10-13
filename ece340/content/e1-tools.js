@@ -1,5 +1,6 @@
-/* Exam 1: finishes each topic lesson (the extra reading and questions from e1-more.js, the lesson's question bank,
-   then randomized problems), and adds the formula sheet (#/sheet) and mixed practice (#/quiz). */
+/* Exam 1: finishes each topic lesson (the intuition build-up from e1-why-*.js first; the extra reading and questions
+   from e1-more.js; intuition problems, the lesson's question bank, then randomized problems), and adds the formula
+   sheet (#/sheet) and mixed practice (#/quiz). */
 (function () {
   'use strict';
   const { R, G } = C;
@@ -16,6 +17,7 @@
   };
   const ALL = [].concat(...Object.values(GENS_FOR));
   const MORE = window.MORE || {};
+  const WHY = window.WHY || {};
 
   COURSE.units.filter((u) => E1.includes(u.id)).forEach((u) => u.lessons.forEach((l) => {
     const more = MORE[l.id] || {};
@@ -32,6 +34,19 @@
 Press **New problem** for fresh values. Two correct answers without opening the solution complete each one; keep going until they feel automatic.`), ...gens.map((g) => G(g, { need: 2 })));
     }
     delete l.bank;
+
+    // Progress is stored per step key, which defaults to the step's position. Freeze the keys of the steps above so
+    // inserting the intuition layer (e1-why-*.js) doesn't shift them.
+    l.steps.forEach((s, i) => { if ((s.t === 'prob' || s.t === 'gen') && !s.id) s.id = `${l.id}.${s.t === 'gen' ? 'g' : 'p'}${i}`; });
+    const why = WHY[l.id];
+    if (!why) return;
+    const tag = (steps, p) => steps.map((s, j) => (s.t === 'prob' && !s.id ? Object.assign(s, { id: `${l.id}.${p}${j}` }) : s));
+    if (l.steps[0].t === 'read') l.steps[0].md = l.steps[0].md.replace('### The idea', '### The model in brief');
+    l.steps.unshift(...tag(why.build || [], 'w'));
+    const at = l.steps.findIndex((s) => s.t === 'read' && /^### More questions/.test(s.md || ''));
+    l.steps.splice(at < 0 ? l.steps.length : at, 0, R(md`### Intuition problems
+
+Most of these need no formula: reason from the picture first, then check. Read the explanation of every wrong option, even when you got it right; that is where the intuition is.`), ...tag(why.qs || [], 'i'));
   }));
 
   C.unit({
