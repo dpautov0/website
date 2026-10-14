@@ -563,8 +563,15 @@
     return el;
   }
 
+  // A course can ask for multiple-choice options in a fresh random order each time (meta.shuffle); content then lists
+  // them in any order (usually the right answer first). A part with fixed: true keeps its order ("all of the above").
+  function shufflePart(pt) {
+    const idx = U.shuffle(pt.mc.map((_, i) => i));
+    return Object.assign({}, pt, { mc: idx.map((i) => pt.mc[i]), a: idx.indexOf(pt.a), why: pt.why ? idx.map((i) => pt.why[i]) : pt.why });
+  }
+
   function mountProblem(host, p, ctx) {
-    const parts = p.parts || [];
+    const parts = (p.parts || []).map((pt) => (META().shuffle && pt.mc && !pt.fixed ? shufflePart(pt) : pt));
     const S = (p.fig && window.Schem && parts.some((pt) => typeof pt.ans === 'function')) ? Schem.solve(p.fig) : null;
     parts.forEach((pt) => { if (typeof pt.ans === 'function') pt._ans = pt.ans(S); else pt._ans = pt.ans; });
 

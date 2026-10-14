@@ -18,6 +18,7 @@
   const ALL = [].concat(...Object.values(GENS_FOR));
   const MORE = window.MORE || {};
   const WHY = window.WHY || {};
+  const RF = window.RF || { topics: {}, why: {} };
 
   COURSE.units.filter((u) => E1.includes(u.id)).forEach((u) => u.lessons.forEach((l) => {
     const more = MORE[l.id] || {};
@@ -38,11 +39,20 @@ Press **New problem** for fresh values. Two correct answers without opening the 
     // Progress is stored per step key, which defaults to the step's position. Freeze the keys of the steps above so
     // inserting the intuition layer (e1-why-*.js) doesn't shift them.
     l.steps.forEach((s, i) => { if ((s.t === 'prob' || s.t === 'gen') && !s.id) s.id = `${l.id}.${s.t === 'gen' ? 'g' : 'p'}${i}`; });
-    const why = WHY[l.id];
-    if (!why) return;
+    const why = WHY[l.id] || {};
     const tag = (steps, p) => steps.map((s, j) => (s.t === 'prob' && !s.id ? Object.assign(s, { id: `${l.id}.${p}${j}` }) : s));
     if (l.steps[0].t === 'read') l.steps[0].md = l.steps[0].md.replace('### The idea', '### The model in brief');
-    l.steps.unshift(...tag(why.build || [], 'w'));
+    // the opener, the build-up, then rapid-fire drills on each concept (js/rapid-*.js), then the rest of the lesson
+    const care = RF.why[l.id] ? [R(`!!key Why you care\n  ${RF.why[l.id]}`)] : [];
+    const rapid = [].concat(...(RF.topics[l.id] || []).map((d, j) => [
+      R(md`### Rapid fire: ${d.title}
+
+**The trick:** ${d.rule}${j ? '' : `
+
+Short questions with a new situation every time: look, reason, do the mental math, answer in 10–20 seconds. Eight right completes a card; keep going until it's automatic.`}`),
+      Object.assign(G(d.gen, { need: 8 }), { id: `${l.id}.r${j}` }),
+    ]));
+    l.steps.unshift(...care, ...tag(why.build || [], 'w'), ...rapid);
     const at = l.steps.findIndex((s) => s.t === 'read' && /^### More questions/.test(s.md || ''));
     l.steps.splice(at < 0 ? l.steps.length : at, 0, R(md`### Intuition problems
 
@@ -144,6 +154,8 @@ Most of these need no formula: reason from the picture first, then check. Read t
             ### Concepts
           `),
           G('concept', { need: 15, units: E1 }),
+          R(md`### Rapid fire from every topic`),
+          G('rf_ef', { pool: [].concat(...Object.values(RF.topics).map((ds) => ds.map((d) => d.gen))), need: 20 }),
           R(md`### Problems`),
           G(ALL[0], { pool: ALL, need: 10 }),
         ],

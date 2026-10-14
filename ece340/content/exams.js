@@ -8,6 +8,7 @@
   COURSE.meta = {
     name: 'ECE 340',
     key: 'ece340',
+    shuffle: true,
     current: 'e1',
     cheatsheet: 'cheatsheet.html',
     eyebrow: 'Semiconductor Electronics',
@@ -22,11 +23,11 @@
   C.exam({
     id: 'e1', title: 'Exam 1', when: 'Thu Oct 15, 7–8 pm', date: '2026-10-15T19:00:00-05:00',
     scope: 'Ch. 1, 3, and 4.1–4.4.4',
-    blurb: 'Streetman & Banerjee, <i>Solid State Electronic Devices</i> 7e: Ch. 1, 3, and 4 through 4.4.4. Twelve topics. Each builds the intuition from the physics up, with a prediction to make at every step, works one exam-style problem, then drills you with intuition and numerical problems.',
+    blurb: 'Streetman & Banerjee, <i>Solid State Electronic Devices</i> 7e: Ch. 1, 3, and 4 through 4.4.4. Twelve topics. Each builds the intuition from the physics up, with a prediction at every step, then drills every concept with endless rapid-fire questions you answer by reading a band diagram and doing mental math, then exam-style problems.',
     sheet: 'e1-sheet', quiz: 'e1-mix',
     planTitle: 'Before Thursday',
     plan: [
-      '<b>Topics 1–12 in order.</b> Read, work the example on paper, then answer every question in the lesson. A topic is done when they all are.',
+      '<b>Topics 1–12 in order.</b> Read the build-up, then hammer the <b>rapid-fire</b> cards (new situations every time) until the answers are automatic; then the worked example and the rest of the questions.',
       '<b>Mixed practice</b> pulls questions from every topic at random, the way the exam does. Reread whatever you miss.',
       '<b>Formula sheet</b> to see what the exam gives you and what to memorize, then the <b>cheat sheet</b> front and back.',
     ],
