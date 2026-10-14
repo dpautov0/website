@@ -53,6 +53,14 @@ Short questions with a new situation every time: look, reason, do the mental mat
       Object.assign(G(d.gen, { need: 8 }), { id: `${l.id}.r${j}` }),
     ]));
     l.steps.unshift(...care, ...tag(why.build || [], 'w'), ...rapid);
+    // complete theory (e1-theory.js): after the model in brief, a checklist before the worked example, questions first
+    const th = (window.THEORY || {})[l.id] || {};
+    const iModel = l.steps.findIndex((s) => s.t === 'read' && /### The model in brief/.test(s.md || ''));
+    if (th.read) l.steps.splice(iModel + 1, 0, ...th.read);
+    const iEx = l.steps.findIndex((s) => s.t === 'read' && /### Worked example/.test(s.md || ''));
+    if (th.keep) l.steps.splice(iEx < 0 ? l.steps.length : iEx, 0, ...th.keep);
+    const iMore = l.steps.findIndex((s) => s.t === 'read' && /^### More questions/.test(s.md || ''));
+    if (th.qs && iMore >= 0) l.steps.splice(iMore + 1, 0, ...tag(th.qs, 'h'));
     const at = l.steps.findIndex((s) => s.t === 'read' && /^### More questions/.test(s.md || ''));
     l.steps.splice(at < 0 ? l.steps.length : at, 0, R(md`### Intuition problems
 
