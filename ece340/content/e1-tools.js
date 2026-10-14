@@ -74,7 +74,7 @@ Most of these need no formula: reason from the picture first, then check. Read t
         id: 'e1-sheet', title: 'Formula sheet', kind: 'read',
         steps: [
           R(md`
-            The exam comes with the course formula sheet: physical constants, the Fermi function and density of states, $N_c$, $N_v$, $n_i$, the $n_0$/$p_0$ forms with $E_F$ and the quasi-Fermi levels, $\mu = q\bar t/m^*$, $D/\mu = kT/q$, $R = \rho L/wt$, $\sigma$, the drift–diffusion currents, $\delta n = g\tau$, the decay law, the continuity and diffusion equations, $L = \sqrt{D\tau}$ and $V_0$. So you don't need to memorize those, but you do need to know what each one means and when it applies.
+            The exam comes with the course formula sheet: physical constants, the Fermi function and density of states, $N_c$, $N_v$, $n_i$, the $n_0$/$p_0$ forms with $E_F$ and the quasi-Fermi levels, $\mu = q\bar t/m^*$, $D/\mu = kT/q$, $R = \rho L/wt$, $\sigma$, the drift–diffusion currents, $\delta n = g\tau$, the decay law, the continuity and diffusion equations, $L = \sqrt{D\tau}$ and $V_0$. So you don't need to memorize those, but you do need to know what each one means and when it applies. Where each equation comes from, how it behaves and its traps: [Every equation, explained](#/l/e1-eqs).
 
             ### Not on the exam sheet: memorize these
 
