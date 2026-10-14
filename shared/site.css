@@ -264,6 +264,8 @@ tr:last-child td { border-bottom: 0; }
 .part.mc { flex-direction: column; align-items: stretch; flex-wrap: nowrap; }
 .mc-q { font-size: 17px; margin-bottom: 4px; }
 .opts { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.opts.short { flex-direction: row; flex-wrap: wrap; }
+.opts.short .opt { flex: 1 0 44px; max-width: 72px; text-align: center; }
 .opt {
   text-align: left; padding: 12px 14px; border-radius: 12px; border: 0; min-width: 0; overflow-wrap: anywhere;
   background: var(--card-2); color: var(--fg); font: 400 16px/1.45 var(--sans); cursor: pointer;

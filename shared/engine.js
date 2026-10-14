@@ -701,7 +701,8 @@
   function partHtml(pt, i) {
     const lbl = pt.lbl ? `<span class="pl">${inline(lblTex(pt.lbl))}${pt.mc ? '' : ' ='}</span>` : '';
     if (pt.mc) {
-      return `<div class="part mc" data-part="${i}">${pt.lbl ? `<div class="mc-q">${inline(pt.lbl)}</div>` : ''}<div class="opts">${pt.mc.map((o, j) => `<button type="button" class="opt" data-j="${j}">${inline(o)}</button>`).join('')}</div><span class="mark"></span></div>`;
+      const short = pt.mc.every((o) => String(o).length <= 3);   // single letters etc.: one compact row
+      return `<div class="part mc" data-part="${i}">${pt.lbl ? `<div class="mc-q">${inline(pt.lbl)}</div>` : ''}<div class="opts${short ? ' short' : ''}">${pt.mc.map((o, j) => `<button type="button" class="opt" data-j="${j}">${inline(o)}</button>`).join('')}</div><span class="mark"></span></div>`;
     }
     if (pt.expr !== undefined) {
       const vars = Object.keys(pt.vars).map((v) => `<code>${v}</code>`).join(' ');

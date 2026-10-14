@@ -13,6 +13,8 @@
     cheatsheet: 'cheatsheet.html',
     eyebrow: 'Semiconductor Electronics',
     actions: [
+      { href: '#/l/e1-x15', label: 'The 2015 exam' },
+      { href: '#/l/e1-xA', label: 'Practice exams' },
       { href: '#/quiz', label: 'Mixed practice' },
       { href: '#/sheet', label: 'Formula sheet' },
       { href: 'cheatsheet.html', label: 'Cheat sheet' },
@@ -28,6 +30,7 @@
     planTitle: 'Before Thursday',
     plan: [
       '<b>Topics 1–12 in order.</b> Read the build-up, then hammer the <b>rapid-fire</b> cards (new situations every time) until the answers are automatic; then the worked example and the rest of the questions.',
+      '<b>The 2015 exam</b>, then <b>practice exams A and B</b> under time (60 min), then the endless exam-style problems and the harder conceptual bank.',
       '<b>Mixed practice</b> pulls questions from every topic at random, the way the exam does. Reread whatever you miss.',
       '<b>Formula sheet</b> to see what the exam gives you and what to memorize, then the <b>cheat sheet</b> front and back.',
     ],

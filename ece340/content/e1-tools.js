@@ -164,6 +164,8 @@ Most of these need no formula: reason from the picture first, then check. Read t
           G('concept', { need: 15, units: E1 }),
           R(md`### Rapid fire from every topic`),
           G('rf_ef', { pool: [].concat(...Object.values(RF.topics).map((ds) => ds.map((d) => d.gen))), need: 20 }),
+          R(md`### Exam-style problems`),
+          G('ex_circle', { pool: RF.examGens || ['ex_circle'], need: 6 }),
           R(md`### Problems`),
           G(ALL[0], { pool: ALL, need: 10 }),
         ],
