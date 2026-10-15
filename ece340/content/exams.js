@@ -13,6 +13,8 @@
     cheatsheet: 'cheatsheet.html',
     eyebrow: 'Semiconductor Electronics',
     actions: [
+      { href: '#/l/e1-sp26', label: 'Spring 2026 exam' },
+      { href: '#/l/e1-f24', label: 'Fall 2024 exam' },
       { href: '#/l/e1-x15', label: 'The 2015 exam' },
       { href: '#/l/e1-xA', label: 'Practice exams' },
       { href: '#/quiz', label: 'Mixed practice' },
