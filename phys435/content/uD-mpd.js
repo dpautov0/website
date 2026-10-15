@@ -919,7 +919,7 @@
     const p = pol(Rr, -30); dimL(f, 0, 0, p[0], p[1], 'R', ['b', 'br', 'r']);
     return widen(f).svg();
   })();
-  const FP_COS2 = ball({ kind: 'cos2', Rdim: 210, extra: (f, Rr) => { const p = pol(Rr / 2, -40); dimL(f, 0, 0, p[0], p[1], ''); put(f, p[0], p[1], 'R/2', ['br', 'r', 'b'], 3, 'small'); const a = pol(Rr * 0.28, 125), b = pol(Rr * 0.8, 50); f.dot(a[0], a[1], 2); f.line(a[0], a[1], -Rr - 18, -Rr - 14, { cls: 'dim thin' }); put(f, -Rr - 18, -Rr - 14, md`+\rho_0\cos\theta\ (r<R/2)`, ['l', 'tl', 't'], 3, 'small'); f.dot(b[0], b[1], 2); f.line(b[0], b[1], Rr + 18, -Rr - 14, { cls: 'dim thin' }); put(f, Rr + 18, -Rr - 14, md`-\rho_0\cos\theta\ (R/2<r<R)`, ['r', 'tr', 't'], 3, 'small'); } });
+  const FP_COS2 = ball({ kind: 'cos2', Rdim: 210, extra: (f, Rr) => { const p = pol(Rr / 2, -40); dimL(f, 0, 0, p[0], p[1], ''); put(f, p[0], p[1], 'R/2', ['br', 'r', 'b'], 3, 'small'); const a = pol(Rr * 0.28, 125), b = pol(Rr * 0.8, 50); f.dot(a[0], a[1], 2); f.line(a[0], a[1], -Rr - 18, -Rr - 14, { cls: 'dim thin' }); put(f, -Rr - 18, -Rr - 14, md`+\rho_0\cos\theta\ (r\lt R/2)`, ['l', 'tl', 't'], 3, 'small'); f.dot(b[0], b[1], 2); f.line(b[0], b[1], Rr + 18, -Rr - 14, { cls: 'dim thin' }); put(f, Rr + 18, -Rr - 14, md`-\rho_0\cos\theta\ (R/2\lt r\lt R)`, ['r', 'tr', 't'], 3, 'small'); } });
   const FP_OCT = octBall({ oct: [[1, 1, 1, '+'], [1, 1, -1, '-']] });
   const FP_OCT_SOL = octBall({ oct: [[1, 1, 1, '+'], [1, 1, -1, '-']], extra: (g, Rr) => {
     const O = g.p3(0, 0, 0), n = g.p3(Rr * 1.35, 0, Rr * 1.35);

@@ -690,6 +690,7 @@
   }
 
   function meterDots(c, need) {
+    if (need > 12) return `<em>${c} / ${need}</em>`; // long meters as a count, so they never overflow a phone
     let s = '';
     for (let i = 0; i < need; i++) s += `<i class="${i < c ? 'on' : ''}"></i>`;
     return s + (c > need ? `<em>+${c - need}</em>` : '');
