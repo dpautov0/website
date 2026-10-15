@@ -93,7 +93,7 @@
         - **Amorphous**: only short-range order; each atom still has about four neighbors, but there is no repeating pattern (thin-film transistors in displays). Much lower mobility.
       `),
       Q(md`An electron travels through a perfect, motionless silicon crystal. The silicon atoms it passes…`,
-        ['do not scatter it; the periodic lattice only changes how its energy depends on momentum', 'scatter it at every atom, which is where resistance comes from', 'trap it at every atom, so it can only hop from atom to atom', 'scatter it only at the corners of each unit cell'], 0,
+        ['do not scatter it: a perfect lattice only shapes $E(k)$', 'scatter it at every atom: that is resistance', 'trap it, so it hops from atom to atom', 'scatter it only at the unit-cell corners'], 0,
         [null, 'Then even a perfect crystal at 0 K would have a huge resistance. Scattering comes from imperfections and vibrations, not from the periodic atoms.', 'Free carriers in a crystal move as waves spread through it; they are not stuck on atoms.', 'Unit-cell corners are bookkeeping; nothing physical happens there.'],
         md`A wave in a perfectly periodic potential propagates without scattering. Resistance comes from **departures** from periodicity: lattice vibrations, ionized dopants, defects.`),
       R(md`
@@ -109,7 +109,7 @@
         **Counting atoms per cell** comes from asking "how much of this atom is inside my cube?" A corner is shared by the 8 cubes that meet there, so each cube owns $\tfrac18$ of it; a face is shared by 2 cubes ($\tfrac12$); an edge by 4 ($\tfrac14$); an interior atom is all yours. An fcc cell has $8 \times \tfrac18 + 6 \times \tfrac12 = 4$ lattice points, and two atoms per point gives diamond **8 atoms per cell**. You never need to memorize the 8: it is 4 points times a 2-atom basis.
       `),
       Q(md`A corner atom of a cubic cell counts as $\tfrac18$ of an atom because…`,
-        ['8 cells meet at each corner and share it equally', 'only one atom in 8 sits at a corner', 'corner atoms are smaller', 'each corner atom has 8 bonds'], 0,
+        ['8 cells share each corner equally', 'only one atom in 8 sits at a corner', 'corner atoms are smaller than the others', 'each corner atom has 8 bonds to share'], 0,
         [null, 'The fraction is about one atom shared among cells, not about how many atoms are corners.', 'Atoms are the same size wherever they sit.', 'Si atoms have 4 bonds; the 1/8 is pure geometry.'],
         md`Stack cubes to fill space and 8 of them touch at every corner, so each owns one eighth of the atom there.`),
       R(md`
@@ -142,7 +142,7 @@
         The four nearest neighbors sit along the body diagonals at $\tfrac{\sqrt3}{4}a = 2.35$ Å: that is the Si–Si bond length. The open structure leaves large empty spaces, which is why some impurities (copper, gold, iron) slip between the atoms and diffuse quickly through silicon, and why fabrication fights such contamination so hard.
       `),
       Q(md`Silicon fills only 34% of space while fcc copper fills 74%. The main reason is that…`,
-        ['silicon’s covalent bonds are directional, fixing four neighbors at tetrahedral angles', 'silicon atoms are much smaller than copper atoms', 'silicon is full of vacancies', 'silicon has a larger lattice constant'], 0,
+        ['directional bonds fix just 4 neighbors per atom', 'silicon atoms are much smaller than copper’s', 'silicon crystals are full of vacancies', 'silicon’s lattice constant is larger'], 0,
         [null, 'Packing fraction is about arrangement, not size: equal spheres in fcc fill 74% whatever their size.', 'A good Si crystal has very few vacancies; the openness is built into the structure.', 'The lattice constant sets the scale, not the fraction of space filled.'],
         md`Four neighbors instead of twelve leaves large voids. Directional covalent bonding is the cause.`),
       R(md`
@@ -160,11 +160,11 @@
     qs: [
       Q(md`A crystal keeps its structure but its lattice constant doubles. Its number of atoms per cm³…`,
         ['drops to 1/8', 'halves', 'stays the same', 'drops to 1/4'], 0,
-        [null, 'Density is per volume, and volume goes as $a^3$.', '$N \\propto 1/a^3$, not $1/a$.', 'Same atoms per cell, but each cell is 8 times bigger.', 'That would be $1/a^2$: an areal density.'],
+        [null, '$N \\propto 1/a^3$, not $1/a$.', 'Same atoms per cell, but each cell is 8 times bigger.', 'That would be $1/a^2$: an areal density.'],
         md`$N = (\text{atoms per cell})/a^3$; doubling $a$ multiplies the cell volume by 8.`),
       Q(md`GaAs has the zincblende structure. Compared with silicon's diamond structure it has…`,
-        ['the same lattice and positions; Ga and As alternate, so each atom bonds to four of the other kind', 'a simple cubic lattice with Ga at the corners and As at the center', 'four atoms per cubic cell instead of eight', 'a different number of nearest neighbors'], 0,
-        [null, 'That is the CsCl structure, not zincblende.', 'Still 8 per cell: 4 Ga and 4 As.', 'Each atom still has 4 tetrahedral neighbors.'],
+        ['the same arrangement, with Ga and As alternating', 'a simple cubic lattice: Ga corners, As center', 'four atoms per cubic cell instead of eight', 'six nearest neighbors instead of four'], 0,
+        [null, 'That is the CsCl structure, not zincblende.', 'Still 8 per cell: 4 Ga and 4 As.', 'Still four: each Ga bonds tetrahedrally to four As.'],
         md`Zincblende = diamond with the two basis sites occupied by different atoms. The tetrahedral bonding is the same.`),
       Q(md`How many nearest neighbors does each atom have in the diamond lattice?`,
         ['4', '6', '8', '12'], 0,
@@ -183,7 +183,7 @@
         [null, '$a/\\sqrt2$ is larger than $a/\\sqrt3$.', '$(100)$ planes are $a$ apart: the widest.', 'Spacing is $a/\\sqrt{h^2 + k^2 + l^2}$.'],
         md`$d_{111} = a/\sqrt3$, $d_{110} = a/\sqrt2$, $d_{100} = a$.`),
       Q(md`Amorphous silicon has a much lower electron mobility than crystalline silicon because…`,
-        ['without long-range order the electron waves scatter constantly and many states are localized', 'it has fewer atoms per cm³', 'it has no band gap', 'its atoms have fewer than four bonds on average'], 0,
+        ['no long-range order: waves scatter, states localize', 'it has fewer atoms per cubic centimeter', 'it has no band gap, so carriers can’t form', 'its atoms average fewer than four bonds'], 0,
         [null, 'Its density is close to crystalline Si.', 'It still has a gap (about 1.7 eV).', 'Most atoms still have four bonds; the disorder is in angles and lengths.'],
         md`Mobility needs waves that can propagate. Disorder breaks the periodicity everywhere, so carriers scatter or get stuck.`),
       P({
@@ -193,7 +193,7 @@
         sol: md`$N = \dfrac{8}{(5.65\times10^{-8})^3} = 4.436\times10^{22}\,\text{cm}^{-3}$; $\rho_m = \dfrac{(4.436\times10^{22})(72.63)}{6.022\times10^{23}} = 5.35$ g/cm³.`,
       }),
       Q(md`GaAs ($5.32$ g/cm³) is more than twice as dense as Si ($2.33$ g/cm³). Why?`,
-        ['its atoms are much heavier, while the atom spacing is about the same', 'it has more atoms per cubic cell', 'its atoms are packed more tightly', 'its bonds are shorter'], 0,
+        ['heavier atoms at about the same spacing', 'more atoms in each cubic cell (16 vs 8)', 'its atoms are packed more tightly', 'its bonds are much shorter than Si’s'], 0,
         [null, 'Both have 8 atoms per cell.', 'Same tetrahedral structure, same packing fraction.', 'Its lattice constant (5.65 Å) is slightly larger, not smaller.'],
         md`$\rho_m = NM/N_A$: $N$ is nearly the same, but the average atomic mass is about 72 g/mol versus 28.`),
       P({
@@ -202,11 +202,11 @@
         sol: md`$5\times10^{22}/5\times10^{17} = 10^5$: even "heavy" doping replaces only one atom in a hundred thousand.`,
       }),
       Q(md`Device wafers are single crystals rather than polycrystalline because grain boundaries…`,
-        ['scatter carriers and trap them in defect states', 'make the wafer heavier', 'change the band gap of each grain', 'block the dopants from ionizing'], 0,
+        ['scatter carriers and trap them', 'make the wafer heavier and brittle', 'shift the band gap of each grain', 'block the dopants from ionizing'], 0,
         [null, 'Mass has nothing to do with it.', 'Each grain is still silicon with the same gap.', 'Dopants still ionize inside the grains.'],
         md`Boundaries break the periodicity (scattering) and leave dangling bonds that create states in the gap (trapping and recombination).`),
       Q(md`MOSFETs are made on $(100)$ wafers mainly because…`,
-        ['the Si/SiO₂ interface on (100) has the fewest electronic defects', '(100) has the most atoms per area', '(100) oxidizes fastest', 'only (100) wafers can be doped'], 0,
+        ['its Si/SiO₂ interface has the fewest defects', '(100) packs the most atoms per area', '(100) oxidizes fastest of all faces', 'only (100) wafers can be doped evenly'], 0,
         [null, 'The point is the interface quality, which depends on dangling bonds per area.', 'Oxidation rate is not the reason; (111) actually oxidizes faster.', 'Any orientation can be doped.'],
         md`Fewer dangling bonds per area at the (100) surface means fewer interface traps under the gate.`),
     ],
@@ -275,7 +275,7 @@
         A parking garage helps. A completely full level: no car can move. A completely empty one: no cars to move. Now take a few cars from the full lower level up to the empty upper level. Both levels have traffic: the upper one through its few cars (electrons), the lower one through its few empty spaces (holes).
       `),
       Q(md`A field is applied to pure silicon at $T = 0$ K (valence band full, conduction band empty). The current is…`,
-        ['zero: a full band and an empty band cannot carry current', 'small, carried by valence electrons', 'large, because the field is strong', 'carried by holes'], 0,
+        ['zero: full and empty bands carry nothing', 'small, carried by valence electrons', 'large, because the field is strong', 'small, carried by holes in the VB'], 0,
         [null, 'Full means every $+k$ state is paired with a $-k$ state; the field cannot unbalance them.', 'Current does not depend on the field alone; there must be carriers that can respond.', 'At 0 K there are no holes.'],
         md`At 0 K silicon is a perfect insulator. Conduction needs empty states next to filled ones.`),
       RF(md`
@@ -317,29 +317,29 @@
         - **Si (indirect)**: the conduction-band minimum is far from $k = 0$. Emitting a photon needs a **phonon** to carry away the momentum difference at the same moment: a rare three-body event. Electrons usually recombine through defects instead and release heat. Absorption near the gap also needs a phonon, so it is weak.
       `),
       Q(md`Silicon solar cells are typically hundreds of micrometers thick while GaAs cells can be a few micrometers. Why?`,
-        ['Si absorbs weakly near its gap because the indirect transition needs a phonon', 'Si has a larger band gap', 'GaAs has more atoms per cm³', 'Si reflects most of the light'], 0,
+        ['Si is indirect: near-gap absorption needs a phonon', 'Si has the larger band gap of the two', 'GaAs packs more atoms per cubic centimeter', 'Si reflects most of the light that hits it'], 0,
         [null, 'Si’s gap (1.12 eV) is smaller than GaAs’s (1.43 eV).', 'Atom densities are similar.', 'Reflection is handled by coatings in both.'],
         md`Indirect absorption is a second-order process, so $\alpha$ is small near the gap and light penetrates deep. A direct-gap absorber needs only a few $\mu$m.`),
     ],
     qs: [
       Q(md`A semiconductor is squeezed under high pressure, so its atoms move closer together. Its bands…`,
-        ['widen, because neighboring atoms couple more strongly', 'narrow', 'do not change: bands are set by the atoms alone', 'disappear'], 0,
+        ['widen: neighbors couple more strongly', 'narrow: electrons are squeezed in place', 'stay the same: bands come from atoms alone', 'vanish into discrete atomic levels'], 0,
         [null, 'Closer atoms overlap more, which widens the spread of levels.', 'Bands exist only because of coupling between atoms.', 'Bands need the atoms close, not far.'],
         md`Band width tracks the overlap between neighbors. (The gap also shifts, which is how pressure changes the color of some LEDs.)`),
       Q(md`Sodium has one valence electron per atom, and its outer s level forms a band of $2N$ states. Sodium is…`,
-        ['a metal: the band is half full', 'an insulator', 'a semiconductor', 'a metal only when hot'], 0,
+        ['a metal: the band is half full', 'an insulator: the band is full', 'a semiconductor with a small gap', 'a metal only when heated'], 0,
         [null, 'Half-filled bands conduct at any temperature.', 'Its band is not full, so there is no gap to cross.', 'It conducts at all temperatures.'],
         md`$N$ electrons in $2N$ states: half filled. Empty states sit right above the filled ones, so a field moves electrons easily.`),
       Q(md`Diamond (C) has the same structure as Si but a gap of $5.5$ eV instead of $1.12$ eV. The best explanation is…`,
-        ['carbon atoms are smaller and bond more strongly, so bonding and antibonding states are split further apart', 'carbon has more valence electrons', 'diamond has fewer atoms per cm³', 'diamond is amorphous'], 0,
+        ['stronger C–C bonds split the bands further', 'carbon has more valence electrons than Si', 'diamond has fewer atoms per cubic centimeter', 'diamond’s structure is amorphous on average'], 0,
         [null, 'C and Si both have 4 valence electrons.', 'Diamond is actually denser in atoms (smaller $a$).', 'Diamond is a crystal.'],
         md`The gap is the bonding–antibonding split. Shorter, stronger bonds split them more: C (5.5) > Si (1.12) > Ge (0.67) > gray Sn (about 0).`),
       Q(md`Diamond and silicon have the same structure. Diamond is an insulator at room temperature because…`,
-        ['$n_i \\propto e^{-E_g/2kT}$, and $5.5$ eV is so much larger than $kT$ that practically no electrons cross', 'it has no conduction band', 'its valence band is only half full', 'its electrons are much heavier'], 0,
+        ['with 5.5 eV ≫ kT, almost no electrons cross', 'it has no conduction band at all', 'its valence band is only half full', 'its electrons are far heavier than Si’s'], 0,
         [null, 'Every solid has a conduction band; in diamond it is just very far up.', 'It is full, exactly as in Si.', 'Mass is not the main issue; the gap is.'],
         md`The ratio to Si is about $e^{-(5.5 - 1.12)/(2\times0.0259)} = e^{-85} \approx 10^{-37}$. An insulator is a semiconductor with a huge gap.`),
       Q(md`Why does a semiconductor's conductivity rise with temperature while a metal's falls?`,
-        ['heat creates new carriers across the gap in a semiconductor; a metal already has all its carriers and heat only adds scattering', 'semiconductors expand more when heated', 'the band gap of a metal grows with temperature', 'heat makes holes lighter'], 0,
+        ['heat creates carriers in one, scattering in both', 'semiconductors expand more when they are heated', 'a metal’s band gap widens as it heats up', 'heat makes holes lighter, so they move faster'], 0,
         [null, 'Expansion is a tiny effect.', 'Metals have no gap.', 'Effective masses barely change.'],
         md`Semiconductor: carrier number grows exponentially with $T$, which beats the slow loss of mobility. Metal: fixed carriers, mobility falls with $T$.`),
       Q(md`Which band is made of the **bonding** combinations of silicon's valence orbitals?`,
@@ -347,7 +347,7 @@
         [null, 'The conduction band is made of antibonding combinations, higher in energy.', 'They come from opposite combinations.', 'The band picture and the bond picture describe the same thing.'],
         md`Bonding = lower energy = valence band, filled by the $4N$ valence electrons. Antibonding = conduction band.`),
       Q(md`Two holes in the valence band: one at $E_v$, one $0.1$ eV below $E_v$. Which has more energy?`,
-        ['the deeper one: hole energy increases downward', 'the one at $E_v$', 'both have the same energy', 'holes have no energy'], 0,
+        ['the deeper one', 'the one at $E_v$', 'both the same', 'neither: holes carry no energy'], 0,
         [null, 'On a band diagram, upward is electron energy; hole energy is measured downward.', 'Only $E - E_v$ distinguishes them.', 'A hole deeper in the band carries kinetic energy.'],
         md`Making the deeper hole needs an electron removed from a lower energy, which costs more. It relaxes upward to $E_v$ by giving energy to the lattice.`),
       Q(md`A photon's momentum is about how large compared with the range of electron crystal momenta in a band?`,
@@ -364,15 +364,15 @@
         sol: md`$\lambda = \dfrac{1.24}{1.43} = 0.867\,\mu$m, in the near infrared. Carriers relax to the band edges before they recombine, so the emission sits at the gap.`,
       }),
       Q(md`Near the top of the valence band, $E(k)$ curves **downward**. For the electrons there, this means…`,
-        ['their effective mass is negative, which is why the missing electron is described as a hole with positive mass', 'their mass is very large', 'they cannot move', 'they move faster than free electrons'], 0,
+        ['negative effective mass, hence the hole picture', 'a very large positive effective mass', 'they cannot respond to a field at all', 'they move faster than free electrons'], 0,
         [null, 'Curvature sets the size and the sign; here the sign is negative.', 'They can move into empty states.', 'Speed depends on the slope, not on the sign of curvature.'],
         md`$m^* = \hbar^2/(d^2E/dk^2) < 0$ there. A missing negative-mass, negative-charge electron behaves as a positive-mass, positive-charge particle.`),
       Q(md`A material has very narrow (flat) bands. Its carriers are…`,
-        ['heavy and low-mobility, because electrons hop between atoms only weakly', 'light and fast', 'unable to exist', 'always holes'], 0,
+        ['heavy, with low mobility', 'light and fast, with high mobility', 'unable to exist in such bands', 'always holes, never electrons'], 0,
         [null, 'Light carriers need strongly curved bands.', 'Narrow bands still hold carriers.', 'Band shape does not decide the carrier sign.'],
         md`Narrow band = weak coupling = small curvature = large $m^*$.`),
       Q(md`In the bond picture, creating an electron–hole pair in silicon corresponds to…`,
-        ['breaking one Si–Si bond: the electron leaves and the bond is one electron short', 'ionizing a donor', 'removing a silicon atom', 'an electron moving from one bond to another'], 0,
+        ['breaking one Si–Si bond', 'ionizing a donor atom', 'removing a silicon atom from its site', 'an electron moving from bond to bond'], 0,
         [null, 'A donor gives an electron but no hole.', 'The atom stays; one bond loses an electron.', 'That moves a hole; it does not create a pair.'],
         md`Valence band = bonds; conduction band = free. Crossing the gap = breaking a bond, which costs $E_g$.`),
     ],
@@ -392,7 +392,7 @@
         [[fig:pair]]
       `, { pair: { svg: bondFig('pair'), cap: 'Heat breaks a bond: a free electron and an empty spot in the bond (a hole).' } }),
       Q(md`The average thermal energy is only about $0.026$ eV. How does it ever break $1.12$ eV bonds?`,
-        ['thermal energy is random: rare fluctuations far above the average happen, with probability about $e^{-E/kT}$, and there are enormous numbers of bonds', 'it doesn’t: all free carriers come from impurities', 'electrons absorb many small amounts and store them', 'the gap shrinks to 0.026 eV at room temperature'], 0,
+        ['rare big fluctuations, across ~10²³ bonds', 'it doesn’t: impurities supply all carriers', 'electrons store many small kicks of energy', 'the gap shrinks to 0.026 eV at 300 K'], 0,
         [null, 'Even perfectly pure Si has $n_i = 1.5\\times10^{10}\\,\\text{cm}^{-3}$ at 300 K.', 'Energy is not stored step by step in a bond; what matters is the chance of one large fluctuation.', 'The gap changes only slightly with temperature.'],
         md`An exponentially rare event times a gigantic number of tries gives a small but steady generation rate. Raise $T$ a little and $e^{-E_g/kT}$ grows a lot.`),
       R(md`
@@ -410,7 +410,7 @@
         This explains the most important rule in the course with no memorizing: **adding one kind of carrier destroys the other**. Add donors so electrons rise a million-fold, and every hole now meets electrons a million times as often. Holes are still born at the same rate $g(T)$, but they die a million times faster, so their number falls a million-fold.
       `),
       Q(md`Donors raise $n_0$ from $n_i$ to $10^6\,n_i$. The hole concentration…`,
-        ['falls to $n_i/10^6$: holes are born at the same rate but recombine a million times faster', 'stays at $n_i$: donors don’t affect holes', 'rises, because the electrons push holes out of the bonds', 'falls to zero'], 0,
+        ['falls to $n_i/10^6$', 'stays at $n_i$: donors don’t touch holes', 'rises: electrons push holes out of bonds', 'falls to exactly zero'], 0,
         [null, 'Holes are affected through recombination with the extra electrons.', 'Nothing creates extra holes here.', 'Generation never stops, so $p_0$ never reaches zero.'],
         md`$n_0p_0 = n_i^2$ fixed: $p_0 = n_i^2/n_0 = n_i/10^6$. The minority carrier is eaten by the majority.`),
       RF(md`
@@ -430,7 +430,7 @@
         [[fig:donor]]
       `, { donor: { svg: bondFig('donor'), cap: 'Phosphorus: four electrons bond, the fifth circles loosely. Drawn far too small: its orbit spans about ten bond lengths.' } }),
       Q(md`Why is a donor electron's binding energy in Si about 300 times smaller than hydrogen's?`,
-        ['silicon screens the charge ($\\epsilon_r^2 \\approx 140$) and the electron’s effective mass is small', 'phosphorus has a weaker nucleus than hydrogen', 'the electron is in a bond', 'the donor electron moves at the speed of light'], 0,
+        ['strong screening ($\\epsilon_r^2 \\approx 140$) and a light $m^*$', 'phosphorus has a weaker nucleus than H', 'the electron is held in a covalent bond', 'the donor electron moves near light speed'], 0,
         [null, 'The $\\text{P}^+$ core has net charge $+q$, like a proton.', 'The fifth electron is precisely the one with no bond.', 'Nothing relativistic here.'],
         md`$E \propto m^*/\epsilon_r^2$: a factor $0.26/139 \approx 1/530$ from hydrogen's $13.6$ eV gives about $0.025$ eV.`),
       RF(md`
@@ -445,7 +445,7 @@
         **Donor ionization creates no hole, and acceptor ionization creates no free electron.** The other charge is a fixed ion. Only breaking a Si–Si bond makes a pair.
       `, { acc: { svg: bondFig('acceptor'), cap: 'Boron: one bond is short an electron. A neighbor’s electron hops in for about 0.045 eV and the hole wanders off.' } }),
       Q(md`When a phosphorus donor ionizes, a hole is also created. True?`,
-        ['False: the electron came from the donor, and the positive charge left behind is the fixed $\\text{P}^+$ ion, which cannot move', 'True: every free electron leaves a hole', 'True, but the hole is bound to the donor', 'False: the electron goes into a bond'], 0,
+        ['false: the positive charge is the fixed P⁺ ion', 'true: every free electron leaves a hole', 'true, but the hole stays bound to P', 'false: the electron goes into a bond'], 0,
         [null, 'That is true only for bond-breaking (thermal generation).', 'The ion is fixed in the lattice; it carries no current.', 'It goes into the conduction band, not a bond.'],
         md`Ionized donors give electrons with no partner holes; that is why $n_0 \gg p_0$ in n-type material.`),
       R(md`
@@ -456,7 +456,7 @@
         Mobile carriers can move; ions cannot. Whenever mobile carriers are pulled away from their ions (at a junction, in graded doping, at a surface), net charge appears and makes an electric field. That is the seed of Topics 7 and 11 and of every device that follows.
       `),
       Q(md`A piece of n-type silicon sits on the bench. Its overall charge is…`,
-        ['zero: each free electron is balanced by a fixed donor ion', 'negative: it has extra electrons', 'positive: donors are positive', 'negative only at room temperature'], 0,
+        ['zero: donor ions balance the electrons', 'negative: it has extra electrons', 'positive: the donors are positive', 'negative, but only at room temperature'], 0,
         [null, 'The electrons are "extra" relative to the bonds, not relative to the nuclei.', 'Their charge is balanced by the free electrons.', 'Neutrality holds at any temperature.'],
         md`Doping adds neutral atoms. Ionization only separates charge locally; the sample stays neutral.`),
       R(md`
@@ -482,7 +482,7 @@
         [null, '$p_0 = n_i^2/N_d$ goes the other way.', 'More electrons means faster hole recombination.', '$p_0 \\propto 1/N_d$, not $1/N_d^2$.'],
         md`$p_0 = n_i^2/n_0$ with $n_0 \approx N_d$.`),
       Q(md`Temperature rises. In the generation–recombination balance, the product $n_0p_0$…`,
-        ['rises, because generation speeds up exponentially', 'stays fixed: it is always $n_i^2$ at 300 K', 'falls, because recombination speeds up', 'depends only on the doping'], 0,
+        ['rises: generation speeds up exponentially', 'stays fixed: it is always $n_i^2$ at 300 K', 'falls: recombination speeds up more', 'depends only on the doping level'], 0,
         [null, '$n_i$ itself depends strongly on $T$.', 'Recombination only follows the larger carrier numbers that generation creates.', 'Doping sets the split, not the product.'],
         md`$n_0p_0 = n_i^2(T)$, which grows roughly as $T^3e^{-E_g/kT}$.`),
       P({
@@ -491,7 +491,7 @@
         sol: md`$E = 13.6\times\dfrac{0.067}{13.2^2} = 5.2\times10^{-3}$ eV: far below $kT$, so GaAs donors are fully ionized even well below room temperature.`,
       }),
       Q(md`Germanium atoms (group IV) are added to silicon. They…`,
-        ['add no carriers: Ge has four valence electrons, like Si', 'make it n-type', 'make it p-type', 'make it a metal'], 0,
+        ['add no carriers (four valence electrons)', 'make it n-type (Ge gives an electron)', 'make it p-type (Ge takes an electron)', 'make it metallic (Ge is a metal)'], 0,
         [null, 'A donor needs a fifth valence electron.', 'An acceptor needs one fewer.', 'They just replace Si atoms in the bonds.'],
         md`An impurity dopes only if its valence differs from the host's.`),
       Q(md`"Intrinsic" silicon accidentally contains $10^{13}\,\text{cm}^{-3}$ boron. At 300 K it is…`,
@@ -503,7 +503,7 @@
         [null, 'Bigger gap, fewer carriers.', '$n_i$ depends exponentially on the gap.', 'Ge has the smallest gap, so it has the most.'],
         md`$n_i \propto e^{-E_g/2kT}$: Ge $2.5\times10^{13}$, Si $1.5\times10^{10}$, GaAs $2\times10^6\,\text{cm}^{-3}$.`),
       Q(md`In the bond picture, a hole is…`,
-        ['a bond that is missing one electron', 'a missing silicon atom', 'a positive ion', 'a free positron'], 0,
+        ['a bond missing one electron', 'a missing silicon atom (vacancy)', 'a positive ion in the lattice', 'a free positron in the crystal'], 0,
         [null, 'A missing atom is a vacancy, a different defect.', 'Ions are fixed; holes move.', 'It is an absence of an electron, not a new particle.'],
         md`The vacancy in a bond moves as neighboring electrons hop in, carrying charge $+q$.`),
       P({
@@ -512,15 +512,15 @@
         sol: md`$N_d = 10^{14} \gg n_i$, so $n_0 = 10^{14}$ and $p_0 = 2.25\times10^{20}/10^{14} = 2.25\times10^6\,\text{cm}^{-3}$. Even light doping makes holes rare.`,
       }),
       Q(md`Gold in silicon gives energy levels near the middle of the gap. As a dopant at room temperature, gold…`,
-        ['gives almost no free carriers, because ionizing a deep level costs about half the gap; instead it helps electrons and holes recombine', 'is a strong donor', 'is a strong acceptor', 'raises the band gap'], 0,
+        ['gives few carriers but speeds recombination', 'acts as a strong donor, like phosphorus', 'acts as a strong acceptor, like boron', 'raises the band gap around each Au atom'], 0,
         [null, 'A useful donor must sit within a few $kT$ of $E_c$.', 'Same reason: too deep.', 'Impurities at these levels do not change the gap.'],
         md`Shallow levels (within ~0.05 eV of a band) ionize at room temperature; deep levels don't. Deep levels act as stepping stones for recombination (Topic 9).`),
       Q(md`The electron concentration in a sample is $10^{16}$ and the hole concentration is $10^{16}$. Is it intrinsic?`,
-        ['Not at 300 K for Si: $n_0p_0$ would be $10^{32} \\ne n_i^2$, so it isn’t in equilibrium (or isn’t Si at 300 K)', 'Yes: $n = p$ means intrinsic', 'It is n-type', 'It is compensated'], 0,
+        ['not as Si at 300 K: $np \\ne n_i^2$', 'yes: $n = p$ means intrinsic', 'it is n-type with heavy doping', 'it is compensated, so intrinsic'], 0,
         [null, 'Equal $n$ and $p$ in equilibrium Si at 300 K means $n = p = 1.5\\times10^{10}$.', 'Equal numbers of each.', 'Compensation leaves $n_0p_0 = n_i^2$ too.'],
         md`In equilibrium $n_0p_0 = n_i^2$ always. $10^{16}$ of each means excess carriers (light or injection): Topic 9.`),
       Q(md`Why are shallow dopants (levels within about $0.05$ eV of a band) the useful ones?`,
-        ['their binding energy is comparable to $kT$, so they are almost all ionized at room temperature', 'they are the only ones that fit in the lattice', 'they change the band gap', 'they never recombine'], 0,
+        ['ionizing them costs only ~kT', 'they are the only ones that fit the lattice', 'they shift the band gap to useful values', 'they never cause recombination'], 0,
         [null, 'Deep-level impurities fit in the lattice too.', 'Doping does not change the gap at normal levels.', 'Dopants do not recombine; carriers do.'],
         md`Fully ionized dopants make $n_0 \approx N_d$ predictable and nearly independent of temperature.`),
     ],
@@ -543,7 +543,7 @@
         $E_F$ is the energy at which a state is exactly half likely to be full. Well below $E_F$ (by several $kT$), states are full; well above, they are nearly empty, and $f \approx e^{-(E - E_F)/kT}$: the **Boltzmann tail**. The transition is only a few $kT$ wide (about $0.1$ eV at room temperature).
       `),
       Q(md`A state $3kT$ above $E_F$ and a state $4kT$ above $E_F$: which is more likely to be occupied, and by about how much?`,
-        ['the $3kT$ state, by a factor of about $e \\approx 2.7$', 'the $4kT$ state, by $e$', 'the $3kT$ state, by a factor of 4/3', 'they are equally likely'], 0,
+        ['the $3kT$ one, by about 2.7×', 'the $4kT$ one, by about 2.7×', 'the $3kT$ one, by a factor 4/3', 'neither: both are far above $E_F$'], 0,
         [null, 'Higher states are less likely to be full.', 'The tail is exponential, not proportional.', 'Each extra $kT$ costs a factor $e$.'],
         md`In the tail $f \approx e^{-(E - E_F)/kT}$: one more $kT$ divides the probability by $e$.`),
       R(md`
@@ -559,7 +559,7 @@
         The closer $E_F$ sits to $E_c$, the fatter the tail at $E_c$ and the more electrons. Physically, $E_F$ is the energy it costs to add one more electron to the material. Two pieces in contact trade electrons until their $E_F$ match (Topic 7).
       `),
       Q(md`In an n-type sample, $E_F$ lies $0.2$ eV below $E_c$ inside the gap. Is there an electron at $E_F$?`,
-        ['No: there are no states in the gap; $E_F$ is a statistical level that sets occupancy elsewhere', 'Yes, exactly half an electron on average', 'Yes, the donor electrons sit there', 'Only at 0 K'], 0,
+        ['no: there are no states in the gap', 'yes: half an electron on average', 'yes: the donor electrons sit there', 'only at 0 K, when it is sharp'], 0,
         [null, '$f = 1/2$ there, but there is no state to occupy.', 'Donor levels sit near $E_c$, not at $E_F$ in general.', 'The gap has no states at any temperature.'],
         md`$E_F$ is a parameter of the distribution, not a place where electrons live.`),
       RF(md`
@@ -610,7 +610,7 @@
         Moving $E_F$ trades electrons for holes one decade at a time, but the product stays fixed. The same law you got from generation–recombination balance in Topic 3 falls out of the statistics.
       `),
       Q(md`$E_F$ moves up by 60 meV. Which statement is right?`,
-        ['$n_0$ ×10, $p_0$ ÷10, $n_0p_0$ unchanged', '$n_0$ ×10, $p_0$ unchanged', 'both ×10', '$n_0$ ×2, $p_0$ ÷2'], 0,
+        ['$n_0$ ×10, $p_0$ ÷10', '$n_0$ ×10, $p_0$ unchanged', '$n_0$ ×10, $p_0$ ×10', '$n_0$ ×2, $p_0$ ÷2'], 0,
         [null, 'Moving $E_F$ away from $E_v$ shrinks the hole tail too.', 'They move in opposite directions.', 'The exponential gives a factor 10 per 60 meV, not 2.'],
         md`$kT\ln10 = 60$ meV is one decade for each carrier, in opposite directions.`),
       R(md`
@@ -619,7 +619,7 @@
         The tail formula needs $E_F$ at least about $3kT$ away from both band edges (**non-degenerate**). With very heavy doping (above roughly $10^{19}\,\text{cm}^{-3}$ in Si), $E_F$ nears or enters a band; the material is **degenerate** and behaves almost like a metal, and the exponential formulas overestimate $n$. At $T = 0$ the distribution is a sharp step: every state below $E_F$ full, every state above empty.
       `),
       Q(md`A heavily doped sample has $E_F$ $0.01$ eV **above** $E_c$. Using $n_0 = N_ce^{-(E_c - E_F)/kT}$ is…`,
-        ['not valid: the sample is degenerate, and $f$ is no longer a small tail at $E_c$', 'valid, giving $n_0 > N_c$ exactly', 'valid at any doping', 'valid only for holes'], 0,
+        ['invalid: the sample is degenerate', 'valid, giving $n_0 > N_c$ exactly', 'valid at any doping level', 'valid, but only for holes'], 0,
         [null, 'The formula assumes $f \\ll 1$ in the band, which fails here.', 'The Boltzmann tail is an approximation for $E - E_F \\gg kT$.', 'Holes would be negligible here anyway.'],
         md`Use the Boltzmann forms only when $E_F$ is a few $kT$ inside the gap.`),
     ],
@@ -633,7 +633,7 @@
         [null, 'Exactly at $E_F$ only.', 'That holds below $E_F$.', 'There is no thermal tail at 0 K.'],
         md`At 0 K $f$ is a step: 1 below $E_F$, 0 above.`),
       Q(md`$E_c - E_F$ is held fixed while the temperature rises. $n_0$…`,
-        ['rises: the tail broadens ($kT$ grows) and $N_c$ grows as $T^{3/2}$', 'is unchanged', 'falls', 'depends only on the doping'], 0,
+        ['rises: $kT$ and $N_c$ both grow', 'is unchanged: $E_c - E_F$ is fixed', 'falls: electrons spread to higher states', 'depends only on the doping'], 0,
         [null, 'Both $kT$ in the exponent and $N_c$ change.', 'Larger $kT$ makes the exponent less negative.', 'In this hypothetical the position of $E_F$ is fixed; the formula decides.'],
         md`$n_0 = N_c(T)\,e^{-(E_c - E_F)/kT}$: both factors increase with $T$.`),
       P({
@@ -655,7 +655,7 @@
         [null, 'That one is close to 1.', 'Only at $E_F$ itself.', 'That is exactly ½.'],
         md`$f(E_F + \Delta) = 1 - f(E_F - \Delta)$: the distribution is symmetric about $E_F$.`),
       Q(md`Material A has a heavier electron density-of-states mass than material B; everything else is equal, including $E_c - E_F$. A has…`,
-        ['more conduction electrons, because $N_c \\propto (m_n^*)^{3/2}$', 'fewer conduction electrons', 'the same number', 'no conduction electrons'], 0,
+        ['more conduction electrons', 'fewer conduction electrons', 'the same number of electrons', 'no conduction electrons at all'], 0,
         [null, 'Heavier mass means more states near the band edge, not fewer.', '$N_c$ differs.', 'The tail still reaches the band.'],
         md`More states per energy near $E_c$ means more electrons at the same occupancy.`),
       P({
@@ -673,12 +673,12 @@
         sol: md`$E - E_F = 0.3$ eV: $f = 1/(1 + e^{0.3/0.0259}) \approx e^{-11.58} = 9.3\times10^{-6}$.`,
       }),
       Q(md`In equilibrium, can $E_F$ be at different energies in two parts of a sample in contact?`,
-        ['No: electrons would flow toward the lower $E_F$ until it is flat', 'Yes, if the doping differs', 'Yes, at high temperature', 'Only in metals'], 0,
+        ['no: electrons flow until $E_F$ is flat', 'yes, if the doping differs between parts', 'yes, at high enough temperature', 'only in metals, never semiconductors'], 0,
         [null, 'Different doping changes where the bands are relative to $E_F$, not $E_F$ itself.', 'Temperature does not allow a net flow in equilibrium.', 'True for any materials in contact.'],
         md`Equal $E_F$ is what equilibrium means. Topic 7 builds on this.`),
       Q(md`The 60 mV per decade rule comes from…`,
-        ['$kT\\ln10$ at room temperature: the Boltzmann factor changes 10× per $0.0596$ eV', 'the band gap of silicon divided by 20', 'the donor binding energy', 'Ohm’s law'], 0,
-        [null, 'It is the same in every semiconductor at 300 K.', 'Unrelated.', 'Unrelated.'],
+        ['$kT\\ln 10$ at 300 K', '$E_g/20$ for silicon', 'the donor binding energy (~45 meV)', 'the thermal voltage $kT/q$ itself'], 0,
+        [null, 'It is the same in every semiconductor at 300 K.', '$kT$ is 26 meV; times $\\ln10 = 2.3$ gives 60 meV.', 'Unrelated.'],
         md`$e^{\Delta E/kT} = 10 \Rightarrow \Delta E = kT\ln10 = 0.0259\times2.303 = 0.0596$ eV. It scales with temperature.`),
     ],
   };

@@ -148,7 +148,7 @@
             ['That is the cube edge.', 'That is $a/\\sqrt2$, the fcc neighbor distance (same-sublattice atoms in diamond).', null, 'That is $a/2$.'], md`A quarter of the body diagonal: $\tfrac{\sqrt3}{4}a = 2.35$ Å.`),
           Q(md`GaAs crystallizes in which structure?`, ['diamond', 'zincblende', 'body-centered cubic', 'simple cubic'], 1,
             ['Diamond has one kind of atom on both sublattices.', null, 'No: each atom needs 4 tetrahedral bonds.', 'No: each atom needs 4 tetrahedral bonds.'], md`Zincblende: diamond geometry with Ga on one fcc sublattice and As on the other.`),
-          Q(md`A crystal's "basis" is…`, ['the set of lattice points', 'the atom or group of atoms placed at every lattice point', 'the unit cell', 'the lattice constant'], 1,
+          Q(md`A crystal's "basis" is…`, ['the set of lattice points itself', 'the atom group placed at each lattice point', 'the unit cell of the crystal', 'the lattice constant of the cell'], 1,
             ['That is the lattice.', null, 'The unit cell is the repeating box.', 'That is a length.'], md`Crystal = lattice + basis.`),
           Q(md`How many distinct (non-parallel) planes are in the family $\{100\}$ of a cube?`, ['1', '3', '6', '8'], 1,
             ['$\\{100\\}$ includes $(010)$ and $(001)$ too.', null, '6 counts $(100)$ and $(\\bar100)$ separately; they are parallel.', '8 is the $\\{111\\}$ count with signs.'], md`$(100), (010), (001)$; with negatives, the six faces.`),

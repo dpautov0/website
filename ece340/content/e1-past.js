@@ -4,6 +4,7 @@
   'use strict';
   const { R, P } = C;
   const FIX = (lbl, mc, a, why) => ({ lbl, mc, a, why, fixed: true });
+  const MC = (lbl, mc, a, why) => ({ lbl, mc, a, why });   // shuffled
   const N = (lbl, ans, unit, rel = 0.03) => ({ lbl, ans, unit, tol: { rel } });
 
   // ---------------------------------------------------------------- figures
@@ -92,11 +93,11 @@ A semiconductor in **equilibrium** has the band diagram below. Band gap $E_g = 1
       sol: md`The bands rise linearly: at $X = 0$, $E_c = E_F$ (so $E_i = E_F - 0.6$ eV); at $X = L/2$, $E_i = E_F$. So at $L/4$, $E_i$ is halfway between: $E_F - E_i = 0.3$ eV, which is above $E_i$: **n-type**.
 $$n = n_ie^{(E_F - E_i)/kT} = 10^{11}e^{0.3/0.026} = 10^{11}e^{11.54} = 1.03\times10^{16}\,\text{cm}^{-3}$$` }),
     P({ src: 'SP26 · 1c (6 pts)', q: md`(c) What is the approximate kinetic energy of the hole shown in the diagram?`,
-      parts: [FIX('', ['about 0 eV: it sits right at the valence-band edge', 'about $E_g/2 = 0.6$ eV', 'about $E_g = 1.2$ eV', 'about 0.3 eV, its height above $E_F$'], 0,
+      parts: [MC('', ['about 0 eV (at the band edge)', 'about 0.6 eV ($E_g/2$)', 'about 1.2 eV ($E_g$)', 'about 0.3 eV (height above $E_F$)'], 0,
         [null, 'Kinetic energy is measured from the band edge, not from midgap.', 'That is the gap, not the hole’s energy above its band edge.', 'Distance to $E_F$ is not kinetic energy.'])],
       sol: md`A hole's kinetic energy is its distance **below** $E_v$ at its own position (hole energy increases downward). The hole is drawn right on the $E_v$ line, so its kinetic energy is about **0 eV**: all its energy is potential energy ($E_v$ there). The slope of the bands is a force, not kinetic energy.` }),
     P({ src: 'SP26 · 1d (9 pts)', q: md`(d) If $L = 10\,\mu$m, what is the magnitude of the electric field inside the semiconductor? Which way does it point?`,
-      parts: [N('|\\mathscr{E}|', 1200, 'V/cm'), FIX('Direction', ['toward $+x$ (toward $X = L$, where the bands are higher)', 'toward $-x$', 'there is no field: $E_F$ is flat'], 0,
+      parts: [N('|\\mathscr{E}|', 1200, 'V/cm'), FIX('Direction', ['toward $+x$', 'toward $-x$', 'no field: $E_F$ is flat'], 0,
         [null, 'The field points the way the bands rise: $\\mathscr{E} = \\tfrac1q\\,dE_c/dx > 0$.', 'Flat $E_F$ means no current, not no field; the bands slope.'])],
       sol: md`$$\mathscr{E} = \frac1q\frac{dE_c}{dx} = \frac{1.2\,\text{eV}/q}{10\,\mu\text{m}} = \frac{1.2\,\text{V}}{10^{-3}\,\text{cm}} = 1.2\times10^{3}\,\text{V/cm}\ (= 1.2\times10^5\,\text{V/m})$$
 The bands rise by $E_g = 1.2$ eV from $E_c = E_F$ at $X = 0$ to $E_v = E_F$ at $X = L$. Dividing an energy in eV by $q$ gives volts directly; leaving it in joules per meter (the common mistake) is not a field. It points toward $+x$, the way the bands rise; electrons are pushed toward $-x$ (downhill on $E_c$).` }),
@@ -133,7 +134,7 @@ A uniformly doped n-type Si sample at 300 K: $N_D = 1.5\times10^{16}\,\text{cm}^
 
 **Low level**, because $\delta p = 1.5\times10^{14} \ll n_0 = 1.5\times10^{16}$. (It is enormous compared with $p_0 = 1.5\times10^4$, but that doesn't make it high level: low level means the excess is small next to the majority concentration, so the lifetime stays $1/\alpha_rn_0$.)` }),
     P({ src: 'SP26 · 3b (7 pts)', q: md`(b) The illumination is suddenly turned off at $t = 0$. Write the total hole concentration for $t > 0$, and evaluate it at $t = 15\,\mu$s.`,
-      parts: [FIX('p(t) =', [md`$1.5\times10^{4} + 1.5\times10^{14}\,e^{-t/15\,\mu\text{s}}\ \text{cm}^{-3}$`, md`$1.5\times10^{14}\,e^{-t/15\,\mu\text{s}}\ \text{cm}^{-3}$`, md`$1.5\times10^{4}\,e^{-t/15\,\mu\text{s}}\ \text{cm}^{-3}$`, md`$1.5\times10^{16} + 1.5\times10^{14}\,e^{-t/15\,\mu\text{s}}\ \text{cm}^{-3}$`], 0,
+      parts: [MC('p(t) =', [md`$1.5\times10^{4} + 1.5\times10^{14}\,e^{-t/15\,\mu\text{s}}\ \text{cm}^{-3}$`, md`$1.5\times10^{14}\,e^{-t/15\,\mu\text{s}}\ \text{cm}^{-3}$`, md`$1.5\times10^{4}\,e^{-t/15\,\mu\text{s}}\ \text{cm}^{-3}$`, md`$1.5\times10^{16} + 1.5\times10^{14}\,e^{-t/15\,\mu\text{s}}\ \text{cm}^{-3}$`], 0,
         [null, 'That is only the excess; the total includes $p_0$ (it never decays below $p_0$).', 'The excess decays, not the equilibrium part.', 'That adds the electron concentration.']), N('p(15\\,\\mu\\text{s})', 5.518e13, 'cm^{-3}', 0.05)],
       sol: md`Low level, so the excess decays exponentially with the minority lifetime: $p(t) = p_0 + \delta p(0)e^{-t/\tau_p}$, with $p_0 = n_i^2/N_D = 1.5\times10^4$:
 $$p(t) = 1.5\times10^4 + 1.5\times10^{14}e^{-t/15\,\mu\text{s}}\,\text{cm}^{-3}$$
@@ -166,8 +167,8 @@ A semiconductor in **equilibrium** has the band diagram below. Band gap $E_g = 1
     `),
     R(md`### Problem 1 (34 points)`),
     P({ src: 'F24 · 1a (6 pts)', q: md`(a) Explain the difference between metals, semiconductors and insulators, in words and figures. Pick the statement that captures it, then compare your sketch with the solution.`,
-      parts: [FIX('', ['metals have overlapping or partially filled bands; semiconductors have a full valence band and an empty conduction band separated by a small gap (≈1 eV) that heat, doping or light can bridge; insulators have the same filling with a much larger gap (≳5 eV)', 'metals have a small band gap, semiconductors a medium one, insulators no gap', 'semiconductors have partially filled bands; metals and insulators have full bands', 'the only difference is the number of electrons per atom'], 0,
-        [null, 'Metals have no gap at the Fermi level: their band is partly filled.', 'Reversed: semiconductors have full and empty bands at 0 K.', 'The band filling and gap size are what matter.'])],
+      parts: [MC('', ['metal: partly filled band · semiconductor: gap ≈ 1 eV · insulator: gap ≳ 5 eV', 'metal: small gap · semiconductor: medium gap · insulator: no gap at all', 'metal: full bands · semiconductor: partly filled band · insulator: full bands', 'metal: gap ≈ 1 eV · semiconductor: no gap · insulator: gap ≳ 5 eV'], 0,
+        [null, 'Metals have no gap at the Fermi level: their band is partly filled.', 'Reversed: semiconductors have full and empty bands at 0 K.', 'A metal has no gap at its Fermi level; that is why it conducts even at 0 K.'])],
       sol: md`(Streetman Fig. 3-4.) Draw three E–x pictures at 0 K:
 
 - **Metal**: a partly filled band (or overlapping bands), electrons up to $E_F$ with empty states right above: high conductivity at any temperature.
@@ -183,7 +184,7 @@ the largest gap gives the lowest intrinsic concentration: **clear**.` }),
 (i) p-type or n-type? (ii) the electron and hole densities. (iii) $E_F - E_i$ (take $E_i \approx E_g/2$), and whether the Boltzmann approximation is valid.`,
       parts: [FIX('(i) 6 pts', ['n-type', 'p-type', 'intrinsic'], 0, [null, 'Si on a Ga (group III) site has one extra electron: a donor, and 75% of the Si is there.', 'The donors outnumber the acceptors 3 to 1.']),
         N('n\\ (\\text{ii})', 1e16, 'cm^{-3}'), N('p\\ (\\text{ii})', 4e-4, 'cm^{-3}'), N('E_F - E_i\\ (\\text{iii})', 0.578, 'eV', 0.02),
-        FIX('Is the Boltzmann approximation valid?', ['yes: $E_c - E_F = 0.715 - 0.578 = 0.137$ eV ≈ 5kT > 3kT', 'no: $E_F$ is above $E_i$', 'no: GaAs never follows Boltzmann'], 0, [null, 'Being above $E_i$ is fine; what matters is the distance to $E_c$.', 'It does whenever $E_F$ is a few $kT$ inside the gap.'])],
+        MC('Is the Boltzmann approximation valid?', ['yes: $E_c - E_F \\approx 0.137$ eV ≈ 5kT', 'no: $E_F$ is above $E_i$, so it fails', 'no: GaAs never follows Boltzmann'], 0, [null, 'Being above $E_i$ is fine; what matters is the distance to $E_c$.', 'It does whenever $E_F$ is a few $kT$ inside the gap.'])],
       sol: md`(i) **n-type.** Si (column IV) on a Ga (column III) site has one extra electron: a **donor**. On an As (column V) site it is one short: an **acceptor**. 75% donors versus 25% acceptors leaves net donors.
 
 (ii) $N_D = 0.75\times2\times10^{16} = 1.5\times10^{16}$, $N_A = 0.25\times2\times10^{16} = 0.5\times10^{16}$:
@@ -220,12 +221,12 @@ A **direct-gap p-type** semiconductor: $E_g = 1.4$ eV, $\tau_n = \tau_p = 10$ ns
       sol: md`Check the photon: $1.24/0.87 = 1.43$ eV > 1.4 eV, so it is absorbed. Equilibrium: $p_0 = 10^{16}$, $n_0 = n_i^2/p_0 = 4\times10^{-4}\,\text{cm}^{-3}$. Excess: $\Delta n = \Delta p = g_{op}\tau = (10^{21})(10^{-8}) = 10^{13}$ (low level).
 $$n = n_0 + \Delta n \approx 10^{13}\,\text{cm}^{-3}, \qquad p = p_0 + \Delta p = 1.001\times10^{16} \approx 10^{16}\,\text{cm}^{-3}$$` }),
     P({ src: 'F24 · 3b (5 pts)', q: md`(b) The wavelength is changed to 1.6 μm with the same light power density. What are the optical generation rate and the steady-state excess concentration now?`,
-      parts: [FIX('', ['both zero: 0.78 eV photons are below the 1.4 eV gap', 'the same as in (a)', 'larger: there are more photons per watt at longer wavelength', 'half of (a)'], 0,
+      parts: [MC('', ['both zero: 0.78 eV photons are below the 1.4 eV gap', 'the same as in (a)', 'larger: there are more photons per watt at longer wavelength', 'half of (a)'], 0,
         [null, 'Below-gap photons are not absorbed band to band.', 'More photons per watt, yes, but none of them can be absorbed.', 'No.'])],
       sol: md`$h\nu = 1.24/1.6 = 0.78$ eV $< E_g = 1.4$ eV: the material is transparent at this wavelength, so $g_{op} = 0$ and $\Delta n = \Delta p = 0$.` }),
     R(md`**Carrier diffusion.** The same p-type sample ($N_A = 10^{16}$): electrons are injected continuously at $x = 0$ so that the excess there is $2\times10^{13}\,\text{cm}^{-3}$. $\tau_n = \tau_p = 10$ ns, $D_n = 25\,\text{cm}^2/\text{s}$, 300 K ($e \approx 2.72$).`),
     P({ src: 'F24 · 3c (4 pts)', q: md`(c) Which way do the electron diffusion **flux** and the electron diffusion **current** point?`, fig: f24Inject(),
-      parts: [FIX('', ['flux toward $+x$, current toward $-x$', 'flux toward $+x$, current toward $+x$', 'flux toward $-x$, current toward $+x$', 'both zero in steady state'], 0,
+      parts: [MC('', ['flux toward $+x$, current toward $-x$', 'flux toward $+x$, current toward $+x$', 'flux toward $-x$, current toward $+x$', 'both zero in steady state'], 0,
         [null, 'Electrons carry $-q$: their current is opposite to their flow.', 'Electrons flow away from the injection point, down their gradient.', 'Steady state still has a steady flow.'])],
       sol: md`The excess is largest at $x = 0$ and decays into the sample, so electrons diffuse toward **$+x$**. Being negative, they carry current toward **$-x$**: $J_n = qD_n\,dn/dx < 0$.` }),
     P({ src: 'F24 · 3d (12 pts)', q: md`(d) Calculate the electron diffusion current density at $x = 5\,\mu$m (magnitude; its direction is from part (c)).`,

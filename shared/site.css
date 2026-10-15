@@ -294,6 +294,7 @@ tr:last-child td { border-bottom: 0; }
 /* ---------- figures ---------- */
 .fig { margin: 12px 0 16px; overflow-x: auto; overflow-y: hidden; }
 .fig svg.schem, .fig svg.plot, .fig > svg { display: block; max-width: 100%; height: auto; margin: 0 auto; overflow: hidden; }
+.fig img.scan { display: block; width: 100%; height: auto; margin: 0 auto; background: #fff; border-radius: 12px; padding: 8px; box-sizing: border-box; }
 .fig figcaption { text-align: center; font-size: 14px; color: var(--dim); margin-top: 8px; line-height: 1.45; }
 .figrow { display: flex; flex-wrap: wrap; gap: 12px 28px; justify-content: center; align-items: flex-end; }
 .figrow > div { flex: 0 1 auto; min-width: 0; }

@@ -32,7 +32,7 @@
       const [what, R, ws] = pick([
         ['n-type Si is heated from the plateau toward the intrinsic region', 'moves down toward $E_i$', [['moves up toward $E_c$', 'More thermal pairs make it more intrinsic, not more n-type.'], ['stays fixed', '$N_c$ and $n_i$ grow with $T$, so the position changes.'], ['crosses below $E_i$', 'It approaches $E_i$ but never crosses in n-type.']]],
         ['p-type Si is heated from the plateau toward the intrinsic region', 'moves up toward $E_i$', [['moves down toward $E_v$', 'Heating makes it more intrinsic.'], ['stays fixed', 'It moves toward $E_i$.'], ['jumps above $E_i$', 'It never crosses in p-type.']]],
-        ['n-type Si is cooled into freeze-out', 'moves up, toward the donor level near $E_c$', [['moves down toward $E_i$', 'Cooling makes the material more extrinsic, not less.'], ['stays at $E_i$', 'It is n-type.'], ['moves into the valence band', 'Wrong direction.']]],
+        ['n-type Si is cooled into freeze-out', 'moves up, toward $E_d$', [['moves down toward $E_i$', 'Cooling makes the material more extrinsic, not less.'], ['stays where it was at 300 K', 'Cooling shifts the balance between band and donors, so it moves.'], ['moves into the valence band', 'Wrong direction.']]],
       ]);
       return MC('E_F with temperature', md`${what}. Its Fermi level…`, R, ws, md`Hot: everything heads to $E_i$ (intrinsic). Cold n-type: electrons sit on donors, so $E_F$ sits near $E_d$.`);
     },
@@ -48,8 +48,8 @@
         [[b, 'The larger gap holds out longer.'], ['both at once', '$n_i$ depends exponentially on $E_g$.'], ['neither ever does', 'Every semiconductor does when hot enough.']],
         md`Smaller gap, larger $n_i$ at every temperature: Ge 0.67 < Si 1.12 < GaAs 1.43 < SiC 3.3 eV.`);
     },
-    () => MC('Freeze-out', md`At 20 K, n-type Si barely conducts. Why?`, 'the donors keep their electrons: $kT \\approx 1.7$ meV ≪ 45 meV',
-      [['the mobility is zero', 'Mobility is fine; there are just few free carriers.'], ['the gap closes', 'The gap gets slightly larger when cold.'], ['the donors turn into acceptors', 'No.']],
+    () => MC('Freeze-out', md`At 20 K, n-type Si barely conducts. Why?`, 'freeze-out: donors keep their electrons',
+      [['the mobility drops to zero when cold', 'Mobility is fine; there are just few free carriers.'], ['the band gap closes up when cold', 'The gap gets slightly larger when cold.'], ['the donors turn into acceptors', 'A dopant’s type doesn’t change with temperature.']],
       md`Freeze-out: thermal energy can't ionize even shallow donors.`),
   ]);
 
@@ -58,7 +58,7 @@
       const [Nd, Na] = pick([[5, 2], [3, 1], [8, 6], [2, 5], [1, 4], [6, 9], [4, 4]]);
       const k = ri(15, 17), diff = Nd - Na;
       const T = (m) => p10(m, k);
-      const R = diff > 0 ? `n-type, $n_0 \\approx ${T(diff)}$` : diff < 0 ? `p-type, $p_0 \\approx ${T(-diff)}$` : 'compensated: $n_0 \\approx p_0 \\approx n_i$';
+      const R = diff > 0 ? `n-type, $n_0 \\approx ${T(diff)}$` : diff < 0 ? `p-type, $p_0 \\approx ${T(-diff)}$` : 'compensated ($n_0 \\approx n_i$)';
       return MC('Who wins?', md`Si has $N_d = ${T(Nd)}$ and $N_a = ${T(Na)}\,\text{cm}^{-3}$ (all ionized, 300 K). The sample is…`, R,
         [[`n-type, $n_0 \\approx ${T(Nd + Na)}$`, 'Acceptors take donor electrons; they don’t add to them.'], [`${diff >= 0 ? 'n-type' : 'p-type'}, $${diff >= 0 ? 'n_0' : 'p_0'} \\approx ${T(Math.max(Nd, Na))}$`, 'Subtract the other dopant: each acceptor swallows one donor electron.'], [diff > 0 ? `p-type, $p_0 \\approx ${T(diff)}$` : `n-type, $n_0 \\approx ${T(Math.abs(diff) || 1)}$`, 'The larger dopant sets the type.'], ['compensated: $n_0 \\approx p_0 \\approx n_i$', 'Only when $N_d = N_a$.']],
         md`Net doping $|N_d - N_a| = ${diff === 0 ? '0' : T(Math.abs(diff))}$.`);
@@ -126,8 +126,8 @@
     },
     () => {
       const m = pick([10, 100]);
-      return MC('Doping and resistivity', md`The doping of an n-type bar is raised ${m}× (still moderate doping). Its resistivity…`, `drops by somewhat less than ${m}× (mobility falls a little)`,
-        [[`rises ${m}×`, 'More carriers, lower resistivity.'], [`drops exactly ${m * m}×`, '$\\rho = 1/(qn\\mu)$ is linear in $n$.'], ['is unchanged', 'Carriers changed a lot.']],
+      return MC('Doping and resistivity', md`The doping of an n-type bar is raised ${m}× (still moderate doping). Its resistivity…`, `drops a bit less than ${m}×`,
+        [[`rises ${m}× (more scattering)`, 'More carriers, lower resistivity.'], [`drops ${m * m}× (n and μ both)`, '$\\rho = 1/(qn\\mu)$ is linear in $n$.'], ['is unchanged (μ compensates)', 'Carriers changed a lot.']],
         md`$\rho = 1/(qN_d\mu_n)$; $\mu_n$ falls slowly with doping.`);
     },
     () => {
@@ -166,13 +166,13 @@
     () => {
       const [cond, R, ws] = pick([
         ['Lightly doped Si is heated from 300 K to 400 K', 'decreases: lattice scattering grows', [['increases: impurity scattering fades', 'With few impurities, the lattice dominates.'], ['stays the same', '$\\mu_L \\propto T^{-3/2}$.']]],
-        ['Heavily doped Si is warmed from 50 K to 100 K', 'increases: faster carriers are deflected less by the ions', [['decreases: lattice scattering grows', 'At low $T$ and high doping, impurity scattering dominates.'], ['stays the same', '$\\mu_I \\propto T^{3/2}$.']]],
-        ['Doping is raised from $10^{15}$ to $10^{18}$ at 300 K', 'decreases: many more ionized impurities', [['increases', 'More ions, more scattering.'], ['stays the same', 'Impurity scattering grows with $N_I$.']]],
+        ['Heavily doped Si is warmed from 50 K to 100 K', 'increases: ions deflect fast carriers less', [['decreases: lattice scattering grows', 'At low $T$ and high doping, impurity scattering dominates.'], ['stays the same: doping is fixed', '$\\mu_I \\propto T^{3/2}$.']]],
+        ['Doping is raised from $10^{15}$ to $10^{18}$ at 300 K', 'decreases: many more ionized impurities', [['increases: more carriers share the work', 'More ions, more scattering.'], ['stays the same: lattice-limited', 'Impurity scattering grows with $N_I$.']]],
       ]);
       return MC('Mobility trends', md`${cond}. The mobility…`, R, ws.concat([['drops to zero', 'Never.']]), md`$\mu_L \propto T^{-3/2}$, $\mu_I \propto T^{3/2}/N_I$; the smaller one dominates.`);
     },
-    () => MC('Saturation', md`The field across a short Si channel rises from $10^3$ to $10^5$ V/cm. The electron velocity rises about…`, 'from $1.35\\times10^6$ cm/s to about $10^7$ cm/s, far less than 100×',
-      [['100×, to $1.35\\times10^8$ cm/s', 'Above about $10^4$ V/cm the velocity saturates.'], ['not at all', 'It rises until it saturates.'], ['1000×', 'No.']],
+    () => MC('Saturation', md`The field across a short Si channel rises from $10^3$ to $10^5$ V/cm. The electron velocity rises about…`, 'only ~7×, to about $10^7$ cm/s',
+      [['100×, to $1.35\\times10^8$ cm/s', 'Above about $10^4$ V/cm the velocity saturates.'], ['not at all: it is already saturated', 'It rises until it saturates.'], ['1000×, as hot carriers run away', 'Velocity saturates; it doesn’t run away.']],
       md`Optical-phonon emission caps $v$ near $10^7$ cm/s.`),
     () => {
       const pos = Math.random() < 0.5;
@@ -180,8 +180,8 @@
         [[pos ? 'n-type' : 'p-type', 'Both carrier types are pushed to the same face; the sign of the charge there is the carrier sign.'], ['intrinsic', 'Then the Hall voltage would be near zero.'], ['undeterminable', 'The Hall sign tells you directly.']],
         md`$q\vec v\times\vec B$ is the same for holes (moving $+x$) and electrons (moving $-x$): both go to $-y$. A ${pos ? 'positive' : 'negative'} face means ${pos ? 'holes' : 'electrons'}.`);
     },
-    () => MC('Why holes are slower', md`In Si, $\mu_n \approx 1350$ but $\mu_p \approx 480\,\text{cm}^2/\text{V·s}$. The main reason is…`, 'holes respond with a larger effective mass',
-      [['holes are positive', 'Charge sign doesn’t set mobility.'], ['there are fewer holes', 'Mobility is per carrier.'], ['holes don’t scatter', 'They do.']],
+    () => MC('Why holes are slower', md`In Si, $\mu_n \approx 1350$ but $\mu_p \approx 480\,\text{cm}^2/\text{V·s}$. The main reason is…`, 'holes have a larger effective mass',
+      [['holes carry positive charge', 'Charge sign doesn’t set mobility.'], ['there are fewer holes in Si', 'Mobility is per carrier.'], ['holes scatter off every bond', 'Scattering is similar; the mass is the difference.']],
       md`$\mu = q\bar t/m^*$.`),
   ]);
 
@@ -226,8 +226,8 @@
   GENS.rf_contact = () => one([
     () => {
       const m = ri(1, 4), d = e(0.06 * m);
-      return MC('Before and after contact', md`Before contact, sample A's $E_F$ is ${d} eV **above** sample B's. After they touch and reach equilibrium…`, `electrons flowed A → B; A is left positive; the bands step by ${d} eV`,
-        [[`electrons flowed B → A; A is negative`, 'Electrons flow toward the lower $E_F$.'], ['nothing happens: they are separate materials', 'Contact lets charge flow.'], [`electrons flowed A → B; the bands step by ${e(0.12 * m)} eV`, 'The step equals the original $E_F$ difference.']],
+      return MC('Before and after contact', md`Before contact, sample A's $E_F$ is ${d} eV **above** sample B's. After they touch and reach equilibrium…`, `A → B; A ends positive; step ${d} eV`,
+        [[`B → A; A ends negative; step ${d} eV`, 'Electrons flow toward the lower $E_F$.'], ['no flow: they are separate materials', 'Contact lets charge flow.'], [`A → B; A ends positive; step ${e(0.12 * m)} eV`, 'The step equals the original $E_F$ difference.']],
         md`Flow stops when $E_F$ is flat; the charge moved sets up a step $qV_0 = ${d}$ eV.`);
     },
     () => {
@@ -245,9 +245,9 @@
     },
     () => {
       const [ch, R, W] = pick([
-        ['Both sides of a Si p–n junction are doped 10× more heavily.', 'larger, by about 0.12 eV', [['smaller', 'Heavier doping pushes each $E_F$ toward its band.'], ['unchanged', 'Each side moves 0.06 eV.']]],
+        ['Both sides of a Si p–n junction are doped 10× more heavily.', 'larger, by about 0.12 eV', [['smaller, by about 0.12 eV', 'Heavier doping pushes each $E_F$ toward its band.'], ['unchanged: the ratios cancel', 'Each side moves 0.06 eV.']]],
         ['A Ge junction is made with the same doping as a Si one.', 'smaller in Ge', [['larger in Ge', 'Ge’s larger $n_i$ puts each $E_F$ nearer midgap.'], ['equal', '$n_i$ enters the formula.']]],
-        ['Both sides are doped to near degeneracy.', 'close to $E_g/q$, its upper limit', [['far above $E_g/q$', 'Each $E_F$ can only reach its band edge.'], ['zero', 'Heavier doping increases it.']]],
+        ['Both sides are doped to near degeneracy.', 'close to $E_g/q$, its upper limit', [['far above $E_g/q$, with no limit', 'Each $E_F$ can only reach its band edge.'], ['zero: degenerate means metallic', 'Heavier doping increases it.']]],
       ]);
       return MC('Built-in potential trends', md`${ch} The built-in potential is…`, R, W.concat([['negative', 'The n side is always at higher potential.']]),
         md`$qV_0 = kT\ln(N_aN_d/n_i^2) \le E_g$ roughly.`);
@@ -255,17 +255,17 @@
   ]);
 
   GENS.rf_eq = () => one([
-    () => MC('Equilibrium currents', md`In an unbiased p–n junction, the electron **diffusion** current is…`, 'large, but cancelled by an equal and opposite electron drift current',
-      [['zero', 'There is a big gradient, so there is diffusion.'], ['cancelled by the hole diffusion current', 'Each carrier balances separately.'], ['the total current', 'The total is zero.']],
+    () => MC('Equilibrium currents', md`In an unbiased p–n junction, the electron **diffusion** current is…`, 'cancelled by the electron drift current',
+      [['zero, since there is no bias', 'There is a big gradient, so there is diffusion.'], ['cancelled by the hole diffusion current', 'Each carrier balances separately.'], ['equal to the total current', 'The total is zero.']],
       md`Drift and diffusion cancel separately for each carrier.`),
-    () => MC('A tilted Fermi level', md`A band diagram shows $E_F$ sloping across a sample. This means…`, 'current is flowing: the sample is not in equilibrium',
+    () => MC('A tilted Fermi level', md`A band diagram shows $E_F$ sloping across a sample. This means…`, 'a current is flowing',
       [['the doping varies', 'Varying doping bends the bands; $E_F$ stays flat at equilibrium.'], ['nothing special', 'A tilted $E_F$ always drives current.'], ['the temperature varies', 'Not what the slope shows.']],
       md`$J_n = \mu_nn\,dE_F/dx$.`),
     () => MC('A voltmeter on a junction', md`A voltmeter is connected across an unbiased p–n junction in the dark. It reads…`, '0 V',
       [['$V_0$', 'The contact steps around the loop cancel it.'], ['$E_g/q$', 'No.'], ['$kT/q$', 'No.']],
       md`Flat $E_F$ everywhere: no net voltage around a circuit at equilibrium.`),
-    () => MC('Bent bands', md`Across a junction the bands bend. The band gap inside the bent region is…`, 'unchanged: all levels shift together with the potential',
-      [['smaller', 'The gap is a material property.'], ['larger', 'Same material, same gap.'], ['zero at the center', 'No.']],
+    () => MC('Bent bands', md`Across a junction the bands bend. The band gap inside the bent region is…`, 'unchanged: all levels shift together',
+      [['smaller where the bands bend most', 'The gap is a material property.'], ['larger, due to the built-in field', 'Same material, same gap.'], ['zero at the junction center', 'The gap never closes; it is a material property.']],
       md`$E_c$, $E_i$, $E_v$ all follow $-qV(x)$.`),
     () => {
       const [dir, R] = pick([['higher', 'toward the lower-$E_F$ side'], ['lower', 'toward this side']]);
@@ -281,8 +281,8 @@
     () => {
       const [l, E] = pick([[0.31, 4.0], [0.41, 3.02], [0.5, 2.48], [0.62, 2.0], [0.83, 1.49], [1.0, 1.24], [1.3, 0.95], [1.55, 0.8], [2.0, 0.62]]);
       const m = pick(Object.keys(MAT)), abs = E >= MAT[m];
-      return MC('Absorbed or not?', md`Light at $\lambda = ${l}\,\mu$m falls on ${m} ($E_g = ${MAT[m]}$ eV). Band-to-band, it is…`, abs ? 'absorbed, making electron–hole pairs' : 'transmitted: the photon is below the gap',
-        [[abs ? 'transmitted' : 'absorbed', `$h\\nu = 1.24/${l} = ${E.toFixed(2)}$ eV; compare with $E_g = ${MAT[m]}$ eV.`], ['absorbed, two pairs per photon', 'One pair per photon.'], ['reflected completely', 'Some reflection, but not all.']],
+      return MC('Absorbed or not?', md`Light at $\lambda = ${l}\,\mu$m falls on ${m} ($E_g = ${MAT[m]}$ eV). Band-to-band, it is…`, abs ? 'absorbed, making pairs' : 'transmitted: below the gap',
+        [[abs ? 'transmitted: below the gap' : 'absorbed, making pairs', `$h\\nu = 1.24/${l} = ${E.toFixed(2)}$ eV; compare with $E_g = ${MAT[m]}$ eV.`], ['absorbed, two pairs per photon', 'One pair per photon.'], ['reflected completely at the surface', 'Some reflection, but not all.']],
         md`$h\nu = 1.24/${l} = ${E.toFixed(2)}$ eV ${abs ? '≥' : '<'} ${MAT[m]} eV.`);
     },
     () => {
@@ -341,12 +341,12 @@
     },
     () => {
       const k = pick([2, 4, 10]);
-      return MC('Absorption depth', md`At a shorter wavelength, $\alpha$ is ${k}× larger. The absorption depth $1/\alpha$…`, `shrinks ${k}×: light is absorbed closer to the surface`,
+      return MC('Absorption depth', md`At a shorter wavelength, $\alpha$ is ${k}× larger. The absorption depth $1/\alpha$…`, `shrinks ${k}×`,
         [[`grows ${k}×`, 'Larger $\\alpha$ means faster decay.'], ['is unchanged', '$1/\\alpha$ depends on $\\alpha$.'], [`shrinks ${k * k}×`, 'Linear in $1/\\alpha$.']],
         md`Blue light ($\alpha$ large) is absorbed within a fraction of a μm in Si; red penetrates several μm.`);
     },
-    () => MC('Below the gap', md`Why is $\alpha$ essentially zero for photons below the band gap?`, 'there are no empty states for the electron to land in: the gap has none',
-      [['the photons are too fast', 'Speed isn’t the issue.'], ['the material reflects them all', 'Below-gap light passes through: transparent.'], ['the electrons are all bound to donors', 'No.']],
+    () => MC('Below the gap', md`Why is $\alpha$ essentially zero for photons below the band gap?`, 'no states in the gap to land in',
+      [['the photons are too fast to catch', 'Speed isn’t the issue.'], ['the material reflects them all', 'Below-gap light passes through: transparent.'], ['the electrons are all bound to donors', 'Valence electrons could absorb; they lack a final state.']],
       md`Band-to-band absorption needs an empty state at $E + h\nu$.`),
   ]);
 

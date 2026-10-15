@@ -9,6 +9,7 @@
   const fx = (x, n = 3) => S.f(x, n);
   const T = (o) => Object.assign({ tol: { rel: 0.02 } }, o);
   const FIXED = (q, mc, a, why) => ({ lbl: q, mc, a, why, fixed: true });
+  const MIXED = (q, mc, a, why) => ({ lbl: q, mc, a, why });   // options shuffled
 
   // ------------------------------------------------------------------ two samples joined (HW4 problem 3)
   GENS.ex_contact = (o = {}) => {
@@ -64,7 +65,7 @@ An electron with the total energy of $E_{c2}$ sits $${v.toFixed(2)}$ eV above $E
       q: md`p-type Si at 300 K, $N_a = ${S.p(Na)}\,\text{cm}^{-3}$, $\tau_n = \tau_p = ${S.p(tau)}$ s.`,
       parts: [
         T({ lbl: '\\text{thermal-equilibrium recombination rate}\\ (\\text{cm}^{-3}\\text{s}^{-1})', ans: r }),
-        FIXED('Is the equilibrium recombination rate of holes the same as that of electrons?', ['yes: each event removes one electron and one hole', 'no: holes recombine faster', 'no: electrons recombine faster'], 0, [null, 'Recombination always removes pairs.', 'Pairs.']),
+        MIXED('Is the equilibrium recombination rate of holes the same as that of electrons?', ['yes: one of each per event', 'no: holes recombine faster', 'no: electrons recombine faster'], 0, [null, 'Recombination always removes pairs.', 'Pairs.']),
         FIXED(`Under steady light, $\\delta n = \\delta p = ${S.p(d)}$. This is…`, ['low-level injection', 'high-level injection'], low ? 0 : 1, low ? [null, `$\\delta = ${S.p(d)}$ is well below $p_0 = ${S.p(Na)}$.`] : [`$\\delta = ${S.p(d)}$ exceeds $p_0 = ${S.p(Na)}$.`, null]),
         T({ lbl: 'g_{op}\\ \\text{needed (low level)}\\ (\\text{cm}^{-3}\\text{s}^{-1})', ans: d / tau }),
       ],

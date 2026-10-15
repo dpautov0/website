@@ -117,8 +117,8 @@
         [[kind === 'insulator' ? 'a semiconductor' : 'an insulator', kind === 'insulator' ? `A ${g} eV gap is hundreds of $kT$: essentially no electrons cross.` : `A ${g} eV gap is small enough for some thermal excitation and for doping to work.`], ['a metal', 'A metal needs a partly filled band; this one is full.'], ['a superconductor', 'Not a band-filling category.']],
         kind === 'insulator' ? md`A ${g} eV gap (${g === '9' ? 'like SiO₂' : 'like diamond'}) is far too big for thermal excitation or doping to give useful conduction.` : md`Full band plus a gap of a few eV or less: a semiconductor. Heat lifts a few electrons across and doping works.`);
     },
-    () => MC('What kind of solid?', md`Each atom gives one electron to a band that holds two per atom. The solid is…`, 'a metal: the band is half full',
-      [['an insulator', 'Only a completely full band (plus a gap) insulates.'], ['a semiconductor', 'A partly filled band conducts at any temperature.'], ['impossible to tell', 'Half filling decides it.']],
+    () => MC('What kind of solid?', md`Each atom gives one electron to a band that holds two per atom. The solid is…`, 'a metal (half-filled band)',
+      [['an insulator (filled band)', 'Only a completely full band (plus a gap) insulates.'], ['a semiconductor (small gap)', 'A partly filled band conducts at any temperature.'], ['impossible to tell from this', 'Half filling decides it.']],
       md`Half-filled band: empty states right next to filled ones, so a field moves electrons easily (sodium, copper).`),
     () => {
       const m = pick([1, 2, 3, 4]), dE = (0.12 * m).toFixed(2);
@@ -134,8 +134,8 @@
     },
     () => {
       const metal = Math.random() < 0.5;
-      return MC('Heating a solid', md`A ${metal ? 'metal' : 'pure semiconductor'} is heated from 300 K to 400 K. Its conductivity…`, metal ? 'falls: more lattice scattering, same number of carriers' : 'rises sharply: many more carriers across the gap',
-        [[metal ? 'rises: more carriers' : 'falls: more lattice scattering', metal ? 'A metal’s carrier count is fixed by its partly filled band.' : 'Mobility does fall, but the carrier count grows hundreds of times.'], ['stays exactly the same', 'Both mobility and (for semiconductors) carrier count depend on T.'], ['drops to zero', 'No.']],
+      return MC('Heating a solid', md`A ${metal ? 'metal' : 'pure semiconductor'} is heated from 300 K to 400 K. Its conductivity…`, metal ? 'falls: more lattice scattering' : 'rises sharply: many more carriers',
+        [[metal ? 'rises: more carriers are freed' : 'falls: more lattice scattering', metal ? 'A metal’s carrier count is fixed by its partly filled band.' : 'Mobility does fall, but the carrier count grows hundreds of times.'], ['stays the same: carriers are fixed', 'Both mobility and (for semiconductors) carrier count depend on T.'], ['drops to zero above 350 K', 'Conductivity changes gradually.']],
         md`${metal ? 'Metal: fixed carriers, falling mobility.' : 'Semiconductor: $n_i \\propto e^{-E_g/2kT}$ wins over the mobility drop.'}`);
     },
     () => {
@@ -160,16 +160,16 @@
         [['0', hole ? 'Only a hole right at $E_v$ has zero kinetic energy; hole energy increases downward.' : 'Only an electron right at $E_c$ has zero kinetic energy.'], [`${(1.12 + x).toFixed(2)} eV`, 'Measure from the band edge, not across the gap.'], [`−${x} eV`, 'Kinetic energy is positive.']],
         md`${hole ? '$E_v$ is a hole’s potential energy; the distance below it is kinetic.' : '$E_c$ is an electron’s potential energy; the distance above it is kinetic.'} It will relax to the band edge in about a picosecond, giving that energy to the lattice.`);
     },
-    () => MC('Full bands', md`A band is **completely full**. A field is applied. The current carried by this band is…`, 'zero: every state is taken, so the field cannot unbalance the velocities',
-      [['large: it has many electrons', 'Many electrons, but for each one moving one way another moves the other way, and none can change state.'], ['small but nonzero', 'Exactly zero.'], ['carried by holes', 'A full band has no holes.']],
+    () => MC('Full bands', md`A band is **completely full**. A field is applied. The current carried by this band is…`, 'zero: velocities stay balanced',
+      [['large: it has many electrons', 'Many electrons, but for each one moving one way another moves the other way, and none can change state.'], ['small, from the fastest electrons', 'Exactly zero.'], ['carried by the band’s holes', 'A full band has no holes.']],
       md`Conduction needs empty states next to filled ones.`),
-    () => MC('What is a hole?', md`The valence band is missing one electron. That band then carries current as if it held…`, 'one particle of charge $+q$ moving with the field',
-      [['one extra electron', 'An absence of an electron acts as positive charge.'], ['no current at all', 'One empty state lets electrons move.'], ['a positive ion', 'Ions are fixed; the hole moves.']],
+    () => MC('What is a hole?', md`The valence band is missing one electron. That band then carries current as if it held…`, 'one $+q$ particle moving with the field',
+      [['one extra electron moving against it', 'An absence of an electron acts as positive charge.'], ['no current: the band is nearly full', 'One empty state lets electrons move.'], ['a positive ion drifting with the field', 'Ions are fixed; the hole moves.']],
       md`Tracking the one empty state is equivalent to tracking all the electrons: a $+q$ particle with positive mass.`),
     () => {
       const [a, b] = pick([[0.1, 0.3], [0.05, 0.2], [0.2, 0.4]]);
       return MC('Hole energy direction', md`Hole A sits ${a} eV below $E_v$, hole B ${b} eV below. Which has more energy, and which way will each move in energy?`, 'B; both float up toward $E_v$',
-        [['A; both sink deeper', 'Hole energy increases downward, and holes relax upward to $E_v$.'], ['equal energies', 'They are at different depths.'], ['B; both sink deeper', 'Holes float up, like bubbles.']],
+        [['A; both float up toward $E_v$', 'Hole energy increases downward: B, the deeper one, has more.'], ['equal; both float up toward $E_v$', 'They are at different depths.'], ['B; both sink deeper', 'Holes float up, like bubbles.']],
         md`A hole deeper in the band has more energy; it gives it to the lattice and rises to $E_v$.`);
     },
   ]);
@@ -190,7 +190,7 @@
     () => {
       const direct = Math.random() < 0.5;
       return MC('Direct or indirect?', direct ? md`A material's conduction-band minimum and valence-band maximum are **both at** $k = 0$. As a light emitter it is…` : md`A material's conduction-band minimum is at a **large** $k$, while the valence-band maximum is at $k = 0$. As a light emitter it is…`,
-        direct ? 'efficient: direct gap, electrons drop straight down and emit photons' : 'poor: indirect gap, emission needs a phonon too',
+        direct ? 'efficient: direct gap' : 'poor: needs a phonon too',
         [[direct ? 'poor: needs a phonon' : 'efficient: direct gap', direct ? 'Same $k$: no phonon needed.' : 'Different $k$: momentum must be supplied by a phonon.'], ['unable to absorb light at all', 'Both kinds absorb above the gap.'], ['efficient only when cold', 'Temperature is not the deciding factor.']],
         md`Photons carry almost no momentum, so efficient emission needs the band extrema at the same $k$ (GaAs yes, Si no).`);
     },
@@ -201,8 +201,8 @@
         [[`B, by a factor of ${r}`, 'A steeper parabola means a lighter carrier.'], [`A, by a factor of ${r * r}`, '$E = \\hbar^2k^2/2m^*$: at the same $k$, $E \\propto 1/m^*$.'], ['they are equally heavy', 'Different rise at the same $k$ means different mass.']],
         md`$E = \hbar^2k^2/2m^*$: at equal $k$, $E_A/E_B = m_B^*/m_A^* = ${r}$.`);
     },
-    () => MC('Why vertical transitions?', md`Why does a photon emitted or absorbed by an electron connect two states at (almost) the **same** $k$?`, 'a photon’s momentum is about a thousand times smaller than typical crystal momenta',
-      [['photons have no energy', 'They carry $h\\nu$.'], ['electrons can’t change $k$', 'Phonons and fields change it easily.'], ['the band gap forbids it', 'The gap sets the energy, not the momentum.']],
+    () => MC('Why vertical transitions?', md`Why does a photon emitted or absorbed by an electron connect two states at (almost) the **same** $k$?`, 'photon momentum is ~1000× too small to matter',
+      [['photons carry no energy, only momentum', 'They carry $h\\nu$.'], ['electrons can’t change $k$ in a crystal', 'Phonons and fields change it easily.'], ['the band gap forbids any other transition', 'The gap sets the energy, not the momentum.']],
       md`$k_{photon} \approx 2\pi/\lambda \sim 10^5\,\text{cm}^{-1}$ versus $\pi/a \sim 10^8\,\text{cm}^{-1}$.`),
   ]);
 
@@ -210,9 +210,9 @@
   GENS.rf_dope = () => one([
     () => {
       const [x, g, t] = pick([['P', 'V', 'n'], ['As', 'V', 'n'], ['Sb', 'V', 'n'], ['B', 'III', 'p'], ['Al', 'III', 'p'], ['Ga', 'III', 'p'], ['In', 'III', 'p'], ['Ge', 'IV', '0'], ['C', 'IV', '0']]);
-      const R = { n: 'n-type (donor)', p: 'p-type (acceptor)', 0: 'neither: same valence as Si' };
+      const R = { n: 'n-type (donor)', p: 'p-type (acceptor)', 0: 'neither (group IV)' };
       return MC('Which type?', md`Silicon is doped with **${x}** (group ${g}). It becomes…`, R[t],
-        Object.keys(R).filter((k) => k !== t).map((k) => [R[k], { n: 'A donor needs one more valence electron than Si (group V).', p: 'An acceptor needs one fewer (group III).', 0: `Group ${g} differs from Si’s group IV.` }[k]]).concat([['a metal', 'Doping at normal levels keeps it a semiconductor.']]),
+        Object.keys(R).filter((k) => k !== t).map((k) => [R[k], { n: 'A donor needs one more valence electron than Si (group V).', p: 'An acceptor needs one fewer (group III).', 0: `Group ${g} differs from Si’s group IV.` }[k]]).concat([['metallic (degenerate)', 'Doping at normal levels keeps it a semiconductor.']]),
         md`Group V gives a spare electron (donor), group III is one short (acceptor), group IV changes nothing.`);
     },
     () => {
@@ -224,7 +224,7 @@
     () => {
       const k = ri(13, 18), n = Math.random() < 0.5;
       const [M, m] = n ? ['n_0', 'p_0'] : ['p_0', 'n_0'];
-      return MC('Minority from majority', md`Si at 300 K ($n_i = ${NI}$) has $${M} = 10^{${k}}\,\text{cm}^{-3}$. Then $${m}$ is…`, `$${p10(2.25, 20 - k)}\,\text{cm}^{-3}$`,
+      return MC('Minority from majority', md`Si at 300 K ($n_i = ${NI}$) has $${M} = 10^{${k}}\,\text{cm}^{-3}$. Then $${m}$ is…`, `$${p10(2.25, 20 - k)}\\,\\text{cm}^{-3}$`,
         [[`$${pow(k)}\\,\\text{cm}^{-3}$`, 'Equal numbers only when intrinsic.'], [`$${NI}\\,\\text{cm}^{-3}$`, 'That is intrinsic; the majority suppresses the minority.'], [`$${p10(2.25, 20 - k + 1)}\\,\\text{cm}^{-3}$`, 'Off by ten.'], [`$${p10(1.5, 10 - k)}\\,\\text{cm}^{-3}$`, 'Square $n_i$: $n_i^2 = 2.25\\times10^{20}$.']],
         md`$${m} = n_i^2/${M} = 2.25\times10^{20}/10^{${k}}$.`);
     },
@@ -238,19 +238,19 @@
       const k = ri(14, 17), c = pick(['eq', 'eq', 'more', 'less']);
       const pEq = 2.25e20 / Math.pow(10, k);
       const pv = c === 'eq' ? pEq : c === 'more' ? pEq * Math.pow(10, ri(3, 6)) : pEq / Math.pow(10, ri(2, 3));
-      const R = { eq: 'it is in equilibrium: $np = n_i^2$', more: 'it has excess carriers ($np > n_i^2$): light or injection', less: 'carriers have been removed ($np < n_i^2$): net generation will refill them' };
+      const R = { eq: 'equilibrium ($np = n_i^2$)', more: 'excess carriers ($np > n_i^2$)', less: 'carriers removed ($np < n_i^2$)' };
       return MC('Equilibrium or not?', md`A Si sample at 300 K has $n = 10^{${k}}$ and $p = ${S.f(pv, 2)}\,\text{cm}^{-3}$. What can you say?`, R[c],
-        Object.keys(R).filter((x) => x !== c).map((x) => [R[x], 'Multiply: compare $np$ with $n_i^2 = 2.25\\times10^{20}$.']).concat([['it is impossible', 'Any $n$ and $p$ can exist out of equilibrium.']]),
+        Object.keys(R).filter((x) => x !== c).map((x) => [R[x], 'Multiply: compare $np$ with $n_i^2 = 2.25\\times10^{20}$.']).concat([['impossible ($np \\ne n_i^2$)', 'Any $n$ and $p$ can exist out of equilibrium.']]),
         md`$np = ${S.f(Math.pow(10, k) * pv, 2)}$ against $n_i^2 = 2.25\times10^{20}$.`);
     },
   ]);
 
   GENS.rf_ionize = () => one([
-    () => MC('Is doped Si charged?', md`A piece of n-type silicon sits on the bench. Its overall charge is…`, 'zero: each free electron is balanced by a fixed donor ion',
-      [['negative: it has extra electrons', 'Extra relative to the bonds, not to the nuclei.'], ['positive: donors are positive', 'Their charge is balanced by the electrons they gave.'], ['negative only when warm', 'Neutral at every temperature.']],
+    () => MC('Is doped Si charged?', md`A piece of n-type silicon sits on the bench. Its overall charge is…`, 'zero: donor ions balance the electrons',
+      [['negative: it has extra electrons', 'Extra relative to the bonds, not to the nuclei.'], ['positive: donors are positive', 'Their charge is balanced by the electrons they gave.'], ['negative, but only when it is warm', 'Neutral at every temperature.']],
       md`Doping adds neutral atoms; ionization only separates charge locally.`),
-    () => MC('Donor ionization', md`A phosphorus donor ionizes at room temperature. What is created?`, 'a free electron and a fixed $\\text{P}^+$ ion, but no hole',
-      [['an electron–hole pair', 'Pairs come from breaking Si–Si bonds, not from donors.'], ['a free hole', 'Donors give electrons.'], ['a free $\\text{P}^+$ ion that drifts', 'The ion is locked in the lattice.']],
+    () => MC('Donor ionization', md`A phosphorus donor ionizes at room temperature. What is created?`, 'a free electron and a fixed P⁺ ion',
+      [['an electron–hole pair, like light makes', 'Pairs come from breaking Si–Si bonds, not from donors.'], ['a free hole and a fixed P⁻ ion', 'Donors give electrons; P becomes P⁺.'], ['a free electron and a mobile P⁺ ion', 'The ion is locked in the lattice.']],
       md`That is why $n_0 \gg p_0$ in n-type material.`),
     () => {
       const [ch, f] = pick([['$\\epsilon_r$ were half as large', '×4'], ['$\\epsilon_r$ were twice as large', '÷4'], ['the effective mass were twice as large', '×2'], ['the effective mass were half as large', '÷2']]);
@@ -260,8 +260,8 @@
     },
     () => {
       const Ed = pick([0.3, 0.4, 0.5]);
-      return MC('Deep levels', md`An impurity level sits **${Ed} eV** below $E_c$ in Si. At 300 K, as a donor it is…`, `useless: ionizing it costs about ${Math.round(Ed / 0.0259)} kT, so almost none ionize`,
-        [['fully ionized, like phosphorus', 'Phosphorus is 0.045 eV ≈ 1.7 kT deep; this is far deeper.'], ['an acceptor', 'Depth doesn’t change donor into acceptor.'], ['ionized only in the dark', 'Light doesn’t matter here.']],
+      return MC('Deep levels', md`An impurity level sits **${Ed} eV** below $E_c$ in Si. At 300 K, as a donor it is…`, `mostly un-ionized (~${Math.round(Ed / 0.0259)} kT deep)`,
+        [['fully ionized, like phosphorus', 'Phosphorus is 0.045 eV ≈ 1.7 kT deep; this is far deeper.'], ['an acceptor instead, being deep', 'Depth doesn’t change donor into acceptor.'], ['ionized only under illumination', 'Light doesn’t decide donor ionization.']],
         md`$e^{-${Ed}/0.0259} \approx 10^{${-Math.round(Ed / RF.D)}}$. Deep levels act as recombination centers instead (Topic 9).`);
     },
     () => {
@@ -310,8 +310,8 @@
     () => {
       const m = ri(1, 4), d = e(0.06 * m), dir = pick(['E_c', 'E_v']);
       const nUp = dir === 'E_c';
-      return MC('Moving the Fermi level', md`$E_F$ moves ${d} eV toward $${dir}$. What happens?`, `$n_0$ ${nUp ? '×' : '÷'}$${pow(m)}$, $p_0$ ${nUp ? '÷' : '×'}$${pow(m)}$, $n_0p_0$ unchanged`,
-        [[`$n_0$ ${nUp ? '×' : '÷'}$${pow(m)}$, $p_0$ unchanged`, 'Holes respond too, in the opposite direction.'], [`both ${nUp ? '×' : '÷'}$${pow(m)}$`, 'They move oppositely; the product is fixed.'], [`$n_0$ ${nUp ? '×' : '÷'}$${pow(2 * m)}$, $p_0$ ${nUp ? '÷' : '×'}$${pow(2 * m)}$`, 'One decade per 0.06 eV.']],
+      return MC('Moving the Fermi level', md`$E_F$ moves ${d} eV toward $${dir}$. What happens?`, `$n_0$ ${nUp ? '×' : '÷'}$${pow(m)}$, $p_0$ ${nUp ? '÷' : '×'}$${pow(m)}$`,
+        [[`$n_0$ ${nUp ? '×' : '÷'}$${pow(m)}$, $p_0$ unchanged`, 'Holes respond too, in the opposite direction.'], [`$n_0$ ${nUp ? '×' : '÷'}$${pow(m)}$, $p_0$ ${nUp ? '×' : '÷'}$${pow(m)}$`, 'They move oppositely; the product is fixed.'], [`$n_0$ ${nUp ? '×' : '÷'}$${pow(2 * m)}$, $p_0$ ${nUp ? '÷' : '×'}$${pow(2 * m)}$`, 'One decade per 0.06 eV.']],
         md`One decade per 0.06 eV for each carrier, in opposite directions.`);
     },
     () => {
@@ -322,8 +322,8 @@
     },
     () => {
       const near = pick([0.02, 0.04, 0.05]);
-      return MC('When the shortcut fails', md`Heavy doping puts $E_F$ only ${near} eV below $E_c$. Using $n_0 = N_ce^{-(E_c - E_F)/kT}$ here is…`, 'unreliable: $E_F$ is within about $3kT$ of the band, so the material is (nearly) degenerate',
-        [['exact', 'The Boltzmann form assumes $E_c - E_F \\gtrsim 3kT \\approx 0.08$ eV.'], ['fine, since $E_F$ is still below $E_c$', 'Below is not enough; it must be several $kT$ below.'], ['wrong only for holes', 'It is the electrons’ formula that fails here.']],
+      return MC('When the shortcut fails', md`Heavy doping puts $E_F$ only ${near} eV below $E_c$. Using $n_0 = N_ce^{-(E_c - E_F)/kT}$ here is…`, 'unreliable: (nearly) degenerate',
+        [['exact, as for any doped sample', 'The Boltzmann form assumes $E_c - E_F \\gtrsim 3kT \\approx 0.08$ eV.'], ['fine, since $E_F$ is still below $E_c$', 'Below is not enough; it must be several $kT$ below.'], ['wrong only for the hole formula', 'It is the electrons’ formula that fails here.']],
         md`$3kT = 0.078$ eV; ${near} eV is closer than that.`);
     },
   ]);
@@ -351,14 +351,14 @@
     () => {
       const above = Math.random() < 0.5;
       return MC('Heating and f(E)', md`The temperature rises. For a state 0.1 eV ${above ? 'above' : 'below'} $E_F$ (fixed), the occupation probability…`, above ? 'rises: the tail spreads upward' : 'falls: some electrons are lifted out',
-        [[above ? 'falls' : 'rises', 'Heating smears the step in both directions.'], ['stays the same', 'Only $f(E_F) = \\tfrac12$ is fixed.'], [above ? 'becomes 1' : 'becomes 0', 'It changes gradually.']],
+        [[above ? 'falls: electrons settle lower' : 'rises: more electrons settle in', 'Heating smears the step in both directions.'], ['stays the same: $E_F$ is fixed', 'Only $f(E_F) = \\tfrac12$ is fixed.'], [above ? 'jumps to 1 at high enough T' : 'drops to 0 at high enough T', 'It tends to ½ as $kT$ grows, never past it.']],
         md`Higher $kT$ widens the transition around $E_F$.`);
     },
     () => MC('T = 0', md`At $T = 0$ K, the probability that a state just **above** $E_F$ is occupied is…`, '0',
       [['1/2', 'Only at $E_F$ itself.'], ['1', 'That is below $E_F$.'], ['$e^{-1}$', 'There is no tail at 0 K.']],
       md`At 0 K, $f$ is a step: full below $E_F$, empty above.`),
-    () => MC('What is E_F?', md`$E_F$ sits in the band gap of a semiconductor, where there are no states. What does it mean?`, 'it is the energy where a state would be half full; it sets the occupancy of the real states in the bands',
-      [['it is where the electrons are', 'There are no states at $E_F$ in the gap.'], ['it is the top of the valence band', 'That is $E_v$.'], ['it marks the dopant atoms', 'Dopant levels are separate.']],
+    () => MC('What is E_F?', md`$E_F$ sits in the band gap of a semiconductor, where there are no states. What does it mean?`, 'the energy where a state would be half full',
+      [['it is where the electrons are', 'There are no states at $E_F$ in the gap.'], ['it is the top of the valence band', 'That is $E_v$.'], ['it marks the dopant energy levels', 'Dopant levels are separate.']],
       md`$E_F$ is a statistical level: its distance to each band edge sets $n_0$ and $p_0$.`),
   ]);
 

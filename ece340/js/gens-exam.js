@@ -12,6 +12,7 @@
   const fx = (x, n = 3) => S.f(x, n);
   const T = (o) => Object.assign({ tol: { rel: 0.02 } }, o);
   const FIXED = (q, mc, a, why) => ({ lbl: q, mc, a, why, fixed: true });
+  const MIXED = (q, mc, a, why) => ({ lbl: q, mc, a, why });   // options shuffled
 
   // ------------------------------------------------------------------ Fermi level at four temperatures (2015, problem 1)
   // schematic band diagram (not to scale): levels in units with Ev = 0, Ei = 50, Ec = 100; candidate lines lettered top to bottom
@@ -87,9 +88,9 @@
     const sol = md`Sample ${D} is doped: it rises at low $T$ as donors ionize (freeze-out), is flat at $N_d = ${S.p(Nd)}$ while $n_i \ll N_d$ (extrinsic), and joins the intrinsic curve once $n_i > N_d$. Sample ${I} only rises steeply: intrinsic, $n = n_i \propto T^{3/2}e^{-E_g/2kT}$.`;
     const one = (q, right, wrongs) => ({ title: 'Reading n(T)', q: base + q, fig, parts: [{ mc: [right, ...wrongs.map((w) => w[0])], a: 0, why: [null, ...wrongs.map((w) => w[1])] }], sol });
     if (ask === 'which') return one('Which sample is doped?', `${D}: it has a flat region at $N_d$`, [[`${I}`, 'It only rises steeply with $T$: that is $n_i(T)$.'], ['both', 'The intrinsic one has no plateau.'], ['neither can be told from the plot', 'The plateau identifies the doped one.']]);
-    if (ask === 'low') return one(`Why does sample ${D} rise at the lowest temperatures?`, 'donors are ionizing as $kT$ grows (freeze-out region)', [['the band gap shrinks', 'Small effect; not the cause.'], ['intrinsic pairs are being created', 'Far too few at these temperatures.'], ['the mobility rises', 'Mobility doesn’t change carrier counts.']]);
-    if (ask === 'mid') return one(`Why is sample ${D} flat over a wide middle range?`, 'all donors are ionized and $n_i \\ll N_d$, so $n_0 \\approx N_d$', [['generation and recombination stop', 'They balance; they don’t stop.'], ['the donors are frozen out', 'Then $n$ would be below $N_d$ and changing.'], ['the sample is intrinsic there', 'Intrinsic $n$ rises steeply with $T$.']]);
-    if (ask === 'high') return one(`Why does sample ${D} rise again at high temperature and merge with ${I}?`, 'thermal pairs across the gap outnumber the donor electrons ($n_i > N_d$)', [['more donors ionize', 'They were all ionized already.'], ['the donors become acceptors', 'No.'], ['the mobility increases', 'Not a carrier count effect.']]);
+    if (ask === 'low') return one(`Why does sample ${D} rise at the lowest temperatures?`, 'donors are still ionizing (freeze-out)', [['the band gap shrinks as it warms', 'Small effect; not the cause.'], ['intrinsic pairs are being created', 'Far too few at these temperatures.'], ['the mobility rises with temperature', 'Mobility doesn’t change carrier counts.']]);
+    if (ask === 'mid') return one(`Why is sample ${D} flat over a wide middle range?`, 'donors all ionized, and $n_i \\ll N_d$', [['generation and recombination stop', 'They balance; they don’t stop.'], ['the donors are frozen out there', 'Then $n$ would be below $N_d$ and changing.'], ['the sample is intrinsic there', 'Intrinsic $n$ rises steeply with $T$.']]);
+    if (ask === 'high') return one(`Why does sample ${D} rise again at high temperature and merge with ${I}?`, 'thermal pairs outnumber donor electrons', [['more donors ionize when hot', 'They were all ionized already.'], ['the donors become acceptors', 'A dopant’s type doesn’t change with temperature.'], ['the mobility increases when hot', 'Not a carrier count effect.']]);
     return one(`What is the donor concentration of sample ${D}?`, `$${S.p(Nd)}\\,\\text{cm}^{-3}$ (the plateau)`, [[`$${S.p(Nd * 100)}\\,\\text{cm}^{-3}$`, 'Read the flat part.'], ['$1.5\\times10^{10}\\,\\text{cm}^{-3}$', 'That is $n_i$ at 300 K.'], ['it can’t be read from the plot', 'The plateau value is $N_d$.']]);
   };
 
@@ -158,12 +159,12 @@ Larger: thermal electron–hole pairs now add to the majority. Still ${n ? 'n' :
       title: 'Two flashes',
       q: md`n-type Si with $N_d = 10^{${k}}\,\text{cm}^{-3}$ at 300 K is hit by two very short flashes, each creating $\Delta p = ${S.p(dp)}\,\text{cm}^{-3}$ uniformly: one at $t = 0$, one at $t = ${m === 1 ? '' : m}\tau$, where $\tau$ is the minority lifetime.`,
       parts: [
-        FIXED('$\\delta p(t)$ looks like…', ['a jump to $\\Delta p$, exponential decay, a second jump of $\\Delta p$ on top of what is left, exponential decay', 'a jump to $\\Delta p$, linear decay to zero, a second identical jump', 'two separate jumps to $\\Delta p$ from zero, each decaying', 'a jump to $2\\Delta p$ at $t = 0$'], 0,
+        MIXED('$\\delta p(t)$ looks like…', ['two exponential decays, the second starting above $\\Delta p$', 'a jump to $\\Delta p$, linear decay to zero, a second identical jump', 'two separate jumps to $\\Delta p$ from zero, each decaying', 'a single jump to $2\\Delta p$, then one decay'], 0,
           [null, 'At low level the decay is exponential and never quite reaches zero.', 'The first flash’s carriers haven’t all gone when the second arrives: they add.', 'The flashes are at different times.']),
         T({ lbl: '\\delta p/\\Delta p\\ \\text{just after the 2nd flash}', ans: after }),
         FIXED('Is it low-level injection at all times?', ['yes', 'no'], 0, [null, `The largest excess is $${fx(after * dp, 2)}$, far below $N_d = 10^{${k}}$.`]),
         T({ lbl: 'E_i - F_p\\ \\text{at}\\ t = 0^+\\ (\\text{eV})', ans: EiFp }),
-        FIXED('Right after the first flash, $F_n$ is…', ['essentially at the dark $E_F$', 'at $E_i$', 'below $F_p$', 'at $E_c$'], 0,
+        MIXED('Right after the first flash, $F_n$ is…', ['essentially at the dark $E_F$', 'at $E_i$, like intrinsic material', 'below $F_p$, as holes dominate', 'at $E_c$, as electrons flood in'], 0,
           [null, 'Electrons are the majority; adding a tiny excess barely moves their level.', 'Far from it: n-type.', 'Excess carriers put $F_n$ above $F_p$.']),
       ],
       sol: md`$\delta p(t) = \Delta pe^{-t/\tau}$; at $t = ${m}\tau$ the second flash adds $\Delta p$ to $\Delta pe^{-${m}}$: $\delta p = \Delta p(1 + e^{-${m}}) = ${after.toFixed(3)}\,\Delta p$, then decays again. Low level throughout ($\delta p \ll N_d$).
@@ -215,7 +216,7 @@ Right after the first flash: $p = p_0 + \Delta p \approx ${fx(2.25e20 / Nd + dp,
   GENS.ex_jexpr = (o = {}) => {
     const L = ([
       { q: md`$\delta p(x) = \Delta p\,e^{-x/L_p}$ (no field).`, r: md`$J_p = \dfrac{qD_p\Delta p}{L_p}e^{-x/L_p}$`, w: [[md`$J_p = -\dfrac{qD_p\Delta p}{L_p}e^{-x/L_p}$`, 'Sign: $J_p = -qD_p\\,d\\delta p/dx$ and $d\\delta p/dx < 0$, so $J_p > 0$.'], [md`$J_p = qD_p\Delta p\,e^{-x/L_p}$`, 'The derivative brings down $1/L_p$.'], [md`$J_p = \dfrac{qD_n\Delta p}{L_p}e^{-x/L_p}$`, 'Holes use $D_p$.']] },
-      { q: md`$\delta p(x) = \Delta p\,(1 - x/W)$ for $0 \le x \le W$ (no field).`, r: md`$J_p = \dfrac{qD_p\Delta p}{W}$, the same everywhere`, w: [[md`$J_p = -\dfrac{qD_p\Delta p}{W}$`, 'Holes flow down the slope (to $+x$), and so does their current.'], [md`$J_p = \dfrac{qD_p\Delta p}{W}(1 - x/W)$`, 'The derivative of a straight line is a constant.'], ['$J_p = 0$', 'There is a gradient.']] },
+      { q: md`$\delta p(x) = \Delta p\,(1 - x/W)$ for $0 \le x \le W$ (no field).`, r: md`$J_p = \dfrac{qD_p\Delta p}{W}$`, w: [[md`$J_p = -\dfrac{qD_p\Delta p}{W}$`, 'Holes flow down the slope (to $+x$), and so does their current.'], [md`$J_p = \dfrac{qD_p\Delta p}{W}(1 - x/W)$`, 'The derivative of a straight line is a constant.'], ['$J_p = 0$', 'There is a gradient.']] },
       { q: md`$\delta p(x) = A\,e^{-x^2/c}$ (no field).`, r: md`$J_p = \dfrac{2qD_pA\,x}{c}e^{-x^2/c}$`, w: [[md`$J_p = -\dfrac{2qD_pA\,x}{c}e^{-x^2/c}$`, '$J_p = -qD_p\\,d\\delta p/dx$, and $d\\delta p/dx = -(2x/c)Ae^{-x^2/c}$.'], [md`$J_p = qD_pA\,e^{-x^2/c}$`, 'Differentiate the exponent too.'], [md`$J_p = \dfrac{qD_pA}{c}e^{-x^2/c}$`, 'The chain rule brings down $-2x/c$.']] },
       { q: md`$n(x) = N_d\,e^{-x/\alpha}$ (find the electron **diffusion** current).`, r: md`$J_{n,\text{diff}} = -\dfrac{qD_nN_d}{\alpha}e^{-x/\alpha}$`, w: [[md`$J_{n,\text{diff}} = +\dfrac{qD_nN_d}{\alpha}e^{-x/\alpha}$`, 'Electron diffusion current $= +qD_n\\,dn/dx$, and $dn/dx < 0$.'], [md`$J_{n,\text{diff}} = -qD_nN_d\,e^{-x/\alpha}$`, 'The derivative brings down $1/\\alpha$.'], [md`$J_{n,\text{diff}} = -\dfrac{qD_pN_d}{\alpha}e^{-x/\alpha}$`, 'Electrons use $D_n$.']] },
     ]), C = o.i !== undefined ? L[o.i] : pick(L);

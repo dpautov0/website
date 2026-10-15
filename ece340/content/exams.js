@@ -14,6 +14,7 @@
     eyebrow: 'Semiconductor Electronics',
     actions: [
       { href: '#/l/mcq-all', label: 'Multiple-choice bank' },
+      { href: '#/l/hw1', label: 'Past homework' },
       { href: '#/l/e1-sp26', label: 'Spring 2026 exam' },
       { href: '#/l/e1-f24', label: 'Fall 2024 exam' },
       { href: '#/l/e1-x15', label: 'The 2015 exam' },
