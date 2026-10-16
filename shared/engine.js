@@ -379,7 +379,7 @@
     const lede = M.lede || [cur.when ? `${cur.when}${days && days !== 'done' ? ` <b class="when">${days}</b>` : ''}` : '', cur.blurb || ''].filter(Boolean).join('<br>');
     const plan = cur.plan ? { title: cur.planTitle, items: cur.plan } : M.plan;
     const row = (href, num, t, sub, f, done) => `<a class="row${done ? ' done' : ''}" href="${href}"><span class="row-num">${num ?? ''}</span><span class="row-main"><span class="row-title">${t}</span>${sub ? `<span class="row-sub">${sub}</span>` : ''}</span><span class="row-end">${f === null ? '<span class="chev"></span>' : ring(f)}</span></a>`;
-    const lessonRow = (l) => { const p = lessonProgress(l); return row(`#/l/${l.id}`, l.topic, l.title, l.sec ? `§${l.sec}` : '', p.tot ? p.pct : null, p.tot && p.got >= p.tot); };
+    const lessonRow = (l) => { const p = lessonProgress(l); return row(`#/l/${l.id}`, l.topic, l.title, l.ref || (l.sec ? `§${l.sec}` : ''), p.tot ? p.pct : null, p.tot && p.got >= p.tot); };
     const unitRow = (u) => { const f = unitProgress(u); return row(`#/l/${u.lessons[0].id}`, String(u.num).replace(/^Unit /, ''), u.title, u.blurb || '', f, f >= 0.999); };
     const group = (h, rows, cls = '') => `<section class="group ${cls}">${h ? `<h2 class="group-h">${h}</h2>` : ''}<div class="list">${rows}</div></section>`;
     const lists = M.home === 'units'
@@ -427,7 +427,7 @@
     main.innerHTML = `
       <article class="lesson k-${l.kind || 'lesson'}">
         <header class="l-head">
-          <p class="eyebrow">${l.unit.num} · ${l.unit.title}${l.topic ? ` · Topic ${l.topic}` : ''}${l.sec ? ` · §${l.sec}` : ''}</p>
+          <p class="eyebrow">${l.unit.num} · ${l.unit.title}${l.topic ? ` · Topic ${l.topic}` : ''}${l.ref ? ` · ${l.ref}` : l.sec ? ` · §${l.sec}` : ''}</p>
           <h1>${l.title}</h1>
           ${l.kind && l.kind !== 'lesson' ? `<span class="kind-pill">${KIND[l.kind]}</span>` : ''}
           <div class="l-progress"><div class="meter"><span></span></div><span class="l-count"></span></div>
