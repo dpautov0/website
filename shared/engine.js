@@ -51,15 +51,17 @@
 
   // Math is swapped for placeholders first, so bold, italics and quotes can wrap it (*find $V$ outside.*),
   // then restored untouched. An unpaired ** or * is left as text.
+  // A backslash-dollar (\$5) is a literal dollar sign: inside math it stays \$ for KaTeX, in text it becomes a lone
+  // "$" in its own element so neither the math splitter nor KaTeX's auto-render pairs it with another one.
   function inline(s) {
     const math = [];
-    let t = String(s).replace(/\$\$[\s\S]*?\$\$|\$[^$]*\$/g, (m) => { math.push(m); return `\u0001${math.length - 1}\u0002`; });
+    let t = String(s).replace(/\\\$/g, '\u0003').replace(/\$\$[\s\S]*?\$\$|\$[^$]*\$/g, (m) => { math.push(m.replace(/\u0003/g, () => '\\$')); return `\u0001${math.length - 1}\u0002`; });
     t = smartQuotes(t, '')
       .replace(/`([^`]+)`/g, '<code>$1</code>')
       .replace(/\*\*([^*]+?)\*\*/g, '<b>$1</b>')
       .replace(/(^|[^*\w])\*([^*\n]+?)\*(?!\w)/g, '$1<em>$2</em>')
       .replace(/\[([^\]]+)\]\((#[^)]+)\)/g, '<a href="$2">$1</a>');
-    return t.replace(/\u0001(\d+)\u0002/g, (_, i) => escMath(math[+i]));
+    return t.replace(/\u0001(\d+)\u0002/g, (_, i) => escMath(math[+i])).replace(/\u0003/g, () => '<span class="usd">$</span>');
   }
   const inlineSeg = inline;
 
@@ -697,7 +699,7 @@
   }
 
   // answer-box label: TeX unless it is plain words (no TeX characters, a space, a 4+ letter word)
-  const lblTex = (l) => (l.includes('$') || (!/[\\_^{}]/.test(l) && /\s/.test(l) && /[A-Za-z]{4,}/.test(l)) ? l : `$${l}$`);
+  const lblTex = (l) => (/(^|[^\\])\$/.test(l) || (!/[\\_^{}]/.test(l) && /\s/.test(l) && /[A-Za-z]{4,}/.test(l)) ? l : `$${l}$`);
 
   function partHtml(pt, i) {
     const lbl = pt.lbl ? `<span class="pl">${inline(lblTex(pt.lbl))}${pt.mc ? '' : ' ='}</span>` : '';
