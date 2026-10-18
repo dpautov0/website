@@ -7,6 +7,7 @@
     actions: [
       { href: '#/l/ds5', label: 'Homework & discussion problems' },
       { href: '#/l/x-a', label: 'Practice exams' },
+      { href: '#/l/in-all', label: 'Intuition drills' },
       { href: '#/l/mc-all', label: 'Multiple-choice bank' },
       { href: '#/quiz', label: 'Mixed practice' },
       { href: '#/sheet', label: 'Formula sheet' },

@@ -2,7 +2,7 @@
 (function () {
   'use strict';
   const { R, G } = C;
-  const UNITS = ['u0', 'u1', 'u1b', 'u2', 'u3', 'u4', 'u5', 'u6'];
+  const UNITS = ['u0', 'u1', 'u1b', 'u2', 'u3', 'u4', 'u5', 'u6', 'intu'];
   const ALL = ['math_mix', 'cd_demand', 'income_mix', 'slutsky', 'shift_move', 'market_demand', 'elasticity', 'income_elas', 'cs_mix', 'cvev', 'prod_basics', 'mp_trs', 'rts', 'isocost_mp', 'cd_costmin', 'corner_kink', 'cost_func', 'mc_avg', 'cost_sched'];
 
   C.unit({ id: 'tools', exam: 'm2', tools: true, num: 'Mini Exam 2', title: 'Formula sheet and mixed practice', lessons: [
