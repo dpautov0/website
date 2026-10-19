@@ -148,7 +148,9 @@
       [md`$0.556\ \mu$A`, md`$0.0885\ \mu$A`, '5.56 mA', 'zero: no charge crosses the gap'], 0,
       [null, md`That uses $f$ in place of $\omega = 2\pi f$.`, md`That keeps the area in cm²: $1\ \text{cm}^2 = 10^{-4}\ \text{m}^2$.`, md`No charge crosses, but $\partial\mathbf D/\partial t \ne 0$: the displacement current is exactly what continues the wire current across the gap.`],
       md`$I_d = A\,\left|\dfrac{\partial D}{\partial t}\right|_{\max} = \epsilon_0\omega E_0A = (8.854\times10^{-12})(2\pi\times10^6)(100)(10^{-4}) = 5.56\times10^{-7}$ A. It equals the current in the leads.`, { src: 'Practice A · 1(iv)', hints: [md`$I_d = A\,\partial D/\partial t$; for $E_0\cos\omega t$ its amplitude is $\epsilon_0\omega E_0A$.`] }),
-    Q(md`(v) With $\Phi = 0$ and $\mathbf A = 4yzt\,\hat x$ Wb/m ($x, y, z$ in m, $t$ in s), the magnetic flux density at $(1, 2, 3)$ m and $t = 1$ s is…`,
+    Q(md`**Not on the Fall 2026 Exam 2:** the vector potential is not tested this term (instructor answer on Piazza). Skip this one before the exam.
+
+(v) With $\Phi = 0$ and $\mathbf A = 4yzt\,\hat x$ Wb/m ($x, y, z$ in m, $t$ in s), the magnetic flux density at $(1, 2, 3)$ m and $t = 1$ s is…`,
       [md`$8\hat y - 12\hat z$ T`, md`$-8\hat y + 12\hat z$ T`, md`$12\hat y - 8\hat z$ T`, md`$8\hat y + 12\hat z$ T`, md`$-24\hat x$ T`], 0,
       [null, 'Every sign flipped: that is $-\\nabla\\times\\mathbf A$.', md`The derivatives are swapped: $B_y = \partial A_x/\partial z = 4yt$, $B_z = -\partial A_x/\partial y = -4zt$.`, md`$B_z = \partial A_y/\partial x - \partial A_x/\partial y$: the minus sign was lost.`, md`That is $-\partial\mathbf A/\partial t$ evaluated there: the electric field, not $\mathbf B$.`],
       md`For $\mathbf A = A_x\hat x$: $\nabla\times\mathbf A = \hat y\,\dfrac{\partial A_x}{\partial z} - \hat z\,\dfrac{\partial A_x}{\partial y} = 4yt\,\hat y - 4zt\,\hat z$. At $(1,2,3)$, $t = 1$: $8\hat y - 12\hat z$ T. (The electric field is $\mathbf E = -\partial\mathbf A/\partial t = -4yz\,\hat x = -24\hat x$ V/m there.)`, { src: 'Practice A · 1(v)', hints: [md`$\mathbf B = \nabla\times\mathbf A$. With only $A_x$: $B_y = \partial A_x/\partial z$, $B_z = -\partial A_x/\partial y$.`] }),
@@ -575,6 +577,8 @@
 
     R(md`
       ### Problem 4 (19 points): a vector potential
+
+      **Not on the Fall 2026 Exam 2:** the vector potential is not tested this term (instructor answer on Piazza). Skip this one before the exam. Its 19 points are a fair stand-in for a flux or Ampère problem; if you skip it, give yourself the points back when scoring.
 
       In free space, $\mathbf A = A_y(x)\,\hat y$ with ($x$ in m)
       $$A_y = -kx^2\ \ (|x| \le 1\ \text{m}), \qquad A_y = -k(2|x| - 1)\ \ (|x| \ge 1\ \text{m}), \qquad k = 3\times10^{-3}\ \text{Wb/m}^3$$

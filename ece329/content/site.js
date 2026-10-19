@@ -37,7 +37,8 @@
     sheet: 'e2-sheet', quiz: 'e2-mix',
     planTitle: 'Plan',
     plan: [
-      '<b>Unit 0 first</b> if right-hand rules, flux integrals or delta functions feel shaky. It is short.',
+      '<b>Scope (Piazza):</b> Lecture 1 through the Poynting theorem. <b>Curl in cylindrical coordinates is tested</b> (coax examples; not spherical). <b>Not tested:</b> the vector potential (moved to Extra) and phasors (Lectures 21–22). The triangle pulse is ECE 210\'s: $\\triangle(t/\\tau) = 1 - 2|t|/\\tau$ for $|t| \\le \\tau/2$.',
+      '<b>Unit 0 first</b> if right-hand rules, flux integrals, cylindrical curls or delta functions feel shaky. It is short.',
       '<b>Topics 1–17 in order.</b> Read the build-up, answer each prediction before you look, then drill the rapid-fire cards until they are automatic.',
       '<b>The Fall 2025 exam</b> under time (75 min): the most recent Exam 2, same format as your Exam 1 (four problems, symbolic answers, one 4″×6″ handwritten card).',
       '<b>The two Prof. Chen-style exams</b> (he wrote your Exam 1), then <b>the two Fall 2025-style exams</b>, each under time. Then Spring 2018, the summer exams and practice exams A–C if time is left.',
@@ -56,6 +57,7 @@
   unit('u4', 'Unit 4', 'Maxwell complete: displacement current, magnetic materials');
   unit('u5', 'Unit 5', 'Plane waves and power');
   unit('u6', 'Unit 6', 'Exam 1 material, condensed');
+  unit('x-extra', 'Extra', 'Not on the Fall 2026 Exam 2', { extra: true, blurb: 'The vector potential A: on older exams, not tested this term (Piazza).' });
   unit('e2-past', 'Exam 2', 'Past exams (blank, with solutions)', { tools: true });
   unit('e2-prac', 'Exam 2', 'Practice exams and exam-style problems', { tools: true });
   unit('e2-hw', 'Exam 2', 'Homework 1–7 (blank, with solutions)', { tools: true });

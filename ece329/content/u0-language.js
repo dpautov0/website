@@ -163,6 +163,30 @@
     return g.svg();
   }
 
+  // top view: a thin wedge between r and r + dr, angle dphi, circulated counterclockwise (z out of the page)
+  function wedgeFig() {
+    const g = PF.fig({ alt: 'top view with the z-axis out of the page at the lower left: a thin wedge between radius r and r + dr spanning a small angle d-phi, circulated counterclockwise; the inner arc has length r d-phi and the longer outer arc (r + dr) d-phi' });
+    const ox = 30, oy = 200, r1 = 112, r2 = 168, a0 = 20, a1 = 56, am = (a0 + a1) / 2;
+    const P = (R, d) => [ox + R * Math.cos(d * DEG), oy - R * Math.sin(d * DEG)];
+    g.line(ox, oy, ...P(r1, a0), { cls: 'dim thin dash' });
+    g.line(ox, oy, ...P(r1, a1), { cls: 'dim thin dash' });
+    g.angle(ox, oy, 38, a0, a1, 'd\\phi');
+    g.odot(ox, oy, 6);
+    g.label(ox - 10, oy, 'z', 'r', 'small accent');
+    g.line(...P(r1, a0), ...P(r2, a0), { cls: 'thick', mid: true, hs: 8 });     // out along phi
+    g.arc(ox, oy, r2, a0, a1, { cls: 'thick' });                               // counterclockwise along the outer arc
+    g.line(...P(r2, a1), ...P(r1, a1), { cls: 'thick', mid: true, hs: 8 });     // back in along phi + dphi
+    g.arc(ox, oy, r1, a1, a0, { cls: 'thick' });                               // clockwise along the inner arc
+    const t = am * DEG, [xo, yo] = P(r2, am), [xi, yi] = P(r1, am);
+    g.head(xo, yo, -Math.sin(t), -Math.cos(t), { hs: 8 });
+    g.head(xi, yi, Math.sin(t), Math.cos(t), { hs: 8 });
+    g.label(...P(r2 + 10, am), '(r + dr)\\,d\\phi', 'bl', 'small');
+    g.label(...P(r1 - 10, am), 'r\\,d\\phi', 'tr', 'small');
+    g.label(...P((r1 + r2) / 2, a0 - 4), 'dr', 't', 'small');
+    g.label(...P(r1 * 0.62, a0 - 5), 'r', 't', 'small');
+    return g.svg();
+  }
+
   // narrowing rectangles of area 1
   function deltaFig() {
     const box = (w) => (x) => (Math.abs(x) < w / 2 ? 1 / w : 0);
@@ -554,11 +578,11 @@
 
   // ================================================================ C: divergence, curl, partial derivatives
   EM.lesson('u0', {
-    id: 'u0-curl-div', topic: 'C', order: 3, ref: 'Used in Topics 3, 7, 12–16', title: 'Divergence, curl and partial anti-derivatives',
+    id: 'u0-curl-div', topic: 'C', order: 3, ref: 'Used in Topics 3, 5, 7, 12–16', title: 'Divergence, curl and partial anti-derivatives',
     steps: [
       R(md`
         !!key Why you care
-          The right column of the formula sheet is written in $\nabla\cdot$ and $\nabla\times$. HW 7 #4 gets $\mathbf H$ from $\mathbf E$ with Faraday's law (and $\mathbf E$ from $\mathbf H$ with Ampère's), HW 7 #2 finds $\rho(t)$ from $\nabla\cdot\mathbf J$, HW 7 #5 checks the wave equation by differentiating, and Spring 2018 1(iv) and 1(v) are one-line divergence and curl questions.
+          The right column of the formula sheet is written in $\nabla\cdot$ and $\nabla\times$. HW 7 #4 gets $\mathbf H$ from $\mathbf E$ with Faraday's law (and $\mathbf E$ from $\mathbf H$ with Ampère's), HW 7 #2 finds $\rho(t)$ from $\nabla\cdot\mathbf J$, HW 7 #5 checks the wave equation by differentiating, and Spring 2018 1(iv) and 1(v) are one-line divergence and curl questions. Exam 2 also tests the curl in **cylindrical** coordinates (the instructor, on Piazza): $\mathbf J$ from the $\mathbf H$ of a wire or a coax, as in the notes' coax examples. The formula sheet does not give it.
 
         ### Notation
 
@@ -567,6 +591,7 @@
         - $\nabla f$: the **gradient** of a scalar $f$, a vector pointing uphill (steepest increase). $\mathbf E = -\nabla V$ points downhill in potential.
         - $\nabla\cdot\mathbf F$: the **divergence**, a scalar. $\nabla\times\mathbf F$: the **curl**, a vector. Both carry the units of $\mathbf F$ per meter: $\nabla\cdot\mathbf D$ is in C/m³, $\nabla\times\mathbf H$ in A/m².
         - $\nabla^2 = \nabla\cdot\nabla = \partial^2/\partial x^2 + \partial^2/\partial y^2 + \partial^2/\partial z^2$: the **Laplacian**.
+        - $(r, \phi, z)$: cylindrical coordinates, with unit vectors $\hat r, \hat\phi, \hat z$ ([Lesson A](#/l/u0-vectors), Step 4); $r$ is the distance from the $z$-axis. $F_r, F_\phi, F_z$: the components of $\mathbf F$ along them.
         - $\cos(\omega t - \beta z)$: a sinusoidal wave ([Lesson E](#/l/u0-waveforms)), $\omega$ in rad/s, $\beta$ in rad/m. In a medium with permeability $\mu$ and permittivity $\epsilon$: $\beta/\omega = \sqrt{\mu\epsilon}$, and $\eta = \sqrt{\mu/\epsilon}$ ($\Omega$) is the ratio $E/H$.
 
         ### The idea
@@ -684,38 +709,104 @@
           - $\partial_z\cos(\omega t - \beta z) = -\beta\sin(\omega t - \beta z)$. The chain rule gives $+\beta\sin$.
           - Forgetting that the integration "constant" can depend on the other variables, or keeping a static field in a wave.
           - Expecting $y\,\hat x$ to have divergence. It changes across its direction, not along it.
+      `),
+      RF(md`
+        ### Round fields: divergence and curl in cylindrical coordinates
+
+        Wires, coax and solenoids are round, so their fields come as $F_r$, $F_\phi$, $F_z$ in $(r, \phi, z)$. The Cartesian formulas do not carry over letter for letter:
+        $$\nabla\cdot\mathbf F = \frac1r\frac{\partial(rF_r)}{\partial r} + \frac1r\frac{\partial F_\phi}{\partial\phi} + \frac{\partial F_z}{\partial z}$$
+        $$\nabla\times\mathbf F = \hat r\left[\frac1r\frac{\partial F_z}{\partial\phi} - \frac{\partial F_\phi}{\partial z}\right] + \hat\phi\left[\frac{\partial F_r}{\partial z} - \frac{\partial F_z}{\partial r}\right] + \hat z\,\frac1r\left[\frac{\partial(rF_\phi)}{\partial r} - \frac{\partial F_r}{\partial\phi}\right]$$
+
+        Read them against Steps 2 and 3: the same cycle, $r \to \phi \to z \to r$, with two changes. Every $\partial/\partial\phi$ carries a $1/r$, because a step $d\phi$ is an arc of length $r\,d\phi$. And the $r$-derivative of $F_r$ (in the divergence) or of $F_\phi$ (in the $\hat z$ part of the curl) acts on $r$ **times** the component.
+
+        [[fig:wedge]]
+
+        **Why $\frac1r\partial_r(rF_\phi)$.** Circulate around a thin wedge between $r$ and $r + dr$. The outer arc, $(r + dr)\,d\phi$, is longer than the inner one, $r\,d\phi$, so the circulation is the change of $rF_\phi$ across the wedge times $d\phi$: $\partial_r(rF_\phi)\,dr\,d\phi$. Divide by the wedge's area, $r\,dr\,d\phi$. The divergence's $\frac1r\partial_r(rF_r)$ is the same argument for the flux through the outer and inner faces.
+      `, { wedge: { svg: wedgeFig(), cap: 'Seen from +z, circulated counterclockwise. The outer arc is longer than the inner one, so the circulation per unit area measures the change of rF_φ, not of F_φ.' } }),
+      R(md`
+        ### The three round fields of this course
+
+        Round symmetry leaves **one component, depending on $r$ only**. Every other term of the formulas is zero:
+
+        | field | its source |
+        |---|---|
+        | $\mathbf H = H_\phi(r)\,\hat\phi$: wire, thick wire, coax | $\mathbf J = \nabla\times\mathbf H = \hat z\,\dfrac1r\dfrac{d(rH_\phi)}{dr}$ |
+        | $\mathbf H = H_z(r)\,\hat z$: solenoid | $\mathbf J = \nabla\times\mathbf H = -\hat\phi\,\dfrac{dH_z}{dr}$ |
+        | $\mathbf E = E_r(r)\,\hat r$: line charge, charged cylinder, coax | $\rho = \nabla\cdot(\epsilon\mathbf E) = \dfrac{\epsilon}{r}\dfrac{d(rE_r)}{dr}$ |
+
+        $\nabla\times\mathbf H = \mathbf J$ is static Ampère; $\nabla\cdot\mathbf D = \rho$ is Gauss, with $\mathbf D = \epsilon\mathbf E$ and $\epsilon$ uniform. Both $\mathbf H$ rows have $\nabla\cdot\mathbf H = 0$, as a magnetic field must; the $\mathbf E$ row has $\nabla\times\mathbf E = 0$, as a static field must.
+      `),
+      Q(md`**Predict.** Inside a wire, $\mathbf H = H_0\dfrac{r^2}{a^2}\,\hat\phi$. Then $\mathbf J = $`,
+        [md`$\dfrac{3H_0r}{a^2}\,\hat z$`, md`$\dfrac{2H_0r}{a^2}\,\hat z$`, md`$\dfrac{H_0r}{a^2}\,\hat z$`, md`$\dfrac{3H_0r}{a^2}\,\hat\phi$`], 0,
+        [null, md`That is $\partial H_\phi/\partial r$ alone. The curl differentiates $rH_\phi = H_0r^3/a^2$, then divides by $r$.`, md`That is $H_\phi/r$ alone, the other half of the product rule.`, md`The curl of a $\hat\phi$ field that depends on $r$ points along $\hat z$, like the current that makes it.`],
+        md`$rH_\phi = H_0r^3/a^2$, $\;\dfrac{d}{dr}(rH_\phi) = 3H_0r^2/a^2$, divide by $r$: $\;J_z = 3H_0r/a^2$. The current density grows outward.`, { id: 'u0-curl-div.cyl0' }),
+      R(md`
+        ### Four quick examples
+
+        **Thick wire, inside** ($r < a$, $I$ uniform): $H_\phi = \dfrac{Ir}{2\pi a^2}$, so $rH_\phi = \dfrac{Ir^2}{2\pi a^2}$ and
+        $$\mathbf J = \hat z\,\frac1r\frac{d}{dr}\frac{Ir^2}{2\pi a^2} = \frac{I}{\pi a^2}\,\hat z$$
+        Uniform: $I$ spread over $\pi a^2$, as assumed.
+
+        **Thick wire, outside** ($r > a$): $H_\phi = \dfrac{I}{2\pi r}$, so $rH_\phi = I/2\pi$ is constant and $\mathbf J = 0$. The field circles the axis but has no curl there. $1/r$ is the one profile $H_\phi(r)$ with zero curl: the field of a current that is all somewhere else.
+
+        **Charged cylinder** (uniform $\rho_0$ in $r < a$, free space): inside, $E_r = \dfrac{\rho_0r}{2\epsilon_0}$ gives $\rho = \dfrac{\epsilon_0}{r}\dfrac{d}{dr}\dfrac{\rho_0r^2}{2\epsilon_0} = \rho_0$, as it must. Outside, $E_r = \dfrac{\rho_0a^2}{2\epsilon_0r}$: $rE_r$ is constant, so $\rho = 0$.
+
+        **Solenoid:** $H_z = nI$ inside, $0$ outside. $dH_z/dr = 0$ except at the wall, where $H_z$ drops by $nI$. So the current sits in the wall, and $-dH_z/dr > 0$ there puts it along $+\hat\phi$: counterclockwise seen from $+z$, which by the RHR makes $\mathbf H$ along $+\hat z$. ✓
+
+        !!trap The product-rule trap
+          $\dfrac1r\dfrac{d(rH_\phi)}{dr}$ is **not** $\dfrac{dH_\phi}{dr}$. By the product rule, $\dfrac1r\dfrac{d(rH_\phi)}{dr} = \dfrac{dH_\phi}{dr} + \dfrac{H_\phi}{r}$. Drop the $H_\phi/r$ and the thick wire gets $J_z = -I/2\pi r^2$ outside, where there is no current, and $I/2\pi a^2$ inside, half the true value. The same holds for $\frac1r\frac{d(rE_r)}{dr}$.
 
         ### Check questions
       `),
       Q(md`$\nabla\cdot(x^2\,\hat x + y^2\,\hat y)$ at $(1, 2, 0)$ is…`, ['$6$', '$5$', md`$2\hat x + 4\hat y$`, '$0$'], 0,
         [null, md`That is $x^2 + y^2$: the components added, not differentiated.`, 'The divergence is a scalar: add the derivatives.', md`Each component grows along its own direction, so the divergence is positive.`],
-        md`$2x + 2y = 2 + 4 = 6$.`),
+        md`$2x + 2y = 2 + 4 = 6$.`, { id: 'u0-curl-div.p12' }),
       Q(md`$\nabla\times(x\,\hat y) = $`, [md`$\hat z$`, md`$-\hat z$`, md`$\hat x$`, '$0$'], 0,
         [null, md`$(\nabla\times\mathbf F)_z = \partial_xF_y - \partial_yF_x = 1 - 0$, positive.`, md`The curl of a $y$-directed field varying in $x$ points along $\hat x\times\hat y = \hat z$.`, md`$F_y$ changes as you move across it in $x$: that is circulation.`],
-        md`Only $\partial_xF_y = 1$ survives: $\hat z$.`),
+        md`Only $\partial_xF_y = 1$ survives: $\hat z$.`, { id: 'u0-curl-div.p13' }),
       Q(md`Which of these can be a magnetic flux density $\mathbf B$?`,
         [md`$y\,\hat x - x\,\hat y$`, md`$x\,\hat x$`, md`$x\,\hat x + y\,\hat y$`, md`$z^2\,\hat z$`], 0,
         [null, md`$\nabla\cdot = 1 \ne 0$.`, md`$\nabla\cdot = 2 \ne 0$.`, md`$\nabla\cdot = 2z \ne 0$.`],
-        md`$\partial_x(y) + \partial_y(-x) = 0$: no sources, so it can be a $\mathbf B$ (it circles the $z$-axis, like the field inside a wire).`),
+        md`$\partial_x(y) + \partial_y(-x) = 0$: no sources, so it can be a $\mathbf B$ (it circles the $z$-axis, like the field inside a wire).`, { id: 'u0-curl-div.p14' }),
       Q(md`Which of these can be an **electrostatic** field $\mathbf E$?`,
         [md`$x\,\hat x + y\,\hat y$`, md`$y\,\hat x - x\,\hat y$`, md`$y\,\hat x$`, md`$x\,\hat y$`], 0,
         [null, md`Its curl is $-2\hat z$.`, md`Its curl is $-\hat z$.`, md`Its curl is $+\hat z$.`],
-        md`Its curl is zero; it is $-\nabla V$ with $V = -(x^2 + y^2)/2$.`),
+        md`Its curl is zero; it is $-\nabla V$ with $V = -(x^2 + y^2)/2$.`, { id: 'u0-curl-div.p15' }),
       Q(md`If $\mathbf J = 0$ in a region of free space, which must be true there for $\mathbf D$?`,
         [md`$\partial(\nabla\cdot\mathbf D)/\partial t = 0$`, md`$\partial\mathbf D/\partial t = 0$`, md`$\nabla\cdot\mathbf D = 0$`, md`$\mathbf D = 0$`], 0,
         [null, md`$\mathbf D$ can still change in time: a wave passing through has $\mathbf J = 0$.`, 'A static charge density can sit there; only its change is forbidden.', 'Fields reach into current-free regions all the time.'],
-        md`Divergence of Ampère–Maxwell: $0 = \nabla\cdot\mathbf J + \partial(\nabla\cdot\mathbf D)/\partial t$. With $\mathbf J = 0$, the charge density there cannot change.`, { src: 'Spring 2018 Exam 2' }),
+        md`Divergence of Ampère–Maxwell: $0 = \nabla\cdot\mathbf J + \partial(\nabla\cdot\mathbf D)/\partial t$. With $\mathbf J = 0$, the charge density there cannot change.`, { src: 'Spring 2018 Exam 2', id: 'u0-curl-div.p16' }),
       Q(md`$\Phi = 3x^2$ V and $\mathbf A = -6xt\,\hat x + 3y\,\hat y$ V·s/m. With $\mathbf E = -\nabla\Phi - \partial\mathbf A/\partial t$ and $\mathbf B = \nabla\times\mathbf A$…`,
         [md`$\mathbf E$ and $\mathbf B$ are both zero everywhere, for all time`, md`$\mathbf E = -6x\,\hat x$ and $\mathbf B = 0$`, md`$\mathbf E = 0$ and $\mathbf B = 3\hat z$`, md`$\mathbf E = -12x\,\hat x$, constant in time`], 0,
         [null, md`That forgets $-\partial\mathbf A/\partial t = +6x\,\hat x$, which cancels $-\nabla\Phi$.`, md`$\partial_xA_y - \partial_yA_x = 0 - 0$: $A_y$ depends on $y$ only, $A_x$ on $x$ and $t$.`, md`That subtracts $\partial\mathbf A/\partial t$ with the wrong sign.`],
-        md`$-\nabla\Phi = -6x\,\hat x$ and $-\partial\mathbf A/\partial t = +6x\,\hat x$: $\mathbf E = 0$. $\nabla\times\mathbf A = 0$ because each component depends only on its own coordinate (and $t$).`, { src: 'Spring 2018 Exam 2' }),
+        md`$-\nabla\Phi = -6x\,\hat x$ and $-\partial\mathbf A/\partial t = +6x\,\hat x$: $\mathbf E = 0$. $\nabla\times\mathbf A = 0$ because each component depends only on its own coordinate (and $t$).`, { src: 'Spring 2018 Exam 2', id: 'u0-curl-div.p17' }),
       Q(md`At fixed $z$, $\dfrac{\partial}{\partial t}\cos(\omega t - \beta z) = $`,
         [md`$-\omega\sin(\omega t - \beta z)$`, md`$\omega\sin(\omega t - \beta z)$`, md`$-\beta\sin(\omega t - \beta z)$`, md`$-\omega\cos(\omega t - \beta z)$`], 0,
         [null, md`$\cos' = -\sin$ and the inside derivative is $+\omega$: one minus sign.`, md`In $t$ the chain rule brings down $\omega$.`, md`The derivative of $\cos$ is $-\sin$.`],
-        md`$-\sin(\cdot)\times\partial_t(\omega t - \beta z) = -\omega\sin(\omega t - \beta z)$.`),
+        md`$-\sin(\cdot)\times\partial_t(\omega t - \beta z) = -\omega\sin(\omega t - \beta z)$.`, { id: 'u0-curl-div.p18' }),
       Q(md`The units of $\nabla\times\mathbf H$ are…`, ['A/m²', 'A/m', 'A', 'A·m'], 0,
         [null, md`That is $\mathbf H$; the curl adds a 1/m.`, md`That is a circulation $\oint\mathbf H\cdot d\mathbf l$.`, 'The curl divides by length, it does not multiply.'],
-        md`$\nabla$ is "per meter": (A/m)/m = A/m², the units of $\mathbf J$, as in $\nabla\times\mathbf H = \mathbf J + \partial\mathbf D/\partial t$.`),
+        md`$\nabla$ is "per meter": (A/m)/m = A/m², the units of $\mathbf J$, as in $\nabla\times\mathbf H = \mathbf J + \partial\mathbf D/\partial t$.`, { id: 'u0-curl-div.p19' }),
+      Q(md`$\mathbf E = kr\,\hat r$ in cylindrical coordinates ($k$ a constant). $\nabla\cdot\mathbf E = $`,
+        ['$2k$', '$k$', '$3k$', '$0$'], 0,
+        [null, md`That is $\partial E_r/\partial r$ alone. Differentiate $rE_r = kr^2$, then divide by $r$.`, md`That is the divergence of $k(x\,\hat x + y\,\hat y + z\,\hat z)$, which spreads in three dimensions; $kr\,\hat r$ spreads only away from the axis.`, md`The field spreads away from the axis: positive divergence.`],
+        md`$\dfrac1r\dfrac{d}{dr}(kr^2) = 2k$. Cartesian check: $kr\,\hat r = k(x\,\hat x + y\,\hat y)$, divergence $k + k$. ✓`, { id: 'u0-curl-div.cyl1' }),
+      Q(md`A thick winding makes $\mathbf H = H_0(1 - r/a)\,\hat z$ for $r < a$ (zero outside). There, $\mathbf J = $`,
+        [md`$\dfrac{H_0}{a}\,\hat\phi$`, md`$-\dfrac{H_0}{a}\,\hat\phi$`, md`$\dfrac{H_0}{a}\,\hat z$`, md`$0$: $H_z$ does not depend on $\phi$`], 0,
+        [null, md`The $\hat\phi$ part of the curl is $\partial F_r/\partial z - \partial F_z/\partial r$: the minus sign sits on $\partial_rH_z$, and $\partial_rH_z = -H_0/a$ is negative.`, md`The curl of a $\hat z$ field that varies with $r$ is perpendicular to $\hat z$: it circles the axis, like a solenoid's current.`, md`$H_z$ varies with $r$, and $\partial_rF_z$ is in the $\hat\phi$ part of the curl.`],
+        md`$\mathbf J = -\hat\phi\,dH_z/dr = -\hat\phi(-H_0/a) = (H_0/a)\,\hat\phi$: counterclockwise from $+z$, and the RHR (fingers along $\hat\phi$) gives $\mathbf H$ along $+\hat z$. ✓`, { id: 'u0-curl-div.cyl2' }),
+      Q(md`Which $\mathbf H = H_\phi(r)\,\hat\phi$ has zero curl at every $r > 0$? ($k$ is a constant.)`,
+        [md`$H_\phi = k/r$`, md`$H_\phi = k$`, md`$H_\phi = kr$`, md`$H_\phi = k/r^2$`], 0,
+        [null, md`$\frac1r\frac{d}{dr}(kr) = k/r \ne 0$: a constant $H_\phi$ needs current everywhere.`, md`$\frac1r\frac{d}{dr}(kr^2) = 2k$: that is the field inside a uniform wire.`, md`$\frac1r\frac{d}{dr}(k/r) = -k/r^3 \ne 0$.`],
+        md`$rH_\phi = k$ is constant, so the curl is zero: the field outside a wire, $I/2\pi r$, whose current is all inside $r$.`, { id: 'u0-curl-div.cyl3' }),
+      Q(md`For $\mathbf H = H_\phi(r)\,\hat\phi$, which components of $\nabla\times\mathbf H$ can be nonzero?`,
+        [md`only the $\hat z$ component`, md`only the $\hat\phi$ component`, md`the $\hat r$ and $\hat z$ components`, md`none: a field that depends only on $r$ has no curl`], 0,
+        [null, md`The $\hat\phi$ part, $\partial_zF_r - \partial_rF_z$, uses $F_r$ and $F_z$, both zero here.`, md`The $\hat r$ part, $\frac1r\partial_\phi F_z - \partial_zF_\phi$, needs an $F_z$ or a $z$-dependence.`, md`The $\hat z$ part, $\frac1r\partial_r(rH_\phi)$, survives: that is the axial current of a wire.`],
+        md`$\nabla\times\mathbf H = \hat z\,\frac1r\frac{d(rH_\phi)}{dr}$: circulation around the axis means current along it.`, { id: 'u0-curl-div.cyl4' }),
+      Q(md`In free space, $\mathbf E = kr^2\,\hat r$ inside a long charged cylinder ($k$ a constant). The charge density there is…`,
+        [md`$3\epsilon_0kr$`, md`$2\epsilon_0kr$`, md`$\epsilon_0kr$`, md`$3kr$`], 0,
+        [null, md`That is $\epsilon_0\,dE_r/dr$ alone; the divergence differentiates $rE_r = kr^3$.`, md`That is $\epsilon_0E_r/r$ alone, the other half of the product rule.`, md`That is $\nabla\cdot\mathbf E$; Gauss's law gives $\rho = \epsilon_0\nabla\cdot\mathbf E$.`],
+        md`$\rho = \dfrac{\epsilon_0}{r}\dfrac{d}{dr}(kr^3) = 3\epsilon_0kr$.`, { id: 'u0-curl-div.cyl5' }),
       R(md`
         ### Drills with new situations every time
       `),
@@ -723,8 +814,12 @@
       Object.assign(G('rf_u0_partial', { need: 6 }), { id: 'u0-curl-div.r0' }),
       level(2, 'compute', md`**The trick:** divergence: each component by its own variable. Curl: each component by the **other** variables, $\partial_yF_z - \partial_zF_y$ and its cyclic shifts.`),
       Object.assign(G('rf_u0_divcurl', { need: 6 }), { id: 'u0-curl-div.r1' }),
+      level(2, 'cylindrical coordinates', md`**The trick:** $H_\phi(r)$: multiply by $r$, differentiate, divide by $r$; the answer points along $\hat z$. $H_z(r)$: $J_\phi = -dH_z/dr$. $E_r(r)$: $\rho = \frac{\epsilon}{r}\frac{d}{dr}(rE_r)$.`),
+      Object.assign(G('rf_u0_cyl', { need: 6 }), { id: 'u0-curl-div.r3' }),
       level(3, 'a field from its partner', md`**The trick:** $\nabla\times\mathbf F = \hat a\times\partial\mathbf F/\partial a$, divide, anti-differentiate in $t$, then check $\eta$ and $\mathbf E\times\mathbf H$.`),
       Object.assign(G('u0_h_from_e', { need: 2 }), { id: 'u0-curl-div.r2' }),
+      level(3, 'a source from a round field', md`**The trick:** one surviving term of the cylindrical curl or divergence gives the density; the integral law (Ampère's or Gauss's) on a circle gives the total, and the two must agree.`),
+      Object.assign(G('u0_cyl', { need: 2 }), { id: 'u0-curl-div.r4' }),
     ],
   });
 
@@ -1464,6 +1559,173 @@
     };
   };
 
+  // ---------------------------------------------------------------- C: cylindrical coordinates
+  // c * S * r^p * a^s as TeX (c an integer): cylMono(3, 'H_0', 1, -2) -> \dfrac{3H_0r}{a^{2}}
+  function cylMono(c, S, pr, s) {
+    if (!c) return '0';
+    const pw = (v, e) => (e === 1 ? v : `${v}^{${e}}`);
+    const num = [S], den = [];
+    if (pr > 0) num.push(pw('r', pr)); if (pr < 0) den.push(pw('r', -pr));
+    if (s > 0) num.push(pw('a', s)); if (s < 0) den.push(pw('a', -s));
+    const co = Math.abs(c) === 1 ? '' : String(Math.abs(c)), sg = c < 0 ? '-' : '';
+    return den.length ? `${sg}\\dfrac{${co}${num.join('')}}{${den.join('')}}` : `${sg}${co}${num.join('')}`;
+  }
+  // the same as an answer-box expression: cylExpr(3, 'H0', 1, -2) -> 3*H0*r/(a^2)
+  function cylExpr(c, S, pr, s) {
+    const pw = (v, e) => (e === 1 ? v : `${v}^${e}`);
+    const num = [...(c === 1 ? [] : [String(c)]), S], den = [];
+    if (pr > 0) num.push(pw('r', pr)); if (pr < 0) den.push(pw('r', -pr));
+    if (s > 0) num.push(pw('a', s)); if (s < 0) den.push(pw('a', -s));
+    return num.join('*') + (den.length ? `/(${den.join('*')})` : '');
+  }
+
+  GENS.rf_u0_cyl = () => one([
+    // H_phi = H0 (r/a)^n  ->  J_z = (n + 1) H0 r^(n-1) / a^n
+    () => {
+      const n = pick([0, 1, 2, 3]);
+      const o = (t, dir = '\\hat z') => (t === '0' ? '$0$' : `$${t}\\,${dir}$`);
+      const J = cylMono(n + 1, 'H_0', n - 1, -n);
+      const half = n === 1 ? md`That is one of the two equal terms, $\partial H_\phi/\partial r$ or $H_\phi/r$; the curl is their sum.` : null;
+      return MC('Curl of a round H', md`$\mathbf H = ${cylMono(1, 'H_0', n, -n)}\,\hat\phi$ (cylindrical). $\nabla\times\mathbf H = $`, o(J),
+        [[o(cylMono(n, 'H_0', n - 1, -n)), half || md`That is $\partial H_\phi/\partial r$ alone. Differentiate $rH_\phi$, then divide by $r$.`],
+          [o(cylMono(1, 'H_0', n - 1, -n)), half || md`That is $H_\phi/r$ alone, the other half of the product rule.`],
+          [o(J, '\\hat\\phi'), md`A $\hat\phi$ field that depends on $r$ curls about the axis: its curl points along $\hat z$.`],
+          [o(cylMono(n + 1, 'H_0', n, -n)), md`That is $\frac{d}{dr}(rH_\phi)$; divide by $r$.`]],
+        md`$rH_\phi = ${cylMono(1, 'H_0', n + 1, -n)}$, $\;\dfrac{d}{dr}(rH_\phi) = ${cylMono(n + 1, 'H_0', n, -n)}$, divide by $r$: $\;${J}\,\hat z$.`);
+    },
+    // H_z(r) z-hat  ->  J_phi = -dH_z/dr
+    () => {
+      const n = pick([1, 2, 3]), dec = pick([true, false]);
+      const rn = n === 1 ? '\\dfrac{r}{a}' : `\\dfrac{r^{${n}}}{a^{${n}}}`;
+      const sg = dec ? 1 : -1;                              // J_phi = -dH_z/dr = sg * n H0 r^(n-1)/a^n
+      const mag = cylMono(n, 'H_0', n - 1, -n);
+      const T = (s, dir) => `$${s < 0 ? '-' : ''}${mag}\\,${dir}$`;
+      const wr = [[T(-sg, '\\hat\\phi'), md`The $\hat\phi$ part of the curl is $\partial F_r/\partial z - \partial F_z/\partial r$: the minus sign sits on $\partial_rH_z$.`],
+        [T(sg, '\\hat z'), md`A $\hat z$ field that varies with $r$ has its curl along $\hat\phi$: the current circles the axis.`],
+        ['$0$', md`$H_z$ changes with $r$, and $-\partial_rF_z$ is in the $\hat\phi$ part of the curl.`]];
+      if (!dec) wr.push([`$-${cylMono(n + 1, 'H_0', n - 1, -n)}\\,\\hat\\phi$`, md`That applies $\frac1r\frac{d}{dr}(r\,\cdot)$, which belongs to $F_\phi$ in the $\hat z$ part; $H_z$ enters as $-\partial_rH_z$.`]);
+      return MC('Curl of a solenoid-like H', md`$\mathbf H = ${dec ? `H_0\\left(1 - ${rn}\\right)` : cylMono(1, 'H_0', n, -n)}\,\hat z$ for $r < a$. $\nabla\times\mathbf H = $`, T(sg, '\\hat\\phi'), wr,
+        md`$\nabla\times\mathbf H = -\hat\phi\,\dfrac{dH_z}{dr}$ with $\dfrac{dH_z}{dr} = ${dec ? '-' : ''}${mag}$. ${dec ? '$H_z$ falls outward, so the current circles counterclockwise from $+z$, along $+\\hat\\phi$.' : '$H_z$ grows outward, so the current runs along $-\\hat\\phi$.'}`);
+    },
+    // E_r(r) r-hat  ->  rho
+    () => {
+      const n = pick([1, 2, 3]);
+      const o = (c, S, pr) => `$${cylMono(c, S, pr, -n)}$`;
+      return MC('Charge from a round E', md`In free space, $\mathbf E = ${cylMono(1, 'E_0', n, -n)}\,\hat r$ inside a long charged cylinder. $\rho = $`, o(n + 1, '\\epsilon_0E_0', n - 1),
+        [[o(n, '\\epsilon_0E_0', n - 1), md`That is $\epsilon_0\,\partial E_r/\partial r$ alone. Differentiate $rE_r$, then divide by $r$.`],
+          [o(n + 1, 'E_0', n - 1), md`That is $\nabla\cdot\mathbf E$. Gauss's law gives $\rho = \epsilon_0\nabla\cdot\mathbf E$.`],
+          [o(n + 2, '\\epsilon_0E_0', n - 1), md`That is the spherical divergence, $\frac{1}{r^2}\partial_r(r^2E_r)$. Here $r$ is the distance from an axis: $\frac1r\partial_r(rE_r)$.`],
+          [o(n + 1, '\\epsilon_0E_0', n), md`That is $\epsilon_0\frac{d}{dr}(rE_r)$; divide by $r$.`]],
+        md`$\rho = \dfrac{\epsilon_0}{r}\dfrac{d}{dr}\left(${cylMono(1, 'E_0', n + 1, -n)}\right) = ${cylMono(n + 1, '\\epsilon_0E_0', n - 1, -n)}$.`);
+    },
+    // a number: H_phi = k r^n A/m
+    () => {
+      const n = pick([2, 3]), k = pick([2, 3, 4, 6, 10]), r0 = pick([0.5, 2]);
+      const J = (n + 1) * k * r0 ** (n - 1);
+      const o = (x) => `$${p(x)}$ A/m²`;
+      return MC('A curl at a point', md`$\mathbf H = ${k}r^{${n}}\,\hat\phi$ A/m, with $r$ in meters. $J_z$ at $r = ${r0}$ m is…`, o(J),
+        [[o(n * k * r0 ** (n - 1)), md`That is $\partial H_\phi/\partial r$ alone; add $H_\phi/r$.`],
+          [o(k * r0 ** (n - 1)), md`That is $H_\phi/r$ alone; add $\partial H_\phi/\partial r$.`],
+          [o((n + 1) * k * r0 ** n), md`That is $\frac{d}{dr}(rH_\phi)$ before dividing by $r$.`],
+          [o(k * r0 ** n), md`That is $H_\phi$ itself, in A/m; the curl is a derivative.`]],
+        md`$\dfrac1r\dfrac{d}{dr}\big(${k}r^{${n + 1}}\big) = ${(n + 1) * k}${n === 2 ? 'r' : `r^{${n - 1}}`}$; at $r = ${r0}$ m: $${p(J)}$ A/m².`);
+    },
+    // which part survives
+    () => {
+      const [q, right, w, s] = pick([
+        [md`$\mathbf H = H_\phi(r)\,\hat\phi$ (any profile). The current density it implies points along…`, md`$\pm\hat z$ only`,
+          [[md`$\pm\hat\phi$`, md`The curl of a $\hat\phi$ field that depends on $r$ has only a $\hat z$ part, $\frac1r\frac{d}{dr}(rH_\phi)$.`], [md`$\pm\hat r$`, md`The $\hat r$ part needs an $F_z$ or a $z$-dependence.`], [md`nowhere: $\mathbf J = 0$ for any $H_\phi(r)$`, md`Only $H_\phi\propto1/r$ has zero curl.`]],
+          md`A wire's current runs along its axis; its $\mathbf H$ circles it.`],
+        [md`$\mathbf H = H_z(r)\,\hat z$ (any profile). The current density it implies points along…`, md`$\pm\hat\phi$ only`,
+          [[md`$\pm\hat z$`, md`The $\hat z$ part of the curl uses $F_\phi$ and $F_r$, which are zero.`], [md`$\pm\hat r$`, md`The $\hat r$ part, $\frac1r\partial_\phi F_z$, is zero: $H_z$ does not depend on $\phi$.`], [md`nowhere: $\mathbf J = 0$ for any $H_z(r)$`, md`Only a constant $H_z$ has zero curl.`]],
+          md`$\nabla\times\mathbf H = -\hat\phi\,dH_z/dr$: a solenoid's current circles its axis.`],
+        [md`$\mathbf E = E_r(r)\,\hat r$ (any profile). $\nabla\times\mathbf E = $`, md`$0$, for any $E_r(r)$`,
+          [[md`$\hat z\,\frac1r\frac{d(rE_r)}{dr}$`, md`That is the divergence with a $\hat z$ attached; the $\hat z$ part of the curl uses $F_\phi$ and $\partial_\phi F_r$.`], [md`$-\hat\phi\,\frac{dE_r}{dr}$`, md`The $\hat\phi$ part is $\partial_zF_r - \partial_rF_z$: it has $\partial_zF_r$, not $\partial_rF_r$.`], [md`$0$ only if $E_r\propto1/r$`, md`$1/r$ is the zero-**divergence** profile. The curl of $E_r(r)\,\hat r$ is always zero.`]],
+          md`$F_r$ enters the curl only through $\partial_zF_r$ and $\partial_\phi F_r$, both zero. So a charged cylinder's field can be electrostatic.`],
+        [md`$\mathbf E = E_r(r)\,\hat r$ in a charge-free region, between the conductors of a coax. Then $E_r\propto$`, md`$1/r$`,
+          [[md`$1/r^2$`, md`That is a point charge, with the spherical $r$. Here $\frac1r\frac{d}{dr}(rE_r) = 0$ needs $rE_r$ constant.`], ['$r$', 'That is inside a uniformly charged cylinder, where $\\rho \\ne 0$.'], ['a constant', md`$\frac1r\frac{d}{dr}(rE_0) = E_0/r \ne 0$.`]],
+          md`$\rho = \frac{\epsilon}{r}\frac{d}{dr}(rE_r) = 0$ means $rE_r$ is constant: $E_r = \lambda/2\pi\epsilon r$.`],
+      ]);
+      return MC('What survives', q, right, w, s);
+    },
+  ]);
+
+  // J or rho from a given round field, and the total from the integral law
+  GENS.u0_cyl = () => {
+    const kind = pick(['wire', 'wire', 'charge', 'sol']), n = pick([1, 2, 3]), f1 = pick([0.25, 0.5, 0.8]);
+    const pf = n === 1 ? '' : n === 2 ? `\\,(${f1})` : `\\,(${f1})^{${n - 1}}`;     // (r1/a)^(n-1)
+    const rn = n === 1 ? '\\dfrac{r}{a}' : `\\dfrac{r^{${n}}}{a^{${n}}}`;
+    const VR = { H0: [0.5, 3], E0: [1, 10], eps0: [0.5, 2], a: [0.5, 2], r: [0.2, 1.5] };
+    const vars = (...k) => Object.fromEntries(k.map((x) => [x, VR[x]]));
+    if (kind === 'wire') {
+      const amm = pick([1, 2, 4, 5]), a = amm / 1000, H0 = pick([10, 20, 40, 50, 100]);
+      const r1 = f1 * a, J1 = (n + 1) * H0 / a * f1 ** (n - 1), I = 2 * Math.PI * a * H0;
+      const Jt = cylMono(n + 1, 'H_0', n - 1, -n);
+      return {
+        title: 'J from the H of a wire',
+        q: md`A long conductor of radius $a = ${amm}$ mm lies on the $z$-axis. Its static field is $\mathbf H = H_\phi(r)\,\hat\phi$ with $H_\phi = ${cylMono(1, 'H_0', n, -n)}$ for $r < a$ and $H_\phi = \dfrac{H_0a}{r}$ for $r > a$, where $H_0 = ${H0}$ A/m. Use $\nabla\times\mathbf H = \mathbf J$ to find $J_z(r)$ inside, its value at $r = ${p(r1 * 1000)}$ mm, and $\mathbf J$ outside. Then find the total current $I$ from Ampère's law.`,
+        parts: [
+          { lbl: '$J_z(r)$ for $r < a$, in A/m²', expr: cylExpr(n + 1, 'H0', n - 1, -n), vars: vars('H0', 'a', 'r') },
+          N(`J_z(${p(r1 * 1000)}\\ \\text{mm})`, J1, 'A/m^2'),
+          { lbl: 'For $r > a$, $\\mathbf J$ is', mc: ['zero', '$-H_0a/r^2$ along $\\hat z$', '$+H_0a/r^2$ along $\\hat z$'], a: 0, fixed: true, why: [null, 'That is $\\partial H_\\phi/\\partial r$ alone. $rH_\\phi = H_0a$ is constant, so the curl is zero.', 'That is $H_\\phi/r$ alone. The full curl, $\\partial_rH_\\phi + H_\\phi/r$, is zero.'] },
+          N('I', I, 'A'),
+        ],
+        hints: ['Only the $\\hat z$ part of the curl survives: $J_z = \\dfrac1r\\dfrac{d}{dr}(rH_\\phi)$. Multiply by $r$ first, then differentiate, then divide by $r$.', 'Ampère on a circle outside: $2\\pi rH_\\phi = I$. It must equal $\\int_0^aJ_z\\,2\\pi r\\,dr$.'],
+        sol: sol({
+          eq: md`Static Ampère in point form, $\nabla\times\mathbf H = \mathbf J$; for $\mathbf H = H_\phi(r)\hat\phi$ only $J_z = \dfrac1r\dfrac{d}{dr}(rH_\phi)$ survives. Integral form on a circle of radius $r$: $2\pi rH_\phi = I_{\text{enc}}$.`,
+          sym: md`Inside: $rH_\phi = ${cylMono(1, 'H_0', n + 1, -n)}$, so $J_z = \dfrac1r\cdot${cylMono(n + 1, 'H_0', n, -n)} = ${Jt}$. Outside: $rH_\phi = H_0a$ is constant, so $\mathbf J = 0$. Ampère at $r > a$: $I = 2\pi r\cdot\dfrac{H_0a}{r} = 2\pi aH_0$. Check: $\displaystyle\int_0^a${Jt}\,2\pi r\,dr = 2\pi aH_0$. ✓`,
+          sub: md`$$J_z(${p(r1 * 1000)}\ \text{mm}) = ${n + 1}\,\frac{${H0}\ \text{A/m}}{${p(a)}\ \text{m}}${pf} = ${f(J1)}\ \text{A/m}^2, \qquad I = 2\pi(${p(a)}\ \text{m})(${H0}\ \text{A/m}) = ${f(I)}\ \text{A}$$`,
+          ans: md`$J_z = ${Jt}$ for $r < a$ (${n === 1 ? 'uniform' : 'growing outward'}); $J_z = ${f(J1)}$ A/m² at $${p(r1 * 1000)}$ mm; $\mathbf J = 0$ for $r > a$; $I = ${f(I)}$ A along $+\hat z$.`,
+          check: md`$H_\phi > 0$ circles counterclockwise from $+z$, so by the RHR the current runs along $+\hat z$: $J_z > 0$. ✓ The curl and Ampère give the same $I$. ✓ Units: (A/m)/m = A/m². ✓`,
+        }),
+      };
+    }
+    if (kind === 'charge') {
+      const acm = pick([1, 2, 5]), a = acm / 100, E0 = pick([100, 200, 500, 1000, 2000]);
+      const r1 = f1 * a, rho1 = (n + 1) * EM.eps0 * E0 / a * f1 ** (n - 1), lam = 2 * Math.PI * a * EM.eps0 * E0;
+      const Rt = cylMono(n + 1, '\\epsilon_0E_0', n - 1, -n);
+      return {
+        title: 'ρ from the E of a charged cylinder',
+        q: md`A long cylinder of charge, radius $a = ${acm}$ cm, lies on the $z$-axis in free space. Its field is $\mathbf E = E_r(r)\,\hat r$ with $E_r = ${cylMono(1, 'E_0', n, -n)}$ for $r < a$ and $E_r = \dfrac{E_0a}{r}$ for $r > a$, where $E_0 = ${E0}$ V/m. Use $\nabla\cdot\mathbf D = \rho$ to find $\rho(r)$ inside, its value at $r = ${p(r1 * 100)}$ cm, and $\rho$ outside. Then find the charge per unit length $\lambda$ from Gauss's law.`,
+        parts: [
+          { lbl: '$\\rho(r)$ for $r < a$, in C/m³', expr: cylExpr(n + 1, 'eps0*E0', n - 1, -n), vars: vars('eps0', 'E0', 'a', 'r') },
+          N(`\\rho(${p(r1 * 100)}\\ \\text{cm})`, rho1, 'C/m^3'),
+          { lbl: 'For $r > a$, $\\rho$ is', mc: ['zero', '$-\\epsilon_0E_0a/r^2$', '$+\\epsilon_0E_0a/r^2$'], a: 0, fixed: true, why: [null, 'That is $\\epsilon_0\\,\\partial E_r/\\partial r$ alone. $rE_r = E_0a$ is constant, so the divergence is zero.', 'That is $\\epsilon_0E_r/r$ alone. The full divergence, $\\partial_rE_r + E_r/r$, is zero.'] },
+          N('\\lambda', lam, 'C/m'),
+        ],
+        hints: ['Only the $r$ term of the divergence survives: $\\rho = \\dfrac{\\epsilon_0}{r}\\dfrac{d}{dr}(rE_r)$.', 'Gauss on a coaxial cylinder of length $\\ell$ outside: $\\epsilon_0E_r\\,2\\pi r\\ell = \\lambda\\ell$. It must equal $\\int_0^a\\rho\\,2\\pi r\\,dr$.'],
+        sol: sol({
+          eq: md`Gauss in point form, $\nabla\cdot\mathbf D = \rho$ with $\mathbf D = \epsilon_0\mathbf E$; for $\mathbf E = E_r(r)\hat r$ only $\rho = \dfrac{\epsilon_0}{r}\dfrac{d}{dr}(rE_r)$ survives. Integral form on a coaxial cylinder of radius $r$, length $\ell$: $\epsilon_0E_r\,2\pi r\ell = \lambda_{\text{enc}}\ell$.`,
+          sym: md`Inside: $rE_r = ${cylMono(1, 'E_0', n + 1, -n)}$, so $\rho = \dfrac{\epsilon_0}{r}\cdot${cylMono(n + 1, 'E_0', n, -n)} = ${Rt}$. Outside: $rE_r = E_0a$ is constant, so $\rho = 0$. Gauss at $r > a$: $\lambda = 2\pi r\epsilon_0\dfrac{E_0a}{r} = 2\pi a\epsilon_0E_0$. Check: $\displaystyle\int_0^a${Rt}\,2\pi r\,dr = 2\pi a\epsilon_0E_0$. ✓`,
+          sub: md`$$\rho(${p(r1 * 100)}\ \text{cm}) = ${n + 1}\,\frac{(8.854\times10^{-12}\ \text{F/m})(${E0}\ \text{V/m})}{${p(a)}\ \text{m}}${pf} = ${f(rho1)}\ \text{C/m}^3$$ $$\lambda = 2\pi(${p(a)}\ \text{m})(8.854\times10^{-12}\ \text{F/m})(${E0}\ \text{V/m}) = ${f(lam)}\ \text{C/m}$$`,
+          ans: md`$\rho = ${Rt}$ for $r < a$; $\rho = ${f(rho1)}$ C/m³ at $${p(r1 * 100)}$ cm; $\rho = 0$ outside; $\lambda = ${f(lam)}$ C/m.`,
+          check: md`$\mathbf E$ points outward, so the charge is positive. ✓ Units: (F/m)(V/m)/m = C/m³. ✓ ${n === 1 ? 'A linear $E_r$ means a uniform $\\rho$, the formula sheet\'s cylinder.' : 'A steeper $E_r$ means charge piled toward the surface.'}`,
+        }),
+      };
+    }
+    const acm = pick([1, 2, 5]), a = acm / 100, H0 = pick([100, 200, 500, 1000]);
+    const r1 = f1 * a, J1 = n * H0 / a * f1 ** (n - 1);
+    const Jt = cylMono(n, 'H_0', n - 1, -n);
+    return {
+      title: 'J from the H of a thick winding',
+      q: md`A long, thick winding of radius $a = ${acm}$ cm on the $z$-axis makes the static field $\mathbf H = H_z(r)\,\hat z$ with $H_z = H_0\left(1 - ${rn}\right)$ for $r < a$ and $H_z = 0$ for $r > a$, where $H_0 = ${H0}$ A/m. Use $\nabla\times\mathbf H = \mathbf J$ to find $J_\phi(r)$ inside, its value at $r = ${p(r1 * 100)}$ cm, and its direction. Then find the current per meter of length, $\int_0^aJ_\phi\,dr$.`,
+      parts: [
+        { lbl: '$J_\\phi(r)$ for $r < a$, in A/m²', expr: cylExpr(n, 'H0', n - 1, -n), vars: vars('H0', 'a', 'r') },
+        N(`J_\\phi(${p(r1 * 100)}\\ \\text{cm})`, J1, 'A/m^2'),
+        { lbl: 'Seen from $+z$, the current circulates', mc: ['counterclockwise ($+\\hat\\phi$)', 'clockwise ($-\\hat\\phi$)'], a: 0, fixed: true, why: [null, '$J_\\phi = -dH_z/dr$, and $H_z$ falls outward, so $J_\\phi > 0$. Check: counterclockwise current makes $\\mathbf H$ along $+\\hat z$ inside (RHR).'] },
+        N('\\int_0^aJ_\\phi\\,dr', H0, 'A/m'),
+      ],
+      hints: ['For $\\mathbf H = H_z(r)\\hat z$ only the $\\hat\\phi$ part of the curl survives: $J_\\phi = -dH_z/dr$.', 'Integrate $J_\\phi$ from $0$ to $a$. Ampère on a rectangle with one long side on the axis and one outside gives the same.'],
+      sol: sol({
+        eq: md`$\nabla\times\mathbf H = \mathbf J$; for $\mathbf H = H_z(r)\hat z$ only $J_\phi = -\dfrac{dH_z}{dr}$ survives. Integral form on a rectangle of length $\ell$ in a plane through the axis, one long side on the axis and one outside: $H_z(0)\,\ell = \ell\displaystyle\int_0^aJ_\phi\,dr$.`,
+        sym: md`$\dfrac{dH_z}{dr} = -${Jt}$, so $J_\phi = ${Jt}$ for $r < a$, along $+\hat\phi$; $\mathbf J = 0$ outside. Per meter of length: $\displaystyle\int_0^a${Jt}\,dr = H_0\left[${n === 1 ? 'r/a' : `r^{${n}}/a^{${n}}`}\right]_0^a = H_0$, which is $H_z(0)$, as Ampère requires. ✓`,
+        sub: md`$$J_\phi(${p(r1 * 100)}\ \text{cm}) = ${n === 1 ? '' : `${n}\\,`}\frac{${H0}\ \text{A/m}}{${p(a)}\ \text{m}}${pf} = ${f(J1)}\ \text{A/m}^2, \qquad \int_0^aJ_\phi\,dr = ${H0}\ \text{A/m}$$`,
+        ans: md`$J_\phi = ${Jt}$; $${f(J1)}$ A/m² at $${p(r1 * 100)}$ cm, counterclockwise from $+z$; $\int_0^aJ_\phi\,dr = ${H0}$ A/m.`,
+        check: md`RHR: current counterclockwise from $+z$ makes $\mathbf H$ along $+\hat z$ inside, as given. ✓ A rectangle with its inner side at radius $r$ encloses only the current outside $r$: $\int_r^aJ_\phi\,dr' = H_0\left(1 - ${rn}\right) = H_z(r)$. ✓`,
+      }),
+    };
+  };
+
   // ================================================================ generators: D
   const FUN = [['x^2', (x) => x * x], ['(2x + 1)', (x) => 2 * x + 1], ['\\cos(\\pi x)', (x) => Math.cos(Math.PI * x)], ['x^3', (x) => x ** 3], ['(x - 1)^2', (x) => (x - 1) ** 2], ['e^{0}\\,x', (x) => x]];
   const tri = (x) => (Math.abs(x) <= 0.5 ? 1 - 2 * Math.abs(x) : 0);
@@ -1840,6 +2102,47 @@
     Q(md`$\mathbf H = H_0\cos(\omega t - \beta z)\,\hat y$ in a lossless medium. By $\nabla\times\mathbf H = \epsilon\,\partial\mathbf E/\partial t$, $\mathbf E$ points along…`, [md`$+\hat x$`, md`$-\hat x$`, md`$+\hat z$`, md`$+\hat y$`], 0,
       [null, md`Then $\mathbf E\times\mathbf H \propto -\hat x\times\hat y = -\hat z$, but $\cos(\omega t - \beta z)$ travels toward $+z$. A sign slipped: anti-differentiating $-\sin$ in $t$ gives $+\cos/\omega$.`, 'E is perpendicular to the travel direction.', 'E is perpendicular to H.'],
       md`$\nabla\times\mathbf H = \hat z\times\partial_z\mathbf H = -\beta H_0\sin(\omega t - \beta z)\,\hat x$. So $\partial\mathbf E/\partial t = -(\beta H_0/\epsilon)\sin(\cdot)\,\hat x$ and $\mathbf E = \dfrac{\beta H_0}{\epsilon\omega}\cos(\cdot)\,\hat x = \eta H_0\cos(\omega t - \beta z)\,\hat x$. Check: $\hat x\times\hat y = +\hat z$, the travel direction. ✓`),
+    // cylindrical coordinates
+    Q(md`$\nabla\times(H_0\,\hat\phi)$, with $H_0$ a constant, is…`,
+      [md`$\dfrac{H_0}{r}\,\hat z$`, '$0$', md`$H_0\,\hat z$`, md`$\dfrac{H_0}{r}\,\hat\phi$`], 0,
+      [null, md`A constant component is not a constant field: $\hat\phi$ turns from point to point, and $rH_\phi = H_0r$ grows.`, md`The curl carries a 1/m: $\frac1r\frac{d}{dr}(H_0r) = H_0/r$.`, md`A $\hat\phi$ field circulates about the axis; its curl points along $\hat z$.`],
+      md`$\frac1r\frac{d}{dr}(rH_0) = H_0/r$. A constant $H_\phi$ needs a current density $H_0/r$ wherever it holds.`),
+    Q(md`$\nabla\cdot\big(\hat r/r\big)$ for $r > 0$, in cylindrical coordinates, is…`,
+      ['$0$', md`$-\dfrac{1}{r^2}$`, md`$\dfrac{1}{r^2}$`, md`$\dfrac{2}{r^2}$`], 0,
+      [null, md`That is $\partial F_r/\partial r$ alone; $rF_r = 1$ is constant.`, md`$\frac1r\frac{d}{dr}\big(r\cdot\frac1r\big) = \frac1r\frac{d}{dr}(1) = 0$.`, md`$rF_r = 1$ is constant: no divergence.`],
+      md`$\hat r/r$ is the shape of a line charge's field. Off the line there is no charge, so no divergence.`),
+    Q(md`For any profile $H_\phi(r)$, $\nabla\cdot\big(H_\phi(r)\,\hat\phi\big) = $`,
+      ['$0$', md`$\dfrac1r\dfrac{d(rH_\phi)}{dr}$`, md`$\dfrac{dH_\phi}{dr}$`, md`$\dfrac{H_\phi}{r}$`], 0,
+      [null, md`That is the $\hat z$ part of the curl, not the divergence.`, md`The divergence uses $\partial F_\phi/\partial\phi$ for this component, and $H_\phi$ does not depend on $\phi$.`, md`The only term with $F_\phi$ is $\frac1r\partial F_\phi/\partial\phi = 0$.`],
+      md`Circles neither start nor end: every wire's $\mathbf H$ satisfies $\nabla\cdot\mathbf B = 0$ automatically.`),
+    Q(md`A radial field $\mathbf F = F_r(r)\,\hat r$ that depends only on $r$ has curl…`,
+      [md`$0$, for any $F_r(r)$`, md`$\hat z\,\dfrac1r\dfrac{d(rF_r)}{dr}$`, md`$-\hat\phi\,\dfrac{dF_r}{dr}$`, md`zero only if $F_r\propto1/r$`], 0,
+      [null, md`That is the divergence with a $\hat z$ attached. The $\hat z$ part of the curl uses $F_\phi$ and $\partial_\phi F_r$.`, md`The $\hat\phi$ part is $\partial_zF_r - \partial_rF_z$: it has $\partial_zF_r$, not $\partial_rF_r$.`, md`$1/r$ is the zero-**divergence** profile; every $F_r(r)$ has zero curl.`],
+      md`$F_r$ enters the curl only through $\partial_zF_r$ and $\partial_\phi F_r$, both zero. That is why a charged cylinder's $E_r(r)$ can be electrostatic.`),
+    Q(md`$\dfrac1r\dfrac{d}{dr}\big(rH_\phi\big) = $`,
+      [md`$\dfrac{dH_\phi}{dr} + \dfrac{H_\phi}{r}$`, md`$\dfrac{dH_\phi}{dr}$`, md`$\dfrac{dH_\phi}{dr} + H_\phi$`, md`$r\dfrac{dH_\phi}{dr} + H_\phi$`], 0,
+      [null, md`That drops the derivative of the $r$: the product rule gives two terms.`, md`After dividing by $r$, the second term is $H_\phi/r$, not $H_\phi$.`, md`That is $\frac{d}{dr}(rH_\phi)$ before dividing by $r$.`],
+      md`Product rule: $\frac{d}{dr}(rH_\phi) = H_\phi + r\frac{dH_\phi}{dr}$; divide by $r$.`),
+    Q(md`$\mathbf H = H_0e^{-r/a}\,\hat z$ inside a long cylinder. $\mathbf J = $`,
+      [md`$\dfrac{H_0}{a}e^{-r/a}\,\hat\phi$`, md`$-\dfrac{H_0}{a}e^{-r/a}\,\hat\phi$`, md`$\dfrac{H_0}{a}e^{-r/a}\,\hat z$`, md`$H_0\left(\dfrac1r - \dfrac1a\right)e^{-r/a}\,\hat\phi$`], 0,
+      [null, md`$J_\phi = -dH_z/dr$, and $dH_z/dr = -(H_0/a)e^{-r/a}$: the two minus signs cancel.`, md`A $\hat z$ field that varies with $r$ has its curl along $\hat\phi$.`, md`That applies $\frac1r\frac{d}{dr}(r\,\cdot)$, which belongs to $F_\phi$ in the $\hat z$ part; $H_z$ enters the $\hat\phi$ part as $-\partial_rH_z$.`],
+      md`$J_\phi = -\dfrac{d}{dr}\big(H_0e^{-r/a}\big) = \dfrac{H_0}{a}e^{-r/a}$. $H_z$ falls outward, so the current circles counterclockwise from $+z$, and the RHR gives $+\hat z$ inside. ✓`),
+    Q(md`$H_\phi = H_0r/a$ for $r < a$ and $H_0a/r$ for $r > a$. The current density is…`,
+      [md`$\dfrac{2H_0}{a}\,\hat z$ inside, $0$ outside`, md`$\dfrac{H_0}{a}\,\hat z$ inside, $-\dfrac{H_0a}{r^2}\,\hat z$ outside`, md`$\dfrac{2H_0}{a}\,\hat z$ inside, $-\dfrac{2H_0a}{r^2}\,\hat z$ outside`, md`$0$ inside, $\dfrac{H_0}{a}\,\hat z$ outside`], 0,
+      [null, md`That is $dH_\phi/dr$ on both sides: the $H_\phi/r$ term is missing.`, md`Outside, $rH_\phi = H_0a$ is constant: no current.`, md`Inside, $H_\phi$ grows with $r$, so current is enclosed there; outside, $rH_\phi$ is constant.`],
+      md`Inside: $\frac1r\frac{d}{dr}(H_0r^2/a) = 2H_0/a$, uniform. Outside: $rH_\phi = H_0a$ is constant, so $\mathbf J = 0$. It is a uniform wire carrying $I = J\pi a^2 = 2\pi aH_0$.`),
+    Q(md`In Cartesian, $\mathbf F = -y\,\hat x + x\,\hat y$ has $\nabla\times\mathbf F = 2\hat z$. In cylindrical coordinates, $\mathbf F$ is…`,
+      [md`$r\,\hat\phi$, and $\frac1r\frac{d}{dr}(r\cdot r) = 2$ agrees`, md`$\hat\phi$, with curl $\frac1r\hat z$`, md`$r\,\hat r$, with no curl`, md`$-r\,\hat\phi$, with curl $-2\hat z$`], 0,
+      [null, md`$|\mathbf F| = \sqrt{x^2 + y^2} = r$, not 1.`, md`$r\,\hat r = x\,\hat x + y\,\hat y$ points away from the axis; this field circles it.`, md`At $(1, 0)$, $\mathbf F = \hat y = +\hat\phi$: counterclockwise.`],
+      md`$\hat\phi = -\sin\phi\,\hat x + \cos\phi\,\hat y$, so $r\hat\phi = -y\,\hat x + x\,\hat y$. Both coordinate systems give the same curl, $2\hat z$, as they must.`),
+    Q(md`Inside a uniform wire, $H_\phi = H_0r/a$. Close to the axis, $\nabla\times\mathbf H = \hat z\,\frac1r\frac{d(rH_\phi)}{dr}$ is…`,
+      [md`$2H_0/a$, the same as everywhere inside`, md`infinite, because of the $1/r$`, md`zero, because $H_\phi \to 0$ on the axis`, md`$H_0/a$, half its value elsewhere`], 0,
+      [null, md`$rH_\phi = H_0r^2/a$ vanishes like $r^2$; its derivative, $2H_0r/a$, cancels the $1/r$.`, md`$H_\phi$ goes to zero but its slope does not; the curl measures the change.`, md`$\frac1r\frac{d}{dr}(H_0r^2/a) = 2H_0/a$ at every $r < a$; nothing changes near the axis.`],
+      md`The $1/r$ is harmless: $J_z = 2H_0/a$ right up to the axis, as the Cartesian form $\frac{H_0}{a}(-y\,\hat x + x\,\hat y)$ confirms.`),
+    Q(md`An ideal solenoid has $H_z = nI$ for $r < a$ and $0$ for $r > a$ ($nI > 0$). Where is $\nabla\times\mathbf H$ nonzero?`,
+      [md`only at $r = a$: a sheet of current $nI$ per meter along $+\hat\phi$`, md`everywhere inside: $\dfrac{nI}{a}\,\hat\phi$`, md`nowhere: $\mathbf H$ is uniform inside and zero outside`, md`only at $r = a$, along $-\hat\phi$`], 0,
+      [null, md`$H_z$ is flat inside: $dH_z/dr = 0$ there.`, md`It is flat on each side, but it drops by $nI$ at the wall: its derivative there is a spike.`, md`$J_\phi = -dH_z/dr$, and $H_z$ **drops** outward: $+\hat\phi$.`],
+      md`$J_\phi = -dH_z/dr$ is a spike (a delta) at $r = a$ of weight $nI$: the turns, $nI$ amperes per meter, counterclockwise from $+z$ for $\mathbf H$ along $+\hat z$.`),
   ];
 
   EM.BANK['u0-deltas'] = [

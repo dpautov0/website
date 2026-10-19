@@ -1,6 +1,6 @@
 /* Topic 5 — Ampère's law with symmetry (Lectures 12–13). ∮H·dl = I_enc, H = B/μ0; when symmetry lets you pull H out
    of the integral and how to choose the loop; the infinite wire, the thick wire with uniform J, the coax (the lecture's
-   challenge question), the solenoid (rectangular loop), the toroid, and MMF.
+   challenge question), the solenoid (rectangular loop), the toroid, MMF, and the check ∇×H = J in cylindrical coordinates.
    Planar sources (sheets, slabs, holes, delta currents) are Topic 6; the displacement-current term is Topic 12. */
 (function () {
   'use strict';
@@ -98,7 +98,7 @@
     steps: [
       R(md`
         !!key Why you care
-          Summer 2018 #1(a) is a thick wire with $\mathbf J = \hat z/\pi$ A/m²: $H$ inside and outside at given points. HW 5 #4(a)(b) is the same with a total current $I$. Summer 2017 #1(b) and Summer 2020 #2(b) are solenoids, $H = nI$, with a second solenoid nested inside to cancel it. Spring 2018 #2 gives a toroid's $\mu_0NI/2\pi r$ and asks for its flux. Lecture 12 ends on a coax challenge question. The sheets and slabs of Topic 6 are the same law with a rectangle.
+          Summer 2018 #1(a) is a thick wire with $\mathbf J = \hat z/\pi$ A/m²: $H$ inside and outside at given points. HW 5 #4(a)(b) is the same with a total current $I$. Summer 2017 #1(b) and Summer 2020 #2(b) are solenoids, $H = nI$, with a second solenoid nested inside to cancel it. Spring 2018 #2 gives a toroid's $\mu_0NI/2\pi r$ and asks for its flux. Lecture 12 ends on a coax challenge question. The sheets and slabs of Topic 6 are the same law with a rectangle. Exam 2 also tests $\nabla\times\mathbf H = \mathbf J$ in cylindrical coordinates on wires and coax (the instructor, on Piazza): Step 7.
 
         ### Notation
 
@@ -109,6 +109,7 @@
         - $r$, $\hat\phi$: distance from the symmetry axis and the direction circling it. $a$, $b$, $c$: radii.
         - $n$: turns per meter of a solenoid, $n = N/\ell$. $N$: total number of turns (of a toroid).
         - **MMF** (magnetomotive force): $\oint_C\mathbf H\cdot d\mathbf l$, in A, often called ampere-turns.
+        - $\nabla\times\mathbf H$: the **curl** of $\mathbf H$, its circulation per unit area, in A/m² ([Unit 0, Lesson C](#/l/u0-curl-div)).
 
         ### The idea
 
@@ -203,6 +204,28 @@
         ['$1.5$', '$1$', '$0.67$', '$2.25$'], 0,
         [null, 'That would be a solenoid. A toroid\'s $H\\propto1/r$.', 'Inverted: the inner wall is closer, so $H$ is larger there.', 'One power of $r$, not two.'],
         md`$H\propto1/r$: $6/4 = 1.5$.`),
+      R(md`
+        ### Step 7: check the result with the curl
+
+        Ampère's law also has a point form, $\nabla\times\mathbf H = \mathbf J$. For $\mathbf H = H_\phi(r)\,\hat\phi$, one term of the cylindrical curl survives ([Unit 0, Lesson C](#/l/u0-curl-div)):
+        $$\mathbf J = \nabla\times\mathbf H = \hat z\,\frac1r\frac{d}{dr}\big(rH_\phi\big)$$
+        Multiply by $r$, differentiate, divide by $r$: **not** $dH_\phi/dr$. Since $rH_\phi = I_{\text{enc}}(r)/2\pi$,
+        $$J_z = \frac{1}{2\pi r}\frac{dI_{\text{enc}}}{dr}$$
+        the current in a thin ring, divided by the ring's area $2\pi r\,dr$. Where $I_{\text{enc}}$ stops growing, $\mathbf J = 0$, even though $\mathbf H \ne 0$.
+
+        | region | $H_\phi$ | $rH_\phi$ | $J_z$ |
+        |---|---|---|---|
+        | inside the wire, $r < a$ | $\dfrac{Ir}{2\pi a^2}$ | $\dfrac{Ir^2}{2\pi a^2}$ | $\dfrac{I}{\pi a^2}$: the uniform $J$ ✓ |
+        | between, $a < r < b$ (or outside a lone wire) | $\dfrac{I}{2\pi r}$ | $\dfrac{I}{2\pi}$ | $0$ ✓ |
+        | thick outer conductor, $b < r < c$ | $\dfrac{I}{2\pi r}\,\dfrac{c^2 - r^2}{c^2 - b^2}$ | $\dfrac{I}{2\pi}\,\dfrac{c^2 - r^2}{c^2 - b^2}$ | $-\dfrac{I}{\pi(c^2 - b^2)}$: the return current ✓ |
+        | outside the coax | $0$ | $0$ | $0$ ✓ |
+
+        With a thin outer shell instead, $rH_\phi$ drops from $I/2\pi$ to $0$ at $r = b$: the curl is a spike there, the shell's surface current. Any $H_\phi(r)$ you derive must give back the $\mathbf J$ you started from.
+      `),
+      Q(md`**Predict.** Inside a long wire, Ampère gives $H_\phi = kr^2/3$, with $k$ a constant. The current density in the wire is…`,
+        [md`$kr\,\hat z$`, md`$\dfrac{2kr}{3}\,\hat z$`, md`$\dfrac{kr}{3}\,\hat z$`, md`$k\,\hat z$, uniform`], 0,
+        [null, md`That is $dH_\phi/dr$ alone. Differentiate $rH_\phi = kr^3/3$, then divide by $r$.`, md`That is $H_\phi/r$ alone, the other half of the product rule.`, md`A uniform $J$ gives $H_\phi\propto r$, not $r^2$.`],
+        md`$rH_\phi = kr^3/3$, $\;\dfrac{d}{dr}(rH_\phi) = kr^2$, divide by $r$: $\;J_z = kr$. Back to Ampère: $\int_0^rkr'\,2\pi r'\,dr' = \dfrac{2\pi kr^3}{3} = 2\pi rH_\phi$. ✓`, { id: 't5-ampere.curl0' }),
       RF(md`
         ### The method
 
@@ -211,7 +234,7 @@
           2. **Choose $C$** along $\mathbf H$ where you want it, and perpendicular to $\mathbf H$ (or where $\mathbf H = 0$) everywhere else.
           3. **Orient $C$**; the RHR gives $d\mathbf S$. Left side: $H\times$(length where $\mathbf H\parallel d\mathbf l$).
           4. **$I_{\text{enc}}$:** $\int\mathbf J\cdot d\mathbf S$ over the part of $S$ inside the conductor. Partial areas inside a conductor; return currents with their sign.
-          5. **Solve, give the direction** by the RHR, and check: $H$ is continuous at the surface of a volume current; zero where the enclosed current is zero.
+          5. **Solve, give the direction** by the RHR, and check: $H$ is continuous at the surface of a volume current; zero where the enclosed current is zero; $\frac1r\frac{d}{dr}(rH_\phi)$ gives back $J$ (Step 7).
 
         ### Worked example
 
@@ -250,35 +273,47 @@
       Q(md`The current density in a long cylinder is $\mathbf J = \hat z/\pi$ A/m² for $r < a$ and zero otherwise. With $a = \pi$ m, $H_\phi$ at $r = a$ is…`,
         ['$1/2$ A/m', '$\\pi/2$ A/m', '$1/(2\\pi)$ A/m', '$1$ A/m'], 0,
         [null, 'That forgets the $1/\\pi$ in $J$: $H = Jr/2 = (1/\\pi)(\\pi)/2$.', 'That uses $r = 1$ m instead of $r = a = \\pi$ m.', 'That drops the 2 from $H = Jr/2$.'],
-        md`$H_\phi\,2\pi r = J\pi r^2$, so $H_\phi = Jr/2 = \frac{1}{\pi}\cdot\frac{\pi}{2} = \frac12$ A/m. (Summer 2018, 1(a)(iii).)`, { src: 'Summer 2018 Exam 2' }),
+        md`$H_\phi\,2\pi r = J\pi r^2$, so $H_\phi = Jr/2 = \frac{1}{\pi}\cdot\frac{\pi}{2} = \frac12$ A/m. (Summer 2018, 1(a)(iii).)`, { src: 'Summer 2018 Exam 2', id: 't5-ampere.p14' }),
       Q(md`Same cylinder ($\mathbf J = \hat z/\pi$ A/m² for $r < a$), now with $a = 1$ m. $H_\phi$ at $r = 2a$ is…`,
         ['$1/(4\\pi)$ A/m', '$1/(2\\pi)$ A/m', '$1/\\pi$ A/m', '$1/4$ A/m'], 0,
         [null, 'That is the surface value $I/2\\pi a$, at $r = a = 1$ m, not $2a$.', 'That is $Jr/2$ at $r = 2$ m: the inside formula used outside.', 'The enclosed current is $J\\pi a^2 = 1$ A; divide by $2\\pi r$, not by $r^2$.'],
-        md`$I_{\text{enc}} = J\pi a^2 = 1$ A; $H_\phi = \dfrac{1}{2\pi(2)} = \dfrac{1}{4\pi}$ A/m. (Summer 2018, 1(a)(iv).)`, { src: 'Summer 2018 Exam 2' }),
+        md`$I_{\text{enc}} = J\pi a^2 = 1$ A; $H_\phi = \dfrac{1}{2\pi(2)} = \dfrac{1}{4\pi}$ A/m. (Summer 2018, 1(a)(iv).)`, { src: 'Summer 2018 Exam 2', id: 't5-ampere.p15' }),
       Q(md`A long solenoid has $N = 1000$ loops per meter and carries $I_1 = 1$ mA. Its internal field is $\mathbf H = H_0\hat z$ with $H_0 = $`,
         ['$1$ A/m', '$1000$ A/m', '$1.26\\ \\mu$T', '$10^{-3}$ A/m'], 0,
         [null, 'That uses $I = 1$ A instead of 1 mA.', 'That is $B = \\mu_0H$, in tesla; the question asks for $H$.', 'That forgets the turns per meter.'],
-        md`$H_0 = nI = (1000\ \text{m}^{-1})(10^{-3}\ \text{A}) = 1$ A/m. (Summer 2017, 1(b)(i).)`, { src: 'Summer 2017 Exam 2' }),
+        md`$H_0 = nI = (1000\ \text{m}^{-1})(10^{-3}\ \text{A}) = 1$ A/m. (Summer 2017, 1(b)(i).)`, { src: 'Summer 2017 Exam 2', id: 't5-ampere.p16' }),
       Q(md`A long solenoid along $\hat x$ ($1000$ loops/m, $I_1 = 1$ mA) gives $\mathbf H = 1\,\hat x$ A/m inside. A second solenoid with $500$ loops/m is put inside it. To make $\mathbf H = 0$ inside the inner one, its current must be…`,
         ['$2$ mA, opposite in direction to $I_1$', '$1$ mA, opposite to $I_1$', '$2$ mA, in the same direction as $I_1$', '$0.5$ mA, opposite to $I_1$'], 0,
         [null, 'With half the turns per meter it needs twice the current: $500\\,I_2 = 1$ A/m.', 'Same direction would add to the field instead of cancelling it.', 'That scales by the turns ratio the wrong way: $I_2 = I_1n_1/n_2 = (1\\ \\text{mA})(1000/500)$.'],
-        md`Inside the inner solenoid both fields add: $1 + 500\,I_2 = 0$, so $I_2 = -2$ mA. Between the two, only the outer one's field remains. (Summer 2020, 2(b)(ii).)`, { src: 'Summer 2020 Exam 2' }),
+        md`Inside the inner solenoid both fields add: $1 + 500\,I_2 = 0$, so $I_2 = -2$ mA. Between the two, only the outer one's field remains. (Summer 2020, 2(b)(ii).)`, { src: 'Summer 2020 Exam 2', id: 't5-ampere.p17' }),
       Q(md`A closed path runs near a long wire but does **not** encircle it. Then…`,
         ['$\\oint\\mathbf H\\cdot d\\mathbf l = 0$, though $\\mathbf H\\ne0$ on the path', '$\\mathbf H = 0$ everywhere on the path', '$\\oint\\mathbf H\\cdot d\\mathbf l = I$', 'Ampère\'s law does not apply'], 0,
         [null, 'The wire\'s field reaches the path; only its circulation cancels.', 'Only currents through the surface count.', 'It applies to every closed path.'],
-        md`$I_{\text{enc}} = 0$, so the circulation is zero: $\mathbf H\cdot d\mathbf l$ is positive on part of the path and negative on the rest.`),
+        md`$I_{\text{enc}} = 0$, so the circulation is zero: $\mathbf H\cdot d\mathbf l$ is positive on part of the path and negative on the rest.`, { id: 't5-ampere.p18' }),
       Q(md`A **square** path is drawn around a long straight wire carrying $I$. $\oint\mathbf H\cdot d\mathbf l$ is…`,
         ['$I$', '$I$ times $4/\\pi$', 'less than $I$, since the corners are farther', 'not defined: Ampère needs a circle'], 0,
         [null, 'The shape of the path does not matter; only the enclosed current does.', 'The far corners have a weaker $H$ but a longer path; the circulation is exactly $I$.', 'Any closed path works; a circle is only the convenient one.'],
-        md`The law holds for any path. A square just makes $\mathbf H$ hard to pull out of the integral.`),
+        md`The law holds for any path. A square just makes $\mathbf H$ hard to pull out of the integral.`, { id: 't5-ampere.p19' }),
       Q(md`A long thin-walled tube of radius $b$ carries current $I$ along its length. Inside the tube ($r < b$), $H$ is…`,
         ['zero', '$I/2\\pi r$', '$Ir/2\\pi b^2$', '$I/2\\pi b$'], 0,
         [null, 'That is the field **outside** the tube.', 'That is a solid wire; a tube carries no current inside $r < b$.', 'That is the value just outside the wall.'],
-        md`A circle inside the tube encloses nothing, and $\mathbf H = H_\phi(r)\hat\phi$, so $H_\phi = 0$.`),
+        md`A circle inside the tube encloses nothing, and $\mathbf H = H_\phi(r)\hat\phi$, so $H_\phi = 0$.`, { id: 't5-ampere.p20' }),
       Q(md`Why does a long straight wire have no **radial** component of $\mathbf B$?`,
         ['A radial $\\mathbf B$ would give net flux out of a closed cylinder, but $\\oint\\mathbf B\\cdot d\\mathbf S = 0$', 'Ampère\'s law forbids it', 'The current is along $\\hat z$, so $\\mathbf B$ must be too', 'It does have one, but it is small'], 0,
         [null, 'Ampère\'s law constrains the circulation, the $\\hat\\phi$ part; it says nothing about $B_r$.', '$\\mathbf B$ is perpendicular to the current; a $\\hat z$ part is ruled out by Biot–Savart.', 'By symmetry and $\\nabla\\cdot\\mathbf B = 0$ it is exactly zero.'],
-        md`By symmetry $B_r$ would be the same all over a coaxial cylinder, giving net flux out of it. Gauss's law for $\mathbf B$ makes it zero.`),
+        md`By symmetry $B_r$ would be the same all over a coaxial cylinder, giving net flux out of it. Gauss's law for $\mathbf B$ makes it zero.`, { id: 't5-ampere.p21' }),
+      Q(md`Between the conductors of a coax, $H_\phi = I/2\pi r$, which is not zero. There, $\nabla\times\mathbf H$ is…`,
+        ['$0$', md`$-\dfrac{I}{2\pi r^2}\,\hat z$`, md`$\dfrac{I}{2\pi r}\,\hat z$`, md`$\dfrac{I}{2\pi r^2}\,\hat\phi$`], 0,
+        [null, md`That is $\partial H_\phi/\partial r$ alone. The curl is $\frac1r\frac{d}{dr}(rH_\phi)$, and $rH_\phi = I/2\pi$ is constant.`, md`That is $H_\phi$ itself pointed along $\hat z$; the curl is a derivative, in A/m².`, md`The curl of a $\hat\phi$ field that depends on $r$ points along $\hat z$, and here it is zero.`],
+        md`No current flows between the conductors, and the curl says so: $\mathbf H$ circles the inner current without having curl where there is no current.`, { id: 't5-ampere.curl1' }),
+      Q(md`In the thick outer conductor of a coax ($b < r < c$, return current spread uniformly), $\nabla\times\mathbf H$ points…`,
+        [md`along $-\hat z$, opposite to the inner current`, md`along $+\hat z$, since $H_\phi > 0$ there`, md`along $+\hat\phi$, like $\mathbf H$`, md`nowhere: it is zero, as between the conductors`], 0,
+        [null, md`$H_\phi > 0$ is not the test. $rH_\phi\propto c^2 - r^2$ **decreases**, so $\frac1r\frac{d}{dr}(rH_\phi) < 0$.`, md`The curl of $H_\phi(r)\,\hat\phi$ has only a $\hat z$ part.`, md`Here $H_\phi$ falls faster than $1/r$: $rH_\phi$ drops from $I/2\pi$ to $0$ across the conductor.`],
+        md`$J_z = \dfrac1r\dfrac{d}{dr}\Big[\dfrac{I}{2\pi}\dfrac{c^2 - r^2}{c^2 - b^2}\Big] = -\dfrac{I}{\pi(c^2 - b^2)}$: the return current, uniform over the outer conductor.`, { id: 't5-ampere.curl2' }),
+      Q(md`You know $H_\phi(r)$ for some long, round current distribution. Where is $\mathbf J = 0$?`,
+        [md`wherever $rH_\phi$ does not change with $r$`, md`wherever $H_\phi$ does not change with $r$`, md`only where $H_\phi = 0$`, md`wherever $H_\phi$ decreases with $r$`], 0,
+        [null, md`A constant $H_\phi = H_0$ gives $J_z = H_0/r \ne 0$.`, md`Between coax conductors $H_\phi = I/2\pi r \ne 0$, yet $\mathbf J = 0$.`, md`Falling as $1/r$ gives zero; falling faster gives a negative $J_z$ (a return current), and slower a positive one.`],
+        md`$J_z = \frac1r\frac{d}{dr}(rH_\phi)$ and $2\pi rH_\phi = I_{\text{enc}}$: $\mathbf J = 0$ exactly where the enclosed current stops changing.`, { id: 't5-ampere.curl3' }),
       R(md`
         ### Rapid fire: enclosed current
 
@@ -298,10 +333,11 @@
 
         Press **New problem** for fresh values. Two correct answers without opening the solution complete each one.
       `),
-      G('t5_thick', { need: 2 }),
-      G('t5_coax', { need: 2 }),
-      G('t5_nested', { need: 2 }),
-      G('t5_toroid', { need: 2 }),
+      Object.assign(G('t5_thick', { need: 2 }), { id: 't5-ampere.g27' }),
+      Object.assign(G('t5_coax', { need: 2 }), { id: 't5-ampere.g28' }),
+      Object.assign(G('t5_nested', { need: 2 }), { id: 't5-ampere.g29' }),
+      Object.assign(G('t5_toroid', { need: 2 }), { id: 't5-ampere.g30' }),
+      Object.assign(G('t5_curl', { need: 2 }), { id: 't5-ampere.gcurl' }),
     ],
   });
 
@@ -512,6 +548,41 @@
     };
   };
 
+  // a nonuniform wire: J from H with the cylindrical curl, I_enc with Ampère, and the two agree
+  GENS.t5_curl = () => {
+    const kind = pick(['lin', 'sq', 'par']), coax = pick([false, true]);
+    const amm = pick([2, 4, 5, 10]), a = amm / 1000, I = pick([2, 5, 10, 20]), bmm = amm * pick([2, 3]), fr = pick([0.25, 0.5, 0.75]);
+    const r1 = fr * a, aa = p(a);
+    const K = {
+      lin: { prof: 'J\\propto r', H: '\\dfrac{Ir^2}{2\\pi a^3}', rH: '\\dfrac{Ir^3}{2\\pi a^3}', d: '\\dfrac{3Ir^2}{2\\pi a^3}', J: '\\dfrac{3Ir}{2\\pi a^3}', Ie: 'I\\dfrac{r^3}{a^3}', ex: '3*I*r/(2*pi*a^3)',
+        J1: 3 * I * fr / (2 * Math.PI * a * a), Ie1: I * fr ** 3, J1s: `\\frac{3(${I}\\ \\text{A})(${fr})}{2\\pi(${aa}\\ \\text{m})^2}`, Ie1s: `(${I}\\ \\text{A})(${fr})^3`, note: '$J$ is zero on the axis and largest at the surface' },
+      sq: { prof: 'J\\propto r^2', H: '\\dfrac{Ir^3}{2\\pi a^4}', rH: '\\dfrac{Ir^4}{2\\pi a^4}', d: '\\dfrac{2Ir^3}{\\pi a^4}', J: '\\dfrac{2Ir^2}{\\pi a^4}', Ie: 'I\\dfrac{r^4}{a^4}', ex: '2*I*r^2/(pi*a^4)',
+        J1: 2 * I * fr * fr / (Math.PI * a * a), Ie1: I * fr ** 4, J1s: `\\frac{2(${I}\\ \\text{A})(${fr})^2}{\\pi(${aa}\\ \\text{m})^2}`, Ie1s: `(${I}\\ \\text{A})(${fr})^4`, note: '$J$ is zero on the axis and largest at the surface' },
+      par: { prof: 'J\\propto1 - r^2/a^2', H: '\\dfrac{Ir}{\\pi a^2}\\left(1 - \\dfrac{r^2}{2a^2}\\right)', rH: '\\dfrac{I}{\\pi a^2}\\left(r^2 - \\dfrac{r^4}{2a^2}\\right)', d: '\\dfrac{I}{\\pi a^2}\\left(2r - \\dfrac{2r^3}{a^2}\\right)', J: '\\dfrac{2I}{\\pi a^2}\\left(1 - \\dfrac{r^2}{a^2}\\right)', Ie: 'I\\dfrac{r^2}{a^2}\\left(2 - \\dfrac{r^2}{a^2}\\right)', ex: '2*I*(1 - r^2/a^2)/(pi*a^2)',
+        J1: 2 * I * (1 - fr * fr) / (Math.PI * a * a), Ie1: I * fr * fr * (2 - fr * fr), J1s: `\\frac{2(${I}\\ \\text{A})}{\\pi(${aa}\\ \\text{m})^2}\\left(1 - ${fr}^2\\right)`, Ie1s: `(${I}\\ \\text{A})(${fr})^2\\left(2 - ${fr}^2\\right)`, note: '$J$ is largest on the axis, $2I/\\pi a^2$, twice the average $I/\\pi a^2$, and zero at the surface' },
+    }[kind];
+    const reg = coax ? '$a < r < b$' : '$r > a$';
+    const zeroWhy = ['That is $\\partial H_\\phi/\\partial r$ alone. $rH_\\phi = I/2\\pi$ is constant, so the curl is zero.', 'That is $H_\\phi/r$ alone. The full curl, $\\partial_rH_\\phi + H_\\phi/r$, is zero.'];
+    return {
+      title: 'Check Ampère with the curl',
+      q: md`A long wire of radius $a = ${amm}$ mm on the $z$-axis carries $I = ${I}$ A along $+\hat z$, spread **nonuniformly** over its cross-section${coax ? `; a thin coaxial shell of radius $b = ${bmm}$ mm carries it back` : ''}. Ampère's law gives $\mathbf H = H_\phi(r)\,\hat\phi$ with $H_\phi = ${K.H}$ for $r < a$ and $H_\phi = \dfrac{I}{2\pi r}$ for ${reg}${coax ? ' ($H_\\phi = 0$ for $r > b$)' : ''}. Recover $J_z(r)$ inside from $\nabla\times\mathbf H = \mathbf J$ and evaluate it at $r = ${p(r1 * 1000)}$ mm. Find the current enclosed by the circle $r = ${p(r1 * 1000)}$ mm from Ampère's law, and confirm that $\int\mathbf J\cdot d\mathbf S$ over the disk gives the same. What is $\mathbf J$ for ${reg}?`,
+      parts: [
+        { lbl: '$J_z(r)$ for $r < a$, in A/m²', expr: K.ex, vars: { I: [0.5, 5], a: [0.5, 2], r: [0.2, 1.5] } },
+        N(`J_z(${p(r1 * 1000)}\\ \\text{mm})`, K.J1, 'A/m^2'),
+        N(`I_{\\text{enc}}(${p(r1 * 1000)}\\ \\text{mm})`, K.Ie1, 'A'),
+        { lbl: `For ${reg}, $\\mathbf J$ is`, mc: ['zero', '$-\\dfrac{I}{2\\pi r^2}\\,\\hat z$', '$+\\dfrac{I}{2\\pi r^2}\\,\\hat z$'], a: 0, fixed: true, why: [null, ...zeroWhy] },
+      ],
+      hints: ['$J_z = \\dfrac1r\\dfrac{d}{dr}(rH_\\phi)$: multiply by $r$ first, differentiate, then divide by $r$.', 'Ampère on the circle: $I_{\\text{enc}} = 2\\pi rH_\\phi$. The disk integral is $\\int_0^{r}J_z\\,2\\pi r\'\\,dr\'$; the two must agree.'],
+      sol: sol({
+        eq: md`Point form $\nabla\times\mathbf H = \mathbf J$; for $\mathbf H = H_\phi(r)\hat\phi$ only $J_z = \dfrac1r\dfrac{d}{dr}(rH_\phi)$ survives. Integral form on a circle of radius $r$: $2\pi rH_\phi = I_{\text{enc}}(r)$.`,
+        sym: md`Inside: $rH_\phi = ${K.rH}$, $\;\dfrac{d}{dr}(rH_\phi) = ${K.d}$, so $J_z = ${K.J}$ ($${K.prof}$). Ampère: $I_{\text{enc}}(r) = 2\pi rH_\phi = ${K.Ie}$. The disk, with rings of area $2\pi r'\,dr'$: $\displaystyle\int_0^rJ_z(r')\,2\pi r'\,dr' = ${K.Ie}$, the same. ✓ For ${reg}: $rH_\phi = I/2\pi$ is constant, so $\mathbf J = 0$.`,
+        sub: md`$$J_z(${p(r1 * 1000)}\ \text{mm}) = ${K.J1s} = ${f(K.J1)}\ \text{A/m}^2, \qquad I_{\text{enc}} = ${K.Ie1s} = ${f(K.Ie1)}\ \text{A}$$`,
+        ans: md`$J_z = ${K.J}$; $J_z = ${f(K.J1)}$ A/m² at $${p(r1 * 1000)}$ mm; $I_{\text{enc}} = ${f(K.Ie1)}$ A by both methods; $\mathbf J = 0$ for ${reg}.`,
+        check: md`At $r = a$ the enclosed current is all of $I$, and both forms of $H_\phi$ give $I/2\pi a$: continuous. ✓ ${K.note}. ✓`,
+      }),
+    };
+  };
+
   // ---------------------------------------------------------------- extra questions for the bank
   EM.BANK['t5-ampere'] = [
     Q(md`$\oint_C\mathbf H\cdot d\mathbf l = I_{\text{enc}}$ uses the current through **which** surface?`,
@@ -578,5 +649,26 @@
       ['$kr^2/3$', '$kr/2$', '$kr^3/3$', '$kr^2/2$'], 0,
       [null, 'That is the uniform-$J$ result with $J = k$; here $J$ grows with $r$.', 'That is $I_{\\text{enc}}/2\\pi$: divide by the path length $2\\pi r$.', 'That treats $J = kr$ as uniform out to $r$, $(kr)r/2$; the inner layers carry less.'],
       md`$I_{\text{enc}} = \int_0^r kr'\,2\pi r'\,dr' = \frac{2\pi k r^3}{3}$; $H_\phi = I_{\text{enc}}/2\pi r = kr^2/3$.`),
+    // the curl check (Step 7)
+    Q(md`Inside a long wire, $H_\phi = H_0r/a$. The current density is…`,
+      [md`$\dfrac{2H_0}{a}\,\hat z$, uniform`, md`$\dfrac{H_0}{a}\,\hat z$, uniform`, md`$\dfrac{H_0r}{a}\,\hat z$`, md`$\dfrac{2H_0}{a}\,\hat\phi$`], 0,
+      [null, md`That is only one of the two equal terms, $dH_\phi/dr$ or $H_\phi/r$; the curl is their sum.`, md`That is $H_\phi$ itself pointed along $\hat z$; the curl is a derivative, in A/m².`, md`The current that makes a $\hat\phi$ field runs along $\hat z$.`],
+      md`$\frac1r\frac{d}{dr}\big(H_0r^2/a\big) = 2H_0/a$. Check: $J\pi a^2 = 2\pi aH_0 = 2\pi a\,H_\phi(a)$, Ampère at the surface. ✓`),
+    Q(md`$H_\phi$ is a constant, $H_0$, throughout a region $a < r < b$. That region carries…`,
+      [md`$J_z = H_0/r$: current that thins out with $r$`, md`no current, since $H_\phi$ is constant`, md`$J_z = H_0$, uniform`, md`$J_z = -H_0/r$`], 0,
+      [null, md`$rH_\phi = H_0r$ grows, so the enclosed current $2\pi rH_0$ grows with $r$.`, md`The curl has units of A/m²: $\frac1r\frac{d}{dr}(H_0r) = H_0/r$.`, md`$I_{\text{enc}} = 2\pi rH_0$ grows outward, so $J_z > 0$.`],
+      md`$\frac1r\frac{d}{dr}(rH_0) = H_0/r$. Every ring of width $dr$ carries the same current, $J_z\,2\pi r\,dr = 2\pi H_0\,dr$.`),
+    Q(md`Integrate the curl's $J_z = \frac1r\frac{d}{dr}(rH_\phi)$ over a disk of radius $R$ centered on the axis (no line current on the axis): $\int_0^RJ_z\,2\pi r\,dr = $`,
+      [md`$2\pi RH_\phi(R)$, Ampère's law`, md`$H_\phi(R)$`, md`$\pi R^2H_\phi(R)$`, md`$2\pi H_\phi(R)$`], 0,
+      [null, md`The ring area $2\pi r\,dr$ cancels the $1/r$ and leaves $2\pi\,d(rH_\phi)$; integrating gives $2\pi RH_\phi(R)$.`, md`The $1/r$ cancels one power of $r$: what remains is $2\pi R$, a length, not an area.`, md`The integral of $d(rH_\phi)$ is $RH_\phi(R)$, not $H_\phi(R)$.`],
+      md`$\int_0^R\frac1r\frac{d(rH_\phi)}{dr}\,2\pi r\,dr = 2\pi\big[rH_\phi\big]_0^R = 2\pi RH_\phi(R) = I_{\text{enc}}$. The point form and the integral form are one law (Stokes' theorem).`),
+    Q(md`A long wire carries $I$ with $J\propto(1 - r^2/a^2)$. Compared with a uniform wire of the same $I$ and $a$, its $H_\phi$ at the surface $r = a$ is…`,
+      ['the same, $I/2\\pi a$', 'larger', 'smaller', 'zero, since $J = 0$ at the surface'], 0,
+      [null, md`At $r = a$ only $I_{\text{enc}} = I$ matters, not how it is spread.`, md`Same $I_{\text{enc}} = I$ at $r = a$, so the same $H_\phi$.`, md`$H_\phi(a)$ is set by all the current inside, $I$, not by $J$ at the surface.`],
+      md`$2\pi aH_\phi(a) = I$ for any distribution. The profiles differ only inside, where this one is larger (more current near the axis).`),
+    Q(md`For the wire with $J\propto(1 - r^2/a^2)$ carrying $I$, $J$ on the axis is…`,
+      [md`$\dfrac{2I}{\pi a^2}$, twice the average`, md`$\dfrac{I}{\pi a^2}$, the average`, '$0$', md`$\dfrac{I}{2\pi a^2}$`], 0,
+      [null, md`The average is $I/\pi a^2$; this profile piles current near the axis.`, md`$1 - r^2/a^2 = 1$ on the axis: that is the maximum.`, md`$\int_0^aJ_0(1 - r^2/a^2)\,2\pi r\,dr = \pi a^2J_0/2$, so $J_0 = 2I/\pi a^2$, four times this.`],
+      md`$I = \int_0^aJ_0\big(1 - \tfrac{r^2}{a^2}\big)2\pi r\,dr = \tfrac{\pi a^2}{2}J_0$, so $J_0 = 2I/\pi a^2$. The curl of its $H_\phi = \dfrac{Ir}{\pi a^2}\Big(1 - \dfrac{r^2}{2a^2}\Big)$ gives the same.`),
   ];
 })();

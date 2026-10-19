@@ -79,7 +79,7 @@
 <p>$d\mathbf B = \frac{\mu_0I\,d\mathbf l\times\hat R}{4\pi R^2}$ <i class="sep">|</i> $d\mathbf F = I\,d\mathbf l\times\mathbf B$</p>
 <p>wires $\frac{F}{\ell} = \frac{\mu_0I_1I_2}{2\pi d}$: parallel attract</p>
 <p>$I\delta(x)\delta(y)\hat z$ = wire (A) <i class="sep">|</i> $J_s\delta(z)$ = sheet (A/m)</p>
-<p>$\mathbf B = \nabla\times\mathbf A$ <i class="sep">|</i> $\mathbf E = -\nabla\Phi - \partial_t\mathbf A$ <i class="sep">|</i> $\Psi = \oint\mathbf A\cdot d\mathbf l$</p>
+<p>check a shape with the curl: $H_\phi(r)\hat\phi$ → $J_z = \frac1r\frac{d(rH_\phi)}{dr}$ <i class="sep">|</i> $H_z(r)\hat z$ → $J_\phi = -\frac{dH_z}{dr}$</p>
 </section>
 
 <section><h2>Faraday</h2>
@@ -160,6 +160,8 @@
 
 <section><h2>Vector calculus</h2>
 <p>$\nabla\times\mathbf F = \hat x(\partial_yF_z - \partial_zF_y) + \hat y(\partial_zF_x - \partial_xF_z) + \hat z(\partial_xF_y - \partial_yF_x)$</p>
+<p><b>cyl.</b> $\nabla\cdot\mathbf F = \frac1r\partial_r(rF_r) + \frac1r\partial_\phi F_\phi + \partial_zF_z$</p>
+<p><b>cyl.</b> $\nabla\times\mathbf F = \hat r\left(\frac1r\partial_\phi F_z - \partial_zF_\phi\right) + \hat\phi\left(\partial_zF_r - \partial_rF_z\right) + \frac{\hat z}{r}\left(\partial_r(rF_\phi) - \partial_\phi F_r\right)$</p>
 <p>$\hat r = \cos\phi\,\hat x + \sin\phi\,\hat y$ <i class="sep">|</i> $\hat\phi = -\sin\phi\,\hat x + \cos\phi\,\hat y$ <i class="sep">|</i> $d\mathbf l = dr\,\hat r + r\,d\phi\,\hat\phi + dz\,\hat z$</p>
 <p class="t">cm² → m²: $\times10^{-4}$ <i class="sep">|</i> $2\pi r$ not $\pi r^2$ <i class="sep">|</i> $\epsilon$ vs $\epsilon_0$ <i class="sep">|</i> units: A/m, T, Wb, V, H, F</p>
 </section>

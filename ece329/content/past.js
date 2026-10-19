@@ -345,8 +345,10 @@ Only **(b)** shows right, then left.` }),
       sol: md`Take the divergence of Ampère–Maxwell, $\nabla\times\mathbf H = \mathbf J + \partial\mathbf D/\partial t$. The divergence of a curl is zero:
 $$0 = \nabla\cdot\mathbf J + \frac{\partial}{\partial t}(\nabla\cdot\mathbf D)\quad\Rightarrow\quad\frac{\partial(\nabla\cdot\mathbf D)}{\partial t} = 0\ \text{ when }\mathbf J = 0$$
 **(b).** Same thing in words: $\nabla\cdot\mathbf D = \rho$ (Gauss) and $\partial\rho/\partial t = -\nabla\cdot\mathbf J = 0$ (continuity). The charge density can be anything, but it cannot change.` }),
-    P({ src: 'Spring 2018 #1(v) · 3 pts', title: 'Fields from potentials',
-      q: md`The scalar and vector potentials are $\Phi = 3x^2$ V and $\mathbf A = -6xt\,\hat x + 3y\,\hat y$ V·s/m. Then the electric field and the magnetic flux density satisfy…`,
+    P({ src: 'Spring 2018 #1(v) · 3 pts', title: 'Fields from potentials (not on this exam)',
+      q: md`**Not on the Fall 2026 Exam 2:** the vector potential is not tested this term (instructor answer on Piazza). Skip this one before the exam.
+
+The scalar and vector potentials are $\Phi = 3x^2$ V and $\mathbf A = -6xt\,\hat x + 3y\,\hat y$ V·s/m. Then the electric field and the magnetic flux density satisfy…`,
       parts: [FIX('', ['(a) both $\\mathbf E$ and $\\mathbf B$ are zero everywhere for all time', '(b) $\\mathbf E$ is constant in time but varies with position; $\\mathbf B$ is constant in position but varies with time', '(c) $\\mathbf E$ is constant in time but varies with position; $\\mathbf B$ is constant in time but varies with position', '(d) $\\mathbf E$ is constant in position but varies with time; $\\mathbf B$ is constant in position but varies with time', '(e) $\\mathbf E$ is constant in position but varies with time; $\\mathbf B$ is constant in time but varies with position', '(f) none of the above'], 0,
         [null, md`$-\nabla\Phi = -6x\hat x$ alone varies with position, but $-\partial\mathbf A/\partial t = +6x\hat x$ cancels it exactly. And $\nabla\times\mathbf A = 0$.`, md`Same cancellation in $\mathbf E$. $\mathbf B = \nabla\times\mathbf A = 0$: $A_x$ depends only on $x$, $A_y$ only on $y$.`, md`$\mathbf E$ is not only $-\partial\mathbf A/\partial t$; adding $-\nabla\Phi$ cancels it. $\mathbf B = 0$.`, md`Both fields vanish: $\mathbf E$ by cancellation, $\mathbf B$ because $\mathbf A$ has no curl.`, md`(a) is listed.`])],
       sol: md`$$\mathbf E = -\nabla\Phi - \frac{\partial\mathbf A}{\partial t} = -6x\,\hat x - (-6x\,\hat x) = 0$$
@@ -777,8 +779,10 @@ New values at $x = -3, -1.5, 0, 1.5, 3$ m: **$-1\hat y$, $1\hat y$, ($3\hat y$ |
 
 [[fig:p]]`,
       figs: { p: { svg: hPlot(hyMainSheet, 'x', 'H_y'), cap: '$H_y(x)$ with the sheet (A/m): every point shifts by −1 (x < 0) or +1 (x > 0), with a 2 A/m jump at x = 0.' } } }),
-    P({ src: 'Summer 2019 #2(b) · 10 pts', title: 'From A to B to J',
-      q: md`**(b)** Consider the magnetic vector potential $\mathbf A(x, y, z) = \hat x\,|z|$.
+    P({ src: 'Summer 2019 #2(b) · 10 pts', title: 'From A to B to J (not on this exam)',
+      q: md`**Not on the Fall 2026 Exam 2:** the vector potential is not tested this term (instructor answer on Piazza). Skip this one before the exam.
+
+**(b)** Consider the magnetic vector potential $\mathbf A(x, y, z) = \hat x\,|z|$.
 (i) Show that $\nabla\cdot\mathbf A = 0$. (ii) Determine $\mathbf B$ from $\mathbf A$. (iii) What $\mathbf J(x, y, z)$ would produce this $\mathbf B$?`,
       parts: [
         MC('(ii) $\\mathbf B =$', [md`$+\hat y$ T for $z > 0$, $-\hat y$ T for $z < 0$`, md`$-\hat y$ T for $z > 0$, $+\hat y$ T for $z < 0$`, md`$\hat x\,\text{sgn}(z)$ T`, md`$\hat z$ T`], 0,
@@ -913,8 +917,10 @@ New values at $y = -3, -1.5, 0, 1.5, 3$ m: **$+1\hat z$, $4\hat z$, ($5\hat z$ b
 
 **Key error:** the key states the rule correctly ("add $-\hat z$ for $y > 0$, $+\hat z$ for $y < 0$") but its numbers ($-\hat z$, $2\hat z$, $4\hat z$, $3\hat z$, $1\hat z$) and its plot apply the opposite sign.`,
       figs: { p: { svg: hPlot(hzConfSheet, 'y', 'H_z'), cap: '$H_z(y)$ with the sheet (A/m): +1 below y = 0, −1 above, a 2 A/m drop at the sheet.' } } }),
-    P({ src: 'Summer 2019 conflict #2(b) · 10 pts', title: 'From A to B to J',
-      q: md`**(b)** Consider the magnetic vector potential $\mathbf A(x, y, z) = -\hat y\,|z|$.
+    P({ src: 'Summer 2019 conflict #2(b) · 10 pts', title: 'From A to B to J (not on this exam)',
+      q: md`**Not on the Fall 2026 Exam 2:** the vector potential is not tested this term (instructor answer on Piazza). Skip this one before the exam.
+
+**(b)** Consider the magnetic vector potential $\mathbf A(x, y, z) = -\hat y\,|z|$.
 (i) Show that $\nabla\cdot\mathbf A = 0$. (ii) Determine $\mathbf B$ from $\mathbf A$. (iii) What $\mathbf J(x, y, z)$ would produce this $\mathbf B$?`,
       parts: [
         MC('(ii) $\\mathbf B =$', [md`$+\hat x$ T for $z > 0$, $-\hat x$ T for $z < 0$`, md`$-\hat x$ T for $z > 0$, $+\hat x$ T for $z < 0$`, md`$\hat y\,\text{sgn}(z)$ T`, md`$\hat z$ T`], 0,

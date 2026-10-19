@@ -62,7 +62,7 @@
         | $\mathbf M$ | A/m | **magnetization**: magnetic dipole moment per volume | ${T13} |
         | $V$ | V | **electrostatic potential**: work per charge from the reference point | ${R3} |
         | $\Phi$ | V | **scalar potential** with time-varying fields: $\mathbf E = -\nabla\Phi - \partial\mathbf A/\partial t$ | ${T7} |
-        | $\mathbf A$ | Wb/m = V·s/m | **vector potential**: $\mathbf B = \nabla\times\mathbf A$ | ${T7} |
+        | $\mathbf A$ | Wb/m = V·s/m | **vector potential**: $\mathbf B = \nabla\times\mathbf A$ (not on the Fall 2026 Exam 2) | [Extra](#/l/x-vecpot) |
         | $\Psi$ | Wb = T·m² = V·s | **magnetic flux** $\int_S\mathbf B\cdot d\mathbf S$ through one turn | ${T8} |
         | $\Lambda$ | Wb (Wb-turns) | **flux linkage** $N\Psi$ | ${T11} |
         | $\Psi_E$ | C | **electric flux** $\int_S\mathbf D\cdot d\mathbf S$ | ${T12} |
