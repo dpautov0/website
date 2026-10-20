@@ -8,6 +8,9 @@
                                         V/E: p1 is the + terminal.  I/G: arrow points p1 -> p2.
                                         D: p1 = anode.  E/G: {g: gain, c: [ctrl+, ctrl-]}
      ['gnd', p]                         ground (bars below p); ['gndu', p] bars above p (AC ground at a rail)
+     ['acg', p, {dir}]                  incremental ground (the course's open triangle: a bias voltage that holds
+                                        still for small signals). dir 'd' (default) hangs below p, 'u' sits above it,
+                                        'l'/'r' point sideways. Treated as ground in the netlist.
      ['rail', p, {n, v}]                supply bar (acts as a source to ground)
      ['term', p, {n, name, side}]       open terminal
      ['node', p, {n, name, side, dot}]  names a node (name used by answers)
@@ -94,7 +97,7 @@
         }
       } else if (TWO.has(t)) {
         pins.push(el.pts[0], el.pts[1]);
-      } else if (t === 'gnd' || t === 'gndu') {
+      } else if (t === 'gnd' || t === 'gndu' || t === 'acg') {
         pins.push(el.pts[0]); uf.union(k(el.pts[0]), 'GND');
       } else if (t === 'rail' || t === 'term' || t === 'node' || t === 'dot') {
         pins.push(el.pts[0]);
@@ -274,9 +277,9 @@
     s += `<path d="M${chx},${cy - 10}H${cx}V${top}M${chx},${cy + 10}H${cx}V${bot}"/>`;
     if (el.type === 'nmos') s += head(cx - 1 * f, cy + 10, f, 0, 6);          // arrow out of the source
     else s += head(chx + 1 * f, cy - 10, -f, 0, 6);                           // arrow into the source
-    if (el.opts.dc) {
+    if (el.opts.dc) {                              // gate tied to the drain: above for NMOS, below for PMOS
       const gxx = X(P.G[0]);
-      s += `<path d="M${gxx},${cy}V${top}H${cx}"/>`;
+      s += `<path d="M${gxx},${cy}V${Y(P.D[1])}H${cx}"/>`;
     }
     const txt = [tex(el.opts.n), el.opts.sz ? tex(`\\mathrm{${el.opts.sz}}`) : ''].filter(Boolean).join('<br/>');
     s += f > 0 ? label(cx + 7, cy, txt, 'l', 'small') : label(cx - 7, cy, txt, 'r', 'small');
@@ -327,6 +330,13 @@
       } else if (t === 'gndu') {
         const x = X(el.pts[0][0]), y = Y(el.pts[0][1]);
         body += `<path d="M${x},${y}V${y - 10}M${x - 10},${y - 10}H${x + 10}M${x - 6.5},${y - 14}H${x + 6.5}M${x - 3},${y - 18}H${x + 3}"/>`;
+      } else if (t === 'acg') {
+        const x = X(el.pts[0][0]), y = Y(el.pts[0][1]);
+        const d = { d: [0, 1], u: [0, -1], l: [-1, 0], r: [1, 0] }[o.dir || 'd'];
+        const px = -d[1], py = d[0];
+        const b = [x + d[0] * 6, y + d[1] * 6], tip = [x + d[0] * 20, y + d[1] * 20];
+        body += `<path d="M${x},${y}L${b[0]},${b[1]}M${b[0] + px * 9},${b[1] + py * 9}L${b[0] - px * 9},${b[1] - py * 9}L${tip[0]},${tip[1]}Z"/>`;
+        track(Math.min(x, tip[0]) - 10, Math.min(y, tip[1]) - 10, Math.max(x, tip[0]) + 10, Math.max(y, tip[1]) + 10);
       } else if (t === 'rail') {
         const x = X(el.pts[0][0]), y = Y(el.pts[0][1]);
         body += `<path d="M${x},${y}V${y - 10}"/><path class="thick" d="M${x - 14},${y - 10}H${x + 14}"/>`;
@@ -385,7 +395,7 @@
         if (el.opts.dc) { bump(P.G); bump(P.D); }
       } else if (el.type === 'opamp') {
         Object.values(ampPins(el)).forEach((p) => bump(p));
-      } else if (el.type === 'rail' || el.type === 'gnd' || el.type === 'gndu') bump(el.pts[0]);
+      } else if (el.type === 'rail' || el.type === 'gnd' || el.type === 'gndu' || el.type === 'acg') bump(el.pts[0]);
     }
     for (const [a, b] of segs) for (const p of pins) if (onInterior(p, a, b)) bump(p, 2);
     let dots = '';

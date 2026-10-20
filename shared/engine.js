@@ -389,7 +389,8 @@
       : study.map((u) => group(`<span class="u-num">${u.num}</span> ${u.title}`, u.lessons.map(lessonRow).join(''))).join('');
     const toolLists = tools.map((u) => group(u.title, u.lessons.filter((l) => !l.hideHome).map((l) => { const p = lessonProgress(l); return row(`#/l/${l.id}`, '', l.title, l.sub || '', p.tot ? p.pct : null, p.tot && p.got >= p.tot); }).join(''))).join('');
     const extras = COURSE.units.filter((u) => u.extra);
-    const later = EXAMS().filter((e) => e.id !== cur.id);
+    const later = EXAMS().filter((e) => e.id !== cur.id && !e.past);
+    const earlier = EXAMS().filter((e) => e.id !== cur.id && e.past && examUnits(e).length);   // exam.past: already taken, kept as review
     main.innerHTML = `
       <section class="home">
         <header class="hero">
@@ -405,6 +406,7 @@
         ${plan ? `<section class="plan card"><h2>${plan.title || 'Plan'}</h2><ol>${plan.items.map((x) => `<li>${x}</li>`).join('')}</ol>${plan.note ? `<p class="plan-note">${plan.note}</p>` : ''}</section>` : ''}
         ${lists}${toolLists}
         ${extras.length ? group(M.extraTitle || 'Extra', extras.map(unitRow).join(''), 'muted') : ''}
+        ${earlier.map((e) => group(`${e.title} review${e.scope ? ` <span class="group-sub">${e.scope}</span>` : ''}`, examUnits(e).map(unitRow).join(''), 'muted')).join('')}
         ${later.length ? `<section class="group muted"><h2 class="group-h">Later</h2><div class="list">${later.map((e) => `<div class="row static"><span class="row-num"></span><span class="row-main"><span class="row-title">${e.title}</span><span class="row-sub">${e.scope || ''}${examUnits(e).length ? '' : ' · not added yet'}</span></span></div>`).join('')}</div></section>` : ''}
         ${M.howto ? `<p class="howto">${M.howto}</p>` : ''}
         <p class="reset-row"><button class="btn subtle" id="reset">Reset progress</button><span class="reset-ask" hidden>Erase all progress on this device? <button class="btn danger" id="reset-yes">Erase</button> <button class="btn subtle" id="reset-no">Keep</button></span></p>
@@ -773,6 +775,7 @@
     quiz: '<circle cx="12" cy="12" r="8.5"/><path d="M9.7 9.6a2.4 2.4 0 1 1 3.3 2.2c-.7.3-1 .8-1 1.5v.5M12 16.8v.2"/>',
     practice: '<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1"/>',
     exam: '<path d="M6 3.5h9l3 3v14H6z"/><path d="m9 12.5 2 2 4-4"/>',
+    cards: '<rect x="3.5" y="7" width="13" height="13" rx="2"/><path d="M7.5 7V5a1.5 1.5 0 0 1 1.5-1.5h10A1.5 1.5 0 0 1 20.5 5v10a1.5 1.5 0 0 1-1.5 1.5h-2.5"/>',
     print: '<path d="M7 8V3.5h10V8M7 17H4v-7.5h16V17h-3"/><path d="M7 14h10v6.5H7z"/>',
   };
   const svgIcon = (k) => `<svg viewBox="0 0 24 24" aria-hidden="true">${ICON[k] || ICON.sheet}</svg>`;

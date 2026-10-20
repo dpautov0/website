@@ -239,9 +239,9 @@
       let u;
       try { u = evaluate(ua, env); } catch (e) { return { ok: false, err: e.message }; }
       valid++;
-      const tol = 1e-6 * Math.max(Math.abs(r), Math.abs(u));
+      const tol = (spec.rtol || 1e-6) * Math.max(Math.abs(r), Math.abs(u));   // rtol: accept the g_m r_ds >> 1 approximations too
       if (Math.abs(u - r) <= tol) good++;
-      else { bad++; if (Math.abs(u + r) <= 1e-6 * Math.abs(r)) neg++; }
+      else { bad++; if (Math.abs(u + r) <= (spec.rtol || 1e-6) * Math.abs(r)) neg++; }
     }
     if (!valid) return { ok: false, err: 'Could not evaluate that expression.' };
     if (!bad) return { ok: true };

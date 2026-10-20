@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>ECE 342 Stage Sheet</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.css">
+<link rel="stylesheet" href="../shared/site.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/contrib/auto-render.min.js"></script>
+<style>
+  :root { --ink: #111; --head: #1d4f91; --rule: #c3ccd6; --soft: #5a6470; --paper: #fff; --ex: #f3f6fa; --red: #a4453b; --halo: #fff; --fg: #111; }
+  @page { size: letter; margin: 0.28in; }
+  html, body { background: var(--paper); color: var(--ink); margin: 0; }
+  body { font: 9.6pt/1.28 "Segoe UI", Inter, Arial, sans-serif; letter-spacing: 0; }
+  .page { width: 7.94in; margin: 0 auto; }
+  .page + .page { break-before: page; }
+  .top { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1.2px solid var(--ink); margin-bottom: 4px; padding-bottom: 1px; }
+  .top b { font-size: 10pt; }
+  .top span { color: var(--soft); font-size: 8.6pt; }
+  .cols { column-count: 2; column-gap: 12px; column-rule: 0.6px solid var(--rule); }
+  .c { break-inside: avoid; display: flex; gap: 6px; align-items: flex-start; border-bottom: 0.5px solid var(--rule); padding: 2px 0 3px; }
+  .c .f { flex: 0 0 92px; width: 92px; display: flex; justify-content: center; }
+  .c .f .fig { margin: 0; overflow: visible; }
+  .c .t { flex: 1 1 auto; min-width: 0; }
+  .c .t p { margin: 0 0 1px; }
+  h2 { font-size: 9.6pt; margin: 3px 0 1px; color: var(--head); border-bottom: 0.8px solid var(--head); break-after: avoid; column-span: none; }
+  .nm { font-weight: 700; }
+  .why { color: var(--soft); font-size: 8.6pt; }
+  .t .katex-display { margin: 1px 0; }
+  .katex { font-size: 1.0em; }
+  .box { break-inside: avoid; background: var(--ex); border-radius: 3px; padding: 3px 5px; margin: 3px 0; }
+  .box p, .box li { margin: 0 0 1.5px; }
+  .box ul { margin: 0; padding-left: 13px; }
+  .red { color: var(--red); font-weight: 600; }
+  .schem .figov .flab, .figov .flab { font-size: 12px; }
+  @media screen { body { padding: 16px; } .page { max-width: 100%; margin-bottom: 28px; } .page + .page { border-top: 2px dashed var(--rule); padding-top: 12px; } }
+  @media screen and (max-width: 760px) { body { padding: 10px; font-size: 10.5pt; } .cols { column-count: 1; } .top { flex-direction: column; } }
+</style>
+</head>
+<body>
+
+<div class="page">
+<div class="top"><b>ECE 342 · Exam 2 stage sheet</b><span>$i_d = g_mv_{gs} + v_{ds}/r_{ds}$ (D→S), NMOS and PMOS alike · $g_m = \frac{2I_D}{V_{ov}} = \mu C_{ox}\frac WLV_{ov} = \sqrt{2\mu C_{ox}\frac WLI_D}$</span></div>
+<div class="cols">
+
+<h2>Small-signal circuit</h2>
+<div class="box"><ul>
+<li>$V_{DD}$, bias $V_B$, ▽ → <b>incremental ground</b>. DC current source → <b>open</b>. $\infty$ capacitor → short.</li>
+<li>Gate–source shorted by a <b>wire</b>: $V_{GS} = 0$, device <span class="red">off</span> → open. By a big <b>cap</b>: biased, $v_{gs} = 0$ → $r_{ds}$.</li>
+<li>$1\,\text{mA}$ at $V_{ov} = 0.2$: $g_m = 10\,\text{mS}$, $1/g_m = 100\,\Omega$. Same $I$: $V_{ov}\propto\frac1{\sqrt{W/L}}$, $g_m\propto\sqrt{W/L}$.</li>
+</ul></div>
+
+<h2>Looking in (others at incremental ground)</h2>
+<div class="c"><div class="f" data-f="gate"></div><div class="t"><p><span class="nm">Gate:</span> $R_G = \infty$</p><p class="why">Never loads the node it hangs on.</p></div></div>
+<div class="c"><div class="f" data-f="drain"></div><div class="t"><p><span class="nm">Drain:</span> $R_D = r_{ds}$</p><p class="why">$v_{gs} = 0$: a current source, imperfect by $r_{ds}$.</p></div></div>
+<div class="c"><div class="f" data-f="source"></div><div class="t"><p><span class="nm">Source:</span> $\frac1{g_m}\parallel r_{ds}\approx\frac1{g_m}$</p><p class="why">Push it up $v$: $v_{gs} = -v$, $g_mv$ flows in. Sources are low.</p></div></div>
+<div class="c"><div class="f" data-f="diode"></div><div class="t"><p><span class="nm">Diode (G = D):</span> $\frac1{g_m}\parallel r_{ds}\approx\frac1{g_m}$</p><p class="why">PMOS diode: the same. Stacked diodes add.</p></div></div>
+<div class="c"><div class="f" data-f="diodeRS"></div><div class="t"><p><span class="nm">Diode on $R_S$:</span> $R_S + \frac1{g_m}\parallel r_{ds}$</p><p class="why">Gate follows drain ($K = 1$): no magnification. Not $\approx R_S$!</p></div></div>
+<div class="c"><div class="f" data-f="drainDeg"></div><div class="t"><p><span class="nm">Degenerated drain:</span> $r_{ds} + R_S + g_mr_{ds}R_S\approx r_{ds}(1 + g_mR_S)$</p><p class="why">$R_S$ looks $g_mr_{ds}$ times bigger from the drain.</p></div></div>
+<div class="c"><div class="f" data-f="sourceRD"></div><div class="t"><p><span class="nm">Source, $R_D$ on drain:</span> $\dfrac{r_{ds} + R_D}{1 + g_mr_{ds}}\approx\frac1{g_m} + \frac{R_D}{g_mr_{ds}}$</p><p class="why">$R_D$ looks $g_mr_{ds}$ times smaller. <span class="red">Ideal current source on the drain: $\infty$.</span></p></div></div>
+<div class="c"><div class="f" data-f="drainK"></div><div class="t"><p><span class="nm">K rule</span> (gate moves $Kv_x$): $\dfrac{r_{ds} + R_S + g_mr_{ds}R_S}{1 + g_mr_{ds}K}\approx\dfrac{R_S + 1/g_m}{K}$</p><p class="why">$K = 0$: degenerated drain; $K = 1$: diode. $R_S = 0$: $r_{ds}\parallel\frac{1}{Kg_m}$. Divider: $K = \frac{R_b}{R_a + R_b}$.</p></div></div>
+<div class="c"><div class="f" data-f="cascodeR"></div><div class="t"><p><span class="nm">Cascode:</span> $r_{ds1} + r_{ds2} + g_{m2}r_{ds2}r_{ds1}\approx g_{m2}r_{ds2}r_{ds1}$</p><p class="why">Degenerated drain with $R_S = r_{ds1}$. Work any stack bottom-up: $R_{next} = r_{ds} + R_x(1 + g_mr_{ds})$.</p></div></div>
+<div class="c"><div class="f" data-f="regCascode"></div><div class="t"><p><span class="nm">Regulated cascode:</span> $r_{ds1} + R + g_{m1}r_{ds1}(1 + A)R$, $A = g_{m3}r_{ds3}$</p><p class="why">The booster drives the gate the other way: $v_{gs1}$ swings $(1 + A)\times$.</p></div></div>
+<div class="c"><div class="f" data-f="diffMirror"></div><div class="t"><p><span class="nm">Diff pair, mirror load:</span> $R_{out}\approx r_{ds2}\parallel r_{ds4}$</p><p class="why">Test current: down $M_2$, up $M_1$ (it sees $\approx2r_{ds}$), onto the diode, copied by $M_4$: counts twice. Current-source loads instead: $r_{ds4}\parallel\big[r_{ds2} + (1 + g_{m2}r_{ds2})\frac{r_{ds1} + r_{ds3}}{1 + g_{m1}r_{ds1}}\big]\approx r_{ds4}\parallel3r_{ds}$.</p></div></div>
+
+<h2>Method for any node</h2>
+<div class="box"><ul>
+<li>$R = R_{UP}\parallel R_{DN}\parallel(\text{transistors whose gate the node drives})$. The smallest branch wins: spot the $1/g_m$ ones first.</li>
+<li>Each branch from its far end toward the node, replacing finished pieces by one resistance.</li>
+<li>A gate the test voltage reaches: find $K$ (divider, a diode in a stack $K = \frac{R_{below}}{R_{branch}}$). Feedback through a mirror: $R_{branch}/(1 + \text{extra current per unit } i)$.</li>
+<li>Keep an $r_{ds}$ when nothing smaller is in parallel with it; drop it next to $1/g_m$.</li>
+<li><b>Box</b> $R_{UP}$, $R_{DN}$ separately: partial credit.</li>
+</ul></div>
+
+<h2>Single stages</h2>
+<div class="box"><p>$A_v = -G_MR_{out}$. $G_M$: output shorted, current pulled <b>down</b> into the stage per $v_{in}$ (add every path). $R_{out}$: $v_{in}$ dead, $R_{UP}\parallel R_{DN}$.</p></div>
+<div class="c"><div class="f" data-f="cs"></div><div class="t"><p><span class="nm">CS:</span> $G_M = g_m$, $R_{out} = R_D\parallel r_{ds}$, $A_v = -g_m(R_D\parallel r_{ds})$</p><p class="why">$v_{in}\uparrow$ → pulls more → $v_{out}\downarrow$.</p></div></div>
+<div class="c"><div class="f" data-f="csDeg"></div><div class="t"><p><span class="nm">CS + $R_S$:</span> $G_M = \dfrac{g_m}{1 + (g_m + g_{ds})R_S}$, $R_{out} = R_D\parallel r_{ds}(1 + g_mR_S)$</p><p>$A_v\approx-\dfrac{g_mR_D}{1 + g_mR_S}\to-\dfrac{R_D}{R_S}$</p><p class="why">Source on an ideal current source: contributes $G_M = 0$. Diode in the source: $\frac{g_{m1}g_{m3}}{g_{m1} + g_{m3}}$.</p></div></div>
+<div class="c"><div class="f" data-f="csDiode"></div><div class="t"><p><span class="nm">Diode load:</span> $A_v\approx-\dfrac{g_{m1}}{g_{m2}} = -\sqrt{\dfrac{\mu_1(W/L)_1}{\mu_2(W/L)_2}}$</p><p class="why">Same current. NMOS over a PMOS diode: $\mu_n/\mu_p = 2$ under the root.</p></div></div>
+<div class="c"><div class="f" data-f="csIsrc"></div><div class="t"><p><span class="nm">Current-source load:</span> $A_v = -g_{m1}(r_{ds1}\parallel r_{ds2})\approx-\frac12g_mr_{ds}$</p><p class="why">The most one transistor gives.</p></div></div>
+<div class="c"><div class="f" data-f="inverter"></div><div class="t"><p><span class="nm">CMOS inverter:</span> $A_v = -(g_{m1} + g_{m2})(r_{ds1}\parallel r_{ds2})$</p><p class="why">Same signal on both gates: the currents add.</p></div></div>
+<div class="c"><div class="f" data-f="cg"></div><div class="t"><p><span class="nm">CG:</span> $A_v = +\dfrac{R_D\parallel R_{dev}}{R_S + \frac1{g_m}\parallel r_{ds}}\approx+\dfrac{R_D}{R_S + 1/g_m}$</p><p>$R_{in} = \dfrac{r_{ds} + R_D}{1 + g_mr_{ds}}$, $R_{out} = R_D\parallel\underbrace{(r_{ds} + R_S + g_mr_{ds}R_S)}_{R_{dev}}$</p><p class="why">Non-inverting ($G_M < 0$). $R_S = 0$: $(1 + g_mr_{ds})\frac{R_D}{R_D + r_{ds}}$.</p></div></div>
+<div class="c"><div class="f" data-f="cd"></div><div class="t"><p><span class="nm">CD (follower):</span> $A_v = \dfrac{R_L\parallel r_{ds}}{(R_L\parallel r_{ds}) + 1/g_m}$, $R_{out} = R_L\parallel\frac1{g_m}\parallel r_{ds}$</p><p class="why">A divider with $1/g_m$. Ideal current source: $\frac{g_mr_{ds}}{1 + g_mr_{ds}}\approx1$, $V_{OUT} = V_{IN} - V_{GS}$.</p></div></div>
+<div class="c"><div class="f" data-f="cascode"></div><div class="t"><p><span class="nm">Cascode:</span> $G_M = \dfrac{g_{m1}r_{ds1}(1 + g_{m2}r_{ds2})}{r_{ds1} + r_{ds2} + g_{m2}r_{ds1}r_{ds2}}\approx g_{m1}$</p><p>$R_{out} = R_D\parallel(r_{ds1} + r_{ds2} + g_{m2}r_{ds2}r_{ds1})$, $A_v\approx-g_{m1}R_D$</p></div></div>
+
+<h2>Multi-transistor</h2>
+<div class="c"><div class="f" data-f="foldedCascode"></div><div class="t"><p><span class="nm">Folded cascode:</span> $R_X = r_{ds1}\parallel r_{ds3}\parallel\frac1{g_{m2}}$, $G_M = g_{m1}\dfrac{R_X}{R_X + 1/g_{m4}}$</p><p>$R_{out} = R_D\parallel[r_{ds4} + R_X(1 + g_{m4}r_{ds4})]$</p><p class="why">Current division at $X$; then a CG degenerated by $R_X$.</p></div></div>
+<div class="c"><div class="f" data-f="mirror"></div><div class="t"><p><span class="nm">Mirror:</span> $i_{out} = \dfrac{g_{m2}}{g_{m1}}i_{in} = \dfrac{(W/L)_2}{(W/L)_1}i_{in}$, diode node $= i_{in}/g_{m1}$</p><p class="why">The copy flows the same way. CS → PMOS diode → mirror into $R_L$: $A_v = +\frac{g_{m1}g_{m3}}{g_{m2}}R_L$.</p></div></div>
+<div class="box"><ul>
+<li><b>Chains:</b> $A_v = A_1A_2$; find $v_1$ with the next stage attached (gate: free; source/diode: $1/g_m$ in parallel).</li>
+<li><b>Two paths:</b> short the output, add every transistor's current: $G_M = G_{M,a} + g_{m,b}A_1$. A PMOS gate fed an inverted copy fights an NMOS fed $v_{in}$.</li>
+<li><b>Current division:</b> into a $1/g_m$ branch from $R_X$: share $\frac{R_X}{R_X + 1/g_m}$.</li>
+<li><b>Signs:</b> CS-type stages invert, CG and CD do not. Check: "$v_{in}\uparrow$ → current ... → $v_{out}$ ...".</li>
+</ul></div>
+
+<h2>DC (Problem 1)</h2>
+<div class="box"><ul>
+<li>Mirror (same $V_{GS}$): $I\propto W/L$. KCL: resistors take the difference of mirrored currents.</li>
+<li>Saturation: NMOS $V_D\ge V_G - V_T$; PMOS $V_D\le V_G + |V_T|$; edge = equality. Diodes are always saturated.</li>
+<li>$K = \frac12\mu C_{ox}\frac WL$; $\mu_pC_{ox} = 50$ is half of $\mu_nC_{ox} = 100\,\mu\text{A/V}^2$: a PMOS needs $2\times$ the $W/L$.</li>
+<li>Numeric gains: DC only as far as $g_m$; $\infty$ caps short; watch an input divider into a $1/g_m$ node.</li>
+</ul></div>
+
+</div>
+</div>
+
+<script src="../shared/core.js"></script>
+<script src="js/mna.js"></script>
+<script src="js/schem.js"></script>
+<script src="../shared/figlabels.js"></script>
+<script src="../shared/declutter.js"></script>
+<script src="content/e2-figs.js"></script>
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('[data-f]').forEach((el) => {
+      const f = window.E2F[el.dataset.f];
+      el.innerHTML = `<figure class="fig">${Schem.render(f(), { maxW: 92 })}</figure>`;
+    });
+    if (window.FigLabels) FigLabels.lift(document.body);
+    renderMathInElement(document.body, { delimiters: [{ left: '$$', right: '$$', display: true }, { left: '$', right: '$', display: false }], throwOnError: false });
+    if (window.declutter) declutter(document.body);
+    // print: tall circuits are capped at 116 px so the sheet stays on two pages (the site's phone minimum does not
+    // apply here). Runs after the label layer has laid itself out.
+    const cap = () => document.querySelectorAll('.c .figbox').forEach((box) => {
+      const vb = box.querySelector('svg').viewBox.baseVal;
+      const w = Math.min(92, (116 * vb.width) / vb.height);
+      box.style.width = `${w}px`; box.style.minWidth = '0';
+      FigLabels.scale(box);
+    });
+    (document.fonts ? document.fonts.ready : Promise.resolve()).then(() => setTimeout(() => { cap(); document.body.dataset.ready = '1'; }, 300));
+  });
+</script>
+</body>
+</html>
