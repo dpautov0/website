@@ -713,7 +713,7 @@
       const vars = Object.keys(pt.vars).map((v) => `<code>${v}</code>`).join(' ');
       return `<div class="part expr" data-part="${i}">${lbl}<input class="ans" type="text" autocomplete="off" spellcheck="false" aria-label="${U.esc(pt.lbl || 'answer')}"><span class="mark"></span><div class="expr-meta"><span class="vars">Variables: ${vars}</span><span class="preview"></span></div></div>`;
     }
-    return `<div class="part num" data-part="${i}">${lbl}<input class="ans" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" aria-label="${U.esc(pt.lbl || 'answer')}">${pt.unit ? `<span class="unit">$${unitTeX(pt.unit)}$</span>` : ''}<span class="mark"></span></div>`;
+    return `<div class="part num" data-part="${i}">${lbl}<input class="ans" type="text" inputmode="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" aria-label="${U.esc(pt.lbl || 'answer')}">${pt.unit ? `<span class="unit">$${unitTeX(pt.unit)}$</span>` : ''}<span class="mark"></span></div>`;
   }
 
   function checkPart(pt, box) {
