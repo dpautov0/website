@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>ECE 329 Exam 2 Notecard</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/contrib/auto-render.min.js"></script>
+<style>
+  /* One 4" x 6" index card, both sides, printed landscape (6 in wide, 4 in tall). A template to copy by hand. */
+  :root { --ink: #111; --head: #1d4f91; --rule: #b9c3cf; --soft: #5a6470; --red: #a4453b; --paper: #fff; }
+  @page { size: 6in 4in; margin: 0.1in; }
+  * { box-sizing: border-box; }
+  html, body { background: var(--paper); color: var(--ink); margin: 0; }
+  body { font: 6.5pt/1.22 "Segoe UI", Arial, sans-serif; }
+  .card { width: 5.8in; height: 3.8in; overflow: hidden; margin: 0 auto; }
+  .card + .card { break-before: page; }
+  .top { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 0.9px solid var(--ink); margin-bottom: 2px; }
+  .top b { font-size: 6.4pt; }
+  .top span { color: var(--soft); }
+  .cols { column-count: 3; column-gap: 6px; column-rule: 0.5px solid var(--rule); column-fill: balance; height: 3.6in; }
+  section { break-inside: avoid; margin: 0 0 2.5px; }
+  h2 { font-size: 6.1pt; margin: 0 0 0.5px; color: var(--head); border-bottom: 0.5px solid var(--rule); }
+  p { margin: 0 0 0.8px; }
+  .t { color: var(--red); font-weight: 600; }
+  .sep { color: #9aa6b2; font-style: normal; padding: 0 1px; }
+  .katex { font-size: 1.0em; }
+  @media screen {
+    body { padding: 18px; font-size: 9.2pt; background: #eef1f5; }
+    .card { width: auto; max-width: 980px; height: auto; background: #fff; padding: 14px 16px; border-radius: 8px; box-shadow: 0 1px 4px rgba(0, 0, 0, .15); margin-bottom: 22px; }
+    .cols { height: auto; column-fill: balance; }
+    .top b { font-size: 10pt; }
+    .note { max-width: 980px; margin: 0 auto 14px; color: var(--soft); font: 10pt/1.4 "Segoe UI", Arial, sans-serif; }
+  }
+  @media screen and (max-width: 760px) { body { padding: 10px; font-size: 10pt; } .cols { column-count: 1; } }
+  @media print { .note { display: none; } }
+</style>
+</head>
+<body>
+
+<p class="note">Your one 4″×6″ card, front and back, laid out to copy by hand. Print it at actual size (the PDF is one card per page) to check that your handwriting fits, or write it smaller than shown. Most points are lost on signs and factors, so those are in red.</p>
+
+<!-- ================================ FRONT: magnetics, induction ================================ -->
+<div class="card">
+<div class="top"><b>ECE 329 Exam 2 · FRONT</b><span>$\mu_0 = 4\pi\!\times\!10^{-7}$ <i class="sep">|</i> $\epsilon_0 \approx 8.85\!\times\!10^{-12} \approx \frac{10^{-9}}{36\pi}$ <i class="sep">|</i> $c = 3\!\times\!10^8$ <i class="sep">|</i> $\eta_0 = 120\pi$</span></div>
+<div class="cols">
+
+<section><h2>Maxwell</h2>
+<p>$\oint\mathbf D\cdot d\mathbf S = Q_{enc}$ <i class="sep">|</i> $\nabla\cdot\mathbf D = \rho$</p>
+<p>$\oint\mathbf B\cdot d\mathbf S = 0$ <i class="sep">|</i> $\nabla\cdot\mathbf B = 0$</p>
+<p>$\oint\mathbf E\cdot d\mathbf l = -\frac{d}{dt}\int\mathbf B\cdot d\mathbf S$ <i class="sep">|</i> $\nabla\times\mathbf E = -\partial_t\mathbf B$</p>
+<p>$\oint\mathbf H\cdot d\mathbf l = I_{enc} + \frac{d}{dt}\int\mathbf D\cdot d\mathbf S$ <i class="sep">|</i> $\nabla\times\mathbf H = \mathbf J + \partial_t\mathbf D$</p>
+<p>$\nabla\cdot\mathbf J = -\partial_t\rho$ <i class="sep">|</i> $\mathbf J = \sigma\mathbf E$ <i class="sep">|</i> $\mathbf F = q(\mathbf E + \mathbf v\times\mathbf B)$</p>
+</section>
+
+<section><h2>Materials</h2>
+<p>$\mathbf D = \epsilon_0\mathbf E + \mathbf P = \epsilon\mathbf E$, $\mathbf P = \epsilon_0\chi_e\mathbf E$, $\epsilon_r = 1 + \chi_e$</p>
+<p>$\mathbf B = \mu_0(\mathbf H + \mathbf M) = \mu\mathbf H$, $\mathbf M = \chi_m\mathbf H$, $\mu_r = 1 + \chi_m$</p>
+<p>dia $\chi_m < 0$ (tiny), para $> 0$ (tiny), ferro $\gg 1$</p>
+<p>bound: $\rho_b = -\nabla\cdot\mathbf P$, $\mathbf P\cdot\hat n$; $\mathbf J_b = \nabla\times\mathbf M$, $\mathbf M\times\hat n$</p>
+</section>
+
+<section><h2>Boundaries ($\hat n$: side − → side +)</h2>
+<p>$E_t$, $B_n$ continuous <i class="sep">|</i> $\hat n\cdot(\mathbf D^+ - \mathbf D^-) = \rho_s$</p>
+<p>$\mathbf H^+ - \mathbf H^- = \mathbf J_s\times\hat n$ (free $J_s$ only)</p>
+<p>no $\rho_s$/$J_s$: $D_n$, $H_t$ continuous, so $E_n$, $B_t$ scale by $\epsilon$, $\mu$ ratio</p>
+<p>conductor: $\mathbf E = 0$, $\rho = 0$ inside; $\rho_s = \hat n\cdot\mathbf D$ outside</p>
+</section>
+
+<section><h2>H of shapes (Ampère, RHR)</h2>
+<p>wire $\frac{I}{2\pi r}\hat\phi$ <i class="sep">|</i> thick wire inside $\frac{Ir}{2\pi a^2}$</p>
+<p>coax $\frac{I}{2\pi r}$ ($a < r < b$), 0 outside</p>
+<p>solenoid $H = \frac{N}{\ell}I$ inside, 0 outside <i class="sep">|</i> toroid $\frac{NI}{2\pi r}$</p>
+<p>sheet $\mathbf H = \tfrac12\mathbf J_s\times\hat n$ ($\hat n$ sheet → point); $\pm$ sheet pair: $J_s$ between, 0 out</p>
+<p>slab: 0 at mid-plane, linear inside, $\pm\frac{JW}{2}$ outside</p>
+<p>loop axis $B = \frac{\mu_0Ia^2}{2(a^2+z^2)^{3/2}}$, center $\frac{\mu_0I}{2a}$</p>
+<p>$d\mathbf B = \frac{\mu_0I\,d\mathbf l\times\hat R}{4\pi R^2}$ <i class="sep">|</i> $d\mathbf F = I\,d\mathbf l\times\mathbf B$</p>
+<p>wires $\frac{F}{\ell} = \frac{\mu_0I_1I_2}{2\pi d}$: parallel attract</p>
+<p>$I\delta(x)\delta(y)\hat z$ = wire (A) <i class="sep">|</i> $J_s\delta(z)$ = sheet (A/m)</p>
+<p>check a shape with the curl: $H_\phi(r)\hat\phi$ → $J_z = \frac1r\frac{d(rH_\phi)}{dr}$ <i class="sep">|</i> $H_z(r)\hat z$ → $J_\phi = -\frac{dH_z}{dr}$</p>
+</section>
+
+<section><h2>Faraday</h2>
+<p>$\mathcal E = \oint(\mathbf E + \mathbf v\times\mathbf B)\cdot d\mathbf l = -N\frac{d\Psi}{dt}$, $\Psi = \int\mathbf B\cdot d\mathbf S$</p>
+<p>fingers along $C$ → thumb $= d\mathbf S$. <span class="t">Lenz is a check, not a 2nd minus.</span></p>
+<p>bar $vB\ell$ <i class="sep">|</i> rails $I = \frac{vB\ell}{R}$, $F = I\ell B$ against $\mathbf v$</p>
+<p>spinning loop $\Psi = BA\cos\omega t$ → $\mathcal E = BA\omega\sin\omega t$</p>
+<p>uniform $B_z(t)$, radius $a$: $E_\phi = -\frac r2\dot B$ in, $-\frac{a^2}{2r}\dot B$ out</p>
+<p>meter reads $\int_+^-\mathbf E\cdot d\mathbf l$ along its leads; around a loop $\sum IR = \mathcal E_{\text{enclosed}}$; leads hugging $R$: $\pm IR$</p>
+</section>
+
+<section><h2>Inductance</h2>
+<p>$L = \frac{N\Psi}{I}$ <i class="sep">|</i> $v = L\frac{dI}{dt}$ <i class="sep">|</i> $W = \tfrac12LI^2 = \int\tfrac12\mu H^2dV$</p>
+<p>solenoid $\frac{\mu N^2A}{\ell}$ <i class="sep">|</i> toroid $\frac{\mu N^2h}{2\pi}\ln\frac ba$</p>
+<p>coax $L' = \frac{\mu}{2\pi}\ln\frac ba$ <i class="sep">|</i> pp line $L' = \frac{\mu d}{w}$ <i class="sep">|</i> $L'C' = \mu\epsilon$</p>
+<p>mutual $M = \frac{N_2\Psi_{21}}{I_1}$</p>
+<p class="t">$N$ turns: $N/\ell$ in $H$ and $N$ again in the linkage: $\mathcal E, L \propto N^2$</p>
+</section>
+
+</div></div>
+
+<!-- ================================ BACK: electric, waves, power ================================ -->
+<div class="card">
+<div class="top"><b>ECE 329 Exam 2 · BACK</b><span>$v_p = \frac{1}{\sqrt{\mu\epsilon}}$ <i class="sep">|</i> $\eta = \sqrt{\mu/\epsilon}$ <i class="sep">|</i> $c = 0.3$ m/ns</span></div>
+<div class="cols">
+
+<section><h2>Statics (Exam 1)</h2>
+<p>$E$: point $\frac{Q}{4\pi\epsilon_0r^2}$, line $\frac{\rho_l}{2\pi\epsilon_0r}$, sheet $\frac{\rho_s}{2\epsilon_0}$, slab $\frac{\rho z}{\epsilon_0}$ in</p>
+<p>$V_A - V_B = \int_A^B\mathbf E\cdot d\mathbf l$ <i class="sep">|</i> $\mathbf E = -\nabla V$ <i class="sep">|</i> $\nabla^2V = -\rho/\epsilon$</p>
+</section>
+
+<section><h2>C, G, relaxation</h2>
+<p>$C = Q/V$: pp $\frac{\epsilon A}{d}$ <i class="sep">|</i> coax $\frac{2\pi\epsilon\ell}{\ln(b/a)}$ <i class="sep">|</i> spheres $\frac{4\pi\epsilon ab}{b-a}$ <i class="sep">|</i> sphere $4\pi\epsilon a$</p>
+<p>stacked: $D$ same, $V = D\sum\frac{d_i}{\epsilon_i}$ <i class="sep">|</i> side by side: $E$ same, $C$'s add</p>
+<p>$R = \frac{\ell}{\sigma A}$ <i class="sep">|</i> $\frac GC = \frac\sigma\epsilon$ <i class="sep">|</i> $RC = \frac\epsilon\sigma$</p>
+<p>$\rho = \rho_0e^{-t/\tau}$, <span class="t">$\tau = \epsilon/\sigma$</span>; $E$ from $\rho$: $\partial_zE_z = \rho/\epsilon$</p>
+</section>
+
+<section><h2>Displacement current</h2>
+<p>$\mathbf J_d = \partial_t\mathbf D$ <i class="sep">|</i> $I_d = \frac{d\Psi_e}{dt}$ <i class="sep">|</i> <span class="t">$\Psi_e = \int\mathbf D\cdot d\mathbf S$ (C)</span></p>
+<p>capacitor: $I_d = C\frac{dV}{dt}$ = wire current</p>
+<p>plates radius $R$: $H_\phi = \frac r2\partial_tD$ ($r < R$), $\frac{R^2}{2r}\partial_tD$ ($r > R$); $+\hat\phi$ if $D_z$ grows</p>
+<p>$\frac{\sigma}{\omega\epsilon} \gg 1$: conductor <i class="sep">|</i> $\ll 1$: dielectric</p>
+</section>
+
+<section><h2>Plane waves</h2>
+<p>$\partial_z^2E = \mu\epsilon\,\partial_t^2E$ <i class="sep">|</i> $f(t - \frac z{v})$ → $+z$ <i class="sep">|</i> $g(t + \frac zv)$ → $-z$</p>
+<p>$v_p = \frac{c}{\sqrt{\mu_r\epsilon_r}}$ <i class="sep">|</i> $\eta = \eta_0\sqrt{\mu_r/\epsilon_r}$ <i class="sep">|</i> $|\mathbf E| = \eta|\mathbf H|$</p>
+<p>$\mathbf E\perp\mathbf H\perp$ travel; <span class="t">$\mathbf E\times\mathbf H$ along travel</span> ($\hat x\times\hat y = \hat z$, $\hat y\times\hat z = \hat x$, $\hat z\times\hat x = \hat y$)</p>
+<p>valid wave: depends on $t \mp z/v$ only (or sums); $\cos\omega t\cos\beta z$ = standing</p>
+</section>
+
+<section><h2>Sheet at $z = 0$</h2>
+<p>$\mathbf E = -\frac\eta2\mathbf J_s\left(t - \frac{|z|}{v}\right)$ both sides: <b>E even in z</b></p>
+<p>$\mathbf E\times\mathbf H$ away from sheet: <b>H odd in z</b>, jumps by $J_s$</p>
+<p>course: $\mathbf J_s = -J_s(t)\hat x$ → $E_x = \frac\eta2J_s(t \mp \frac zv)$, $H_y = \pm\frac12J_s(t \mp \frac zv)$, $z \gtrless 0$</p>
+<p>sheet power $\frac\eta2J_s^2$/m², half each way ($S = \frac\eta4J_s^2$)</p>
+</section>
+
+<section><h2>Reading a wave</h2>
+<p>vs $t$ at $z$: same shape, delayed $|z|/v$</p>
+<p>vs $z$ at $t$: shape flipped; front at $|z| = v(t - t_{on})$; <span class="t">first in time = farthest in z</span></p>
+<p>snapshot at $t_1$ → $t_2$: slide $v(t_2 - t_1)$ along travel</p>
+<p>$H$ sketch: $E/\eta$, sign from $\mathbf E\times\mathbf H$; label component + unit</p>
+</section>
+
+<section><h2>Sinusoids</h2>
+<p>$\cos(\omega t - \beta z + \phi)$: $\omega = 2\pi f$, $\beta = \frac{2\pi}{\lambda}$, $v = \frac\omega\beta = \lambda f$</p>
+<p>$\Delta\phi$ in $\Delta t$ → $\omega$; $\Delta\phi$ over $\Delta z$ → $\beta$</p>
+<p>$\mathbf J_s = -\cos(\omega t + \phi)\hat x$ → $E_x = \frac\eta2\cos(\omega t \mp \beta z + \phi)$</p>
+</section>
+
+<section><h2>Power</h2>
+<p>$\mathbf S = \mathbf E\times\mathbf H$ (W/m²) <i class="sep">|</i> plane wave $S = \frac{E^2}{\eta} = \eta H^2$</p>
+<p>$\langle S\rangle = \frac{E_0^2}{2\eta}$ <i class="sep">|</i> $w_e = \frac12\epsilon E^2 = w_m = \frac12\mu H^2$ <i class="sep">|</i> $S = v(w_e + w_m)$</p>
+<p>$-\oint\mathbf S\cdot d\mathbf A = \frac{d}{dt}\int(w_e + w_m) + \int\mathbf J\cdot\mathbf E$</p>
+</section>
+
+<section><h2>Vector calculus</h2>
+<p>$\nabla\times\mathbf F = \hat x(\partial_yF_z - \partial_zF_y) + \hat y(\partial_zF_x - \partial_xF_z) + \hat z(\partial_xF_y - \partial_yF_x)$</p>
+<p><b>cyl.</b> $\nabla\cdot\mathbf F = \frac1r\partial_r(rF_r) + \frac1r\partial_\phi F_\phi + \partial_zF_z$</p>
+<p><b>cyl.</b> $\nabla\times\mathbf F = \hat r\left(\frac1r\partial_\phi F_z - \partial_zF_\phi\right) + \hat\phi\left(\partial_zF_r - \partial_rF_z\right) + \frac{\hat z}{r}\left(\partial_r(rF_\phi) - \partial_\phi F_r\right)$</p>
+<p>$\hat r = \cos\phi\,\hat x + \sin\phi\,\hat y$ <i class="sep">|</i> $\hat\phi = -\sin\phi\,\hat x + \cos\phi\,\hat y$ <i class="sep">|</i> $d\mathbf l = dr\,\hat r + r\,d\phi\,\hat\phi + dz\,\hat z$</p>
+<p class="t">cm² → m²: $\times10^{-4}$ <i class="sep">|</i> $2\pi r$ not $\pi r^2$ <i class="sep">|</i> $\epsilon$ vs $\epsilon_0$ <i class="sep">|</i> units: A/m, T, Wb, V, H, F</p>
+</section>
+
+</div></div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    renderMathInElement(document.body, { delimiters: [{ left: '$', right: '$', display: false }], throwOnError: false });
+    document.body.setAttribute('data-ready', '1');
+  });
+</script>
+</body>
+</html>

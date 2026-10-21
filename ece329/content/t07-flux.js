@@ -129,11 +129,11 @@
 
   // ---------------------------------------------------------------- the lesson
   EM.lesson('u2', {
-    id: 't7-flux', topic: 7, ref: 'Lectures 12, 15', title: 'Magnetic flux, ∇·B = 0, and the vector potential',
+    id: 't7-flux', topic: 7, ref: 'Lectures 12, 15', title: 'Magnetic flux and ∇·B = 0',
     steps: [
       R(md`
         !!key Why you care
-          Flux feeds every Faraday problem, and this topic has exam points of its own: the vector potential (Summer 2019 #2(b) and its conflict exam #2(b), 10 points each: show $\nabla\cdot\mathbf A = 0$, find $\mathbf B$, find the $\mathbf J$ that makes it), potentials to fields (Spring 2018 1(v)), flux through one turn of a toroid (Spring 2018 #2(a), 10 points), flux of a nonuniform field (Summer 2020 #3(b)). HW 5 #1, the flux through a partial cone, takes two lines once you close the surface.
+          Flux feeds every Faraday problem, and this topic has exam points of its own: flux through one turn of a toroid (Spring 2018 #2(a), 10 points), flux of a nonuniform field (Summer 2020 #3(b)), testing whether a field can be a $\mathbf B$. HW 5 #1, the flux through a partial cone, takes two lines once you close the surface. **The vector potential is not on the Fall 2026 Exam 2** (instructor answer on Piazza); it now sits in [Extra](#/l/x-vecpot).
 
         ### Notation
 
@@ -141,8 +141,7 @@
         - $S$: a surface. An **open** surface has an edge, its **rim** $C$. A **closed** surface (a balloon) has no rim; $\oint_S$ covers all of it, with $d\mathbf S$ pointing **outward**.
         - $d\mathbf S = \hat n\,dS$: a small patch as a vector (size = area, direction = normal). On an open surface the right-hand rule (RHR) from $C$ fixes $\hat n$.
         - $\Psi = \int_S\mathbf B\cdot d\mathbf S$: magnetic flux, Wb = T·m² = V·s.
-        - $\nabla\cdot\mathbf B = \partial_xB_x + \partial_yB_y + \partial_zB_z$: divergence, the net outflow per volume. $\nabla\times\mathbf A$: curl, the circulation per area. ($\partial_x$ is short for $\partial/\partial x$; see [vectors](#/l/u0-vectors).)
-        - $\mathbf A$: the magnetic **vector potential**, Wb/m = T·m = V·s/m. $\Phi$: the scalar (electric) potential, V; in statics it is the familiar $V$.
+        - $\nabla\cdot\mathbf B = \partial_xB_x + \partial_yB_y + \partial_zB_z$: divergence, the net outflow per volume. $\nabla\times\mathbf H$: curl, the circulation per area. ($\partial_x$ is short for $\partial/\partial x$; see [curl and divergence](#/l/u0-curl-div).)
         - $\mathbf H = \mathbf B/\mu_0$ in free space (A/m); volume current $\mathbf J$ (A/m²), surface current $\mathbf J_s$ (A/m).
         - $\operatorname{sgn}(z) = \pm1$ for $z \gtrless 0$; $\delta(z)$: a spike at $z = 0$ with unit area, 1/m ([deltas](#/l/u0-deltas)). $\frac{d}{dz}|z| = \operatorname{sgn}(z)$ and $\frac{d}{dz}\operatorname{sgn}(z) = 2\delta(z)$.
 
@@ -150,7 +149,7 @@
 
         Magnetic field lines never begin or end: there is no magnetic charge. So whatever flux enters a closed surface also leaves it:
         $$\oint_S\mathbf B\cdot d\mathbf S = 0 \qquad\Longleftrightarrow\qquad \nabla\cdot\mathbf B = 0$$
-        Two tools follow. The flux through an open surface depends only on its rim, so an awkward surface can be swapped for a flat one. And $\mathbf B$ is the curl of a vector potential, $\mathbf B = \nabla\times\mathbf A$, whose integral around the rim is the flux.
+        Two tools follow. The flux through an open surface depends only on its rim, so an awkward surface can be swapped for flat ones. And $\nabla\cdot\mathbf B = 0$ is a test: a proposed field that fails it cannot be a magnetic field.
       `),
       RF(md`
         ### Step 1: flux through an open surface
@@ -200,6 +199,97 @@
         ['$-3\\pi R^2B_0$', '$+3\\pi R^2B_0$', '$-6\\pi R^2B_0$', '$0$'], 0,
         [null, 'That is the outward flux through the floor disk. Dome and floor must add to zero.', 'That uses the dome\'s curved area, $2\\pi R^2$. Only the projected area $\\pi R^2$ counts.', 'Zero is the total for dome plus floor. The dome alone carries the floor\'s flux, reversed.'],
         md`Close it with the disk at $z = 0$, outward normal $-\hat z$: $\Psi_{\text{floor}} = (-B_z)\pi R^2 = +3\pi R^2B_0$. So $\Psi_{\text{dome}} = -3\pi R^2B_0$: the field points mostly down, into the dome. The $B_x$ lines enter its back and leave its front: no net.`),
+      RF(md`
+        ### The method
+
+        !!method Flux and Gauss's law for B
+          1. **Flux:** fix $d\mathbf S$ (RHR from $C$). Uniform $\mathbf B$: $\Psi = (\mathbf B\cdot\hat n)A$. Otherwise cut $S$ into strips where $\mathbf B$ is constant and integrate.
+          2. **Awkward surface:** close it with flat pieces, all normals outward; $\Psi_{\text{awkward}} = -\sum\Psi_{\text{flat}}$. Switch to the $d\mathbf S$ the problem asks for at the end.
+          3. **Is it a B field?** Compute $\nabla\cdot\mathbf B$. Zero everywhere: yes. Anything else: no.
+          4. **Check:** units (Wb = T·m²), the sign (+ along $d\mathbf S$), and that all the closed surface's outward fluxes add to zero.
+
+        ### Worked example
+
+        !!graded Problem
+          A half-cylinder of radius $R$ and length $\ell$ has its axis along $y$ ($0 \le y \le \ell$) and stands on the plane $z = 0$ (the part with $z \ge 0$). (a) Show that $\mathbf B = B_0(2\hat x + \hat y - 4\hat z)$ is a possible magnetic field and find its outward flux through the curved surface. (b) Repeat for the nonuniform $\mathbf B = B_0\left(\dfrac{x}{\ell}\hat x + \hat y - \dfrac{z}{\ell}\hat z\right)$.
+
+        **1. Divergence.** (a) Uniform: $\nabla\cdot\mathbf B = 0$. (b) $\nabla\cdot\mathbf B = B_0\left(\tfrac1\ell + 0 - \tfrac1\ell\right) = 0$. Both are possible $\mathbf B$ fields, so the closing trick applies to both.
+
+        **2. Close the surface.** Add the floor ($z = 0$, area $2R\ell$, outward $-\hat z$) and the two half-disk ends ($y = 0$ and $y = \ell$, area $\tfrac12\pi R^2$ each, outward $-\hat y$ and $+\hat y$). Then $\Psi_{\text{curved}} = -(\Psi_{\text{floor}} + \Psi_{\text{ends}})$.
+
+        **3. (a) Uniform field.**
+        $$\Psi_{\text{floor}} = (-4B_0)(-1)(2R\ell) = 8B_0R\ell, \qquad \Psi_{\text{ends}} = (-B_0 + B_0)\tfrac12\pi R^2 = 0$$
+        $$\Psi_{\text{curved}} = -8B_0R\ell\ \ \text{Wb}$$
+        Negative: the field points mostly down, so it enters the curved roof. $B_x$ enters one side of the roof and leaves the other: no net.
+
+        **4. (b) Nonuniform field.** On the floor $B_z = -B_0z/\ell = 0$, so $\Psi_{\text{floor}} = 0$; on the ends $B_y = B_0$ is uniform and cancels. So $\Psi_{\text{curved}} = 0$.
+
+        **Check by direct integration.** On the roof $\hat n = (x\hat x + z\hat z)/R$ with $x = R\cos\theta$, $z = R\sin\theta$, $dS = R\,d\theta\,dy$:
+        $$\Psi_{\text{curved}} = \int_0^\ell\!\!\int_0^\pi\frac{B_0R^2}{\ell R}(\cos^2\theta - \sin^2\theta)\,R\,d\theta\,dy = B_0R^2\int_0^\pi\cos2\theta\,d\theta = 0\ ✓$$
+        The same check for (a) gives $B_0R\ell\left[2\sin\theta + 4\cos\theta\right]_0^\pi = -8B_0R\ell$ ✓.
+
+        !!mistake Common mistakes
+          - Using the curved area for a uniform field. A dome of radius $R$ has area $2\pi R^2$, but its flux is $B_z\pi R^2$: only the projection counts.
+          - Mixing normals when closing a surface. Use outward normals for $\oint = 0$, then convert to the $d\mathbf S$ the problem asks for.
+          - Forgetting a flat piece. Count every face, including ends whose fluxes cancel.
+          - A nonuniform field on a flat piece: integrate it over that piece; don't use its value at one point.
+          - Testing a B field with its curl. $\nabla\times\mathbf B \ne 0$ only means current is present; the test is $\nabla\cdot\mathbf B = 0$.
+
+        ### Check questions
+      `, {}),
+      Q(md`For which $k$ is $\mathbf B = B_0(kx\,\hat x + 3y\,\hat y - 2z\,\hat z)/\ell$ a possible magnetic field?`,
+        ['$k = -1$', '$k = 1$', '$k = 5$', '$k = -5$'], 0,
+        [null, 'Then $\\nabla\\cdot\\mathbf B = (1 + 3 - 2)B_0/\\ell = 2B_0/\\ell$.', 'Then $\\nabla\\cdot\\mathbf B = 6B_0/\\ell$: that is $k = 3 + 2$, the sizes added with both signs dropped.', 'Then $\\nabla\\cdot\\mathbf B = -4B_0/\\ell$: that solves $k + 3 + 2 = 0$, reading $-2z$ as $+2z$.'],
+        md`$\nabla\cdot\mathbf B = (k + 3 - 2)B_0/\ell = 0$ gives $k = -1$.`),
+      Q(md`A closed tin can sits in a static, nonuniform $\mathbf B$. The outward flux is $3$ mWb through its side and $2$ mWb through its top. Through its bottom (outward) it is…`,
+        ['$-5$ mWb', '$+5$ mWb', '$-1$ mWb', '$0$'], 0,
+        [null, 'Then the total would be 10 mWb, not zero.', 'That treats the top\'s 2 mWb as entering. All three are outward: $3 + 2 + \\Psi = 0$.', 'Only the total is zero; flux has to come in somewhere.'],
+        md`$\oint\mathbf B\cdot d\mathbf S = 3 + 2 + \Psi_{\text{bottom}} = 0$, so 5 mWb enters through the bottom.`),
+      Q(md`A closed surface surrounds only the north end of a long bar magnet; the magnet pierces the surface. The net outward flux of $\mathbf B$ is…`,
+        ['zero', 'positive: field lines leave a north pole', 'negative', 'proportional to the magnet\'s strength'], 0,
+        [null, 'Outside the magnet the lines leave; inside the magnet the same lines come back in, where the magnet crosses the surface.', 'Lines leave the north end on the outside; the net is still zero.', 'There is no magnetic charge to enclose, however strong the magnet is.'],
+        md`$\oint\mathbf B\cdot d\mathbf S = 0$ for every closed surface. Inside a bar magnet $\mathbf B$ runs from S to N, closing the loops that leave N on the outside.`),
+      Q(md`A flat disk and a deep bowl share the same circular rim $C$; both are oriented by the RHR from $C$. In a static, nonuniform $\mathbf B$, their fluxes are…`,
+        ['equal', 'different: the bowl has more area', 'equal and opposite', 'equal only if $\\mathbf B$ is uniform'], 0,
+        [null, 'Extra area lets more lines in and out; the net through it is fixed by the rim.', 'They are opposite only if one is oriented outward from the volume between them. With the RHR from the same $C$ they are equal.', '$\\oint\\mathbf B\\cdot d\\mathbf S = 0$ holds for any $\\mathbf B$.'],
+        md`Disk and bowl (one flipped) form a closed surface with zero net outward flux, so the fluxes along the RHR normals are equal.`),
+      R(md`
+        ### Rapid fire: is it a magnetic field?
+
+        **The trick:** add $\partial_xB_x + \partial_yB_y + \partial_zB_z$. A component that does not depend on its own coordinate contributes nothing. Zero everywhere: a possible $\mathbf B$.
+
+        Short questions with a new situation every time: reason, answer in 10–20 seconds. Eight right completes a card.
+      `),
+      Object.assign(G('rf_t7_div', { need: 8 }), { id: 't7-flux.r0' }),
+      R(md`
+        ### Rapid fire: close the surface
+
+        **The trick:** for a uniform field only the component normal to the rim's flat disk (or floor) matters; the awkward surface carries the flat piece's outward flux with the sign reversed.
+      `),
+      Object.assign(G('rf_t7_close', { need: 8 }), { id: 't7-flux.r1' }),
+      R(md`
+        ### Problems with new numbers every time
+
+        Press **New problem** for fresh values. Two correct answers without opening the solution complete each one.
+      `),
+      G('t7_toroid', { need: 2 }),
+      G('t7_close', { need: 2 }),
+    ],
+  });
+
+  // ---------------------------------------------------------------- the vector potential: Extra (not on the Fall 2026 Exam 2)
+  EM.lesson('x-extra', {
+    id: 'x-vecpot', topic: 'A', ref: 'Lecture 15a', title: 'The vector potential A (not on Exam 2)',
+    steps: [
+      R(md`
+        !!key Not on the Fall 2026 Exam 2
+          The instructors answered on Piazza that the vector potential will **not** be tested on Exam 2 (Section C did not cover it). Older exams used it (Spring 2018 1(v), Summer 2019 #2(b) and its conflict exam), so it is kept here for those papers and for later courses. Skip it before the exam.
+
+        ### Notation
+
+        - $\mathbf A$: the magnetic **vector potential**, Wb/m = T·m = V·s/m. $\Phi$: the scalar (electric) potential, V; in statics it is the familiar $V$.
+        - Everything else as in [Topic 7](#/l/t7-flux): $\mathbf B$ (T), $\mathbf H = \mathbf B/\mu_0$ (A/m), $\mathbf J$ (A/m²), $\mathbf J_s$ (A/m), $\operatorname{sgn}(z)$, $\delta(z)$.
+      `),
       R(md`
         ### Step 4: the vector potential, B = ∇×A
 
@@ -302,22 +392,6 @@
         ['$\\mathbf J = +\\hat y\\,\\dfrac{2}{\\mu_0}\\delta(z)$ A/m²: a sheet on $z = 0$', '$\\mathbf J = -\\hat y\\,\\dfrac{2}{\\mu_0}\\delta(z)$ A/m²', '$\\mathbf J = +\\hat y\\,\\dfrac{1}{\\mu_0}\\delta(z)$ A/m²', '$\\mathbf J = 0$ everywhere: $\\mathbf B$ is constant on each side'], 0,
         [null, 'Sign: $\\mathbf B = \\hat x\\operatorname{sgn}(z)$, and $(\\nabla\\times\\mathbf H)_y = \\partial_zH_x = +2\\delta(z)/\\mu_0$.', '$H_x$ jumps from $-1/\\mu_0$ to $+1/\\mu_0$: by $2/\\mu_0$, not $1/\\mu_0$.', 'Constant on each side, but it jumps at $z = 0$. A jump in tangential $\\mathbf H$ is a surface current.'],
         md`$\mathbf B = \nabla\times\mathbf A = \hat x\operatorname{sgn}(z)$ T. $\mathbf J = \nabla\times(\mathbf B/\mu_0) = \hat y\,\partial_z(\operatorname{sgn}z)/\mu_0 = \hat y\frac{2}{\mu_0}\delta(z)$, i.e. $\mathbf J_s = \frac{2}{\mu_0}\hat y$ A/m on $z = 0$. Same from $\hat n\times(\mathbf H^+ - \mathbf H^-) = \hat z\times\frac{2}{\mu_0}\hat x$.`, { src: 'Summer 2019 Exam 2 (conflict)' }),
-      Q(md`For which $k$ is $\mathbf B = B_0(kx\,\hat x + 3y\,\hat y - 2z\,\hat z)/\ell$ a possible magnetic field?`,
-        ['$k = -1$', '$k = 1$', '$k = 5$', '$k = -5$'], 0,
-        [null, 'Then $\\nabla\\cdot\\mathbf B = (1 + 3 - 2)B_0/\\ell = 2B_0/\\ell$.', 'Then $\\nabla\\cdot\\mathbf B = 6B_0/\\ell$: that is $k = 3 + 2$, the sizes added with both signs dropped.', 'Then $\\nabla\\cdot\\mathbf B = -4B_0/\\ell$: that solves $k + 3 + 2 = 0$, reading $-2z$ as $+2z$.'],
-        md`$\nabla\cdot\mathbf B = (k + 3 - 2)B_0/\ell = 0$ gives $k = -1$.`),
-      Q(md`A closed tin can sits in a static, nonuniform $\mathbf B$. The outward flux is $3$ mWb through its side and $2$ mWb through its top. Through its bottom (outward) it is…`,
-        ['$-5$ mWb', '$+5$ mWb', '$-1$ mWb', '$0$'], 0,
-        [null, 'Then the total would be 10 mWb, not zero.', 'That treats the top\'s 2 mWb as entering. All three are outward: $3 + 2 + \\Psi = 0$.', 'Only the total is zero; flux has to come in somewhere.'],
-        md`$\oint\mathbf B\cdot d\mathbf S = 3 + 2 + \Psi_{\text{bottom}} = 0$, so 5 mWb enters through the bottom.`),
-      Q(md`A closed surface surrounds only the north end of a long bar magnet; the magnet pierces the surface. The net outward flux of $\mathbf B$ is…`,
-        ['zero', 'positive: field lines leave a north pole', 'negative', 'proportional to the magnet\'s strength'], 0,
-        [null, 'Outside the magnet the lines leave; inside the magnet the same lines come back in, where the magnet crosses the surface.', 'Lines leave the north end on the outside; the net is still zero.', 'There is no magnetic charge to enclose, however strong the magnet is.'],
-        md`$\oint\mathbf B\cdot d\mathbf S = 0$ for every closed surface. Inside a bar magnet $\mathbf B$ runs from S to N, closing the loops that leave N on the outside.`),
-      Q(md`A flat disk and a deep bowl share the same circular rim $C$; both are oriented by the RHR from $C$. In a static, nonuniform $\mathbf B$, their fluxes are…`,
-        ['equal', 'different: the bowl has more area', 'equal and opposite', 'equal only if $\\mathbf B$ is uniform'], 0,
-        [null, 'Extra area lets more lines in and out; the net through it is fixed by the rim.', 'They are opposite only if one is oriented outward from the volume between them. With the RHR from the same $C$ they are equal.', '$\\oint\\mathbf B\\cdot d\\mathbf S = 0$ holds for any $\\mathbf B$.'],
-        md`Disk and bowl (one flipped) form a closed surface with zero net outward flux, so the fluxes along the RHR normals are equal.`),
       Q(md`The SI unit of the vector potential $\mathbf A$ is…`,
         ['Wb/m', 'T', 'Wb', 'A/m'], 0,
         [null, '$\\mathbf B = \\nabla\\times\\mathbf A$ has one more 1/m than $\\mathbf A$, so $\\mathbf A$ is T·m = Wb/m.', 'That is the flux $\\oint\\mathbf A\\cdot d\\mathbf l$: $\\mathbf A$ times a length.', 'That is $\\mathbf H$ (and $\\mathbf J_s$).'],
@@ -331,20 +405,6 @@
         [null, '$(\\nabla\\times\\mathbf A_2)_z = \\partial_xA_y = B_0$ as well.', '$(\\nabla\\times\\mathbf A_1)_z = -\\partial_yA_x = B_0$ as well.', '$\\mathbf A$ is fixed only up to a gradient: $\\mathbf A_2 - \\mathbf A_1 = \\nabla(B_0xy)$.'],
         md`Both curls are $B_0\hat z$. Potentials that differ by a gradient describe the same field.`),
       R(md`
-        ### Rapid fire: is it a magnetic field?
-
-        **The trick:** add $\partial_xB_x + \partial_yB_y + \partial_zB_z$. A component that does not depend on its own coordinate contributes nothing. Zero everywhere: a possible $\mathbf B$.
-
-        Short questions with a new situation every time: reason, answer in 10–20 seconds. Eight right completes a card.
-      `),
-      Object.assign(G('rf_t7_div', { need: 8 }), { id: 't7-flux.r0' }),
-      R(md`
-        ### Rapid fire: close the surface
-
-        **The trick:** for a uniform field only the component normal to the rim's flat disk (or floor) matters; the awkward surface carries the flat piece's outward flux with the sign reversed.
-      `),
-      Object.assign(G('rf_t7_close', { need: 8 }), { id: 't7-flux.r1' }),
-      R(md`
         ### Rapid fire: curls and potentials
 
         **The trick:** for $\mathbf A = A_i(x_j)\,\hat x_i$ the curl points along the third axis, sign by the cyclic order; $\mathbf E = -\nabla\Phi - \partial\mathbf A/\partial t$; $\Psi = \oint\mathbf A\cdot d\mathbf l$.
@@ -352,11 +412,7 @@
       Object.assign(G('rf_t7_curl', { need: 8 }), { id: 't7-flux.r2' }),
       R(md`
         ### Problems with new numbers every time
-
-        Press **New problem** for fresh values. Two correct answers without opening the solution complete each one.
       `),
-      G('t7_toroid', { need: 2 }),
-      G('t7_close', { need: 2 }),
       G('t7_sheetA', { need: 2 }),
       G('t7_potentials', { need: 2 }),
     ],
@@ -669,6 +725,29 @@
       ['twice as large', 'four times as large', 'unchanged', 'half as large'], 0,
       [null, 'Scaling $a$ and $b$ together leaves $\\ln(b/a)$ unchanged; only $h$ doubles.', 'The doubled height doubles every strip\'s area.', 'The larger radii weaken $B$, but the strips widen by the same factor; the height still doubles.'],
       md`$\ln(2b/2a) = \ln(b/a)$, and $\Psi_1 \propto h$.`),
+    Q(md`In free space, $\mathbf B = B_0\hat y$ for $z > 0$ and $\mathbf B = 0$ for $z < 0$. On $z = 0$ there must be a surface current…`,
+      ['$\\mathbf J_s = -(B_0/\\mu_0)\\,\\hat x$', '$\\mathbf J_s = +(B_0/\\mu_0)\\,\\hat x$', '$\\mathbf J_s = -(2B_0/\\mu_0)\\,\\hat x$', '$\\mathbf J_s = (B_0/\\mu_0)\\,\\hat y$'], 0,
+      [null, 'Sign: $\\hat z\\times\\hat y = -\\hat x$.', 'The jump in $H_y$ is $B_0/\\mu_0$, not $2B_0/\\mu_0$.', 'A sheet current is perpendicular to the jump in $\\mathbf H$, not along it.'],
+      md`$\mathbf J_s = \hat n\times(\mathbf H^+ - \mathbf H^-) = \hat z\times\frac{B_0}{\mu_0}\hat y = -\frac{B_0}{\mu_0}\hat x$.`),
+    Q(md`$\mathbf B = B_0(y/\ell)\,\hat x$ in a region of free space. The current density there is…`,
+      ['$-\\dfrac{B_0}{\\mu_0\\ell}\\hat z$', '$+\\dfrac{B_0}{\\mu_0\\ell}\\hat z$', '$0$, since $\\nabla\\cdot\\mathbf B = 0$', '$\\dfrac{B_0}{\\mu_0\\ell}\\hat x$'], 0,
+      [null, 'Sign: $(\\nabla\\times\\mathbf H)_z = \\partial_xH_y - \\partial_yH_x$.', 'Zero divergence makes it a valid $\\mathbf B$; its curl still needs a current.', 'The current is along the curl, perpendicular to $\\mathbf B$ here.'],
+      md`$\mathbf J = \nabla\times\mathbf H = \hat z(\partial_xH_y - \partial_yH_x) = -\frac{B_0}{\mu_0\ell}\hat z$.`),
+    Q(md`Gauss's law for $\mathbf B$ applied to a thin pillbox straddling an interface says…`,
+      ['the normal component of $\\mathbf B$ is continuous', 'the tangential component of $\\mathbf B$ is continuous', 'the normal component of $\\mathbf H$ is continuous', 'the normal component of $\\mathbf B$ jumps by $\\mu_0J_s$'], 0,
+      [null, 'The pillbox\'s thin side carries no flux; it says nothing about tangential parts.', 'Across a change in $\\mu$, $H_n = B_n/\\mu$ jumps.', 'No source of $\\mathbf B$ flux exists; surface currents affect the tangential $\\mathbf H$.'],
+      md`What enters the bottom face leaves through the top: $B_n^+ = B_n^-$. (Topic 13 uses this at material interfaces.)`),
+    Q(md`To find the flux of a uniform $\mathbf B$ through a curved open surface (a partial cone, say), the quickest route is to…`,
+      ['close it with flat pieces and use $\\oint\\mathbf B\\cdot d\\mathbf S = 0$', 'parametrize the curved surface and integrate', 'multiply $|\\mathbf B|$ by the curved area', 'find $\\mathbf A$ and integrate it over the surface'], 0,
+      [null, 'That works, with far more algebra and more chances to slip.', 'That ignores direction: lines enter and leave a curved surface.', '$\\mathbf A$ is integrated around the rim, not over the surface.'],
+      md`The flat pieces carry $(\mathbf B\cdot\hat n)A$ each; the curved part carries minus their sum.`),
+    Q(md`$\mathbf B = B_0(y/\ell)\,\hat z$. The flux through a square of side $a$ in the $xy$-plane centered on the origin is…`,
+      ['zero', '$B_0a^2$', '$\\tfrac12B_0a^2$', 'no answer: this is not a valid B'], 0,
+      [null, 'The field is $B_0$ only at $y = \\ell$; over a centered square its average is zero.', '$B_z$ is odd in $y$: the flux up through one half cancels the flux down through the other.', '$\\nabla\\cdot\\mathbf B = \\partial_zB_z = 0$: valid.'],
+      md`$B_z$ is odd in $y$ and the square is symmetric: as much flux goes up through one half as down through the other.`),
+  ];
+
+  EM.BANK['x-vecpot'] = [
     Q(md`Which identity guarantees that any $\mathbf B = \nabla\times\mathbf A$ obeys Gauss's law for $\mathbf B$?`,
       ['$\\nabla\\cdot(\\nabla\\times\\mathbf A) = 0$', '$\\nabla\\times(\\nabla f) = 0$', '$\\nabla\\cdot(\\nabla f) = \\nabla^2f$', '$\\nabla\\times(\\nabla\\times\\mathbf A) = \\nabla(\\nabla\\cdot\\mathbf A) - \\nabla^2\\mathbf A$'], 0,
       [null, 'That one gives $\\mathbf E = -\\nabla\\Phi - \\partial\\mathbf A/\\partial t$ from Faraday\'s law.', 'That defines the Laplacian (Poisson\'s equation).', 'That one is used in Ampère\'s law for the potentials.'],
@@ -701,25 +780,5 @@
       ['$B_0y\\,\\hat x$', '$-B_0y\\,\\hat x$', '$B_0x\\,\\hat y$', '$\\tfrac12B_0(x\\hat y - y\\hat x)$'], 0,
       [null, '$(\\nabla\\times\\mathbf A)_z = -\\partial_yA_x = B_0$: valid.', '$(\\nabla\\times\\mathbf A)_z = \\partial_xA_y = B_0$: valid.', 'Each term gives $\\tfrac12B_0$: valid.'],
       md`$\nabla\times(B_0y\,\hat x) = -\hat z\,\partial_y(B_0y) = -B_0\hat z$: the wrong sign.`),
-    Q(md`In free space, $\mathbf B = B_0\hat y$ for $z > 0$ and $\mathbf B = 0$ for $z < 0$. On $z = 0$ there must be a surface current…`,
-      ['$\\mathbf J_s = -(B_0/\\mu_0)\\,\\hat x$', '$\\mathbf J_s = +(B_0/\\mu_0)\\,\\hat x$', '$\\mathbf J_s = -(2B_0/\\mu_0)\\,\\hat x$', '$\\mathbf J_s = (B_0/\\mu_0)\\,\\hat y$'], 0,
-      [null, 'Sign: $\\hat z\\times\\hat y = -\\hat x$.', 'The jump in $H_y$ is $B_0/\\mu_0$, not $2B_0/\\mu_0$.', 'A sheet current is perpendicular to the jump in $\\mathbf H$, not along it.'],
-      md`$\mathbf J_s = \hat n\times(\mathbf H^+ - \mathbf H^-) = \hat z\times\frac{B_0}{\mu_0}\hat y = -\frac{B_0}{\mu_0}\hat x$.`),
-    Q(md`$\mathbf B = B_0(y/\ell)\,\hat x$ in a region of free space. The current density there is…`,
-      ['$-\\dfrac{B_0}{\\mu_0\\ell}\\hat z$', '$+\\dfrac{B_0}{\\mu_0\\ell}\\hat z$', '$0$, since $\\nabla\\cdot\\mathbf B = 0$', '$\\dfrac{B_0}{\\mu_0\\ell}\\hat x$'], 0,
-      [null, 'Sign: $(\\nabla\\times\\mathbf H)_z = \\partial_xH_y - \\partial_yH_x$.', 'Zero divergence makes it a valid $\\mathbf B$; its curl still needs a current.', 'The current is along the curl, perpendicular to $\\mathbf B$ here.'],
-      md`$\mathbf J = \nabla\times\mathbf H = \hat z(\partial_xH_y - \partial_yH_x) = -\frac{B_0}{\mu_0\ell}\hat z$.`),
-    Q(md`Gauss's law for $\mathbf B$ applied to a thin pillbox straddling an interface says…`,
-      ['the normal component of $\\mathbf B$ is continuous', 'the tangential component of $\\mathbf B$ is continuous', 'the normal component of $\\mathbf H$ is continuous', 'the normal component of $\\mathbf B$ jumps by $\\mu_0J_s$'], 0,
-      [null, 'The pillbox\'s thin side carries no flux; it says nothing about tangential parts.', 'Across a change in $\\mu$, $H_n = B_n/\\mu$ jumps.', 'No source of $\\mathbf B$ flux exists; surface currents affect the tangential $\\mathbf H$.'],
-      md`What enters the bottom face leaves through the top: $B_n^+ = B_n^-$. (Topic 13 uses this at material interfaces.)`),
-    Q(md`To find the flux of a uniform $\mathbf B$ through a curved open surface (a partial cone, say), the quickest route is to…`,
-      ['close it with flat pieces and use $\\oint\\mathbf B\\cdot d\\mathbf S = 0$', 'parametrize the curved surface and integrate', 'multiply $|\\mathbf B|$ by the curved area', 'find $\\mathbf A$ and integrate it over the surface'], 0,
-      [null, 'That works, with far more algebra and more chances to slip.', 'That ignores direction: lines enter and leave a curved surface.', '$\\mathbf A$ is integrated around the rim, not over the surface.'],
-      md`The flat pieces carry $(\mathbf B\cdot\hat n)A$ each; the curved part carries minus their sum.`),
-    Q(md`$\mathbf B = B_0(y/\ell)\,\hat z$. The flux through a square of side $a$ in the $xy$-plane centered on the origin is…`,
-      ['zero', '$B_0a^2$', '$\\tfrac12B_0a^2$', 'no answer: this is not a valid B'], 0,
-      [null, 'The field is $B_0$ only at $y = \\ell$; over a centered square its average is zero.', '$B_z$ is odd in $y$: the flux up through one half cancels the flux down through the other.', '$\\nabla\\cdot\\mathbf B = \\partial_zB_z = 0$: valid.'],
-      md`$B_z$ is odd in $y$ and the square is symmetric: as much flux goes up through one half as down through the other.`),
   ];
 })();

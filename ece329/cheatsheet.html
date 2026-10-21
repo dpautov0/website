@@ -103,11 +103,11 @@
 <li>$\mathbf H$: free currents only. $\mathbf M = (\mu_r - 1)\mathbf H$, $\mathbf B = \mu_0(\mathbf H + \mathbf M)$, bound sheet $\mathbf M\times\hat n_{\text{out}}$; $\mathbf P = (\epsilon - \epsilon_0)\mathbf E$. Dia $\chi_m < 0$, para small $> 0$, ferro $\gg 1$.</li>
 </ul></section>
 
-<section><h2>8 · Displacement current, curls, A</h2>
+<section><h2>8 · Displacement current, curls</h2>
 <ul>
 <li>$\mathbf J_d = \partial\mathbf D/\partial t$; gap current $C\dot V$ = wire current. Round plates: $H_\phi = \tfrac r2\epsilon\dot E$ in, $\tfrac{R^2}{2r}\epsilon\dot E$ out. $J_c/J_d = \sigma/\omega\epsilon$.</li>
 <li><b>$\nabla\times[f(w)\hat e] = f'(w)\,\hat w\times\hat e$.</b> Curl amplitude $\beta\times$ amplitude, then $\div\mu\omega$ or $\epsilon\omega$: $E_0 = \eta H_0$, $\hat{\mathbf H} = \hat{\mathbf k}\times\hat{\mathbf E}$.</li>
-<li>$\mathbf B = \nabla\times\mathbf A$, $\mathbf E = -\nabla\Phi - \partial\mathbf A/\partial t$, $\Psi = \oint\mathbf A\cdot d\mathbf l$, $\mathbf A + \nabla\psi$ same $\mathbf B$; check $\nabla\cdot\mathbf B = 0$; $\mathbf J = \nabla\times\mathbf B/\mu_0$.</li>
+<li><b>Cylindrical</b> (tested): $\nabla\times(H_\phi\hat\phi) = \frac{\hat z}{r}\frac{d(rH_\phi)}{dr}$, $\nabla\times(H_z\hat z) = -\hat\phi\frac{dH_z}{dr}$, $\nabla\cdot(E_r\hat r) = \frac1r\frac{d(rE_r)}{dr}$. Check $\nabla\cdot\mathbf B = 0$; $\mathbf J = \nabla\times\mathbf H$. Vector potential: not tested.</li>
 </ul></section>
 
 <section><h2>9 · Waves: read and sketch</h2><span class="fig" data-f="snap"></span>
@@ -205,10 +205,10 @@
 <li>$H(2\ \text{cm}) = \tfrac r2(1.39) = 0.0139$; $H(8\ \text{cm}) = \frac{R^2}{2r}(1.39) = 0.0139$ A/m; $I_0 = 6.99$ mA.</li>
 </ul></section>
 
-<section class="ex"><h2>Ex 12 · Magnetic slab; A to J</h2><span class="fig" data-f="msl"></span>
+<section class="ex"><h2>Ex 12 · Magnetic slab; curl in cylindrical</h2><span class="fig" data-f="msl"></span>
 <ul>
 <li>Sheets $\pm5$ A/m, gap filled with $\mu_r = 20$: $H = 5$ A/m (as in air), $B = 100\mu_0 = 1.26\times10^{-4}$ T, $M = 95$ A/m, bound sheets $\pm95$ A/m.</li>
-<li>$\mathbf A = -k|x|\hat y$: $\nabla\cdot\mathbf A = 0$; $\mathbf B = \hat z\,\partial_xA_y = -k\operatorname{sgn}(x)\hat z$; jump at 0: $\mathbf J_s = \frac{2k}{\mu_0}\hat y$.</li>
+<li>Wire with $\mathbf J = J_0\frac ra\hat z$: Ampère gives $H_\phi = \frac{J_0r^2}{3a}$ inside. Check: $\frac1r\frac{d}{dr}\left(\frac{J_0r^3}{3a}\right) = \frac{J_0r}{a}$ ✓. Outside $H_\phi = \frac{J_0a^2}{3r}$: curl 0 ✓.</li>
 </ul></section>
 
 <section><h2>Power</h2>

@@ -18,6 +18,8 @@
   // spellings that mean the same symbol
   const ALIAS = {
     'π': 'pi', Pi: 'pi', PI: 'pi',
+    'μ0': 'mu0', 'µ0': 'mu0', 'χm': 'chim', 'χ': 'chi', 'η0': 'eta0', 'η': 'eta',
+    'εr': 'epsr', 'ϵr': 'epsr', epsilonr: 'epsr', 'μr': 'mur',
     'ε0': 'eps0', 'ϵ0': 'eps0', epsilon0: 'eps0', e0: 'eps0', epsilon: 'eps0', eps: 'eps0', ε: 'eps0', ϵ: 'eps0',
     'λ': 'lambda', lam: 'lambda', 'σ': 'sigma', sig: 'sigma', 'ρ': 'rho', 'θ': 'theta', th: 'theta', 'φ': 'phi', 'ϕ': 'phi',
     'α': 'alpha', 'β': 'beta', 'κ': 'kappa', 'τ': 'tau', 'μ': 'mu', 'Δ': 'Delta', 'δ': 'delta', 'ω': 'omega',
@@ -139,6 +141,7 @@
           return { k: 'call', f: fn, args };
         }
         if (CONSTS[n] !== undefined) return { k: 'num', v: CONSTS[n], name: n };
+        if (n === 'e') return { k: 'num', v: Math.E, name: 'e' };            // e^(...) typed as text (only when e is not a variable)
         const split = V.size ? splitVars(n, V) : null;
         if (split) {
           return split.reduce((acc, v) => (acc ? { k: 'bin', op: '*', a: acc, b: { k: 'var', n: v }, imp: true } : { k: 'var', n: v }), null);
@@ -235,6 +238,11 @@
   // Symbolic answers: evaluate both expressions at random points.
   function checkExpr(input, ref, spec) {
     const names = Object.keys(spec.vars);
+    // The math box turns "mu0" into μ followed by 0 and "chim" into χ followed by m (no subscript): join a split name
+    // back together when the joined form is one of this answer's variables and the first piece is not.
+    // A Greek letter glued to a Latin one ("πr", "ωt") is a product, unless the pair is a name of its own (χm, εr).
+    input = String(input).replace(/([Ͱ-Ͽ])(?=[A-Za-z])/g, (g, ch, off, str) => (ALIAS[ch + str[off + 1]] ? ch : `${ch} `));
+    input = String(input).replace(/\b([A-Za-z]+)\s+([A-Za-z0-9]{1,3})\b/g, (m, a, b) => (names.includes(a + b) && !names.includes(a) ? a + b : m));
     let ua;
     try { ua = parse(input, names, spec.disp); } catch (e) { return { ok: false, err: e.message }; }
     const ra = parse(ref, names);

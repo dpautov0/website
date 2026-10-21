@@ -1,0 +1,47 @@
+/* ECE 342 Exam 2 additions: the flashcard deck. Colours come from the shared tokens in ../shared/site.css. */
+.fc { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; }
+.fc-stage, .fc-card, .fc-back, .fc-a { min-width: 0; }   /* let wide formulas be fitted, not stretch the card */
+.fc-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.fc-chip {
+  border: 0; border-radius: 999px; padding: 7px 13px; font: 500 14px/1.2 var(--sans); cursor: pointer;
+  background: var(--fill); color: var(--dim);
+}
+.fc-chip span { opacity: .7; margin-left: 2px; font-variant-numeric: tabular-nums; }
+.fc-chip.on { background: var(--tint); color: var(--accent); }
+.fc-stats { display: grid; gap: 6px; }
+.fc-bar { height: 8px; border-radius: 4px; background: var(--fill); overflow: hidden; display: flex; }
+.fc-bar span { display: block; height: 100%; transition: width .3s; }
+.fc-bar .k { background: var(--good); }
+.fc-bar .l { background: var(--accent); opacity: .55; }
+.fc-count { margin: 0; font-size: 14px; color: var(--dim); }
+.fc-count b { color: var(--fg); font-weight: 600; }
+.fc-dim { color: var(--faint); }
+.fc-card { --halo: var(--card); background: var(--card); border-radius: var(--r); padding: 18px 22px 16px; }
+.fc-meta { display: flex; justify-content: space-between; gap: 12px; margin: 0 0 4px; font-size: 13px; color: var(--faint); font-variant-numeric: tabular-nums; }
+.fc-t { margin: 0 0 6px; font-size: 21px; letter-spacing: -0.02em; }
+.fc-card .fig { margin: 8px 0 10px; }
+.fc-q p { margin: .4em 0; }
+.fc-try { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 10px 0 4px; }
+.fc-try input {
+  flex: 1 1 260px; min-width: 0; font: 15px var(--mono); padding: 9px 12px; border-radius: 10px;
+  border: 1px solid var(--line-2); background: var(--card-2); color: var(--fg);
+}
+.fc-res { font-size: 14px; }
+.fc-res.good { color: var(--good); }
+.fc-res.bad { color: var(--bad); }
+.fc-actions { margin: 12px 0 2px; }
+.fc-back { border-top: 1px solid var(--line); margin-top: 12px; padding-top: 6px; }
+.fc-a { font-size: 1.04em; }
+.fc-why { margin-top: 8px; padding: 10px 14px; border-radius: 12px; background: var(--fill-2); color: var(--fg); }
+.fc-why > span { display: block; font-size: 12px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--dim); margin-bottom: 2px; }
+.fc-why p { margin: .3em 0; }
+.fc-grade { display: flex; gap: 10px; flex-wrap: wrap; margin: 14px 0 2px; }
+.fc-grade .btn { flex: 1 1 140px; justify-content: center; }
+.fc-donecard h3 { margin: 4px 0 6px; }
+.fc-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin: 0; font-size: 14px; }
+.fc-keys { color: var(--faint); font-size: 13px; margin-left: auto; }
+@media (max-width: 600px) {
+  .fc-card { padding: 16px 16px 14px; }
+  .fc-keys { display: none; }
+  .fc-t { font-size: 19px; }
+}

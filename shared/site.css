@@ -153,6 +153,7 @@ h1, h2, h3, h4, h5, h6 { font-family: var(--display); text-wrap: balance; color:
 .group-h { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; margin: 0 0 10px; }
 .group-h .u-num { font-size: 15px; font-weight: 600; color: var(--faint); margin-right: 4px; }
 .group.muted .group-h { color: var(--dim); font-size: 19px; }
+.group-h .group-sub { font-size: 14px; font-weight: 400; letter-spacing: 0; color: var(--faint); margin-left: 6px; }
 .list { background: var(--card); border-radius: var(--r); overflow: hidden; }
 .row, .row:visited {
   display: grid; grid-template-columns: 34px minmax(0, 1fr) auto; align-items: center; column-gap: 12px;
@@ -218,6 +219,7 @@ tr:last-child td { border-bottom: 0; }
 /* callouts */
 .call { margin: 6px 0 16px; padding: 16px 18px; border-radius: 16px; background: var(--card); }
 .call-t { font-size: 13px; font-weight: 600; letter-spacing: .02em; text-transform: uppercase; color: var(--dim); margin-bottom: 6px; }
+.call-t .katex { text-transform: none; letter-spacing: 0; font-size: 1.12em; }   /* math in a title keeps its case */
 .call-key { background: var(--tint); }
 .call-key .call-t { color: var(--accent); }
 .call-trap, .call-mistake { background: var(--bad-tint); }

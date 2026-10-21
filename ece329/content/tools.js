@@ -25,16 +25,53 @@
     steps: [R(md`${EM.BANK[l.id].length} questions on [${l.title}](#/l/${l.id}). Options are shuffled every time.`), ...EM.BANK[l.id]],
   }));
 
+  // Extra lessons (not on the exam) keep their own bank questions at the end; they stay out of quizzes and mixed practice.
+  COURSE.units.filter((u) => u.extra).forEach((u) => u.lessons.forEach((l) => {
+    if ((EM.BANK[l.id] || []).length) l.steps.push(R(md`### More questions`), ...EM.BANK[l.id]);
+  }));
+
   // ---------------------------------------------------------------- generators used by the lessons, for mixed practice
   const gens = new Set();
-  study.forEach((u) => u.lessons.forEach((l) => l.steps.forEach((s) => { if (s.t === 'gen' && s.name !== 'concept') (s.opts.pool || [s.name]).forEach((g) => gens.add(g)); })));
+  const gensOf = (ls) => { const g = new Set(); ls.forEach((l) => l.steps.forEach((s) => { if (s.t === 'gen' && s.name !== 'concept') (s.opts.pool || [s.name]).forEach((n) => g.add(n)); })); return [...g]; };
+  study.forEach((u) => gensOf(u.lessons).forEach((g) => gens.add(g)));
   const RFG = [...gens].filter((g) => /^rf_/.test(g)), PG = [...gens].filter((g) => !/^rf_/.test(g));
+
+  // ---------------------------------------------------------------- mini quizzes
+  // Each bank question is tagged with its lesson, so a quiz can draw from one topic or one unit. The bank questions are
+  // never shown in the lesson itself, so every mini quiz question is new to the reader.
+  topics.forEach((l) => EM.BANK[l.id].forEach((q) => { q.tags = [l.id]; }));
+  // after every section: five bank questions on that section
+  study.forEach((u) => u.lessons.forEach((l) => {
+    if (!(EM.BANK[l.id] || []).length) return;
+    l.steps.push(
+      R(md`### Mini quiz
+
+Five questions on this section that you have not seen above, drawn at random from its [question bank](#/l/mcq-${l.id}). No hints. Five right completes it; a wrong pick explains itself, and the next card is a new question.`),
+      Object.assign(G('concept', { units: ['e2-mcq'], tags: [l.id], need: 5 }), { id: `${l.id}.quiz` }),
+    );
+  }));
+  // after every unit: a mixed quiz over all its sections, then problems with new numbers from all of them
+  study.forEach((u) => {
+    const ls = u.lessons.filter((l) => (EM.BANK[l.id] || []).length);
+    if (ls.length < 2) return;
+    const probs = gensOf(u.lessons).filter((g) => !/^rf_/.test(g));
+    u.lessons.push({
+      id: `quiz-${u.id}`, topic: '✓', order: 1e6, title: `${u.num} quiz`, kind: 'quiz', ref: `${ls.length} sections, mixed`,
+      steps: [
+        R(md`Questions from every section of ${u.num} (${ls.map((l) => `[${l.title}](#/l/${l.id})`).join(', ')}), mixed, with nothing telling you which section they come from. Each card links back to its section.
+
+### Concepts`),
+        Object.assign(G('concept', { units: ['e2-mcq'], tags: ls.map((l) => l.id), need: 10 }), { id: `quiz-${u.id}.c` }),
+        ...(probs.length ? [R(md`### Problems`), Object.assign(G(probs[0], { pool: probs, need: 3 }), { id: `quiz-${u.id}.p` })] : []),
+      ],
+    });
+  });
 
   EM.lesson('e2-x', {
     id: 'e2-sheet', title: 'Formula sheet', kind: 'read',
     steps: [
       R(md`
-        This is the course's **Midterm 2 formula sheet**, typed. You are given everything in the first part; the second part is what is **not** on it, which you must carry in your head or on your own card. Where each equation comes from and when it fails: [Every equation, explained](#/l/e2-eqs).
+        This is the course's **Midterm 2 formula sheet**, typed: the first part is the sheet, the second part is what is **not** on it. The Fall 2025 Exam 2 and your Exam 1 printed no sheet and allowed one 4″×6″ card of handwritten notes, so plan for having only your card: know the first part cold and put the second part's traps on the card. A ready layout to copy by hand: <a href="notecard.html">your 4″×6″ notecard</a> (<a href="notecard.pdf">PDF</a>, one card side per page). Where each equation comes from and when it fails: [Every equation, explained](#/l/e2-eqs).
 
         ### Given: Maxwell's equations, force, continuity
 
@@ -90,7 +127,8 @@
         - **Forces:** $d\mathbf F = I\,d\mathbf l\times\mathbf B$; parallel wires $F/\ell = \mu_0I_1I_2/2\pi d$, attract if the currents are parallel.
         - **Biot–Savart:** $d\mathbf B = \dfrac{\mu_0}{4\pi}\dfrac{I\,d\mathbf l\times\hat R}{R^2}$. Loop of radius $a$, on its axis: $B_z = \dfrac{\mu_0Ia^2}{2(a^2 + z^2)^{3/2}}$, center $\mu_0I/2a$, far away $\mu_0Ia^2/2z^3$.
         - **Ampère shapes:** solenoid ($n$ turns/m) $H = nI$ inside, 0 outside; toroid $H_\phi = NI/2\pi r$ inside; thick wire $H_\phi = Ir/2\pi a^2$ inside; coax $H_\phi = I/2\pi r$ between, 0 outside. Sheet: $\mathbf H = \tfrac12\mathbf J_s\times\hat n$ ($\hat n$ from the sheet toward the point).
-        - **Potentials:** $\mathbf B = \nabla\times\mathbf A$, $\mathbf E = -\nabla\Phi - \partial\mathbf A/\partial t$.
+        - **Curl and divergence in cylindrical coordinates** (tested this term, per Piazza; spherical is not): $\nabla\cdot\mathbf F = \frac1r\partial_r(rF_r) + \frac1r\partial_\phi F_\phi + \partial_zF_z$; $\nabla\times\mathbf F = \hat r\left(\frac1r\partial_\phi F_z - \partial_zF_\phi\right) + \hat\phi\left(\partial_zF_r - \partial_rF_z\right) + \hat z\,\frac1r\left(\partial_r(rF_\phi) - \partial_\phi F_r\right)$. For $\mathbf H = H_\phi(r)\hat\phi$: $\mathbf J = \hat z\,\frac1r\frac{d(rH_\phi)}{dr}$.
+        - **Not tested this term:** the vector potential ($\mathbf B = \nabla\times\mathbf A$, $\mathbf E = -\nabla\Phi - \partial\mathbf A/\partial t$; see [Extra](#/l/x-vecpot)) and phasors (Lectures 21–22).
         - **Circuits from fields:** $R = \ell/\sigma A$; parallel plate $C = \epsilon A/d$; coax $C' = 2\pi\epsilon/\ln(b/a)$; spheres $C = 4\pi\epsilon\,ab/(b - a)$, isolated sphere $4\pi\epsilon a$. Same geometry: $G/C = \sigma/\epsilon$, and $RC = \epsilon/\sigma$.
         - **Inductance:** $L = N\Psi/I = \Lambda/I$; solenoid $L = \mu N^2A/\ell$; toroid (rectangular section $h$, radii $a$, $b$) $L = \dfrac{\mu N^2h}{2\pi}\ln\dfrac ba$; coax $L' = \dfrac{\mu}{2\pi}\ln\dfrac ba$; parallel-plate line $L' = \mu d/w$. Same transmission line: $L'C' = \mu\epsilon$. Mutual $L_{ab} = \Psi_{ab}/I_a$. Energy $\tfrac12LI^2$.
         - **Relaxation:** $\rho(t) = \rho(0)e^{-t/\tau}$, $\tau = \epsilon/\sigma$; inside a conductor in steady state $\rho = 0$, $\mathbf E = 0$.
