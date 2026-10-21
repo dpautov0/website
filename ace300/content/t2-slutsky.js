@@ -21,9 +21,9 @@
   const slutskyFig = EC.graph({
     w: 330, h: 270, x: [0, 26], y: [0, 26], xl: 'x_1', yl: 'x_2', xt: [6, 9, 12, 18, 24], yt: [9, 12, 18, 24],
     items: [
-      { seg: [[0, 24], [12, 0]], cls: 'curve dim', lab: '\\text{original}', at: 0.9, dx: 6 },
-      { seg: [[0, 24], [24, 0]], lab: '\\text{new}', at: 0.92, dx: 6 },
-      { seg: [[0, 18], [18, 0]], cls: 'curve c4 dash', lab: '\\text{compensated}', at: 0.93, dx: 4, dy: 12, anchor: 'tl' },
+      { seg: [[0, 24], [12, 0]], cls: 'curve dim', lab: '\\text{original}', at: 0.8, dx: -6, dy: 0, anchor: 'r' },
+      { seg: [[0, 24], [24, 0]], lab: '\\text{new}', at: 0.85, dx: 6, dy: 0, anchor: 'l' },
+      { seg: [[0, 18], [18, 0]], cls: 'curve c4 dash', lab: '\\text{comp.}', at: 0.88, dx: 6, dy: 0, anchor: 'l' },
       { f: EC.ic(0.5, Math.sqrt(72)), from: 3, to: 25, cls: 'c2 thin' }, { f: EC.ic(0.5, 12), from: 5.6, to: 25, cls: 'c2 thin' },
       { pt: [6, 12], lab: 'A', at: 'tl' }, { pt: [9, 9], lab: 'C', at: 'bl' }, { pt: [12, 12], lab: 'B', at: 'tr' },
     ],
@@ -31,8 +31,8 @@
   const incFig = EC.graph({
     w: 320, h: 260, x: [0, 34], y: [0, 34], xl: 'x_1', yl: 'x_2', xt: [5, 7.5, 10, 20, 30], yt: [10, 15, 20, 30],
     items: [
-      { seg: [[0, 20], [20, 0]], cls: 'curve dim', lab: '\\text{original } (p_1 = 2)', at: 0.95, dx: 4 },
-      { seg: [[0, 20], [10, 0]], lab: '\\text{new } (p_1 = 4)', at: 0.95, dx: 6 },
+      { seg: [[0, 20], [20, 0]], cls: 'curve dim', lab: '\\text{original } (p_1 = 2)', at: 0.8, dx: 8, dy: 0, anchor: 'l' },
+      { seg: [[0, 20], [10, 0]] },
       { seg: [[0, 30], [15, 0]], cls: 'curve c4 dash', lab: '\\text{compensated } (m = 60)', at: 0.15, dx: 10 },
       { pt: [10, 10], lab: 'A', at: 'tr' }, { pt: [7.5, 15], lab: 'C', at: 'tr' }, { pt: [5, 10], lab: 'B', at: 'bl' },
     ],
@@ -40,12 +40,14 @@
   const giffenFig = EC.graph({
     w: 300, h: 220, x: [0, 10], y: [0, 10], xl: 'x_1', yl: 'p_1', xt: [], yt: [],
     items: [
-      { pts: [[1.5, 8.5], [3, 6], [4.2, 4.5], [4.8, 3.6], [4.4, 2.6], [5.2, 1.6], [7, 0.8], [9, 0.5]], cls: 'curve', lab: '\\text{demand with a Giffen range}', labI: 0, dx: 10, dy: 4, anchor: 'l' },
-      { text: [7.2, 3.6], t: '\\text{here } p_1\\uparrow \\Rightarrow x_1\\uparrow', anchor: 'l' }],
+      { pts: [[1.5, 8.5], [2.6, 6.6], [3.8, 5.0], [5.0, 3.6]], cls: 'curve', lab: '\\text{demand}', labI: 0, dx: 10, dy: 4, anchor: 'l' },
+      { pts: [[5.0, 3.6], [4.2, 2.4]], cls: 'curve c5' },
+      { pts: [[4.2, 2.4], [5.4, 1.5], [7.2, 0.9], [9.2, 0.6]], cls: 'curve' },
+      { text: [5.4, 3.2], t: '\\text{Giffen range: } p_1\\uparrow\\ \\Rightarrow\\ x_1\\uparrow', anchor: 'l' }],
   });
   const relFig = EC.graph({
-    w: 300, h: 220, x: [0, 20], y: [0, 6], xl: '\\text{tea}', yl: 'p_{tea}', xt: [8, 12], yt: [2],
-    items: [{ seg: [[0, 4], [16, 0]], cls: 'curve dim', lab: '\\text{before}', at: 0.9, dx: 4 }, { seg: [[0, 5], [20, 0]], cls: 'curve', lab: '\\text{after}', at: 0.9, dx: 4 },
+    w: 300, h: 220, x: [0, 20], y: [0, 6], xl: '\\text{tea}', yl: 'p_{\\text{tea}}', xt: [8, 12], yt: [2],
+    items: [{ seg: [[0, 4], [16, 0]], cls: 'curve dim', lab: '\\text{before}', at: 0.3, dx: -4, dy: 6, anchor: 'tr' }, { seg: [[0, 5], [20, 0]], cls: 'curve', lab: '\\text{after}', at: 0.3, dx: 4, dy: -4, anchor: 'bl' },
       { pt: [8, 2], guide: 'x' }, { pt: [12, 2], guide: 'x' }, { arrow: [[8.6, 2.5], [11.4, 2.5]], cls: 'dim' }],
   });
 
@@ -91,7 +93,7 @@
             - $B$: $x_1 = 48/(2\cdot2) = 12$, $x_2 = 12$
 
             **Step 2. Price the old bundle A at the new prices.** That is the "adjusted income":
-            $$m' = p_1^{new}x_1^A + p_2x_2^A = 2(6) + 2(12) = \$36$$
+            $$m' = p_1^{\text{new}}x_1^A + p_2x_2^A = 2(6) + 2(12) = \$36$$
 
             **Step 3. Find C** with the new prices and the adjusted income $m'$:
             - $x_1^C = 36/(2\cdot2) = 9$, $x_2^C = 36/(2\cdot2) = 9$, so $C = (9, 9)$
@@ -104,12 +106,12 @@
             [[fig:sl]]
 
             On the graph, the **compensated budget line** (dashed) is parallel to the **new** line (new prices) and passes through **A** (just affords the old bundle). C is the best point on it.
-          `, { sl: { svg: slutskyFig, cap: 'A → C is the substitution effect; C → B is the income effect.' } }),
+          `, { sl: { svg: slutskyFig, cap: 'Grey: original line. Blue: new line. Purple dashed: compensated line. A → C is the substitution effect; C → B is the income effect.' } }),
           Q(md`The Slutsky compensated budget line is…`, ['parallel to the new budget line and passes through the old bundle A', 'parallel to the old budget line and passes through the new bundle B', 'parallel to the new budget line and tangent to the old indifference curve', 'the old budget line shifted out by the price change'], 0,
             [null, 'That mixes up which line and which bundle.', 'Tangent to the old curve is the compensating variation (CV) line, a different tool.', 'It uses the new prices, so it has the new slope.'],
             md`New prices (so parallel to the new line), old bundle just affordable (so through A).`),
           Q(md`To find the adjusted income in the Slutsky method, you compute…`, ['the cost of the old bundle at the new prices', 'the cost of the new bundle at the old prices', 'the cost of the old bundle at the old prices', 'the original income times the price ratio'], 0,
-            [null, 'Backwards: the old bundle, priced at new prices.', 'That is just the original income.', 'No such rule.'], md`$m' = p_1^{new}x_1^A + p_2^{new}x_2^A$.`),
+            [null, 'Backwards: the old bundle, priced at new prices.', 'That is just the original income.', 'No such rule.'], md`$m' = p_1^{\text{new}}x_1^A + p_2^{\text{new}}x_2^A$.`),
           Q(md`In the Slutsky decomposition, the income effect on good 1 is…`, [md`$x_1^B - x_1^C$`, md`$x_1^C - x_1^A$`, md`$x_1^B - x_1^A$`, md`$x_1^A - x_1^C$`], 0,
             [null, 'That is the substitution effect.', 'That is the total effect.', 'Wrong order and wrong pair.'], md`Income effect: from C (compensated) to B (final).`),
 
@@ -126,7 +128,7 @@
             [[fig:inc]]
 
             Both effects are negative: good 1 got relatively more expensive (substitute away from it) and the person is poorer (buy less of a normal good).
-          `, { inc: { svg: incFig, cap: 'For a price increase the compensated line is farther out than the new line.' } }),
+          `, { inc: { svg: incFig, cap: 'Blue: new line (p₁ = 4). For a price increase the compensated line is farther out than the new line.' } }),
           P({ q: md`Same setup as the price-increase example ($x_1 = m/(2p_1)$, $x_2 = m/(2p_2)$, $m = \$40$, $p_2 = \$2$), but $p_1$ rises from \$2 to **\$5**. Find the adjusted income, $C$, and the three effects on good 1.`,
             parts: [N("m'", 70), N('x_1^C', 7), N('x_2^C', 17.5), N('\\text{substitution}', -3), N('\\text{income}', -3), N('\\text{total}', -6)],
             hints: ['A = (10, 10) as before. B: $x_1 = 40/10 = 4$.', '$m\' = 5(10) + 2(10)$.'],
@@ -181,7 +183,7 @@
             - an inferior good is still ordinary if the substitution effect is bigger (the usual case).
 
             [[fig:g]]
-          `, { g: { svg: giffenFig, cap: 'A Giffen range: the demand curve slopes upward for some prices.' } }),
+          `, { g: { svg: giffenFig, cap: 'Red: the Giffen range, where demand slopes upward (price and quantity move together).' } }),
           Q(md`Which statement is true?`, ['every Giffen good is inferior', 'every inferior good is Giffen', 'every normal good is Giffen', 'Giffen goods have no income effect'], 0,
             [null, 'Most inferior goods are ordinary: their substitution effect wins.', 'For a normal good both effects push quantity opposite to the price.', 'The income effect is exactly what makes them Giffen.'],
             md`Giffen needs an income effect that outweighs substitution, and pushing the "wrong" way, which only an inferior good has.`),
@@ -213,7 +215,7 @@
             md`Pricier hot dogs → fewer hot dogs → fewer buns needed at every bun price: shift left.`),
           Q(md`The price of tea falls and coffee purchases fall (income and coffee price fixed). Coffee and tea are…`, ['gross substitutes', 'gross complements', 'neither', 'both inferior'], 0,
             [null, 'Complements would move the other way: cheaper tea → more coffee.', 'Coffee changed, so they are related.', 'Income didn’t change; this is a cross-price question.'],
-            md`$p_{tea}$ ↓ and $x_{coffee}$ ↓: same direction, $\partial x/\partial p > 0$, substitutes.`),
+            md`$p_{\text{tea}}$ ↓ and $x_{\text{coffee}}$ ↓: same direction, $\partial x/\partial p > 0$, substitutes.`),
           P({ q: md`Demand for good 1 is $x_1 = 20 - 2p_1 + 0.5p_2 + 0.1m$. Find $\partial x_1/\partial p_2$ and classify the goods.`,
             parts: [N('\\partial x_1/\\partial p_2', 0.5), FIX('The goods are…', ['gross substitutes', 'gross complements', 'neither'], 0, [null, 'The derivative is positive.', 'It is not zero.'])],
             sol: md`$\partial x_1/\partial p_2 = 0.5 > 0$: raising $p_2$ raises $x_1$, so they are gross substitutes.` }),

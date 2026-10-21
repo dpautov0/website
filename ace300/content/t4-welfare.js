@@ -46,9 +46,9 @@
     w: 330, h: 290, x: [0, 34], y: [0, 44], xl: 'q_1\\ (\\text{pizza})', yl: 'q_2\\ (\\text{soda})', xt: [15, 30], yt: [30],
     items: [
       { seg: [[0, 30], [30, 0]], cls: 'curve', lab: '\\text{old}', at: 0.93, dx: 4, dy: -4 },
-      { seg: [[0, 30], [15, 0]], cls: 'curve c2', lab: '\\text{new}', at: 0.85, dx: 6, dy: 0, anchor: 'l' },
+      { seg: [[0, 30], [15, 0]], cls: 'curve c2', lab: '\\text{new}', at: 0.85, dx: -6, dy: 0, anchor: 'r' },
       { seg: [[0, mC], [mC / 2, 0]], cls: 'curve c3 dash', lab: 'CV', at: 0.04, dx: 6, dy: 0, anchor: 'l' },
-      { seg: [[0, mE], [mE, 0]], cls: 'curve c4 dash', lab: 'EV', at: 0.9, dx: 2, dy: 10, anchor: 'tl' },
+      { seg: [[0, mE], [mE, 0]], cls: 'curve c4 dash', lab: 'EV', at: 0.92, dx: 6, dy: 0, anchor: 'l' },
       { f: EC.ic(0.4, UA), from: 4.2, to: 33, cls: 'dim', lab: 'U_A', labX: 33, dx: -2, dy: -6, anchor: 'br' },
       { f: EC.ic(0.4, UB), from: 2.4, to: 33, cls: 'dim', lab: 'U_B', labX: 33, dx: -2, dy: -6, anchor: 'br' },
       { pt: [12, 18], lab: 'A', at: 'tr' }, { pt: [6, 18], lab: 'B', at: 'tl' }, { pt: [mC * 0.2, mC * 0.6], lab: 'C', at: 'tr' }, { pt: [mE * 0.4, mE * 0.6], lab: 'D', at: 'bl' },

@@ -24,7 +24,7 @@
       { f: (y) => y * y - 6 * y + 13, from: 0.6, to: 6.2, cls: 'c2', lab: 'AVC', labX: 6.2, dx: 4, dy: 2, anchor: 'l' },
       { f: (y) => y * y - 6 * y + 13 + 32 / y, from: 1.25, to: 6.2, lab: 'ATC', labX: 6.2, dx: 4, dy: 2, anchor: 'l' },
       { f: (y) => 3 * y * y - 12 * y + 13, from: 0.6, to: 5.1, cls: 'c5', lab: 'MC', labX: 5.0, dx: 6, dy: 2, anchor: 'l' },
-      { pt: [3, 4], lab: '\\min AVC', at: 'br', guide: true }, { pt: [4, 13], lab: '\\min ATC', at: 'br', guide: true },
+      { pt: [3, 4], guide: true }, { pt: [4, 13], guide: true },
     ],
   });
   const lrac = (y) => 9 + 0.01 * (y - 20) ** 2;
@@ -174,7 +174,7 @@
 
             !!key To find the output that minimizes an average
               Set $MC$ equal to that average and solve. (Or take the derivative of the average and set it to 0. Same answer.)
-          `, { avg: { svg: avgFig, cap: 'MC (red) passes through the bottom of AVC and the bottom of ATC.' } }),
+          `, { avg: { svg: avgFig, cap: 'MC (red) crosses AVC at its minimum (y = 3, AVC = \\$4) and ATC at its minimum (y = 4, ATC = \\$13).' } }),
           R(md`
             ### Worked example: minimum AVC
 

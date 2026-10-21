@@ -13,9 +13,9 @@
   const coffeeFig = EC.graph({
     w: 320, h: 270, x: [0, 9], y: [0, 13.5], xl: 'C\\ (\\text{coffee})', yl: 'M\\ (\\text{muffins})', xt: [6, 7.2, 8], yt: [10.8, 12],
     items: [
-      { seg: [[0, 12], [6, 0]], cls: 'curve', lab: '\\text{old}', at: 0.97, dx: -2, dy: -4, anchor: 'br' },
-      { seg: [[0, 12], [8, 0]], cls: 'curve c2', lab: '\\text{new}', at: 0.85, dx: 6, dy: 0, anchor: 'l' },
-      { seg: [[0, 10.8], [7.2, 0]], cls: 'curve c3 dash', lab: '\\text{comp.}', at: 0.9, dx: 4, dy: -2 },
+      { seg: [[0, 12], [6, 0]], cls: 'curve' },
+      { seg: [[0, 12], [8, 0]], cls: 'curve c2' },
+      { seg: [[0, 10.8], [7.2, 0]], cls: 'curve c3 dash' },
       { f: EC.ic(0.4, UA), from: 1.2, to: 8.8, cls: 'dim' }, { f: EC.ic(0.4, UB), from: 1.7, to: 8.8, cls: 'dim' },
       { pt: [2.4, 7.2], lab: 'A', at: 'tl' }, { pt: [3.2, 7.2], lab: 'B', at: 'tr' }, { pt: [2.88, 6.48], lab: 'C', at: 'bl' },
     ],
@@ -23,8 +23,8 @@
   const gasFig = EC.graph({
     w: 320, h: 240, x: [0, 3000], y: [0, 6], xl: 'Q', yl: 'P', xt: [[750, '750'], [2000, '2000'], [2750, '2750']], yt: [4, 5],
     items: [
-      { seg: [[0, 4], [2000, 0]], cls: 'curve c2', lab: 'P(q_B)', at: 0.55, dx: -6, dy: -4, anchor: 'br' },
-      { seg: [[0, 5], [750, 0]], cls: 'curve c4', lab: 'P(q_F)', at: 0.75, dx: -4, dy: -2, anchor: 'br' },
+      { seg: [[0, 4], [2000, 0]], cls: 'curve c2', lab: 'P(q_B)', at: 0.6, dx: -4, dy: 4, anchor: 'tr' },
+      { seg: [[0, 5], [750, 0]], cls: 'curve c4', lab: 'P(q_F)', at: 0.7, dx: -6, dy: 0, anchor: 'r' },
       { pts: [[0, 5], [150, 4], [2750, 0]], cls: 'curve c3', lab: 'P(Q)', labI: 2, dx: -2, dy: -8, anchor: 'br' },
       { pt: [150, 4], lab: '(150,\\,4)', at: 'tr' },
     ],
@@ -34,9 +34,9 @@
     w: 330, h: 290, x: [0, 34], y: [0, 44], xl: 'q_1', yl: 'q_2', xt: [15, 30], yt: [30],
     items: [
       { seg: [[0, 30], [30, 0]], cls: 'curve', lab: '\\text{old}', at: 0.93, dx: 4, dy: -4 },
-      { seg: [[0, 30], [15, 0]], cls: 'curve c2', lab: '\\text{new}', at: 0.85, dx: 6, dy: 0, anchor: 'l' },
+      { seg: [[0, 30], [15, 0]], cls: 'curve c2', lab: '\\text{new}', at: 0.85, dx: -6, dy: 0, anchor: 'r' },
       { seg: [[0, mC], [mC / 2, 0]], cls: 'curve c3 dash', lab: 'CV', at: 0.04, dx: 6, dy: 0, anchor: 'l' },
-      { seg: [[0, mE], [mE, 0]], cls: 'curve c4 dash', lab: 'EV', at: 0.9, dx: 2, dy: 10, anchor: 'tl' },
+      { seg: [[0, mE], [mE, 0]], cls: 'curve c4 dash', lab: 'EV', at: 0.92, dx: 6, dy: 0, anchor: 'l' },
       { f: EC.ic(0.4, jUA), from: 4.2, to: 33, cls: 'dim' }, { f: EC.ic(0.4, jUB), from: 2.4, to: 33, cls: 'dim' },
       { pt: [12, 18], lab: 'A', at: 'tr' }, { pt: [6, 18], lab: 'B', at: 'tl' }, { pt: [mC * 0.2, mC * 0.6], lab: 'C', at: 'tr' }, { pt: [mE * 0.4, mE * 0.6], lab: 'D', at: 'bl' },
     ],
@@ -57,10 +57,10 @@
       parts: [N('\\text{old line, coffee intercept}', 6), N('\\text{new line, coffee intercept}', 8), N('\\text{muffin intercept (both)}', 12)],
       sol: md`Old: $4C + 2M = 24$ hits $C = 6$ and $M = 12$. New: $3C + 2M = 24$ hits $C = 8$ and $M = 12$. The line **pivots out** around the muffin intercept.
 
-      [[fig:g]]`, figs: { g: { svg: coffeeFig, cap: 'A: before. B: after. C: compensated (new prices, income just enough to buy A).' } } }),
+      [[fig:g]]`, figs: { g: { svg: coffeeFig, cap: 'Blue: old budget line. Orange: new budget line. Green dashed: compensated line (new prices, income just enough to buy A).' } } }),
     P({ src: 'DS5 · 1c', q: md`What adjusted income makes the original bundle A just affordable at the **new** prices? Then find the compensated bundle C.`,
       parts: [N("m'", 21.6), N('C^C', 2.88), N('M^C', 6.48)],
-      hints: ["$m' = p_C^{new}C^A + p_MM^A$.", 'C uses new prices with income $m\'$.'],
+      hints: ["$m' = p_C^{\\text{new}}C^A + p_MM^A$.", 'C uses new prices with income $m\'$.'],
       sol: md`$m' = 3(2.4) + 2(7.2) = 7.2 + 14.4 = 21.6$. Compensated bundle: $C = 0.4(21.6)/3 = 2.88$, $M = 0.6(21.6)/2 = 6.48$.
 
       Why less income? Coffee got cheaper, so the old bundle costs less now. We take away just enough income that the student can still **barely** buy A.` }),
@@ -78,7 +78,7 @@
       sol: md`$2000 - 500P = 0 \Rightarrow P = 4$. $750 - 150P = 0 \Rightarrow P = 5$. Fords buy whenever $P < 5$; Buicks only when $P < 4$.` }),
     P({ src: 'DS5 · 2b', q: md`Find market demand $Q(P)$ on each price range.`,
       parts: [X('Q(P)\\text{ for } 0 \\le P \\le 4', '2750 - 650*P', { P: [0, 4] }), X('Q(P)\\text{ for } 4 < P \\le 5', '750 - 150*P', { P: [4, 5] })],
-      hints: ['Between \$4 and \$5 only Ford owners buy.'],
+      hints: ['Between \\$4 and \\$5 only Ford owners buy.'],
       sol: md`$4 < P \le 5$: only Fords, $Q = 750 - 150P$. $0 \le P \le 4$: both, $Q = (2000 - 500P) + (750 - 150P) = 2750 - 650P$.` }),
     P({ src: 'DS5 · 2c–2d', q: md`Find the market quantity at the ends of each range, then sketch.`,
       parts: [N('Q(0)', 2750), N('Q(4)', 150), N('Q(5)', 0)],
@@ -87,7 +87,7 @@
       [[fig:g]]`, figs: { g: { svg: gasFig, cap: 'The market curve follows the Ford curve above \\$4 and bends out at the kink (150, 4).' } } }),
     P({ src: 'DS5 · 2e–2g', q: md`(e) Total quantity at \$3? (f) At \$1, how much does weekly demand change if the price rises by \$0.10? (g) Same question at \$10.`,
       parts: [N('Q(3)', 800), N('\\Delta Q\\text{ at \\$1}', -65), N('\\Delta Q\\text{ at \\$10}', 0)],
-      hints: ['\$3 is below the kink: use $2750 - 650P$.', 'At \$10, nobody is buying.'],
+      hints: ['\\$3 is below the kink: use $2750 - 650P$.', 'At \\$10, nobody is buying.'],
       sol: md`(e) $Q(3) = 2750 - 1950 = 800$. (f) On the lower segment, slope $-650$: $\Delta Q = -650 \times 0.10 = -65$ gallons. (g) \$10 is above both choke prices, so $Q = 0$ and it cannot fall further: $\Delta Q = 0$.` }),
   ];
 
@@ -241,13 +241,13 @@
 
       (a) Shirts bought. (b) TWTP. (c) Spending. (d) CS. (e) The price rises to \$16. New CS?`,
       parts: [N('(a)', 3), N('(b)', 67), N('(c)', 36), N('(d)', 31), N('(e)', 20)],
-      hints: ['At \$16 only the first two shirts are worth it.'],
+      hints: ['At \\$16 only the first two shirts are worth it.'],
       sol: md`(a) WTP ≥ 12: shirts 1–3. (b) $30 + 22 + 15 = 67$. (c) $3 \times 12 = 36$. (d) $67 - 36 = 31$. (e) At \$16 buy 2: CS $= (30 - 16) + (22 - 16) = 14 + 6 = 20$.` }),
     P({ src: 'HW6-style · 2', q: md`Market demand for strawberries is $Q = 100 - 5P$ (pounds, \$/lb). A frost raises the price from \$8 to \$12.
 
       (a) CS at \$8. (b) CS at \$12. (c) ΔCS. (d) The rectangle part of the loss.`,
       parts: [N('(a)', 360), N('(b)', 160), N('(c)', -200), N('(d)', 160)],
-      hints: ['Choke price: \$20. At \$8, $Q = 60$; at \$12, $Q = 40$.'],
+      hints: ['Choke price: \\$20. At \\$8, $Q = 60$; at \\$12, $Q = 40$.'],
       sol: md`(a) $Q = 60$: $\tfrac12(60)(20 - 8) = 360$. (b) $Q = 40$: $\tfrac12(40)(8) = 160$. (c) $-200$. (d) Rectangle $= 40 \times 4 = 160$; triangle $= \tfrac12(20)(4) = 40$; $160 + 40 = 200$ ✓.` }),
     P({ src: 'HW6-style · 3', q: md`The price of gasoline **falls**. Gasoline is a normal good.`,
       parts: [FIX('CV: income is…', ['given', 'taken away'], 1, ['After a price fall he is better off; to return him to the old utility, take income away.', null]),
