@@ -8,6 +8,7 @@
   COURSE.units.forEach((u) => { if (!u.exam) u.exam = 'e1'; });
 
   const unit = (id, num, title, extra = {}) => C.unit(Object.assign({ id, exam: 'e2', num, title, lessons: [] }, extra));
+  unit('e2start', 'Start', 'Start here: why amplifiers, and the map of every stage', { blurb: 'Read this first. Where every stage comes from, what job each one does, and the whole route on one page, before any formulas.' });
   unit('e2u6', 'Unit 6', 'The small-signal MOSFET', { blurb: 'Bias first, then small changes: what "incremental ground" means, one model for NMOS and PMOS, $r_{ds}$, and the test-source method.' });
   unit('e2u7', 'Unit 7', 'Terminal impedances', { blurb: 'Looking into the gate, drain and source; diodes; degeneration as an impedance scaler; $R_{UP}\\parallel R_{DN}$; gates that move with the test voltage.' });
   unit('e2u8', 'Unit 8', 'Single-stage amplifiers: the $G_MR_{out}$ method', { blurb: 'CS, degenerated CS, CG, CD and the cascode, each as $G_M$ and $R_{out}$; the loads (resistor, diode, current source); three ways to the same gain.' });
