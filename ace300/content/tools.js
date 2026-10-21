@@ -60,7 +60,7 @@
 
         !!key Slutsky in four steps
           1. A: old prices, old income. 2. B: new prices, old income.
-          3. $m' = p_1^{new}x_1^A + p_2x_2^A$; C: new prices with $m'$.
+          3. $m' = p_1^{\text{new}}x_1^A + p_2x_2^A$; C: new prices with $m'$.
           4. Substitution $= C - A$; income $= B - C$; total $= B - A$.
 
         !!key Giffen and the signs

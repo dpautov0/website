@@ -87,8 +87,9 @@
       let best = null;
       if (free(at(0, 0))) best = [0, 0];
       else for (const c of CANDS) if (free(at(c[0], c[1]))) { best = c; break; }
-      if (!best) best = [0, 0];
+      if (!best) { best = [0, 0]; L.fo.dataset.stuck = 1; }   // nowhere free nearby: left overlapping
       if (best[0] || best[1]) {
+        L.fo.dataset.moved = Math.round(Math.hypot(best[0], best[1]));   // how far it had to go (for audits)
         if (L.html) { L.fo.dataset.x = +L.fo.dataset.x + best[0]; L.fo.dataset.y = +L.fo.dataset.y + best[1]; }
         else { L.fo.setAttribute('x', +L.fo.getAttribute('x') + best[0]); L.fo.setAttribute('y', +L.fo.getAttribute('y') + best[1]); }
         moved = true;

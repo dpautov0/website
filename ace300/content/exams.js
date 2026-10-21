@@ -47,7 +47,7 @@
       parts: [N('\\text{choke}_1', 30), N('\\text{choke}_2', 10), X('Q\\ (0 \\le P \\le 10)', '100 - 6*P', { P: [0, 10] }), X('Q\\ (10 < P \\le 30)', '60 - 2*P', { P: [10, 30] }),
         N('Q(5)', 70), N('\\varepsilon\\text{ at }5', -30 / 70), N('Q(20)', 20), N('\\varepsilon\\text{ at }20', -2),
         FIX('At $P = 5$, demand is…', ['elastic', 'unit elastic', 'inelastic'], 2), FIX('At $P = 20$, demand is…', ['elastic', 'unit elastic', 'inelastic'], 0)],
-      hints: ['Use the slope of the segment you are on: −6 below \$10, −2 above.'],
+      hints: ['Use the slope of the segment you are on: −6 below \\$10, −2 above.'],
       sol: md`(a) 30 and 10. (b) $Q = 100 - 6P$ for $P \le 10$; $Q = 60 - 2P$ for $10 < P \le 30$.
       (c) $Q(5) = 70$; $\varepsilon = -6 \cdot 5/70 = -0.43$: inelastic.
       (d) $Q(20) = 20$; only consumer 1 buys; $\varepsilon = -2 \cdot 20/20 = -2$: elastic.` }),

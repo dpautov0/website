@@ -29,15 +29,15 @@
   const subIso = EC.graph({
     w: 300, h: 220, x: [0, 26], y: [0, 9.5], xl: 'x_1', yl: 'x_2', xt: [9, 18, 24], yt: [3, 6, 8],
     items: [
-      { seg: [[0, 3], [9, 0]], lab: 'y = 9', at: 0.15, dx: 4, dy: -2 },
-      { seg: [[0, 6], [18, 0]], cls: 'curve c2', lab: 'y = 18', at: 0.12, dx: 4, dy: -2 },
-      { seg: [[0, 8], [24, 0]], cls: 'curve c3', lab: 'y = 24', at: 0.1, dx: 4, dy: -2 },
+      { seg: [[0, 3], [9, 0]] },
+      { seg: [[0, 6], [18, 0]], cls: 'curve c2' },
+      { seg: [[0, 8], [24, 0]], cls: 'curve c3' },
     ],
   });
   const dimFig = EC.graph({
-    w: 300, h: 220, x: [0, 10], y: [0, 16], xl: 'x_1', yl: 'y', xt: [1, 4, 9], yt: [5, 10, 15],
+    w: 300, h: 220, x: [0, 12.5], y: [0, 19], xl: 'x_1', yl: 'y', xt: [1, 4, 9], yt: [5, 10, 15],
     items: [
-      { f: (x) => 5 * Math.sqrt(x), from: 0, to: 9.8, lab: 'y = 5\\sqrt{x_1}', labX: 9.2, dy: 10, anchor: 'tr', dx: 0 },
+      { f: (x) => 5 * Math.sqrt(x), from: 0, to: 12, lab: 'y = 5\\sqrt{x_1}', labX: 11, dx: 2, dy: 10, anchor: 'tl' },
       { pt: [1, 5], guide: true }, { pt: [4, 10], guide: true }, { pt: [9, 15], guide: true },
       { text: [2.4, 9.4], t: '+5', anchor: 'r' }, { text: [6.3, 14.2], t: '+5', anchor: 'r' },
     ],
@@ -144,7 +144,7 @@
             [[fig:sub]]
 
             The isoquants are straight lines with a constant slope of $-1/3$: you can always swap 3 units of $x_1$ for 1 unit of $x_2$.
-          `, { sub: { svg: subIso, cap: 'Perfect substitutes: parallel straight-line isoquants.' } }),
+          `, { sub: { svg: subIso, cap: 'Perfect substitutes y = x₁ + 3x₂. Blue: y = 9. Orange: y = 18. Green: y = 24. Parallel straight lines.' } }),
           Q(md`$y = x_1 + 3x_2$. Which bundle produces the **same** output as $(9, 0)$?`, ['(0, 3)', '(3, 3)', '(0, 9)', '(3, 1)'], 0,
             [null, '$3 + 9 = 12$, not 9.', '$0 + 27 = 27$.', '$3 + 3 = 6$.'],
             md`$(9, 0)$ gives $9$. $(0, 3)$ gives $0 + 3 \cdot 3 = 9$ ✓.`),

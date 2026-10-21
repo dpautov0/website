@@ -107,7 +107,7 @@
     const sub = x1C - x1A, inc = x1B - x1C;
     return { title: 'Slutsky decomposition', q: md`$U = x_1^{${a}}x_2^{${F(1 - a)}}$ (so $x_1 = ${a}m/p_1$, $x_2 = ${F(1 - a)}m/p_2$), $m = \$${m}$, $p_2 = \$${p2}$. The price of good 1 ${q1 > p1 ? 'rises' : 'falls'} from \$${p1} to \$${q1}. Decompose the change in $x_1$.`,
       parts: [N('x_1^A', x1A), N('x_1^B', x1B), N("m'", mp), N('x_1^C', x1C), N('\\text{substitution effect}', sub), N('\\text{income effect}', inc)],
-      hints: ['A: old prices, old income. B: new prices, old income.', "$m' = p_1^{new}x_1^A + p_2x_2^A$ (the old bundle at new prices).", 'C: new prices with income $m\'$.'],
+      hints: ['A: old prices, old income. B: new prices, old income.', "$m' = p_1^{\\text{new}}x_1^A + p_2x_2^A$ (the old bundle at new prices).", 'C: new prices with income $m\'$.'],
       sol: md`$A$: $x_1 = ${F(x1A)}$, $x_2 = ${F(x2A)}$. $B$: $x_1 = ${a}(${m})/${q1} = ${F(x1B)}$.
         $m' = ${q1}(${F(x1A)}) + ${p2}(${F(x2A)}) = ${F(mp)}$. $C$: $x_1 = ${a}(${F(mp)})/${q1} = ${F(x1C)}$.
         Substitution $= ${F(x1C)} - ${F(x1A)} = ${F(sub)}$; income $= ${F(x1B)} - ${F(x1C)} = ${F(inc)}$; total $= ${F(x1B - x1A)}$ ✓.

@@ -10,8 +10,8 @@
   const choiceFig = EC.graph({
     w: 300, h: 240, x: [0, 10], y: [0, 18], xl: 'x_1', yl: 'x_2', xt: [4, 8], yt: [8, 16],
     items: [
-      { seg: [[0, 16], [8, 0]], lab: '\\text{budget: } 4x_1 + 2x_2 = 32', at: 0.75, dx: 10, dy: -2 },
-      { f: EC.ic(0.5, Math.sqrt(32)), from: 1.9, to: 9.5, cls: 'c2', lab: '\\text{indifference curve}', labX: 9.3, dy: -10, anchor: 'br' },
+      { seg: [[0, 16], [8, 0]], lab: '\\text{budget: } 4x_1 + 2x_2 = 32', at: 0, dx: 8, dy: 0, anchor: 'l' },
+      { f: EC.ic(0.5, Math.sqrt(32)), from: 2.2, to: 9.5, cls: 'c2', lab: '\\text{indifference curve}', labX: 2.2, dx: 8, dy: 0, anchor: 'l' },
       { pt: [4, 8], lab: 'A = (4,\\,8)', at: 'tr', guide: true },
     ],
   });
