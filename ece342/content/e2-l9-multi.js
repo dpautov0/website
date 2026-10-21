@@ -127,7 +127,7 @@ The fold is free when nothing else at $X$ competes with $M_4$'s source. (Problem
         1. **Currents first.** Find the reference (a current source, or a device with known $V_{GS}$). Mirrors copy it in proportion to $W/L$. A device in series with another carries the same current.
         2. **KCL** at nodes where mirrored currents meet a resistor: the resistor takes the difference (Practice 2 #1: $I_{25k} = I_1 - I_{M4} = 200 - 100 = 100\,\mu\text{A}$, so $V_1 = 5 - 2.5 = 2.5\,\text{V}$).
         3. **Overdrives** from $I = KV_{ov}^2$. Same current, $4\times$ wider: half the overdrive.
-        4. **Edge of saturation:** NMOS $V_D = V_G - V_T$; PMOS $V_D = V_G + |V_T|$. Turn that into a voltage, then into the requested resistor or bias.
+        4. **Edge of saturation:** NMOS $V_D = V_G - V_{TN}$; PMOS $V_D = V_G + |V_{TP}|$. Turn that into a voltage, then into the requested resistor or bias.
 
         Practice 2 #1 in two lines: $M_5$ (2X PMOS, 100 µA) has $V_{ov} = 0.2$, so $V_{G5} = 3.8\,\text{V}$; $M_3$ (8X) has $V_{ov} = 0.1$, $V_{SG3} = 1.1$. $M_4$ at the edge needs its drain at $5 - 0.2 = 4.8\,\text{V} = V_{G3} + 1.1$, so $V_{G3} = 3.7\,\text{V}$ and $R_1 = (3.8 - 3.7)/100\,\mu\text{A} = 1\kO$.
       `),

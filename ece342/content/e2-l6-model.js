@@ -45,13 +45,13 @@
         !!trap Check the DC state before you draw $g_m$
         A small-signal model only exists around a bias point in saturation. Practice Exam 1 asks what you get if you short a MOSFET's gate to its source:
 
-        - **With a wire:** $V_{GS} = 0 < V_T$ at DC. The device is off: an **open circuit**.
+        - **With a wire:** $V_{GS} = 0 < V_{TN}$ at DC. The device is off: an **open circuit**.
         - **With a huge capacitor** (bias set elsewhere): the device stays biased, but $v_{gs} = 0$ for signals. The controlled source is dead and what is left is a **resistor $r_{ds}$**.
       `),
       Q(md`A MOSFET's gate is shorted to its source with a wire. What two-terminal small-signal element is left between drain and source?`,
         ['An open circuit: the device is off.', 'A resistor $r_{ds}$.', 'A resistor $1/g_m$.', 'A short.'], 0,
         [null, 'That is the capacitor version: there the device is still biased. With a wire, $V_{GS} = 0$ turns it off.', '$1/g_m$ needs the gate tied to the *drain* (a diode).', 'Nothing conducts with $V_{GS} = 0$.'],
-        md`$V_{GS} = 0 < V_T$: cut-off, no channel, no small-signal model at all. Always check the DC state first.`),
+        md`$V_{GS} = 0 < V_{TN}$: cut-off, no channel, no small-signal model at all. Always check the DC state first.`),
     ],
   });
 
@@ -66,12 +66,12 @@
 
         !!key The small-signal MOSFET (Lecture 14)
         $$i_d = g_mv_{gs} + \frac{v_{ds}}{r_{ds}}\qquad(\text{flowing drain}\to\text{source inside the device})$$
-        A voltage-controlled current source $g_mv_{gs}$ from drain to source, with $r_{ds}$ in parallel. The gate draws nothing.
+        A voltage-controlled current source $g_mv_{gs}$ from drain to source, with $r_{ds}$ in parallel. The gate draws nothing. (The lectures and the Exam 1 paper label the controlling voltage $v_x$ and draw the source as $g_mv_x$: same thing, $v_x = v_{gs}$.)
       `, [['nmos', [1, 1], { n: '' }], ['txt', [1.25, -0.1], '$D$', { a: 'l' }], ['txt', [1.25, 2.1], '$S$', { a: 'l' }], ['txt', [-0.15, 1], '$G$', { a: 'r' }],
         ['txt', [2.1, 1], '$\\Longrightarrow$', { a: 'c' }],
         ['G', [4, 0], [4, 2], { n: 'g_mv_{gs}' }], ['w', [4, 0], [5.3, 0]], ['R', [5.3, 0], [5.3, 2], { n: 'r_{ds}' }], ['w', [4, 2], [5.3, 2]], ['term', [4, 0], { n: 'D', side: 'a' }], ['term', [4, 2], { n: 'S', side: 'b' }], ['term', [2.9, 1], { n: 'G\\ (\\text{open})', side: 'b' }]]),
       R(md`
-        **The same model works for a PMOS.** For a PMOS the big current flows source to drain, $I_{SD} = \tfrac12\mu_pC_{ox}\tfrac{W}{L}(V_{SG} - |V_T|)^2$. Raise $v_{sg}$ and $i_{sd}$ grows by $g_mv_{sg}$. Now flip both signs: $i_{d}$ (drain to source) $= -i_{sd} = -g_mv_{sg} = g_mv_{gs}$. The model is literally identical. So every result in this unit (diode $1/g_m$, degeneration, cascodes) holds for PMOS with no changes.
+        **The same model works for a PMOS.** For a PMOS the big current flows source to drain, $I_{SD} = \tfrac12\mu_pC_{ox}\tfrac{W}{L}(V_{SG} - |V_{TP}|)^2$. Raise $v_{sg}$ and $i_{sd}$ grows by $g_mv_{sg}$. Now flip both signs: $i_{d}$ (drain to source) $= -i_{sd} = -g_mv_{sg} = g_mv_{gs}$. The model is literally identical. So every result in this unit (diode $1/g_m$, degeneration, cascodes) holds for PMOS with no changes.
 
         **Numbers to have in your head** (course parameters):
 

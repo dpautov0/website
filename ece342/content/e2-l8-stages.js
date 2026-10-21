@@ -159,7 +159,7 @@ $$A_v = +\frac{R_D\parallel(r_{ds} + R_S + g_mr_{ds}R_S)}{R_S + \frac1{g_m}\para
         Drive the gate, take the output at the source, drain at $V_{DD}$. The device and the load make a **voltage divider**: from $v_{in}$ the source looks like a $1/g_m$ "resistor" (Lecture 17 redraws it exactly that way), down to $R_L\parallel r_{ds}$:
         $$A_v = \frac{R_L\parallel r_{ds}}{(R_L\parallel r_{ds}) + 1/g_m} < 1,\qquad R_{out} = R_L\parallel\tfrac1{g_m}\parallel r_{ds},\qquad R_{in} = \infty$$
 
-        **DC picture (level shifter):** with an ideal current source $I_B$ as the load, $I_D = I_B$ fixes $V_{GS} = V_T + V_{ov}$. The output copies the input, shifted down by $V_{GS}$: $V_{OUT} = V_{IN} - (V_T + V_{ov})$, and $A_v = \dfrac{g_mr_{ds}}{1 + g_mr_{ds}}\approx 1$.
+        **DC picture (level shifter):** with an ideal current source $I_B$ as the load, $I_D = I_B$ fixes $V_{GS} = V_{TN} + V_{ov}$. The output copies the input, shifted down by $V_{GS}$: $V_{OUT} = V_{IN} - (V_{TN} + V_{ov})$, and $A_v = \dfrac{g_mr_{ds}}{1 + g_mr_{ds}}\approx 1$.
 
         **Why use it:** it can drive a small load without dragging down the stage in front of it, because its input is a gate (infinite) and its output is a source ($1/g_m$, low).
       `, F.cd()),

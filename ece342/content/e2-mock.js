@@ -136,7 +136,7 @@
       sol: md`
         **What to see first.** Common gate: the input drives the **source**, the output is at the **drain**, gain is non-inverting.
 
-        **DC.** $K = \tfrac12(100\mu)(500) = 25\,\text{mA/V}^2$, so $V_{ov} = 0.2\,\text{V}$ and $V_S = 2 - 1.2 = 0.8\,\text{V}$. $V_D = 5 - (1\,\text{m})(2\kO) = 3\,\text{V} \ge V_G - V_T = 1$ ✓ (saturated).
+        **DC.** $K = \tfrac12(100\mu)(500) = 25\,\text{mA/V}^2$, so $V_{ov} = 0.2\,\text{V}$ and $V_S = 2 - 1.2 = 0.8\,\text{V}$. $V_D = 5 - (1\,\text{m})(2\kO) = 3\,\text{V} \ge V_G - V_{TN} = 1$ ✓ (saturated).
 
         **Small signal.** $g_m = \dfrac{2(1\,\text{m})}{0.2} = 10\,\text{mA/V}$. Looking into the source with $r_{ds} \to \infty$: $R_{in} = 1/g_m = 100\,\Omega$.
 
@@ -320,7 +320,7 @@
       q: md`Same circuit. What is the largest $R$ that keeps $M_4$ in saturation?`,
       fig: B1Fig,
       parts: [{ lbl: 'R_{max}', unit: 'kΩ', ans: 24 }],
-      hints: [md`PMOS saturation, node form: $V_D \le V_G + |V_T|$. Here $V_G = V_X$.`],
+      hints: [md`PMOS saturation, node form: $V_D \le V_G + |V_{TP}|$. Here $V_G = V_X$.`],
       sol: md`
         $M_4$ saturated $\iff V_{OUT} \le V_X + 1 = 4.8\,\text{V}$ (equivalently $V_{SD4} \ge V_{ov4} = 0.2\,\text{V}$).
 
@@ -336,19 +336,19 @@
       parts: [{ lbl: 'V_{B,min}', unit: 'V', ans: 1.6 }, { lbl: 'V_{B,max}', unit: 'V', ans: 4.8 }],
       hints: [
         md`$M_2$ carries $400\,\mu\text{A}$ as $1x$: its $V_{GS2}$ is fixed, so $V_A = V_B - V_{GS2}$.`,
-        md`$M_1$ needs $V_A \ge V_{G1} - V_T$. $M_2$ needs $V_X \ge V_B - V_T$.`,
+        md`$M_1$ needs $V_A \ge V_{G1} - V_{TN}$. $M_2$ needs $V_X \ge V_B - V_{TN}$.`,
       ],
       sol: md`
         $M_2$ ($1x$, $K = 2.5\,\text{mA/V}^2$) at $400\,\mu\text{A}$: $V_{ov2} = \sqrt{0.16} = 0.4\,\text{V}$, $V_{GS2} = 1.4\,\text{V}$, so $V_A = V_B - 1.4$.
 
-        **$M_1$ saturated:** $V_A \ge V_{G1} - V_T = 1.2 - 1 = 0.2 \Rightarrow V_B \ge 1.6\,\text{V}$.
+        **$M_1$ saturated:** $V_A \ge V_{G1} - V_{TN} = 1.2 - 1 = 0.2 \Rightarrow V_B \ge 1.6\,\text{V}$.
 
-        **$M_2$ saturated:** $V_X \ge V_B - V_T \Rightarrow 3.8 \ge V_B - 1 \Rightarrow V_B \le 4.8\,\text{V}$.
+        **$M_2$ saturated:** $V_X \ge V_B - V_{TN} \Rightarrow 3.8 \ge V_B - 1 \Rightarrow V_B \le 4.8\,\text{V}$.
 
         So $1.6\,\text{V} \le V_B \le 4.8\,\text{V}$. Too low and the cascode squeezes $M_1$ into triode; too high and $M_2$ itself runs out of headroom under the diode.
 
         !!key Pattern
-        A cascode's source rides $V_{GS}$ below its gate. Bias it so the device under it keeps $V_{ov}$ across it, and so its own drain stays above $V_G - V_T$.
+        A cascode's source rides $V_{GS}$ below its gate. Bias it so the device under it keeps $V_{ov}$ across it, and so its own drain stays above $V_G - V_{TN}$.
       `,
     }),
     P({

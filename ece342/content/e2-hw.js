@@ -29,7 +29,7 @@
 
   const HW4 = [
     R(md`
-      **Course parameters:** $\mu_nC_{ox} = 100\,\mu\text{A/V}^2$, $\mu_pC_{ox} = 50\,\mu\text{A/V}^2$, $|V_{TH}| = 1\,\text{V}$, and on this set **$\lambda = 0$**, so $r_{ds} \to \infty$ in every answer (the solutions show where $r_{ds}$ would enter).
+      **Course parameters:** $\mu_nC_{ox} = 100\,\mu\text{A/V}^2$, $\mu_pC_{ox} = 50\,\mu\text{A/V}^2$, $|V_{TP}| = 1\,\text{V}$, and on this set **$\lambda = 0$**, so $r_{ds} \to \infty$ in every answer (the solutions show where $r_{ds}$ would enter).
 
       **What this set drills**
       - **#1:** the three single-transistor stages (degenerated CS, CG, CD), each with a gate resistor that does nothing. Learn to read "where does the input enter, where is the output taken".
@@ -166,7 +166,7 @@ $$A_V = -(g_{m1} + g_{m2})\left(\frac{1}{g_{m3}}\parallel\frac{1}{g_{m4}}\parall
       sol: md`
 With $V_{ov} = 0.2$: NMOS carries $\tfrac12(100\mu)(0.04) = 2\,\mu\text{A}$ per unit $W/L$, PMOS carries $1\,\mu\text{A}$ per unit.
 
-- $V_B = V_T + V_{ov} = $ **$1.2\,\text{V}$** (source at DC ground).
+- $V_B = V_{TN} + V_{ov} = $ **$1.2\,\text{V}$** (source at DC ground).
 - $M_1$ (NMOS, 0.5 mA): $W/L = 250$. $M_2$ (PMOS, 0.5 mA): $W/L = 500$.
 - $M_3$ mirrors $M_2$ with twice the current: $W/L = 1000$. $M_4$ (NMOS, 1 mA): $W/L = 500$.
 
@@ -215,7 +215,7 @@ $$A_V = -\frac{g_{m1}g_{m3}}{g_{m2}}\left(R + \frac{1}{g_{m4}}\right)$$
       sol: md`
 **(a)** $M_3$ ($1X$ PMOS): $V_{ov3} = 5 - 3.6 - 1 = 0.4$, $I_3 = \tfrac12(50\mu)(200)(0.16) = 800\,\mu\text{A}$. Edge: $V_X = 5 - 0.4 = 4.6\,\text{V}$. $M_1$: $I_1 = \tfrac12(100\mu)(200)(0.04) = 400\,\mu\text{A}$, so $I_2 = 400\,\mu\text{A}$ and $V_{ov2} = \sqrt{\dfrac{400\mu}{\tfrac12(50\mu)(400)}} = 0.2$. Then $V_{SG2} = 1.2$: **$V_{B2} = 4.6 - 1.2 = 3.4\,\text{V}$**.
 
-**(b)** $M_2$ saturated needs $V_{OUT} \le V_{G2} + |V_T| = 4.4\,\text{V}$; the current through $R_D$ is fixed at $400\,\mu\text{A}$, so **$R_{D,max} = 4.4/0.4\text{m} = 11\,\text{k}\Omega$**.
+**(b)** $M_2$ saturated needs $V_{OUT} \le V_{G2} + |V_{TP}| = 4.4\,\text{V}$; the current through $R_D$ is fixed at $400\,\mu\text{A}$, so **$R_{D,max} = 4.4/0.4\text{m} = 11\,\text{k}\Omega$**.
 
 **(d) What to see first:** $M_1$ is a CS transconductor, $M_3$ a current source, $M_2$ a **common-gate** device that passes current from $X$ to the output: a **folded cascode**. With $\lambda = 0$ node $X$ has nothing but $M_2$'s source to send current into, so all of $g_{m1}v_{in}$ is taken out of $M_2$'s current:
 $$A_V = -g_{m1}R_D = -(4\,\text{mA/V})(11\,\text{k}\Omega) = -44$$
@@ -259,7 +259,7 @@ $$A_V = -g_{m1}R_D = -(4\,\text{mA/V})(11\,\text{k}\Omega) = -44$$
 
   const HW5 = [
     R(md`
-      **Course parameters:** $\mu_nC_{ox} = 100\,\mu\text{A/V}^2$, $\mu_pC_{ox} = 50\,\mu\text{A/V}^2$, $|V_{TH}| = 1\,\text{V}$. Every device is saturated with $r_{ds}$ finite and $g_mr_{ds} \gg 1$.
+      **Course parameters:** $\mu_nC_{ox} = 100\,\mu\text{A/V}^2$, $\mu_pC_{ox} = 50\,\mu\text{A/V}^2$, $|V_{TP}| = 1\,\text{V}$. Every device is saturated with $r_{ds}$ finite and $g_mr_{ds} \gg 1$.
 
       **What this set drills:** finding $R_{EQ}$ by inspection. Apply a test source, kill independent sources (a DC current source becomes an **open**, a DC voltage source a **short**), then build the answer from the canonical results:
       - looking into a **drain** with $R_S$ at the source: $r_{ds} + R_S + g_mr_{ds}R_S$;
@@ -513,7 +513,7 @@ $$R_{DN} \approx \frac{g_mr_{ds}R_1}{2},\qquad R_{EQ} = R_{UP}\parallel R_{DN}$$
 
   const HW6 = [
     R(md`
-      **Course parameters:** $\mu_nC_{ox} = 100\,\mu\text{A/V}^2$, $\mu_pC_{ox} = 50\,\mu\text{A/V}^2$, $|V_{TH}| = 1\,\text{V}$; all devices saturated, $g_mr_{ds} \gg 1$, $r_{ds}$ finite.
+      **Course parameters:** $\mu_nC_{ox} = 100\,\mu\text{A/V}^2$, $\mu_pC_{ox} = 50\,\mu\text{A/V}^2$, $|V_{TP}| = 1\,\text{V}$; all devices saturated, $g_mr_{ds} \gg 1$, $r_{ds}$ finite.
 
       **What this set drills:** the $G_MR_{out}$ method on two-stage circuits.
       - $A_V = -G_MR_{out}$, with $G_M$ the short-circuit current **pulled down** into the stage per volt of input (output shorted) and $R_{out}$ the resistance at the output with the input zeroed.

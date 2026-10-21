@@ -42,7 +42,7 @@
 <body>
 
 <div class="page">
-<div class="top"><b>ECE 342 · Exam 2 stage sheet</b><span>$i_d = g_mv_{gs} + v_{ds}/r_{ds}$ (D→S), NMOS and PMOS alike · $g_m = \frac{2I_D}{V_{ov}} = \mu C_{ox}\frac WLV_{ov} = \sqrt{2\mu C_{ox}\frac WLI_D}$</span></div>
+<div class="top"><b>ECE 342 · Exam 2 stage sheet</b><span>$V_{TN} = |V_{TP}| = 1\,\text{V}$ · $i_d = g_mv_{gs} + v_{ds}/r_{ds}$ (D→S), NMOS and PMOS alike · $g_m = \frac{2I_D}{V_{ov}} = \mu C_{ox}\frac WLV_{ov} = \sqrt{2\mu C_{ox}\frac WLI_D}$</span></div>
 <div class="cols">
 
 <h2>Small-signal circuit</h2>
@@ -98,7 +98,7 @@
 <h2>DC (Problem 1)</h2>
 <div class="box"><ul>
 <li>Mirror (same $V_{GS}$): $I\propto W/L$. KCL: resistors take the difference of mirrored currents.</li>
-<li>Saturation: NMOS $V_D\ge V_G - V_T$; PMOS $V_D\le V_G + |V_T|$; edge = equality. Diodes are always saturated.</li>
+<li>Saturation: NMOS $V_D\ge V_G - V_{TN}$; PMOS $V_D\le V_G + |V_{TP}|$; edge = equality. Diodes are always saturated.</li>
 <li>$K = \frac12\mu C_{ox}\frac WL$; $\mu_pC_{ox} = 50$ is half of $\mu_nC_{ox} = 100\,\mu\text{A/V}^2$: a PMOS needs $2\times$ the $W/L$.</li>
 <li>Numeric gains: DC only as far as $g_m$; $\infty$ caps short; watch an input divider into a $1/g_m$ node.</li>
 </ul></div>

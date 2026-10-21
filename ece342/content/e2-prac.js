@@ -160,7 +160,7 @@
       q: md`Physically shorting the gate and drain of a MOSFET gives a two-terminal device that behaves like a small-signal resistor $(1/g_m)\parallel r_{ds} \approx 1/g_m$ (if $g_mr_{ds} \gg 1$). What type of two-terminal *small-signal* device results if we short the gate and source terminals: (a) physically, with a straight wire; (b) virtually, by connecting a very large capacitance?`,
       fig: p1fig1c,
       parts: [
-        { lbl: '(a) Gate wired to source', mc: ['An open circuit: $V_{GS} = 0 < V_T$, so the device is off', 'A resistor $r_{ds}$', 'A resistor $1/g_m$', 'A short circuit'], a: 0,
+        { lbl: '(a) Gate wired to source', mc: ['An open circuit: $V_{GS} = 0 < V_{TN}$, so the device is off', 'A resistor $r_{ds}$', 'A resistor $1/g_m$', 'A short circuit'], a: 0,
           why: [null, 'That needs the device to be biased in saturation. A wire forces the DC $V_{GS}$ to zero too, and an NMOS with $V_{GS} = 0$ is cut off.', '$1/g_m$ is the diode connection (gate to drain), not gate to source.', 'There is no channel at all with $V_{GS} = 0$.'] },
         { lbl: '(b) Gate to source through a huge capacitor', mc: ['A resistor $r_{ds}$ (an ideal current source if $r_{ds} \\to \\infty$)', 'An open circuit', 'A resistor $1/g_m$', 'A short circuit'], a: 0,
           why: [null, 'The capacitor is open at DC, so the device keeps its bias and conducts; only the *small-signal* $v_{gs}$ is zero.', 'That is gate tied to drain.', 'The channel current does not depend on $v_{ds}$ except through $r_{ds}$.'] },
@@ -169,7 +169,7 @@
       sol: md`
 **What to see first:** separate the DC bias from the small-signal model.
 
-**(a) Wire.** The wire forces $V_{GS} = 0$ at DC as well. An NMOS with $V_{GS} = 0 < V_T$ is **cut off**: no channel, so the two-terminal device is an **open circuit** (infinite incremental resistance).
+**(a) Wire.** The wire forces $V_{GS} = 0$ at DC as well. An NMOS with $V_{GS} = 0 < V_{TN}$ is **cut off**: no channel, so the two-terminal device is an **open circuit** (infinite incremental resistance).
 
 **(b) Large capacitor.** At DC the capacitor is open, so the transistor keeps whatever bias the rest of the circuit gives it (say, saturation). For signals the capacitor is a short, so $v_{gs} = 0$ and $g_mv_{gs} = 0$. What remains between drain and source is $r_{ds}$: the device is a **resistor $r_{ds}$**, which is an ideal current source when $r_{ds} \to \infty$. This is exactly why "gate at incremental ground" turns a transistor into a current source.
 
@@ -314,7 +314,7 @@ $$R_{out} = R_D \parallel \big[r_{ds4} + R_X(1 + g_{m4}r_{ds4})\big] \approx R_D
       hints: [
         md`Every current is set by a mirror. $M_0$ (diode) carries the $100\,\mu\text{A}$; $M_1$ is twice its size. The same $100\,\mu\text{A}$ flows through $R_1$ and the diode $M_5$; $M_4$ is the same size as $M_5$.`,
         md`KCL at $V_1$: in from $M_3$ plus $I_2$ through the $25\kO$ equals out through $M_2$/$M_1$.`,
-        md`Edge of saturation shortcuts: PMOS $V_D = V_G + |V_T|$, NMOS $V_D = V_G - V_T$. For (b), $M_4$'s drain is $M_3$'s source, $V_{G3} + V_{SG3}$.`,
+        md`Edge of saturation shortcuts: PMOS $V_D = V_G + |V_{TP}|$, NMOS $V_D = V_G - V_{TN}$. For (b), $M_4$'s drain is $M_3$'s source, $V_{G3} + V_{SG3}$.`,
       ],
       sol: md`
 **What to see first:** no resistor sets a current here; the mirrors do. Find the currents, then the voltages follow.
@@ -322,12 +322,12 @@ $$R_{out} = R_D \parallel \big[r_{ds4} + R_X(1 + g_{m4}r_{ds4})\big] \approx R_D
 **(a)** $M_0$ (diode, $1x$) carries $100\,\mu\text{A}$; $M_1$ ($2x$, same $V_{GS}$) carries **$I_1 = 200\,\mu\text{A}$**. The same $100\,\mu\text{A}$ flows down through $M_5$ and $R_1$; $M_4$ ($2x$, same $V_{SG}$ as $M_5$) carries $100\,\mu\text{A}$, which flows through $M_3$ into node $V_1$. KCL at $V_1$:
 $$100\,\mu\text{A} + I_2 = I_1 = 200\,\mu\text{A} \;\Rightarrow\; I_2 = 100\,\mu\text{A},\quad V_1 = 5 - (25\kO)(100\,\mu\text{A}) = 2.5\,\text{V}$$
 
-**(b)** $2x$ PMOS: $K = \tfrac12(50\mu)(100) = 2.5\,\text{mA/V}^2$, so at $100\,\mu\text{A}$, $V_{ov} = 0.2\,\text{V}$. $M_5$: $V_{SG} = 1.2\,\text{V}$, so the shared gate of $M_5$/$M_4$ sits at $3.8\,\text{V}$. PMOS edge of saturation: $V_{D4} = V_{G4} + |V_T| = 4.8\,\text{V}$.
+**(b)** $2x$ PMOS: $K = \tfrac12(50\mu)(100) = 2.5\,\text{mA/V}^2$, so at $100\,\mu\text{A}$, $V_{ov} = 0.2\,\text{V}$. $M_5$: $V_{SG} = 1.2\,\text{V}$, so the shared gate of $M_5$/$M_4$ sits at $3.8\,\text{V}$. PMOS edge of saturation: $V_{D4} = V_{G4} + |V_{TP}| = 4.8\,\text{V}$.
 
 $V_{D4}$ is $M_3$'s source. $M_3$ is $8x$: $K = 10\,\text{mA/V}^2$, $V_{ov3} = 0.1\,\text{V}$, $V_{SG3} = 1.1\,\text{V}$. Its gate is the bottom of $R_1$: $3.8 - (100\,\mu\text{A})R_1$. So
 $$4.8 = 3.8 - (100\,\mu\text{A})R_1 + 1.1 \;\Rightarrow\; R_1 = 1\kO$$
 
-**(c)** $M_0$: $1x$ at $100\,\mu\text{A}$ gives $V_{ov} = 0.2$, $V_{GS} = 1.2\,\text{V}$, the gate of $M_1$ too. NMOS edge: $V_{D1} = V_{G1} - V_T = 0.2\,\text{V}$. That is $M_2$'s source; $M_2$ ($2x$ at $200\,\mu\text{A}$, $V_{ov} = 0.2$) needs $V_{GS2} = 1.2$, so **$V_A = 1.4\,\text{V}$**.
+**(c)** $M_0$: $1x$ at $100\,\mu\text{A}$ gives $V_{ov} = 0.2$, $V_{GS} = 1.2\,\text{V}$, the gate of $M_1$ too. NMOS edge: $V_{D1} = V_{G1} - V_{TN} = 0.2\,\text{V}$. That is $M_2$'s source; $M_2$ ($2x$ at $200\,\mu\text{A}$, $V_{ov} = 0.2$) needs $V_{GS2} = 1.2$, so **$V_A = 1.4\,\text{V}$**.
 
 **Pattern:** mirror ⇒ same $V_{GS}$, current ∝ size. Series ⇒ same current, $V_{ov} \propto 1/\sqrt{\text{size}}$ (the $8x$ device needs half the overdrive of the $2x$). Edge of saturation compares drain to gate, never source.`,
     }),
@@ -767,7 +767,7 @@ If $M_5 = M_1$ and $R_5 = R_1$, the denominator is about 2: the up branch looks 
       sol: md`
 **What to see first:** gate held at a DC voltage, input into the source, output at the drain: **common gate**.
 
-**DC.** $I_D = 1\,\text{mA}$ (forced). $K = \tfrac12(100\mu)(500) = 25\,\text{mA/V}^2$, $V_{ov} = 0.2\,\text{V}$, $V_{GS} = 1.2\,\text{V}$, so $V_S = 1.5 - 1.2 = 0.3\,\text{V}$. $V_D = 3 - (1\,\text{mA})(1\kO) = 2\,\text{V} \ge V_G - V_T = 0.5\,\text{V}$: saturated. $g_m = 2I_D/V_{ov} = 10\,\text{mA/V}$.
+**DC.** $I_D = 1\,\text{mA}$ (forced). $K = \tfrac12(100\mu)(500) = 25\,\text{mA/V}^2$, $V_{ov} = 0.2\,\text{V}$, $V_{GS} = 1.2\,\text{V}$, so $V_S = 1.5 - 1.2 = 0.3\,\text{V}$. $V_D = 3 - (1\,\text{mA})(1\kO) = 2\,\text{V} \ge V_G - V_{TN} = 0.5\,\text{V}$: saturated. $g_m = 2I_D/V_{ov} = 10\,\text{mA/V}$.
 
 **Signal.** $v_{in}$ drives the source directly (an ideal source, no series resistance), so $v_{gs} = -v_{in}$ and the drain current changes by $-g_mv_{in}$. Less current through the $1\kO$ means the drain rises:
 $$v_{out} = +g_m(1\kO)\,v_{in} \;\Rightarrow\; A_V = +10$$
