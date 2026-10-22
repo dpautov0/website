@@ -42,21 +42,122 @@
     id: 'e2-u8-cs', title: 'Common source and its loads', ref: 'Lectures 14–16, Problem Set 4',
     steps: [
       R(md`
-        The input transistor is the same in every CS stage: $G_M = g_{m1}$. Only the load changes, and the gain is $-g_{m1}\times(\text{everything at the drain})$:
+        ### The plan for this lesson
 
-        | Load (looking up) | $R_{out}$ | $A_v$ |
-        |---|---|---|
-        | Resistor $R_D$ | $R_D\parallel r_{ds1}$ | $-g_{m1}(R_D\parallel r_{ds1})$ |
-        | Diode-connected $M_2$ | $\tfrac1{g_{m2}}\parallel r_{ds1}\parallel r_{ds2}$ | $\approx -\dfrac{g_{m1}}{g_{m2}}$ |
-        | Current source ($M_2$, gate held) | $r_{ds1}\parallel r_{ds2}$ | $-g_{m1}(r_{ds1}\parallel r_{ds2})$ |
-        | Two loads at once (a diode and $R_D$ on the same node) | $R_D\parallel\tfrac1{g_{m2}}\parallel r_{ds1}$ | the smallest one wins |
+        A **common source** amplifier is one transistor, $M_1$, with the input on its gate, its source grounded, and the output taken at its drain. Something sits **above** the drain, between the output and $V_{DD}$: that something is called the **load**.
 
-        **Diode load: gain from geometry.** Both devices carry the same DC current, and $g_m = \sqrt{2\mu C_{ox}(W/L)I_D}$, so
-        $$A_v\approx -\frac{g_{m1}}{g_{m2}} = -\sqrt{\frac{\mu_1(W/L)_1}{\mu_2(W/L)_2}}$$
-        A PMOS diode load on an NMOS input picks up the mobility ratio $\mu_n/\mu_p = 2$.
+        We will try three different loads, one at a time:
+        1. a plain **resistor** $R_D$;
+        2. a **diode-connected** transistor;
+        3. a transistor used as a **current source**.
 
-        **Current-source load: the most gain one transistor can give,** about half the intrinsic gain $g_mr_{ds}$, because the drain node only sees two $r_{ds}$.
+        For each one we ask the same question, and only one thing changes. Here is why.
+
+        **The input side never changes.** Short the output to ground. $M_1$ has $v_{gs} = v_{in}$, so it pulls a current $g_{m1}v_{in}$ down out of the output. The load has zero volts across it (the output is shorted), so it carries no signal current. So for **every** load:
+        $$G_M = g_{m1}$$
+
+        **Only the output resistance changes.** Turn off the input ($v_{in} = 0$). Looking down from the output you see $M_1$'s drain with its gate and source at ground: just $r_{ds1}$. Looking up you see the load. So
+        $$R_{out} = r_{ds1}\parallel(\text{whatever the load looks like})$$
+        $$A_v = -G_MR_{out} = -g_{m1}\times\Big(r_{ds1}\parallel\text{load}\Big)$$
+
+        So the whole lesson comes down to one question: **what resistance does each load look like, from the output?**
+      `),
+      R(md`
+        ### Load 1: a resistor $R_D$
+
+        The resistor looks like itself: $R_D$. So
+        $$R_{out} = R_D\parallel r_{ds1},\qquad A_v = -g_{m1}\,(R_D\parallel r_{ds1})$$
+
+        **Example.** $g_{m1} = 2\,\text{mS}$, $R_D = 10\kO$, $r_{ds1} = 100\kO$.
+        - $R_{out} = 10\text{k}\parallel100\text{k} = \dfrac{10\cdot100}{110}\kO = 9.09\kO$.
+        - $A_v = -(2\,\text{mS})(9.09\kO) = -18.2$.
+
+        Usually $R_D \ll r_{ds}$, so $A_v \approx -g_{m1}R_D = -20$. To get more gain you need a bigger $R_D$, which also means a bigger DC voltage drop across it. That is the problem the transistor loads solve.
+      `, F.cs()),
+      R(md`
+        ### Load 2: a diode-connected transistor
+
+        $M_2$ is a PMOS whose **gate is wired to its own drain**, and that node is the output. Its source is on $V_{DD}$.
+
+        **Step 1: what is $v_{gs2}$?** Use the small-signal model (it is the same for NMOS and PMOS).
+        - $M_2$'s source is on $V_{DD}$: a fixed voltage, so for signals it is ground. $v_{s2} = 0$.
+        - $M_2$'s gate is wired to the output. $v_{g2} = v_{out}$.
+        - So $v_{gs2} = v_{out} - 0 = v_{out}$.
+
+        **Step 2: draw the model.** $M_2$ becomes a dependent source $g_{m2}v_{gs2} = g_{m2}v_{out}$, pointing from its drain (the output) to its source (ground), with $r_{ds2}$ beside it. $M_1$ becomes $g_{m1}v_{in}$ from the output down to ground, with $r_{ds1}$ beside it. The circuit is drawn here; the model is drawn in the next step.
+      `, F.csDiode()),
+      R(md`
+        **Step 3: the dependent source of $M_2$ is really a resistor.** It carries a current $g_{m2}v_{out}$ **out of** the output node, and the voltage across it is $v_{out}$. A two-terminal element where current $=$ (constant) $\times$ (its own voltage) is a resistor:
+        $$\frac{\text{voltage}}{\text{current}} = \frac{v_{out}}{g_{m2}v_{out}} = \frac{1}{g_{m2}}$$
+        So the diode-connected $M_2$ looks like $\dfrac{1}{g_{m2}}\parallel r_{ds2}$.
+
+        **Step 4: the output resistance.** Three things in parallel at the output: $\dfrac1{g_{m2}}$, $r_{ds2}$, $r_{ds1}$. Typical sizes: $\dfrac1{g_m}$ is about $500\,\Omega$, $r_{ds}$ is about $100\kO$. The smallest one wins a parallel combination:
+        $$R_{out} = \frac{1}{g_{m2}}\parallel r_{ds2}\parallel r_{ds1}\approx\frac{1}{g_{m2}}$$
+
+        **Step 5: the gain.**
+        $$A_v = -g_{m1}R_{out}\approx-\frac{g_{m1}}{g_{m2}}$$
+        The gain is a **ratio of two $g_m$'s**. No resistor appears at all.
+      `, [
+        ['w', [1, 0], [6, 0]], ['term', [6, 0], { n: 'v_{out}' }], ['node', [1, 0], { n: '', side: 'a' }],
+        ['G', [1, 0], [1, 1.8], { n: 'g_{m1}v_{in}', side: 'l' }], ['R', [2.4, 0], [2.4, 1.8], { n: 'r_{ds1}' }], ['w', [1, 1.8], [2.4, 1.8]], ['gnd', [1.7, 1.8]],
+        ['txt', [1.7, 2.6], '$M_1$'],
+        ['G', [3.8, 0], [3.8, -1.8], { n: 'g_{m2}v_{out}', side: 'l' }], ['R', [5, -1.8], [5, 0], { n: 'r_{ds2}' }], ['w', [3.8, -1.8], [5, -1.8]], ['gndu', [4.4, -1.8]],
+        ['txt', [4.4, 0.6], '$M_2$ (diode)'],
+      ]),
+      R(md`
+        ### Why "gain from geometry"
+
+        $g_m$ depends on the bias current, so it looks like the gain would depend on the bias too. It does not. Here is why.
+
+        **Step 1: both transistors carry the same DC current.** $M_1$ and $M_2$ are in series between $V_{DD}$ and ground, so the same $I_D$ flows through both.
+
+        **Step 2: write $g_m$ in terms of $I_D$ and size.** From the square law, $I_D = \tfrac12\mu C_{ox}\tfrac WL V_{ov}^2$, so $V_{ov} = \sqrt{\dfrac{2I_D}{\mu C_{ox}(W/L)}}$. Put that into $g_m = \dfrac{2I_D}{V_{ov}}$:
+        $$g_m = \frac{2I_D}{\sqrt{2I_D/(\mu C_{ox}W/L)}} = \sqrt{2\,\mu C_{ox}\,(W/L)\,I_D}$$
+
+        **Step 3: take the ratio.** The same $I_D$ appears under both square roots and cancels, and so do the 2 and $C_{ox}$:
+        $$\frac{g_{m1}}{g_{m2}} = \sqrt{\frac{\mu_1\,(W/L)_1}{\mu_2\,(W/L)_2}}$$
+        So the gain depends only on **sizes** and **mobilities**: the geometry of the two transistors.
+
+        **Step 4: NMOS input, PMOS load.** In this course $\mu_nC_{ox} = 100\,\mu\text{A/V}^2$ and $\mu_pC_{ox} = 50\,\mu\text{A/V}^2$, so $\mu_n/\mu_p = 2$. That factor of 2 goes under the square root along with the size ratio.
+
+        **Example.** $M_1$ is an NMOS with $W/L = 20$; $M_2$ is a PMOS diode with $W/L = 10$.
+        $$|A_v| = \sqrt{\frac{100\times20}{50\times10}} = \sqrt{\frac{2000}{500}} = \sqrt4 = 2$$
+        So $A_v \approx -2$. The catch: because of the square root, a big gain needs a huge size ratio (a gain of 10 needs a ratio of 100). So diode loads give small, predictable gains.
+      `),
+      R(md`
+        ### Load 3: a current source
+
+        $M_2$ is a PMOS with its **gate held at a fixed bias voltage**, source on $V_{DD}$, drain at the output.
+
+        **Step 1: $v_{gs2}$.** Gate fixed, so $v_{g2} = 0$. Source on $V_{DD}$, so $v_{s2} = 0$. So $v_{gs2} = 0$.
+
+        **Step 2: the model.** The dependent source is $g_{m2}\times0 = 0$: it disappears. Only $r_{ds2}$ is left, from the output to ground.
+
+        **Step 3: output resistance and gain.**
+        $$R_{out} = r_{ds1}\parallel r_{ds2},\qquad A_v = -g_{m1}\,(r_{ds1}\parallel r_{ds2})$$
+
+        **Step 4: how big is that?** If the two $r_{ds}$ are equal, $r_{ds}\parallel r_{ds} = \tfrac12r_{ds}$, so
+        $$A_v = -\tfrac12\,g_{m1}r_{ds}$$
+        The product $g_mr_{ds}$ is called the **intrinsic gain**: it is what one transistor would give if the load were infinitely big. With a current-source load we get **half** of it, because the output node sees two $r_{ds}$ in parallel, $M_1$'s own and the load's.
+
+        **Example.** $g_{m1} = 2\,\text{mS}$, $r_{ds1} = r_{ds2} = 100\kO$.
+        - $R_{out} = 100\text{k}\parallel100\text{k} = 50\kO$.
+        - $A_v = -(2\,\text{mS})(50\kO) = -100$.
+
+        Compare: resistor load $-18$, diode load $-2$, current-source load $-100$. A current source has a big **small-signal** resistance ($r_{ds}$) while needing only a small DC voltage across it. That is why it gives the most gain one transistor can give (more needs a cascode, Unit 8 later).
       `, F.csIsrc()),
+      R(md`
+        ### Summary: one table, now that each row is explained
+
+        | Load (looking up) | What it looks like | $R_{out}$ | $A_v$ | Typical size |
+        |---|---|---|---|---|
+        | Resistor $R_D$ | $R_D$ | $R_D\parallel r_{ds1}$ | $-g_{m1}(R_D\parallel r_{ds1})$ | about $-20$ |
+        | Diode-connected $M_2$ | $\tfrac1{g_{m2}}$ (its gate follows the output) | $\tfrac1{g_{m2}}\parallel r_{ds1}\parallel r_{ds2}$ | $\approx -\dfrac{g_{m1}}{g_{m2}}$ | about $-2$ |
+        | Current source ($M_2$, gate held) | $r_{ds2}$ (its gate is still) | $r_{ds1}\parallel r_{ds2}$ | $-g_{m1}(r_{ds1}\parallel r_{ds2})$ | about $-100$ |
+        | Two loads on the same node | everything in parallel | the smallest one wins | | |
+
+        The single fact behind the whole table: **a transistor whose gate moves with the node looks small ($1/g_m$); a transistor whose gate is still looks big ($r_{ds}$).**
+      `),
       Q(md`An NMOS CS stage ($W/L = 200$) has a diode-connected NMOS load ($W/L = 50$). Ignoring $r_{ds}$, what is $A_v$?`,
         ['$-2$', '$-4$', '$-0.5$', '$-\\sqrt2$'], 0,
         [null, 'That is the ratio of sizes; the gain is the square root of it.', 'Upside down: the input device is the bigger one, so $|A_v| > 1$.', 'Check the ratio: $200/50 = 4$, $\\sqrt4 = 2$.'],
