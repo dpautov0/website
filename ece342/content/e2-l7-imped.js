@@ -241,24 +241,186 @@ $$R_{DN} = \frac{r_{ds} + R_S + g_mr_{ds}R_S}{1 + g_mr_{ds}K}\approx\frac{R_S + 
     ],
   });
 
+  // ---------------------------------------------------------------- differential pair, from the model up
+  // Transistor-level pictures: (a) current-source loads, (b) mirror load
+  const pairFig = (b) => b ? F.diffMirror() : [
+    ['rail', [1, -0.4]], ['rail', [3, -0.4]],
+    ['pmos', [1, 0.6], { n: 'M_3', flip: true }], ['acg', [2, 0.6]], ['pmos', [3, 0.6], { n: 'M_4' }],
+    ['nmos', [1, 2.6], { n: 'M_1' }], ['nmos', [3, 2.6], { n: 'M_2', flip: true }], ['acg', [0, 2.6]], ['acg', [4, 2.6]],
+    ['w', [3, 1.6], [3.8, 1.6]], ['term', [3.8, 1.6], { n: '\\leftarrow R_{out}', side: 'r' }], ['node', [1, 1.6], { n: 'A', side: 'l' }],
+    ['w', [1, 3.6], [3, 3.6]], ['node', [2, 3.6], { n: 'P', side: 'a' }], ['I', [2, 3.6], [2, 4.8], { n: 'I_{tail}', side: 'r' }], ['gnd', [2, 4.8]],
+  ];
+  // Step 1 picture: every fixed node replaced by ground, tail removed
+  const pairKilled = (b) => [
+    ['acg', [1, -0.4]], ['acg', [3, -0.4]],
+    b ? ['pmos', [1, 0.6], { n: 'M_3', flip: true, dc: true }] : ['pmos', [1, 0.6], { n: 'M_3', flip: true }],
+    ...(b ? [] : [['acg', [2, 0.6]]]),
+    b ? ['pmos', [3, 0.6], { n: 'M_4' }] : ['pmos', [3, 0.6], { n: 'M_4', flip: true }],
+    ...(b ? [] : [['acg', [4, 0.6]]]),
+    ['nmos', [1, 2.6], { n: 'M_1' }], ['nmos', [3, 2.6], { n: 'M_2', flip: true }], ['acg', [0, 2.6]], ['acg', [4, 2.6]],
+    ['w', [3, 1.6], [4.6, 1.6]], ['V', [4.6, 1.6], [4.6, 2.8], { n: 'v_t', side: 'r' }], ['gnd', [4.6, 2.8]], ['iarr', [3.8, 1.6], 'l', { n: 'i_t' }],
+    ['node', [1, 1.6], { n: 'A', side: 'l' }],
+    ['w', [1, 3.6], [3, 3.6]], ['node', [2, 3.6], { n: 'P', side: 'b' }], ['txt', [2, 4.4], '$\\text{tail: open}$'],
+  ];
+  // Step 2 picture: the full small-signal model. Each transistor = g_m v_gs (drain to source) in parallel with r_ds.
+  const pairModel = (b) => [
+    // loads on node A (left) and on the output (right); top row is incremental ground (V_DD)
+    ['gndu', [1, -1.6]], ['R', [1, -1.6], [1, 0], { n: b ? '\\tfrac{1}{g_{m3}}\\parallel r_{ds3}' : 'r_{ds3}', side: 'l' }],
+    ...(b ? [
+      ['G', [5, 0], [5, -1.6], { n: 'g_{m4}v_A' }], ['gndu', [5, -1.6]], ['w', [5, -1.6], [6.2, -1.6]], ['R', [6.2, -1.6], [6.2, 0], { n: 'r_{ds4}' }],
+    ] : [
+      ['gndu', [6.2, -1.6]], ['R', [6.2, -1.6], [6.2, 0], { n: 'r_{ds4}' }],
+    ]),
+    // M1 between A and P
+    ['w', [1, 0], [2.2, 0]], ['G', [1, 0], [1, 2.4], { n: 'g_{m1}v_{gs1}', side: 'l' }], ['R', [2.2, 0], [2.2, 2.4], { n: 'r_{ds1}' }], ['w', [1, 2.4], [2.2, 2.4]],
+    ['txt', [1.6, -0.3], '$M_1$'],
+    // M2 between output and P
+    ['w', [3.8, 0], [5, 0]], ['R', [3.8, 0], [3.8, 2.4], { n: 'r_{ds2}', side: 'l' }], ['G', [5, 0], [5, 2.4], { n: 'g_{m2}v_{gs2}' }], ['w', [3.8, 2.4], [5, 2.4]],
+    ['txt', [4.4, -0.3], '$M_2$'],
+    // shared source node P, nothing else attached (tail open)
+    ['w', [2.2, 2.4], [3.8, 2.4]], ['node', [3, 2.4], { n: 'P', side: 'b' }],
+    ['node', [1, 0], { n: 'A', side: 'al' }], ['node', [5, 0], { n: 'out', side: 'a' }],
+    // test source on the output
+    ['w', [5, 0], [7.4, 0]], ['V', [7.4, 0], [7.4, 1.2], { n: 'v_t', side: 'r' }], ['gnd', [7.4, 1.2]], ['iarr', [6.8, 0], 'l', { n: 'i_t' }],
+  ];
+
   L({
-    id: 'e2-u7-pair', title: 'Differential-pair nodes', ref: 'Practice 3 #3',
+    id: 'e2-u7-pair', title: 'Differential-pair nodes, from the model up', ref: 'Practice 3 #3',
     steps: [
       R(md`
-        A differential pair is two transistors sharing a source node $P$, fed by a tail current source (open in small signal). With both gates at incremental ground, a test voltage at one output drives current down $M_2$, into $P$, and since the tail is open, **all of it goes up through $M_1$** into $M_1$'s drain load.
+        ### The circuit and the question
 
-        So looking down from $M_2$'s drain you see a degenerated drain whose "$R_S$" is "looking into $M_1$'s source with $M_1$'s load on its drain":
-        $$R_P = \frac{r_{ds1} + R_{L1}}{1 + g_{m1}r_{ds1}},\qquad R_{DN2} = r_{ds2} + R_P(1 + g_{m2}r_{ds2})$$
+        A **differential pair** is two transistors, $M_1$ and $M_2$, whose **sources are tied together** at one node, called $P$. A **tail current source** $I_{tail}$ pulls a fixed DC current out of $P$ to ground. Each drain has a load on top. Practice 3 #3 asks: **what resistance do you see looking into $M_2$'s drain** (the output)? Both gates sit at fixed bias voltages.
 
-        **Current-source loads** (Practice 3 #3(a)): $R_{L1} = r_{ds3}$, so $R_P\approx 2/g_{m1}$ and $R_{DN2}\approx 3r_{ds}$ for matched devices; $R_{EQ1} = r_{ds4}\parallel R_{DN2}$.
+        There are two versions. In **(a)**, the loads are two PMOS **current sources** ($M_3$, $M_4$, gates held at a fixed voltage). In **(b)**, the load is a **current mirror**: $M_3$ is diode-connected (gate tied to its drain, node $A$), and $M_4$'s gate is tied to node $A$ too.
 
-        **Mirror load** (Practice 3 #3(b)): $R_{L1} = 1/g_{m3}$ (the diode), so $R_{DN2}\approx 2r_{ds}$. But the current that lands on the diode $M_3$ is copied by $M_4$, which pulls the same current out of the output: the path counts **twice**:
-        $$R_{EQ2} = r_{ds4}\parallel\frac{R_{DN2}}{1 + g_{m4}/g_{m3}}\approx r_{ds4}\parallel r_{ds2}$$
-      `, F.diffMirror()),
-      Q(md`In a differential pair with an ideal tail current source, a test current is pushed into $M_2$'s drain. Where does it go?`,
+        We will do (a) completely, every step, then see what (b) changes.
+      `, pairFig(false)),
+      R(md`
+        ### Step 1: turn off everything that does not move
+
+        For small signals, any node held at a fixed voltage is ground. So:
+        - $V_{DD}$ becomes ground (the triangles on top).
+        - The gates of $M_1$ and $M_2$ (fixed bias) become ground.
+        - The gates of $M_3$ and $M_4$ (fixed bias) become ground.
+        - The tail is an **ideal current source**: its current never changes, so the signal current through it is zero. A branch that carries zero signal current is an **open circuit**. Remove it.
+
+        Then put a **test source** $v_t$ on the output and ask how much current $i_t$ it pushes in. $R_{out} = v_t / i_t$.
+
+        Notice what removing the tail does: node $P$ now touches **only** $M_1$'s source and $M_2$'s source. Whatever current comes down through $M_2$ into $P$ has exactly one place to go: **up through $M_1$**.
+      `, pairKilled(false)),
+      R(md`
+        ### Step 2: replace every transistor with its model
+
+        Each transistor becomes a **dependent current source $g_mv_{gs}$, pointing from drain to source**, in parallel with **$r_{ds}$** from drain to source. Nothing connects to the gate.
+
+        - $M_3$: gate at ground, source at ground, so $v_{gs3} = 0$: its dependent source is zero. Only $r_{ds3}$ is left, from $A$ to ground.
+        - $M_4$: same reasoning: only $r_{ds4}$, from the output to ground.
+        - $M_1$: drain $A$, source $P$, gate at ground, so $v_{gs1} = 0 - v_P = -v_P$.
+        - $M_2$: drain = output, source $P$, gate at ground, so $v_{gs2} = -v_P$.
+
+        That gives the full small-signal circuit below. There are three unknowns: $v_P$, $v_A$, and the current $i_2$ flowing **down** through $M_2$ (from the output to $P$).
+      `, pairModel(false)),
+      R(md`
+        ### Step 3: write the equations, one node at a time
+
+        **(1) Current down through $M_2$** (output to $P$). It is the dependent source plus the $r_{ds2}$ current:
+        $$i_2 = g_{m2}v_{gs2} + \frac{v_t - v_P}{r_{ds2}} = -g_{m2}v_P + \frac{v_t - v_P}{r_{ds2}}$$
+
+        **(2) KCL at $P$.** Only $M_1$ and $M_2$ touch $P$. So the current $i_2$ arriving from $M_2$ must leave through $M_1$, going **up**, from $P$ to $A$. In $M_1$'s drain-to-source direction (down, $A$ to $P$) that current is $-i_2$:
+        $$-i_2 = g_{m1}v_{gs1} + \frac{v_A - v_P}{r_{ds1}} = -g_{m1}v_P + \frac{v_A - v_P}{r_{ds1}}$$
+
+        **(3) KCL at $A$.** The current $i_2$ arrives at $A$ from below and leaves through $r_{ds3}$ to ground:
+        $$v_A = i_2\,r_{ds3}$$
+
+        **(4) Total current from the test source.** It splits: $i_2$ goes down $M_2$, and $v_t/r_{ds4}$ goes into $M_4$:
+        $$i_t = i_2 + \frac{v_t}{r_{ds4}}$$
+      `),
+      R(md`
+        ### Step 4: solve
+
+        **Find $v_P$.** Put (3) into (2):
+        $$-i_2 = -g_{m1}v_P + \frac{i_2r_{ds3} - v_P}{r_{ds1}}$$
+        Multiply by $r_{ds1}$:
+        $$-i_2r_{ds1} = -g_{m1}r_{ds1}v_P + i_2r_{ds3} - v_P$$
+        Move the $v_P$ terms to one side:
+        $$v_P\,(1 + g_{m1}r_{ds1}) = i_2\,(r_{ds1} + r_{ds3})$$
+        $$v_P = i_2\,R_P,\qquad R_P = \frac{r_{ds1} + r_{ds3}}{1 + g_{m1}r_{ds1}}$$
+        $R_P$ is the resistance node $P$ presents to $M_2$. It is exactly **"looking into $M_1$'s source, with $r_{ds3}$ on $M_1$'s drain"**: the source-side formula from earlier in this unit. Size: $R_P \approx \dfrac{1}{g_{m1}}\Big(1 + \dfrac{r_{ds3}}{r_{ds1}}\Big) \approx \dfrac{2}{g_{m1}}$. Small.
+
+        **Find $v_t / i_2$.** Put $v_P = i_2R_P$ into (1):
+        $$i_2 = -g_{m2}i_2R_P + \frac{v_t - i_2R_P}{r_{ds2}}$$
+        Multiply by $r_{ds2}$ and collect $i_2$:
+        $$i_2\,\big(r_{ds2} + g_{m2}r_{ds2}R_P + R_P\big) = v_t$$
+        $$R_{DN2} = \frac{v_t}{i_2} = r_{ds2} + R_P\,(1 + g_{m2}r_{ds2})$$
+        This is the **degenerated-drain formula** ($r_{ds} + R_S + g_mr_{ds}R_S$) with $R_S = R_P$. So: $M_2$ looks like a transistor with a resistor $R_P$ under its source, and that resistor is $M_1$ seen from its source.
+
+        **Add $M_4$.** From (4), $i_t = v_t/R_{DN2} + v_t/r_{ds4}$, so the two are in parallel:
+        $$\boxed{R_{out} = r_{ds4}\parallel\Big[r_{ds2} + R_P(1 + g_{m2}r_{ds2})\Big],\qquad R_P = \frac{r_{ds1} + r_{ds3}}{1 + g_{m1}r_{ds1}}}$$
+
+        **Matched pair** ($g_{m1} = g_{m2}$, $r_{ds1} = r_{ds2}$): $R_P(1 + g_{m2}r_{ds2}) = r_{ds1} + r_{ds3}$ exactly, so $R_{DN2} = 2r_{ds1} + r_{ds3}$. With every $r_{ds}$ equal: $R_{DN2} = 3r_{ds}$ and $R_{out} = r_{ds}\parallel 3r_{ds} = \tfrac34r_{ds}$.
+
+        !!intuition What the current actually does
+        Push current into the output. Most of it goes into $M_4$ ($r_{ds4}$). The rest goes **down $M_2$, across $P$, and back up $M_1$** into $r_{ds3}$, because the tail is open and there is nowhere else to go. Going up through $M_1$ is "entering a source": cheap, about $2/g_m$. But $M_2$ sits on top of that small resistance with its gate held, and the impedance scaler multiplies it by about $g_mr_{ds}$, giving roughly $2r_{ds}$. So the path down through the pair is a big resistance, about $2r_{ds}$ to $3r_{ds}$.
+      `),
+      P({
+        id: 'e2u7-pair-a', title: 'Current-source loads, with numbers',
+        q: md`In circuit (a), all four transistors have $g_m = 2\,\text{mS}$ and $r_{ds} = 100\kO$. Find $R_P$ (the resistance node $P$ presents), $R_{DN2}$ (looking down into $M_2$'s drain), and $R_{out}$.`,
+        fig: pairModel(false),
+        parts: [{ lbl: 'R_P', unit: 'kΩ', ans: 0.99502 }, { lbl: 'R_{DN2}', unit: 'kΩ', ans: 300 }, { lbl: 'R_{out}', unit: 'kΩ', ans: 75 }],
+        hints: [md`$R_P = \dfrac{r_{ds1} + r_{ds3}}{1 + g_{m1}r_{ds1}} = \dfrac{200\kO}{1 + 200}$.`, md`$R_{DN2} = r_{ds2} + R_P(1 + g_{m2}r_{ds2})$. Notice $(1 + g_{m2}r_{ds2})$ is the same 201 you divided by.`],
+        sol: md`
+1. $g_mr_{ds} = (2\,\text{mS})(100\kO) = 200$.
+2. $R_P = \dfrac{100\text{k} + 100\text{k}}{1 + 200} = \dfrac{200\text{k}}{201} = 0.995\kO$ (about $2/g_m = 1\kO$).
+3. $R_{DN2} = 100\text{k} + 0.995\text{k}\times201 = 100\text{k} + 200\text{k} = 300\kO$.
+4. $R_{out} = r_{ds4}\parallel R_{DN2} = 100\text{k}\parallel300\text{k} = \dfrac{100\cdot300}{400}\kO = 75\kO$.`,
+      }),
+      R(md`
+        ### Part (b): the mirror load. What changes?
+
+        Now $M_3$ is **diode-connected** (gate tied to its drain $A$), and $M_4$'s gate is **also tied to $A$**. Go through the model again, device by device:
+
+        - $M_3$: gate = drain = $A$, source at ground, so $v_{gs3} = v_A$. Its dependent source $g_{m3}v_A$ flows from $A$ to ground, and $r_{ds3}$ also connects $A$ to ground. A current $g_{m3}v_A$ through a node at voltage $v_A$ is just a resistor $1/g_{m3}$. So $M_3$ is $\dfrac{1}{g_{m3}}\parallel r_{ds3}$, call it $R_{D3}$.
+        - $M_4$: source at ground (V_DD), gate at $A$, so $v_{gs4} = v_A$. Its dependent source $g_{m4}v_A$ now **pulls current out of the output node**. This is new: in (a) $M_4$'s gate was still.
+        - $M_1$, $M_2$: unchanged.
+      `, pairModel(true)),
+      R(md`
+        ### Part (b), the equations
+
+        Equations (1) and (2) are **identical** to part (a). Equation (3) uses the diode instead of $r_{ds3}$:
+        $$v_A = i_2\,R_{D3},\qquad R_{D3} = \frac{1}{g_{m3}}\parallel r_{ds3} \approx \frac{1}{g_{m3}}$$
+        So the same algebra gives the same shape, with $R_{D3}$ in place of $r_{ds3}$:
+        $$R_P = \frac{r_{ds1} + R_{D3}}{1 + g_{m1}r_{ds1}},\qquad R_{DN2} = r_{ds2} + R_P(1 + g_{m2}r_{ds2})$$
+        Matched pair: $R_{DN2} = 2r_{ds1} + R_{D3} \approx 2r_{ds}$.
+
+        **Equation (4) changes.** The test source now feeds three things: $i_2$ down the pair, $v_t/r_{ds4}$ into $M_4$'s $r_{ds}$, **and** $M_4$'s dependent source $g_{m4}v_A$:
+        $$i_t = i_2 + \frac{v_t}{r_{ds4}} + g_{m4}v_A = i_2 + \frac{v_t}{r_{ds4}} + g_{m4}R_{D3}\,i_2$$
+        $$i_t = \frac{v_t}{r_{ds4}} + i_2\,\big(1 + g_{m4}R_{D3}\big),\qquad i_2 = \frac{v_t}{R_{DN2}}$$
+        Divide by $v_t$:
+        $$\boxed{R_{out} = r_{ds4}\parallel\frac{R_{DN2}}{1 + g_{m4}R_{D3}}}$$
+
+        **Matched** ($g_{m4} = g_{m3}$): $g_{m4}R_{D3} \approx 1$, so the bottom is about 2:
+        $$R_{out} \approx r_{ds4}\parallel\frac{2r_{ds}}{2} = r_{ds4}\parallel r_{ds2}$$
+
+        !!intuition Why the mirror halves the pair's resistance
+        The current $i_2$ that goes down $M_2$ and up $M_1$ lands on the diode $M_3$. The mirror $M_4$ **copies** it and pulls the copy out of the output too. So for every bit of current the pair path carries, the output actually supplies **twice** as much. Twice the current at the same voltage is half the resistance: $2r_{ds}$ becomes $r_{ds}$. This is the "feedback through a mirror" rule from the K-rule lesson: $R = \dfrac{R_{branch}}{1 + \text{copy ratio}}$, with copy ratio $g_{m4}R_{D3} \approx 1$.
+      `),
+      P({
+        id: 'e2u7-pair-b', title: 'Mirror load, with numbers',
+        q: md`In circuit (b), all four transistors have $g_m = 2\,\text{mS}$ and $r_{ds} = 100\kO$. Find $R_{D3}$ (the diode $M_3$), $R_{DN2}$, the copy factor $1 + g_{m4}R_{D3}$, and $R_{out}$.`,
+        fig: pairModel(true),
+        parts: [{ lbl: 'R_{D3}', unit: 'Ω', ans: 497.51 }, { lbl: 'R_{DN2}', unit: 'kΩ', ans: 200.4975 }, { lbl: '1 + g_{m4}R_{D3}', unit: '', ans: 1.99502 }, { lbl: 'R_{out}', unit: 'kΩ', ans: 50.124 }],
+        hints: [md`$R_{D3} = \dfrac{1}{g_m}\parallel r_{ds} = \dfrac{1}{2\,\text{mS} + 10\,\mu\text{S}}$.`, md`Matched pair: $R_{DN2} = 2r_{ds} + R_{D3}$. Then $R_{out} = r_{ds4}\parallel\dfrac{R_{DN2}}{1 + g_{m4}R_{D3}}$.`],
+        sol: md`
+1. $R_{D3} = \dfrac{1}{2\,\text{mS} + 1/100\text{k}} = \dfrac{1}{2.01\,\text{mS}} = 497.5\,\Omega$.
+2. $R_P = \dfrac{100\text{k} + 0.4975\text{k}}{201} = 0.49999\kO$, and $R_{DN2} = 100\text{k} + 0.49999\text{k}\times201 = 200.50\kO$ (that is $2r_{ds} + R_{D3}$).
+3. Copy factor: $1 + (2\,\text{mS})(497.5\,\Omega) = 1 + 0.995 = 1.995$.
+4. $\dfrac{R_{DN2}}{1.995} = 100.50\kO$, then $R_{out} = 100\text{k}\parallel100.5\text{k} = 50.12\kO$. Compare (a): $75\kO$. The mirror makes the output resistance smaller, about $r_{ds}/2$.`,
+      }),
+      Q(md`In a differential pair with an ideal tail current source, a test current is pushed into $M_2$'s drain. Where does the part that enters $M_2$ go?`,
         ['Down $M_2$, then up through $M_1$ into $M_1$\'s drain load.', 'Down $M_2$ and into the tail source.', 'Nowhere: the output impedance is infinite.', 'Half through each transistor to ground.'], 0,
         [null, 'The tail is an ideal current source: open in small signal.', 'It does flow, because $M_1$\'s source is a $1/g_m$-ish path to its drain load.', 'Neither transistor has a path to ground except through its drain load.'],
-        md`With the tail open, $M_1$ and $M_2$ are in series through node $P$. The current goes down $M_2$ and up $M_1$ (backwards through it, as a common-gate device) into $M_1$'s load.`),
+        md`With the tail open, node $P$ touches only the two sources. The current goes down $M_2$ and up $M_1$ (into $M_1$'s source, out of its drain) into $M_1$'s load.`),
     ],
   });
 })();
