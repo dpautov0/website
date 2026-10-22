@@ -8,13 +8,14 @@
     eyebrow: 'Electronic Circuits',
     actions: [
       { href: '#/cards', label: 'Flashcards: canonical stages' },
+      { href: '#/look', label: 'Drill: which end is which (NMOS/PMOS)' },
       { href: '#/l/e2-p1', label: 'Practice exams 1–5' },
       { href: '#/l/e2-mockA', label: 'New practice exams' },
       { href: '#/l/e2-hw4', label: 'Homework 4–6' },
       { href: '#/sheet', label: 'Stage sheet' },
       { href: 'stages.html', label: 'Printable sheet' },
     ],
-    aliases: { '#/sp26': 'u5-s26-paper', '#/cards': 'e2-cards', '#/prac': 'e2-p1' },
+    aliases: { '#/sp26': 'u5-s26-paper', '#/cards': 'e2-cards', '#/prac': 'e2-p1', '#/look': 'e2-u7-look' },
     howto: 'Numbers: in the unit shown, arithmetic allowed (<code>19/3</code>, <code>sqrt(0.04)</code>), within 1.5%. Expressions: <code>gm*RD</code> or <code>gm RD</code>; <code>||</code> is parallel, so <code>rds || 1/gm</code> works. Where a problem says so, the $g_mr_{ds} \\gg 1$ approximation is accepted as well as the exact form. A drill doesn\'t count once you open its solution. Progress is saved in this browser.',
   };
 
