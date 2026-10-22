@@ -9,10 +9,13 @@
   const KO = (r) => `${f(r / 1000, 3)}\\,\\text{k}\\Omega`;
   const MS = (g) => `${f(g * 1000, 3)}\\,\\text{mS}`;
   // a resistance answer in a sensible unit, with the approximation accepted as well
-  const resPart = (lbl, exact, approx) => {
+  const resPart = (lbl, exact, approx, traps = []) => {
     const [unit, s] = exact < 1e3 ? ['Ω', 1] : exact < 1e6 ? ['kΩ', 1e-3] : ['MΩ', 1e-6];
     const p = { lbl, unit, ans: exact * s };
     if (approx !== undefined && Math.abs(approx - exact) > 0.012 * exact) p.accept = [approx * s];
+    // traps whose value is within tolerance of the right answer would reject it, so drop those
+    const t = traps.filter((x) => Math.abs(x.v - exact) > 0.02 * exact && (approx === undefined || Math.abs(x.v - approx) > 0.02 * approx));
+    if (t.length) p.traps = t.map((x) => ({ v: x.v * s, msg: x.msg }));
     return p;
   };
   const resTeX = (r) => (r < 1e3 ? `${f(r, 3)}\\,\\Omega` : r < 1e6 ? KO(r) : `${f(r / 1e6, 3)}\\,\\text{M}\\Omega`);
@@ -52,7 +55,9 @@
     return {
       fig: [...Up.fig(p), ...D.fig(p), look, lookT],
       q: `Find the small-signal resistance $R_{EQ}$ at the node. ${devs}. Triangles are incremental grounds.`,
-      parts: [resPart('R_{EQ}', req, ap)],
+      parts: [resPart('R_{EQ}', req, ap, [
+        { v: rd, msg: 'That is $R_{DN}$ alone (looking down). $R_{EQ}$ is the whole node: put $R_{UP}$ in parallel.' },
+        { v: ru, msg: 'That is $R_{UP}$ alone (looking up). $R_{EQ}$ is the whole node: put $R_{DN}$ in parallel.' }])],
       hints: ['Split the node: $R_{EQ} = R_{UP}\\parallel R_{DN}$. Each branch is one canonical stage.', `Down: ${D.say}. Up: ${Up.say}.`],
       sol: `**Down:** ${D.say} $= ${resTeX(rd)}$.\n\n**Up:** ${Up.say} $= ${resTeX(ru)}$.\n\n$$R_{EQ} = R_{UP}\\parallel R_{DN} = ${resTeX(ru)}\\parallel ${resTeX(rd)} = ${resTeX(req)}$$\n\nThe smaller branch dominates: ${ru < rd ? 'looking up' : 'looking down'} is the low-resistance side.${Math.abs(ap - req) > 0.012 * req ? ` (With the $g_mr_{ds}\\gg1$ approximations: ${resTeX(ap)}, also accepted.)` : ''}`,
     };
@@ -69,7 +74,9 @@
       fig: [['nmos', [1, 1]], ['R', [1, 2], [1, 3.2], { n: 'R_S', s: KO(RS) }], ['gnd', [1, 3.2]], ['w', [1, 0], [1, -0.4], [2.2, -0.4]], ['term', [2.2, -0.4], { n: '\\leftarrow R_{EQ}', side: 'r' }],
         ['w', [1, -0.4], [-1, -0.4]], ['R', [-1, -0.4], [-1, 1], { n: 'R_a', s: KO(Ra), side: 'l' }], ['R', [-1, 1], [-1, 2.4], { n: 'R_b', s: KO(Rb), side: 'l' }], ['gnd', [-1, 2.4]], ['w', [-1, 1], [0, 1]]],
       q: `$g_m = ${MS(g)}$, $r_{ds} = ${KO(r)}$. The gate hangs on a divider from the drain. Find $R_{EQ}$.`,
-      parts: [resPart('R_{EQ}', req, apx)],
+      parts: [resPart('R_{EQ}', req, apx, [
+        { v: rdn, msg: 'That is the transistor branch alone ($R_{DN}$). The divider $R_a + R_b$ also connects the node to ground, so it is in parallel: $R_{EQ} = R_{DN}\\parallel(R_a + R_b)$.' },
+        { v: r + RS + g * r * RS, msg: 'That treats the gate as held still. Here the gate moves with the test voltage by $K = R_b/(R_a+R_b)$: divide by $1 + g_mr_{ds}K$, then put $R_a + R_b$ in parallel.' }])],
       hints: ['Two branches from the node: the divider $R_a + R_b$, and the transistor. The gate draws no current, so it does not load the divider.', 'The gate moves by $K = R_b/(R_a + R_b)$ times the test voltage. Use $R_{DN} = \\dfrac{r_{ds} + R_S + g_mr_{ds}R_S}{1 + g_mr_{ds}K}$.'],
       sol: `$K = \\dfrac{R_b}{R_a + R_b} = ${f(K, 3)}$. Transistor branch:\n$$R_{DN} = \\frac{r_{ds} + R_S + g_mr_{ds}R_S}{1 + g_mr_{ds}K} = ${resTeX(rdn)}$$\nIt is about $\\dfrac{R_S + 1/g_m}{K}$: a diode with $R_S$, divided by $K$. Divider branch: $R_a + R_b = ${resTeX(Ra + Rb)}$.\n$$R_{EQ} = ${resTeX(rdn)}\\parallel${resTeX(Ra + Rb)} = ${resTeX(req)}$$`,
     };

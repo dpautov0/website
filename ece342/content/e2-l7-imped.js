@@ -201,9 +201,42 @@ This is the common-gate input resistance (Lecture 17).`,
 $$R_{DN} = \frac{r_{ds} + R_S + g_mr_{ds}R_S}{1 + g_mr_{ds}K}\approx\frac{R_S + 1/g_m}{K}$$`,
       }),
       R(md`
-        **Feedback through a mirror** (Practice 4 #3(b), Practice 5 #2(b)): the test current flows through one branch, lands on a diode, and the diode's voltage drives another transistor's gate whose drain is the test node. Same idea, one more step: find the current through the diode ($i$), its voltage ($i\times\frac1{g_m}$, or $i(R + \frac1{g_m})$ with a resistor), then that transistor's extra current $\approx g_m\times$ that voltage. Each extra current that scales with $i_t$ divides the branch resistance: $R_{EQ} = \dfrac{R_{branch}}{1 + (\text{extra current per unit }i)}$. Practice 5 #2(b) gives
+        ### Feedback through a mirror: one more step
+
+        This shows up in Practice 4 #3(b) and Practice 5 #2(b). The picture: the test current flows down one branch and passes through a **diode-connected transistor** (maybe with a resistor). The voltage it makes there drives the **gate of another transistor whose drain is the test node**. That transistor then pulls extra current out of the test node, so the node looks smaller.
+
+        Below is Practice 5 #2(b). The stack $M_1$, $M_2$, $R$ is the branch; $M_3$ and $M_4$ are the transistors whose gates sense it.
+      `, [
+        ['nmos', [1, 1], { n: 'M_1' }], ['acg', [0, 1]], ['w', [1, 0], [1, -0.4], [4.6, -0.4]], ['term', [4.6, -0.4], { n: '\\leftarrow R_{eq2}', side: 'r' }],
+        ['nmos', [1, 3], { n: 'M_2', dc: true }], ['node', [1, 2], { n: 'X', side: 'ar' }], ['node', [1, 4], { n: 'Y', side: 'al' }],
+        ['R', [1, 4], [1, 5.2], { n: 'R', side: 'l' }], ['gnd', [1, 5.2]],
+        ['w', [1, 4], [2, 4]], ['nmos', [3, 4], { n: 'M_3' }], ['gnd', [3, 5]], ['w', [3, 3], [3, -0.4]],
+        ['w', [1, 2], [2.6, 2], { hops: [3] }], ['w', [2.6, 2], [3.6, 2], { hops: [3] }], ['nmos', [4.6, 2], { n: 'M_4' }], ['gnd', [4.6, 3]], ['w', [4.6, 1], [4.6, -0.4]],
+      ]),
+      R(md`
+        **Step 1: the current down the branch.** With nothing else attached, the stack looks like $R_{eq1}$ (part (a) of the same problem):
+        $$R_X = R + \frac{1}{g_{m2}}\parallel r_{ds2},\qquad R_{eq1} = r_{ds1} + R_X\,(1 + g_{m1}r_{ds1})$$
+        So a test voltage $v_t$ sends a current $i = \dfrac{v_t}{R_{eq1}}$ down through $M_1$, $M_2$ and $R$.
+
+        **Step 2: the voltages that current makes.** The gate draws no current, so all of $i$ goes through $M_2$ and $R$:
+        $$v_Y = i\,R \qquad\text{(top of the resistor)}$$
+        $$v_X = i\,\Big(R + \frac{1}{g_{m2}}\Big) = i\,R_X \qquad\text{(top of the diode)}$$
+        With no resistor, the diode alone gives $v = i\times\dfrac{1}{g_m}$.
+
+        **Step 3: the extra currents.** $M_3$ and $M_4$ have their sources grounded and their drains on the test node. Each pulls $g_m\times$(its gate voltage), plus its own $v_t/r_{ds}$:
+        $$i_{M3} = g_{m3}\,v_Y + \frac{v_t}{r_{ds3}} = g_{m3}R\;i + \frac{v_t}{r_{ds3}}$$
+        $$i_{M4} = g_{m4}\,v_X + \frac{v_t}{r_{ds4}} = g_{m4}R_X\;i + \frac{v_t}{r_{ds4}}$$
+
+        **Step 4: add up everything leaving the test node.**
+        $$i_t = i\,\big(1 + g_{m3}R + g_{m4}R_X\big) + \frac{v_t}{r_{ds3}} + \frac{v_t}{r_{ds4}}$$
+        The branch carries $i$, but the node really supplies $i(1 + g_{m3}R + g_{m4}R_X)$. Every extra current that grows with $i$ makes the branch look that many times smaller:
         $$R_{eq2} = r_{ds3}\parallel r_{ds4}\parallel\frac{R_{eq1}}{1 + g_{m3}R + g_{m4}R_X}$$
-        with $R_X = R + \tfrac1{g_{m2}}\parallel r_{ds2}$ and $R_{eq1} = r_{ds1} + R_X(1 + g_{m1}r_{ds1})$. Both are worked in full in the practice exams.
+
+        !!intuition The rule in one line
+        $$R_{EQ} = \frac{R_{branch}}{1 + (\text{extra current per unit of branch current})}$$
+        Each transistor that senses the branch current and dumps a copy onto the test node adds its "copy ratio" to the bottom. Here $M_3$ copies $g_{m3}R$ and $M_4$ copies $g_{m4}R_X$ per unit of $i$.
+
+        Both parts are worked in full in [Practice Exam 5](#/l/e2-p5) (#2) and [Practice Exam 4](#/l/e2-p4) (#3(b)).
       `),
     ],
   });

@@ -731,7 +731,10 @@
     let u;
     try { u = Expr.parseNumber(v); } catch (e) { return { ok: false, err: e.message }; }
     if (pt.accept && pt.accept.some((a) => Math.abs(u - a) <= 0.015 * Math.abs(a) + 1e-12)) return { ok: true };
-    return Expr.compareNumber(u, pt._ans, pt.tol || {});
+    // traps: known wrong answers (a common slip) with a message that names the slip
+    const trap = (pt.traps || []).find((t) => Math.abs(u - t.v) <= 0.015 * Math.abs(t.v) + 1e-12);
+    if (trap) return { ok: false, msg: trap.msg };
+    return Expr.compareNumber(u, pt._ans, pt.tol || {}, v);
   }
 
   // ---------------------------------------------------------------- router

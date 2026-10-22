@@ -204,7 +204,7 @@
     return evaluate(parse(str, []), {});
   }
 
-  function compareNumber(u, ans, tol = {}) {
+  function compareNumber(u, ans, tol = {}, raw = '') {
     const rel = tol.rel ?? 0.015;
     const abs = tol.abs ?? 1e-9;
     const ok = Math.abs(u - ans) <= Math.max(abs, rel * Math.abs(ans));
@@ -216,7 +216,13 @@
       if (near(r, 1000) || near(r, 1e-3) || near(r, 1e6) || near(r, 1e-6)) return { ok: false, msg: 'Off by a power of 1000. Check the unit shown next to the box (mA vs A, kΩ vs Ω).' };
       if (near(r, 2) || near(r, 0.5)) return { ok: false, msg: 'Off by a factor of 2. A missing ½, or a term counted twice?' };
       if (near(r, 4) || near(r, 0.25)) return { ok: false, msg: 'Off by a factor of 4. Check anything that gets squared.' };
-      if (Math.abs(r - 1) < 0.06) return { ok: false, msg: 'Very close. Check your rounding; carry more digits.' };
+      if (Math.abs(r - 1) < 0.06) {
+        // Rounding can only explain the miss if the typed number is short (few significant digits).
+        const sig = (String(raw).replace(/e.*$/i, '').replace(/[^0-9]/g, '').replace(/^0+/, '') || '0').length;
+        const pct = Math.abs(r - 1) * 100;
+        if (sig <= 2 || (sig <= 3 && pct < 2.5)) return { ok: false, msg: 'Very close. Check your rounding; carry more digits.' };
+        return { ok: false, msg: `Close (${pct.toFixed(1)}% off), but that is not rounding. A small piece is missing or extra: a resistance in parallel, an $r_{ds}$, or a $1/g_m$.` };
+      }
     }
     return { ok: false, msg: 'Not quite.' };
   }
