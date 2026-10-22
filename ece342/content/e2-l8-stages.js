@@ -341,10 +341,23 @@
 
         The single fact behind the whole table: **a transistor whose gate moves with the node looks small ($1/g_m$); a transistor whose gate is still looks big ($r_{ds}$).**
       `),
-      Q(md`An NMOS CS stage ($W/L = 200$) has a diode-connected NMOS load ($W/L = 50$). Ignoring $r_{ds}$, what is $A_v$?`,
+      Q(md`An NMOS common source amplifier $M_1$ ($W/L = 200$) has a diode-connected NMOS load $M_2$ ($W/L = 50$), drawn below: $M_2$'s gate and drain are both on $V_{DD}$, and its source is the output. Ignoring $r_{ds}$, what is $A_v$?`,
         ['$-2$', '$-4$', '$-0.5$', '$-\\sqrt2$'], 0,
-        [null, 'That is the ratio of sizes; the gain is the square root of it.', 'Upside down: the input device is the bigger one, so $|A_v| > 1$.', 'Check the ratio: $200/50 = 4$, $\\sqrt4 = 2$.'],
-        md`Same current, same mobility: $|A_v| = \sqrt{200/50} = 2$, inverting. With a PMOS diode of $W/L = 50$ it would be $\sqrt{(100\cdot200)/(50\cdot50)} = \sqrt8\approx2.83$.`),
+        [null, 'That is the ratio of sizes; the gain is the ratio of $g_m$\'s, which is the square root of it.', 'Upside down: the input device $M_1$ is the bigger one, so $|A_v| > 1$.', 'Check the ratio: $200/50 = 4$, and $\\sqrt4 = 2$.'],
+        md`
+**Step 1: what does $M_2$ look like from the output?** Its gate and drain sit on $V_{DD}$ (incremental ground), its source is the output, so $v_{gs2} = 0 - v_{out}$. Its dependent source carries $g_{m2}v_{out}$ in step with the output voltage: a resistor $\dfrac1{g_{m2}}$. (Same as the PMOS diode in the lesson, just flipped: NMOS diode seen from its source.)
+
+**Step 2: the gain.** $G_M = g_{m1}$ and $R_{out}\approx\dfrac1{g_{m2}}$, so $A_v \approx -\dfrac{g_{m1}}{g_{m2}}$.
+
+**Step 3: the ratio from sizes.** Same DC current through both, same mobility (both NMOS), so
+$$\frac{g_{m1}}{g_{m2}} = \sqrt{\frac{(W/L)_1}{(W/L)_2}} = \sqrt{\frac{200}{50}} = \sqrt4 = 2,\qquad A_v\approx-2$$
+
+With a PMOS diode load of $W/L = 50$ instead, the mobility ratio 2 joins in: $\sqrt{\dfrac{100\cdot200}{50\cdot50}} = \sqrt8\approx2.83$.`,
+        { fig: [
+          ['rail', [1, -2]], ['nmos', [1, -1], { n: 'M_2', sz: '50', dc: true }], ['w', [1, 0], [1.8, 0]], ['term', [1.8, 0], { n: 'v_{out}' }],
+          ['nmos', [1, 1], { n: 'M_1', sz: '200' }], ['gnd', [1, 2]],
+          ['w', [0, 1], [-0.6, 1], [-0.6, 1.4]], ['Vac', [-0.6, 1.4], [-0.6, 2.4], { n: 'v_{in}', side: 'l' }], ['gnd', [-0.6, 2.4]],
+        ] }),
       P({
         id: 'e2u8-inv', src: 'Problem Set 4 · #2', title: 'Both devices driven: the CMOS inverter amplifier',
         q: md`Both gates are driven by $v_{in}$ ($M_1$ NMOS below, $M_2$ PMOS above). Find $A_v$ with $r_{ds}$.`,
