@@ -38,26 +38,30 @@
   const L14 = (id) => /^u8-/.test(id) || id === 'uW-multipole' || /^uD-mp-/.test(id);
   const mp = [...all.keys()].filter(L14);
   const PATH2 = [
+    { id: 'q0', title: 'Start here: the exam format', blurb: 'What Exam I looked like (four problems, 50 minutes, the clock is the enemy) and which Exam II problem each one turns into.',
+      ids: ['e2-format'] },
     { id: 'q1', title: 'Multipoles, and dipoles in a field', blurb: 'Lecture 14 and HW 5–6: the multipole expansion, dipole moments, then torque, energy and force on a dipole (HW 4.6, 4.7).',
       ids: mp.filter((id) => !/^uD-/.test(id)).concat(['e2-dipE'], mp.filter((id) => /^uD-/.test(id))) },
     { id: 'q2', title: 'Polarization, bound charge, and D', blurb: 'σ_b = P·n̂, ρ_b = −∇·P, the four standard shapes, and when Gauss for D works (HW 4.10, 4.11, 4.15).',
-      ids: ['e2-bound', 'e2-D'] },
+      ids: ['e2-pic-P', 'e2-bound', 'e2-D'] },
     { id: 'q3', title: 'Linear dielectrics', blurb: 'D = εE, capacitors as series/parallel springs, coax, boundary conditions, the sphere in a uniform field (HW 4.18, 4.21, 4.24; Disc. 4.19).',
-      ids: ['e2-linear', 'e2-dielbc'] },
+      ids: ['e2-linear', 'e2-dielbc', 'e2-dielimg'] },
     { id: 'q4', title: 'Energy and force in dielectrics', blurb: 'W = ½∫D·E, fixed Q vs fixed V, the slab sucked into a capacitor (HW 4.26).',
-      ids: ['e2-energy'] },
+      ids: ['e2-energy', 'e2-energyint'] },
     { id: 'q5', title: 'Currents and Biot–Savart', blurb: 'K, J, spinning charge, forces on currents, and the segment/arc table that solves bent-wire problems (HW 5.6, 5.8, 5.10; Disc. 5.4, 5.11).',
-      ids: ['e2-currents', 'e2-bs'] },
+      ids: ['e2-pic-B', 'e2-currents', 'e2-bs'] },
     { id: 'q6', title: 'Ampère’s law', blurb: 'The four symmetric setups, sheets, slabs, coaxial solenoids, the moving capacitor, the off-center hole (HW 5.14, 5.17, 5.18; Disc. 5.15).',
       ids: ['e2-ampere'] },
     { id: 'q7', title: 'Vector potential, boundary conditions, magnetic dipoles', blurb: 'A from J, Stokes for A, the B jump across K, m = (Q/2M)L, the spinning shell (HW 5.25, 5.26, 5.29, 5.37; Disc. 5.39, 5.63).',
       ids: ['e2-A', 'e2-mbc'] },
     { id: 'q8', title: 'Magnetization and H', blurb: 'Para/dia, J_b = ∇×M, K_b = M×n̂, the electric/magnetic swap, H = 0 by symmetry, linear media (HW 6.3, 6.8, 6.12, 6.16).',
-      ids: ['e2-mdip', 'e2-boundJ', 'e2-H'] },
-    { id: 'q9', title: 'Speed tricks and practice exams', blurb: 'What to memorize, twelve shortcuts, the setups table, a rapid-fire round, two timed mocks, the concept quiz.',
-      ids: ['e2-sheet', 'e2-speed', 'e2-setups', 'e2-rapid', 'e2-mockA', 'e2-mockB', 'e2-quiz'] },
+      ids: ['e2-pic-M', 'e2-mdip', 'e2-boundJ', 'e2-H'] },
+    { id: 'qx', title: 'Exam-format problems: given a field, overlapping shapes', blurb: 'Exam I problems 1 and 2 in Exam II material: div, curl, potential and energy of given E, B and P fields, and superposition of overlapping balls, slabs, wires and cavities.',
+      ids: ['e2-fields', 'e2-overlap'] },
+    { id: 'q9', title: 'Speed tricks and practice exams', blurb: 'What to memorize, twelve shortcuts, the setups table, a rapid-fire round, five timed 50-minute mocks (C mirrors Exam I problem by problem), the concept quiz.',
+      ids: ['e2-sheet', 'e2-speed', 'e2-setups', 'e2-rapid', 'e2-mockC', 'e2-mockD', 'e2-mockE', 'e2-mockA', 'e2-mockB', 'e2-quiz'] },
   ];
-  const units2 = PATH2.map((p, i) => ({ id: p.id, exam: 'e2', num: `Unit ${i + 1}`, title: p.title, blurb: p.blurb, lessons: take(p.ids) }));
+  const units2 = PATH2.map((p, i) => ({ id: p.id, exam: 'e2', num: i ? `Unit ${i}` : 'Start', title: p.title, blurb: p.blurb, lessons: take(p.ids) }));
 
   // Extra: Exam I review material that the Exam I path skipped
   const R329 = (id) => /^u[012]-/.test(id) || ['u3-work', 'u3-conductors', 'u3-cavities', 'u3-capacitors', 'u4-poisson'].includes(id);
@@ -96,11 +100,11 @@
       R(md`Random multiple-choice questions from the Exam II path (Units 1–8), options shuffled, no repeats until the pool runs out. Each card links back to its lesson. Aim for 30 seconds a card.
 
 ### Everything on Exam II`),
-      G('concept', { need: 20, units: ['q1', 'q2', 'q3', 'q4', 'q5', 'q6', 'q7', 'q8'] }),
+      G('concept', { need: 20, units: ['q1', 'q2', 'q3', 'q4', 'q5', 'q6', 'q7', 'q8', 'qx'] }),
       R(md`### Electric side: multipoles and dielectrics`),
       G('concept', { need: 10, units: ['q1', 'q2', 'q3', 'q4'] }),
       R(md`### Magnetic side: Biot–Savart, Ampère, A, magnetization`),
-      G('concept', { need: 10, units: ['q5', 'q6', 'q7', 'q8'] }),
+      G('concept', { need: 10, units: ['q5', 'q6', 'q7', 'q8', 'qx'] }),
     ];
   }
 })();
