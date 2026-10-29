@@ -38,7 +38,7 @@ Press **New problem** for fresh values. Two correct without opening the solution
 
   // a fixed exam problem with numeric parts
   const num = (lbl, ans, unit, tol) => ({ lbl, ans, unit, tol: tol || { rel: 0.02 } });
-  const mc = (lbl, opts, a, why) => ({ lbl, mc: opts, a, why, fixed: true });
+  const mc = (lbl, opts, a, why) => ({ lbl, mc: opts, a, why });
 
   C.unit({
     id: 'e2-x', exam: 'e2', tools: true, num: 'Exam 2', title: 'Practice',
@@ -71,6 +71,8 @@ Press **New problem** for fresh values. Two correct without opening the solution
         steps: [
           R(md`
             The exam comes with the course formula sheet (the same F26 sheet as Exam 1, which already includes the junction formulas). **Check your copy**; this is what it covers for Exam 2, then what it doesn't.
+
+            **Printable version:** the [cheat sheet](cheatsheet-e2.html) puts every formula and a knob-to-effect table on the front, and eleven worked examples on the back, on one sheet of letter paper.
 
             ### On the sheet
             - $V_0 = \frac{kT}{q}\ln\frac{p_p}{p_n} = \frac{kT}{q}\ln\frac{N_aN_d}{n_i^2}$, $\frac{p_p}{p_n} = \frac{n_n}{n_p} = e^{qV_0/kT}$, $qV_0 = E_{vp} - E_{vn}$, $-V_0 = \int_{-x_{p0}}^{x_{n0}}\mathscr{E}\,dx$
@@ -146,7 +148,7 @@ Press **New problem** for fresh values. Two correct without opening the solution
         ],
       },
       {
-        id: 'e2-mock', title: 'Practice exam (60 min)', kind: 'mock', sub: 'four problems in the style of the hour exams and HW6–7',
+        id: 'e2-mock', title: 'Practice exam 1 (60 min)', kind: 'mock', sub: 'four problems in the style of the hour exams and HW6–7',
         steps: [
           R(md`
             Set a timer for 60 minutes and use only the formula sheet and a calculator. Si at 300 K, $n_i = 1.5\times10^{10}\,\text{cm}^{-3}$, $kT = 0.0259$ eV, $\epsilon_{Si} = 11.8\epsilon_0$ unless stated. Answers within 2% count.
@@ -161,13 +163,13 @@ Press **New problem** for fresh values. Two correct without opening the solution
             sol: md`(a) $L_p = L_n = \sqrt{10\times10^{-6}} = 31.6\,\mu$m. (b) $p_n = 4.5\times10^4$, $n_p = 1.125\times10^3$; $e^{0.55/0.0259} - 1 = 1.67\times10^9$ → $\Delta p_n = 7.51\times10^{13}$, $\Delta n_p = 1.88\times10^{12}\,\text{cm}^{-3}$; $\Delta p_n/N_d = 0.015$: low level. (c) $I_0 = qA(\frac{10}{3.16\times10^{-3}}4.5\times10^4 + \frac{20}{3.16\times10^{-3}}1125) = 2.39\times10^{-14}$ A; $I = 39.9\,\mu$A; holes $\frac{4.5\times10^4}{4.5\times10^4 + 2\times1125} = 95.2\%$. (d) $W\sqrt{(0.754 - 0.55)/0.754} = 0.234\,\mu$m. (e) $-I_0 = -2.39\times10^{-14}$ A (real diodes: more, from generation).` }),
           P({ src: 'Practice · Problem 3', title: 'How do these change?',
             q: md`A Si p⁺-n diode breaks down by avalanche at 60 V. The n-side doping is **quadrupled**; nothing else changes (take $\mathscr{E}_{crit}$ as fixed). For each quantity, pick the change, and estimate the new breakdown voltage.`,
-            parts: [mc('V_0', ['increases slightly', 'decreases slightly', 'unchanged', 'doubles'], 0, [null, md`$\ln$ of a bigger product.`, md`$+\frac{kT}{q}\ln4$ = +36 mV.`, 'Logarithmic, not linear.']),
-              mc('W\\ \\text{at zero bias}', ['about halves', 'about doubles', 'about ×¼', 'unchanged'], 0, [null, md`$W \propto N_d^{-1/2}$.`, 'Square root.', 'The light side sets it.']),
-              mc('C_j\\ \\text{at zero bias}', ['about doubles', 'about halves', 'about ×4', 'unchanged'], 0, [null, 'Narrower W, larger C.', 'Square root.', 'It follows W.']),
-              mc('I_0', ['about ×¼', 'about ×4', 'about ×½', 'unchanged'], 0, [null, md`$p_n = n_i^2/N_d$ falls.`, 'Linear in $1/N_d$.', 'The light side sets it.']),
+            parts: [mc('$V_0$', ['increases slightly', 'decreases slightly', 'unchanged', 'doubles'], 0, [null, md`$\ln$ of a bigger product.`, md`$+\frac{kT}{q}\ln4$ = +36 mV.`, 'Logarithmic, not linear.']),
+              mc('$W$ at zero bias',['about halves', 'about doubles', 'about ×¼', 'unchanged'], 0, [null, md`$W \propto N_d^{-1/2}$.`, 'Square root.', 'The light side sets it.']),
+              mc('$C_j$ at zero bias',['about doubles', 'about halves', 'about ×4', 'unchanged'], 0, [null, 'Narrower W, larger C.', 'Square root.', 'It follows W.']),
+              mc('$I_0$', ['about ×¼', 'about ×4', 'about ×½', 'unchanged'], 0, [null, md`$p_n = n_i^2/N_d$ falls.`, 'Linear in $1/N_d$.', 'The light side sets it.']),
               num('V_{br}\\ \\text{(new)}', 15, 'V', { rel: 0.03 }),
               mc('Mechanism now', ['still avalanche', 'Zener', 'both equally'], 0, [null, md`15 V > $6E_g/q$ ≈ 6.7 V.`, 'Not in the 4.5–6.7 V window.']),
-              mc('Temperature coefficient of V_{br}', ['positive', 'negative', 'zero'], 0, [null, 'That is Zener.', 'Only in the mixed window.'])],
+              mc('Temperature coefficient of $V_{br}$', ['positive', 'negative', 'zero'], 0, [null, 'That is Zener.', 'Only in the mixed window.'])],
             sol: md`$V_0$ +36 mV; $W$, $x_{n0}$ ×½; $C_j$ ×2; $I_0$ ×¼ (and the turn-on voltage +36 mV); $V_{br} \propto 1/N_d$ → 60/4 = 15 V, still above 6.7 V so still avalanche, positive temperature coefficient. Heavier still and it would cross into Zener.` }),
           P({ src: 'Practice · Problem 4', title: 'Solar cell and switching',
             q: md`(a) A 1 cm² Si solar cell under 100 mW/cm² has $I_{sc} = 35$ mA and dark saturation current $I_{th} = 2\times10^{-12}$ A; its fill factor is 0.78. Find $V_{oc}$, $P_{max}$, the efficiency, and $V_{oc}$ under 10× the light. Which quadrant does it operate in? (b) A p⁺-n diode with $\tau_p = 2\,\mu$s carries 2 mA and is switched to a reverse current of 1 mA. Storage delay time?`,

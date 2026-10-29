@@ -10,14 +10,15 @@
     key: 'ece340',
     shuffle: true,
     current: 'e2',
-    cheatsheet: 'cheatsheet.html',
+    cheatsheet: 'cheatsheet-e2.html',
     eyebrow: 'Semiconductor Electronics',
     actions: [
       { href: '#/l/e2-speed', label: 'Speed round' },
-      { href: '#/l/e2-mock', label: 'Practice exam' },
+      { href: '#/l/e2-mock', label: 'Practice exams' },
       { href: '#/quiz', label: 'Mixed practice' },
       { href: '#/sheet', label: 'Formula sheet' },
       { href: '#/e1/sheet', label: 'Exam 1 sheet' },
+      { href: 'cheatsheet.html', label: 'Exam 1 cheat sheet' },
     ],
     howto: 'Answers: type numbers as <code>1.5e10</code>, <code>1.5*10^10</code> or <code>1.5x10^10</code>; arithmetic like <code>2.25e20/1e16</code> works too. The unit is printed next to each box. Answers within about 1% count (3 significant figures is enough). Constants unless a problem says otherwise: $kT = 0.0259$ eV at 300 K, $q = 1.6\\times10^{-19}$ C, Si $n_i = 1.5\\times10^{10}\\,\\text{cm}^{-3}$ and $E_g = 1.12$ eV. Multiple choice explains every wrong option. A randomized problem doesn\'t count once you open its solution. Progress is saved in this browser.',
   };
@@ -44,8 +45,8 @@
     plan: [
       '<b>Topics 13–22 in order.</b> Read the build-up slowly and answer every <b>predict first</b> question before you look. Then hammer the <b>rapid-fire</b> cards until the answer arrives before you finish reading.',
       '<b>Speed round</b> every day: the what-happens-if cards from all ten topics mixed. This is the intuition section of the exam.',
-      '<b>Practice exam</b> under a 60-minute timer, then the endless exam-style problems in each topic and in <b>mixed practice</b>.',
-      '<b>Formula sheet</b>: what the exam gives you, what to memorize, the numbers to have in your fingers, and 14 lines to say out loud the night before.',
+      '<b>Practice exams 1–4</b>, each under a 60-minute timer, one every other day; then the <b>endless practice exam</b> (new numbers every visit) and the exam-style problems in each topic and in <b>mixed practice</b>.',
+      '<b>Formula sheet</b>: what the exam gives you, what to memorize, the numbers to have in your fingers, and 14 lines to say out loud the night before. Then print the <a href="cheatsheet-e2.html">cheat sheet</a>: every formula and a knob-to-effect table on the front, eleven worked examples on the back.',
     ],
   });
   C.exam({ id: 'final', title: 'Final', scope: 'Ch. 6 and 7 (field-effect and bipolar transistors), plus everything before' });
