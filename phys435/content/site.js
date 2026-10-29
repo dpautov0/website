@@ -19,9 +19,9 @@
     planTitle: 'How to use it',
     plan: [
       '<b>Start with <a href="#/l/e2-format">Read this first</a>.</b> Exam I was four problems in 50 minutes (fields plus an ugly energy integral, overlapping slab and sphere, images, sphere in a uniform field). It maps each one to its Exam II version.',
-      '<b>Units 1–8 in order.</b> Each opens with the physical picture, then builds the idea, gives the speed trick for it, and drills it with concept cards and homework-style problems. Every HW 6–9 and Discussion 5–7 problem is worked somewhere on the path.',
+      '<b>Units 1–8 in order.</b> Each opens with the physical picture, then builds the idea, gives the speed trick for it, and drills it with concept cards and homework-style problems, and ends with an <b>endless speed drill</b> (fresh numbers every time, with a target time per card). Every HW 6–9 and Discussion 5–7 problem is worked somewhere on the path.',
       '<b>Unit 9: the exam-format problems.</b> Given a field (div, curl, potential, energy) and overlapping shapes: the two Exam I problems that are pure technique.',
-      '<b>Unit 10 under time.</b> Five 50-minute mocks on paper with only the formula sheet; start with Mock C (Exam I, problem by problem). Practice the triage: standard results first on every problem, then recipes, then the hard parts. The <a href="#/l/e2-speed">speed tricks</a> and <a href="#/l/e2-setups">setups table</a> are where the time comes from.',
+      '<b>Unit 10 under time.</b> Eight 50-minute mocks on paper with only the formula sheet: start with C (Exam I, problem by problem), then D, E, F, G (the deliberately-too-long one), A, B, and save H for the night before. Practice the triage: standard results first on every problem, then recipes, then the hard parts. The <a href="#/l/e2-speed">speed tricks</a> and <a href="#/l/e2-setups">setups table</a> are where the time comes from.',
       '<b>Last day:</b> the rapid-fire round and the concept quiz until nothing surprises you; the memorize page.',
     ],
   });
