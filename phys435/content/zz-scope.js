@@ -1,7 +1,7 @@
-/* The study path. Loaded after every other content file: it regroups the existing lessons into numbered units, in the
-   order to study them, covering only what ECE 329 Exam 1 did not (the student aced it), within Hour Exam I's scope
-   (Lectures 1–13). Everything else (329 review, repeats, extra practice, Lecture 14 multipoles) goes into Extra units,
-   which the sidebar collapses and the home page lists last. No lesson is deleted. */
+/* The study paths. Loaded after every other content file: it regroups the lessons into numbered units, in the order
+   to study them. Hour Exam II (current, Lectures 14–27) gets its own path: the Lecture 14 multipole lessons, then the
+   e2-*.js lessons. Hour Exam I's path (Lectures 1–13, only what ECE 329 did not cover) is kept as a past exam for review;
+   its 329 review and repeats stay in Extra units. No lesson is deleted. */
 (function () {
   'use strict';
   if (typeof COURSE === 'undefined' || !COURSE.units) return;
@@ -32,27 +32,49 @@
     { id: 'p9', title: 'Practice exams', blurb: 'The formula sheet, the method chooser, last spring\'s real exam, the mocks, and the concept quiz.',
       ids: ['x-sheet', 'x-method', 'x-s26', 'x-mock4', 'x-mock3', 'x-mock', 'x-mock2', 'uD-start', 'x-quiz'] },
   ];
-  const units = PATH.map((p, i) => ({ id: p.id, num: `Unit ${i + 1}`, title: p.title, blurb: p.blurb, lessons: take(p.ids) }));
+  const units = PATH.map((p, i) => ({ id: p.id, exam: 'e1', num: `Unit ${i + 1}`, title: p.title, blurb: p.blurb, lessons: take(p.ids) }));
 
-  // Extra: not needed for this exam
+  // Hour Exam II: Lectures 14–27
   const L14 = (id) => /^u8-/.test(id) || id === 'uW-multipole' || /^uD-mp-/.test(id);
+  const mp = [...all.keys()].filter(L14);
+  const PATH2 = [
+    { id: 'q1', title: 'Multipoles, and dipoles in a field', blurb: 'Lecture 14 and HW 5–6: the multipole expansion, dipole moments, then torque, energy and force on a dipole (HW 4.6, 4.7).',
+      ids: mp.filter((id) => !/^uD-/.test(id)).concat(['e2-dipE'], mp.filter((id) => /^uD-/.test(id))) },
+    { id: 'q2', title: 'Polarization, bound charge, and D', blurb: 'σ_b = P·n̂, ρ_b = −∇·P, the four standard shapes, and when Gauss for D works (HW 4.10, 4.11, 4.15).',
+      ids: ['e2-bound', 'e2-D'] },
+    { id: 'q3', title: 'Linear dielectrics', blurb: 'D = εE, capacitors as series/parallel springs, coax, boundary conditions, the sphere in a uniform field (HW 4.18, 4.21, 4.24; Disc. 4.19).',
+      ids: ['e2-linear', 'e2-dielbc'] },
+    { id: 'q4', title: 'Energy and force in dielectrics', blurb: 'W = ½∫D·E, fixed Q vs fixed V, the slab sucked into a capacitor (HW 4.26).',
+      ids: ['e2-energy'] },
+    { id: 'q5', title: 'Currents and Biot–Savart', blurb: 'K, J, spinning charge, forces on currents, and the segment/arc table that solves bent-wire problems (HW 5.6, 5.8, 5.10; Disc. 5.4, 5.11).',
+      ids: ['e2-currents', 'e2-bs'] },
+    { id: 'q6', title: 'Ampère’s law', blurb: 'The four symmetric setups, sheets, slabs, coaxial solenoids, the moving capacitor, the off-center hole (HW 5.14, 5.17, 5.18; Disc. 5.15).',
+      ids: ['e2-ampere'] },
+    { id: 'q7', title: 'Vector potential, boundary conditions, magnetic dipoles', blurb: 'A from J, Stokes for A, the B jump across K, m = (Q/2M)L, the spinning shell (HW 5.25, 5.26, 5.29, 5.37; Disc. 5.39, 5.63).',
+      ids: ['e2-A', 'e2-mbc'] },
+    { id: 'q8', title: 'Magnetization and H', blurb: 'Para/dia, J_b = ∇×M, K_b = M×n̂, the electric/magnetic swap, H = 0 by symmetry, linear media (HW 6.3, 6.8, 6.12, 6.16).',
+      ids: ['e2-mdip', 'e2-boundJ', 'e2-H'] },
+    { id: 'q9', title: 'Speed tricks and practice exams', blurb: 'What to memorize, twelve shortcuts, the setups table, a rapid-fire round, two timed mocks, the concept quiz.',
+      ids: ['e2-sheet', 'e2-speed', 'e2-setups', 'e2-rapid', 'e2-mockA', 'e2-mockB', 'e2-quiz'] },
+  ];
+  const units2 = PATH2.map((p, i) => ({ id: p.id, exam: 'e2', num: `Unit ${i + 1}`, title: p.title, blurb: p.blurb, lessons: take(p.ids) }));
+
+  // Extra: Exam I review material that the Exam I path skipped
   const R329 = (id) => /^u[012]-/.test(id) || ['u3-work', 'u3-conductors', 'u3-cavities', 'u3-capacitors', 'u4-poisson'].includes(id);
   const rest = [...all.keys()].filter((id) => !used.has(id));
   const extra = [
-    { id: 'e1', num: 'Extra', title: 'ECE 329 review: vectors, Gauss, potential, conductors', blurb: 'Material you already know from ECE 329, with every PHYS 435 homework problem worked.', lessons: take(rest.filter(R329)) },
-    { id: 'e2', num: 'Extra', title: 'More practice on the same topics', blurb: 'Repeats and extra practice for Units 1–8. Only if you have time left.', lessons: take(rest.filter((id) => !R329(id) && !L14(id))) },
-    { id: 'e3', num: 'Extra', title: 'Multipoles (not on Exam I)', blurb: 'Not on Hour Exam I. Kept for Exam II.', lessons: take(rest.filter(L14)) },
+    { id: 'ex1', num: 'Extra', title: 'Exam I extra: ECE 329 review (vectors, Gauss, potential, conductors)', blurb: 'Material you already know from ECE 329, with every PHYS 435 homework problem worked.', lessons: take(rest.filter(R329)) },
+    { id: 'ex2', num: 'Extra', title: 'Exam I extra: more practice on the same topics', blurb: 'Repeats and extra practice for Exam I Units 1–8.', lessons: take(rest.filter((id) => !R329(id))) },
   ];
   extra.forEach((u) => { u.extra = true; });
-  extra[2].lessons.forEach((l) => { l.noBank = true; });
 
   COURSE.units.length = 0;
-  units.concat(extra).filter((u) => u.lessons.length).forEach((u) => COURSE.units.push(u));
+  units2.concat(units, extra).filter((u) => u.lessons.length).forEach((u) => COURSE.units.push(u));
 
   // the concept quiz draws from the study path only
   const quiz = all.get('x-quiz');
   if (quiz) {
-    quiz.title = 'Concept quiz';
+    quiz.title = 'Concept quiz (Exam I)';
     quiz.steps = [
       R(md`Random multiple-choice questions from the study path (Units 1–8), options shuffled, no repeats until the pool runs out. Each card links back to its lesson.
 
@@ -64,6 +86,21 @@
       G('concept', { need: 8, units: ['p3', 'p4'] }),
       R(md`### Deltas and energy`),
       G('concept', { need: 8, units: ['p1', 'p2'] }),
+    ];
+  }
+
+  // the Exam II concept quiz draws from its study path
+  const quiz2 = all.get('e2-quiz');
+  if (quiz2) {
+    quiz2.steps = [
+      R(md`Random multiple-choice questions from the Exam II path (Units 1–8), options shuffled, no repeats until the pool runs out. Each card links back to its lesson. Aim for 30 seconds a card.
+
+### Everything on Exam II`),
+      G('concept', { need: 20, units: ['q1', 'q2', 'q3', 'q4', 'q5', 'q6', 'q7', 'q8'] }),
+      R(md`### Electric side: multipoles and dielectrics`),
+      G('concept', { need: 10, units: ['q1', 'q2', 'q3', 'q4'] }),
+      R(md`### Magnetic side: Biot–Savart, Ampère, A, magnetization`),
+      G('concept', { need: 10, units: ['q5', 'q6', 'q7', 'q8'] }),
     ];
   }
 })();
