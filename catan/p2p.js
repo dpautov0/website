@@ -10,6 +10,14 @@ const GAME_FILES = ["__init__.py", "board.py", "bot.py", "common.py", "engine.py
   "mapgen.py", "progress.py", "seafaring.py"];
 const SAVE_KEY = "sl-host";
 const TRADE_PATIENCE = 20000;
+// Fallback transport: public MQTT brokers over secure websockets. Used when a direct
+// WebRTC link can't be made (strict NATs, campus Wi-Fi, hotspots); it works anywhere
+// normal https does. The host listens on all of them; a guest uses the first that answers.
+const RELAYS = ["wss://broker.emqx.io:8084/mqtt", "wss://broker.hivemq.com:8884/mqtt"];
+const MQTT_URL = "https://unpkg.com/mqtt@5.10.1/dist/mqtt.min.js";
+const DIRECT_GRACE = 5000;      // how long a guest tries a direct link before also trying relays
+const FIND_TIMEOUT = 20000;     // give up looking for a realm that never answers
+const FORCE_RELAY = new URLSearchParams(location.search).has("relay");   // debugging aid
 const HEARTBEAT = 4000;         // host pings guests this often
 const HOST_SILENCE = 12000;     // guests reconnect after this long without hearing from the host
 const BOT_DELAY = { respond_trade: 1400, roll: 1100, end_turn: 900, discard: 1000, pick: 1000 };
@@ -27,6 +35,13 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const hex = (n) => [...crypto.getRandomValues(new Uint8Array(n))].map((b) => b.toString(16).padStart(2, "0")).join("");
 const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
 const peerId = (code) => PEER_PREFIX + code.toLowerCase();
+const topicBase = (code) => `serfs-lords/v1/${code.toLowerCase()}`;
+
+let mqttReady = null;
+function loadMqtt() {
+  mqttReady = mqttReady || loadScript(MQTT_URL).catch((e) => { mqttReady = null; throw e; });
+  return mqttReady;
+}
 
 function busy(text) {
   let el = $("busy");
@@ -334,29 +349,37 @@ const P2P = {
 
   send(m) {
     if (this.room) this.room.handle(this.local, m);
-    else if (this.conn?.open) this.conn.send(m);
+    else if (this.conn) this.conn.send(m);
   },
 
   leave() {
     if (this.room) localStorage.removeItem(SAVE_KEY);
+    this.conn?.close();
     this.peer?.destroy();
   },
 
   async becomeHost(code, saved) {
     const py = await loadPython();
     busy(saved ? "Reopening your realm…" : "Opening your realm to visitors…");
-    this.peer = await openPeer(peerId(code), saved ? 15 : 1);
+    try {
+      this.peer = await openPeer(peerId(code), saved ? 15 : 1);
+    } catch (e) {
+      if (e.type === "unavailable-id" && !saved) throw e;   // code clash: caller picks another code
+      console.warn("direct connections unavailable, relays only:", e.message);
+      this.peer = null;
+    }
     busy("");
     this.code = code;
     const room = this.room = new HostRoom(code, py, saved);
     this.local = { send: (m) => setTimeout(() => onMessage(structuredClone(m)), 0) };
-    this.peer.on("connection", (c) => {
+    this.startRelays(room);
+    this.peer?.on("connection", (c) => {
       const client = { send: (m) => { try { if (c.open) c.send(m); } catch {} }, close: () => c.close() };
       c.on("data", (d) => room.handle(client, d));
       c.on("close", () => room.disconnect(client));
       c.on("error", () => room.disconnect(client));
     });
-    this.peer.on("disconnected", () => { if (!this.peer.destroyed) this.peer.reconnect(); });
+    this.peer?.on("disconnected", () => { if (!this.peer.destroyed) this.peer.reconnect(); });
     // a closed host tab isn't always reported to guests, so keep them posted
     setInterval(() => room.seats.forEach((s) => { if (s.client && s.client !== this.local) s.client.send({ type: "ping" }); }), HEARTBEAT);
     window.addEventListener("beforeunload", (e) => {
@@ -367,44 +390,146 @@ const P2P = {
     });
   },
 
+  async startRelays(room) {
+    try { await loadMqtt(); } catch { console.warn("relay library failed to load"); return; }
+    const base = topicBase(this.code);
+    for (const url of RELAYS) {
+      const c = mqtt.connect(url, { reconnectPeriod: 3000, connectTimeout: 8000 });
+      const guests = new Map();   // guest id -> {client, seen}
+      c.on("connect", () => c.subscribe(`${base}/up/+`));
+      c.on("message", (topic, payload) => {
+        let d;
+        try { d = JSON.parse(payload.toString()); } catch { return; }
+        const gid = topic.slice(topic.lastIndexOf("/") + 1);
+        let g = guests.get(gid);
+        const known = !!g;
+        if (!g) {
+          g = { client: { send: (m) => c.publish(`${base}/down/${gid}`, JSON.stringify(m)), close: () => {} }, seen: 0 };
+          guests.set(gid, g);
+        }
+        g.seen = Date.now();
+        if (d.type === "hello") return g.client.send({ type: "ping" });
+        // a guest we don't know is still pinging: we reloaded, so ask them to rejoin now
+        if (d.type === "ping") return known ? undefined : g.client.send({ type: "who" });
+        if (d.type === "bye") { guests.delete(gid); return room.disconnect(g.client); }
+        room.handle(g.client, d);
+      });
+      setInterval(() => {
+        for (const [gid, g] of guests) {
+          if (Date.now() - g.seen > HOST_SILENCE + 8000) { guests.delete(gid); room.disconnect(g.client); }
+        }
+      }, 5000);
+    }
+  },
+
+  // Guest: try a direct WebRTC link and (after a grace period) the relays; use whichever answers first.
   connectTo(code, onOpen) {
     this.code = code;
+    const attempt = this.attempt = {};   // a newer call to connectTo supersedes this one
     const rejoin = () => this.connectTo(code, () => this.send({ type: "join", room: code, name: ui.session?.name, token: ui.session?.token }));
-    const open = () => {
-      const conn = this.peer.connect(peerId(code), { reliable: true });
-      this.conn = conn;
-      let heard = Date.now();
-      const lost = () => {
-        if (this.conn !== conn) return;
-        this.conn = null;
-        clearInterval(watch);
-        conn.close();
-        toast("Lost the host's connection, reconnecting…");
-        setTimeout(rejoin, 1500);
-      };
-      const watch = setInterval(() => { if (conn.open && Date.now() - heard > HOST_SILENCE) lost(); }, 2000);
-      conn.on("open", () => { heard = Date.now(); busy(""); onOpen(); });
-      conn.on("data", (m) => { heard = Date.now(); if (m?.type !== "ping") onMessage(m); });
-      conn.on("close", lost);
-      conn.on("error", lost);
+    let chosen = null, heard = Date.now();
+    const links = [];
+    const use = (link) => {
+      if (chosen || this.attempt !== attempt) return link.close();
+      chosen = this.conn = link;
+      heard = Date.now();
+      for (const l of links) if (l !== link) l.close();
+      busy("");
+      onOpen();
     };
-    if (this.peer && !this.peer.destroyed && this.peer.open) return open();
+    const data = (link, m) => {
+      if (link !== chosen) return;
+      heard = Date.now();
+      if (m?.type === "who") return onOpen();   // the host reloaded and forgot us: rejoin
+      if (m?.type !== "ping") onMessage(m);
+    };
+    const lost = (link) => {
+      if (link !== chosen || this.conn !== link) return;
+      this.conn = null;
+      clearInterval(watch);
+      link.close();
+      toast("Lost the host's connection, reconnecting…");
+      setTimeout(rejoin, 1500);
+    };
+    const watch = setInterval(() => {
+      if (this.attempt !== attempt) return clearInterval(watch);
+      if (chosen && Date.now() - heard > HOST_SILENCE) lost(chosen);
+    }, 2000);
+    const startRelay = () => { if (!chosen && !attempt.relay) { attempt.relay = true; this.relayLink(code, links, use, data, lost); } };
+
     busy(`Looking for realm ${code}…`);
-    this.peer = new Peer();
-    this.peer.on("open", open);
-    this.peer.on("disconnected", () => { if (!this.peer.destroyed) this.peer.reconnect(); });
-    this.peer.on("error", (e) => {
-      if (e.type !== "peer-unavailable") { busy(""); toast(`Connection problem: ${e.type}`); return; }
+    if (!FORCE_RELAY) this.directLink(code, links, use, data, lost, startRelay);
+    setTimeout(startRelay, FORCE_RELAY ? 0 : DIRECT_GRACE);
+    setTimeout(() => { if (!chosen && this.attempt === attempt) busy(`Looking for realm ${code}… (trying another route)`); }, DIRECT_GRACE + 1000);
+    setTimeout(() => {
+      if (chosen || this.attempt !== attempt) return;
+      for (const l of links) l.close();
       if (ui.st || !$("lobby").classList.contains("hidden")) {
-        busy("The host's tab is closed or reloading. Waiting for it to come back…");
-        setTimeout(rejoin, 3000);
+        busy("Can't reach the host right now. Is their tab still open? Retrying…");
+        rejoin();
       } else {
         busy("");
-        toast(`Can't find realm ${code}. Is the host's tab open?`);
+        toast(`Can't find realm ${code}. Check the code, and make sure the host's tab is open.`);
         saveSession(null);
         show("join");
       }
-    });
+    }, FIND_TIMEOUT);
+  },
+
+  directLink(code, links, use, data, lost, giveUp) {
+    const open = () => {
+      const conn = this.peer.connect(peerId(code), { reliable: true });
+      const link = { kind: "direct", send: (m) => conn.open && conn.send(m), close: () => conn.close() };
+      links.push(link);
+      conn.on("open", () => use(link));
+      conn.on("data", (m) => data(link, m));
+      conn.on("close", () => lost(link));
+      conn.on("error", () => lost(link));
+    };
+    if (this.peer && !this.peer.destroyed && this.peer.open) return open();
+    try {
+      this.peer = new Peer();
+    } catch {
+      return giveUp();
+    }
+    this.peer.on("open", open);
+    this.peer.on("disconnected", () => { if (!this.peer.destroyed) this.peer.reconnect(); });
+    this.peer.on("error", () => giveUp());   // host not on the direct network, or signaling down: lean on relays
+  },
+
+  async relayLink(code, links, use, data, lost) {
+    try { await loadMqtt(); } catch { return; }
+    const base = topicBase(code);
+    const gid = hex(8);
+    for (const url of RELAYS) {
+      const c = mqtt.connect(url, { reconnectPeriod: 0, connectTimeout: 8000 });
+      let opened = false, hello = null, ping = null;
+      const link = {
+        kind: "relay",
+        send: (m) => c.publish(`${base}/up/${gid}`, JSON.stringify(m)),
+        close: () => { clearInterval(hello); clearInterval(ping); try { if (opened) c.publish(`${base}/up/${gid}`, '{"type":"bye"}'); } catch {} c.end(); },
+      };
+      links.push(link);
+      c.on("connect", () => {
+        c.subscribe(`${base}/down/${gid}`);
+        const say = () => c.publish(`${base}/up/${gid}`, '{"type":"hello"}');
+        say();
+        hello = setInterval(say, 2000);
+      });
+      c.on("message", (topic, payload) => {
+        let m;
+        try { m = JSON.parse(payload.toString()); } catch { return; }
+        if (!opened) {
+          opened = true;
+          clearInterval(hello);
+          ping = setInterval(() => c.publish(`${base}/up/${gid}`, '{"type":"ping"}'), HEARTBEAT);
+          use(link);
+        }
+        data(link, m);
+      });
+      c.on("close", () => { if (opened) lost(link); });
+      c.on("error", () => {});
+    }
   },
 };
 
