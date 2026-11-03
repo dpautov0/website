@@ -158,7 +158,8 @@ function renderLobby(m) {
       ${p.bot ? `<span class="botstyle">${STYLE[p.bot]}</span>${host ? `<button class="link-btn" data-unbot="${i}">remove</button>` : ""}` : ""}</li>`).join("")
     + `<li class="cap">${m.players.length} / ${m.max_players} lords</li>`
     + (host && m.players.length < m.max_players ? `<li class="addbot">Add a computer lord:
-        ${m.styles.map((s) => `<button data-addbot="${s}">${STYLE[s]}</button>`).join("")}</li>` : "");
+        ${m.styles.map((s) => `<button data-addbot="${s}">${STYLE[s]}</button>`).join("")}
+        <button data-addbot="random" title="a random personality">🎲 Random</button></li>` : "");
   const o = m.options, r = m.resolved;
   if (host) {
     $("settings").innerHTML = `
