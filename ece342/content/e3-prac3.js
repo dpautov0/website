@@ -483,6 +483,206 @@
     }),
   ];
 
+  // ================================================================== Practice exam K
+  const K1Fig = [
+    ['rail', [1, -2.4], { n: 'V_{DD} = 5\\,\\text{V}' }], ['pmos', [1, -1.4], { n: 'M_2', sz: '40/1', dc: true }],
+    ['w', [1, -0.4], [1, 0]], ['npn', [1, 1], { n: 'Q_1' }],
+    ['w', [1, -0.2], [2, -0.2]], ['C', [2, -0.2], [2.8, -0.2], { n: '\\infty' }], ['w', [2.8, -0.2], [3.4, -0.2]], ['term', [3.4, -0.2], { n: 'v_{out}', side: 'a' }],
+    ['R', [3.4, -0.2], [3.4, 1.1], { n: 'R_L', s: '500\\,\\Omega' }], ['gnd', [3.4, 1.1]],
+    ['R', [1, 2], [1, 3.2], { n: 'R_E', s: kO(1), side: 'l' }], ['gnd', [1, 3.2]],
+    ['w', [1, 2], [1.8, 2]], ['C', [1.8, 2], [1.8, 3.2], { n: 'C_E' }], ['w', [1.8, 3.2], [1, 3.2]],
+    ['w', [0, 1], [-0.6, 1], [-0.6, 1.3]], ['Vac', [-0.6, 1.3], [-0.6, 2.3], { n: 'v_{in}', side: 'l' }], ['V', [-0.6, 2.3], [-0.6, 3.3], { n: Vv(1.7), side: 'l' }], ['gnd', [-0.6, 3.3]],
+  ];
+  const K2Fig = [
+    ['rail', [2, -2.4], { n: 'V_{DD}' }], ['R', [2, -2.4], [2, -1], { n: 'R_F' }], ['node', [2, -1], { n: 'F', side: 'ar' }],
+    ['w', [2, -1], [0.6, -1]], ['nmos', [0.6, 0], { n: 'M_1' }], ['gnd', [0.6, 1]],
+    ['w', [-0.4, 0], [-0.9, 0], [-0.9, 0.3]], ['Vac', [-0.9, 0.3], [-0.9, 1.3], { n: 'v_{in}', side: 'l' }], ['gnd', [-0.9, 1.3]],
+    ['pnp', [2, 0], { n: 'Q_2', flip: true }], ['acg', [3, 0]],
+    ['w', [2, 1], [3.6, 1]], ['term', [3.6, 1], { n: 'v_{out}' }],
+    ['nmos', [2, 2], { n: 'M_3' }], ['acg', [1, 2]], ['gnd', [2, 3]],
+  ];
+  const K3Fig = [
+    ['rail', [2, -2.4], { n: 'V_{CC}' }], ['R', [2, -2.4], [2, -1], { n: 'R_E', s: '75\\,\\Omega' }],
+    ['pnp', [2, 0], { n: 'Q_1' }],
+    ['R', [2, 1], [2, 2.4], { n: 'R_C', s: kO(5), side: 'l' }], ['gnd', [2, 2.4]],
+    ['w', [2, 1], [3.8, 1]], ['term', [3.8, 1], { n: 'v_{out}' }], ['C', [3.2, 1], [3.2, 2.2], { n: 'C_L' }], ['gnd', [3.2, 2.2]],
+    ['w', [1, 0], [0.4, 0]], ['C', [0.4, 0], [0.4, -1], { n: 'C_\\pi' }], ['w', [0.4, -1], [2, -1]],
+    ['C', [0.4, 0], [0.4, 1], { n: 'C_\\mu' }], ['w', [0.4, 1], [2, 1]],
+    ['R', [-0.9, 0], [0.4, 0], { n: 'R_S', s: kO(10) }],
+    ['w', [-0.9, 0], [-1.4, 0], [-1.4, 0.3]], ['Vac', [-1.4, 0.3], [-1.4, 1.3], { n: 'v_{in}', side: 'l' }],
+    ['V', [-1.4, 1.3], [-1.4, 2.3], { n: 'V_B', side: 'l' }], ['gnd', [-1.4, 2.3]],
+  ];
+  const K2r = { gm1: [2e-3, 40e-3], rds1: [3e5, 1e6], RF: [3e3, 1e4], gm2: [30e-3, 80e-3], beta2: [150, 300] };
+  const K2RE = 'rpi2 || ((ro2 + rds3)/(1 + gm2*ro2))';
+  const K2RUP = '(ro2 + (RF || rds1 || rpi2)*(1 + gm2*ro2))';
+  const K2GM = 'gm1*(gm2 + 1/ro2)/(1/RF + 1/rds1 + (beta2 + 1)/rpi2 + 1/ro2)';
+
+  const Kex = [
+    intro('K', 'A BJT on a MOS diode load, a BiCMOS folded cascode, and what emitter degeneration does to the bandwidth.'),
+    P({
+      id: 'e3pK-1', src: 'Exam 3 practice K · Problem 1 (35 pts)', title: 'A common emitter on a PMOS diode load', big: true,
+      q: md`$V_{DD} = 5\,\text{V}$. $Q_1$ (NPN, $\beta = 100$, $r_o = \infty$): base at $1.7\,\text{V}$ DC plus $v_{in}$, $R_E = 1\kO$ to ground bypassed by $C_E$ (infinite). Its collector load is $M_2$, a diode-connected PMOS ($W/L = 40/1$, $\lambda = 0$) with its source on $V_{DD}$. The output is the collector; in part (f) a load $R_L = 500\,\Omega$ is coupled to it through an infinite capacitor.
+
+(a) $I_C$. (b) The DC output voltage $V_{OUT}$; is $Q_1$ forward-active? (c) $R_{in}$, looking into the base. (d) $R_{out}$, the small-signal resistance at the output without $R_L$. (e) $A_v = v_{out}/v_{in}$ without $R_L$. (f) $A_v$ with $R_L$ connected. (g) The $W/L$ of $M_2$ that would give $|A_v| = 40$ without $R_L$, at the same current. (h) Why can't you keep raising the gain this way?`,
+      fig: K1Fig,
+      parts: [
+        { lbl: 'I_C', unit: 'mA', ans: 0.990, accept: [1] },
+        { lbl: 'V_{OUT}', unit: 'V', ans: 3.005, accept: [3], traps: [{ v: 4, msg: 'That drops only $|V_{TP}|$ across $M_2$. A diode carrying $1\\,\\text{mA}$ needs an overdrive too: $V_{SG} = 1 + V_{ov}$.' }] },
+        { lbl: 'R_{in}', unit: 'kΩ', ans: 2.525, accept: [2.5], traps: [{ v: 103.5, msg: 'The emitter is bypassed: $R_E$ is a short for signals, so it is not multiplied by $\\beta + 1$.' }] },
+        { lbl: 'R_{out}', unit: 'Ω', ans: 502.5, accept: [500] },
+        { lbl: 'A_v', unit: '', ans: -19.9, accept: [-20], traps: [{ v: 19.9, msg: 'A common emitter inverts, whatever its load.' }] },
+        { lbl: 'A_v\\ \\text{with}\\ R_L', unit: '', ans: -9.93, accept: [-10], traps: [{ v: -19.9, msg: 'The coupling capacitor puts $R_L$ in parallel with the diode\'s $1/g_{m2}$ for signals, and $500\\,\\Omega$ against $500\\,\\Omega$ halves the gain.' }] },
+        { lbl: '(W/L)_2', unit: '', ans: 9.9, accept: [10], traps: [{ v: 20, msg: '$g_{m2} = \\sqrt{2\\mu_pC_{ox}(W/L)I_D}$ grows only as the **square root** of $W/L$. To halve $g_{m2}$ at the same current you need a quarter of the $W/L$.' }] },
+        { lbl: '(h) What stops you from raising $|A_v|$ further by shrinking $M_2$?', mc: ['Headroom: $V_{SG} = 1 + V_{ov}$ grows with the gain and pulls the collector down until $Q_1$ saturates', '$g_{m1}$ falls as $M_2$ shrinks', '$M_2$ leaves saturation', '$r_\\pi$ starts to load the output'], a: 0,
+          why: [null, '$I_C$ is set by the base and emitter ($I_E = 1\\,\\text{mA}$), not by the load, so $g_{m1}$ does not change.', 'A diode-connected MOSFET has $V_{SD} = V_{SG}$, so it is always saturated.', '$r_\\pi$ is at the base; with $r_o = \\infty$ nothing at the base touches the collector.'] },
+      ],
+      hints: [
+        md`DC: $V_E = 1.7 - 0.7 = 1.0\,\text{V}$ sets $I_E$. All of $I_C$ goes through $M_2$: $I_C = \tfrac12(50\,\mu)(40)V_{ov}^2$, and $V_{OUT} = 5 - (1 + V_{ov})$.`,
+        md`A diode-connected transistor looks like $1/g_m$ (Exam 2). With $r_o = \infty$, $R_{out} = 1/g_{m2}$ and $A_v = -g_{m1}/g_{m2}$.`,
+        md`$\dfrac{g_{m1}}{g_{m2}} = \dfrac{I/V_T}{2I/V_{ov}} = \dfrac{V_{ov}}{2V_T}$: the gain is set by $M_2$'s overdrive alone.`,
+      ],
+      sol: md`
+        **Recognize it first.** In at the **base**, out at the **collector**, emitter bypassed: a **common emitter**. Its load is a **diode-connected PMOS** (gate tied to drain), which from its drain looks like $1/g_{m2}$ (Exam 2's diode load). So $A_v = -g_{m1}(1/g_{m2})$: the ratio of a BJT's transconductance to a MOSFET's at the same current.
+
+        **(a)** $V_E = 1.7 - 0.7 = 1.0\,\text{V}$, $I_E = 1\,\text{V}/1\,\text{k} = 1\,\text{mA}$, $I_C = \alpha I_E = 0.990\,\text{mA}$.
+
+        **(b)** $M_2$ carries $I_C$: $\tfrac12(50\,\mu)(40) = 1\,\text{mA/V}^2$, so $V_{ov} = \sqrt{0.990} = 0.995\,\text{V}$ and $V_{SG} = 1.995\,\text{V}$:
+        $$V_{OUT} = 5 - 1.995 = 3.005\,\text{V}$$
+        $V_C = 3.0\,\text{V} > V_B = 1.7\,\text{V}$: forward-active ✓ ($V_{CE} = 2.0\,\text{V}$).
+
+        **(c)** Emitter bypassed: $R_{in} = r_\pi = \beta/g_{m1} = 100/39.6\,\text{mS} = 2.525\kO$.
+
+        **(d)** Looking into $Q_1$'s collector: open ($r_o = \infty$). Looking into the diode: apply $v_x$ to its drain. The gate is tied to the drain and the source sits on $V_{DD}$ (a signal ground), so $v_{gs} = v_x$, and the model gives $i_x = g_{m2}v_{gs} = g_{m2}v_x$ flowing in at the drain: a resistance $1/g_{m2}$. With $g_{m2} = 2I/V_{ov} = 2(0.990)/0.995 = 1.99\,\text{mS}$:
+        $$R_{out} = \frac{1}{g_{m2}} = 502\,\Omega$$
+
+        **(e)** $A_v = -g_{m1}R_{out} = -(39.6\,\text{mS})(502\,\Omega) = -19.9$. Look at it as a ratio:
+        $$|A_v| = \frac{g_{m1}}{g_{m2}} = \frac{I/V_T}{2I/V_{ov}} = \frac{V_{ov}}{2V_T} = \frac{0.995}{0.05} = 19.9$$
+        The current cancels: the gain depends only on $M_2$'s overdrive. (Exam 2's all-MOS version gave $\sqrt{(W/L)_1/(W/L)_2}$; a BJT's $g_m$ is so large that one ordinary diode already gives a gain of 20.)
+
+        **(f)** With $R_L$: the output node sees $502\parallel500 = 251\,\Omega$, so $A_v = -(39.6\,\text{m})(251) = -9.93$. A diode load has a **low** output resistance, so a modest load halves the gain.
+
+        **(g)** $|A_v| = V_{ov}/(2V_T) = 40$ needs $V_{ov} = 2\,\text{V}$. At $I = 0.990\,\text{mA}$:
+        $$\frac{W}{L} = \frac{2I}{\mu_pC_{ox}V_{ov}^2} = \frac{2(0.990\,\text{m})}{(50\,\mu)(4)} = 9.9\approx10$$
+        Then $V_{SG} = 3\,\text{V}$ and $V_{OUT} = 2\,\text{V}$: still above $V_B = 1.7\,\text{V}$, but only just.
+
+        **(h)** Every factor of gain costs $2V_T = 50\,\text{mV}$ of overdrive, taken from the collector's headroom. $|A_v| = 60$ would need $V_{SG} = 4\,\text{V}$, $V_{OUT} = 1\,\text{V} < V_B$: $Q_1$ saturates. That is why high gain needs a current-source load instead of a diode.
+
+        !!key A transistor on a diode
+        Gain $= -g_{m,\text{amp}}/g_{m,\text{load}}$. BJT on a MOS diode: $-V_{ov}/(2V_T)$. MOS on a MOS diode: $-\sqrt{(W/L)_1/(W/L)_2}$ (same current, same mobility). The output resistance is low, about $1/g_{m,\text{load}}$, so the stage drives loads poorly.
+      `,
+    }),
+    P({
+      id: 'e3pK-2', src: 'Exam 3 practice K · Problem 2 (35 pts)', title: 'A BiCMOS folded cascode: NMOS in, PNP cascode', big: true,
+      q: md`A folded cascode. $M_1$ (NMOS, source grounded) takes $v_{in}$ at its gate; its drain is the fold node $F$, which $R_F$ ties to $V_{DD}$. $Q_2$ (PNP, base at a fixed bias) has its emitter at $F$ and its collector at the output; $M_3$ (NMOS, gate at a fixed bias) is the output's current source. Keep $r_{ds1}$, $r_{o2}$ and $r_{ds3}$. In symbols:
+
+(a) $R_{E2}$, looking into $Q_2$'s emitter from node $F$ (with the output loaded only by $M_3$). (b) $R_{UP}$, looking up into $Q_2$'s collector from the output, with $v_{in} = 0$. (c) $R_{out}$. (d) $G_M$ of the stage. (e) $A_v = v_{out}/v_{in}$. (f) Why $R_{UP}$ stops growing once $R_F$ is large.`,
+      fig: K2Fig,
+      parts: [
+        ex(K2RE, ['gm2', 'beta2', 'rpi2', 'ro2', 'rds3'], 'R_{E2}', { ranges: K2r }),
+        ex(K2RUP, ['gm2', 'beta2', 'rpi2', 'ro2', 'RF', 'rds1'], 'R_{UP}', { ranges: K2r }),
+        ex(`rds3 || ${K2RUP}`, ['gm2', 'beta2', 'rpi2', 'ro2', 'RF', 'rds1', 'rds3'], 'R_{out}', { ranges: K2r }),
+        ex(K2GM, ['gm1', 'gm2', 'beta2', 'rpi2', 'ro2', 'RF', 'rds1'], 'G_M', { ranges: K2r }),
+        ex(`-(${K2GM})*(rds3 || ${K2RUP})`, ['gm1', 'gm2', 'beta2', 'rpi2', 'ro2', 'RF', 'rds1', 'rds3'], 'A_v', { ranges: K2r }),
+        { lbl: '(f) As $R_F\\to\\infty$, $R_{UP}$ levels off near $(\\beta_2 + 1)r_{o2}$ because', mc: ['$r_{\\pi2}$, from $F$ to the held base, takes over as the emitter\'s degeneration, and $g_{m2}r_{\\pi2} = \\beta_2$', '$r_{ds1}$ is in parallel with $R_F$', 'the output current source $M_3$ is in parallel', 'a PNP has a lower $\\beta$ than an NPN'], a: 0,
+          why: [null, '$r_{ds1}$ does sit in parallel with $R_F$, but it is large; the ceiling is set by the much smaller $r_{\\pi2}$, which a MOS cascode would not have.', '$M_3$ limits $R_{out}$, not $R_{UP}$: $R_{UP}$ is defined looking up, without $M_3$.', 'The ceiling is $(\\beta + 1)r_o$ for any BJT, NPN or PNP; the cause is the base current, i.e. $r_\\pi$.'] },
+      ],
+      hints: [
+        md`Name the pieces: $M_1$ is a common source whose drain current is **folded**: it is pulled out of node $F$, where $Q_2$'s emitter supplies most of it. $Q_2$ (base held, in at the emitter, out at the collector) is a **common base**. Together: a folded cascode (Exam 2), with a PNP as the cascode device.`,
+        md`(a) An emitter with the base held: its current can leave through $r_{\pi2}$ (into the base) or through the collector into $r_{ds3}$. The second path is Exam 2's "source with a drain load", $(r_o + R_D)/(1 + g_mr_o)$.`,
+        md`(b) A degenerated collector: the emitter sees $R_F\parallel r_{ds1}$ to ground **and** $r_{\pi2}$ to the held base. (d) Short the output: $M_1$'s current $g_{m1}v_{in}$ divides at $F$ between $R_F\parallel r_{ds1}$ and $Q_2$'s emitter (about $1/g_{m2}$); $Q_2$ passes $\alpha$ of its share to the output.`,
+      ],
+      sol: md`
+        **Recognize it first.**
+        - $M_1$: in at the **gate**, out at the **drain**, source grounded: a **common source**, but its drain is not the output.
+        - $Q_2$: PNP drawn emitter-up, **base held**, in at the **emitter** (node $F$), out at the **collector**: a **common base**. A CS feeding a CB is a cascode; because the CB is a PNP hanging from $V_{DD}$, the signal current turns around at $F$: a **folded cascode**.
+        - $M_3$: gate held, the output's current source: $r_{ds3}$ looking down.
+        - $R_F$ supplies the DC current of both $M_1$ and $Q_2$; for signals it is a resistor from $F$ to ground.
+
+        **(a) Into $Q_2$'s emitter** (base held: $v_\pi = -v_e$). A test current into the emitter has two ways out: into the base through $r_{\pi2}$, or across the transistor into the collector node and down $r_{ds3}$. KCL at the collector: what arrives through $r_{o2}$ and the $g_{m2}v_\pi$ source leaves through $r_{ds3}$, which gives Exam 2's source-with-a-drain-load result for the second path:
+        $$R_{E2} = r_{\pi2}\parallel\frac{r_{o2} + r_{ds3}}{1 + g_{m2}r_{o2}}\approx\frac{1}{g_{m2}}\Big(1 + \frac{r_{ds3}}{r_{o2}}\Big)$$
+        About $2/g_{m2}$ when $r_{ds3}\approx r_{o2}$: still small, so $F$ is a low-impedance node.
+
+        **(b) Into $Q_2$'s collector.** A **degenerated collector**: the emitter sees $R_F\parallel r_{ds1}$ (to ground with $v_{in} = 0$) and $r_{\pi2}$ (to the held base), all in parallel. Push $i_t$ into the collector; it leaves through that parallel combination, so $v_e = i_t(R_F\parallel r_{ds1}\parallel r_{\pi2})$ and $v_\pi = -v_e$; the current in $r_{o2}$ is $i_t\big(1 + g_{m2}(R_F\parallel r_{ds1}\parallel r_{\pi2})\big)$:
+        $$R_{UP} = r_{o2} + (R_F\parallel r_{ds1}\parallel r_{\pi2})(1 + g_{m2}r_{o2})\approx r_{o2}\big[1 + g_{m2}(R_F\parallel r_{\pi2})\big]$$
+
+        **(c)** $R_{out} = r_{ds3}\parallel R_{UP}$. Usually $R_{UP}\gg r_{ds3}$, so the output current source sets $R_{out}$: to use the cascode fully, cascode $M_3$ too.
+
+        **(d) $G_M$: short the output.** Now $Q_2$'s emitter looks like $r_{\pi2}\parallel\dfrac{r_{o2}}{1 + g_{m2}r_{o2}}\approx1/g_{m2}$. $M_1$ pulls $g_{m1}v_{in}$ out of $F$; that current is supplied by $R_F\parallel r_{ds1}$ and by $Q_2$'s emitter, which split it like any current divider, and $Q_2$ passes $\alpha_2$ of its emitter current on to the collector. Writing KCL at $F$ exactly:
+        $$G_M = g_{m1}\,\frac{g_{m2} + 1/r_{o2}}{\dfrac1{R_F} + \dfrac1{r_{ds1}} + \dfrac{\beta_2 + 1}{r_{\pi2}} + \dfrac1{r_{o2}}}\approx g_{m1}\,\alpha_2\,\frac{R_F}{R_F + 1/g_{m2}}\approx g_{m1}$$
+        Sign: $v_{in}$ up, $M_1$ pulls more current from $F$, $F$ falls, $Q_2$'s $V_{EB}$ falls, $Q_2$ delivers less current into the output: the output loses current, $G_M > 0$.
+
+        **(e)**
+        $$A_v = -G_MR_{out}\approx-g_{m1}\Big(r_{ds3}\parallel r_{o2}\big[1 + g_{m2}(R_F\parallel r_{\pi2})\big]\Big)$$
+
+        **(f) The $\beta r_o$ ceiling.** As $R_F$ grows, $R_F\parallel r_{\pi2}\to r_{\pi2}$ and $g_{m2}r_{\pi2} = \beta_2$: $R_{UP}\to(\beta_2 + 1)r_{o2}$. The base current gives the signal a path around the cascode device. A PMOS cascode (gate draws nothing) would keep growing as $g_{m2}r_{ds2}R_F$.
+
+        !!key Folded cascode, the two questions
+        (1) Where does the input transistor's current go? It divides at the fold node; the cascode device's emitter/source ($\approx1/g_m$) wins against a big $R_F$, so $G_M\approx g_{m1}$. (2) What does the output see looking up? A degenerated collector (or drain) whose emitter resistance is everything at the fold node, plus $r_\pi$ for a BJT.
+      `,
+    }),
+    P({
+      id: 'e3pK-3', src: 'Exam 3 practice K · Problem 3 (30 pts)', title: 'Emitter degeneration and the bandwidth (time constants with $r_\\pi$)', big: true,
+      q: md`A PNP common emitter with an unbypassed emitter resistor: $R_E = 75\,\Omega$ from the emitter to $V_{CC}$, $R_C = 5\kO$ from the collector to ground. $v_{in}$ (with the DC bias $V_B$) drives the base through $R_S = 10\kO$. $I_C = 1\,\text{mA}$, $\beta = 100$, $r_o = \infty$. $C_\pi = 8\,\text{pF}$, $C_\mu = 0.125\,\text{pF}$, and $C_L = 1.5\,\text{pF}$ from the output to ground.
+
+(a) $R_{in}$, looking into the base. (b) The DC gain $A_{v0} = v_{out}/v_{in}$. (c) The resistance seen by $C_\pi$. (d) The resistance seen by $C_\mu$. (e) $\omega_{-3dB}$ by open-circuit time constants. (f) Now bypass $R_E$ with a large capacitor: $\omega_{-3dB}$ by the same method. (g) What did the degeneration do?`,
+      fig: K3Fig,
+      parts: [
+        { lbl: 'R_{in}', unit: 'kΩ', ans: 10.075, accept: [10], traps: [{ v: 2.5, msg: 'That is $r_\\pi$ alone: $R_E$ is in the emitter and is seen $(\\beta + 1)$ times bigger from the base.' }] },
+        { lbl: 'A_{v0}', unit: '', ans: -24.91, accept: [-25], traps: [
+          { v: -49.6, msg: 'That is the gain from the **base**. $R_S$ and $R_{in}\\approx10\\,\\text{k}\\Omega$ divide $v_{in}$ first: only half reaches the base.' },
+          { v: -50, msg: 'That is the gain from the **base**. $R_S$ and $R_{in}\\approx10\\,\\text{k}\\Omega$ divide $v_{in}$ first: only half reaches the base.' },
+          { v: -66.7, msg: 'That is $-R_C/R_E$, the $g_mR_E\\gg1$ limit; here $g_mR_E = 3$, so keep the $1/g_m$. And divide by the input divider.' },
+          { v: -40, msg: 'That is the bypassed stage. With $R_E$ in the emitter, $G_M = g_m/(1 + g_mR_E)\\approx10\\,\\text{mS}$.' }] },
+        { lbl: 'R_{C\\pi}', unit: 'kΩ', ans: 1.255, accept: [1.25], traps: [
+          { v: 2.5, msg: 'That is $r_\\pi$ alone. The emitter is not grounded: test **between** base and emitter. The degenerated path $(R_S + R_E)/(1 + g_mR_E)$ is in parallel.' },
+          { v: 5.02, msg: 'That is the base node to ground. $C_\\pi$ goes from base to **emitter**, and the emitter moves with the base.' },
+          { v: 2.52, msg: 'That is $(R_S + R_E)/(1 + g_mR_E)$ alone. $r_\\pi$ is also directly across $C_\\pi$, in parallel.' }] },
+        { lbl: 'R_{C\\mu}', unit: 'kΩ', ans: 259.1, accept: [260], traps: [
+          { v: 1010, msg: 'That uses the full $g_m$ in the bridge term. With degeneration, the base-to-collector transconductance is $G_M = g_m/(1 + g_mR_E)\\approx10\\,\\text{mS}$.' },
+          { v: 10.0, msg: 'That is $R_{left} + R_{right}$ only. Add $G_MR_{left}R_{right}$: the Miller term.' },
+          { v: 510, msg: 'That uses $R_{left} = R_S$. The base node also has $R_{in}\\approx10\\,\\text{k}\\Omega$ to ground through the transistor: $R_{left} = R_S\\parallel R_{in}\\approx5\\,\\text{k}\\Omega$.' }] },
+        { lbl: '\\omega_{-3dB}', unit: 'rad/s', ans: 2.003e7, accept: [2e7], traps: [{ v: 1.345e7, msg: 'That is the bypassed stage\'s bandwidth.' }] },
+        { lbl: '\\omega_{-3dB}\\ \\text{(bypassed)}', unit: 'rad/s', ans: 1.345e7, accept: [1.34e7] },
+        { lbl: '(g) Compared with the bypassed stage, degeneration', mc: ['cut the gain from $40$ to $25$ and raised the bandwidth from $1.34\\times10^7$ to $2.0\\times10^7$: mostly by shrinking the Miller term of $C_\\mu$', 'raised both the gain and the bandwidth', 'left the bandwidth unchanged: the capacitors are the same', 'raised the bandwidth only by shrinking $C_L$\'s time constant'], a: 0,
+          why: [null, 'Degeneration always lowers the gain: $G_M$ drops from $g_m$ to about $g_m/(1 + g_mR_E)$.', 'Same capacitors, different resistances: degeneration changes what $C_\\pi$ and $C_\\mu$ see.', '$C_L$ sees $R_C$ in both cases ($7.5\\,\\text{ns}$). The change is in $\\tau_\\mu$ ($51\\to32\\,\\text{ns}$) and $\\tau_\\pi$ ($16\\to10\\,\\text{ns}$).'] },
+      ],
+      hints: [
+        md`$g_m = 40\,\text{mS}$, $r_\pi = 2.5\kO$, $g_mR_E = 3$. Degenerated stage: $G_M = \dfrac{g_m}{1 + g_mR_E(\beta + 1)/\beta}\approx10\,\text{mS}$ and $R_{in} = r_\pi + (\beta + 1)R_E$.`,
+        md`$C_\pi$ (base to emitter): Lecture 29's $\dfrac{R_G + R_S}{1 + g_mR_S}$ for a degenerated CS, with the BJT's $r_\pi$ in parallel: $r_\pi\parallel\dfrac{R_S + R_E}{1 + g_mR_E}$ (here $R_S$ is the base resistance).`,
+        md`$C_\mu$: the bridge rule $R_{left} + R_{right} + G_MR_{left}R_{right}$, with $R_{left} = R_S\parallel R_{in}$ (the base node), $R_{right} = R_C$, and the degenerated $G_M$.`,
+      ],
+      sol: md`
+        **Recognize it first.** In at the **base**, out at the **collector**, $R_E$ in the emitter: a **degenerated common emitter** (a PNP drawn emitter-up; the small-signal model is the same as for an NPN). This is Lecture 29's degenerated common source with the BJT's two twists: the base draws current ($R_{in}$ is finite, and $r_\pi$ sits right across $C_\pi$), and $G_M$ carries a $(\beta + 1)/\beta$. Capacitors: $C_\pi$ bridges base and emitter (floating, because the emitter moves); $C_\mu$ bridges base and collector (the Miller capacitor); $C_L$ is on the output node.
+
+        **(a)** $g_m = 40\,\text{mS}$, $r_\pi = 2.5\kO$. The $(\beta + 1)$ rule: $R_{in} = r_\pi + (\beta + 1)R_E = 2.5\,\text{k} + 101(75) = 10.075\kO\approx10\kO$.
+
+        **(b)** The input divider: $v_b/v_{in} = R_{in}/(R_S + R_{in}) = 10.075/20.075 = 0.502$. The stage: $G_M = \dfrac{g_m}{1 + g_mR_E(\beta + 1)/\beta} = \dfrac{40\,\text{m}}{1 + 3.03} = 9.93\,\text{mS}\approx10\,\text{mS}$. So
+        $$A_{v0} = -0.502\times(9.93\,\text{m})(5\,\text{k}) = -24.9\approx-25$$
+
+        **(c) $C_\pi$.** Open $C_\mu$ and $C_L$, zero $v_{in}$, inject $i_t$ into the base and take it out of the emitter. KCL at the base: $i_t = v_b/R_S + v_\pi/r_\pi$. KCL at the emitter: what arrives through $r_\pi$ and the $g_m$ source leaves through $R_E$ or the test source: $v_\pi/r_\pi + g_mv_\pi = v_e/R_E + i_t$. Eliminate $v_b$ and $v_e = v_b - v_\pi$:
+        $$R_{C\pi} = \frac{v_\pi}{i_t} = \frac{R_S + R_E}{1 + g_mR_E + (R_S + R_E)/r_\pi} = r_\pi\parallel\frac{R_S + R_E}{1 + g_mR_E}$$
+        $$R_{C\pi} = 2.5\,\text{k}\parallel\frac{10.075\,\text{k}}{4} = 2.5\,\text{k}\parallel2.52\,\text{k} = 1.25\kO,\qquad\tau_\pi = (1.25\,\text{k})(8\,\text{p}) = 10\,\text{ns}$$
+        Check: $R_E = 0$ gives $r_\pi\parallel R_S$, the plain CE ✓; $r_\pi\to\infty$ gives Lecture 29's MOS result ✓.
+
+        **(d) $C_\mu$.** Bridge rule. Left node (base) to ground: $R_S$ in parallel with the transistor's input, $R_{in}$ (with $r_o = \infty$ the collector does not affect the base): $R_{left} = 10\,\text{k}\parallel10.075\,\text{k} = 5.02\kO$. Right node (collector): $R_{right} = R_C = 5\kO$ (the collector itself is an open circuit). The transconductance from the base voltage to the collector current is the degenerated $G_M\approx10\,\text{mS}$:
+        $$R_{C\mu} = R_{left} + R_{right} + G_MR_{left}R_{right} = 5\,\text{k} + 5\,\text{k} + (10\,\text{m})(5\,\text{k})(5\,\text{k}) = 260\kO$$
+        ($259\kO$ with the unrounded values.) $\tau_\mu = (260\,\text{k})(0.125\,\text{p}) = 32.5\,\text{ns}$.
+
+        **(e)** $C_L$ sees $R_C$: $\tau_L = (5\,\text{k})(1.5\,\text{p}) = 7.5\,\text{ns}$. $\sum\tau = 10 + 32.5 + 7.5 = 50\,\text{ns}$:
+        $$\omega_{-3dB}\approx\frac{1}{50\,\text{ns}} = 2.0\times10^7\,\text{rad/s}$$
+        (Exact for this circuit: $2.07\times10^7$.)
+
+        **(f) Bypassed.** Now the emitter is grounded: $R_{C\pi} = R_S\parallel r_\pi = 2\kO$ ($16\,\text{ns}$); $R_{C\mu} = 2\,\text{k} + 5\,\text{k} + (40\,\text{m})(2\,\text{k})(5\,\text{k}) = 407\kO$ ($50.9\,\text{ns}$); $\tau_L = 7.5\,\text{ns}$. $\sum\tau = 74.4\,\text{ns}$, $\omega_{-3dB} = 1.34\times10^7\,\text{rad/s}$, with $A_{v0} = -\tfrac{2.5}{12.5}(40\,\text{m})(5\,\text{k}) = -40$.
+
+        **(g)** Gain $40\to25$, bandwidth $1.34\to2.0\times10^7$. The Miller term shrank because the base-to-collector transconductance fell from $g_m$ to $G_M$ (even though $R_{left}$ grew), and $C_\pi$ is partly bootstrapped. The gain-bandwidth products are similar ($5.4$ vs $5.0\times10^8$): degeneration trades gain for bandwidth.
+
+        !!key Degenerated CE, the three resistances
+        $C_\pi$: $r_\pi\parallel\dfrac{R_S + R_E}{1 + g_mR_E}$. $C_\mu$: $R_{left} + R_C + G_MR_{left}R_C$ with $R_{left} = R_S\parallel[r_\pi + (\beta + 1)R_E]$ and $G_M\approx\dfrac{g_m}{1 + g_mR_E}$. $C_L$: $R_C$ (with $r_o = \infty$).
+      `,
+    }),
+  ];
+
   E3.lesson('e3-pracu', { id: 'e3-pI', title: 'Exam 3 practice exam I', kind: 'mock', sub: 'A mirror-biased CE on $\\pm5\\,\\text{V}$, an NPN and a degenerated PMOS on one output, a PNP follower driving a capacitor', steps: Iex });
   E3.lesson('e3-pracu', { id: 'e3-pJ', title: 'Exam 3 practice exam J', kind: 'mock', sub: 'A PNP CE into an NMOS mirror, the K rule under a degenerated PNP, a finite bypass capacitor and its Bode plot', steps: Jex });
+  E3.lesson('e3-pracu', { id: 'e3-pK', title: 'Exam 3 practice exam K', kind: 'mock', sub: 'A CE on a PMOS diode load, a BiCMOS folded cascode with a PNP, emitter degeneration and the bandwidth', steps: Kex });
 })();
