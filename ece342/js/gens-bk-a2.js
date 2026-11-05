@@ -359,4 +359,35 @@
       _t: { g: 'src', ld, gm, rds, RD, ans },
     };
   };
+
+  // ---------------------------------------------------------------- bk03-diode: NMOS / PMOS diodes, sizes, series R
+  GENS.bk_mi_diode = () => {
+    const pm = Math.random() < 0.5, useSize = Math.random() < 0.5, withR = Math.random() < 0.6;
+    const withRds = !useSize || Math.random() < 0.5;
+    const muc = pm ? 50e-6 : 100e-6;
+    let gm, wl, I;
+    if (useSize) { wl = pick([10, 20, 25, 40, 50, 100]); I = pick([0.1e-3, 0.2e-3, 0.25e-3, 0.4e-3, 0.5e-3]); gm = Math.sqrt(2 * muc * wl * I); } else gm = pick(GM);
+    const rds = withRds ? pick(RDS) : Infinity;
+    const Rs = withR ? pick([500, 1e3, 2e3, 5e3]) : 0;
+    const top = !pm && withR && Math.random() < 0.35;
+    const rd = isFinite(rds) ? dio(gm, rds) : 1 / gm, ans = Rs + rd;
+    const fig = pm ? F.diode({ p: 1, rs: withR ? 'R' : undefined, rsv: withR ? RT(Rs) : undefined, look: 'R_{in}' })
+      : top ? F.diode({ rtop: 'R', rtv: RT(Rs), look: 'R_{in}' }) : F.diode({ rs: withR ? 'R' : undefined, rsv: withR ? RT(Rs) : undefined, look: 'R_{in}' });
+    const devTxt = useSize ? `$W/L = ${wl}$, carrying $I_D = ${MA(I)}$ ($\\mu_${pm ? 'p' : 'n'}C_{ox} = ${pm ? 50 : 100}\\,\\mu\\text{A/V}^2$)` : `$g_m = ${MS(gm)}$`;
+    const rTxt = withR ? (pm ? `; $R = ${RT(Rs)}$ connects its source to $V_{DD}$` : top ? `; $R = ${RT(Rs)}$ sits between the test node and its drain` : `; $R = ${RT(Rs)}$ connects its source to ground`) : '';
+    const traps = [];
+    if (isFinite(rds)) traps.push({ v: rds + Rs, msg: 'That treats the transistor as $r_{ds}$, as if its gate were held. Here the gate rides with the drain.' }, { v: Rs + 1 / gm, msg: 'Close: that drops $r_{ds}$. The problem gives it: use $1/(g_m + 1/r_{ds})$.' });
+    if (withR) traps.push({ v: rd, msg: `You left out $R$, which carries the same current: it adds in series.` });
+    if (withR && isFinite(rds)) traps.push({ v: rds + Rs + gm * rds * Rs, msg: 'That magnifies $R$ as if the gate were held. The diode\'s gate moves with its drain: no magnification, $R$ just adds.' });
+    if (useSize && pm) traps.push({ v: Rs + 1 / Math.sqrt(2 * 100e-6 * wl * I), msg: 'For a PMOS use $\\mu_pC_{ox} = 50\\,\\mu\\text{A/V}^2$.' });
+    const gmLine = useSize ? `$g_m = \\sqrt{2\\mu C_{ox}(W/L)I_D} = \\sqrt{2(${pm ? 50 : 100}\\,\\mu\\text{A/V}^2)(${wl})(${MA(I)})} = ${MS(gm)}$.\n\n` : '';
+    return {
+      fig,
+      q: `A diode-connected ${pm ? 'PMOS (source toward $V_{DD}$)' : 'NMOS'} with ${devTxt}${isFinite(rds) ? `, $r_{ds} = ${RT(rds)}$` : ' (ignore $r_{ds}$)'}${rTxt}. Find the small-signal resistance $R_{in}$ at the arrow.`,
+      parts: [BK.res('R_{in}', ans, undefined, traps)],
+      hints: ['Gate and drain are one node, so $v_{gs} = v_{ds}$: the transistor is a two-terminal resistor $\\tfrac{1}{g_m}\\parallel r_{ds}$.', 'A resistor in series with it simply adds (no magnification: the gate is not held).'],
+      sol: `${gmLine}**The diode.** Gate tied to drain: $v_{gs} = v_{ds}$, so the transistor is a resistor ${isFinite(rds) ? `$\\tfrac{1}{g_m}\\parallel r_{ds} = \\dfrac{1}{${MS(gm)} + ${MS(1 / rds)}} = ${RT(rd)}$` : `$1/g_m = ${RT(rd)}$`}.\n\n${withR ? `**The resistor** carries the same current (the gate takes none), so it adds in series:\n$$R_{in} = R + ${isFinite(rds) ? '\\tfrac{1}{g_m}\\parallel r_{ds}' : '\\tfrac{1}{g_m}'} = ${RT(Rs)} + ${RT(rd)} = ${RT(ans)}$$` : `$$R_{in} = ${RT(ans)}$$`}${pnote(pm)}`,
+      _t: { g: 'diode', pm, gm, rds: isFinite(rds) ? rds : null, Rs, top, ans },
+    };
+  };
 })();

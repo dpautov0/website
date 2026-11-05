@@ -460,7 +460,7 @@ With the base bypassed, $R_B$ disappears for signals and the gain is back to $66
         id: 'bk09-cb-3', title: 'Lecture 24\'s $G_M$, typed',
         q: md`Type $G_M$ of the common base with $R_B$ on the base and $R_E$ in series with the source ($r_o\to\infty$). Use \`RB\`, \`rpi\`, \`beta\`, \`RE\`.`,
         fig: F.amp({ kind: 'cb', RE: true, RB: true }),
-        parts: [ex('-1/((RB + rpi)/beta + (beta + 1)/beta*RE)', ['RB', 'rpi', 'beta', 'RE'], 'G_M')],
+        parts: [Object.assign(ex('-1/((RB + rpi)/beta + (beta + 1)/beta*RE)', ['RB', 'rpi', 'beta', 'RE'], 'G_M'), { vars: { RE: [10, 200], RB: [1e3, 2e4], rpi: [1e3, 2e4], beta: [50, 200] } })],
         sol: md`From the KVL $0 = \frac{i_{out}}{\beta}(R_B + r_\pi) + i_{out}\big(1 + \frac1\beta\big)R_E + v_{in}$:
 $$G_M = \frac{-1}{\frac{R_B + r_\pi}{\beta} + \frac{\beta + 1}{\beta}R_E}$$`,
       }),
@@ -590,7 +590,7 @@ From the source: the $50\,\Omega$ source resistance is in series with the emitte
         id: 'bk09-cc-2', title: 'The follower\'s gain, typed',
         q: md`Type $A_v$ of the emitter follower with source resistance $R_B$ and emitter resistor $R_E$ ($r_o\to\infty$). Use \`RE\`, \`RB\`, \`rpi\`, \`beta\`.`,
         fig: F.amp({ kind: 'cc', RB: true }),
-        parts: [ex('RE/(RE + (rpi + RB)/(beta + 1))', ['RE', 'RB', 'rpi', 'beta'], 'A_v')],
+        parts: [Object.assign(ex('RE/(RE + (rpi + RB)/(beta + 1))', ['RE', 'RB', 'rpi', 'beta'], 'A_v'), { vars: { RE: [50, 500], RB: [2e3, 2e4], rpi: [1e3, 2e4], beta: [50, 200] } })],
         sol: md`$$A_v = \frac{R_E}{R_E + \frac{r_\pi + R_B}{\beta + 1}} = \frac{(\beta + 1)R_E}{R_B + r_\pi + (\beta + 1)R_E}$$`,
       }),
       P({
@@ -1144,14 +1144,14 @@ AC: $R_E\parallel r_e = 25.8\,\Omega$; $v_e = v_s\dfrac{25.8}{75.8} = 0.340\,v_s
         id: 'bk09-x-6', title: 'Common base input, typed',
         q: md`Type $R_{in}$ of Lecture 24's common base ($R_B$ on the base, $R_E$ in series with the source). Use \`RE\`, \`RB\`, \`rpi\`, \`beta\`.`,
         fig: F.amp({ kind: 'cb', RE: true, RB: true }),
-        parts: [ex('RE + (RB + rpi)/(beta + 1)', ['RE', 'RB', 'rpi', 'beta'], 'R_{in}')],
+        parts: [Object.assign(ex('RE + (RB + rpi)/(beta + 1)', ['RE', 'RB', 'rpi', 'beta'], 'R_{in}'), { vars: { RE: [10, 200], RB: [1e3, 2e4], rpi: [1e3, 2e4], beta: [50, 200] } })],
         sol: md`$R_{in} = R_E + \dfrac{R_B + r_\pi}{\beta + 1}$.`,
       }),
       P({
         id: 'bk09-x-7', title: 'Follower output, typed',
         q: md`Type $R_{out}$ of the emitter follower with source resistance $R_B$ and emitter resistor $R_E$. Use \`RE\`, \`RB\`, \`rpi\`, \`beta\`.`,
         fig: F.amp({ kind: 'cc', RB: true }),
-        parts: [ex('RE || ((rpi + RB)/(beta + 1))', ['RE', 'RB', 'rpi', 'beta'], 'R_{out}')],
+        parts: [Object.assign(ex('RE || ((rpi + RB)/(beta + 1))', ['RE', 'RB', 'rpi', 'beta'], 'R_{out}'), { vars: { RB: [2e3, 2e4], RE: [50, 500], rpi: [1e3, 2e4], beta: [50, 200] } })],
         sol: md`$R_{out} = R_E\parallel\dfrac{r_\pi + R_B}{\beta + 1}$.`,
       }),
       P({

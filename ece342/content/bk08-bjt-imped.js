@@ -224,7 +224,7 @@ The $470\,\Omega$ resistor contributes 97% of the input resistance.`,
         id: 'bk08-base-3', title: 'The formula, typed',
         q: md`Type the resistance looking into the base when a resistor $R_B$ is in series with the base and $R_E$ is under the emitter ($r_o\to\infty$). Use \`RB\`, \`rpi\`, \`beta\`, \`RE\`.`,
         fig: F.lookB({ RE: true, RB: true }),
-        parts: [ex('RB + rpi + (beta + 1)*RE', ['RB', 'rpi', 'beta', 'RE'], 'R_{in}')],
+        parts: [Object.assign(ex('RB + rpi + (beta + 1)*RE', ['RB', 'rpi', 'beta', 'RE'], 'R_{in}'), { vars: { RB: [2e4, 1e5], rpi: [1e3, 1e4], beta: [50, 200], RE: [100, 500] } })],
         hints: [md`$R_B$ carries the base current $i_t$; $R_E$ carries $(\beta + 1)i_t$.`],
         sol: md`KVL from the input to ground: $v_t = i_tR_B + i_tr_\pi + (\beta + 1)i_tR_E$, so
 $$R_{in} = R_B + r_\pi + (\beta + 1)R_E$$
@@ -577,7 +577,7 @@ The quick estimate $\beta^2R_E = 5\,\text{M}\Omega$ is 7% low, because the two $
         id: 'bk08-elev-3', title: 'Darlington input, typed',
         q: md`Type the resistance looking into $Q_1$'s base of a Darlington with $R_E$ under $Q_2$ ($r_o\to\infty$). Use \`rpi1\`, \`rpi2\`, \`beta1\`, \`beta2\`, \`RE\`.`,
         fig: darl(),
-        parts: [Object.assign(ex('rpi1 + (beta1 + 1)*(rpi2 + (beta2 + 1)*RE)', ['rpi1', 'rpi2', 'beta1', 'beta2', 'RE'], 'R_{in}'), { vars: { rpi1: [1e5, 5e5], rpi2: [1e3, 5e3], beta1: [50, 200], beta2: [50, 200], RE: [100, 2000] } })],
+        parts: [Object.assign(ex('rpi1 + (beta1 + 1)*(rpi2 + (beta2 + 1)*RE)', ['rpi1', 'rpi2', 'beta1', 'beta2', 'RE'], 'R_{in}'), { vars: { rpi1: [1e5, 5e5], rpi2: [1e3, 5e3], beta1: [80, 200], beta2: [80, 200], RE: [100, 2000] } })],
         hints: [md`Start at the bottom: into $Q_2$'s base. That is what hangs under $Q_1$'s emitter.`],
         sol: md`$$R_{in} = r_{\pi1} + (\beta_1 + 1)\big[r_{\pi2} + (\beta_2 + 1)R_E\big]$$
 Two floors: $R_E$ is multiplied by $(\beta_1 + 1)(\beta_2 + 1)$, $r_{\pi2}$ once, $r_{\pi1}$ not at all.`,
@@ -1322,7 +1322,7 @@ Down one floor: $(50 + 15.94)\kO/51 = 1.293\kO$. Down two: $(0.3125 + 1.293)\kO/
         id: 'bk08-x-7', title: 'An emitter node, typed',
         q: md`Type the resistance $R_X$ of the emitter node: base held through $R_B$, $R_E$ from the emitter to ground ($r_o\to\infty$). Use \`RB\`, \`RE\`, \`rpi\`, \`beta\`.`,
         fig: emitNode,
-        parts: [ex('RE || ((RB + rpi)/(beta + 1))', ['RB', 'RE', 'rpi', 'beta'], 'R_X')],
+        parts: [Object.assign(ex('RE || ((RB + rpi)/(beta + 1))', ['RB', 'RE', 'rpi', 'beta'], 'R_X'), { vars: { RB: [2e3, 2e4], RE: [50, 500], rpi: [1e3, 2e4], beta: [50, 200] } })],
         sol: md`Up into the emitter: $\dfrac{R_B + r_\pi}{\beta + 1}$. Down: $R_E$. $\;R_X = R_E\parallel\dfrac{R_B + r_\pi}{\beta + 1}$.`,
       }),
       P({
