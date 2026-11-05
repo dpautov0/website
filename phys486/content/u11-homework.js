@@ -187,7 +187,9 @@
                 $$\psi_2 = \frac{1}{\sqrt2}\hat a_+\psi_1 = \frac{N}{2}(\xi - \partial_\xi)\left(\sqrt2\,\xi e^{-\xi^2/2}\right) = \frac{N}{\sqrt2}\left[\xi^2 - (1 - \xi^2)\right]e^{-\xi^2/2} = \frac{N}{\sqrt2}(2\xi^2 - 1)e^{-\xi^2/2}$$
                 **Check.** $\psi_n = \tfrac{N}{\sqrt{2^nn!}}H_n(\xi)e^{-\xi^2/2}$ with $H_2 = 4\xi^2 - 2$: $\tfrac{N}{\sqrt8}(4\xi^2 - 2) = \tfrac{N}{\sqrt2}(2\xi^2 - 1)$ ✓.
 
-                **(b)** [[fig:sho]]
+                **(b)** The sketch:
+
+                [[fig:sho]]
                 - **Nodes:** $\psi_0$ none, $\psi_1$ one (at 0), $\psi_2$ two (at $\xi = \pm1/\sqrt2$). The $n$th state has $n$ nodes: more wiggles, more curvature, more kinetic energy.
                 - **Parity:** even, odd, even: $\psi_n(-x) = (-1)^n\psi_n(x)$, because $V$ is even and $\hat a_+$ flips parity ($\xi$ and $\partial_\xi$ are both odd).
                 - **Spacing:** equal steps $\hbar\omega$. Each state pokes past its classical turning points $\xi = \pm\sqrt{2n + 1}$ and decays there.
