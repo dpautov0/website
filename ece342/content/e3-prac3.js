@@ -30,16 +30,16 @@
   const I1Fig = [
     ['rail', [3, -2.2], { n: 'V_{CC} = 5\\,\\text{V}' }], ['R', [3, -2.2], [3, -1], { n: 'R_C', s: kO(4) }],
     ['npn', [3, 0], { n: 'Q_1' }],
-    ['w', [3, -1], [3.8, -1]], ['C', [3.8, -1], [4.6, -1], { n: '\\infty' }], ['w', [4.6, -1], [6.6, -1]], ['term', [6.6, -1], { n: 'v_{out}', side: 'a' }],
-    ['R', [6.6, -1], [6.6, 0.4], { n: 'R_L', s: kO(4) }], ['gnd', [6.6, 0.4]],
-    ['Vac', [-1.8, 0.3], [-1.8, 1.3], { n: 'v_{sig}', side: 'l' }], ['gnd', [-1.8, 1.3]],
-    ['w', [-1.8, 0.3], [-1.8, 0]], ['R', [-1.8, 0], [-0.6, 0], { n: 'R_{sig}', s: '500\\,\\Omega' }], ['C', [-0.6, 0], [0.2, 0], { n: '\\infty' }], ['w', [0.2, 0], [2, 0]],
+    ['w', [3, -1], [3.6, -1]], ['C', [3.6, -1], [4.3, -1], { n: '\\infty' }], ['w', [4.3, -1], [5.6, -1]], ['term', [5.6, -1], { n: 'v_{out}', side: 'a' }],
+    ['R', [5.6, -1], [5.6, 0.4], { n: 'R_L', s: kO(4) }], ['gnd', [5.6, 0.4]],
+    ['Vac', [-1.2, 0.3], [-1.2, 1.3], { n: 'v_{sig}', side: 'l' }], ['gnd', [-1.2, 1.3]],
+    ['w', [-1.2, 0.3], [-1.2, 0]], ['R', [-1.2, 0], [-0.25, 0], { n: 'R_{sig}', s: '500\\,\\Omega' }], ['C', [-0.25, 0], [0.4, 0], { n: '\\infty' }], ['w', [0.4, 0], [2, 0]],
     ['R', [1.1, 0], [1.1, 1.3], { n: 'R_B', s: kO(10), side: 'l' }], ['gnd', [1.1, 1.3]],
     ['w', [3, 1], [2, 1]], ['C', [2, 1], [2, 2.1], { n: 'C_E', side: 'l' }], ['gnd', [2, 2.1]],
     ['w', [3, 1], [3, 1.2]], ['nmos', [3, 2.2], { n: 'M_2', sz: '20/1', flip: true }],
     ['nmos', [5, 2.2], { n: 'M_1', sz: '10/1', dc: true }],
-    ['rail', [5, 0], { n: 'V_{CC}' }], ['R', [5, 0], [5, 1.2], { n: 'R_{ref}', s: kO(16) }],
-    ['w', [3, 3.2], [5.8, 3.2]], ['term', [5.8, 3.2], { n: '-5\\,\\text{V}', side: 'r' }],
+    ['rail', [5, 0], { n: 'V_{CC}' }], ['R', [5, 0], [5, 1.2], { n: 'R_{ref}', s: kO(16), side: 'l' }],
+    ['w', [3, 3.2], [5.4, 3.2]], ['term', [5.4, 3.2], { n: '-5\\,\\text{V}', side: 'r' }],
   ];
   const I2Fig = [
     ['rail', [2, -3.2], { n: 'V_{DD}' }], ['R', [2, -3.2], [2, -2], { n: 'R_S' }],
@@ -277,11 +277,11 @@
   ];
   // J-1's small-signal model: Q1 (emitter at signal ground) is g_m v_in from A to ground; M1's diode is 1/g_m1; M2 copies
   const J1Model = [
-    ['G', [0, 0], [0, 1.6], { n: 'g_mv_{in}', side: 'l' }], ['w', [0, 0], [1.4, 0]], ['node', [0.7, 0], { n: 'A', side: 'a' }],
-    ['R', [1.4, 0], [1.4, 1.6], { n: '1/g_{m1}' }],
-    ['G', [4, 0], [4, 1.6], { n: 'g_{m2}v_a', side: 'l' }], ['w', [4, 0], [5.2, 0]], ['R', [5.2, 0], [5.2, 1.6], { n: 'R_D' }],
-    ['term', [5.8, 0], { n: 'v_{out}' }], ['w', [5.2, 0], [5.8, 0]],
-    ['w', [0, 1.6], [5.2, 1.6]], ['gnd', [2.7, 1.6]],
+    ['G', [0, 0], [0, 1.6], { n: 'g_mv_{in}', side: 'l' }], ['w', [0, 0], [1.3, 0]], ['node', [0.65, 0], { n: 'A', side: 'a' }],
+    ['R', [1.3, 0], [1.3, 1.6], { n: '1/g_{m1}' }],
+    ['G', [3.2, 0], [3.2, 1.6], { n: 'g_{m2}v_a', side: 'l' }], ['w', [3.2, 0], [4.2, 0]], ['R', [4.2, 0], [4.2, 1.6], { n: 'R_D' }],
+    ['node', [3.7, 0], { n: 'v_{out}', side: 'a' }],
+    ['w', [0, 1.6], [4.2, 1.6]], ['gnd', [2.25, 1.6]],
   ];
   const J2Fig = [
     ['rail', [2, -3.2], { n: 'V_{CC}' }], ['R', [2, -3.2], [2, -2], { n: 'R_E' }],
@@ -714,14 +714,14 @@
   ];
   // Lecture 28's model of the CS/CE stage, with this problem's values in it
   const L3Model = [
-    ['Vac', [-1.6, 0.3], [-1.6, 1.6], { n: 'v_{TH}', side: 'l' }], ['gnd', [-1.6, 1.6]], ['w', [-1.6, 0.3], [-1.6, 0]],
-    ['R', [-1.6, 0], [0, 0], { n: 'R_{TH}' }], ['node', [0, 0], { n: 'X', side: 'al' }],
-    ['C', [0, 0], [0, 1.6], { n: 'C_{in} = C_\\pi', side: 'l' }],
-    ['w', [0, 0], [0, -0.9]], ['C', [0, -0.9], [2.4, -0.9], { n: 'C_{xy} = C_\\mu' }], ['w', [2.4, -0.9], [2.4, 0]],
-    ['node', [2.4, 0], { n: 'Y', side: 'ar' }], ['G', [2.4, 0], [2.4, 1.6], { n: 'g_mv_X', side: 'l' }],
-    ['w', [2.4, 0], [5, 0]], ['R', [3.6, 0], [3.6, 1.6], { n: 'R_L' }], ['C', [4.6, 0], [4.6, 1.6], { n: 'C_{out} = C_L' }],
-    ['term', [5.4, 0], { n: 'v_{out}' }], ['w', [5, 0], [5.4, 0]],
-    ['w', [0, 1.6], [4.6, 1.6]], ['gnd', [1.2, 1.6]],
+    ['Vac', [-1, 0.3], [-1, 1.6], { n: 'v_{TH}' }], ['gnd', [-1, 1.6]], ['w', [-1, 0.3], [-1, 0]],
+    ['R', [-1, 0], [0, 0], { n: 'R_{TH}' }], ['node', [0, 0], { n: 'X', side: 'r' }],
+    ['C', [0, 0], [0, 1.6], { n: 'C_{in}' }],
+    ['w', [0, 0], [0, -0.9]], ['C', [0, -0.9], [1.85, -0.9], { n: 'C_{xy}' }], ['w', [1.85, -0.9], [1.85, 0]],
+    ['node', [1.85, 0], { n: 'Y', side: 'ar' }], ['G', [1.85, 0], [1.85, 1.6], { n: 'g_mv_X', side: 'l' }],
+    ['w', [1.85, 0], [3.4, 0]], ['R', [2.6, 0], [2.6, 1.6], { n: 'R_L' }], ['C', [3.4, 0], [3.4, 1.6], { n: 'C_{out}' }],
+    ['node', [3.4, 0], { n: 'v_{out}', side: 'a' }],
+    ['w', [0, 1.6], [3.4, 1.6]], ['gnd', [0.9, 1.6]],
   ];
   const L2RX = '(rds1 || rpi3)';
   const L2A = 'gm3*(ro3 || rds4)';
@@ -867,7 +867,7 @@ $$\frac{v_{out}}{v_{TH}} = \frac{(sC_\mu - g_m)R_L}{as^2 + bs + 1},\quad a = R_{
         md`$b$ is exactly the sum of the open-circuit time constants: $R_{TH}C_\pi + (R_{TH} + R_L + g_mR_{TH}R_L)C_\mu + R_LC_L$.`,
         md`For two well-separated poles, $as^2 + bs + 1\approx(1 + s/\omega_{p1})(1 + s/\omega_{p2})$ gives $b\approx1/\omega_{p1}$ and $a = 1/(\omega_{p1}\omega_{p2})$, so $\omega_{p2}\approx b/a$.`,
       ],
-      figs: { model: { fig: L3Model, cap: 'Lecture 28\'s model, filled in for this stage: $R_{TH} = R_S\\parallel r_\\pi = 1\\,\\text{k}\\Omega$, $v_{TH} = 0.8\\,v_{in}$; $C_{in} = C_\\pi$, the bridging $C_{xy} = C_\\mu$, $C_{out} = C_L$; $R_L = r_o\\parallel r_{ds2} = 100\\,\\text{k}\\Omega$. The PNP uses the same model as an NPN.' } },
+      figs: { model: { fig: L3Model, cap: 'Lecture 28\'s model, filled in for this stage: $R_{TH} = R_S\\parallel r_\\pi = 1\\,\\text{k}\\Omega$, $v_{TH} = 0.8\\,v_{in}$; $C_{in} = C_\\pi$ (base to the emitter, a signal ground), the bridging $C_{xy} = C_\\mu$, $C_{out} = C_L$; $R_L = r_o\\parallel r_{ds2} = 100\\,\\text{k}\\Omega$. The PNP uses the same model as an NPN.' } },
       sol: md`
         **Recognize it first.** In at the **base** (through $R_S$), out at the **collector**, emitter on a rail: a **common emitter** (a PNP, emitter on top). Its load is $M_2$ with the gate held: a current source, $r_{ds2}$. So the collector node is high-impedance, $R_L = r_o\parallel r_{ds2}$, the gain is large, and $C_\mu$ bridges an inverting gain of 2000: the Miller effect will dominate. This is exactly Lecture 28's CE model (figure), so we use its exact $a$, $b$.
 
