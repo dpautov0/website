@@ -28,8 +28,8 @@
   const ratioPlot = B.plot2({
     x: [0, 1], y: [1, 1.32], w: 440, h: 230,
     xt: [0, 0.25, 0.5, 0.75, 1].map((v) => ({ v, t: `$${v}$` })), yt: [1, 1.1, 1.2, 1.3].map((v) => ({ v, t: `$${v}$` })),
-    curves: [{ f: (x) => (x < 1e-9 ? 1 : twoPole(1, x) * (1 + x)), n: '$\\omega_{-3dB}\\,/\\,\\hat\\omega$', at: 0.55, pos: 'l' }],
-    pts: [{ x: 1, y: 1.287, n: '$1.29$', pos: 'l' }],
+    curves: [{ f: (x) => (x < 1e-9 ? 1 : twoPole(1, x) * (1 + x)), n: '$\\omega_{-3dB}\\,/\\,\\hat\\omega$', at: 0.3, pos: 'r' }],
+    pts: [{ x: 1, y: 1.287, n: '$1.29$', pos: 'b' }],
     xl: '$\\tau_2/\\tau_1$ (second time constant over the first)', yl: 'true over estimated bandwidth',
   });
 
@@ -842,6 +842,10 @@
         [md`$2R_S + \tfrac{1}{g_m}$`, md`$R_S + R_L + g_mR_SR_L$`, md`$R_S$`, md`$\tfrac{1}{g_m}$`], 0,
         [null, md`That is the plain common source.`, md`That is $C_{gs1}$.`, md`That is node $X$ alone, $C_{gs2}$.`],
         md`$R_X\approx1/g_m$: $R_S + R_X + g_mR_SR_X\approx2R_S + 1/g_m$. Miller factor about 2.`, { fig: F.casc({ hi: 'Cgd1' }) }),
+      Q(md`In the cascode, $C_{gs2}$ hangs from node $X$ to $M_2$'s held gate. What does it add to $\sum\tau$?`,
+        [md`Very little: node $X$ is about $1/g_{m2}$, so $R_{cgs2}C_{gs2}$ is a fraction of a nanosecond`, md`The most: $C_{gs2}$ is as big as $C_{gs1}$`, md`It is Miller-multiplied by the gain to the output`, md`Nothing: node $X$ is an incremental ground`], 0,
+        [null, md`A big capacitor on a small resistance makes a small time constant: $0.4\,\text{pF}\times370\,\Omega = 0.15\,\text{ns}$ in the example.`, md`Its far end is a held gate: it is a node-to-ground capacitor, not a bridge.`, md`Node $X$ moves (by about $-v_{g1}$); it is only small in resistance.`],
+        md`$R_{cgs2} = r_{ds1}\parallel\tfrac{1}{g_{m2}}(1 + \tfrac{R_L}{r_{ds2}})\approx\tfrac{1}{g_{m2}}$: tiny. The cascode puts its extra capacitor on the lowest-resistance node in the circuit.`, { fig: F.casc({ hi: 'Cgs2' }) }),
       P({
         id: 'bk13-cascode-x1', title: 'The cascode in numbers',
         q: md`Identical transistors: $g_m = 4\,\text{mS}$, $r_{ds} = 50\,\text{k}\Omega$, $C_{gs} = 0.4\,\text{pF}$, $C_{gd} = 40\,\text{fF}$; $R_S = 20\,\text{k}\Omega$, $R_L = 25\,\text{k}\Omega$, $C_L = 0.5\,\text{pF}$. Find $R_{cgs2}$, $R_{cgd1}$, $R_{out}$ and the estimate.`,
@@ -958,6 +962,15 @@
         q: md`For the common emitter of section 13.3 ($\tau_\pi = 5.71$, $\tau_\mu = 45.8$, $\tau_{CL} = 3.85\,\text{ns}$), what fraction of $\sum\tau$ is the Miller capacitor's, and what would the estimate be if $C_\mu$ were halved?`,
         parts: [num('\\tau_\\mu/\\sum\\tau', STG.ce(CE1)[1].R * 0.4e-12 / oc('ce', CE1).sum, 'x'), num('\\hat\\omega_{-3dB}', oc('ce', mod(CE1, (q) => { q.C.Cmu /= 2; })).w, 'w')],
         sol: md`$45.8/55.3 = 0.83$. Halving $C_\mu$: $5.71 + 22.9 + 3.85 = 32.5\,\text{ns}$, $\hat\omega = 3.08\times10^7\,\text{rad/s}$, 1.7 times better.`,
+      }),
+      P({
+        id: 'bk13-dominant-x4', title: 'Trade gain for bandwidth',
+        q: md`Halve the load of the running common source, so that $R_L' = 4\,\text{k}\Omega$ (everything else the same: $R_S = 4\,\text{k}\Omega$, $g_m = 5\,\text{mS}$, $C_{gs} = 200\,\text{fF}$, $C_{gd} = 25\,\text{fF}$, $C_L = 300\,\text{fF}$). Find the new estimate, and the gain–bandwidth product $|A_v|\hat\omega_{-3dB}$ before and after.`,
+        parts: [num('\\hat\\omega_{-3dB}', 1 / 4.2e-9, 'w'), num('|A_v|\\hat\\omega\\ \\text{before}', 40 / 7.5e-9, 'w'), num('|A_v|\\hat\\omega\\ \\text{after}', 20 / 4.2e-9, 'w')],
+        hints: [md`$g_mR_L' = 20$: $R_{cgd} = 4 + 21\times4\,\text{k}\Omega$.`],
+        sol: md`$\tau_{cgs} = 0.8\,\text{ns}$; $R_{cgd} = 4 + 21\times4 = 88\,\text{k}\Omega$, $\tau_{cgd} = 2.2\,\text{ns}$; $\tau_{CL} = 4\,\text{k}\Omega\times300\,\text{fF} = 1.2\,\text{ns}$. $\sum\tau = 4.2\,\text{ns}$, $\hat\omega = 2.38\times10^8\,\text{rad/s}$.
+
+Before: $40\times1.33\times10^8 = 5.33\times10^9$; after: $20\times2.38\times10^8 = 4.76\times10^9\,\text{rad/s}$. Halving the gain did not quite double the bandwidth: the input time constant $R_SC_{gs}$ does not shrink with $R_L$, so with a source resistance the product is not constant.`,
       }),
       R(md`### Drill: which one dominates, and what to change`),
       G('bk_octc_dom', { need: 4 }),

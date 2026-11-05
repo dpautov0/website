@@ -477,7 +477,7 @@
     ['w', [1, -2.6], [3, -2.6]], ['rail', [2, -2.6], { n: 'V_{DD}' }],
     ['pmos', [3, -1.6], { n: 'M_4' }], ['acg', [2, -1.6]], ['w', [3, -0.6], [3.8, -0.6]], out([3.8, -0.6]),
     ['nmos', [3, 0.4], { n: 'M_3' }], ['acg', [2, 0.4]],
-    ['pmos', [1, -1.6], { n: 'M_2', flip: true, dc: true }], ['w', [1, -0.6], [1, 1.4]], ['w', [1, 1.4], [3, 1.4]], ['node', [2, 1.4], { n: 'v_1', side: 'b' }],
+    ['pmos', [1, -1.6], { n: 'M_2', dc: true }], ['w', [1, -0.6], [1, 1.4]], ['w', [1, 1.4], [3, 1.4]], ['node', [2, 1.4], { n: 'v_1', side: 'b' }],
     ['nmos', [1, 2.4], { n: 'M_1' }], ['gnd', [1, 3.4]], ['w', [0, 2.4], [-0.6, 2.4], [-0.6, 2.8]], ...vin(-0.6, 2.8),
   ];
   // exam-level chain: CS into a stack of two PMOS diodes; the middle of the stack drives a PMOS common source
@@ -722,7 +722,7 @@
         id: 'bk05-ch-sym', title: 'The CS → CG chain, symbolically',
         q: md`For the CS → CG chain, find $A_v = v_{out}/v_{in}$ keeping every $r_{ds}$. Use \`gm1\`, \`rds1\`, \`RD1\`, \`gm2\`, \`rds2\`, \`RD2\`.`,
         fig: csCgFig,
-        parts: [ex('-gm1*(RD1 || rds1 || (rds2 + RD2)/(1 + gm2*rds2))*(gm2 + 1/rds2)*(RD2 || rds2)', ['gm1', 'rds1', 'RD1', 'gm2', 'rds2', 'RD2'], 'A_v')],
+        parts: [ex('-gm1*(RD1 || rds1 || (rds2 + RD2)/(1 + gm2*rds2))*(gm2 + 1/rds2)*(RD2 || rds2)', ['gm1', 'rds1', 'RD1', 'gm2', 'rds2', 'RD2'], 'A_v', { ranges: { RD2: [2e4, 1e5], gm2: [1e-3, 5e-3] } })],
         hints: [md`$A_1 = -g_{m1}(R_{D1}\parallel r_{ds1}\parallel R_{in2})$ with $R_{in2} = \dfrac{r_{ds2} + R_{D2}}{1 + g_{m2}r_{ds2}}$.`, md`$A_2 = (g_{m2} + 1/r_{ds2})(R_{D2}\parallel r_{ds2})$.`],
         sol: md`
 $$A_v = -g_{m1}\Big(R_{D1}\parallel r_{ds1}\parallel\frac{r_{ds2} + R_{D2}}{1 + g_{m2}r_{ds2}}\Big)\Big(g_{m2} + \frac1{r_{ds2}}\Big)(R_{D2}\parallel r_{ds2})$$
@@ -733,8 +733,8 @@ With $g_mr_{ds}\gg1$ and $R_{D1}\parallel r_{ds1}\gg1/g_{m2}$ this is about $-g_
         q: md`$M_1$ (CS) has a diode-connected PMOS $M_2$ on its drain $v_1$. $v_1$ is also the source of the common gate $M_3$ (gate held), whose drain is the output, loaded by the PMOS current source $M_4$ (gate held). (a) Find $A_1 = v_1/v_{in}$ and $A_v$ symbolically, keeping $r_{ds}$. (b) Evaluate both with every $g_m = 1\,\text{mS}$, every $r_{ds} = 200\kO$.`,
         fig: chainCgLoad,
         parts: [
-          ex('-gm1*(rds1 || (1/(gm2 + 1/rds2)) || (rds3 + rds4)/(1 + gm3*rds3))', ['gm1', 'rds1', 'gm2', 'rds2', 'gm3', 'rds3', 'rds4'], 'A_1'),
-          ex('-gm1*(rds1 || (1/(gm2 + 1/rds2)) || (rds3 + rds4)/(1 + gm3*rds3))*(gm3 + 1/rds3)*(rds3 || rds4)', ['gm1', 'rds1', 'gm2', 'rds2', 'gm3', 'rds3', 'rds4'], 'A_v'),
+          ex('-gm1*(rds1 || (1/(gm2 + 1/rds2)) || (rds3 + rds4)/(1 + gm3*rds3))', ['gm1', 'rds1', 'gm2', 'rds2', 'gm3', 'rds3', 'rds4'], 'A_1', { ranges: { gm2: [1e-3, 3e-3], gm3: [1e-3, 3e-3] } }),
+          ex('-gm1*(rds1 || (1/(gm2 + 1/rds2)) || (rds3 + rds4)/(1 + gm3*rds3))*(gm3 + 1/rds3)*(rds3 || rds4)', ['gm1', 'rds1', 'gm2', 'rds2', 'gm3', 'rds3', 'rds4'], 'A_v', { ranges: { gm2: [1e-3, 3e-3], gm3: [1e-3, 3e-3] } }),
           { lbl: 'A_1\\ (\\text{numbers})', unit: '', ans: -0.66116, traps: [{ v: -0.5, msg: 'That uses $R_{in3} = 1/g_{m3}$. With $r_{ds4}$ on its drain, $M_3$\'s source is about $2/g_{m3}$.' }] },
           { lbl: 'A_v\\ (\\text{numbers})', unit: '', ans: -66.446, accept: [-66.67] },
         ],
@@ -776,6 +776,287 @@ $$R_{in3} = \frac{r_{ds3} + r_{ds4}}{1 + g_{m3}r_{ds3}}\approx\frac{2}{g_{m3}}\q
 **The shortcut:** $M_1$'s current $g_{m1}v_{in}$ flows through both diodes, so $v_1\approx-g_{m1}v_{in}\times\tfrac1{g_{m3}}$: only the diode between $v_1$ and the rail matters. $A_1\approx-g_{m1}/g_{m3} = -0.5$.`,
       }),
       G('bk_chain', { need: 4 }),
+    ],
+  });
+
+  // ================================================================ 3. two paths: figures
+  const pathsNorton = [
+    ['w', [0, 0], [5.4, 0]], out([5.4, 0]),
+    ['G', [0, 0], [0, 1.8], { n: 'G_{Ma}v_{in}', side: 'l' }], ['G', [2.2, 0], [2.2, 1.8], { n: 'G_{Mb}v_{in}', side: 'l' }],
+    ['R', [4.2, 0], [4.2, 1.8], { n: 'R_{out}' }], ['w', [0, 1.8], [4.2, 1.8]], ['gnd', [2.2, 1.8]],
+  ];
+  const invFig = [
+    ['rail', [1, -2]], ['pmos', [1, -1], { n: 'M_2' }], ['nmos', [1, 1], { n: 'M_1' }], ['gnd', [1, 2]],
+    ['w', [1, 0], [1.8, 0]], out([1.8, 0]),
+    ['w', [0, -1], [-0.3, -1], [-0.3, 1], [0, 1]], ['w', [-0.3, 0], [-0.9, 0], [-0.9, 0.4]], ...vin(-0.9, 0.4),
+  ];
+  const fightFig = [
+    ['rail', [1, -2]], ['pmos', [1, -1], { n: 'M_2', dc: true }], ['nmos', [1, 1], { n: 'M_1' }], ['gnd', [1, 2]],
+    ['node', [1.7, 0], { n: 'v_1', side: 'a' }], ['w', [1, 0], [2.4, 0], [2.4, -1], [3, -1]],
+    ['rail', [4, -2]], ['pmos', [4, -1], { n: 'M_4' }], ['nmos', [4, 1], { n: 'M_3' }], ['gnd', [4, 2]],
+    ['w', [4, 0], [4.8, 0]], out([4.8, 0]),
+    ['w', [0, 1], [-1, 1], [-1, 1.4]], ...vin(-1, 1.4),
+    ['w', [-0.4, 1], [-0.4, 2.9], [2.6, 2.9], [2.6, 1], [3, 1]],
+  ];
+  const fightModel = [
+    ['w', [0, 0], [1.2, 0]], ['node', [0.6, 0], { n: 'v_1', side: 'a' }],
+    ...ssm(0, 0, 1.8, 'g_{m1}v_{in}', 'r_{ds1}'), ['gnd', [0.6, 1.8]],
+    ...ssm(0, 0, -1.8, 'g_{m2}v_1', 'r_{ds2}'), ['gndu', [0.6, -1.8]],
+    ['txt', [0.6, 2.6], '$M_1\\ (\\text{below}),\\ M_2\\ (\\text{diode, above})$'],
+    ['w', [4.4, 0], [6.8, 0]], out([6.8, 0]),
+    ...ssm(4.4, 0, 1.8, 'g_{m3}v_{in}', 'r_{ds3}'), ['gnd', [5, 1.8]],
+    ...ssm(4.4, 0, -1.8, 'g_{m4}v_1', 'r_{ds4}'), ['gndu', [5, -1.8]],
+    ['txt', [5, 2.6], '$M_3\\ (\\text{below}),\\ M_4\\ (\\text{above})$'],
+  ];
+  const degPPFig = [
+    ['rail', [1, -2]], ['pmos', [1, -1], { n: 'M_2' }], ['nmos', [1, 1], { n: 'M_1' }], ['R', [1, 2], [1, 3.2], { n: 'R_S' }], ['gnd', [1, 3.2]],
+    ['w', [1, 0], [1.8, 0]], out([1.8, 0]),
+    ['w', [0, -1], [-0.3, -1], [-0.3, 1], [0, 1]], ['w', [-0.3, 0], [-0.9, 0], [-0.9, 0.4]], ...vin(-0.9, 0.4),
+  ];
+  const pathsExam = [
+    ['rail', [1, -2]], ['R', [1, -2], [1, -0.8], { n: 'R_{D1}', side: 'l' }], ['nmos', [1, 0.2], { n: 'M_1' }], ['gnd', [1, 1.2]],
+    ['node', [1.8, -0.8], { n: 'v_1', side: 'a' }], ['w', [1, -0.8], [2.6, -0.8], [2.6, -1.5]],
+    ['rail', [3.6, -2.5]], ['pmos', [3.6, -1.5], { n: 'M_3' }], ['nmos', [3.6, 0.5], { n: 'M_2' }],
+    ['R', [3.6, 1.5], [3.6, 2.7], { n: 'R_S' }], ['gnd', [3.6, 2.7]], ['w', [3.6, -0.5], [4.4, -0.5]], out([4.4, -0.5]),
+    ['w', [0, 0.2], [-1, 0.2], [-1, 0.6]], ...vin(-1, 0.6),
+    ['w', [-0.4, 0.2], [-0.4, 3.0], [2.2, 3.0], [2.2, 0.5], [2.6, 0.5]],
+  ];
+
+  // ================================================================ 3. two paths into one output
+  L({
+    id: 'bk05-paths', title: 'Two paths into one output', ref: 'Problem Sets 4 #2, 6(b)(d)(e); Practice 2 #3, 4 #2',
+    steps: [
+      R(md`
+        ### The question
+
+        Sometimes $v_{in}$ reaches the output through **more than one transistor**. The simplest case is the CMOS push-pull stage, where $v_{in}$ drives an NMOS and a PMOS that share one drain. A harder case: $v_{in}$ drives one transistor at the output directly and, at the same time, a first stage whose output $v_1$ drives a second transistor at the same output. Problem Sets 4 and 6 and Practice Exam 2 #3 are built like this.
+
+        We want one gain from several contributions. The answer is short: **with the output shorted, the transistor currents simply add**, each with its own sign. This section shows why, and how to get every sign right.
+      `),
+      RF(md`
+        ### The physical picture: several hands on one rope
+
+        Picture the output node as a bucket. Each transistor whose drain is on the output is a hose that pours current in or draws it out; the resistance to (incremental) ground is a leak. The bucket's level is the output voltage.
+
+        Now hold the level still: short the output to ground. Then no hose can feel the level, because every transistor's current depends only on its own $v_{gs}$ (and on $v_{ds}$ through $r_{ds}$, which the short pins at zero). The hoses cannot interact through the output, so **their currents just add**. Let the output go, and the net current flows through the one leak, $R_{out}$.
+
+        [[fig:n]]
+
+        That is the Norton picture of [Chapter 4](#/l/bk04-norton) with the current source split into one piece per path. Each piece can **push** (current into the output) or **pull** (current out of it). Pushes and pulls fight; pulls add to pulls.
+      `, { n: { fig: pathsNorton, cap: 'Two paths into one output, seen from the output: two Norton currents in parallel, one output resistance.' } }),
+      R(md`
+        ### The model and the derivation
+
+        **Model.** Every transistor saturated and replaced by $g_mv_{gs}$ from drain to source with $r_{ds}$ beside it. The circuit is linear, so superposition holds. **Convention** (Chapter 4): $G_M = i_{out}/v_{in}$ with the output shorted and $i_{out}$ the current flowing from the short **into** the stage, that is, pulled out of the output node by the transistors.
+
+        **Step 1: short the output.** Now $v_{out} = 0$. Every resistor and every $r_{ds}$ that runs from the output to an incremental ground has zero volts across it: it carries no current.
+
+        **Step 2: what is left.** The only currents that can leave the shorted node are the dependent sources of the transistors whose drains are on it (and, for a degenerated transistor, the current its branch carries; we come back to that in Example 3).
+
+        **Step 3: KCL at the short.** The short supplies whatever the transistors draw:
+        $$i_{out} = g_{ma}v_{gs,a} + g_{mb}v_{gs,b} + \dots$$
+
+        **Step 4: divide by $v_{in}$.** If a gate sees $v_{in}$ itself, its $v_{gs}/v_{in}$ is $1$ (source on a rail). If a gate sits on the output of an earlier stage, $v_{gs}/v_{in} = A_1$, **with $A_1$'s sign**:
+        $$G_M = g_{ma}\frac{v_{gs,a}}{v_{in}} + g_{mb}\frac{v_{gs,b}}{v_{in}} + \dots$$
+
+        **Step 5: one output resistance.** Set $v_{in} = 0$. Every internal node driven only by $v_{in}$ (like $v_1$) goes still, so every gate at the output is still. There is one output node, so there is one $R_{out} = R_{UP}\parallel R_{DN}$.
+
+        !!key Several paths into one output
+          $$A_v = -\big(G_{Ma} + G_{Mb} + \dots\big)R_{out}$$
+          Each $G_{M}$ term is that path's short-circuit transconductance with its own sign; a gate driven by an earlier stage contributes $g_mA_1$. $R_{out}$ is found once, with $v_{in} = 0$.
+      `),
+      RF(md`
+        ### Example 1: the CMOS push-pull stage (paths that add)
+
+        $M_1$ (NMOS, source on ground) and $M_2$ (PMOS, source on $V_{DD}$) share the output drain, and **both gates are $v_{in}$**. Take $g_{m1} = g_{m2} = 1\,\text{mS}$ and $r_{ds1} = r_{ds2} = 200\kO$.
+
+        [[fig:f]]
+
+        **Step 1: each $v_{gs}$.** $M_1$: $v_{gs1} = v_{in} - 0 = v_{in}$. $M_2$: its source is $V_{DD}$, an incremental ground, so $v_{gs2} = v_{in} - 0 = v_{in}$ too. (The same model serves NMOS and PMOS: $g_mv_{gs}$ from drain to source.)
+
+        **Step 2: $G_M$.** Both dependent sources point from their drain (the output) to their source, so both carry current **out of** the output: $G_M = g_{m1} + g_{m2} = 2\,\text{mS}$.
+
+        **Step 3: $R_{out}$.** With $v_{in} = 0$ both gates are still: each transistor is its $r_{ds}$. $R_{out} = r_{ds1}\parallel r_{ds2} = 100\kO$.
+
+        **Step 4:** $A_v = -(2\,\text{mS})(100\kO) = -200$.
+
+        **In words:** $v_{in}$ up, the NMOS pulls down harder **and** the PMOS pushes up less. Both lower $v_{out}$. Compare a common source with a plain current-source load (the PMOS gate held): $A_v = -g_{m1}(r_{ds1}\parallel r_{ds2}) = -100$. Letting the load transistor help doubles the gain for free.
+      `, { f: { fig: invFig, cap: 'The CMOS push-pull stage: both gates on $v_{in}$, both drains on the output.' } }),
+      RF(md`
+        ### Example 2: two paths that fight
+
+        **Direct path:** $M_3$ (NMOS, gate at $v_{in}$) has its drain on the output. **Indirect path:** $M_1$ (NMOS, gate at $v_{in}$) pulls on node $v_1$, loaded by the diode-connected PMOS $M_2$; $v_1$ drives the gate of the PMOS $M_4$, whose drain is also on the output. Take $g_{m1} = g_{m2} = g_{m3} = 1\,\text{mS}$, $g_{m4} = 2\,\text{mS}$, every $r_{ds} = 200\kO$.
+
+        [[fig:f]]
+
+        **Step 1: each $v_{gs}$.** Every source is on ground or $V_{DD}$: $v_{gs1} = v_{in}$, $v_{gs2} = v_1$ (gate and drain at $v_1$), $v_{gs3} = v_{in}$, $v_{gs4} = v_1$.
+
+        **Step 2: the model.** The two halves are joined only by $v_1$ controlling $M_4$; no wire joins them, because a gate draws no current. So the left half can be solved first, by itself.
+
+        [[fig:m]]
+
+        **Step 3: $A_1$ from KCL at $v_1$** (currents leaving):
+        $$g_{m1}v_{in} + \frac{v_1}{r_{ds1}} + g_{m2}v_1 + \frac{v_1}{r_{ds2}} = 0\quad\Rightarrow\quad A_1 = \frac{v_1}{v_{in}} = -\frac{g_{m1}}{g_{m2} + 1/r_{ds1} + 1/r_{ds2}} = -\frac{1}{1.01} = -0.990$$
+        A common source with a diode load: inverting, gain about $-g_{m1}/g_{m2}$.
+
+        **Step 4: $G_M$.** $i_{out} = g_{m3}v_{in} + g_{m4}v_1 = (g_{m3} + g_{m4}A_1)v_{in}$:
+        $$G_M = 1\,\text{mS} + (2\,\text{mS})(-0.990) = -0.980\,\text{mS}$$
+
+        **Step 5: $R_{out}$ and the gain.** $v_{in} = 0$ makes $v_1 = 0$, so both output transistors are their $r_{ds}$: $R_{out} = 100\kO$, and $A_v = -(-0.980\,\text{mS})(100\kO) = +98.0$.
+
+        **In words:** $v_{in}$ up, $M_3$ pulls $1\,\text{mS}\times v_{in}$ down. Meanwhile $v_1$ falls by about $v_{in}$, which turns the PMOS $M_4$ **on** harder: it pushes $2\,\text{mS}\times v_{in}$ more **into** the output. The push wins, so the gain is positive.
+      `, {
+        f: { fig: fightFig, cap: 'Two paths: $M_3$ directly, and $M_1$–$M_2$ then $M_4$.' },
+        m: { fig: fightModel, cap: 'The small-signal model. Left: node $v_1$ ($M_1$ pulls, the diode $M_2$ acts as $1/g_{m2}$). Right: the output ($M_3$ and $M_4$). Only $v_1$ links them.' },
+      }),
+      R(md`
+        ### Check it
+
+        - **The paths can cancel.** $G_M = 0$ when $g_{m3} = g_{m4}\,\dfrac{g_{m1}}{g_{m2} + 1/r_{ds1} + 1/r_{ds2}}$; with these numbers, $g_{m4} = 1.01\,\text{mS}$. A good test of your signs: if your formula cannot reach zero, a sign is wrong.
+        - **Remove a path.** $g_{m4} = 0$ (the PMOS a plain current source) leaves $A_v = -g_{m3}(r_{ds3}\parallel r_{ds4}) = -100$, the common source with an active load.
+        - **Units:** each term of $G_M$ is a transconductance ($A_1$ is dimensionless).
+
+        !!intuition Add or fight, in one sentence
+          For each transistor at the output, ask: when $v_{in}$ rises, does it take current **out of** the output or put current **in**? A gate that sees $v_{in}$ itself takes current out, NMOS or PMOS alike. A gate that sees an **inverted** copy ($A_1 < 0$) puts current in. Same direction: add. Opposite directions: subtract.
+      `),
+      RF(md`
+        ### Example 3: a degenerated path
+
+        Now degenerate the NMOS of the push-pull stage with $R_S = 1\kO$ under its source; everything else as in Example 1. Each path's $G_M$ is still found with the output shorted, but the degenerated branch no longer delivers $g_{m1}v_{in}$.
+
+        [[fig:f]]
+
+        **The degenerated branch, output shorted.** Its drain is at 0, its source at $v_s$, so its current (drain to source) is $g_{m1}(v_{in} - v_s) + (0 - v_s)/r_{ds1}$, and the same current flows down through $R_S$: $v_s/R_S$. Setting them equal and solving for $v_s$, the branch current is
+        $$G_{M1} = \frac{g_{m1}}{1 + (g_{m1} + 1/r_{ds1})R_S} = \frac{1\,\text{mS}}{1 + 1.005} = 0.499\,\text{mS}$$
+        ([Chapter 4](#/l/bk04-degen)). The PMOS path is unchanged: $G_{M2} = g_{m2} = 1\,\text{mS}$. Total $G_M = 1.499\,\text{mS}$.
+
+        **$R_{out}$.** Looking down is now a degenerated drain: $R_{DN} = r_{ds1} + R_S + g_{m1}r_{ds1}R_S = 401\kO$. Looking up: $r_{ds2} = 200\kO$. $R_{out} = 200\kO\parallel401\kO = 133.4\kO$.
+
+        **Gain.** $A_v = -(1.499\,\text{mS})(133.4\kO) = -200$. Exactly the same as without $R_S$!
+
+        !!intuition Why degeneration did not change the gain
+          For the degenerated branch, $G_{M1} = \dfrac{g_{m1}r_{ds1}}{R_{DN}}$ exactly (multiply the formula above by $r_{ds1}/r_{ds1}$). The PMOS has $G_{M2} = \dfrac{g_{m2}r_{ds2}}{R_{UP}}$ with $R_{UP} = r_{ds2}$. Then
+          $$A_v = -(G_{M1} + G_{M2})\frac{R_{UP}R_{DN}}{R_{UP} + R_{DN}} = -\frac{g_{m1}r_{ds1}\,R_{UP} + g_{m2}r_{ds2}\,R_{DN}}{R_{UP} + R_{DN}}$$
+          a weighted average of the two intrinsic gains. With equal intrinsic gains ($200$ each) the average is $200$ whatever $R_S$ is: degeneration takes away transconductance and gives back exactly as much output resistance.
+      `, { f: { fig: degPPFig, cap: 'Push-pull with the NMOS degenerated by $R_S$.' } }),
+      R(md`
+        ### How to recognize it
+
+        Look at the output node and list every transistor whose **drain** touches it. If two or more of them have gates that move with $v_{in}$ (directly, or through an earlier stage), you have several paths. Then:
+
+        1. For each one, write $v_{gs}/v_{in}$: $1$ for a gate on $v_{in}$ with its source on a rail; $A_1$ (with sign) for a gate on an earlier stage's output; for a degenerated branch, use $\dfrac{g_m}{1 + (g_m + 1/r_{ds})R_S}$.
+        2. Add them: $G_M$.
+        3. One $R_{out}$, with $v_{in} = 0$.
+
+        !!mistake Common mistakes with two paths
+          - **Losing the sign of $A_1$.** A gate driven by an inverting stage contributes $g_mA_1 < 0$: it fights the direct path.
+          - **Two output resistances.** There is one output node, so one $R_{out}$. Do not compute "the $R_{out}$ of each path".
+          - **Leaving $v_1$ moving when you find $R_{out}$.** With $v_{in} = 0$, a node driven only by $v_{in}$ is still, so its transistor at the output is just $r_{ds}$.
+          - **Flipping the PMOS sign by hand.** With $v_{gs}$ (not $v_{sg}$) and the source on a rail, a PMOS whose gate rises pulls current out of its drain, exactly like an NMOS.
+      `),
+      Q(md`In the CMOS push-pull stage, $v_{in}$ drives the gates of an NMOS (source on ground) and a PMOS (source on $V_{DD}$) whose drains share the output. Do their contributions to $G_M$ add or subtract?`,
+        ['Add: $G_M = g_{mn} + g_{mp}$', 'Subtract: $G_M = g_{mn} - g_{mp}$', 'Only the larger one counts', 'They cancel when the devices match'], 0,
+        [null, 'Gate up makes the NMOS pull down harder and the PMOS push up less: both lower $v_{out}$.', 'Both currents land in the same short; nothing is discarded.', 'They would cancel only if one gate saw an inverted copy of $v_{in}$.'],
+        md`Both gates see $v_{in}$ itself, so both transistors draw current out of the output when $v_{in}$ rises: $G_M = g_{mn} + g_{mp}$, and $A_v = -(g_{mn} + g_{mp})(r_{dsn}\parallel r_{dsp})$.`, { fig: invFig }),
+      Q(md`In Example 2 (the fight), you set $v_{in} = 0$ to find $R_{out}$. What does $M_4$ look like from the output?`,
+        ['$r_{ds4}$: $v_1$ is still, so its gate is held', '$1/g_{m4}$', '$r_{ds4}(1 + g_{m4}r_{ds2})$', 'An open circuit'], 0,
+        [null, 'That would need $M_4$\'s gate to follow the output. Its gate is $v_1$, which nothing drives once $v_{in} = 0$.', 'Its source is on $V_{DD}$, not on a resistor: nothing degenerates it.', 'Channel-length modulation leaves $r_{ds4}$.'],
+        md`With $v_{in} = 0$ the only source at node $v_1$ ($g_{m1}v_{in}$) is gone and the output cannot reach $v_1$ (a gate draws no current), so $v_1 = 0$: $M_4$ is $r_{ds4}$, and $R_{out} = r_{ds3}\parallel r_{ds4}$.`),
+      Q(md`A gate at the output is driven by $v_1 = A_1v_{in}$ with $A_1 = -3$, and the transistor has $g_m = 2\,\text{mS}$. What does it add to $G_M$?`,
+        ['$-6\\,\\text{mS}$', '$+6\\,\\text{mS}$', '$+2\\,\\text{mS}$', '$-2/3\\,\\text{mS}$'], 0,
+        [null, 'Keep the sign of $A_1$: the gate moves opposite to $v_{in}$, so the transistor pushes current in.', 'Its gate does not see $v_{in}$; it sees $A_1v_{in}$.', 'Multiply, do not divide: $g_m\\cdot v_{gs}/v_{in} = g_mA_1$.'],
+        md`The contribution is $g_m\,v_{gs}/v_{in} = g_mA_1 = (2\,\text{mS})(-3) = -6\,\text{mS}$. Negative: current is pushed **into** the output when $v_{in}$ rises.`),
+      P({
+        id: 'bk05-pa-inv', title: 'Push-pull with unequal devices',
+        q: md`In the push-pull stage, $g_{m1} = 2\,\text{mS}$, $r_{ds1} = 50\kO$ (NMOS) and $g_{m2} = 1\,\text{mS}$, $r_{ds2} = 100\kO$ (PMOS). Find $G_M$, $R_{out}$ and $A_v$.`,
+        fig: invFig,
+        parts: [
+          { lbl: 'G_M', unit: 'mS', ans: 3, traps: [{ v: 1, msg: 'The two contributions add: both gates see $v_{in}$.' }] },
+          { lbl: 'R_{out}', unit: 'kΩ', ans: 33.333 },
+          { lbl: 'A_v', unit: '', ans: -100 },
+        ],
+        hints: [md`Both gates see $v_{in}$ and both sources sit on rails.`, md`$R_{out} = r_{ds1}\parallel r_{ds2}$.`],
+        sol: md`
+1. $G_M = g_{m1} + g_{m2} = 3\,\text{mS}$ (both pull current out of the output when $v_{in}$ rises).
+2. $R_{out} = 50\kO\parallel100\kO = 33.3\kO$.
+3. $A_v = -(3\,\text{mS})(33.3\kO) = -100$.`,
+      }),
+      P({
+        id: 'bk05-pa-fight', title: 'The fight, with other numbers',
+        q: md`In Example 2's circuit, take $g_{m1} = 1\,\text{mS}$, $g_{m2} = 2\,\text{mS}$, $g_{m3} = 2\,\text{mS}$, $g_{m4} = 1\,\text{mS}$, every $r_{ds} = 200\kO$. Find $A_1 = v_1/v_{in}$, $G_M$ and $A_v$.`,
+        fig: fightFig,
+        parts: [
+          { lbl: 'A_1', unit: '', ans: -0.49751, accept: [-0.5] },
+          { lbl: 'G_M', unit: 'mS', ans: 1.5025, accept: [1.5], traps: [{ v: 2.4975, msg: 'The PMOS path subtracts: its gate sees an inverted copy ($A_1 < 0$).' }] },
+          { lbl: 'A_v', unit: '', ans: -150.25, accept: [-150] },
+        ],
+        hints: [md`$A_1 = -\dfrac{g_{m1}}{g_{m2} + 1/r_{ds1} + 1/r_{ds2}}$.`, md`$G_M = g_{m3} + g_{m4}A_1$, $R_{out} = r_{ds3}\parallel r_{ds4} = 100\kO$.`],
+        sol: md`
+1. $A_1 = -\dfrac{1}{2 + 0.005 + 0.005} = -0.4975$.
+2. $G_M = 2\,\text{mS} + (1\,\text{mS})(-0.4975) = 1.5025\,\text{mS}$. This time the direct path wins.
+3. $A_v = -(1.5025\,\text{mS})(100\kO) = -150.2$: inverting, because $M_3$ (which inverts) wins the fight.`,
+      }),
+      P({
+        id: 'bk05-pa-sym', title: 'The fight, symbolically',
+        q: md`For Example 2's circuit, find $A_v$ keeping every $r_{ds}$. Write $A_1$ out in full.`,
+        fig: fightFig,
+        parts: [ex('-(gm3 - gm4*gm1/(gm2 + 1/rds1 + 1/rds2))*(rds3 || rds4)', ['gm1', 'gm2', 'gm3', 'gm4', 'rds1', 'rds2', 'rds3', 'rds4'], 'A_v', { ranges: { gm1: [1e-3, 2e-3], gm2: [2e-3, 4e-3], gm3: [4e-3, 8e-3], gm4: [1e-3, 2e-3] } })],
+        hints: [md`$A_1 = -g_{m1}\big(\tfrac1{g_{m2}}\parallel r_{ds1}\parallel r_{ds2}\big)$; gates draw nothing, so nothing loads $v_1$.`, md`Short the output: $i_{out} = g_{m3}v_{in} + g_{m4}v_1$.`],
+        sol: md`
+$G_M = g_{m3} + g_{m4}A_1 = g_{m3} - \dfrac{g_{m1}g_{m4}}{g_{m2} + 1/r_{ds1} + 1/r_{ds2}}$ and $R_{out} = r_{ds3}\parallel r_{ds4}$:
+$$A_v = -\Big(g_{m3} - \frac{g_{m1}g_{m4}}{g_{m2} + 1/r_{ds1} + 1/r_{ds2}}\Big)(r_{ds3}\parallel r_{ds4})\approx-\Big(g_{m3} - \frac{g_{m1}g_{m4}}{g_{m2}}\Big)(r_{ds3}\parallel r_{ds4})$$
+The minus sign inside the bracket is the fight.`,
+      }),
+      P({
+        id: 'bk05-pa-zero', title: 'Make the paths cancel',
+        q: md`In Example 2's circuit, $g_{m1} = g_{m2} = g_{m3} = 1\,\text{mS}$ and every $r_{ds} = 200\kO$. What $g_{m4}$ makes $A_v = 0$? And what is $A_v$ if $g_{m4}$ is twice that?`,
+        fig: fightFig,
+        parts: [
+          { lbl: 'g_{m4}', unit: 'mS', ans: 1.01, accept: [1] },
+          { lbl: 'A_v\\ (2g_{m4})', unit: '', ans: 100 },
+        ],
+        hints: [md`$G_M = g_{m3} + g_{m4}A_1 = 0$ with $A_1 = -1/1.01$.`, md`Doubling $g_{m4}$: $G_M = g_{m3} - 2g_{m3} = -g_{m3}$.`],
+        sol: md`
+1. $A_1 = -\dfrac{1\,\text{mS}}{1.01\,\text{mS}}$, so $G_M = 0$ needs $g_{m4} = g_{m3}/|A_1| = 1.01\,\text{mS}$.
+2. With $2.02\,\text{mS}$: $G_M = 1 - 2.02/1.01 = -1\,\text{mS}$, so $A_v = -(-1\,\text{mS})(100\kO) = +100$. Too strong a push turns the stage non-inverting.`,
+      }),
+      P({
+        id: 'bk05-pa-deg', title: 'Degenerated push-pull, symbolically',
+        q: md`For the push-pull stage with $R_S$ under the NMOS (Example 3), type $G_M$ and $R_{out}$, keeping $r_{ds}$. Use \`gm1\`, \`rds1\`, \`gm2\`, \`rds2\`, \`RS\`.`,
+        fig: degPPFig,
+        parts: [
+          ex('gm1/(1 + (gm1 + 1/rds1)*RS) + gm2', ['gm1', 'rds1', 'gm2', 'rds2', 'RS'], 'G_M'),
+          ex('rds2 || (rds1 + RS + gm1*rds1*RS)', ['gm1', 'rds1', 'gm2', 'rds2', 'RS'], 'R_{out}'),
+        ],
+        hints: [md`Output shorted: the degenerated branch carries $\dfrac{g_{m1}}{1 + (g_{m1} + 1/r_{ds1})R_S}v_{in}$; the PMOS carries $g_{m2}v_{in}$.`, md`$R_{DN}$ is a degenerated drain; $R_{UP} = r_{ds2}$.`],
+        sol: md`
+$$G_M = \frac{g_{m1}}{1 + (g_{m1} + 1/r_{ds1})R_S} + g_{m2}\approx\frac{g_{m1}}{1 + g_{m1}R_S} + g_{m2},\qquad R_{out} = r_{ds2}\parallel\big(r_{ds1} + R_S + g_{m1}r_{ds1}R_S\big)$$
+Both paths pull current out of the output when $v_{in}$ rises, so they add.`,
+      }),
+      P({
+        id: 'bk05-pa-exam', title: 'A boosted path against a degenerated one', big: true,
+        q: md`$v_{in}$ drives $M_1$, a common source with $R_{D1}$, whose drain $v_1$ drives the gate of the PMOS $M_3$ at the output. $v_{in}$ also drives $M_2$, an NMOS at the output degenerated by $R_S$. (a) Find $G_M$ and $R_{out}$ symbolically. (b) With every $g_m = 1\,\text{mS}$, every $r_{ds} = 200\kO$, $R_{D1} = 10\kO$, $R_S = 1\kO$, find $A_1$, $G_M$, $R_{out}$ and $A_v$.`,
+        fig: pathsExam,
+        parts: [
+          ex('gm2/(1 + (gm2 + 1/rds2)*RS) - gm3*gm1*(RD1 || rds1)', ['gm1', 'rds1', 'RD1', 'gm2', 'rds2', 'RS', 'gm3'], 'G_M'),
+          ex('rds3 || (rds2 + RS + gm2*rds2*RS)', ['gm2', 'rds2', 'RS', 'rds3'], 'R_{out}'),
+          { lbl: 'A_1', unit: '', ans: -9.5238 },
+          { lbl: 'G_M\\ (\\text{mS})', unit: 'mS', ans: -9.0251, traps: [{ v: 10.023, msg: 'The PMOS path subtracts: its gate sees $A_1v_{in}$ with $A_1 < 0$.' }] },
+          { lbl: 'R_{out}\\ (\\text{k}\\Omega)', unit: 'kΩ', ans: 133.44 },
+          { lbl: 'A_v', unit: '', ans: 1204.3 },
+        ],
+        hints: [md`$v_1$ only drives a gate: $A_1 = -g_{m1}(R_{D1}\parallel r_{ds1})$.`, md`Output shorted: $M_3$ contributes $g_{m3}A_1$, $M_2$ contributes $\dfrac{g_{m2}}{1 + (g_{m2} + 1/r_{ds2})R_S}$.`, md`$R_{out} = r_{ds3}\parallel(r_{ds2} + R_S + g_{m2}r_{ds2}R_S)$.`],
+        sol: md`
+**Recognize it first:** two paths into one output. The PMOS $M_3$ is driven by an inverted, amplified copy ($A_1$), so it pushes current in; the degenerated NMOS $M_2$ pulls current out. They fight, and the amplified path wins.
+
+1. **$A_1$.** $v_1$ drives only a gate: $A_1 = -g_{m1}(R_{D1}\parallel r_{ds1}) = -(1\,\text{mS})(9.524\kO) = -9.524$.
+2. **$G_M$.** $G_{M2} = \dfrac{1\,\text{mS}}{1 + 1.005} = 0.499\,\text{mS}$ and $g_{m3}A_1 = -9.524\,\text{mS}$: $G_M = -9.025\,\text{mS}$.
+3. **$R_{out}$.** $R_{DN} = 200\kO + 1\kO + 200\kO = 401\kO$; $R_{out} = 200\kO\parallel401\kO = 133.4\kO$.
+4. **$A_v$** $= -(-9.025\,\text{mS})(133.4\kO) = +1204$.
+
+**Sign in words:** $v_{in}$ up, $v_1$ falls by $9.5v_{in}$, the PMOS pushes hard into the output; the NMOS pulls a little. Net: $v_{out}$ rises.`,
+      }),
+      G('bk_paths', { need: 4 }),
     ],
   });
 })();

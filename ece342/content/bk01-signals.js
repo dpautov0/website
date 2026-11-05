@@ -314,7 +314,7 @@ $$10 - 5(V_{IN} - 1)^2 = 5\quad\Rightarrow\quad(V_{IN} - 1)^2 = 1\quad\Rightarro
 
 **(d)** $0.1/(2\times1) = 0.05 = 5\%$. A $100\,\text{mV}$ signal is only "small" to about $5\%$ here; Section 1.2 derives this.`,
       }),
-      G('bk_bias_q', { need: 4 }),
+      G('bk_c1_bias', { need: 4 }),
     ],
   });
 
@@ -601,8 +601,8 @@ Ten times less for the diode. Keep this in mind for Exam 3: a BJT's base-emitter
 
 **(d)** $25\,\mu\text{A}/0.4\,\text{mA} = 6.25\%$, which is $V_p/(4V_{ov}) = 0.1/1.6$.`,
       }),
-      G('bk_tan_sq', { need: 3 }),
-      G('bk_tan_exp', { need: 3 }),
+      G('bk_c1_tan_sq', { need: 3 }),
+      G('bk_c1_tan_exp', { need: 3 }),
     ],
   });
 
@@ -815,7 +815,7 @@ Ten times less for the diode. Keep this in mind for Exam 3: a BJT's base-emitter
 
 **(d)** **Zero.** The current source fixes the current at $1\,\text{mA}$ no matter what the supply does, so the diode current does not change, and neither does its voltage. In the small-signal picture an ideal current source is an **open circuit** (its current change is always zero), so the ripple has no path to the diode. Section 1.4 makes this a rule.`,
       }),
-      G('bk_diode', { need: 4 }),
+      G('bk_c1_diode', { need: 4 }),
     ],
   });
 
@@ -1070,7 +1070,7 @@ $$\frac{v_y}{v_s} = \frac{25}{1000 + 25} = 0.0244$$
 
 **(d)** No current in $D_1$'s $r_d$ means no voltage across it: $v_x = v_y$, so $v_x/v_s = 0.0244$. The top node simply follows the middle node.`,
       }),
-      G('bk_two_atten', { need: 4 }),
+      G('bk_c1_two', { need: 4 }),
     ],
   });
 
@@ -1348,8 +1348,8 @@ So $v_{th} = -8.333\times0.3\,v_s = -2.5\,v_s$.
 
 **(c)** $v_{out} = -2.5\,v_s\times\dfrac{1000}{1000 + 833.3} = -1.364\,v_s$.`,
       }),
-      G('bk_test_div', { need: 3 }),
-      G('bk_test_fb', { need: 3 }),
+      G('bk_c1_test_div', { need: 3 }),
+      G('bk_c1_test_fb', { need: 3 }),
     ],
   });
 
@@ -1543,7 +1543,7 @@ So $v_{th} = -8.333\times0.3\,v_s = -2.5\,v_s$.
 
 **(d)** $R_S$, the smallest by a factor of $50$. The common shortcut $R\approx g_mr_{ds}R_S$ needs $g_mR_S\gg1$; here it is only $2$.`,
       }),
-      G('bk_sizes', { need: 4 }),
+      G('bk_c1_sizes', { need: 4 }),
     ],
   });
 
@@ -1806,7 +1806,7 @@ $$v_t = i_t(1 + g_mR_S)R_o + i_tR_S\quad\Rightarrow\quad R_D = R_o + R_S + g_mR_
 
 **(d)** One diode drop: $0.7\,\text{V}$ (and $V_X = 1.4\,\text{V}$).`,
       }),
-      G('bk_bias_q', { need: 8, pool: ['bk_bias_q', 'bk_tan_sq', 'bk_tan_exp', 'bk_diode', 'bk_two_atten', 'bk_test_div', 'bk_test_fb', 'bk_sizes'] }),
+      G('bk_c1_bias', { need: 8, pool: ['bk_c1_bias', 'bk_c1_tan_sq', 'bk_c1_tan_exp', 'bk_c1_diode', 'bk_c1_two', 'bk_c1_test_div', 'bk_c1_test_fb', 'bk_c1_sizes'] }),
     ],
   });
 })();

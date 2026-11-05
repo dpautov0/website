@@ -287,8 +287,8 @@
 
 **(c)** $R_{on} = 1/(kV_{ov}) = 1/(1\,\text{mA/V}^2\times1\,\text{V}) = 1\kO$. (At $V_D = 0.76\,\text{V}$ the device is not deep in triode, so it is not exactly this resistor; $R_{on}$ describes the bottom of the curve.)`,
       }),
-      G('bk_mos_region', { need: 4 }),
-      G('bk_mos_sq', { need: 3 }),
+      G('bk_c2_region', { need: 4 }),
+      G('bk_c2_sq', { need: 3 }),
     ],
   });
 
@@ -452,7 +452,7 @@ $$V_{ov} = 1 - 5V_{ov}^2\quad\Rightarrow\quad5V_{ov}^2 + V_{ov} - 1 = 0\quad\Rig
 
 **(e)** $V_D = 1.93\le V_G + 1 = 4\,\text{V}$: saturated. ✓`,
       }),
-      G('bk_pmos', { need: 4 }),
+      G('bk_c2_pmos', { need: 4 }),
     ],
   });
 
@@ -605,7 +605,7 @@ A large $\lambda$ like $0.1\,\text{V}^{-1}$ shifts the bias by $25\%$, which is 
         hints: [md`$\lambda = 1/(r_{ds}I_D)$.`],
         sol: md`(a) $\lambda = 1/(50\kO\times0.4\,\text{mA}) = 1/20 = 0.05\,\text{V}^{-1}$. (b) $\lambda = 0.025$: $r_{ds} = 1/(0.025\times0.4\,\text{mA}) = 100\kO$.`,
       }),
-      G('bk_rds', { need: 3 }),
+      G('bk_c2_rds', { need: 3 }),
     ],
   });
 
@@ -777,8 +777,8 @@ A large $\lambda$ like $0.1\,\text{V}^{-1}$ shifts the bias by $25\%$, which is 
 
 **(c)** $1/g_m = 373\,\Omega$. **(d)** $r_{ds} = 1/(0.05\times0.36\,\text{mA}) = 55.6\kO$. **(e)** $g_mr_{ds} = 149 = 2/(0.05\times0.268)$ ✓.`,
       }),
-      G('bk_gm', { need: 4 }),
-      G('bk_gm_scale', { need: 3 }),
+      G('bk_c2_gm', { need: 4 }),
+      G('bk_c2_gm_scale', { need: 3 }),
     ],
   });
 
@@ -972,7 +972,7 @@ A large $\lambda$ like $0.1\,\text{V}^{-1}$ shifts the bias by $25\%$, which is 
         hints: [md`$v_{gs} = 0$ kills the VCCS.`],
         sol: md`Only $r_{ds}$ is left: $1/(0.02\times0.25\,\text{mA}) = 200\kO$. This is how a transistor makes a (nearly ideal) current source: hold its $v_{gs}$ still and it looks like $r_{ds}$.`,
       }),
-      G('bk_cs_model', { need: 4 }),
+      G('bk_c2_cs', { need: 4 }),
     ],
   });
 
@@ -1119,7 +1119,7 @@ A large $\lambda$ like $0.1\,\text{V}^{-1}$ shifts the bias by $25\%$, which is 
 
 **(e)** $A_v = -2\times(5\parallel125) = -2\times4.808 = -9.62$. **(f)** $5\parallel125\parallel5 = 2.451\kO$: $A_v = -4.90$.`,
       }),
-      G('bk_pmos_model', { need: 3 }),
+      G('bk_c2_pcs', { need: 3 }),
     ],
   });
 
@@ -1297,8 +1297,149 @@ A large $\lambda$ like $0.1\,\text{V}^{-1}$ shifts the bias by $25\%$, which is 
 
 **(g)** The edge is $V_D = 2\,\text{V}$: $R_D\le(10 - 2)/0.5\,\text{mA} = 16\kO$.`,
       }),
-      G('bk_dc_rs', { need: 3 }),
-      G('bk_dc_mirror', { need: 3 }),
+      G('bk_c2_dc_rs', { need: 3 }),
+      G('bk_c2_mirror', { need: 3 }),
+    ],
+  });
+
+  // ================================================================== Chapter 2 problems
+  const csLoadFig = () => [['rail', [1, -2], { n: 'V_{DD} = 5\\,\\text{V}' }], ['pmos', [1, -1], { n: 'M_2' }], ['w', [0, -1], [-0.4, -1]], ['term', [-0.4, -1], { n: 'V_B', side: 'l' }],
+    ['w', [1, 0], [1.8, 0]], ['term', [1.8, 0], { n: 'v_{out}' }], ['nmos', [1, 1], { n: 'M_1' }], ['gnd', [1, 2]],
+    ['w', [0, 1], [-0.6, 1], [-0.6, 1.4]], ['Vac', [-0.6, 1.4], [-0.6, 2.4], { n: 'v_{in}', side: 'l' }], ['V', [-0.6, 2.4], [-0.6, 3.4], { n: 'V_{GS1}', side: 'l' }], ['gnd', [-0.6, 3.4]]];
+  const bypFig = () => [...divFigM({ vdd: '5\\,\\text{V}', r1: '500\\,\\text{k}\\Omega', r2: '500\\,\\text{k}\\Omega', rs: '0.5\\,\\text{k}\\Omega', rd: '2\\,\\text{k}\\Omega' })
+    .map((e) => (e[0] === 'node' && e[2].n === 'V_S' ? ['node', e[1], { n: 'V_S', side: 'l' }] : e)),
+    ['w', [1, 2], [2.5, 2]], ['C', [2.5, 2], [2.5, 3.2], { n: 'C_S' }], ['w', [1, 3.2], [2.5, 3.2]]];
+  const pbypFig = () => [['rail', [1, -0.6], { n: 'V_{DD} = 5\\,\\text{V}' }], ['R', [1, -0.6], [1, 0.8], { n: 'R_S', s: '0.5\\,\\text{k}\\Omega' }], ['w', [1, 0.8], [2.5, 0.8]], ['C', [2.5, -0.6], [2.5, 0.8], { n: 'C_S' }], ['w', [1, -0.6], [2.5, -0.6]],
+    ['pmos', [1, 1.8]], ['w', [0, 1.8], [-0.6, 1.8]], ['term', [-0.6, 1.8], { n: 'V_G = 3\\,\\text{V}\\ (+v_{in})', side: 'l' }], ['R', [1, 2.8], [1, 4.2], { n: 'R_D', s: '3\\,\\text{k}\\Omega' }], ['gnd', [1, 4.2]], ['w', [1, 2.8], [1.8, 2.8]], ['term', [1.8, 2.8], { n: 'v_{out}' }]];
+
+  L({
+    id: 'bk02-problems', title: 'Chapter 2 problems', kind: 'review',
+    steps: [
+      RF(md`
+        ### Chapter 2 summary
+
+        **1. The square law and its regions** ([2.1](#/l/bk02-how)). The gate is a capacitor plate: the channel holds $C_{ox}(V_{GS} - V_{TN})$ per area; drift gives the triode law $k[V_{ov}V_{DS} - \tfrac12V_{DS}^2]$; at $V_{DS} = V_{ov}$ the channel pinches off and the current stays at $\tfrac12kV_{ov}^2$. Saturation check: $V_D\ge V_G - V_{TN}$.
+
+        [[fig:out]]
+
+        **2. PMOS** ([2.2](#/l/bk02-pmos)): every voltage and doping flipped. Use $V_{SG}$, $V_{SD}$, $|V_{TP}|$ and $\mu_pC_{ox} = 50\,\mu\text{A/V}^2$; current flows source $\to$ drain; saturation while $V_D\le V_G + |V_{TP}|$.
+
+        **3. $r_{ds} = 1/(\lambda I_D)$** ([2.3](#/l/bk02-clm)): the channel shortens as $V_{DS}$ grows, so the saturation lines tilt; all of them meet at $V_{DS} = -1/\lambda$.
+
+        [[fig:clm]]
+
+        **4. $g_m = kV_{ov} = 2I_D/V_{ov} = \sqrt{2kI_D}$** ([2.4](#/l/bk02-gm)): the slope of the square law (its tangent hits the axis at $V_{TN} + \tfrac12V_{ov}$). Intrinsic gain $g_mr_{ds} = 2/(\lambda V_{ov})$.
+
+        **5. The model** ([2.5](#/l/bk02-model)): $i_d = g_mv_{gs} + v_{ds}/r_{ds}$, gate open. Common source: $A_v = -g_m(R_D\parallel r_{ds})$.
+
+        [[fig:m]]
+
+        **6. One model for both types** ([2.6](#/l/bk02-pmodel)): with $i_d$ defined drain $\to$ source and $v_{gs}$ gate to source, the PMOS's minus signs cancel. Its arrow points up because its source is on top.
+
+        **7. DC operating point** ([2.7](#/l/bk02-bias)): assume saturation, solve, check. Divider gates are unloaded; a source resistor gives a quadratic in $V_{ov}$; a diode-connected device is always saturated; a mirror copies current by $W/L$.
+      `, { out: { svg: outPlot(), cap: 'Output curves: triode left of the dashed parabola, saturation right of it.' }, clm: { svg: clmPlot(), cap: 'Channel-length modulation: tilted lines meeting at $-1/\\lambda$.' },
+        m: { svg: row([{ fig: modelN(), cap: 'NMOS' }, { fig: modelP(), cap: 'PMOS (source on top)' }]), cap: 'The same model for both: $g_mv_{gs}$ from drain to source, $r_{ds}$ beside it.' } }),
+      R(md`
+        ### Problems
+
+        Course values throughout: $\mu_nC_{ox} = 100\,\mu\text{A/V}^2$, $\mu_pC_{ox} = 50\,\mu\text{A/V}^2$, $V_{TN} = |V_{TP}| = 1\,\text{V}$; $\lambda = 0$ for DC unless stated. The last four are exam-style.
+      `),
+      P({ id: 'bk02-pr-id', title: 'A quarter-size device', q: md`$1X = 250/1$. A $\tfrac14X$ NMOS has $V_{GS} = 1.4\,\text{V}$ (saturated). Find $I_D$.`,
+        parts: [{ lbl: 'I_D', unit: 'mA', ans: 0.5, traps: [{ v: 2, msg: 'A $\\tfrac14X$ device has a quarter of the $1X$ current.' }, { v: 1, msg: 'Missing the $\\tfrac12$.' }] }],
+        hints: [md`$W/L = 62.5$, $k = 6.25\,\text{mA/V}^2$.`], sol: md`$k = (100\,\mu)(62.5) = 6.25\,\text{mA/V}^2$; $I_D = \tfrac12(6.25)(0.4)^2 = 0.5\,\text{mA}$.` }),
+      P({ id: 'bk02-pr-region', title: 'Region from node voltages', q: md`NMOS, $W/L = 40$: $V_G = 2.5\,\text{V}$, $V_S = 1\,\text{V}$, $V_D = 1.2\,\text{V}$. Region and $I_D$?`,
+        parts: [{ lbl: 'Region', mc: ['Triode', 'Saturation', 'Cutoff'], a: 0, why: [null, md`Saturation needs $V_D\ge V_G - V_{TN} = 1.5\,\text{V}$.`, md`$V_{GS} = 1.5\,\text{V} > V_{TN}$.`] }, { lbl: 'I_D', unit: 'mA', ans: 0.32, traps: [{ v: 0.5, msg: 'That is the saturation current.' }] }],
+        hints: [md`$V_{ov} = 0.5\,\text{V}$, $V_{DS} = 0.2\,\text{V}$, $k = 4\,\text{mA/V}^2$.`], sol: md`$V_{DS} = 0.2 < V_{ov} = 0.5$: triode. $I_D = 4[0.5(0.2) - 0.02] = 0.32\,\text{mA}$.` }),
+      P({ id: 'bk02-pr-pmos', title: 'A PMOS from node voltages', q: md`PMOS, $W/L = 80$: $V_S = 3.3\,\text{V}$, $V_G = 1.8\,\text{V}$, $V_D = 1\,\text{V}$. Region and $I_D$?`,
+        parts: [{ lbl: 'Region', mc: ['Saturation', 'Triode', 'Cutoff'], a: 0, why: [null, md`PMOS triode needs $V_D > V_G + |V_{TP}| = 2.8\,\text{V}$; here $V_D = 1\,\text{V}$.`, md`$V_{SG} = 1.5\,\text{V} > |V_{TP}|$.`] }, { lbl: 'I_D', unit: 'mA', ans: 0.5, traps: [{ v: 1, msg: 'PMOS: $\\mu_pC_{ox} = 50\\,\\mu\\text{A/V}^2$.' }] }],
+        hints: [md`$V_{SG} = 1.5$, $V_{ov} = 0.5$; $k_p = 4\,\text{mA/V}^2$.`], sol: md`$V_D = 1\le V_G + 1 = 2.8$: saturated. $I_D = \tfrac12(4)(0.25) = 0.5\,\text{mA}$, out of the drain.` }),
+      P({ id: 'bk02-pr-rds', title: 'r_ds and the intrinsic gain', q: md`$\lambda = 0.025\,\text{V}^{-1}$, $I_D = 0.4\,\text{mA}$, $V_{ov} = 0.25\,\text{V}$. Find $r_{ds}$, $g_m$ and $g_mr_{ds}$.`,
+        parts: [{ lbl: 'r_{ds}', unit: 'kΩ', ans: 100 }, { lbl: 'g_m', unit: 'mS', ans: 3.2 }, { lbl: 'g_mr_{ds}', unit: '', ans: 320 }],
+        hints: [md`$g_mr_{ds} = 2/(\lambda V_{ov})$.`], sol: md`$r_{ds} = 1/(0.025\times0.4\,\text{mA}) = 100\kO$; $g_m = 0.8/0.25 = 3.2\,\text{mS}$; product $320 = 2/(0.025\times0.25)$.` }),
+      P({ id: 'bk02-pr-gm', title: 'g_m from a gate voltage', q: md`An NMOS with $W/L = 160$ has $V_{GS} = 1.25\,\text{V}$ (source grounded, saturated). Find $g_m$ and $I_D$.`,
+        parts: [{ lbl: 'g_m', unit: 'mS', ans: 4, traps: [{ v: 20, msg: 'Use $V_{ov} = 0.25\\,\\text{V}$, not $V_{GS}$.' }] }, { lbl: 'I_D', unit: 'mA', ans: 0.5 }],
+        hints: [md`Form 1: $kV_{ov}$, $k = 16\,\text{mA/V}^2$.`], sol: md`$g_m = (16\,\text{mA/V}^2)(0.25) = 4\,\text{mS}$; $I_D = \tfrac12(16)(0.0625) = 0.5\,\text{mA}$ (check: $2(0.5)/0.25 = 4$ ✓).` }),
+      P({ id: 'bk02-pr-gmscale', title: 'Nine times the current', q: md`A transistor has $g_m = 2\,\text{mS}$. Its current is multiplied by 9 without changing the device. New $g_m$? And if instead nine identical devices were put in parallel, each at the old current?`,
+        parts: [{ lbl: '\\text{same device}', unit: 'mS', ans: 6, traps: [{ v: 18, msg: 'Same device: $g_m\\propto\\sqrt{I_D}$.' }] }, { lbl: '\\text{nine in parallel}', unit: 'mS', ans: 18 }],
+        hints: [md`$\sqrt{2kI_D}$.`], sol: md`Same device: $\times\sqrt9 = 6\,\text{mS}$. Nine parallel copies (same $V_{ov}$): $\times9 = 18\,\text{mS}$.` }),
+      P({ id: 'bk02-pr-sat', title: 'The largest drain resistor', q: md`NMOS with $k = 2\,\text{mA/V}^2$, gate at $1.5\,\text{V}$, source grounded, $R_D$ to $V_{DD} = 3\,\text{V}$. Find $I_D$ and the largest $R_D$ for saturation.`,
+        parts: [{ lbl: 'I_D', unit: 'mA', ans: 0.25 }, { lbl: 'R_{D,max}', unit: 'kΩ', ans: 10, traps: [{ v: 6, msg: 'The edge is $V_D = V_G - V_{TN} = 0.5\\,\\text{V}$, not $V_G$.' }] }],
+        hints: [md`Edge: $V_D = V_{ov}$.`], sol: md`$I_D = \tfrac12(2)(0.25) = 0.25\,\text{mA}$. Edge $V_D = 0.5\,\text{V}$: $R_D = 2.5/0.25 = 10\kO$.` }),
+      P({ id: 'bk02-pr-model', title: 'Read the model', q: md`$g_m = 2\,\text{mS}$, $r_{ds} = 40\kO$, $v_{gs} = -3\,\text{mV}$, $v_{ds} = +80\,\text{mV}$. Find $i_d$ (drain to source).`,
+        parts: [{ lbl: 'i_d', unit: 'µA', ans: -4, traps: [{ v: -8, msg: 'Add $v_{ds}/r_{ds} = +2\\,\\mu\\text{A}$.' }, { v: 8, msg: '$v_{gs}$ is negative.' }] }],
+        hints: [md`$i_d = g_mv_{gs} + v_{ds}/r_{ds}$.`], sol: md`$2\,\text{mS}\times(-3\,\text{mV}) = -6\,\mu\text{A}$; $80\,\text{mV}/40\kO = 2\,\mu\text{A}$; $i_d = -4\,\mu\text{A}$.` }),
+      P({ id: 'bk02-pr-cs', title: 'Common source', q: md`$g_m = 3\,\text{mS}$, $R_D = 6\kO$, $r_{ds} = 30\kO$. $R_{out}$ and $A_v$?`,
+        parts: [{ lbl: 'R_{out}', unit: 'kΩ', ans: 5 }, { lbl: 'A_v', unit: 'V/V', ans: -15 }],
+        hints: [md`$R_D\parallel r_{ds}$.`], sol: md`$6\parallel30 = 5\kO$; $A_v = -15$.` }),
+      P({ id: 'bk02-pr-pcs', title: 'PMOS common source', q: md`A PMOS common source: $g_m = 1.5\,\text{mS}$, $R_D = 20\kO$, $r_{ds} = 80\kO$. $R_{out}$ and $A_v$?`,
+        parts: [{ lbl: 'R_{out}', unit: 'kΩ', ans: 16 }, { lbl: 'A_v', unit: 'V/V', ans: -24, traps: [{ v: 24, msg: 'Still inverting: one model for both types.' }] }],
+        hints: [md`Same as NMOS.`], sol: md`$20\parallel80 = 16\kO$; $A_v = -1.5\times16 = -24$.` }),
+      P({ id: 'bk02-pr-diode', title: 'Diode-connected voltage', q: md`A diode-connected NMOS with $W/L = 50$ carries $0.9\,\text{mA}$. $V_{GS}$?`,
+        parts: [{ lbl: 'V_{GS}', unit: 'V', ans: 1.6, traps: [{ v: 0.6, msg: 'That is $V_{ov}$; add $V_{TN}$.' }] }],
+        hints: [md`$\tfrac12k = 2.5\,\text{mA/V}^2$.`], sol: md`$V_{ov} = \sqrt{0.9/2.5} = 0.6\,\text{V}$, $V_{GS} = 1.6\,\text{V}$.` }),
+      P({ id: 'bk02-pr-mirror', title: 'A 1:5 mirror', q: md`An NMOS mirror with $(W/L)_2 = 5(W/L)_1$ copies $I_{REF} = 40\,\mu\text{A}$; $M_1$ has $W/L = 20$. Find $I_2$, $V_{GS}$, and the largest $R_D$ from $V_{DD} = 5\,\text{V}$ to $M_2$'s drain.`,
+        parts: [{ lbl: 'I_2', unit: 'µA', ans: 200 }, { lbl: 'V_{GS}', unit: 'V', ans: 1.2 }, { lbl: 'R_{D,max}', unit: 'kΩ', ans: 24 }],
+        hints: [md`$M_1$: $\tfrac12k = 1\,\text{mA/V}^2$, so $V_{ov} = \sqrt{0.04} = 0.2\,\text{V}$.`], sol: md`$I_2 = 5\times40 = 200\,\mu\text{A}$; $V_{ov} = 0.2\,\text{V}$, $V_{GS} = 1.2\,\text{V}$; edge $V_{D2} = 0.2\,\text{V}$: $R_D = 4.8\,\text{V}/0.2\,\text{mA} = 24\kO$.` }),
+      P({
+        id: 'bk02-pr-examA', title: 'Exam style A: divider bias, bypassed source, gain',
+        q: md`$V_{DD} = 5\,\text{V}$, $R_1 = R_2 = 500\kO$, NMOS with $W/L = 20$, $R_S = 0.5\kO$ bypassed by a large capacitor $C_S$, $R_D = 2\kO$, $\lambda = 0.05\,\text{V}^{-1}$; the signal enters at the gate through a large capacitor. Find (a) $V_G$, (b) $V_{ov}$, (c) $I_D$, (d) $V_D$, (e) $g_m$, (f) $r_{ds}$, (g) $A_v$.`,
+        fig: bypFig(),
+        parts: [{ lbl: '(a)\\ V_G', unit: 'V', ans: 2.5 }, { lbl: '(b)\\ V_{ov}', unit: 'V', ans: 1 }, { lbl: '(c)\\ I_D', unit: 'mA', ans: 1 }, { lbl: '(d)\\ V_D', unit: 'V', ans: 3 }, { lbl: '(e)\\ g_m', unit: 'mS', ans: 2 }, { lbl: '(f)\\ r_{ds}', unit: 'kΩ', ans: 20 },
+          { lbl: '(g)\\ A_v', unit: 'V/V', ans: -3.636, traps: [{ v: -4, msg: 'Include $r_{ds}$: $2\\,\\text{k}\\Omega\\parallel20\\,\\text{k}\\Omega$.' }] }],
+        hints: [md`$1.5 = V_{ov} + \tfrac12kR_SV_{ov}^2$ with $\tfrac12kR_S = 0.5\,\text{V}^{-1}$.`, md`$C_S$ shorts $R_S$ for signals: the source is at incremental ground.`],
+        sol: md`
+**(a)** $V_G = 2.5\,\text{V}$. **(b)** $0.5V_{ov}^2 + V_{ov} - 1.5 = 0\Rightarrow V_{ov}^2 + 2V_{ov} - 3 = (V_{ov} + 3)(V_{ov} - 1) = 0$: $V_{ov} = 1\,\text{V}$. **(c)** $I_D = \tfrac12(2)(1) = 1\,\text{mA}$ ($V_S = 0.5\,\text{V}$).
+
+**(d)** $V_D = 5 - 2 = 3\,\text{V}\ge1.5\,\text{V}$ ✓. **(e)** $g_m = 2(1)/1 = 2\,\text{mS}$. **(f)** $r_{ds} = 1/(0.05\times1\,\text{mA}) = 20\kO$.
+
+**(g)** Small-signal picture: $C_S$ grounds the source, the divider sits across the input (it does not affect $v_{gs} = v_{in}$), and the drain sees $R_D\parallel r_{ds} = 1.818\kO$: $A_v = -2\times1.818 = -3.64$.`,
+      }),
+      P({
+        id: 'bk02-pr-examB', title: 'Exam style B: a current-source load',
+        q: md`$M_2$ (PMOS, $W/L = 100$, source on $V_{DD} = 5\,\text{V}$, gate at a fixed $V_B$) is a current source of $0.2\,\text{mA}$ feeding $M_1$ (NMOS, $W/L = 40$, source grounded), whose gate carries a bias $V_{GS1}$ plus $v_{in}$. $\lambda = 0.05\,\text{V}^{-1}$ for both. Find (a) $V_{GS1}$, (b) $V_B$, (c) $g_{m1}$, (d) $r_{ds1} = r_{ds2}$, (e) $A_v$, (f) $A_v$ if both $\lambda$ were halved.`,
+        fig: csLoadFig(),
+        parts: [{ lbl: '(a)\\ V_{GS1}', unit: 'V', ans: 1.3162 }, { lbl: '(b)\\ V_B', unit: 'V', ans: 3.7172 }, { lbl: '(c)\\ g_{m1}', unit: 'mS', ans: 1.2649 }, { lbl: '(d)\\ r_{ds}', unit: 'kΩ', ans: 100 },
+          { lbl: '(e)\\ A_v', unit: 'V/V', ans: -63.25, traps: [{ v: -126.5, msg: 'Both $r_{ds}$ load the output: $r_{ds1}\\parallel r_{ds2}$.' }] }, { lbl: '(f)\\ A_v', unit: 'V/V', ans: -126.5 }],
+        hints: [md`$M_1$ must carry $0.2\,\text{mA}$: $V_{ov1} = \sqrt{2(0.2)/4}$.`, md`$M_2$: $V_{SG2} = 1 + \sqrt{2(0.2)/5}$; $V_B = 5 - V_{SG2}$.`, md`The output sees $r_{ds1}\parallel r_{ds2}$.`],
+        sol: md`
+**(a)** $k_1 = 4\,\text{mA/V}^2$: $V_{ov1} = \sqrt{0.1} = 0.316\,\text{V}$, $V_{GS1} = 1.316\,\text{V}$.
+
+**(b)** $k_2 = 5\,\text{mA/V}^2$: $V_{ov2} = \sqrt{0.08} = 0.283\,\text{V}$, $V_{SG2} = 1.283\,\text{V}$, $V_B = 3.717\,\text{V}$.
+
+**(c)** $g_{m1} = 2(0.2)/0.316 = 1.265\,\text{mS}$. **(d)** $r_{ds} = 1/(0.05\times0.2\,\text{mA}) = 100\kO$ for each.
+
+**(e)** $M_2$'s gate and source are incremental grounds, so it is just $r_{ds2}$ (Section 2.5): $A_v = -g_{m1}(r_{ds1}\parallel r_{ds2}) = -1.265\times50 = -63.2$.
+
+**(f)** Both $r_{ds}$ double: $-126.5$. A current-source load makes the gain a pure transistor property, $\tfrac12g_mr_{ds}$ here. (In practice the DC output voltage of this stage is set by the small mismatch between the two currents; Chapter 4 discusses it.)`,
+      }),
+      P({
+        id: 'bk02-pr-examC', title: 'Exam style C: a PMOS with a bypassed source resistor',
+        q: md`PMOS with $W/L = 160$; $R_S = 0.5\kO$ from $V_{DD} = 5\,\text{V}$ to its source, bypassed by a large $C_S$; gate biased at $3\,\text{V}$ (plus $v_{in}$); $R_D = 3\kO$ to ground; $\lambda = 0.04\,\text{V}^{-1}$. Find (a) $V_{ov}$, (b) $I_D$, (c) $V_S$, (d) $V_D$, (e) saturated?, (f) $g_m$, (g) $A_v$.`,
+        fig: pbypFig(),
+        parts: [{ lbl: '(a)\\ V_{ov}', unit: 'V', ans: 0.5 }, { lbl: '(b)\\ I_D', unit: 'mA', ans: 1 }, { lbl: '(c)\\ V_S', unit: 'V', ans: 4.5 }, { lbl: '(d)\\ V_D', unit: 'V', ans: 3 },
+          { lbl: '(e)', mc: ['Yes: $V_D = 3\\le V_G + 1 = 4$', 'No'], a: 0, why: [null, md`For a PMOS the test is $V_D\le V_G + |V_{TP}| = 4\,\text{V}$, and $V_D = 3\,\text{V}$ passes it.`] }, { lbl: '(f)\\ g_m', unit: 'mS', ans: 4 }, { lbl: '(g)\\ A_v', unit: 'V/V', ans: -10.71 }],
+        hints: [md`$V_{SG} = (5 - 0.5I_D) - 3$ with $I_D$ in mA; $V_{ov} = 1 - 0.5I_D$ and $I_D = 4V_{ov}^2$.`],
+        sol: md`
+**(a)** $V_{ov} = 1 - 0.5(4V_{ov}^2) = 1 - 2V_{ov}^2\Rightarrow2V_{ov}^2 + V_{ov} - 1 = (2V_{ov} - 1)(V_{ov} + 1) = 0$: $V_{ov} = 0.5\,\text{V}$. **(b)** $I_D = 4(0.25) = 1\,\text{mA}$. **(c)** $V_S = 4.5\,\text{V}$. **(d)** $V_D = 3\,\text{V}$.
+
+**(e)** $3\le V_G + 1 = 4$ ✓. **(f)** $g_m = 2(1)/0.5 = 4\,\text{mS}$; $r_{ds} = 1/(0.04\times1\,\text{mA}) = 25\kO$.
+
+**(g)** $C_S$ grounds the source for signals: a plain PMOS common source, $A_v = -4\,\text{mS}\times(3\parallel25)\kO = -4\times2.679 = -10.7$.`,
+      }),
+      P({
+        id: 'bk02-pr-examD', title: 'Exam style D: design for a g_m',
+        q: md`Design an NMOS common source: $g_m = 5\,\text{mS}$ at $I_D = 0.5\,\text{mA}$, source grounded, $V_{DD} = 5\,\text{V}$, $\lambda = 0.04\,\text{V}^{-1}$. Find (a) $V_{ov}$, (b) $W/L$, (c) $V_{GS}$, (d) $r_{ds}$, (e) the largest $R_D$ that keeps saturation, (f) $A_v$ with $R_D = 8\kO$.`,
+        parts: [{ lbl: '(a)\\ V_{ov}', unit: 'V', ans: 0.2 }, { lbl: '(b)\\ W/L', unit: '', ans: 250 }, { lbl: '(c)\\ V_{GS}', unit: 'V', ans: 1.2 }, { lbl: '(d)\\ r_{ds}', unit: 'kΩ', ans: 50 }, { lbl: '(e)\\ R_{D,max}', unit: 'kΩ', ans: 9.6 },
+          { lbl: '(f)\\ A_v', unit: 'V/V', ans: -34.48, traps: [{ v: -40, msg: 'Include $r_{ds} = 50\\,\\text{k}\\Omega$ in parallel with $R_D$.' }] }],
+        hints: [md`$V_{ov} = 2I_D/g_m$; then $W/L = 2I_D/(\mu_nC_{ox}V_{ov}^2)$.`],
+        sol: md`
+**(a)** $V_{ov} = 1\,\text{mA}/5\,\text{mS} = 0.2\,\text{V}$. **(b)** $W/L = 1\,\text{mA}/(100\,\mu\times0.04) = 250$. **(c)** $V_{GS} = 1.2\,\text{V}$. **(d)** $r_{ds} = 1/(0.04\times0.5\,\text{mA}) = 50\kO$.
+
+**(e)** Edge $V_D = V_{ov} = 0.2\,\text{V}$: $R_D\le4.8\,\text{V}/0.5\,\text{mA} = 9.6\kO$.
+
+**(f)** $8\parallel50 = 6.897\kO$: $A_v = -5\times6.897 = -34.5$.`,
+      }),
+      G('bk_c2_region', { need: 8, pool: ['bk_c2_region', 'bk_c2_sq', 'bk_c2_pmos', 'bk_c2_rds', 'bk_c2_gm', 'bk_c2_gm_scale', 'bk_c2_cs', 'bk_c2_pcs', 'bk_c2_dc_rs', 'bk_c2_mirror'] }),
     ],
   });
 })();

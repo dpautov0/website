@@ -104,6 +104,26 @@
     return e;
   };
 
+  // a PMOS common source with an NMOS current-source load (gate held)
+  F.csPisrc = (o = {}) => [rail([1, -2]), ['pmos', [1, -1], { n: 'M_1', sz: o.sz1 }], ['w', [1, 0], [1.8, 0]], out([1.8, 0]),
+    ['nmos', [1, 1], { n: 'M_2', sz: o.sz2 }], ['acg', [0, 1]], ['txt', [-0.3, 1.25], '$V_B$', { a: 'r' }], ['gnd', [1, 2]], ...gin(0, -1, o)];
+  // two transistors' models on one output node: M1 below (drain = out, source = ground), M2 above (drain = out,
+  // source = V_DD, its arrow pointing up). o.g1, o.g2: their dependent-source labels; o.mode: 'short' | 'test' | 'open'
+  F.twoM = (o = {}) => {
+    const e = [['w', [1.2, 0], [5.4, 0]],
+      ['G', [1.2, 0], [1.2, 2], { n: o.g1 || 'g_{m1}v_{in}', side: 'l' }], ['R', [2.6, 0], [2.6, 2], { n: 'r_{ds1}' }], ['w', [1.2, 2], [2.6, 2]], ['gnd', [1.9, 2]],
+      ['txt', [1.9, 2.75], '$M_1$'],
+      ['G', [4, 0], [4, -2], { n: o.g2 || 'g_{m2}v_{gs2}', side: 'l' }], ['R', [5.4, -2], [5.4, 0], { n: 'r_{ds2}' }], ['w', [4, -2], [5.4, -2]], ['gndu', [4.7, -2]],
+      ['txt', [4.7, -2.75], `$M_2${o.t2 ? `\\ (${o.t2})` : ''}$`]];
+    if (o.mode === 'short') e.push(...shortAt([5.4, 0]));
+    else if (o.mode === 'test') e.push(...testAt([5.4, 0]));
+    else e.push(...outAt([5.4, 0]));
+    return e;
+  };
+  // a diode-connected PMOS alone, with a test source on its drain: gate tied to the drain, source on V_DD
+  F.pdiodeM = () => [...mm(3, 0, { up: true }), ['w', [3, 0], [3, -0.6]], ['gndu', [3, -0.6]], ['w', [1.2, 1.6], [1.2, 2.5], [3, 2.5], [3, 2]],
+    ...testAt([4.6, 2]), ['txt', [0.95, 2.25], '$\\text{gate tied to drain}$', { a: 'r' }]];
+
   // ---- plots: Schem.plot plus TeX annotations at data coordinates, t = [{x, y, s, a: 'l' | 'r' | 'c'}]
   const flabel = (x, y, s, a = 'c') => {
     const w = 190, h = 56, fx = a === 'l' ? x : a === 'r' ? x - w : x - w / 2;
@@ -125,6 +145,17 @@
       pts: [{ x: 1.4, y: 0.36, n: '' }, { x: 2.5, y: 0.25, n: 'Q' }, { x: 3.4, y: 0.16, n: '' }] },
     [{ x: 4.0, y: 0.39, s: 'V_{GS} = 1.6\\,\\text{V}', a: 'l' }, { x: 4.0, y: 0.28, s: 'V_{GS} = 1.5\\,\\text{V}', a: 'l' }, { x: 4.0, y: 0.19, s: 'V_{GS} = 1.4\\,\\text{V}', a: 'l' },
       { x: 0.9, y: 0.525, s: '\\text{load line: } I_D = (V_{DD} - V_{DS})/R_D', a: 'l' }]);
+  };
+  // the three loads seen from the output: current through each against the voltage across it (V_DD - V_out).
+  // diode: PMOS K = 2.5 mA/V^2 (0.1 mA at 1.2 V, 1/g_m = 1 kOhm); resistor 20 kOhm; current source: 0.1 mA at 1.5 V,
+  // drawn with lambda = 0.1/V so its slight slope shows
+  F.loadsIV = () => {
+    const cs = (v) => { const s = 0.1 * (1 + 0.1 * (v - 1.5)); return v >= 0.2 ? s : s * (0.4 * v - v * v) / 0.04; };
+    return F.plot({ x: [0, 3], y: [0, 0.2], xl: 'V_{DD} - V_{out}\\ (\\text{V})', yl: 'I\\ (\\text{mA})', w: 440, h: 280, xt: [0, 1, 2, 3], yt: [0, 0.05, 0.1, 0.15, 0.2],
+      curves: [{ f: (v) => v / 20, cls: 'dc' }, { f: (v) => (v <= 1 ? 0 : 2.5 * (v - 1) * (v - 1)), to: 1.283 }, { f: cs, cls: 'dash' }],
+      pts: [{ x: 1.2, y: 0.1, n: '' }, { x: 1.5, y: 0.1, n: '' }, { x: 2, y: 0.1, n: '' }] },
+    [{ x: 1.32, y: 0.178, s: '\\text{diode: steep, } 1/g_m = 1\\,\\text{k}\\Omega', a: 'l' }, { x: 2.12, y: 0.062, s: 'R_D = 20\\,\\text{k}\\Omega', a: 'l' },
+      { x: 0.22, y: 0.128, s: '\\text{current source: flat}', a: 'l' }]);
   };
   // the common source transfer curve (same numbers): off, saturation (the amplifier), triode; tangent at Q
   F.csTransfer = () => {
@@ -248,6 +279,137 @@ Sign check: ${s > 0 ? 'current is pulled out of the output when $v_{in}$ rises, 
 
 ${s > 0 ? '$G_M > 0$: the stage pulls current out of its output when $v_{in}$ rises, so it inverts.' : '$G_M < 0$: the stage pushes current into its output when $v_{in}$ rises, so it does not invert.'} The load can only shrink the resistance at the output, so it can only shrink $|A_v|$.`,
       _v: { k: 'norton', p: { GM: GMv, Ro, RL }, a: { Av: A0, AvL: AL } },
+    };
+  };
+
+  // ---------------------------------------------------------------- 2. the common source (NMOS or PMOS)
+  const RNICE = [1, 2, 2.5, 4, 5, 8, 10, 15, 20, 25, 40, 50, 80, 100].map((x) => x * 1e3);
+  const iBox = (lbl, I, o = {}) => (I < 1e-4 ? box(lbl, I, 'µA', 1e6, o) : box(lbl, I, 'mA', 1e3, o));
+  // a saturated transistor at a nice bias: returns {WL, vov, k (mu Cox), ID, gm} or null
+  const randBias = (pm) => {
+    const k = pm ? 50e-6 : 100e-6, WL = pick(pm ? [20, 40, 50, 80, 100, 200] : [10, 20, 25, 40, 50, 100, 200]), vov = pick([0.2, 0.25, 0.4, 0.5]);
+    const ID = 0.5 * k * WL * vov * vov;
+    return { k, WL, vov, ID, gm: 2 * ID / vov };
+  };
+  GENS.bk_cs = () => {
+    const pm = Math.random() < 0.35, T = pm ? 'PMOS' : 'NMOS';
+    if (Math.random() < 0.35) {
+      const gm = pick([0.5, 1, 2, 2.5, 4, 5]) * 1e-3, RD = pick([2, 4, 5, 8, 10, 20]) * 1e3, rds = pick([20, 40, 50, 80, 100, 200]) * 1e3;
+      const Ro = par(RD, rds), Av = -gm * Ro;
+      return {
+        fig: pm ? F.csP({ RD: KO(RD) }) : F.cs({ RD: KO(RD) }),
+        q: `A ${T} common source stage: $g_m = ${MS(gm)}$, $r_{ds} = ${KO(rds)}$, $R_D = ${KO(RD)}$. Find $G_M$, $R_{out}$ and $A_v$.`,
+        parts: [gBox('G_M', gm, { key: 'GM' }),
+          resBox('R_{out}', Ro, { key: 'Ro', traps: [{ v: RD, msg: 'That is $R_D$ alone: $r_{ds}$ also runs from the drain to (incremental) ground.' }, { v: RD + rds, msg: '$R_D$ and $r_{ds}$ are in parallel, not series: each goes from the drain to an incremental ground.' }] }),
+          nBox('A_v', Av, { key: 'Av', traps: [{ v: -gm * RD, msg: 'That is $-g_mR_D$: $r_{ds}$ sits in parallel with $R_D$ and lowers the resistance at the drain.' }] })],
+        hints: ['Short the drain: $R_D$ and $r_{ds}$ carry nothing, so $G_M = g_m$.', '$v_{in} = 0$ kills the dependent source: $R_{out} = R_D\\parallel r_{ds}$.'],
+        sol: `1. **$G_M$** (drain shorted): $v_{gs} = v_{in}$; $R_D$ and $r_{ds}$ have 0 V across them; the short supplies $g_mv_{in}$. $G_M = g_m = ${MS(gm)}$.
+2. **$R_{out}$** ($v_{in} = 0$, so $v_{gs} = 0$ and the dependent source is open): $R_D\\parallel r_{ds} = \\dfrac{(${f(RD / 1e3, 3)})(${f(rds / 1e3, 3)})}{${f(RD / 1e3, 3)} + ${f(rds / 1e3, 3)}}\\,\\text{k}\\Omega = ${KO(Ro)}$.
+3. **$A_v$** $= -G_MR_{out} = -(${MS(gm)})(${KO(Ro)}) = ${G4(Av)}$.
+
+Sign check: $v_{in}$ up${pm ? ' lowers $V_{SG}$, so less current flows down into $R_D$' : ' pulls more current down through $R_D$'}: the drain falls. Inverting.`,
+        _v: { k: 'cs', p: { gm, rds, RD }, a: { GM: gm, Ro, Av } },
+      };
+    }
+    // from the bias: W/L, V_GS (or the PMOS gate voltage), lambda, R_D -> I_D, g_m, r_ds, A_v
+    let b, RD, VDD = 5;
+    for (let t = 0; t < 50; t++) {
+      b = randBias(pm);
+      const ok = RNICE.filter((r) => b.ID * r >= 1 && b.ID * r <= VDD - b.vov - 0.8);
+      if (ok.length) { RD = pick(ok); break; }
+    }
+    const lam = pick([0.02, 0.04, 0.05, 0.1]), rds = 1 / (lam * b.ID), Ro = par(RD, rds), Av = -b.gm * Ro;
+    const VRD = b.ID * RD, Vgs = 1 + b.vov, VG = pm ? VDD - Vgs : Vgs;
+    const VD = pm ? VRD : VDD - VRD;
+    return {
+      fig: pm ? F.csP({ RD: KO(RD), sz: `${b.WL}/1`, bias: `${f(VG)}\\,\\text{V}` }) : F.cs({ RD: KO(RD), sz: `${b.WL}/1`, bias: `${f(VG)}\\,\\text{V}` }),
+      q: `${T} common source: $W/L = ${b.WL}/1$, ${pm ? '$\\mu_pC_{ox} = 50\\,\\mu\\text{A/V}^2$, $|V_{TP}| = 1\\,\\text{V}$' : '$\\mu_nC_{ox} = 100\\,\\mu\\text{A/V}^2$, $V_{TN} = 1\\,\\text{V}$'}, $\\lambda = ${lam}\\,\\text{V}^{-1}$, $V_{DD} = ${VDD}\\,\\text{V}$, $R_D = ${KO(RD)}$. The gate sits at a DC voltage of $${f(VG)}\\,\\text{V}$ with $v_{in}$ riding on it. Find $I_D$ (ignore $\\lambda$ at DC), $g_m$, $r_{ds}$ and $A_v$.`,
+      parts: [iBox('I_D', b.ID, { key: 'ID' }), gBox('g_m', b.gm, { key: 'gm', traps: [{ v: 2 * b.ID / Vgs, msg: 'That uses $V_{GS}$; $g_m = 2I_D/V_{ov}$ with the overdrive $V_{ov} = V_{GS} - V_{TN}$.' }] }),
+        resBox('r_{ds}', rds, { key: 'rds' }), nBox('A_v', Av, { key: 'Av', traps: [{ v: -b.gm * RD, msg: 'That ignores $r_{ds}$, which is in parallel with $R_D$.' }] })],
+      hints: [`$${pm ? 'V_{SG} = V_{DD} - V_G' : 'V_{GS} = V_G'} = ${f(Vgs)}\\,\\text{V}$, so $V_{ov} = ${f(b.vov)}\\,\\text{V}$ and $I_D = \\tfrac12\\mu C_{ox}\\tfrac WLV_{ov}^2$.`,
+        '$g_m = 2I_D/V_{ov}$, $r_{ds} = 1/(\\lambda I_D)$, $A_v = -g_m(R_D\\parallel r_{ds})$.'],
+      sol: `1. **DC.** ${pm ? `$V_{SG} = ${VDD} - ${f(VG)} = ${f(Vgs)}\\,\\text{V}$` : `$V_{GS} = ${f(Vgs)}\\,\\text{V}$`}, $V_{ov} = ${f(b.vov)}\\,\\text{V}$. $I_D = \\tfrac12(${pm ? 50 : 100}\\,\\mu\\text{A/V}^2)(${b.WL})(${f(b.vov)})^2 = ${MA(b.ID)}$.
+2. **Saturation check.** $V_D = ${pm ? `I_DR_D = ${f(VD, 3)}\\,\\text{V}` : `${VDD} - I_DR_D = ${f(VD, 3)}\\,\\text{V}`}$, so $${pm ? 'V_{SD}' : 'V_{DS}'} = ${f(pm ? VDD - VD : VD, 3)}\\,\\text{V}\\ge V_{ov}$: saturated.
+3. **Small-signal parameters.** $g_m = \\dfrac{2I_D}{V_{ov}} = ${MS(b.gm)}$; $r_{ds} = \\dfrac{1}{\\lambda I_D} = ${OH(rds)}$.
+4. **Gain.** $R_{out} = R_D\\parallel r_{ds} = ${OH(Ro)}$, $A_v = -g_mR_{out} = ${G4(Av)}$.
+
+Quick check from the DC drop: $2V_{R_D}/V_{ov} = 2(${f(VRD, 3)})/${f(b.vov)} = ${f(2 * VRD / b.vov, 3)}$ without $r_{ds}$; with it, a little less.`,
+      _v: { k: 'csbias', p: { pm, WL: b.WL, VG, lam, VDD, RD }, a: { ID: b.ID, gm: b.gm, rds, Av } },
+    };
+  };
+
+  // ---------------------------------------------------------------- 3. the three loads, and the inverter
+  GENS.bk_loads = () => {
+    const form = pick(['sizes', 'sizes', 'diodeR', 'isrc', 'isrc', 'inv']);
+    if (form === 'sizes') {
+      const pd = Math.random() < 0.6, g = pick([2, 3, 4, 5, 6, 8]);
+      let WL2 = pick([1, 2, 4, 5, 10]);
+      if (pd && (g * g * WL2) % 2) WL2 *= 2;
+      const WL1 = pd ? g * g * WL2 / 2 : g * g * WL2, Av = -g;
+      const ratio = pd ? (100 * WL1) / (50 * WL2) : WL1 / WL2;
+      return {
+        fig: pd ? F.csDiodeP({ sz1: `${WL1}/1`, sz2: `${WL2}/1` }) : F.csDiodeN({ sz1: `${WL1}/1`, sz2: `${WL2}/1` }),
+        q: `$M_1$ (NMOS, $W/L = ${WL1}/1$) has a diode-connected ${pd ? 'PMOS' : 'NMOS'} load $M_2$ ($W/L = ${WL2}/1$). Course parameters ($\\mu_nC_{ox} = 100$, $\\mu_pC_{ox} = 50\\,\\mu\\text{A/V}^2$). Ignoring $r_{ds}$, find $A_v$.`,
+        parts: [nBox('A_v', Av, { key: 'Av', traps: [{ v: -ratio, msg: 'That is the ratio of $\\mu C_{ox}W/L$ itself. The gain is the ratio of the $g_m$\'s, which is its **square root**.' },
+          ...(pd ? [{ v: -Math.sqrt(WL1 / WL2), msg: 'Include the mobility ratio: $\\mu_nC_{ox}/\\mu_pC_{ox} = 2$ goes under the square root with the sizes.' }] : []),
+          { v: g, msg: 'A common source inverts: $A_v$ is negative.' }] })],
+        hints: ['Same current through both. $A_v\\approx-g_{m1}/g_{m2}$ and $g_m = \\sqrt{2\\mu C_{ox}(W/L)I_D}$.', `$\\dfrac{g_{m1}}{g_{m2}} = \\sqrt{\\dfrac{${pd ? '\\mu_n' : '\\mu'}(W/L)_1}{${pd ? '\\mu_p' : '\\mu'}(W/L)_2}}$.`],
+        sol: `1. The diode-connected $M_2$ looks like $1/g_{m2}$ (its gate moves with the output), so $R_{out}\\approx1/g_{m2}$ and $A_v\\approx-g_{m1}/g_{m2}$.
+2. Both carry the same $I_D$, and $g_m = \\sqrt{2\\mu C_{ox}(W/L)I_D}$, so $I_D$ cancels in the ratio:
+$$\\frac{g_{m1}}{g_{m2}} = \\sqrt{\\frac{${pd ? '100' : '\\mu_nC_{ox}'}\\times${WL1}}{${pd ? '50' : '\\mu_nC_{ox}'}\\times${WL2}}} = \\sqrt{${f(ratio)}} = ${g}$$
+3. $A_v\\approx-${g}$.
+
+A gain of ${g} needs a ${f(ratio)}:1 ratio of $\\mu C_{ox}W/L$: the square root makes diode loads good for small, predictable gains only.`,
+        _v: { k: 'diodesize', p: { pd, WL1, WL2 }, a: { Av } },
+      };
+    }
+    if (form === 'diodeR') {
+      const gm1 = pick([1, 2, 4, 5]) * 1e-3, gm2 = pick([0.25, 0.5, 1, 2]) * 1e-3, rds1 = pick([50, 100, 200]) * 1e3, rds2 = pick([50, 100, 200]) * 1e3;
+      const Ro = par(rds1, rds2, 1 / gm2), Av = -gm1 * Ro;
+      return {
+        fig: F.csDiodeP(),
+        q: `Common source with a diode-connected PMOS load: $g_{m1} = ${MS(gm1)}$, $r_{ds1} = ${KO(rds1)}$, $g_{m2} = ${MS(gm2)}$, $r_{ds2} = ${KO(rds2)}$. Keeping every $r_{ds}$, find $R_{out}$ and $A_v$.`,
+        parts: [resBox('R_{out}', Ro, { key: 'Ro', traps: [{ v: 1 / gm2, msg: 'That is $1/g_{m2}$ alone; the question keeps both $r_{ds}$, which are in parallel with it.' }, { v: par(rds1, rds2), msg: 'That forgets the diode\'s own $1/g_{m2}$, the smallest of the three.' }] }),
+          nBox('A_v', Av, { key: 'Av', traps: [{ v: -gm1 / gm2, msg: 'That is the approximation $-g_{m1}/g_{m2}$; keep the two $r_{ds}$.' }] })],
+        hints: ['Short the output: the diode has 0 V on its gate and drain, so $G_M = g_{m1}$.', 'Three things from the output to incremental ground: $r_{ds1}$, $r_{ds2}$ and the diode\'s $1/g_{m2}$.'],
+        sol: `1. $G_M = g_{m1} = ${MS(gm1)}$ (with the output shorted the diode's $v_{gs2} = 0$ and its $r_{ds2}$ has 0 V across it).
+2. $R_{out} = r_{ds1}\\parallel r_{ds2}\\parallel\\dfrac{1}{g_{m2}} = \\dfrac{1}{${f(1e3 / rds1, 3)} + ${f(1e3 / rds2, 3)} + ${f(gm2 * 1e3, 3)}}\\,\\text{k}\\Omega = ${OH(Ro)}$ (conductances in mS add).
+3. $A_v = -(${MS(gm1)})(${OH(Ro)}) = ${G4(Av)}$, close to $-g_{m1}/g_{m2} = ${f(-gm1 / gm2, 3)}$.`,
+        _v: { k: 'load', p: { load: 'pdiode', gm1, rds1, gm2, rds2 }, a: { Ro, Av } },
+      };
+    }
+    if (form === 'isrc') {
+      const ID = pick([50, 100, 200, 250]) * 1e-6, vov = pick([0.1, 0.2, 0.25, 0.4]), ln = pick([0.02, 0.04, 0.05]), lp = pick([0.04, 0.05, 0.1]);
+      const gm1 = 2 * ID / vov, rds1 = 1 / (ln * ID), rds2 = 1 / (lp * ID), Ro = par(rds1, rds2), Av = -gm1 * Ro;
+      return {
+        fig: F.csIsrc(),
+        q: `Common source with a PMOS current-source load ($M_2$'s gate held at $V_B$). $I_D = ${MA(ID)}$, $V_{ov1} = ${f(vov)}\\,\\text{V}$, $\\lambda_n = ${ln}\\,\\text{V}^{-1}$, $\\lambda_p = ${lp}\\,\\text{V}^{-1}$. Find $g_{m1}$, $r_{ds1}$, $r_{ds2}$ and $A_v$.`,
+        parts: [gBox('g_{m1}', gm1, { key: 'gm1' }), resBox('r_{ds1}', rds1, { key: 'rds1' }), resBox('r_{ds2}', rds2, { key: 'rds2' }),
+          nBox('A_v', Av, { key: 'Av', traps: [{ v: -gm1 * rds1, msg: 'That is the intrinsic gain $-g_{m1}r_{ds1}$: the load\'s $r_{ds2}$ is in parallel with $r_{ds1}$.' }, { v: -gm1 * (rds1 + rds2), msg: 'Parallel, not series: both run from the output to an incremental ground.' }] })],
+        hints: ['$g_m = 2I_D/V_{ov}$ and $r_{ds} = 1/(\\lambda I_D)$.', `$A_v = -g_{m1}(r_{ds1}\\parallel r_{ds2}) = -\\dfrac{2}{(\\lambda_n + \\lambda_p)V_{ov1}}$.`],
+        sol: `1. $g_{m1} = \\dfrac{2I_D}{V_{ov1}} = ${MS(gm1)}$.
+2. $r_{ds1} = \\dfrac{1}{\\lambda_nI_D} = ${OH(rds1)}$, $r_{ds2} = \\dfrac{1}{\\lambda_pI_D} = ${OH(rds2)}$.
+3. $M_2$'s gate is held and its source is on $V_{DD}$, so $v_{gs2} = 0$ and it is just $r_{ds2}$. $R_{out} = r_{ds1}\\parallel r_{ds2} = ${OH(Ro)}$.
+4. $A_v = -g_{m1}R_{out} = ${G4(Av)}$.
+
+Shortcut: $A_v = -\\dfrac{2}{(\\lambda_n + \\lambda_p)V_{ov1}} = -\\dfrac{2}{(${f(ln + lp)})(${f(vov)})} = ${G4(-2 / ((ln + lp) * vov))}$. The current cancels.`,
+        _v: { k: 'load', p: { load: 'isrc', gm1, rds1, gm2: 1e-3, rds2, ID, vov, ln, lp }, a: { gm1, rds1, rds2, Av } },
+      };
+    }
+    // the CMOS inverter as an amplifier
+    const ID = pick([0.1, 0.2, 0.25]) * 1e-3, von = pick([0.2, 0.25]), vop = pick([0.25, 0.4, 0.5]), lam = pick([0.05, 0.1]);
+    const gm1 = 2 * ID / von, gm2 = 2 * ID / vop, rds = 1 / (lam * ID), Ro = rds / 2, GMv = gm1 + gm2, Av = -GMv * Ro;
+    return {
+      fig: F.inv(),
+      q: `A CMOS inverter used as an amplifier: both gates driven by $v_{in}$, both transistors saturated at $I_D = ${MA(ID)}$. NMOS $V_{ov} = ${f(von)}\\,\\text{V}$, PMOS $|V_{ov}| = ${f(vop)}\\,\\text{V}$, $\\lambda = ${lam}\\,\\text{V}^{-1}$ for both. Find $G_M$, $R_{out}$ and $A_v$.`,
+      parts: [gBox('G_M', GMv, { key: 'GM', traps: [{ v: gm1, msg: 'That is $g_{m1}$ alone. The PMOS is driven too: it pushes less current in when $v_{in}$ rises, which also pulls the output down.' }, { v: gm1 - gm2, msg: 'The two do not fight: both effects lower the output, so they add.' }] }),
+        resBox('R_{out}', Ro, { key: 'Ro' }), nBox('A_v', Av, { key: 'Av' })],
+      hints: ['Short the output: $M_1$ pulls $g_{m1}v_{in}$ down; the PMOS has $v_{gs2} = v_{in}$ too, so it carries $g_{m2}v_{in}$ from the output up to $V_{DD}$.', '$R_{out} = r_{ds1}\\parallel r_{ds2}$.'],
+      sol: `1. $g_{m1} = 2I_D/V_{ov,n} = ${MS(gm1)}$, $g_{m2} = 2I_D/|V_{ov,p}| = ${MS(gm2)}$, $r_{ds} = 1/(\\lambda I_D) = ${OH(rds)}$ for both.
+2. **$G_M$:** with the output shorted, both dependent sources take current out of the output node ($M_1$ down to ground, $M_2$ up to $V_{DD}$), so $G_M = g_{m1} + g_{m2} = ${MS(GMv)}$.
+3. **$R_{out}$:** $v_{in} = 0$ kills both; $r_{ds1}\\parallel r_{ds2} = ${OH(Ro)}$.
+4. $A_v = -(${MS(GMv)})(${OH(Ro)}) = ${G4(Av)}$.`,
+      _v: { k: 'load', p: { load: 'inv', gm1, rds1: rds, gm2, rds2: rds }, a: { GM: GMv, Ro, Av } },
     };
   };
 })();

@@ -914,8 +914,8 @@ Output resistance: $R_E$ in parallel with what the emitter shows, $r_e + R_S/(\\
     const Av = al * RC / (re + RS);
     return {
       fig: [['rail', [1, -1.2], { n: 'V_{CC}' }], ['R', [1, -1.2], [1, 0], { n: 'R_C', s: kOs(RC) }], ['w', [1, 0], [1.8, 0]], ['term', [1.8, 0], { n: 'v_{out}' }], ['npn', [1, 1]], ['acg', [0, 1]],
-        ...(RS ? [['R', [1, 2], [1, 3.2], { n: 'R_S', s: `${RS}\\,\\Omega` }], ['Vac', [1, 3.2], [1, 4.4], { n: 'v_s', side: 'l' }], ['V', [1, 4.4], [1, 5.6], { n: 'V_{EE}', side: 'l' }], ['gnd', [1, 5.6]]]
-          : [['Vac', [1, 2], [1, 3.2], { n: 'v_s', side: 'l' }], ['V', [1, 3.2], [1, 4.4], { n: 'V_{EE}', side: 'l' }], ['gnd', [1, 4.4]]])],
+        ...(RS ? [['R', [1, 2], [1, 3.2], { n: 'R_S', s: `${RS}\\,\\Omega` }], ['Vac', [1, 3.2], [1, 4.4], { n: 'v_s', side: 'l' }], ['V', [1, 5.6], [1, 4.4], { n: 'V_{EE}', side: 'l' }], ['gnd', [1, 5.6]]]
+          : [['Vac', [1, 2], [1, 3.2], { n: 'v_s', side: 'l' }], ['V', [1, 4.4], [1, 3.2], { n: 'V_{EE}', side: 'l' }], ['gnd', [1, 4.4]]])],
       q: `A common-base stage biased at $I_C = ${T.mA(IC)}$, $\\beta = ${beta}$ (ignore $r_o$; the base is held at a fixed bias). The source drives the emitter${RS ? ` through $R_S = ${RS}\\,\\Omega$` : ''}. Find $r_e$ (the input resistance at the emitter) and $A_v = v_{out}/v_s$.`,
       parts: [reP, { lbl: 'A_v', unit: '', ans: Av, accept: [gm * RC / (1 + gm * RS)], traps: notNear([{ v: -Av, msg: 'Sign: a common base does **not** invert. Raising the emitter reduces $V_{BE}$, less current flows in $R_C$, and the collector rises.' }], [Av]) }],
       hints: ['With the base held, the emitter looks like $r_e$.', 'The source pushes $i_e = v_s/(R_S + r_e)$ out of the emitter (into the transistor in the opposite sense); the collector carries $\\alpha$ of it through $R_C$.'],

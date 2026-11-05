@@ -57,7 +57,7 @@
   ];
 
   // ================================================================ Ch 1.1  gain = slope at the bias point
-  GENS.bk_bias_q = () => {
+  GENS.bk_c1_bias = () => {
     let k, RD, ov, VDD, ID, VOUT, Av, tries = 0;
     do {
       k = pick([0.5, 1, 2, 4]) * 1e-3;
@@ -94,7 +94,7 @@
   };
 
   // ================================================================ Ch 1.2  how small is small
-  GENS.bk_tan_sq = () => {
+  GENS.bk_c1_tan_sq = () => {
     const K = pick([2, 5, 10, 25]) * 1e-3, ov = pick([0.1, 0.15, 0.2, 0.25, 0.3, 0.4, 0.5]);
     const vgs = pick([2, 5, 10, 20, 30, 50].filter((m) => m * 1e-3 <= ov / 2)) * 1e-3;
     const pct = pick([1, 2, 5]);
@@ -121,7 +121,7 @@ Expand: $i_D = K(V_{ov} + v_{gs})^2 = KV_{ov}^2 + 2KV_{ov}v_{gs} + Kv_{gs}^2$.
     };
   };
 
-  GENS.bk_tan_exp = () => {
+  GENS.bk_c1_tan_exp = () => {
     const I = pick([0.1, 0.25, 0.5, 1, 2, 5]) * 1e-3, vd = pick([1, 2, 3, 4, 5, 8, 10]) * 1e-3;
     const x = vd / VT, slope = I / VT, lin = slope * vd, exact = I * (Math.exp(x) - 1), err = 100 * (exact - lin) / lin, est = 100 * x / 2;
     return {
@@ -152,7 +152,7 @@ Expand: $i_D = K(V_{ov} + v_{gs})^2 = KV_{ov}^2 + 2KV_{ov}v_{gs} + Kv_{gs}^2$.
       : [['D', [2.2, -0.2], [2.2, 0.8]], ['D', [2.2, 0.8], [2.2, 1.8]], ['w', [2.2, 1.8], [2.2, 2]]]),
     ['gnd', [2.2, 2]], ['w', [2.2, -0.6], [3, -0.6]], ['term', [3, -0.6], { n: 'v_{OUT}' }],
   ];
-  GENS.bk_diode = () => {
+  GENS.bk_c1_diode = () => {
     const n = pick([1, 1, 2]), VS = pick([3, 5, 5, 10, 12]);
     let R, I, tries = 0;
     do { R = pick([1, 1.5, 2, 2.2, 3.3, 4.3, 4.7, 5.6, 8.2, 10, 15, 22]) * 1e3; I = (VS - 0.7 * n) / R; tries++; } while ((I < 0.1e-3 || I > 5e-3) && tries < 200);
@@ -186,7 +186,7 @@ $$|v_{out}| = ${mv(vs)}\times\frac{${ohm(n * rd)}}{${ohm(R)} + ${ohm(n * rd)}} =
     ['C', [2.8, 0], [3.6, 0], { n: 'C_2' }], ['w', [3.6, 0], [4.4, 0], [5, 0]],
     ...(rl ? [['R', [4.4, 0], [4.4, 1.4], { n: 'R_L', s: rl }], ['gnd', [4.4, 1.4]]] : []), ['term', [5, 0], { n: 'v_{out}' }],
   ];
-  GENS.bk_two_atten = () => {
+  GENS.bk_c1_two = () => {
     const design = Math.random() < 0.35;
     if (design) {
       const RS = pick([100, 200, 500, 1000, 2000]), g = pick([0.05, 0.1, 0.2, 0.25, 0.5]);
@@ -239,7 +239,7 @@ $$I_B = \frac{25\,\text{mV}}{${ohm(rd)}} = ${amp(IB)}$$`,
     ['w', [1.4, 0], [3.8, 0]], ['R', [3.8, 0], [3.8, 1.2], { n: 'R_a', s: ra }], ['node', [3.8, 1.2], { n: 'C', side: 'l' }],
     ['R', [3.8, 1.2], [3.8, 2.4], { n: 'R_b', s: rb, side: 'l' }], ['gnd', [3.8, 2.4]], ['vlab', [4.2, 1.35], [4.2, 2.25], { n: 'v_c' }],
   ];
-  GENS.bk_test_div = () => {
+  GENS.bk_c1_test_div = () => {
     const Ra = pick([1, 2, 3, 4, 5, 9]) * 1e3, Rb = pick([1, 1, 2, 3]) * 1e3, gm = pick([1, 2, 4, 5, 10]) * 1e-3;
     const Rp = pick([null, null, 1e3, 2e3, 5e3]);
     const K = Rb / (Ra + Rb), Gs = gm * K, R = 1 / (1 / (Ra + Rb) + Gs + (Rp ? 1 / Rp : 0));
@@ -268,7 +268,7 @@ $$R_A = ${Rp ? '\\frac{1}{g_mK}\\parallel(R_a + R_b)\\parallel R_p' : '\\frac{1}
     ['G', [3.2, 0], [3.2, 1.4], { n: 'g_mv_1', s: gm, side: 'r' }], ['gnd', [3.2, 1.4]],
     ['w', [3.2, 0], [4.9, 0]], ['R', [4.9, 0], [4.9, 1.4], { n: 'R_2', s: r2 }], ['gnd', [4.9, 1.4]], ['w', [4.9, 0], [5.7, 0]], ['term', [5.7, 0], { n: 'v_{out}' }],
   ];
-  GENS.bk_test_fb = () => {
+  GENS.bk_c1_test_fb = () => {
     const R1 = pick([0.5, 1, 1, 2]) * 1e3, RF = pick([4, 5, 10, 20]) * 1e3, R2 = pick([2, 5, 10, 20]) * 1e3, gm = pick([2, 4, 5, 10]) * 1e-3;
     const Rout = 1 / (1 / R2 + (1 + gm * R1) / (R1 + RF));
     const Av = R2 * (1 - gm * RF) / (R1 + R2 + RF + gm * R1 * R2);
@@ -294,7 +294,7 @@ $$\frac{v_{out}}{v_s} = \frac{R_2(1 - g_mR_F)}{R_1 + R_2 + R_F + g_mR_1R_2} = \f
 
   // ================================================================ Ch 1.6  sizes: who wins
   const NICE = [100, 200, 250, 500, 1e3, 2e3, 2.5e3, 5e3, 10e3, 20e3, 50e3, 100e3, 200e3, 500e3, 1e6];
-  GENS.bk_sizes = () => {
+  GENS.bk_c1_sizes = () => {
     const mode = pick(['par2', 'par2', 'ser2', 'par3', 'gain']);
     if (mode === 'gain') {
       const gm = pick([1, 2, 4, 5]) * 1e-3, RD = pick([5e3, 10e3, 20e3]), RL = pick([10e3, 20e3, Infinity]), rds = pick([50e3, 100e3, 200e3, 500e3]);
@@ -355,7 +355,7 @@ Conductances: $\dfrac{1}{${ohm(a)}} + \dfrac{1}{${ohm(b)}} + \dfrac{1}{${ohm(c)}
       ['txt', [1.25, 2.3], `$${p ? 'D' : 'S'}:\\ ${p ? 'V_D' : 'V_S'} = ${f(p ? vd : vs)}\\,\\text{V}$`, { a: 'l' }],
       ['txt', [-0.45, 1.3], `$G:\\ V_G = ${f(vg)}\\,\\text{V}$`, { a: 'r' }]];
   };
-  GENS.bk_mos_region = () => {
+  GENS.bk_c2_region = () => {
     const WL = pick([10, 20, 50, 100]), k = MUN * WL, reg = pick([0, 1, 1, 2, 2, 2]);
     const VS = pick([0, 0, 0.5, 1]);
     const VGS = reg === 0 ? pick([0.4, 0.6, 0.8, 0.9]) : pick([1.2, 1.4, 1.5, 1.8, 2, 2.5]);
@@ -383,7 +383,7 @@ ${reg === 0 ? '' : md`2. $V_D = ${f(VD)}\,\text{V}$ against $V_G - V_{TN} = ${f(
     };
   };
 
-  GENS.bk_mos_sq = () => {
+  GENS.bk_c2_sq = () => {
     const unit = pick([100, 200, 250, 500]), mult = pick([0.25, 0.5, 1, 2, 4]), WL = unit * mult, k = MUN * WL;
     const sz = mult === 0.25 ? '\\tfrac14X' : mult === 0.5 ? '\\tfrac12X' : `${mult}X`;
     const ov = pick([0.1, 0.2, 0.25, 0.3, 0.4, 0.5]), ID = 0.5 * k * ov * ov;
@@ -418,7 +418,7 @@ ${reg === 0 ? '' : md`2. $V_D = ${f(VD)}\,\text{V}$ against $V_G - V_{TN} = ${f(
     ['pmos', [1, 1.8]], ['w', [0, 1.8], [-0.6, 1.8]], ['term', [-0.6, 1.8], { n: `V_G = ${vg}`, side: 'l' }],
     ['R', [1, 2.8], [1, 4.2], { n: 'R_D', s: rd }], ['gnd', [1, 4.2]], ['w', [1, 2.8], [1.8, 2.8]], ['term', [1.8, 2.8], { n: 'V_D' }],
   ];
-  GENS.bk_pmos = () => {
+  GENS.bk_c2_pmos = () => {
     let VDD, WL, VSG, RD, kp, ov, I, VG, VD, tries = 0;
     do {
       VDD = pick([3, 5, 5]); WL = pick([20, 50, 100, 200, 400]); VSG = pick([1.2, 1.3, 1.4, 1.5, 1.6, 2]); RD = pick([1, 2, 2.5, 4, 5, 10]) * 1e3;
@@ -445,7 +445,7 @@ ${reg === 0 ? '' : md`2. $V_D = ${f(VD)}\,\text{V}$ against $V_G - V_{TN} = ${f(
   };
 
   // ================================================================ Ch 2.3  r_ds and lambda
-  GENS.bk_rds = () => {
+  GENS.bk_c2_rds = () => {
     if (Math.random() < 0.5) {
       const lam = pick([0.01, 0.02, 0.025, 0.04, 0.05, 0.1]), I = pick([0.05, 0.1, 0.2, 0.25, 0.4, 0.5, 1, 2]) * 1e-3;
       const r = 1 / (lam * I), I2 = I * pick([2, 4]);
@@ -472,7 +472,7 @@ ${reg === 0 ? '' : md`2. $V_D = ${f(VD)}\,\text{V}$ against $V_G - V_{TN} = ${f(
   };
 
   // ================================================================ Ch 2.4  g_m
-  GENS.bk_gm = () => {
+  GENS.bk_c2_gm = () => {
     const p = Math.random() < 0.35, mu = p ? MUP : MUN, WL = pick([10, 20, 50, 100, 200, 500]), k = mu * WL;
     const lam = pick([0.02, 0.04, 0.05, 0.1]), mode = pick(['VGS', 'ID', 'IDov']);
     let ov, I;
@@ -499,7 +499,7 @@ ${reg === 0 ? '' : md`2. $V_D = ${f(VD)}\,\text{V}$ against $V_G - V_{TN} = ${f(
     };
   };
 
-  GENS.bk_gm_scale = () => {
+  GENS.bk_c2_gm_scale = () => {
     const I1 = pick([0.1, 0.2, 0.5, 1]) * 1e-3, ov1 = pick([0.2, 0.25, 0.4]), gm1 = 2 * I1 / ov1, n = pick([2, 4, 9]);
     const mode = pick(['I', 'WL', 'both']);
     const gm2 = mode === 'both' ? gm1 * n : gm1 * Math.sqrt(n);
@@ -534,7 +534,7 @@ New $g_m = ${ms(gm2)}$, new $V_{ov} = ${volt(ov2)}$. Check with Form 2: $2I_D/V_
     resAns('r_{ds}', rds),
     numAns('A_v', 'V/V', Av, [{ v: -gm * (RL ? par(RD, RL) : RD), msg: 'Include $r_{ds}$: it is in parallel at the drain.' }, ...(RL ? [{ v: -gm * par(RD, rds), msg: 'The load is in parallel at the drain too.' }] : [])]),
   ];
-  GENS.bk_cs_model = () => {
+  GENS.bk_c2_cs = () => {
     let unit, mult, WL, ov, lam, RD, VDD, I, VD, tries = 0;
     do {
       unit = pick([100, 200, 250, 500]); mult = pick([0.5, 1, 2, 4]); WL = unit * mult; ov = pick([0.2, 0.25, 0.3, 0.4, 0.5]);
@@ -558,7 +558,7 @@ $$A_v = -(${ms(gm)})(${ohm(Rout)}) = ${f(Av, 4)}$$`,
     };
   };
 
-  GENS.bk_pmos_model = () => {
+  GENS.bk_c2_pcs = () => {
     let WL, ov, lam, RD, VDD, I, VD, VG, tries = 0;
     do {
       WL = pick([50, 100, 200, 400, 1000]); ov = pick([0.2, 0.25, 0.3, 0.4, 0.5]); lam = pick([0.02, 0.04, 0.05, 0.1]);
@@ -583,7 +583,7 @@ $$A_v = -g_m(R_D\parallel r_{ds}${RL ? '\\parallel R_L' : ''}) = -(${ms(gm)})(${
   // ================================================================ Ch 2.7  DC operating point
   const rsFig = (vg, rs, rd, vdd) => [['rail', [1, -1.4], { n: `V_{DD} = ${vdd}` }], ['R', [1, -1.4], [1, 0], { n: 'R_D', s: rd }], ['w', [1, 0], [1.8, 0]], ['term', [1.8, 0], { n: 'V_D' }],
     ['nmos', [1, 1]], ['w', [0, 1], [-0.6, 1]], ['term', [-0.6, 1], { n: `V_G = ${vg}`, side: 'l' }], ['node', [1, 2], { n: 'V_S', side: 'r' }], ['R', [1, 2], [1, 3.2], { n: 'R_S', s: rs }], ['gnd', [1, 3.2]]];
-  GENS.bk_dc_rs = () => {
+  GENS.bk_c2_dc_rs = () => {
     let VG, k, RS, VDD, RD, ov, I, VD, tries = 0;
     do {
       VG = pick([2, 2.5, 3, 4]); k = pick([0.5, 1, 2, 4]) * 1e-3; RS = pick([0.5, 1, 2, 4]) * 1e3; VDD = pick([5, 10]); RD = pick([1, 2, 4, 5, 10]) * 1e3;
@@ -616,7 +616,7 @@ $$${f(VG - 1)} = V_{ov} + ${f(h)}\,V_{ov}^2\quad\Rightarrow\quad V_{ov} = \frac{
       ['rail', [3, 0], { n: 'V_{DD}' }], ['pmos', [3, 1], { n: 'M_2', sz: s2 }], ['R', [3, 2], [3, 3.2], { n: 'R_D' }], ['gnd', [3, 3.2]], ['w', [3, 2], [3.8, 2]], ['term', [3.8, 2], { n: 'V_{D2}' }]]
     : [['rail', [1, -1.2], { n: 'V_{DD}' }], ['I', [1, -1.2], [1, 0], { n: 'I_{REF}', s: iref, side: 'l' }], ['nmos', [1, 1], { n: 'M_1', flip: true, dc: true, sz: s1 }], ['gnd', [1, 2]],
       ['nmos', [3, 1], { n: 'M_2', sz: s2 }], ['gnd', [3, 2]], ['rail', [3, -1.2], { n: 'V_{DD}' }], ['R', [3, -1.2], [3, 0], { n: 'R_D' }], ['w', [3, 0], [3.8, 0]], ['term', [3.8, 0], { n: 'V_{D2}' }]]);
-  GENS.bk_dc_mirror = () => {
+  GENS.bk_c2_mirror = () => {
     const p = Math.random() < 0.4, mu = p ? MUP : MUN, WL1 = pick([10, 20, 25, 50, 100]), n = pick([0.5, 1, 2, 3, 4]), WL2 = WL1 * n;
     const IREF = pick([0.05, 0.1, 0.2, 0.25, 0.5]) * 1e-3, VDD = pick([3, 5]);
     const ov = Math.sqrt(2 * IREF / (mu * WL1)), I2 = IREF * n;

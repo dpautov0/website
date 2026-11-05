@@ -97,7 +97,7 @@
       ...(o.rs ? [['R', [1, 4], [1, 5.2], lab('R_S', o.rsv)], ['gnd', [1, 5.2]]] : [['gnd', [1, 4]]])];
   };
   // PMOS cascode load: V_DD on top, M_3 then M_4, look up into M_4's drain
-  F.pcasc = (o = {}) => [['rail', [1, -2]], ['pmos', [1, -1], { n: o.n1 || 'M_3' }], ['acg', [0, -1]], ['pmos', [1, 1], { n: o.n2 || 'M_4' }], ['acg', [0, 1]],
+  F.pcasc = (o = {}) => [['rail', [1, -2]], ['pmos', [1, -1], { n: o.n1 || 'M_4' }], ['acg', [0, -1]], ['pmos', [1, 1], { n: o.n2 || 'M_3' }], ['acg', [0, 1]],
     ['w', [1, 2], [1, 2.4]], lookUp([1, 2.4], o.look || 'R')];
   // the regulated cascode (Practice 2 #2(b)): M_1 on R_Y, its gate driven by M_3 with an ideal current-source load
   F.reg = (o = {}) => [
@@ -421,6 +421,83 @@
       hints: ['First reduce whatever is under the source to one resistance $R_S$ (a diode is $\\tfrac{1}{g_m}\\parallel r_{ds}$; a held-gate transistor is $r_{ds}$).', 'Then $R = r_{ds} + R_S + g_mr_{ds}R_S$ for the transistor you look into.'],
       sol: `${extra}**Degeneration.** The gate of $M_1$ is held and all of $i_t$ flows through $R_S$, so $v_s = i_tR_S$ and $v_{gs} = -i_tR_S$; the transistor fights the change. With $g_mr_{ds} = ${f(gr, 4)}$:\n$$R = r_{ds} + R_S + g_mr_{ds}R_S = ${RT(rds)} + ${RT(Rs)} + ${f(gr, 4)}\\times${RT(Rs)} = ${RT(ans)}$$\nCheck: $r_{ds}(1 + g_mR_S) = ${RT(rds * (1 + gm * Rs))}$.${pnote(pm)}`,
       _t: { g: 'degen', kind, pm, gm, rds, Rs, ...(kind === 'R' ? {} : T.lastDeg), ans },
+    };
+  };
+
+  // ---------------------------------------------------------------- bk03-k: gates that move (divider or diode stack)
+  GENS.bk_mi_k = () => {
+    const kind = pick(['div', 'div', 'stack']);
+    if (kind === 'div') {
+      const gm = pick(GM), rds = pick(RDS), RS = pick([0, 0, 500, 1e3, 2e3]), Ra = pick([10e3, 20e3, 30e3, 50e3, 90e3]), Rb = pick([10e3, 20e3, 30e3, 50e3]);
+      const K = Rb / (Ra + Rb), gr = gm * rds, top = rds + RS + gr * RS, Rk = top / (1 + gr * K), Req = par(Rk, Ra + Rb);
+      return {
+        fig: F.kdiv({ rs: RS ? 1 : 0, rav: RT(Ra), rbv: RT(Rb), rsv: RS ? RT(RS) : undefined, look: 'R_{EQ}' }),
+        q: `$g_m = ${MS(gm)}$, $r_{ds} = ${RT(rds)}$${RS ? `, $R_S = ${RT(RS)}$` : ' (source grounded)'}. The divider hangs from the drain node, with the gate at its middle. Find $K$ (how much the gate moves per volt at the node) and the node resistance $R_{EQ}$.`,
+        parts: [{ lbl: 'K', unit: '', ans: K, traps: [{ v: Ra / (Ra + Rb), msg: 'The gate sits across the **bottom** resistor: $K = R_b/(R_a + R_b)$.' }].filter((t) => Math.abs(t.v - K) > 0.02 * K) },
+          BK.res('R_{EQ}', Req, undefined, [{ v: Rk, msg: 'That is the transistor branch alone. The divider also connects the node to ground: put $R_a + R_b$ in parallel.' }, { v: par(top, Ra + Rb), msg: 'That treats the gate as held ($K = 0$). The gate moves with the node, which divides the transistor branch by $1 + g_mr_{ds}K$.' }])],
+        hints: ['The gate takes no current, so the divider is unloaded: $K = R_b/(R_a + R_b)$.', 'Transistor branch: $\\dfrac{r_{ds} + R_S + g_mr_{ds}R_S}{1 + g_mr_{ds}K}$; then put the divider $R_a + R_b$ in parallel.'],
+        sol: `**$K$.** The gate draws nothing, so $K = \\dfrac{R_b}{R_a + R_b} = \\dfrac{${RT(Rb)}}{${RT(Ra + Rb)}} = ${f(K, 4)}$.\n\n**The transistor branch (K rule).** $g_mr_{ds} = ${f(gr, 4)}$.\n$$R_{DN} = \\frac{r_{ds} + R_S + g_mr_{ds}R_S}{1 + g_mr_{ds}K} = \\frac{${RT(top)}}{${f(1 + gr * K, 4)}} = ${RT(Rk)}$$\n**The node.** The divider is a branch too:\n$$R_{EQ} = R_{DN}\\parallel(R_a + R_b) = ${RT(Rk)}\\parallel${RT(Ra + Rb)} = ${RT(Req)}$$`,
+        _t: { g: 'k', kind, gm, rds, RS, Ra, Rb, K, ans: Req, map: { K: 'K', 'R_{EQ}': 'R' } },
+      };
+    }
+    const ga = pick(GM), gb = pick(GM), gc = pick(GM), rc = pick(RDS);
+    const Ra = 1 / ga, Rb = 1 / gb, K = Rb / (Ra + Rb), Rc = rc / (1 + gc * rc * K), Req = par(Ra + Rb, Rc);
+    return {
+      fig: F.kstack({ look: 'R_{EQ}' }),
+      q: `Diodes $M_a$ ($g_{ma} = ${MS(ga)}$) over $M_b$ ($g_{mb} = ${MS(gb)}$) hang from the node (ignore their $r_{ds}$). $M_c$ ($g_{mc} = ${MS(gc)}$, $r_{dsc} = ${RT(rc)}$) has its drain on the node, its source grounded and its gate on $X$. Find $K$ for $M_c$ and $R_{EQ}$.`,
+      parts: [{ lbl: 'K', unit: '', ans: K, traps: [{ v: Ra / (Ra + Rb), msg: '$X$ sits on top of $M_b$: $K$ is the bottom diode\'s share, $\\dfrac{1/g_{mb}}{1/g_{ma} + 1/g_{mb}}$.' }].filter((t) => Math.abs(t.v - K) > 0.02 * K) },
+        BK.res('R_{EQ}', Req, undefined, [{ v: Rc, msg: 'That is $M_c$ alone; the diode stack is a branch of the node too.' }, { v: Ra + Rb, msg: 'That is the stack alone; $M_c$ is a branch too, and its gate moves.' }, { v: par(Ra + Rb, rc), msg: 'That treats $M_c$\'s gate as held. It moves by $Kv_t$.' }])],
+      hints: ['The stack carries $v_t/(1/g_{ma} + 1/g_{mb})$, and $X$ sits at that current times $1/g_{mb}$.', '$M_c$ has $R_S = 0$: $r_{dsc}/(1 + g_{mc}r_{dsc}K)$. Then put the stack in parallel.'],
+      sol: `**$K$.** Each diode is $1/g_m$: $1/g_{ma} = ${RT(Ra)}$, $1/g_{mb} = ${RT(Rb)}$. $X$ is the divider point:\n$$K = \\frac{1/g_{mb}}{1/g_{ma} + 1/g_{mb}} = \\frac{${RT(Rb)}}{${RT(Ra + Rb)}} = ${f(K, 4)}$$\n**$M_c$ (K rule, $R_S = 0$).** $g_{mc}r_{dsc} = ${f(gc * rc, 4)}$:\n$$R_{Mc} = \\frac{r_{dsc}}{1 + g_{mc}r_{dsc}K} = ${RT(Rc)}\\quad(\\approx 1/(Kg_{mc}) = ${RT(1 / (K * gc))})$$\n**The node.** $R_{EQ} = ${RT(Ra + Rb)}\\parallel${RT(Rc)} = ${RT(Req)}$.`,
+      _t: { g: 'k', kind, ga, gb, gc, rc, K, ans: Req, map: { K: 'K', 'R_{EQ}': 'R' } },
+    };
+  };
+
+  // ---------------------------------------------------------------- bk03-cascode: cascode, with R_S, triple, PMOS, regulated
+  GENS.bk_mi_casc = () => {
+    const kind = pick(['casc', 'casc', 'rs', 'triple', 'reg']), up = (R, g, r) => r + R * (1 + g * r);
+    if (kind === 'reg') {
+      const g1 = pick(GM), r1 = pick(RDS), g3 = pick(GM), r3 = pick(RDS), RY = pick([1e3, 5e3, 20e3, 50e3]), A = g3 * r3;
+      const ans = r1 + RY + g1 * r1 * (1 + A) * RY, plain = up(RY, g1, r1);
+      return {
+        fig: F.reg({ ryv: RT(RY) }),
+        q: `Regulated cascode: $M_1$ has $g_{m1} = ${MS(g1)}$, $r_{ds1} = ${RT(r1)}$ and sits on $R_Y = ${RT(RY)}$; the booster $M_3$ has $g_{m3} = ${MS(g3)}$, $r_{ds3} = ${RT(r3)}$, and $I_B$ is ideal. Find $R_{out}$.`,
+        parts: [BK.res('R_{out}', ans, undefined, [{ v: plain, msg: 'That is the plain cascode: the booster multiplies the big term by $1 + A$ with $A = g_{m3}r_{ds3}$.' }, { v: r1 + RY, msg: 'Series only: the feedback terms are missing.' }])],
+        hints: ['$I_B$ is open, so $M_3$ is a common source with gain $-A = -g_{m3}r_{ds3}$ from $Y$ to $M_1$\'s gate.', '$R_{out} = r_{ds1} + R_Y + g_{m1}r_{ds1}(1 + A)R_Y$.'],
+        sol: `**The booster.** $I_B$ is open, so $v_N = -g_{m3}r_{ds3}v_Y = -Av_Y$ with $A = ${f(A, 4)}$, and $v_{gs1} = v_N - v_Y = -(1 + A)v_Y$.\n\n**$M_1$.** With $v_Y = i_tR_Y$, the degeneration algebra gives\n$$R_{out} = r_{ds1} + R_Y + g_{m1}r_{ds1}(1 + A)R_Y = ${RT(r1)} + ${RT(RY)} + (${f(g1 * r1, 4)})(${f(1 + A, 4)})(${RT(RY)}) = ${RT(ans)}$$\nWithout the booster: $${RT(plain)}$.`,
+        _t: { g: 'casc', kind, g1, r1, g3, r3, RY, ans },
+      };
+    }
+    const pm = kind === 'casc' && Math.random() < 0.4;
+    const g1 = pick(GM), r1 = pick(RDS), g2 = pick(GM), r2 = pick(RDS), g3 = pick(GM), r3 = pick(RDS), RS = pick([500, 1e3, 2e3, 5e3]);
+    let ans, fig, q, sol, traps;
+    if (kind === 'casc') {
+      ans = up(r1, g2, r2);
+      fig = pm ? F.pcasc({ n1: 'M_1', n2: 'M_2', look: 'R_{UP}' }) : F.casc({ look: 'R_{out}' });
+      q = `${pm ? 'PMOS cascode: $M_1$ on $V_{DD}$, $M_2$ below it' : 'Cascode: $M_2$ on top of $M_1$'}, both gates held. $M_1$: $r_{ds1} = ${RT(r1)}$; $M_2$: $g_{m2} = ${MS(g2)}$, $r_{ds2} = ${RT(r2)}$. Find the resistance looking into $M_2$'s drain.`;
+      sol = `$M_1$ has $v_{gs1} = 0$: it is just $r_{ds1}$, sitting under $M_2$'s source. $M_2$ is degenerated by it (bottom-up rule):\n$$R = r_{ds2} + r_{ds1}(1 + g_{m2}r_{ds2}) = ${RT(r2)} + ${RT(r1)}\\times${f(1 + g2 * r2, 4)} = ${RT(ans)}$$${pnote(pm)}`;
+      traps = [{ v: r1 + r2, msg: 'Series only: $M_2$ magnifies $r_{ds1}$ by $1 + g_{m2}r_{ds2}$.' }, { v: up(r2, g1, r1), msg: 'You used the bottom transistor as the magnifier. $M_2$, the one you look into, multiplies what is under it.' }];
+      return { fig, q, parts: [BK.res('R', ans, undefined, traps)], hints: ['$M_1$ has a still gate and a source on a rail: it is just $r_{ds1}$.', 'Then degeneration: $r_{ds2} + r_{ds1}(1 + g_{m2}r_{ds2})$.'], sol, _t: { g: 'casc', kind, g2, r2, r1, ans } };
+    }
+    if (kind === 'rs') {
+      const R1 = up(RS, g1, r1); ans = up(R1, g2, r2);
+      return {
+        fig: F.casc({ rs: 1, rsv: RT(RS), look: 'R_{out}' }),
+        q: `$M_2$ on $M_1$ on $R_S = ${RT(RS)}$, gates held. $M_1$: $g_{m1} = ${MS(g1)}$, $r_{ds1} = ${RT(r1)}$; $M_2$: $g_{m2} = ${MS(g2)}$, $r_{ds2} = ${RT(r2)}$. Find $R_{out}$.`,
+        parts: [BK.res('R_{out}', ans, undefined, [{ v: up(r1, g2, r2), msg: 'You dropped $R_S$: first reduce $M_1$ on $R_S$ to $R_1 = r_{ds1} + R_S(1 + g_{m1}r_{ds1})$.' }, { v: R1, msg: 'That is $R_1$, looking into $M_1$; now add $M_2$ on top.' }])],
+        hints: ['Bottom-up: $R_1 = r_{ds1} + R_S(1 + g_{m1}r_{ds1})$.', 'Then $R_{out} = r_{ds2} + R_1(1 + g_{m2}r_{ds2})$.'],
+        sol: `**Bottom-up.**\n$$R_1 = r_{ds1} + R_S(1 + g_{m1}r_{ds1}) = ${RT(r1)} + ${RT(RS)}\\times${f(1 + g1 * r1, 4)} = ${RT(R1)}$$\n$$R_{out} = r_{ds2} + R_1(1 + g_{m2}r_{ds2}) = ${RT(r2)} + ${RT(R1)}\\times${f(1 + g2 * r2, 4)} = ${RT(ans)}$$`,
+        _t: { g: 'casc', kind, g1, r1, g2, r2, RS, ans },
+      };
+    }
+    const R2 = up(r1, g2, r2); ans = up(R2, g3, r3);
+    return {
+      fig: F.casc({ triple: 1, look: 'R_{out}' }),
+      q: `A triple cascode, all gates held: $M_1$ (bottom) $r_{ds1} = ${RT(r1)}$; $M_2$: $g_{m2} = ${MS(g2)}$, $r_{ds2} = ${RT(r2)}$; $M_3$ (top): $g_{m3} = ${MS(g3)}$, $r_{ds3} = ${RT(r3)}$. Find $R_{out}$.`,
+      parts: [BK.res('R_{out}', ans, undefined, [{ v: R2, msg: 'That is the two-transistor cascode $R_2$; $M_3$ multiplies it again.' }, { v: r1 + r2 + r3, msg: 'Series only: each held-gate transistor multiplies what is below it.' }])],
+      hints: ['Bottom-up: $R_2 = r_{ds2} + r_{ds1}(1 + g_{m2}r_{ds2})$.', 'Then $R_{out} = r_{ds3} + R_2(1 + g_{m3}r_{ds3})$.'],
+      sol: `**Bottom-up.**\n$$R_2 = r_{ds2} + r_{ds1}(1 + g_{m2}r_{ds2}) = ${RT(R2)}$$\n$$R_{out} = r_{ds3} + R_2(1 + g_{m3}r_{ds3}) = ${RT(r3)} + ${RT(R2)}\\times${f(1 + g3 * r3, 4)} = ${RT(ans)}$$\nRoughly $(g_{m3}r_{ds3})(g_{m2}r_{ds2})\\,r_{ds1}$.`,
+      _t: { g: 'casc', kind, r1, g2, r2, g3, r3, ans },
     };
   };
 })();

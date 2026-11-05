@@ -1331,4 +1331,410 @@ $$R_{DN} = r_{ds} + R_S + g_mr_{ds}R_S\approx r_{ds}(1 + g_mR_S)$$
       G('bk_mi_degen', { need: 3 }),
     ],
   });
+
+  // ================================================================== 7. the K rule
+  const kModel = [['V', [0, 0.3], [0, 1.5], { n: 'Kv_t', side: 'l' }], ['gnd', [0, 1.5]], ['w', [0, 0.3], [0.6, 0.3]], ['term', [0.6, 0.3], { n: 'G', side: 'a' }],
+    ['term', [0.6, 1.2]], ['w', [0.6, 1.2], [0.6, 2], [2.4, 2]], ['vlab', [0.85, 0.45], [0.85, 1.05], { n: 'v_{gs}' }],
+    ...S.mos(2.4, 0, 2), ['R', [3.05, 2], [3.05, 3.4], { n: 'R_S', side: 'l' }], ['gnd', [3.05, 3.4]], ['node', [3.05, 2], { n: 'v_s = i_tR_S', side: 'br' }],
+    ['txt', [2.55, -0.3], '$D$', { a: 'l' }], ...S.test(3.7, 0)];
+  const kPlot = Schem.plot({
+    x: [0, 1], y: [0, 360], xl: 'K', yl: 'R_{DN}\\ (\\text{k}\\Omega)', w: 420, h: 260,
+    curves: [{ f: (k) => 301 / (1 + 200 * k) }], pts: [{ x: 0, y: 301, n: '301' }, { x: 0.05, y: 27.4, n: '27' }, { x: 0.5, y: 2.98, n: '3' }],
+    xt: [0, 0.25, 0.5, 0.75, 1], yt: [0, 100, 200, 300],
+  });
+  const kMirror = [['w', [1, 0], [1, -0.4], [3.6, -0.4]], ['w', [3, 0], [3, -0.4]], F.lookR([3.6, -0.4], 'R_{EQ}'),
+    ['nmos', [1, 1], { n: 'M_1' }], ['acg', [0, 1]], ['node', [1, 2], { n: 'X', side: 'l' }], ['nmos', [1, 3], { n: 'M_2', dc: true }], ['gnd', [1, 4]],
+    ['w', [1, 2], [1.8, 2], [1.8, 1], [2, 1]], ['nmos', [3, 1], { n: 'M_4' }], ['gnd', [3, 2]]];
+
+  L({
+    id: 'bk03-k', title: 'Gates that move: the K rule', ref: 'Problem Set 5 (f)–(i)',
+    steps: [
+      RF(md`
+        ### The question
+
+        So far every gate was either **held** (degeneration: a huge resistance) or **tied to its own drain** (a diode: a small one). Often a gate is driven by something in between: the middle of a resistor divider hung from the test node, the middle of a diode stack, a diode in another branch that carries the test current. How big is the drain resistance then? This is Problem Set 5 (f) to (i), and part (b) of several Exam 2 practice problems.
+
+        ### The physical picture: a gate that helps a little
+
+        Describe how much the gate moves with one number:
+        $$v_g = K\,v_t$$
+        $K = 0$ is the held gate: the transistor fights the drain (feedback through $R_S$) and the resistance is large. $K = 1$ is the diode: the gate rises with the drain, the transistor helps the current along, and the resistance is small. In between, the gate opens the channel by $g_mKv_t$, a fraction of a diode's push. Without $R_S$ the transistor would be a diode weakened by the factor $K$: about $1/(Kg_m)$.
+        [[fig:a]]
+        ### The model and the derivation
+
+        The gate's driver is computed separately (next part), and here it is simply a voltage $Kv_t$: the gate takes no current, so it cannot disturb whatever drives it.
+        [[fig:b]]
+        **Step 1: node voltages.** $v_d = v_t$, $v_g = Kv_t$, and, since all of $i_t$ flows down through the device and $R_S$, $v_s = i_tR_S$.
+
+        **Step 2: $v_{gs}$.**
+        $$v_{gs} = Kv_t - i_tR_S$$
+        **Step 3: the device current equals $i_t$.** The dependent source plus $r_{ds}$, which has $v_t - i_tR_S$ across it:
+        $$i_t = g_m(Kv_t - i_tR_S) + \frac{v_t - i_tR_S}{r_{ds}}$$
+        **Step 4: multiply every term by $r_{ds}$.**
+        $$i_tr_{ds} = g_mr_{ds}K\,v_t - g_mr_{ds}R_S\,i_t + v_t - R_S\,i_t$$
+        **Step 5: $i_t$ terms on the left, $v_t$ terms on the right.**
+        $$i_t\,(r_{ds} + R_S + g_mr_{ds}R_S) = v_t\,(1 + g_mr_{ds}K)$$
+        **Step 6: the ratio.**
+        $$R_{DN} = \frac{v_t}{i_t} = \frac{r_{ds} + R_S + g_mr_{ds}R_S}{1 + g_mr_{ds}K}$$
+      `, { a: { fig: F.k({ look: 'R_{DN}' }), cap: 'the gate moves by $K$ times the test voltage' }, b: { fig: kModel, cap: 'the gate driven by $Kv_t$: $v_{gs} = Kv_t - i_tR_S$' } }),
+      RF(md`
+        !!key The K rule (the gate moves by $Kv_t$, $R_S$ under the source)
+          $$R_{DN} = \frac{r_{ds} + R_S + g_mr_{ds}R_S}{1 + g_mr_{ds}K}\approx\frac{R_S + 1/g_m}{K}$$
+          The top is the degenerated drain; the bottom is what the moving gate does. The short form needs $g_mr_{ds}K\gg1$.
+
+        ### Check the corners
+
+        - **$K = 0$ (gate held):** the bottom is 1: $r_{ds} + R_S + g_mr_{ds}R_S$, [degeneration](#/l/bk03-degen). ✓
+        - **$K = 1$ (gate on the drain: a diode on $R_S$):** write the top as $r_{ds} + R_S(1 + g_mr_{ds})$ and divide each piece by $1 + g_mr_{ds}$:
+        $$R_{DN} = \frac{r_{ds}}{1 + g_mr_{ds}} + R_S = \tfrac{1}{g_m}\parallel r_{ds} + R_S$$
+        exactly [the diode on a resistor](#/l/bk03-diode). ✓
+        - **$R_S = 0$:** $R_{DN} = \dfrac{r_{ds}}{1 + g_mr_{ds}K} = \dfrac{1}{1/r_{ds} + Kg_m} = r_{ds}\parallel\dfrac{1}{Kg_m}$, a diode weakened by $K$.
+
+        ### How fast the resistance collapses
+
+        With $g_m = 2\,\text{mS}$, $r_{ds} = 100\kO$, $R_S = 1\kO$, the top is $301\kO$ and the bottom is $1 + 200K$:
+        [[fig:p]]
+        $K = 0.05$ already divides the resistance by 11, down to $27.4\kO$; $K = 0.5$ gives $2.98\kO$ (short form: $(1 + 0.5)\kO/0.5 = 3\kO$); $K = 1$ gives $1.50\kO$. **A gate that moves even a few percent destroys the magnification**, because the intrinsic gain $g_mr_{ds} = 200$ multiplies $K$.
+      `, { p: { svg: kPlot, cap: '$R_{DN} = 301\\kO/(1 + 200K)$: most of the drop happens below $K = 0.1$' } }),
+      RF(md`
+        ### Finding $K$
+
+        Finding $K$ is the real work. Ask: **"if the test node moves by $v_t$, how far does this gate move?"** Three patterns cover the exams.
+
+        **1. A resistor divider** $R_a$ (top), $R_b$ (bottom) hung from the test node, with the gate at the middle. The gate takes no current, so the divider is unloaded:
+        $$K = \frac{R_b}{R_a + R_b}$$
+        **The divider is also a branch of the node**: it carries $v_t/(R_a + R_b)$ to ground. Put it in parallel at the end.
+
+        **Example.** $g_m = 2\,\text{mS}$, $r_{ds} = 100\kO$, $R_S = 1\kO$, $R_a = R_b = 10\kO$. Then $K = 0.5$; the transistor branch is $301/101 = 2.980\kO$; the divider branch is $20\kO$; so
+        $$R_{EQ} = 20\kO\parallel2.980\kO = \frac{20\times2.980}{22.98}\kO = 2.594\kO$$
+        [[fig:a]]
+        **2. The middle of a stack that carries the test current.** The branch carries $i = v_t/R_{branch}$, and the gate's node sits at $i\times(\text{resistance below it})$:
+        $$K = \frac{\text{resistance below the gate's node}}{\text{total resistance of that branch}}$$
+        **Example.** Two diodes $M_a$ over $M_b$ ($g_m = 1\,\text{mS}$ each) hang from the test node; $M_c$ ($g_{mc} = 2\,\text{mS}$) has its drain on the node, its source grounded and its gate on the middle node $X$. All $r_{ds} = 100\kO$. Each diode is $1/(1.01\,\text{mS}) = 990.1\,\Omega$, so $K = 990.1/1980.2 = 0.5$; $M_c$ is $\dfrac{100\kO}{1 + 200\times0.5} = 990.1\,\Omega$; and with the stack in parallel,
+        $$R_{EQ} = 1980.2\,\Omega\parallel990.1\,\Omega = 660.1\,\Omega$$
+        [[fig:b]]
+        **3. A diode in another branch** (Problem Set 5 (f)). The test current through one branch also flows through a diode at its bottom, and another transistor's gate sits on that diode. That gate moves by $K = \dfrac{1/g_{m}\ \text{of the diode}}{R_{branch}}$. The next example works it in full.
+      `, { a: { fig: F.kdiv({ rs: 1, look: 'R_{EQ}' }), cap: 'a divider sets $K$, and is a branch too' }, b: { fig: F.kstack({ look: 'R_{EQ}' }), cap: 'a diode stack sets $K$ for $M_c$' } }),
+      RF(md`
+        ### Worked example: feedback through a diode
+
+        $M_1$ (gate held) sits on the diode $M_2$; $M_4$ has its drain on the test node, its source grounded, and its gate on $X$, the top of $M_2$. All transistors $g_m = 2\,\text{mS}$, $r_{ds} = 100\kO$. Find $R_{EQ}$.
+        [[fig:a]]
+        **Step 1: the left branch.** $M_1$ degenerated by the diode: $R_X = \tfrac{1}{g_m}\parallel r_{ds} = 497.5\,\Omega$, so
+        $$R_{b1} = r_{ds} + R_X(1 + g_mr_{ds}) = 100\kO + 0.4975\kO\times201 = 200\kO$$
+        **Step 2: $K$ for $M_4$.** The left branch carries $v_t/R_{b1}$, all of it through $M_2$, so $v_X = (v_t/R_{b1})R_X$:
+        $$K = \frac{R_X}{R_{b1}} = \frac{497.5}{200{,}000} = 0.002488$$
+        **Step 3: $M_4$ by the K rule** ($R_S = 0$):
+        $$R_{M4} = \frac{r_{ds}}{1 + g_mr_{ds}K} = \frac{100\kO}{1 + 200\times0.002488} = \frac{100\kO}{1.4975} = 66.78\kO$$
+        **Step 4: the node.** $R_{EQ} = 200\kO\parallel66.78\kO = 50.06\kO$.
+
+        A gate that moves by a quarter of a percent still cut $M_4$ from $100\kO$ to $66.8\kO$. This is the mirror-loaded differential pair's output in disguise: about $r_{ds}/2$ ([Chapter 5](#/l/bk05-diffpair)).
+
+        ### How to recognize it
+
+        A transistor's drain is on the test node, and its gate connects to something that **also** moves with the test node: a divider, a stack, another branch's diode. Do not split the node naively; find $K$, apply the rule, and put the $K$-setting branch in parallel.
+
+        !!mistake Common mistakes
+          - Treating the gate as held because "it is not tied to the drain". If it moves at all, $K\neq0$.
+          - Forgetting that the divider or stack that sets $K$ is itself a branch of the node.
+          - Computing $K$ with the gate "loading" the divider: it takes no current.
+          - Using $K = 1$ for a gate on a divider: that is only for a gate wired directly to the drain.
+          - Using the short form $(R_S + 1/g_m)/K$ when $g_mr_{ds}K$ is not large (tiny $K$).
+      `, { a: { fig: kMirror, cap: '$M_4$\'s gate senses the current in the left branch' } }),
+      Q(md`In the K rule, which situation is $K = 1$?`,
+        ['The gate tied directly to the drain (a diode)', 'The gate held at a fixed voltage', 'The gate at the middle of an equal divider', 'The gate tied to the source'], 0,
+        [null, 'That is $K = 0$: then the rule gives degeneration.', 'That is $K = 0.5$.', 'Then $v_{gs} = 0$ always: the transistor is just $r_{ds}$ (no rule needed).'],
+        md`$K = 1$ means the gate moves exactly with the drain: a diode. The rule then gives $R_S + \tfrac{1}{g_m}\parallel r_{ds}$.`),
+      Q(md`A transistor ($g_m = 2\,\text{mS}$, $r_{ds}$ large, $R_S = 0$) has its gate at the middle of an equal divider hung from its own drain. Ignoring the divider branch for a moment, the transistor looks like about`,
+        ['$1\\kO$ ($= 2/g_m$)', '$500\\,\\Omega$ ($= 1/g_m$)', '$r_{ds}$', '$250\\,\\Omega$'], 0,
+        [null, 'That would be $K = 1$ (a diode). Here $K = 0.5$.', 'The gate moves, so it is far smaller than $r_{ds}$.', 'Dividing by $K$ makes it **bigger** than $1/g_m$, not smaller.'],
+        md`$R_S = 0$: $r_{ds}\parallel\dfrac{1}{Kg_m}\approx\dfrac{1}{0.5\times2\,\text{mS}} = 1\kO$.`),
+      Q(md`You found the transistor branch with the K rule, $R_{DN} = 3\kO$, for a gate on a divider of total $20\kO$ hung from the node. The node resistance is`,
+        ['$20\\kO\\parallel3\\kO = 2.6\\kO$', '$3\\kO$', '$23\\kO$', '$20\\kO$'], 0,
+        [null, 'The divider also connects the node to ground: it is a branch.', 'Branches are in parallel, not series.', 'The transistor is a branch too, and the smaller one.'],
+        md`Both the divider and the transistor connect the node to ground: $R_{EQ} = 20\parallel3 = 2.61\kO$.`),
+      Q(md`A gate moves by only $K = 0.01$ of the drain voltage; $g_mr_{ds} = 200$, $R_S = 0$. Compared with the held gate ($K = 0$), the drain resistance is`,
+        ['Three times smaller', 'About the same (1% change)', '100 times smaller', 'Twice as large'], 0,
+        [null, 'The bottom is $1 + g_mr_{ds}K = 1 + 2 = 3$: the intrinsic gain amplifies the small $K$.', 'That would need $g_mr_{ds}K\\ll1$.', 'That would need $K = 0.5$.'],
+        md`$R = r_{ds}/(1 + 200\times0.01) = r_{ds}/3$. Small $K$, big effect.`),
+      P({
+        id: 'bk03-k-sym', title: 'The K rule, typed',
+        q: md`The gate of a transistor with $R_S$ in its source moves $K$ times the drain voltage. Type the **exact** resistance looking into the drain. Variables: gm, rds, RS, K.`,
+        fig: F.k({ look: 'R_{DN}' }),
+        parts: [BK.ex('(rds + RS + gm*rds*RS)/(1 + gm*rds*K)', ['gm', 'rds', 'RS', 'K'], 'R_{DN}', { exact: true, ranges: { gm: [1e-3, 4e-3], rds: [5e4, 2e5], RS: [200, 2000], K: [0.02, 0.9] } })],
+        hints: [md`$v_s = i_tR_S$ and $v_g = Kv_t$, so $v_{gs} = Kv_t - i_tR_S$.`],
+        sol: md`$i_t = g_m(Kv_t - i_tR_S) + \dfrac{v_t - i_tR_S}{r_{ds}}$. Times $r_{ds}$: $i_t(r_{ds} + R_S + g_mr_{ds}R_S) = v_t(1 + g_mr_{ds}K)$, so
+$$R_{DN} = \frac{r_{ds} + R_S + g_mr_{ds}R_S}{1 + g_mr_{ds}K}$$`,
+      }),
+      P({
+        id: 'bk03-k-div', title: 'A gate on a divider',
+        q: md`$g_m = 2\,\text{mS}$, $r_{ds} = 50\kO$, $R_S = 0.5\kO$. The divider $R_a = 60\kO$ (top), $R_b = 20\kO$ hangs from the drain node, with the gate at its middle. Find $K$, the transistor branch $R_{DN}$, and $R_{EQ}$.`,
+        fig: F.kdiv({ rs: 1, look: 'R_{EQ}' }),
+        parts: [{ lbl: 'K', unit: '', ans: 0.25 }, { lbl: 'R_{DN}', unit: 'kΩ', ans: 3.86538, traps: [{ v: 100.5, msg: 'That treats the gate as held ($K = 0$).' }] }, { lbl: 'R_{EQ}', unit: 'kΩ', ans: 3.68723, traps: [{ v: 3.86538, msg: 'Add the divider branch $R_a + R_b$ in parallel.' }] }],
+        hints: [md`$K = R_b/(R_a + R_b)$; $g_mr_{ds} = 100$.`, md`$R_{EQ} = R_{DN}\parallel(R_a + R_b)$.`],
+        sol: md`
+1. $K = \dfrac{20}{80} = 0.25$.
+2. Top: $r_{ds} + R_S + g_mr_{ds}R_S = 50 + 0.5 + 100\times0.5 = 100.5\kO$. Bottom: $1 + 100\times0.25 = 26$. $R_{DN} = 100.5/26 = 3.865\kO$ (short form $(0.5 + 0.5)/0.25 = 4\kO$).
+3. $R_{EQ} = 80\parallel3.865 = \dfrac{80\times3.865}{83.865}\kO = 3.687\kO$.`,
+      }),
+      P({
+        id: 'bk03-k-stack', title: 'A diode stack sets $K$',
+        q: md`Diodes $M_a$ ($g_{ma} = 2\,\text{mS}$) over $M_b$ ($g_{mb} = 1\,\text{mS}$) hang from the test node (ignore their $r_{ds}$). $M_c$ ($g_{mc} = 4\,\text{mS}$, $r_{dsc} = 50\kO$) has its drain on the node, its source grounded, its gate on the middle node $X$. Find $K$, $R_{Mc}$, and $R_{EQ}$.`,
+        fig: F.kstack({ look: 'R_{EQ}' }),
+        parts: [{ lbl: 'K', unit: '', ans: 0.666667 }, { lbl: 'R_{Mc}', unit: 'Ω', ans: 372.208 }, { lbl: 'R_{EQ}', unit: 'Ω', ans: 298.211, traps: [{ v: 372.208, msg: 'The stack is a branch of the node too: put $1/g_{ma} + 1/g_{mb}$ in parallel.' }] }],
+        hints: [md`$K$ = (resistance below $X$)/(total stack) = $\dfrac{1/g_{mb}}{1/g_{ma} + 1/g_{mb}}$.`, md`$M_c$: $R_S = 0$, so $r_{dsc}/(1 + g_{mc}r_{dsc}K)$.`],
+        sol: md`
+1. Stack: $500 + 1000 = 1500\,\Omega$; $K = 1000/1500 = 0.667$.
+2. $g_{mc}r_{dsc} = 200$: $R_{Mc} = \dfrac{50\kO}{1 + 200\times0.667} = \dfrac{50\kO}{134.3} = 372.2\,\Omega$ (short form $1/(Kg_{mc}) = 375\,\Omega$).
+3. $R_{EQ} = 1500\parallel372.2 = 298.2\,\Omega$.`,
+      }),
+      P({
+        id: 'bk03-k-rs0', title: 'A small $K$: when the short form fails',
+        q: md`$g_m = 4\,\text{mS}$, $r_{ds} = 25\kO$, $R_S = 0$. The gate sits on a divider $R_a = 90\kO$, $R_b = 10\kO$ from the drain node. Find the transistor branch exactly, the short form $1/(Kg_m)$, and $R_{EQ}$.`,
+        fig: F.kdiv({ look: 'R_{EQ}' }),
+        parts: [{ lbl: 'R_{DN}', unit: 'kΩ', ans: 2.27273 }, { lbl: '1/(Kg_m)', unit: 'kΩ', ans: 2.5 }, { lbl: 'R_{EQ}', unit: 'kΩ', ans: 2.22222 }],
+        hints: [md`$K = 0.1$ and $g_mr_{ds} = 100$, so $g_mr_{ds}K = 10$: not $\gg1$.`],
+        sol: md`
+1. $K = 10/100 = 0.1$; $R_{DN} = \dfrac{25\kO}{1 + 100\times0.1} = \dfrac{25}{11}\kO = 2.273\kO$.
+2. Short form $1/(0.1\times4\,\text{mS}) = 2.5\kO$: 10% high, because $g_mr_{ds}K = 10$ is not large.
+3. $R_{EQ} = 100\kO\parallel2.273\kO = 2.222\kO$.`,
+      }),
+      P({
+        id: 'bk03-k-mirror', title: 'Feedback through a diode (Problem Set 5 (f) style)',
+        q: md`The circuit of the worked example, with all transistors $g_m = 2\,\text{mS}$, $r_{ds} = 50\kO$ this time. Find the left branch $R_{b1}$, $K$ for $M_4$, $R_{M4}$, and $R_{EQ}$.`,
+        fig: kMirror,
+        parts: [{ lbl: 'R_{b1}', unit: 'kΩ', ans: 100 }, { lbl: 'K', unit: '', ans: 0.0049505 }, { lbl: 'R_{M4}', unit: 'kΩ', ans: 33.4437, traps: [{ v: 50, msg: 'That treats $M_4$\'s gate as held. It moves by $K v_t$, which the intrinsic gain amplifies.' }] },
+          { lbl: 'R_{EQ}', unit: 'kΩ', ans: 25.062, traps: [{ v: 33.4437, msg: 'Add the left branch $R_{b1}$ in parallel.' }, { v: 33.3333, msg: 'That is $100\\kO\\parallel50\\kO$: $M_4$ treated as plain $r_{ds}$.' }] }],
+        hints: [md`$R_X = 1/(2\,\text{mS} + 0.02\,\text{mS})$; $R_{b1} = r_{ds} + R_X(1 + g_mr_{ds})$ with $g_mr_{ds} = 100$.`, md`$K = R_X/R_{b1}$, then $R_{M4} = r_{ds}/(1 + g_mr_{ds}K)$.`],
+        sol: md`
+1. $R_X = \dfrac{1}{2\,\text{mS} + 0.02\,\text{mS}} = 495.0\,\Omega$, and $1 + g_mr_{ds} = 101$: $R_{b1} = 50\kO + 0.4950\kO\times101 = 100\kO$ (matched devices: exactly $2r_{ds}$).
+2. $K = \dfrac{R_X}{R_{b1}} = \dfrac{495.0}{100{,}000} = 0.004950$.
+3. $R_{M4} = \dfrac{50\kO}{1 + 100\times0.004950} = \dfrac{50\kO}{1.4950} = 33.44\kO$.
+4. $R_{EQ} = 100\kO\parallel33.44\kO = \dfrac{100\times33.44}{133.44}\kO = 25.06\kO$, again about $r_{ds}/2$.`,
+      }),
+      G('bk_mi_k', { need: 3 }),
+    ],
+  });
+
+  // ================================================================== 8. cascodes and gain boosting
+  const cascModel = [...S.mos(2, 0, 2, { g: 'g_{m2}v_{gs2}', r: 'r_{ds2}' }), ...S.mos(2, 2, 4, { g: 'g_{m1}v_{gs1}', r: 'r_{ds1}' }), ['gnd', [2.65, 4]],
+    ['node', [2, 2], { n: 'X', side: 'l' }], ['txt', [-0.2, 1], '$M_2$: $v_{gs2} = 0 - v_x$', { a: 'r' }], ['txt', [-0.2, 3], '$M_1$: $v_{gs1} = 0 - 0$', { a: 'r' }],
+    ['txt', [2.15, -0.3], '$D_2$', { a: 'l' }], ...S.test(3.3, 0)];
+  const regModel = [...S.mos(4.2, 0, 2, { g: 'g_{m1}v_{gs1}', r: 'r_{ds1}' }), ['R', [4.85, 2], [4.85, 3.4], { n: 'R_Y', side: 'l' }], ['gnd', [4.85, 3.4]],
+    ['node', [4.85, 2], { n: 'Y', side: 'br' }], ['txt', [4.85, -0.35], '$M_1$'],
+    ...S.mos(0.6, 0, 2, { g: 'g_{m3}v_{gs3}', r: 'r_{ds3}' }), ['gnd', [1.25, 2]], ['node', [1.25, 0], { n: 'N', side: 'a' }],
+    ['txt', [1.25, 2.75], '$M_3$ ($I_B$ open)'], ['txt', [1.25, 3.35], '$v_{gs3} = v_Y$'], ['txt', [4.85, 4.15], '$v_{gs1} = v_N - v_Y$'], ...S.test(5.5, 0)];
+  const midX = [['rail', [1, -1.2]], ['R', [1, -1.2], [1, 0], { n: 'R_L' }], ['nmos', [1, 1], { n: 'M_2' }], ['acg', [0, 1]], ['nmos', [1, 3], { n: 'M_1' }], ['acg', [0, 3]], ['gnd', [1, 4]],
+    ['node', [1, 2], { n: 'X', side: 'l' }], ['w', [1, 2], [2, 2]], F.lookR([2, 2], 'R_X')];
+
+  L({
+    id: 'bk03-cascode', title: 'Cascodes and gain boosting', ref: 'Lectures 16–17, Practice 2 #2',
+    steps: [
+      RF(md`
+        ### The question
+
+        Stack one held-gate transistor on top of another: $M_2$'s source sits on $M_1$'s drain, and both gates are held. What do you see looking into the top drain? This **cascode** is the largest resistance two transistors can make, and since gain is $g_mR_{out}$ ([Chapter 4](#/l/bk04-cascode)), it is how amplifiers get large gains. Exam 2 asks for it directly, for stacks of three, and for the "gain-boosted" (regulated) cascode.
+
+        ### The physical picture: a shield
+
+        $M_1$ alone is a current source of resistance $r_{ds1}$: its current changes a little when its drain voltage moves. The cascode transistor $M_2$ stands between $M_1$'s drain and the output and **holds that drain still**: node $X$ is a source of $M_2$, a low-resistance point (about $1/g_{m2}$ looking up). When the output swings, almost all of the swing lands across $M_2$; node $X$ barely moves, so $M_1$'s current barely changes.
+
+        The other way to see it: $M_2$ is a [degenerated](#/l/bk03-degen) transistor whose "$R_S$" is $r_{ds1}$, and degeneration multiplies what is under the source by about $g_{m2}r_{ds2}$.
+        [[fig:a]]
+        ### The derivation, with both models drawn
+
+        **Step 1: $v_{gs}$ of each transistor.** Name the middle node $X$.
+        - $M_1$: gate held, source grounded: $v_{gs1} = 0 - 0 = 0$. Its dependent source is open; only $r_{ds1}$ remains, from $X$ to ground.
+        - $M_2$: gate held, source at $X$: $v_{gs2} = 0 - v_x$. Alive.
+        [[fig:b]]
+        **Step 2: KCL at $X$.** Everything that comes down through $M_2$ (that is $i_t$) leaves through $r_{ds1}$:
+        $$v_x = i_tr_{ds1}$$
+        **Step 3: the current down through $M_2$.**
+        $$i_t = g_{m2}v_{gs2} + \frac{v_t - v_x}{r_{ds2}} = -g_{m2}v_x + \frac{v_t - v_x}{r_{ds2}}$$
+        **Step 4: substitute $v_x = i_tr_{ds1}$.**
+        $$i_t = -g_{m2}r_{ds1}\,i_t + \frac{v_t - i_tr_{ds1}}{r_{ds2}}$$
+        **Step 5: multiply by $r_{ds2}$.**
+        $$i_tr_{ds2} = -g_{m2}r_{ds2}r_{ds1}\,i_t + v_t - i_tr_{ds1}$$
+        **Step 6: collect $i_t$.**
+        $$i_t\,(r_{ds2} + r_{ds1} + g_{m2}r_{ds2}r_{ds1}) = v_t$$
+        $$R_{out} = r_{ds1} + r_{ds2} + g_{m2}r_{ds2}r_{ds1}\approx g_{m2}r_{ds2}\,r_{ds1}$$
+        It is exactly the degeneration formula $r_{ds} + R_S + g_mr_{ds}R_S$ with $R_S = r_{ds1}$.
+      `, { a: { fig: F.casc({ look: 'R_{out}' }), cap: 'the cascode: both gates held' }, b: { fig: cascModel, cap: 'both models; $M_1$ is just $r_{ds1}$' } }),
+      R(md`
+        !!key The cascode
+          $$R_{out} = r_{ds1} + r_{ds2} + g_{m2}r_{ds2}r_{ds1}\approx(g_{m2}r_{ds2})\,r_{ds1}$$
+          The intrinsic gain of the **top** transistor times the $r_{ds}$ of the bottom one.
+
+        ### Check it
+
+        - **$g_{m2}\to0$:** $r_{ds1} + r_{ds2}$, two resistors in series. ✓
+        - **Numbers.** Both transistors $g_m = 2\,\text{mS}$, $r_{ds} = 100\kO$: $R_{out} = 100 + 100 + 200\times100 = 20{,}200\kO = 20.2\,\text{M}\Omega$, two hundred times one transistor.
+        - **The shield, quantified.** $v_x/v_t = r_{ds1}/R_{out} = 100\kO/20.2\,\text{M}\Omega = 0.5\%$: when the output moves by a volt, $X$ moves by 5 mV.
+
+        ### Any stack: work from the bottom up
+
+        The derivation used only the resistance under $M_2$'s source. So for any stack of held-gate transistors:
+
+        !!method The bottom-up rule
+          Reduce everything below a transistor's source to one resistance $R_x$. Looking into that transistor's drain:
+          $$R_{next} = r_{ds} + R_x\,(1 + g_mr_{ds})$$
+          Repeat, one transistor at a time, going up.
+
+        **A triple cascode** ($M_3$ on $M_2$ on $M_1$, all $g_m = 2\,\text{mS}$, $r_{ds} = 100\kO$): $R_2 = 20.2\,\text{M}\Omega$ from above, then
+        $$R_3 = 100\kO + 20.2\,\text{M}\Omega\times201 = 4.06\,\text{G}\Omega$$
+        Why not stack ten? **Headroom.** Each transistor needs $V_{DS}\ge V_{ov}$ to stay saturated, so every added device eats a few hundred millivolts of the output swing; with a $1.8\,\text{V}$ supply two or three is the practical limit.
+
+        **A resistor at the bottom** (Practice 2 #2(a)): $M_2$ on $M_1$ on $R_S$. Bottom-up: $R_1 = r_{ds1} + R_S(1 + g_{m1}r_{ds1})$, then $R_{out} = r_{ds2} + R_1(1 + g_{m2}r_{ds2})$.
+      `),
+      RF(md`
+        ### The PMOS cascode
+
+        The load of a high-gain stage is often a PMOS cascode: $M_4$ on $V_{DD}$, $M_3$ below it, both gates held, output at $M_3$'s drain. Same model upside down (both arrows point up), same algebra:
+        [[fig:a]]
+        $$R_{UP} = r_{ds4} + r_{ds3} + g_{m3}r_{ds3}r_{ds4}$$
+        The magnifying transistor is the one next to the output ($M_3$); the one on the rail ($M_4$) supplies the $r_{ds}$ being magnified. A large-signal square-law solve of this PMOS stack agrees to better than 0.001%.
+
+        **Worked example: a cascode amplifier with a cascode load.** Input off. Down: $M_2$ on $M_1$; up: $M_3$ under $M_4$. All $g_m = 2\,\text{mS}$, $r_{ds} = 100\kO$. Each stack is $20.2\,\text{M}\Omega$, so
+        $$R_{out} = 20.2\,\text{M}\Omega\parallel20.2\,\text{M}\Omega = 10.1\,\text{M}\Omega$$
+        and, as a preview of Chapter 4, $A_v = -g_{m1}R_{out} = -(2\,\text{mS})(10.1\,\text{M}\Omega)\approx-20{,}000$.
+
+        **But with a resistor load** $R_L = 10\kO$ instead of the PMOS cascode: $R_{out} = 10\kO\parallel20.2\,\text{M}\Omega = 9.995\kO$. The cascode is wasted on a resistor: **a big resistance only helps if everything else on the node is big too.**
+      `, { a: { svg: rowSvg([{ fig: F.pcasc({ look: 'R_{UP}' }), cap: 'PMOS cascode load' }, { fig: F.node(['casc', {}], ['casc', {}], { look: 'R_{out}' }), cap: 'cascode amplifier with a cascode load (input off)' }]) } }),
+      RF(md`
+        ### The middle node, and what the load does to it
+
+        Looking into $X$ (Lecture 29 needs this for $C_{gs2}$): down is $r_{ds1}$; up is $M_2$'s source with the load $R_L$ on its drain, $(r_{ds2} + R_L)/(1 + g_{m2}r_{ds2})$ from [the source](#/l/bk03-source):
+        $$R_X = r_{ds1}\parallel\frac{r_{ds2} + R_L}{1 + g_{m2}r_{ds2}}$$
+        With $R_L = 10\kO$ (all $g_m = 2\,\text{mS}$, $r_{ds} = 100\kO$): $R_X = 100\kO\parallel547\,\Omega = 544\,\Omega$, about $1/g_m$: a quiet node. With the $20.2\,\text{M}\Omega$ cascode load: $R_X = 100\kO\parallel(20.3\,\text{M}\Omega/201) = 100\kO\parallel101\kO = 50.2\kO$. A high-impedance load makes the "low" node high.
+        [[fig:a]]
+      `, { a: { fig: midX, cap: 'the middle node: $r_{ds1}$ down, $M_2$\'s source up' } }),
+      RF(md`
+        ### Gain boosting: the regulated cascode
+
+        Practice 2 #2(b) replaces the fixed bias on the cascode's gate with a small amplifier. $M_3$ has its gate on $Y$ (the cascode's source node), its source grounded, and its drain on $M_1$'s gate (node $N$), loaded by an ideal current source $I_B$. Everything below $Y$ is lumped into one resistance $R_Y$.
+        [[fig:a]]
+        **Step 1: $I_B$ is open** (an ideal current source never changes its current). So node $N$ touches only $M_3$'s drain and $M_1$'s gate.
+
+        **Step 2: $v_{gs}$ of each transistor.** $M_3$: $v_{gs3} = v_Y - 0 = v_Y$. $M_1$: $v_{gs1} = v_N - v_Y$. The cascode's gate is no longer still.
+        [[fig:b]]
+        **Step 3: KCL at $N$.** Only $M_3$ touches $N$, so $M_3$'s current must be zero:
+        $$0 = g_{m3}v_Y + \frac{v_N}{r_{ds3}}\quad\Rightarrow\quad v_N = -g_{m3}r_{ds3}\,v_Y = -A\,v_Y,\qquad A = g_{m3}r_{ds3}$$
+        $M_3$ is a common-source amplifier from $Y$ to $N$ whose only load is its own $r_{ds3}$.
+
+        **Step 4: $v_{gs1}$.** $v_{gs1} = -Av_Y - v_Y = -(1 + A)v_Y$: $(1 + A)$ times what a plain cascode has.
+
+        **Step 5: KCL at $Y$.** $M_3$'s gate takes nothing, so all of $i_t$ goes into $R_Y$: $v_Y = i_tR_Y$.
+
+        **Step 6: the current down through $M_1$.**
+        $$i_t = g_{m1}v_{gs1} + \frac{v_t - v_Y}{r_{ds1}} = -g_{m1}(1 + A)R_Y\,i_t + \frac{v_t - i_tR_Y}{r_{ds1}}$$
+        **Step 7: multiply by $r_{ds1}$ and collect $i_t$.**
+        $$i_t\,\big[r_{ds1} + R_Y + g_{m1}r_{ds1}(1 + A)R_Y\big] = v_t$$
+        $$R_{out} = r_{ds1} + R_Y + g_{m1}r_{ds1}(1 + g_{m3}r_{ds3})R_Y\approx(g_{m1}r_{ds1})(g_{m3}r_{ds3})\,R_Y$$
+        **Numbers** (all $g_m = 2\,\text{mS}$, $r_{ds} = 100\kO$, so $A = 200$; $R_Y = 1\kO$): plain, $100 + 1 + 200\times1 = 301\kO$; regulated, $100 + 1 + 200\times201\times1 = 40{,}301\kO = 40.3\,\text{M}\Omega$, another factor of $1 + A = 201$.
+
+        !!intuition A watchdog on node $Y$
+          In a plain cascode, when $Y$ rises by $v_Y$, $v_{gs1}$ falls by $v_Y$ and $M_1$ fights back. In the regulated cascode, $M_3$ sees $Y$ rise and pulls $M_1$'s gate **down** by $Av_Y$, so $v_{gs1}$ falls by $(1 + A)v_Y$ and $M_1$ fights $(1 + A)$ times harder. $Y$ hardly moves at all, so the current hardly changes.
+      `, { a: { fig: F.reg({}), cap: 'the regulated cascode: $M_3$ drives $M_1$\'s gate' }, b: { fig: regModel, cap: 'both models; the gates are tied through the labels' } }),
+      R(md`
+        ### How to recognize it
+
+        A transistor whose source sits on another transistor's drain, both gates held: write $g_{m,top}r_{ds,top}\times$(what is below). A stack: bottom-up. A small amplifier driving the cascode's gate from its own source node: multiply by another $1 + A$.
+
+        !!mistake Common mistakes
+          - $r_{ds1} + r_{ds2}$: series without the feedback.
+          - Using the bottom transistor's $g_m$. The magnifier is the top one (the one you look into).
+          - Forgetting what else is on the node: a $10\kO$ resistor in parallel throws the cascode's megohms away.
+          - In the regulated cascode, using $A = g_{m3}r_{ds3}$ when $M_3$'s load is not an ideal current source: with a resistor $R_B$ there, $A = g_{m3}(r_{ds3}\parallel R_B)$.
+          - Stacking more transistors without checking that each still has $V_{DS}\ge V_{ov}$.
+      `),
+      Q(md`A cascode of two identical transistors versus one of them alone: the output resistance grows by about`,
+        ['$g_mr_{ds}$ (the intrinsic gain)', '2', '$g_m$', '$r_{ds}$'], 0,
+        [null, 'Doubling is $r_{ds1} + r_{ds2}$: series without feedback.', 'That is not a dimensionless factor.', 'That is not dimensionless either.'],
+        md`$R_{out}\approx g_{m2}r_{ds2}\cdot r_{ds1}$ versus $r_{ds1}$: a factor of $g_mr_{ds}$, typically 50 to 200.`),
+      Q(md`In the cascode formula $r_{ds1} + r_{ds2} + g_{m}r_{ds2}r_{ds1}$, whose $g_m$ is it?`,
+        ['The top transistor\'s ($M_2$, the one you look into)', 'The bottom transistor\'s ($M_1$)', 'The average of the two', 'Either: they carry the same current'], 0,
+        [null, '$M_1$ has $v_{gs1} = 0$: its dependent source is dead and it acts only as $r_{ds1}$.', 'Only the top device\'s $v_{gs}$ responds to the test.', 'Same current, but they can have different sizes and so different $g_m$; only $M_2$\'s matters.'],
+        md`$M_2$ is the degenerated transistor; $M_1$ is just its $R_S = r_{ds1}$.`, { fig: F.casc({}) }),
+      Q(md`A $20\,\text{M}\Omega$ cascode drives a node that also has a $10\kO$ resistor to $V_{DD}$. The node resistance is about`,
+        ['$10\\kO$', '$20\\,\\text{M}\\Omega$', '$10\\,\\text{M}\\Omega$', '$20.01\\,\\text{M}\\Omega$'], 0,
+        [null, 'Parallel: the small branch wins.', 'That would need both branches to be $20\\,\\text{M}\\Omega$.', 'Branches to (incremental) ground are in parallel, not series.'],
+        md`$10\kO\parallel20\,\text{M}\Omega = 9.995\kO$. The cascode only pays off with a high-impedance load.`),
+      Q(md`In a regulated cascode the booster has $A = g_{m3}r_{ds3} = 50$. Compared with the plain cascode on the same $R_Y$, the output resistance is about`,
+        ['51 times larger', '50 times smaller', 'unchanged', '2 times larger'], 0,
+        [null, 'The booster makes $M_1$ fight harder, so the resistance goes **up**.', 'The magnification $g_{m1}r_{ds1}$ becomes $g_{m1}r_{ds1}(1 + A)$.', '$1 + A = 51$, not 2.'],
+        md`$R_{out}\approx g_{m1}r_{ds1}(1 + A)R_Y$: another factor $1 + A = 51$.`),
+      P({
+        id: 'bk03-casc-num', title: 'An unequal cascode',
+        q: md`$M_1$ (bottom) has $r_{ds1} = 50\kO$; $M_2$ (top) has $g_{m2} = 4\,\text{mS}$, $r_{ds2} = 80\kO$. Both gates held. Find $R_{out}$.`,
+        fig: F.casc({ look: 'R_{out}' }),
+        parts: [{ lbl: 'R_{out}', unit: 'MΩ', ans: 16.13, traps: [{ v: 0.13, msg: 'That is $r_{ds1} + r_{ds2}$: the feedback term is missing.' }] }],
+        hints: [md`$g_{m2}r_{ds2} = 320$.`],
+        sol: md`$R_{out} = 50\kO + 80\kO + (4\,\text{mS})(80\kO)(50\kO) = 130\kO + 16{,}000\kO = 16.13\,\text{M}\Omega$.`,
+      }),
+      P({
+        id: 'bk03-casc-sym', title: 'The cascode, typed',
+        q: md`Both gates held; $M_1$ at the bottom, $M_2$ on top. Type $R_{out}$ looking into $M_2$'s drain (exact, or the $g_mr_{ds}\gg1$ form). Variables: gm1, gm2, rds1, rds2.`,
+        fig: F.casc({ look: 'R_{out}' }),
+        parts: [BK.ex('rds1 + rds2 + gm2*rds2*rds1', ['gm1', 'gm2', 'rds1', 'rds2'], 'R_{out}')],
+        hints: [md`$M_1$ is just $r_{ds1}$. $M_2$ is degenerated by it.`],
+        sol: md`$R_{out} = r_{ds2} + r_{ds1}(1 + g_{m2}r_{ds2}) = r_{ds1} + r_{ds2} + g_{m2}r_{ds2}r_{ds1}\approx g_{m2}r_{ds2}r_{ds1}$. ($g_{m1}$ does not appear.)`,
+      }),
+      P({
+        id: 'bk03-casc-triple', title: 'A triple cascode, bottom-up',
+        q: md`Three identical transistors, $g_m = 1\,\text{mS}$, $r_{ds} = 50\kO$, stacked with all gates held. Find the resistance looking into the drain of the middle one ($R_2$) and of the top one ($R_3$).`,
+        fig: F.casc({ triple: 1, look: 'R_3' }),
+        parts: [{ lbl: 'R_2', unit: 'MΩ', ans: 2.6 }, { lbl: 'R_3', unit: 'MΩ', ans: 132.65 }],
+        hints: [md`$1 + g_mr_{ds} = 51$. $R_{next} = r_{ds} + R_{below}\times51$.`],
+        sol: md`
+1. $R_2 = 50\kO + 50\kO\times51 = 2600\kO = 2.6\,\text{M}\Omega$.
+2. $R_3 = 50\kO + 2600\kO\times51 = 132{,}650\kO = 132.65\,\text{M}\Omega$, about $(g_mr_{ds})^2r_{ds}$.`,
+      }),
+      P({
+        id: 'bk03-casc-pmos', title: 'A PMOS cascode load',
+        q: md`$M_4$ (on $V_{DD}$) and $M_3$ (below it, output at its drain) both have $r_{ds} = 100\kO$; $g_{m3} = 1\,\text{mS}$. Gates held. Find the resistance looking up into $M_3$'s drain.`,
+        fig: F.pcasc({ look: 'R_{UP}' }),
+        parts: [{ lbl: 'R_{UP}', unit: 'MΩ', ans: 10.2 }],
+        hints: [md`Same formula as the NMOS cascode; the magnifier is $M_3$.`],
+        sol: md`$R_{UP} = r_{ds4} + r_{ds3} + g_{m3}r_{ds3}r_{ds4} = 100 + 100 + 100\times100\ (\text{k}\Omega) = 10{,}200\kO = 10.2\,\text{M}\Omega$.`,
+      }),
+      P({
+        id: 'bk03-casc-reg', title: 'The regulated cascode with numbers',
+        q: md`$M_1$: $g_{m1} = 2\,\text{mS}$, $r_{ds1} = 50\kO$, on $R_Y = 50\kO$ (another transistor's $r_{ds}$). The booster $M_3$ has $g_{m3} = 2\,\text{mS}$, $r_{ds3} = 50\kO$ and an ideal current-source load. Find $A$ and $R_{out}$, and compare with the plain cascode.`,
+        fig: F.reg({ look: 'R_{out}' }),
+        parts: [{ lbl: 'A', unit: '', ans: 100 }, { lbl: 'R_{out}', unit: 'MΩ', ans: 505.1, traps: [{ v: 5.1, msg: 'That is the plain cascode ($A = 0$). The booster multiplies the big term by $1 + A$.' }] }],
+        hints: [md`$A = g_{m3}r_{ds3}$. $R_{out} = r_{ds1} + R_Y + g_{m1}r_{ds1}(1 + A)R_Y$.`],
+        sol: md`
+1. $A = (2\,\text{mS})(50\kO) = 100$.
+2. $R_{out} = 50\kO + 50\kO + (100)(101)(50\kO) = 100\kO + 505{,}000\kO = 505.1\,\text{M}\Omega$.
+3. Plain: $50 + 50 + 100\times50 = 5100\kO = 5.1\,\text{M}\Omega$. The booster gave a factor of about 100.`,
+      }),
+      P({
+        id: 'bk03-casc-amp', title: 'A cascode stage with a cascode load (exam style)',
+        q: md`Input off. Down: $M_2$ on $M_1$; up: $M_3$ under $M_4$; all gates held. Every transistor has $g_m = 1\,\text{mS}$, $r_{ds} = 50\kO$. Find (a) the down stack $R_n$, (b) $R_{out}$, (c) how much the middle node $X$ moves per volt at the output ($v_x/v_{out}$), (d) the resistance at $X$.`,
+        fig: F.node(['casc', {}], ['casc', {}], { look: 'R_{out}' }),
+        parts: [{ lbl: 'R_n', unit: 'MΩ', ans: 2.6 }, { lbl: 'R_{out}', unit: 'MΩ', ans: 1.3 }, { lbl: 'v_x/v_{out}', unit: '', ans: 0.0192308 },
+          { lbl: 'R_X', unit: 'kΩ', ans: 25.4808, traps: [{ v: 0.98, msg: 'That is about $1/g_{m2}$: true only with a small load. Here the load is $2.6\\,\\text{M}\\Omega$, so $(r_{ds2} + R_{up})/(1 + g_{m2}r_{ds2})$ is large.' }] }],
+        hints: [md`(a) $r_{ds1} + r_{ds2} + g_{m2}r_{ds2}r_{ds1}$; the up stack is the same. (c) $X$ is a divider: $v_x = i\,r_{ds1}$ with $i = v_{out}/R_n$.`, md`(d) At $X$: down $r_{ds1}$; up $M_2$'s source with $R_{up} = 2.6\,\text{M}\Omega$ on its drain.`],
+        sol: md`
+**(a)** $R_n = 50 + 50 + 50\times50 = 2600\kO = 2.6\,\text{M}\Omega$.
+
+**(b)** The up stack is identical: $R_{out} = 2.6\parallel2.6 = 1.3\,\text{M}\Omega$.
+
+**(c)** The down stack carries $v_{out}/R_n$, which flows through $r_{ds1}$: $v_x/v_{out} = r_{ds1}/R_n = 50/2600 = 0.0192$.
+
+**(d)** Up from $X$: $\dfrac{r_{ds2} + R_{up}}{1 + g_{m2}r_{ds2}} = \dfrac{50 + 2600}{51}\kO = 51.96\kO$; down: $50\kO$. $R_X = 50\parallel51.96 = 25.48\kO$, not $1/g_m$: with a cascode load the middle node is a high-impedance node too.`,
+      }),
+      P({
+        id: 'bk03-casc-rs', title: 'A cascode with a resistor at the bottom',
+        q: md`$M_2$ on $M_1$ on $R_S = 2\kO$, gates held; both transistors $g_m = 1\,\text{mS}$, $r_{ds} = 100\kO$. Find $R_1$ (looking into $M_1$'s drain) and $R_{out}$.`,
+        fig: F.casc({ rs: 1, look: 'R_{out}' }),
+        parts: [{ lbl: 'R_1', unit: 'kΩ', ans: 302 }, { lbl: 'R_{out}', unit: 'MΩ', ans: 30.602 }],
+        hints: [md`Bottom-up: $R_1 = r_{ds} + R_S(1 + g_mr_{ds})$, then $R_{out} = r_{ds} + R_1(1 + g_mr_{ds})$, with $1 + g_mr_{ds} = 101$.`],
+        sol: md`
+1. $R_1 = 100 + 2\times101 = 302\kO$.
+2. $R_{out} = 100 + 302\times101 = 100 + 30{,}502 = 30{,}602\kO = 30.6\,\text{M}\Omega$.`,
+      }),
+      G('bk_mi_casc', { need: 3 }),
+    ],
+  });
 })();

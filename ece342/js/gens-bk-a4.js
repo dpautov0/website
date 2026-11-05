@@ -161,4 +161,150 @@
 5. **Current gain.** $v_a = \dfrac{i_{in}}{g_{m1} + 1/r_{ds1}}$, $i_{out} = g_{m2}v_a$: $\dfrac{i_{out}}{i_{in}} = \dfrac{${f(r.gm2 * 1e3, 4)}}{${f(r.gm1 * 1e3, 4)} + ${f(1e3 / r.rds1, 4)}} = ${f(r.ai, 4)}$, essentially the size ratio ${f(N)}.`,
     };
   };
+
+  // ================================================================ 2. chains: CS -> CS, CS -> CG, CS -> follower -> R_L
+  const chainFigs = {
+    cscs: () => [
+      ['rail', [1, -1.2]], ['R', [1, -1.2], [1, 0], { n: 'R_{D1}', side: 'l' }], ['nmos', [1, 1], { n: 'M_1' }], ['gnd', [1, 2]],
+      ['w', [0, 1], [-0.6, 1], [-0.6, 1.4]], ...vin(-0.6, 1.4),
+      ['w', [1, 0], [1.8, 0], [1.8, 1], [2, 1]], ['node', [1.4, 0], { n: 'v_1', side: 'a' }],
+      ['rail', [3, -1.2]], ['R', [3, -1.2], [3, 0], { n: 'R_{D2}' }], ['nmos', [3, 1], { n: 'M_2' }], ['gnd', [3, 2]],
+      ['w', [3, 0], [3.8, 0]], ['term', [3.8, 0], { n: 'v_{out}', side: 'r' }],
+    ],
+    cscg: () => [
+      ['rail', [1, -2.2]], ['R', [1, -2.2], [1, -1], { n: 'R_{D2}', side: 'l' }], ['w', [1, -1], [1.8, -1]], ['term', [1.8, -1], { n: 'v_{out}', side: 'r' }],
+      ['nmos', [1, 0], { n: 'M_2' }], ['acg', [0, 0]],
+      ['w', [1, 1], [3, 1]], ['node', [2, 1], { n: 'v_1', side: 'b' }], ['rail', [3, -0.4]], ['R', [3, -0.4], [3, 1], { n: 'R_{D1}' }],
+      ['nmos', [1, 2], { n: 'M_1' }], ['gnd', [1, 3]], ['w', [0, 2], [-0.6, 2], [-0.6, 2.4]], ...vin(-0.6, 2.4),
+    ],
+    cscd: () => [
+      ['rail', [1, -1.2]], ['R', [1, -1.2], [1, 0], { n: 'R_{D1}', side: 'l' }], ['nmos', [1, 1], { n: 'M_1' }], ['gnd', [1, 2]],
+      ['w', [0, 1], [-0.6, 1], [-0.6, 1.4]], ...vin(-0.6, 1.4),
+      ['w', [1, 0], [1.8, 0], [1.8, 1], [2, 1]], ['node', [1.4, 0], { n: 'v_1', side: 'a' }],
+      ['rail', [3, 0]], ['nmos', [3, 1], { n: 'M_2' }], ['w', [3, 2], [3.8, 2]], ['term', [3.8, 2], { n: 'v_{out}', side: 'r' }],
+      ['R', [3, 2], [3, 3.2], { n: 'R_L' }], ['gnd', [3, 3.2]],
+    ],
+  };
+  Object.assign(window.BK4.fig, { chain: chainFigs });
+  T.chain = (v) => {
+    const r = {};
+    if (v.kind === 'cscs') { r.A1 = -v.gm1 * par(v.RD1, v.rds1); r.A2 = -v.gm2 * par(v.RD2, v.rds2); }
+    if (v.kind === 'cscg') {
+      r.Rin2 = (v.rds2 + v.RD2) / (1 + v.gm2 * v.rds2);
+      r.A1 = -v.gm1 * par(v.RD1, v.rds1, r.Rin2); r.A2 = (v.gm2 + 1 / v.rds2) * par(v.RD2, v.rds2);
+      r.A1free = -v.gm1 * par(v.RD1, v.rds1);
+    }
+    if (v.kind === 'cscd') { const Rp = par(v.rds2, v.RL); r.A1 = -v.gm1 * par(v.RD1, v.rds1); r.A2 = v.gm2 * Rp / (1 + v.gm2 * Rp); }
+    r.Av = r.A1 * r.A2;
+    return r;
+  };
+  GENS.bk_chain = () => {
+    const kind = pick(['cscs', 'cscg', 'cscg', 'cscd']);
+    const v = {
+      kind, gm1: pick([0.5, 1, 2, 4]) * 1e-3, rds1: pick([50, 100, 200]) * 1e3, RD1: pick([5, 10, 20]) * 1e3,
+      gm2: pick([0.5, 1, 2, 4]) * 1e-3, rds2: pick([50, 100, 200]) * 1e3, RD2: pick([5, 10, 20]) * 1e3, RL: pick([0.5, 1, 2, 5]) * 1e3,
+    };
+    const r = T.chain(v);
+    const g = (x) => f(x, 4);
+    const m2 = kind === 'cscd' ? `$g_{m2} = ${MS(v.gm2)}$, $r_{ds2} = ${KO(v.rds2)}$, $R_L = ${RT(v.RL)}$` : `$g_{m2} = ${MS(v.gm2)}$, $r_{ds2} = ${KO(v.rds2)}$, $R_{D2} = ${KO(v.RD2)}$`;
+    const what = { cscs: 'a common source whose drain $v_1$ drives the **gate** of a second common source', cscg: 'a common source whose drain $v_1$ drives the **source** of a common gate $M_2$ (gate held)', cscd: 'a common source whose drain $v_1$ drives the **gate** of a source follower $M_2$ with $R_L$ on its source' }[kind];
+    const parts = [];
+    if (kind === 'cscg') parts.push(res('R_{in2}', r.Rin2, { accept: [1 / v.gm2], traps: [{ v: v.rds2, msg: 'That is $r_{ds2}$. A source with its gate held is about $1/g_{m2}$.' }] }));
+    parts.push(num('A_1', '', r.A1, { traps: kind === 'cscg' ? [{ v: r.A1free, msg: 'That ignores the loading: $R_{in2}$ sits in parallel at $v_1$.' }] : [] }));
+    parts.push(num('A_2', '', r.A2, { traps: kind === 'cscd' ? [{ v: 1, msg: 'A follower\'s gain is $g_mR/(1 + g_mR)$ with $R = r_{ds2}\\parallel R_L$: below 1.' }] : kind === 'cscg' ? [{ v: -r.A2, msg: 'A common gate does not invert.' }] : [] }));
+    parts.push(num('A_v', '', r.Av, { traps: kind === 'cscg' ? [{ v: r.A1free * r.A2, msg: 'That multiplies the gains without the loading at $v_1$.' }, { v: -r.Av, msg: 'Count the inversions: only the common source inverts.' }] : [{ v: -r.Av, msg: kind === 'cscs' ? 'Two inversions: positive.' : 'One inversion (the common source): negative.' }] }));
+    const s1 = kind === 'cscg'
+      ? `1. **Loading.** $v_1$ touches $M_2$'s **source**: $R_{in2} = \\dfrac{r_{ds2} + R_{D2}}{1 + g_{m2}r_{ds2}} = \\dfrac{${KO(v.rds2)} + ${KO(v.RD2)}}{1 + ${g(v.gm2 * v.rds2)}} = ${RT(r.Rin2)}$.
+2. **$A_1$.** $R_{D1}\\parallel r_{ds1}\\parallel R_{in2} = ${RT(par(v.RD1, v.rds1, r.Rin2))}$, so $A_1 = -(${MS(v.gm1)})(${RT(par(v.RD1, v.rds1, r.Rin2))}) = ${g(r.A1)}$.
+3. **$A_2$.** Driven at the source: $G_{M2} = -(g_{m2} + 1/r_{ds2})$, $R_{out2} = R_{D2}\\parallel r_{ds2} = ${KO(par(v.RD2, v.rds2))}$: $A_2 = (${MS(v.gm2 + 1 / v.rds2)})(${KO(par(v.RD2, v.rds2))}) = ${g(r.A2)}$.`
+      : kind === 'cscs'
+        ? `1. **Loading.** $v_1$ touches a **gate**: $R_{in2} = \\infty$, no loading.
+2. **$A_1$.** $A_1 = -g_{m1}(R_{D1}\\parallel r_{ds1}) = -(${MS(v.gm1)})(${KO(par(v.RD1, v.rds1))}) = ${g(r.A1)}$.
+3. **$A_2$.** $A_2 = -g_{m2}(R_{D2}\\parallel r_{ds2}) = -(${MS(v.gm2)})(${KO(par(v.RD2, v.rds2))}) = ${g(r.A2)}$.`
+        : `1. **Loading.** $v_1$ touches a **gate**: no loading.
+2. **$A_1$.** $A_1 = -g_{m1}(R_{D1}\\parallel r_{ds1}) = -(${MS(v.gm1)})(${KO(par(v.RD1, v.rds1))}) = ${g(r.A1)}$.
+3. **$A_2$ (follower).** Output shorted, $M_2$ pushes $g_{m2}v_1$ into it: $G_{M2} = -g_{m2}$; $R_{out2} = \\tfrac1{g_{m2}}\\parallel r_{ds2}\\parallel R_L$. With $R = r_{ds2}\\parallel R_L = ${RT(par(v.rds2, v.RL))}$: $A_2 = \\dfrac{g_{m2}R}{1 + g_{m2}R} = \\dfrac{${g(v.gm2 * par(v.rds2, v.RL))}}{1 + ${g(v.gm2 * par(v.rds2, v.RL))}} = ${g(r.A2)}$.`;
+    return {
+      _v: v,
+      fig: chainFigs[kind](),
+      q: md`The chain is ${what}. $g_{m1} = ${MS(v.gm1)}$, $r_{ds1} = ${KO(v.rds1)}$, $R_{D1} = ${KO(v.RD1)}$; ${m2}. Find ${kind === 'cscg' ? '$R_{in2}$ (looking into $M_2$ from $v_1$), ' : ''}$A_1 = v_1/v_{in}$, $A_2 = v_{out}/v_1$ and $A_v$.`,
+      parts,
+      hints: [
+        md`What touches $v_1$? A gate draws nothing; a source with its gate held is about $1/g_m$: $R_{in2} = \dfrac{r_{ds2} + R_{D2}}{1 + g_{m2}r_{ds2}}$.`,
+        md`$A_1 = -g_{m1}(R_{D1}\parallel r_{ds1}\parallel R_{in2})$; $A_2$ by $G_MR_{out}$ with an ideal $v_1$.`,
+      ],
+      sol: md`
+${s1}
+4. **Multiply.** $A_v = A_1A_2 = (${g(r.A1)})(${g(r.A2)}) = ${g(r.Av)}$. ${kind === 'cscs' ? 'Two inversions: positive.' : 'One inversion (the common source): negative.'}${kind === 'cscg' ? ` Without the loading you would have written $(${g(r.A1free)})(${g(r.A2)}) = ${g(r.A1free * r.A2)}$.` : ''}`,
+    };
+  };
+
+  // ================================================================ 3. two paths into one output
+  const pathFigs = {
+    inv: (rs) => [
+      ['rail', [1, -2]], ['pmos', [1, -1], { n: 'M_2' }], ['nmos', [1, 1], { n: 'M_1' }],
+      ...(rs ? [['R', [1, 2], [1, 3.2], { n: 'R_S' }], ['gnd', [1, 3.2]]] : [['gnd', [1, 2]]]),
+      ['w', [1, 0], [1.8, 0]], ['term', [1.8, 0], { n: 'v_{out}', side: 'r' }],
+      ['w', [0, -1], [-0.3, -1], [-0.3, 1], [0, 1]], ['w', [-0.3, 0], [-0.9, 0], [-0.9, 0.4]], ...vin(-0.9, 0.4),
+    ],
+    fight: () => [
+      ['rail', [1, -2]], ['pmos', [1, -1], { n: 'M_2', dc: true }], ['nmos', [1, 1], { n: 'M_1' }], ['gnd', [1, 2]],
+      ['node', [1.7, 0], { n: 'v_1', side: 'a' }], ['w', [1, 0], [2.4, 0], [2.4, -1], [3, -1]],
+      ['rail', [4, -2]], ['pmos', [4, -1], { n: 'M_4' }], ['nmos', [4, 1], { n: 'M_3' }], ['gnd', [4, 2]],
+      ['w', [4, 0], [4.8, 0]], ['term', [4.8, 0], { n: 'v_{out}', side: 'r' }],
+      ['w', [0, 1], [-1, 1], [-1, 1.4]], ...vin(-1, 1.4),
+      ['w', [-0.4, 1], [-0.4, 2.9], [2.6, 2.9], [2.6, 1], [3, 1]],
+    ],
+  };
+  Object.assign(window.BK4.fig, { paths: pathFigs });
+  T.paths = (v) => {
+    const r = {};
+    if (v.kind === 'inv') {
+      r.G1 = v.RS ? v.gm1 / (1 + (v.gm1 + 1 / v.rds1) * v.RS) : v.gm1;
+      r.GM = r.G1 + v.gm2;
+      r.RDN = v.RS ? v.rds1 + v.RS + v.gm1 * v.rds1 * v.RS : v.rds1;
+      r.Rout = par(v.rds2, r.RDN);
+    } else {
+      r.A1 = -v.gm1 / (v.gm2 + 1 / v.rds1 + 1 / v.rds2);
+      r.GM = v.gm3 + v.gm4 * r.A1;
+      r.Rout = par(v.rds3, v.rds4);
+    }
+    r.Av = -r.GM * r.Rout;
+    return r;
+  };
+  GENS.bk_paths = () => {
+    const kind = pick(['inv', 'fight', 'fight']);
+    const G = () => pick([0.5, 1, 2, 4]) * 1e-3, Rd = () => pick([50, 100, 200]) * 1e3;
+    let v, r;
+    for (let k = 0; k < 40; k++) {
+      v = kind === 'inv' ? { kind, gm1: G(), rds1: Rd(), gm2: G(), rds2: Rd(), RS: pick([0, 0, 1e3, 2e3]) }
+        : { kind, gm1: G(), gm2: G(), gm3: G(), gm4: G(), rds1: Rd(), rds2: Rd(), rds3: Rd(), rds4: Rd() };
+      r = T.paths(v);
+      if (Math.abs(r.GM) > 0.15e-3) break;          // keep clear of an exact cancellation
+    }
+    const g = (x) => f(x, 4);
+    const parts = [];
+    if (kind === 'fight') parts.push(num('A_1', '', r.A1, { traps: [{ v: -r.A1, msg: 'A common source with a diode load inverts.' }] }));
+    parts.push(num('G_M', 'mS', r.GM * 1e3, { traps: kind === 'fight' ? [{ v: (v.gm3 - v.gm4 * r.A1) * 1e3, msg: 'The PMOS gate sees an inverted copy ($A_1 < 0$): its term is $g_{m4}A_1$, negative.' }]
+      : [{ v: (r.G1 - v.gm2) * 1e3, msg: 'Both gates see $v_{in}$: both transistors pull current out of the output, so the terms add.' }, ...(v.RS ? [{ v: (v.gm1 + v.gm2) * 1e3, msg: 'The degenerated branch delivers $g_{m1}/(1 + (g_{m1} + 1/r_{ds1})R_S)$, not $g_{m1}$.' }] : [])] }));
+    parts.push(res('R_{out}', r.Rout, { traps: kind === 'inv' && v.RS ? [{ v: par(v.rds1, v.rds2), msg: 'Looking down you see a degenerated drain, $r_{ds1} + R_S + g_{m1}r_{ds1}R_S$.' }] : [] }));
+    parts.push(num('A_v', '', r.Av, { traps: [{ v: -r.Av, msg: 'Check the sign of $G_M$: $A_v = -G_MR_{out}$.' }] }));
+    const q = kind === 'inv'
+      ? md`A push-pull stage: $v_{in}$ drives the NMOS $M_1$ (${v.RS ? `degenerated by $R_S = ${KO(v.RS)}$` : 'source on ground'}) and the PMOS $M_2$ (source on $V_{DD}$); their drains form the output. $g_{m1} = ${MS(v.gm1)}$, $r_{ds1} = ${KO(v.rds1)}$, $g_{m2} = ${MS(v.gm2)}$, $r_{ds2} = ${KO(v.rds2)}$. Find $G_M$ (current pulled out of the shorted output per volt of $v_{in}$), $R_{out}$ and $A_v$.`
+      : md`Two paths: $M_3$ (gate at $v_{in}$) on the output, and $M_1$ (gate at $v_{in}$) with the diode-connected PMOS $M_2$ at node $v_1$, which drives the PMOS $M_4$ on the output. $g_{m1} = ${MS(v.gm1)}$, $g_{m2} = ${MS(v.gm2)}$, $g_{m3} = ${MS(v.gm3)}$, $g_{m4} = ${MS(v.gm4)}$; $r_{ds1} = ${KO(v.rds1)}$, $r_{ds2} = ${KO(v.rds2)}$, $r_{ds3} = ${KO(v.rds3)}$, $r_{ds4} = ${KO(v.rds4)}$. Find $A_1 = v_1/v_{in}$, $G_M$, $R_{out}$ and $A_v$.`;
+    const sol = kind === 'inv'
+      ? md`
+1. **Output shorted.** Both gates see $v_{in}$. ${v.RS ? `The degenerated branch delivers $G_{M1} = \dfrac{g_{m1}}{1 + (g_{m1} + 1/r_{ds1})R_S} = \dfrac{${MS(v.gm1)}}{1 + ${g((v.gm1 + 1 / v.rds1) * v.RS)}} = ${MS(r.G1)}$; the PMOS delivers $g_{m2} = ${MS(v.gm2)}$.` : `Each pulls $g_mv_{in}$ out of the output: $${MS(v.gm1)}$ and $${MS(v.gm2)}$.`} Total $G_M = ${MS(r.GM)}$.
+2. **$v_{in} = 0$.** Up: $r_{ds2} = ${KO(v.rds2)}$. Down: ${v.RS ? `$r_{ds1} + R_S + g_{m1}r_{ds1}R_S = ${RT(r.RDN)}$` : `$r_{ds1} = ${KO(v.rds1)}$`}. $R_{out} = ${RT(r.Rout)}$.
+3. $A_v = -G_MR_{out} = -(${MS(r.GM)})(${RT(r.Rout)}) = ${g(r.Av)}$.`
+      : md`
+1. **Node $v_1$** (KCL, currents leaving): $g_{m1}v_{in} + v_1(g_{m2} + 1/r_{ds1} + 1/r_{ds2}) = 0$, so $A_1 = -\dfrac{${MS(v.gm1)}}{${MS(v.gm2 + 1 / v.rds1 + 1 / v.rds2)}} = ${g(r.A1)}$.
+2. **Output shorted.** $i_{out} = g_{m3}v_{in} + g_{m4}v_1$: $G_M = ${MS(v.gm3)} + (${MS(v.gm4)})(${g(r.A1)}) = ${MS(r.GM)}$. ${r.GM < 0 ? 'The PMOS push wins.' : 'The direct NMOS path wins.'}
+3. **$v_{in} = 0$** makes $v_1 = 0$, so $R_{out} = r_{ds3}\parallel r_{ds4} = ${RT(r.Rout)}$.
+4. $A_v = -G_MR_{out} = ${g(r.Av)}$ (${r.Av > 0 ? 'non-inverting' : 'inverting'}).`;
+    return {
+      _v: v, fig: kind === 'inv' ? pathFigs.inv(v.RS) : pathFigs.fight(), q, parts, sol,
+      hints: [md`Short the output and add the current each transistor pulls out of it; a gate on $v_1$ contributes $g_mA_1$, sign included.`, md`$R_{out}$ with $v_{in} = 0$: every internal node driven only by $v_{in}$ is still.`],
+    };
+  };
 })();

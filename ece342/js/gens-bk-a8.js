@@ -128,7 +128,7 @@
   // common source / common emitter: v_in through R_S to the gate; R_L to the supply; output at the drain
   F.cs = (o = {}, dev = 'nmos') => {
     const { K, N, sup } = NM(dev);
-    const xL = o.cdb ? 4.8 : 4.0;
+    const xL = o.cdb ? 5.0 : 4.0;
     return [
       ...vin(-0.6, 1.5), ['w', [-0.6, 1.5], [-0.6, 1]], ['R', [-0.6, 1], [0.8, 1], RLb(o, 'RS', 'R_S')], ['w', [0.8, 1], [2, 1]],
       [dev, [3, 1], { n: o.dn }], ['gnd', [3, 2]],

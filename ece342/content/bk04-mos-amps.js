@@ -329,4 +329,244 @@ Notice that $G_M$ has **two paths**: the transistor pulls current out, $R_F$ fee
       G('bk_norton', { need: 4 }),
     ],
   });
+
+  // ================================================================== 2. the common source
+  L({
+    id: 'bk04-cs', title: 'The common source', ref: 'Lectures 14–15',
+    steps: [
+      RF(md`
+        ### The question
+
+        The **common source** is the workhorse: input on the gate, output at the drain, source at (incremental) ground. ("Common" because the source belongs to neither the input nor the output.) Every other stage in this chapter is a common source with something added or something moved. We want its gain, why that gain is negative, what sets its size, and what limits it. On Exam 2 it sits inside almost every problem, alone or as the first stage of a chain.
+
+        ### The physical picture
+
+        Bias first. A DC gate voltage $V_{GS}$ opens the valve to a current $I_D$. That current flows down from $V_{DD}$ through $R_D$, so the drain sits at
+        $$V_{out} = V_{DD} - I_DR_D$$
+        Now let the gate rise a little. The valve opens further, more current flows, the drop across $R_D$ grows, and **the drain falls**. That is the whole reason the common source inverts: more current through the load resistor means a bigger drop across it.
+
+        The output curves show it. Each solid curve is the transistor's $I_D$ against $V_{DS}$ at one gate voltage. The dashed line is what $R_D$ allows, $I_D = (V_{DD} - V_{DS})/R_D$: the **load line**. The circuit must sit where the two meet. The numbers: $K = \tfrac12\mu_nC_{ox}\tfrac WL = 1\,\text{mA/V}^2$, $V_{TN} = 1\,\text{V}$, $V_{DD} = 5\,\text{V}$, $R_D = 10\kO$, and $r_{ds}$ ignored for now, so the saturated curves are flat.
+
+        [[fig:ll]]
+
+        At $V_{GS} = 1.5\,\text{V}$ the operating point is $Q$: $I_D = K(0.5\,\text{V})^2 = 0.25\,\text{mA}$ and $V_{DS} = 5 - 2.5 = 2.5\,\text{V}$. Move the gate by $\pm0.1\,\text{V}$ and the operating point slides along the load line, from $V_{DS} = 3.4\,\text{V}$ (at $1.4\,\text{V}$, $0.16\,\text{mA}$) to $1.4\,\text{V}$ (at $1.6\,\text{V}$, $0.36\,\text{mA}$). A $0.2\,\text{V}$ swing at the gate became a $2\,\text{V}$ swing at the drain, upside down: a gain of about $-10$.
+
+        !!intuition A valve and a resistor
+          The transistor does not make voltage. It sets a current, and the resistor turns that current into voltage. A steep valve (large $g_m$) and a large resistor give a large gain. Keep that picture: every formula in this section is a careful version of it.
+      `, { ll: { fig: F.loadLine(), cap: 'Output curves at three gate voltages and the load line of $R_D = 10\\,\\text{k}\\Omega$ from $V_{DD} = 5\\,\\text{V}$. A $\\pm0.1\\,\\text{V}$ gate swing moves the drain from $3.4\\,\\text{V}$ to $1.4\\,\\text{V}$.' } }),
+      RF(md`
+        ### Gain is a slope
+
+        Sweep $V_{in}$ and plot the drain voltage: the **transfer curve**. Below $V_{TN} = 1\,\text{V}$ the transistor is off and $V_{out} = V_{DD}$. Above it, in saturation,
+        $$V_{out} = V_{DD} - R_DK(V_{in} - V_{TN})^2$$
+        falls steeply: this is the amplifier region. Once $V_{out}$ drops below $V_{in} - V_{TN}$, the transistor enters triode and the curve flattens out near zero.
+
+        [[fig:tc]]
+
+        A small signal riding on $Q$ moves along this curve, and over a short enough stretch the curve is its tangent line ([Chapter 1](#/l/bk01-tangent)). So the small-signal gain is the **slope at $Q$**. Differentiate the saturation branch:
+        $$\frac{dV_{out}}{dV_{in}} = -2R_DK(V_{in} - V_{TN}) = -R_D\,(2KV_{ov}) = -g_mR_D$$
+        because $2KV_{ov} = \mu_nC_{ox}\tfrac WLV_{ov} = g_m$ ([Chapter 2](#/l/bk02-gm)). At $Q$: $g_m = 2I_D/V_{ov} = 2(0.25\,\text{mA})/(0.5\,\text{V}) = 1\,\text{mS}$, and the slope is $-(1\,\text{mS})(10\kO) = -10$: the dashed tangent.
+      `, { tc: { fig: F.csTransfer(), cap: 'The transfer curve of the same stage. The gain is the slope at $Q$: $-g_mR_D = -10$.' } }),
+      RF(md`
+        ### The model
+
+        Assumptions: $M_1$ is in saturation at $Q$, and the signal is small. This time we keep $r_{ds} = 1/(\lambda I_D)$, the slope of the real output curves.
+
+        Building the small-signal circuit: $V_{DD}$ becomes ground, so $R_D$ runs from the drain to ground; the DC part of the gate voltage is a constant, so only $v_{in}$ is left at the gate; $M_1$ becomes $g_mv_{gs}$ from drain to source with $r_{ds}$ beside it, and nothing flows into its gate.
+
+        [[fig:bias]]
+
+        ### The derivation
+
+        **$G_M$: short the output.**
+
+        *Step 1: what is $v_{gs}$?* The gate is at $v_{in}$, the source on ground: $v_{gs} = v_{in} - 0 = v_{in}$.
+
+        *Step 2: who carries current?* The shorted drain sits at 0 V. $R_D$ has 0 V at both ends (the drain, and $V_{DD}$, which is ground): no current. $r_{ds}$ has 0 V at the drain and 0 V at the source: no current.
+
+        *Step 3: KCL at the drain.* Only the dependent source is left. It pulls $g_mv_{gs} = g_mv_{in}$ down out of the drain node, and the only thing that can supply that current is the short: $i_{out} = g_mv_{in}$.
+        $$G_M = \frac{i_{out}}{v_{in}} = g_m$$
+
+        [[fig:short]]
+
+        **$R_{out}$: turn the input off.**
+
+        *Step 1: what is $v_{gs}$?* $v_{in} = 0$ puts the gate on ground; the source is on ground: $v_{gs} = 0$.
+
+        *Step 2:* the dependent source carries $g_m\cdot0 = 0$. A current source carrying nothing is an open circuit: erase it.
+
+        *Step 3: a test source $v_t$ on the drain.* Its current $i_t$ splits two ways: up through $R_D$ to (incremental) ground, $v_t/R_D$, and down through $r_{ds}$ to ground, $v_t/r_{ds}$:
+        $$i_t = \frac{v_t}{R_D} + \frac{v_t}{r_{ds}}\quad\Rightarrow\quad R_{out} = \frac{v_t}{i_t} = \frac{1}{1/R_D + 1/r_{ds}} = R_D\parallel r_{ds}$$
+
+        [[fig:test]]
+
+        !!key The common source
+          $$G_M = g_m,\qquad R_{out} = R_D\parallel r_{ds},\qquad A_v = -g_m\,(R_D\parallel r_{ds})$$
+          Input resistance: a gate, $R_{in} = \infty$.
+      `, {
+        bias: { fig: F.cs({ bias: 'V_{GS}' }), cap: 'Total = bias + signal: $v_{in}$ rides on the DC gate voltage $V_{GS}$. For the small-signal circuit, $V_{GS}$ and $V_{DD}$ become ground.' },
+        short: { fig: F.csM('short'), cap: '$G_M$: drain shorted. $R_D$ and $r_{ds}$ have 0 V across them; the short supplies $g_mv_{in}$.' },
+        test: { fig: F.csM('test'), cap: '$R_{out}$: gate grounded, so $v_{gs} = 0$; the test source sees $R_D$ and $r_{ds}$ in parallel.' },
+      }),
+      R(md`
+        ### Check it
+
+        - **$r_{ds}\to\infty$** (no channel-length modulation): $A_v = -g_mR_D$, the slope we got by differentiating the transfer curve.
+        - **$R_D\to\infty$** (an ideal current source above the drain): $A_v = -g_mr_{ds}$, the **intrinsic gain**. That is the most one transistor can give: all of its current change must flow through its own $r_{ds}$.
+        - **Units:** mS × kΩ, a pure number.
+        - **One number:** $g_m = 2\,\text{mS}$, $R_D = 10\kO$, $r_{ds} = 100\kO$ give $R_{out} = 9.09\kO$ and $A_v = -18.2$.
+
+        ### What it means
+
+        **The sign.** A rising gate pulls more current out of the drain node, and pulling current out of a node lowers its voltage. The minus sign is that sentence.
+
+        **The size, from the DC drop.** Put $g_m = 2I_D/V_{ov}$ into $A_v\approx-g_mR_D$:
+        $$A_v\approx-\frac{2I_DR_D}{V_{ov}} = -\frac{2V_{R_D}}{V_{ov}}$$
+        where $V_{R_D} = I_DR_D$ is the DC voltage across the resistor. **A resistively loaded common source has a gain of twice the DC drop on its resistor, divided by the overdrive.** In the load-line example, $2(2.5\,\text{V})/(0.5\,\text{V}) = 10$. You can read that off a DC schematic in your head.
+
+        **What limits it.** A bigger gain needs a bigger $V_{R_D}$, but the drain must stay above $V_{ov}$ to keep $M_1$ saturated, so $V_{R_D} < V_{DD} - V_{ov}$ and
+        $$|A_v| < \frac{2(V_{DD} - V_{ov})}{V_{ov}}$$
+        In practice much less, because the output needs room to swing. With $V_{DD} = 3\,\text{V}$ and $V_{ov} = 0.2\,\text{V}$ the ceiling is 28. To beat it you need a load with a large **small-signal** resistance but a small **DC** drop: a current source ([Section 3](#/l/bk04-loads)).
+
+        **The other ceiling.** Even with an ideal load the gain stops at $g_mr_{ds}$. With $g_m = 2I_D/V_{ov}$ and $r_{ds} = 1/(\lambda I_D)$:
+        $$g_mr_{ds} = \frac{2I_D}{V_{ov}}\cdot\frac{1}{\lambda I_D} = \frac{2}{\lambda V_{ov}}$$
+        The current cancels: $\lambda = 0.05\,\text{V}^{-1}$ and $V_{ov} = 0.2\,\text{V}$ give 200, at any bias current.
+      `),
+      RF(md`
+        ### The PMOS common source
+
+        Turn the circuit upside down: $M_1$ is a PMOS with its source on $V_{DD}$, the input on its gate, $R_D$ from its drain down to ground, and the output at the drain.
+
+        [[fig:pc]]
+
+        **Physically.** A PMOS conducts when its gate is **below** its source: $V_{SG} = V_{DD} - V_G$ sets the current, which flows from $V_{DD}$ down through the transistor into $R_D$, so $V_{out} = I_DR_D$. Raise the gate a little: $V_{SG}$ shrinks, less current flows, the drop across $R_D$ shrinks, and the drain **falls**. Inverting, just like the NMOS version.
+
+        **The model is the same** ([Chapter 2](#/l/bk02-pmodel)): $g_mv_{gs}$ from drain to source with $r_{ds}$ beside it. Drawn source-on-top to match the circuit, the arrow points up, still from drain to source.
+
+        [[fig:pshort]]
+
+        *$G_M$.* Short the drain. The source is on $V_{DD}$, ground for signals, so $v_{gs} = v_{in} - 0 = v_{in}$. $R_D$ and $r_{ds}$ have 0 V across them. The dependent source carries $g_mv_{in}$ from the drain up to the source, that is, **out of** the drain node, and the short supplies it: $i_{out} = g_mv_{in}$ and $G_M = g_m$.
+
+        *$R_{out}$.* $v_{in} = 0$ makes $v_{gs} = 0$, so the dependent source is open. The test source sees $R_D$ down to ground and $r_{ds}$ up to $V_{DD}$: $R_{out} = R_D\parallel r_{ds}$.
+
+        So $A_v = -g_m(R_D\parallel r_{ds})$: **the same formula**. You never need a separate PMOS version of any result in this chapter. Draw the model with $i_d$ from drain to source and the algebra is identical.
+      `, {
+        pc: { fig: F.csP(), cap: 'The PMOS common source: source on $V_{DD}$, gate in, drain out, $R_D$ to ground.' },
+        pshort: { fig: F.csPM('short'), cap: 'Its model with the drain shorted. The arrow still runs from drain to source; it just points up.' },
+      }),
+      R(md`
+        ### How to recognize it
+
+        Input at a **gate**, output at the **drain** of the same transistor, and that transistor's **source** at a supply, at ground, or at anything that holds still for signals (a bypass capacitor counts). An NMOS hangs from the output down to ground; a PMOS hangs from $V_{DD}$ down to the output. Say: "common source: $-g_m$ times everything at the drain in parallel."
+
+        ### Worked example: from the bias to the gain
+
+        $M_1$: NMOS, $W/L = 50/1$, $\mu_nC_{ox} = 100\,\mu\text{A/V}^2$, $V_{TN} = 1\,\text{V}$, $\lambda = 0.05\,\text{V}^{-1}$. $V_{GS} = 1.2\,\text{V}$, $R_D = 20\kO$, $V_{DD} = 5\,\text{V}$.
+
+        1. **Current.** $K = \tfrac12(100\,\mu\text{A/V}^2)(50) = 2.5\,\text{mA/V}^2$ and $V_{ov} = 1.2 - 1 = 0.2\,\text{V}$, so $I_D = KV_{ov}^2 = (2.5)(0.04) = 0.1\,\text{mA}$. ($\lambda$ is ignored at DC, as the course does.)
+        2. **Saturated?** $V_D = 5 - (0.1\,\text{mA})(20\kO) = 3\,\text{V}$, so $V_{DS} = 3\,\text{V}\ge V_{ov} = 0.2\,\text{V}$. Yes.
+        3. **Small-signal parameters.** $g_m = \dfrac{2I_D}{V_{ov}} = \dfrac{0.2\,\text{mA}}{0.2\,\text{V}} = 1\,\text{mS}$ and $r_{ds} = \dfrac{1}{\lambda I_D} = \dfrac{1}{(0.05\,\text{V}^{-1})(0.1\,\text{mA})} = 200\kO$.
+        4. **Gain.** $R_{out} = 20\text{k}\parallel200\text{k} = \dfrac{20\times200}{220}\kO = 18.2\kO$, so $A_v = -(1\,\text{mS})(18.2\kO) = -18.2$.
+        5. **Sanity check from the DC drop.** $2V_{R_D}/V_{ov} = 2(2\,\text{V})/(0.2\,\text{V}) = 20$ without $r_{ds}$; with it, a little less. It agrees.
+
+        !!mistake Common mistakes
+          - **$R_D$ in series with $r_{ds}$.** Both run from the drain to (incremental) ground: they are in **parallel**.
+          - **$v_{gs} = v_{in}$ when the source is not grounded.** That holds only with the source at incremental ground. A resistor under the source changes everything ([Section 4](#/l/bk04-degen)).
+          - **$g_m = 2I_D/V_{GS}$.** The overdrive $V_{ov} = V_{GS} - V_{TN}$ goes in the denominator.
+          - **Skipping the saturation check.** In triode the model is wrong and the gain collapses: the flat right end of the transfer curve.
+          - **A separate sign rule for PMOS.** The model is identical; a PMOS common source inverts too.
+      `),
+      Q(md`In a common source stage the gate voltage rises by $10\,\text{mV}$. Why does the drain voltage fall?`,
+        ['The transistor passes more current, so the drop across $R_D$ grows and the drain, at $V_{DD} - I_DR_D$, goes down.',
+          'The gate is capacitively coupled to the drain, so the drain follows the gate.',
+          'The source rises with the gate, which lowers $V_{DS}$.',
+          'The drain current reverses direction when the gate rises.'], 0,
+        [null,
+          'No signal current flows through the gate here; and "following" would make the drain rise, not fall.',
+          'In a common source the source is grounded: it does not move.',
+          'The current only grows. It is the bigger voltage drop across $R_D$ that pulls the drain down.'],
+        md`$V_{out} = V_{DD} - I_DR_D$. A higher gate means a larger $I_D$ (by $g_m\times10\,\text{mV}$), so a larger drop across $R_D$ and a lower drain. With $g_m = 1\,\text{mS}$ and $R_D = 10\kO$: $10\,\mu\text{A}$ more current, $100\,\text{mV}$ more drop, the drain falls $100\,\text{mV}$. Gain $-10$.`),
+      Q(md`At the drain of a common source stage, how do $R_D$ and $r_{ds}$ combine in $R_{out}$?`,
+        ['In parallel: each runs from the drain to an incremental ground ($V_{DD}$ or ground).', 'In series, because the bias current flows through $R_D$ and then through the transistor.', 'Only $R_D$ counts; $r_{ds}$ belongs to the transistor.', 'Only $r_{ds}$ counts, because it is the larger.'], 0,
+        [null,
+          'That is the DC picture. For the test source, $R_D$ leads up to $V_{DD}$ (ground) and $r_{ds}$ down to ground: two separate paths from the same node.',
+          '$r_{ds}$ is a real path from the drain to the grounded source, so the test source drives current through it.',
+          'In parallel the **smaller** resistance dominates, here usually $R_D$.'],
+        md`Both resistors connect the drain to an incremental ground, so a test source on the drain drives two separate currents, $v_t/R_D$ and $v_t/r_{ds}$: $R_{out} = R_D\parallel r_{ds}$. Series would need the current to pass through one and then the other, which never happens here.`),
+      Q(md`A resistively loaded common source has $1.5\,\text{V}$ of DC drop across $R_D$, and $V_{ov} = 0.25\,\text{V}$. Ignoring $r_{ds}$, what is its gain?`,
+        ['$-12$', '$-6$', '$-24$', '$+12$'], 0,
+        [null, 'You dropped the factor 2: $g_m = 2I_D/V_{ov}$, so $A_v = -2V_{R_D}/V_{ov}$.', 'Check the arithmetic: $2\\times1.5/0.25 = 12$.', 'A common source inverts: the gain is negative.'],
+        md`$A_v\approx-g_mR_D = -\dfrac{2I_D}{V_{ov}}R_D = -\dfrac{2V_{R_D}}{V_{ov}} = -\dfrac{2(1.5)}{0.25} = -12$. No current or resistor value needed: only the DC drop and the overdrive.`),
+      Q(md`A common source stage is biased so that its drain sits only $0.1\,\text{V}$ above ground, with $V_{ov} = 0.3\,\text{V}$. What does that do to the small-signal gain?`,
+        ['The transistor is in triode, not saturation, and the gain is far smaller than $g_mR_D$.', 'Nothing: the gain is $-g_mR_D$ wherever the drain sits.', 'The gain grows, since the drain is closer to ground.', 'The gain changes sign.'], 0,
+        [null,
+          '$-g_mR_D$ assumes saturation. Here $V_{DS} = 0.1\\,\\text{V} < V_{ov}$: triode, the flat end of the transfer curve.',
+          'Near the bottom the transfer curve is flat, so its slope (the gain) is small.',
+          'The transfer curve slopes down everywhere; in triode it is just much flatter.'],
+        md`Saturation needs $V_{DS}\ge V_{ov}$. With $V_{DS} = 0.1\,\text{V} < 0.3\,\text{V}$ the transistor is in triode: it behaves like a small resistor, and the operating point sits on the flat tail of the transfer curve, where the slope is small. Always check saturation before using the small-signal model.`),
+      P({
+        id: 'bk04-cs-num', title: 'Common source with numbers',
+        q: md`A common source stage has $g_m = 3\,\text{mS}$, $r_{ds} = 40\kO$ and $R_D = 8\kO$. Find $R_{out}$ and $A_v$.`,
+        fig: F.cs({ RD: '8\\,\\text{k}\\Omega' }),
+        parts: [{ lbl: 'R_{out}', unit: 'kΩ', ans: 20 / 3, traps: [{ v: 8, msg: 'That is $R_D$ alone: $r_{ds}$ also runs from the drain to ground.' }, { v: 48, msg: 'Parallel, not series: both go from the drain to an incremental ground.' }] },
+          { lbl: 'A_v', unit: '', ans: -20, traps: [{ v: -24, msg: 'That is $-g_mR_D$: include $r_{ds}$ in parallel with $R_D$.' }] }],
+        hints: [md`$R_{out} = R_D\parallel r_{ds}$.`, md`$A_v = -g_mR_{out}$.`],
+        sol: md`
+1. $R_{out} = 8\text{k}\parallel40\text{k} = \dfrac{8\times40}{48}\kO = 6.67\kO$.
+2. $A_v = -(3\,\text{mS})(6.67\kO) = -20$.
+
+Without $r_{ds}$ it would have been $-24$: here $r_{ds}$ is only 5 times $R_D$, so it matters.`,
+      }),
+      P({
+        id: 'bk04-cs-bias', title: 'From $W/L$ and $V_{GS}$ to the gain',
+        q: md`NMOS common source: $W/L = 100/1$, $\mu_nC_{ox} = 100\,\mu\text{A/V}^2$, $V_{TN} = 1\,\text{V}$, $\lambda = 0.05\,\text{V}^{-1}$, $V_{GS} = 1.3\,\text{V}$, $R_D = 6\kO$, $V_{DD} = 5\,\text{V}$. Find $I_D$ (ignore $\lambda$ at DC), $g_m$, $r_{ds}$ and $A_v$. Check saturation.`,
+        fig: F.cs({ bias: '1.3\\,\\text{V}', RD: '6\\,\\text{k}\\Omega', sz: '100/1' }),
+        parts: [{ lbl: 'I_D', unit: 'mA', ans: 0.45 }, { lbl: 'g_m', unit: 'mS', ans: 3, traps: [{ v: 0.9 / 1.3, msg: 'Use the overdrive: $V_{ov} = V_{GS} - V_{TN} = 0.3\\,\\text{V}$.' }] },
+          { lbl: 'r_{ds}', unit: 'kΩ', ans: 400 / 9 }, { lbl: 'A_v', unit: '', ans: -3 * (6 * 400 / 9) / (6 + 400 / 9), traps: [{ v: -18, msg: 'That ignores $r_{ds}$, which is in parallel with $R_D$.' }] }],
+        hints: [md`$K = \tfrac12\mu_nC_{ox}\tfrac WL = 5\,\text{mA/V}^2$ and $V_{ov} = 0.3\,\text{V}$.`, md`$g_m = 2I_D/V_{ov}$, $r_{ds} = 1/(\lambda I_D)$, $A_v = -g_m(R_D\parallel r_{ds})$.`],
+        sol: md`
+1. $K = \tfrac12(100\,\mu)(100) = 5\,\text{mA/V}^2$, $V_{ov} = 0.3\,\text{V}$, $I_D = 5\times0.09 = 0.45\,\text{mA}$.
+2. Saturation: $V_D = 5 - (0.45)(6) = 2.3\,\text{V}\ge V_{ov} = 0.3\,\text{V}$. Saturated.
+3. $g_m = \dfrac{2(0.45\,\text{mA})}{0.3\,\text{V}} = 3\,\text{mS}$; $r_{ds} = \dfrac{1}{(0.05)(0.45\,\text{mA})} = 44.4\kO$.
+4. $R_{out} = 6\text{k}\parallel44.4\text{k} = 5.29\kO$, $A_v = -(3)(5.29) = -15.9$.
+
+Check from the DC drop: $2(2.7\,\text{V})/(0.3\,\text{V}) = 18$ without $r_{ds}$; $r_{ds}$ brings it down to $15.9$.`,
+      }),
+      P({
+        id: 'bk04-cs-pmos', title: 'A PMOS common source',
+        q: md`PMOS common source: $W/L = 40/1$, $\mu_pC_{ox} = 50\,\mu\text{A/V}^2$, $|V_{TP}| = 1\,\text{V}$, $\lambda = 0.1\,\text{V}^{-1}$, $V_{DD} = 5\,\text{V}$, the gate at a DC voltage of $3.6\,\text{V}$, $R_D = 15\kO$ from the drain to ground. Find $I_D$, $g_m$ and $A_v$.`,
+        fig: F.csP({ bias: '3.6\\,\\text{V}', RD: '15\\,\\text{k}\\Omega', sz: '40/1' }),
+        parts: [{ lbl: 'I_D', unit: 'mA', ans: 0.16 }, { lbl: 'g_m', unit: 'mS', ans: 0.8 }, { lbl: 'A_v', unit: '', ans: -0.8 * (15 * 62.5) / (15 + 62.5), traps: [{ v: 0.8 * (15 * 62.5) / (15 + 62.5), msg: 'A PMOS common source inverts too: $v_{in}$ up lowers $V_{SG}$, less current flows into $R_D$, the drain falls.' }] }],
+        hints: [md`$V_{SG} = V_{DD} - V_G = 1.4\,\text{V}$, so $V_{ov} = 0.4\,\text{V}$. $K = \tfrac12(50\,\mu)(40) = 1\,\text{mA/V}^2$.`, md`Same model as NMOS: $A_v = -g_m(R_D\parallel r_{ds})$ with $r_{ds} = 1/(\lambda I_D)$.`],
+        sol: md`
+1. $V_{SG} = 5 - 3.6 = 1.4\,\text{V}$, $V_{ov} = 0.4\,\text{V}$, $K = 1\,\text{mA/V}^2$, $I_D = (1)(0.16) = 0.16\,\text{mA}$.
+2. Saturation: $V_D = I_DR_D = 2.4\,\text{V}$, so $V_{SD} = 2.6\,\text{V}\ge0.4\,\text{V}$. Saturated.
+3. $g_m = \dfrac{2(0.16)}{0.4} = 0.8\,\text{mS}$, $r_{ds} = \dfrac{1}{(0.1)(0.16\,\text{mA})} = 62.5\kO$.
+4. $R_{out} = 15\text{k}\parallel62.5\text{k} = 12.1\kO$, $A_v = -(0.8)(12.1) = -9.68$.
+
+Sign: $v_{in}$ up lowers $V_{SG}$, so less current flows into $R_D$ and the drain falls. Inverting.`,
+      }),
+      P({
+        id: 'bk04-cs-max', title: 'How much gain can a resistor give?',
+        q: md`An NMOS common source runs at $I_D = 0.2\,\text{mA}$ with $V_{ov} = 0.2\,\text{V}$ from $V_{DD} = 3\,\text{V}$. To leave room for the output to swing, its drain must sit at least $1\,\text{V}$ above ground. What is the largest $R_D$ allowed, and the gain it gives (ignore $r_{ds}$)?`,
+        fig: F.cs(),
+        parts: [{ lbl: 'R_D', unit: 'kΩ', ans: 10 }, { lbl: 'A_v', unit: '', ans: -20, traps: [{ v: -15, msg: 'Use the drop across $R_D$, which is $V_{DD} - V_D = 2\\,\\text{V}$, not $1.5\\,\\text{V}$.' }] }],
+        hints: [md`The drop across $R_D$ can be at most $3 - 1 = 2\,\text{V}$.`, md`$A_v = -2V_{R_D}/V_{ov}$, or $g_m = 2I_D/V_{ov}$ times $R_D$.`],
+        sol: md`
+1. $V_{R_D}\le V_{DD} - 1\,\text{V} = 2\,\text{V}$, so $R_D\le\dfrac{2\,\text{V}}{0.2\,\text{mA}} = 10\kO$.
+2. $g_m = \dfrac{2(0.2\,\text{mA})}{0.2\,\text{V}} = 2\,\text{mS}$, $A_v = -(2\,\text{mS})(10\kO) = -20$; the same as $-2V_{R_D}/V_{ov} = -2(2)/0.2$.
+
+The gain is capped by the supply, not by the transistor: more gain from a resistor needs more DC drop. That is the reason for current-source loads.`,
+      }),
+      P({
+        id: 'bk04-cs-sym', title: 'The common source, in symbols',
+        q: md`Type $R_{out}$ and $A_v$ of the common source with $R_D$, keeping $r_{ds}$. Use \`gm\`, \`RD\`, \`rds\` (\`||\` means "in parallel with").`,
+        fig: F.cs(),
+        parts: [ex('RD || rds', ['RD', 'rds'], 'R_{out}', { exact: true }), ex('-gm*(RD || rds)', ['gm', 'RD', 'rds'], 'A_v', { exact: true })],
+        hints: [md`Two resistors from the drain to incremental ground.`],
+        sol: md`$R_{out} = R_D\parallel r_{ds} = \dfrac{R_Dr_{ds}}{R_D + r_{ds}}$ and $A_v = -g_m(R_D\parallel r_{ds})$. Typed: \`RD || rds\` and \`-gm*(RD || rds)\`.`,
+      }),
+      G('bk_cs', { need: 4 }),
+    ],
+  });
 })();

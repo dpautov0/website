@@ -457,4 +457,466 @@
       G('bk_ro', { need: 4 }),
     ],
   });
+
+  // ================================================================== 7.4 the hybrid-pi model
+  const hpV = E3F.hybridPi();
+  const hpI = hpV.map((el) => (el[0] === 'G' ? ['G', [3, 0], [3, 2], { n: '\\beta i_b', side: 'l' }] : el)).concat([['iarr', [0.5, 0], 'r', { n: 'i_b' }]]);
+  const exAmp = { VCC: 12, R1: 68e3, R2: 12e3, RC: 4.7e3, RE: 1.2e3, RL: 10e3, RS: 1e3, bypass: true };
+
+  L({
+    id: 'bk07-hybrid', title: 'The hybrid-$\\pi$ model, assembled and felt', ref: 'Lectures 23–24',
+    steps: [
+      R(md`
+        ### The question
+
+        We now have three small-signal facts: $i_c = g_mv_{be}$, $i_b = v_{be}/r_\pi$, and the collector's extra $v_{ce}/r_o$. Put together, they make one circuit that replaces the transistor in every signal calculation on Exam 3: the **hybrid-$\pi$ model**. This section assembles it, gets a feel for its numbers, gives the procedure for using it, and computes the first gain: the common emitter.
+      `),
+      RF(md`
+        ### The model, assembled
+
+        Each fact becomes one element between the transistor's three terminals:
+        - **base to emitter:** $r_\pi$, because $i_b = v_\pi/r_\pi$, where $v_\pi = v_{be}$ is the voltage across it, $+$ at the base;
+        - **collector to emitter:** a controlled current source $g_mv_\pi$, flowing from collector to emitter inside the model, because $i_c = g_mv_{be}$;
+        - **collector to emitter, in parallel:** $r_o$, because the collector also passes $v_{ce}/r_o$.
+
+        [[fig:hp]]
+
+        The source can be read two ways. Since $v_\pi = i_br_\pi$ and $g_mr_\pi = \beta$, $g_mv_\pi = g_mr_\pi i_b = \beta i_b$: the **same** element is a current-controlled source $\beta i_b$. Use whichever control variable is easier in the circuit at hand.
+
+        !!key The hybrid-$\pi$ model (NPN and PNP alike)
+          $$i_b = \frac{v_\pi}{r_\pi},\qquad i_c = g_mv_\pi + \frac{v_{ce}}{r_o} = \beta i_b + \frac{v_{ce}}{r_o}$$
+          $$g_m = \frac{I_C}{V_T},\qquad r_\pi = \frac{\beta}{g_m},\qquad r_o = \frac{V_A}{I_C}$$
+      `, { hp: { fig: row([[hpV, 'voltage-controlled form'], [hpI, 'current-controlled form']]), cap: 'The hybrid-$\\pi$ model. The two forms are the same circuit: $g_mv_\\pi = \\beta i_b$.' } }),
+      R(md`
+        ### The model, felt
+
+        At $I_C = 1\,\text{mA}$, $\beta = 100$, $V_A = 100\,\text{V}$: $r_\pi = 2.5\kO$, $g_m = 40\,\text{mS}$, $r_o = 100\kO$. Wiggle the base by $1\,\text{mV}$ (emitter grounded):
+        - the base current wiggles by $1\,\text{mV}/2.5\kO = 0.4\,\mu\text{A}$;
+        - the collector current wiggles by $40\,\mu\text{A}$, a hundred times more ($= \beta i_b$ ✓);
+        - letting the collector voltage move by $1\,\text{V}$ would change $i_c$ by only $10\,\mu\text{A}$ through $r_o$.
+
+        So the BJT is a **voltage-controlled current source** with a modest input resistance ($r_\pi$) and a high output resistance ($r_o$). The MOSFET model is the same circuit with $r_\pi\to\infty$.
+      `),
+      R(md`
+        !!method Replacing a BJT by its model
+          1. **DC first:** find $I_C$ and check forward active ([Chapter 6](#/l/bk06-dc)).
+          2. **Parameters:** $g_m = I_C/V_T$, $r_\pi = \beta/g_m$, $r_o = V_A/I_C$ (or $\infty$ if told to ignore it).
+          3. **Kill the DC:** every DC voltage source (supplies, bias sources) becomes a short to ground; every DC current source becomes an open; large capacitors become shorts.
+          4. **Swap:** replace each transistor by the model, wiring $B$, $C$, $E$ to the nodes where the transistor's leads were.
+          5. **Solve** the linear circuit: KCL at nodes, KVL around loops, or $A_v = -G_MR_{out}$ ([Chapter 4](#/l/bk04-norton)).
+      `),
+      RF(md`
+        ### The derivation: the common-emitter gain
+
+        Input on the base, emitter grounded, $R_C$ from the collector to $V_{CC}$. After step 3, $V_{CC}$ is ground, so $R_C$ runs from the collector to ground, in parallel with $r_o$.
+
+        [[fig:ce]]
+
+        - **Input side.** The source sits directly across $r_\pi$, so $v_\pi = v_{in}$.
+        - **Output side, KCL at the collector.** The controlled source pulls $g_mv_\pi$ out of the node toward the emitter (ground); the only other paths are $r_o$ and $R_C$, so the current $g_mv_\pi$ must be supplied through them from ground, which makes the node voltage negative: $\dfrac{v_{out}}{r_o} + \dfrac{v_{out}}{R_C} + g_mv_\pi = 0$.
+        - **Solve:** $v_{out} = -g_mv_\pi\,(R_C\parallel r_o) = -g_mv_{in}(R_C\parallel r_o)$.
+
+        !!key The common-emitter gain
+          $$A_v = \frac{v_{out}}{v_{in}} = -g_m(R_C\parallel r_o)\approx-g_mR_C$$
+          In $G_MR_{out}$ form: short the output and $i_{out} = g_mv_{in}$ flows from the short into the collector, so $G_M = g_m$; with the input zeroed, $R_{out} = R_C\parallel r_o$.
+
+        **Numbers:** $I_C = 1\,\text{mA}$, $R_C = 5\kO$, $V_A = 100\,\text{V}$: $A_v = -40\,\text{mS}\times(5\parallel100)\kO = -190.5$ (or $-200$ without $r_o$).
+      `, { ce: { fig: row([[B.ceFig('R'), 'the stage'], [ceModel({ loads: ['r_o', 'R_C'] }), 'its small-signal circuit']]), cap: 'A common emitter and its hybrid-$\\pi$ circuit: $V_{CC}$ and the bias source are ground.' } }),
+      R(md`
+        ### Check it
+
+        - **Sign:** raise the base, more collector current, more drop across $R_C$, the collector falls: inverting ✓.
+        - **Limits:** $r_o\to\infty$ gives $-g_mR_C$; $R_C\to\infty$ (an ideal current-source load) gives $-g_mr_o = -V_A/V_T$, the intrinsic gain ✓.
+        - **Units:** siemens times ohms, a pure number ✓.
+
+        ### What it means: the gain is the DC drop over 25 mV
+
+        Write $g_mR_C$ with $g_m = I_C/V_T$:
+        $$|A_v|\approx g_mR_C = \frac{I_CR_C}{V_T} = \frac{\text{DC voltage across }R_C}{25\,\text{mV}}.$$
+        *The Art of Electronics* makes this point: the gain is fixed by how many volts the bias drops across the collector resistor, not by $I_C$ or $R_C$ separately. With $V_{CC} = 10\,\text{V}$ and the collector at mid-supply, $5\,\text{V}/25\,\text{mV} = 200$. It can never much exceed $V_{CC}/V_T$, whatever resistor you pick. (It also drifts with temperature through $V_T$, one reason designers add an emitter resistor: [Section 7.5](#/l/bk07-tmodel).)
+
+        ### How to recognize it
+
+        Input at the base, output at the collector, emitter at incremental ground (directly or through a bypass capacitor): a common emitter, $A_v = -g_m\times$(everything from collector to incremental ground, $r_o$ included) $\times$ (any input divider).
+      `),
+      RF(md`
+        ### Worked example: from bias to gain
+
+        This is the amplifier of [Chapter 6's problem 14](#/l/bk06-problems): $V_{CC} = 12\,\text{V}$, $R_1 = 68\kO$, $R_2 = 12\kO$, $R_C = 4.7\kO$, $R_E = 1.2\kO$ (bypassed), $R_L = 10\kO$, $R_S = 1\kO$, $\beta = 150$, and now $V_A = 100\,\text{V}$. Find $A_v = v_{out}/v_s$.
+
+        1. **DC** (done there): $I_C = 0.862\,\text{mA}$.
+        2. **Parameters:** $g_m = 34.5\,\text{mS}$, $r_\pi = 150/34.5\,\text{mS} = 4.35\kO$, $r_o = 100/0.862\,\text{mA} = 116\kO$.
+        3. **Small-signal circuit:** $V_{CC}$ to ground puts $R_1\parallel R_2 = 10.2\kO$ from the base to ground; $C_E$ grounds the emitter; $C_1$, $C_2$ are shorts, so $R_L$ is in parallel with $R_C$.
+
+        [[fig:w]]
+
+        4. **Input:** the base node has $R_1\parallel R_2$ and $r_\pi$ to ground: $R_{in} = 10.2\parallel4.35 = 3.05\kO$, so $v_\pi = v_s\cdot3.05/(3.05 + 1) = 0.753\,v_s$.
+        5. **Output:** $R_C\parallel R_L\parallel r_o = 4.7\parallel10\parallel116 = 3.11\kO$.
+        6. **Gain:** $A_v = -34.5\,\text{mS}\times3.11\kO\times0.753 = -80.8$ (without $r_o$: $-83.0$).
+
+        !!mistake Common mistakes
+          - Leaving $V_{CC}$ in the small-signal circuit. It is ground, which puts $R_1$ (and $R_C$) to ground.
+          - Forgetting the bias divider at the base: it is in parallel with $r_\pi$.
+          - Forgetting $R_L$ (through $C_2$) in parallel with $R_C$.
+          - Using DC voltages ($0.7\,\text{V}$, $V_C$) in the small-signal circuit. Only signals live there.
+          - Flipping the controlled source's direction: it always points from collector to emitter for $g_mv_\pi$ with $v_\pi = v_b - v_e$.
+      `, { w: { fig: row([[B.ampFig(Object.assign({ vals: false }, exAmp)), 'the amplifier'], [ceModel({ RS: true, RB: 'R_1\\parallel R_2', vin: 'v_s', loads: ['r_o', 'R_C', 'R_L'] }), 'its small-signal circuit']]), cap: 'The amplifier and its hybrid-$\\pi$ circuit: the divider and $r_\\pi$ load the input, $R_L$ and $r_o$ the output.' } }),
+      Q(md`In the small-signal circuit, what does the supply $V_{CC}$ become?`,
+        ['A short to ground (an incremental ground)', 'An open circuit', 'A $V_{CC}$ battery, as at DC', 'A resistor $V_{CC}/I_C$'], 0,
+        [null, 'An ideal voltage source has no signal voltage across it, which is a short, not an open. (A DC **current** source becomes an open.)', 'Only changes live in the small-signal circuit; a constant voltage has zero change.', 'A supply is not a resistor.'],
+        md`Its voltage never changes, so for signals it is the same as ground. Everything tied to $V_{CC}$ (like $R_C$ or $R_1$) goes to ground in the model.`),
+      Q(md`Why are $g_mv_\pi$ and $\beta i_b$ the same controlled source?`,
+        ['Because $v_\\pi = i_br_\\pi$ and $g_mr_\\pi = \\beta$', 'They are not: $\\beta i_b$ includes $r_o$', 'Because $\\beta = g_m/r_\\pi$', 'Only when the emitter is grounded'], 0,
+        [null, '$r_o$ is a separate element in both forms.', 'The relation is $\\beta = g_mr_\\pi$, a product.', 'The identity holds for the model itself, whatever surrounds it.'],
+        md`$g_mv_\pi = g_m(i_br_\pi) = (g_mr_\pi)i_b = \beta i_b$. One element, two names for its control.`),
+      Q(md`A common emitter (no emitter resistor, $r_o$ ignored) has $V_{CC} = 9\,\text{V}$ and its collector biased at $V_C = 4\,\text{V}$. Roughly what is $|A_v|$?`,
+        ['200', '160', '360', 'It depends on $I_C$, which is not given'], 0,
+        [null, 'That would be $4\\,\\text{V}/25\\,\\text{mV}$: the collector **voltage**, not the drop across $R_C$.', 'That is $V_{CC}/V_T$, the ceiling, not this circuit.', '$I_CR_C$ is the drop across $R_C$, $9 - 4 = 5\\,\\text{V}$, whatever the split.'],
+        md`$|A_v| = g_mR_C = I_CR_C/V_T = (9 - 4)\,\text{V}/25\,\text{mV} = 200$.`),
+      Q(md`In a common emitter whose emitter resistor is bypassed by a large capacitor, the emitter for signals is`,
+        ['at ground: the capacitor shorts $R_E$', 'at $V_E$, its DC voltage', 'floating: $R_E$ disconnects it', 'at the base voltage'], 0,
+        [null, 'DC values are not part of the small-signal circuit; the emitter node has no signal on it.', 'The capacitor connects it to ground for signals.', 'The base carries the signal; the emitter is held by the capacitor.'],
+        md`A large capacitor is a short for signals, so $R_E$ is bypassed and the emitter is an incremental ground: the stage is a plain common emitter, $-g_m(\dots)$.`),
+      P({
+        id: 'bk07-hyb-ce', title: 'A common-emitter gain',
+        q: md`$I_C = 0.5\,\text{mA}$, $\beta = 100$, $V_A = 50\,\text{V}$, $R_C = 10\kO$, input on the base, emitter grounded. Find $g_m$, $r_o$ and $A_v$.`,
+        fig: B.ceFig('R'),
+        parts: [{ lbl: 'g_m', unit: 'mS', ans: 20 }, { lbl: 'r_o', unit: 'kΩ', ans: 100 }, { lbl: 'A_v', unit: '', ans: -181.818, traps: [{ v: 181.818, msg: 'A common emitter inverts.' }] }],
+        hints: [md`$A_v = -g_m(R_C\parallel r_o)$.`],
+        sol: md`$g_m = 20\,\text{mS}$, $r_o = 100\kO$, $R_C\parallel r_o = 9.09\kO$, $A_v = -181.8$ ($-200$ without $r_o$).`,
+      }),
+      P({
+        id: 'bk07-hyb-rs', title: 'Add a source resistance',
+        q: md`The same stage ($I_C = 0.5\,\text{mA}$, $\beta = 100$, $V_A = 50\,\text{V}$, $R_C = 10\kO$) is driven from a source with $R_S = 5\kO$. Find $r_\pi$ and $v_{out}/v_s$.`,
+        parts: [{ lbl: 'r_\\pi', unit: 'kΩ', ans: 5 }, { lbl: 'v_{out}/v_s', unit: '', ans: -90.9091 }],
+        hints: [md`$v_\pi = v_s\,r_\pi/(r_\pi + R_S)$.`],
+        sol: md`$r_\pi = 100/20\,\text{mS} = 5\kO$; the input divider halves the signal: $A_v = -181.8\times0.5 = -90.9$.`,
+      }),
+      P({
+        id: 'bk07-hyb-aoe', title: 'The gain is the DC drop over 25 mV',
+        q: md`Two common emitters run from $V_{CC} = 15\,\text{V}$ with the collector at $7.5\,\text{V}$ (ignore $r_o$). One has $I_C = 0.5\,\text{mA}$ (so $R_C = 15\kO$), the other $I_C = 2\,\text{mA}$ ($R_C = 3.75\kO$). Find both gains.`,
+        parts: [{ lbl: 'A_v\\ (0.5\\,\\text{mA})', unit: '', ans: -300 }, { lbl: 'A_v\\ (2\\,\\text{mA})', unit: '', ans: -300 }],
+        sol: md`$-g_mR_C = -I_CR_C/V_T = -7.5\,\text{V}/25\,\text{mV} = -300$ for both: $20\,\text{mS}\times15\kO$ and $80\,\text{mS}\times3.75\kO$. Same DC drop, same gain.`,
+      }),
+      P({
+        id: 'bk07-hyb-full', title: 'From bias to gain',
+        q: md`$V_{CC} = 10\,\text{V}$, $R_1 = 47\kO$, $R_2 = 10\kO$, $R_C = 3.3\kO$, $R_E = 1\kO$ (bypassed), $R_L = 4.7\kO$, $R_S = 500\,\Omega$, $\beta = 100$, ignore $r_o$, large capacitors. Find $I_C$, $R_{in}$ (to the right of $R_S$) and $A_v = v_{out}/v_s$.`,
+        fig: B.ampFig({ VCC: 10, R1: 47e3, R2: 10e3, RC: 3.3e3, RE: 1e3, RL: 4.7e3, RS: 500, bypass: true, vals: false }),
+        parts: [{ lbl: 'I_C', unit: 'mA', ans: 0.965152 }, { lbl: 'R_{in}', unit: 'kΩ', ans: 1.97108, traps: [{ v: 2.59027, msg: 'That is $r_\\pi$ alone: the bias divider $R_1\\parallel R_2$ also goes from the base to ground.' }] }, { lbl: 'A_v', unit: '', ans: -59.7028 }],
+        hints: [md`DC: $V_{TH} = 10\times10/57$, $R_{TH} = 47\parallel10$.`, md`Signal: $R_{in} = (R_1\parallel R_2)\parallel r_\pi$; output $R_C\parallel R_L$.`],
+        sol: md`
+1. DC: $V_{TH} = 1.754\,\text{V}$, $R_{TH} = 8.246\kO$, $I_B = \dfrac{1.054}{8.246 + 101}\,\text{mA} = 9.652\,\mu\text{A}$, $I_C = 0.9652\,\text{mA}$.
+2. $g_m = 38.61\,\text{mS}$, $r_\pi = 2.590\kO$.
+3. $R_{in} = 8.246\parallel2.590 = 1.971\kO$; $v_\pi/v_s = 1.971/2.471 = 0.7977$.
+4. $R_C\parallel R_L = 3.3\parallel4.7 = 1.939\kO$; $A_v = -38.61\,\text{mS}\times1.939\kO\times0.7977 = -59.7$.`,
+      }),
+      P({
+        id: 'bk07-hyb-sym', title: 'The gain with a source resistance, typed',
+        q: md`Type $v_{out}/v_s$ for a common emitter (emitter grounded, $r_o$ ignored) with collector resistor $R_C$ driven through $R_S$. Use \`gm\`, \`rpi\`, \`beta\`, \`RS\`, \`RC\` as you like ($r_\pi = \beta/g_m$ is built in).`,
+        parts: [ex('-gm*RC*rpi/(rpi + RS)', ['gm', 'rpi', 'beta', 'RS', 'RC'], 'v_{out}/v_s', { exact: true })],
+        sol: md`$v_{out}/v_s = -g_mR_C\dfrac{r_\pi}{r_\pi + R_S} = -\dfrac{\beta R_C}{r_\pi + R_S}$ (the second form is the current-controlled reading: the source pushes $i_b = v_s/(R_S + r_\pi)$ and the collector delivers $\beta i_b$).`,
+      }),
+      P({
+        id: 'bk07-hyb-ib', title: 'Both readings of the source',
+        q: md`A BJT at $I_C = 1\,\text{mA}$, $\beta = 100$ (emitter grounded) gets $v_{be} = 1\,\text{mV}$. Find $i_b$ and $i_c$.`,
+        parts: [{ lbl: 'i_b', unit: 'µA', ans: 0.4 }, { lbl: 'i_c', unit: 'µA', ans: 40 }],
+        sol: md`$i_b = v_\pi/r_\pi = 1\,\text{mV}/2.5\kO = 0.4\,\mu\text{A}$; $i_c = g_mv_\pi = 40\,\mu\text{A} = \beta i_b$ ✓.`,
+      }),
+      R(md`
+        ### Drills
+
+        Common-emitter gains from the model (source resistance, loads, $r_o$), then the whole exam chain from the bias.
+      `),
+      G('bk_cegain', { need: 4 }),
+      G('bk_full', { need: 3 }),
+    ],
+  });
+
+  // ================================================================== 7.5 the T model and r_e
+  const tMod = [['term', [2, -0.6], { n: 'C', side: 'r' }], ['w', [2, -0.6], [2, 0]], ['G', [2, 0], [2, 1.6], { n: '\\alpha i_e', side: 'l' }],
+    ['term', [0.4, 1.6], { n: 'B', side: 'l' }], ['w', [0.4, 1.6], [2, 1.6]], ['R', [2, 1.6], [2, 3.2], { n: 'r_e' }],
+    ['iarr', [2, 2.4], 'd', { n: 'i_e', side: 'l', off: [-16, 0] }], ['w', [2, 3.2], [2, 3.7]], ['term', [2, 3.7], { n: 'E', side: 'r' }]];
+  const degCkt = [['rail', [1, -1.2], { n: 'V_{CC}' }], ['R', [1, -1.2], [1, 0], { n: 'R_C' }], ['w', [1, 0], [1.8, 0]], ['term', [1.8, 0], { n: 'v_{out}' }],
+    ['npn', [1, 1]], ['R', [1, 2], [1, 3.2], { n: 'R_E' }], ['gnd', [1, 3.2]], ['w', [0, 1], [-0.6, 1], [-0.6, 1.4]], ['Vac', [-0.6, 1.4], [-0.6, 2.6], { n: 'v_{in}', side: 'l' }],
+    ['V', [-0.6, 2.6], [-0.6, 3.8], { n: 'V_{BB}', side: 'l' }], ['gnd', [-0.6, 3.8]]];
+  const degT = [['Vac', [0, 1.6], [0, 2.9], { n: 'v_{in}', side: 'l' }], ['gnd', [0, 2.9]], ['w', [0, 1.6], [2, 1.6]],
+    ['gndu', [2, -1.4]], ['R', [2, -1.4], [2, 0], { n: 'R_C' }], ['w', [2, 0], [2.8, 0]], ['term', [2.8, 0], { n: 'v_{out}' }],
+    ['G', [2, 0], [2, 1.6], { n: '\\alpha i_e', side: 'l' }], ['R', [2, 1.6], [2, 2.9], { n: 'r_e' }], ['iarr', [2, 2.25], 'd', { n: 'i_e', side: 'l', off: [-16, 0] }],
+    ['R', [2, 2.9], [2, 4.2], { n: 'R_E' }], ['gnd', [2, 4.2]]];
+
+  L({
+    id: 'bk07-tmodel', title: 'The T model and the emitter resistance $r_e$', ref: 'Lecture 24',
+    steps: [
+      R(md`
+        ### The question
+
+        The hybrid-$\pi$ model is built around the base current. Many stages are easier to see through the **emitter** current: anything with a resistor in the emitter, anything driven at the emitter, every follower. Is there an equivalent picture centred on $i_e$? There is, and it gives the fastest gains in the course, the ones *The Art of Electronics* computes in its head: $A_v\approx-R_C/(r_e + R_E)$.
+      `),
+      R(md`
+        ### The physical picture: the emitter is a low-resistance node
+
+        Hold the base still and push on the emitter. Lowering the emitter by $1\,\text{mV}$ raises $V_{BE}$ by $1\,\text{mV}$, and the emitter current jumps by 4% ([Section 7.1](#/l/bk07-gm)). A node whose current changes that much for a millivolt has a **small** resistance: about $V_T/I_E$, the same $r_d$ as a diode carrying the emitter current. At $1\,\text{mA}$ that is $25\,\Omega$. This is the **intrinsic emitter resistance** $r_e$, and it behaves like a real resistor sitting inside the emitter lead.
+      `),
+      RF(md`
+        ### The derivation: from the hybrid-$\pi$ model to the T
+
+        Start from the hybrid-$\pi$ model and compute the current that leaves through the emitter. KCL at the emitter node: it carries the base current plus the collector current,
+        $$i_e = i_b + i_c = \frac{v_\pi}{r_\pi} + g_mv_\pi = v_\pi\,\frac{1 + g_mr_\pi}{r_\pi} = v_\pi\,\frac{\beta + 1}{r_\pi}.$$
+        So $v_\pi$ drives $i_e$ as if through a resistor
+        $$r_e\equiv\frac{r_\pi}{\beta + 1},\qquad i_e = \frac{v_\pi}{r_e}.$$
+        The collector current in terms of $i_e$: $i_c = g_mv_\pi = g_mr_e\,i_e$, and $g_mr_e = \dfrac{g_mr_\pi}{\beta + 1} = \dfrac{\beta}{\beta + 1} = \alpha$, so $i_c = \alpha i_e$.
+
+        **Now build a circuit with exactly these terminal currents.** Put $r_e$ from an internal node to the emitter, carrying $i_e$, and tie the base to that internal node. Put a current source $\alpha i_e$ from the collector down into the same node. KCL at the node: $i_b + \alpha i_e = i_e$, so $i_b = (1 - \alpha)i_e = i_e/(\beta + 1) = v_\pi/r_\pi$: exactly the hybrid-$\pi$ base current. All three terminal currents agree for every $v_\pi$, so **the two models are the same two-port**. ($r_o$, when kept, goes from collector to emitter in both.)
+
+        [[fig:t]]
+
+        Two more forms of $r_e$:
+        $$r_e = \frac{r_\pi}{\beta + 1} = \frac{\beta/g_m}{\beta + 1} = \frac{\alpha}{g_m} = \frac{V_T}{I_E}\approx\frac{1}{g_m}.$$
+
+        !!key The T model
+          Base to emitter: $r_e = \alpha/g_m\approx1/g_m$ carrying $i_e$. Collector into the base node: $\alpha i_e$. $r_e\approx25\,\Omega/I_C(\text{mA})$.
+      `, { t: { fig: row([[hpV, 'hybrid-$\\pi$'], [tMod, 'T model']]), cap: 'Two pictures of the same transistor. In the T model $r_e$ carries the emitter current and the collector source feeds the base node.' } }),
+      R(md`
+        ### Check it
+
+        - **Base resistance:** with the emitter grounded, $v_{be}$ sits across $r_e$, $i_e = v_{be}/r_e$ and $i_b = i_e/(\beta + 1)$, so $v_{be}/i_b = (\beta + 1)r_e = r_\pi$ ✓.
+        - **Transconductance:** $i_c = \alpha i_e = \alpha v_{be}/r_e = g_mv_{be}$ ✓.
+        - **$\beta\to\infty$:** $\alpha\to1$, $r_e\to1/g_m$, the base current vanishes: the T model of a MOSFET ✓.
+        - **Number:** $1\,\text{mA}$, $\beta = 100$: $r_e = 0.99/40\,\text{mS} = 24.75\,\Omega$.
+      `),
+      RF(md`
+        ### Quick gains with the T model
+
+        **1. Common emitter with an emitter resistor.** The base sits at $v_{in}$. The emitter current flows through $r_e$ and then $R_E$ to ground, so KVL from the base down: $v_{in} = i_e(r_e + R_E)$. The collector delivers $\alpha i_e$, which comes up through $R_C$ from incremental ground: $v_{out} = -\alpha i_eR_C$. Divide:
+        $$A_v = -\frac{\alpha R_C}{r_e + R_E}\approx-\frac{R_C}{r_e + R_E}.$$
+
+        [[fig:d]]
+
+        This is Lecture 24's result in disguise: $-\dfrac{g_mR_C}{1 + g_mR_E(\beta + 1)/\beta}$. Multiply top and bottom of $\alpha R_C/(r_e + R_E)$ by $g_m/\alpha$ and use $g_mr_e = \alpha$: you get exactly that. The input resistance at the base is $v_{in}/i_b = (\beta + 1)(r_e + R_E) = r_\pi + (\beta + 1)R_E$.
+
+        **2. Emitter follower.** Output at the emitter across $R_E$, collector at incremental ground: $v_{out} = i_eR_E$, and with a source resistance $R_S$ in the base lead, $v_s = i_bR_S + i_e(r_e + R_E)$ with $i_b = i_e/(\beta + 1)$:
+        $$\frac{v_{out}}{v_s} = \frac{R_E}{R_E + r_e + R_S/(\beta + 1)}.$$
+
+        **3. Common base.** Base at incremental ground, signal into the emitter: the emitter looks like $r_e$, so the source pushes $i_e = -v_s/(R_S + r_e)$ (out of the emitter is the positive $i_e$ direction), and $v_{out} = -\alpha i_eR_C$:
+        $$A_v = \frac{\alpha R_C}{r_e + R_S},\qquad R_{in} = r_e.$$
+
+        !!key The Art of Electronics' rule
+          Voltage gain of a stage $\approx-\dfrac{\text{resistance in the collector}}{\text{resistance in the emitter, including }r_e}$, with $r_e\approx25\,\Omega/I_C(\text{mA})$.
+      `, { d: { fig: row([[degCkt, 'a common emitter with $R_E$'], [degT, 'in the T model']]), cap: 'With the T model, $v_{in} = i_e(r_e + R_E)$ and $v_{out} = -\\alpha i_eR_C$.' } }),
+      R(md`
+        ### What it means: degeneration buys predictability and linearity
+
+        With $R_E\gg r_e$, the gain is $-R_C/R_E$: a ratio of two resistors, no longer dependent on $I_C$, $\beta$ or temperature (all of which live in $r_e$). The price is gain: $-R_C/(r_e + R_E)$ instead of $-R_C/r_e$.
+
+        It also buys linearity. Only the part of $v_{in}$ across $r_e$ reaches the junction: $v_{be} = v_{in}\,r_e/(r_e + R_E)$. With $r_e = 25\,\Omega$ and $R_E = 475\,\Omega$, the junction sees $1/20$ of the input, so the input can be 20 times larger for the same distortion ([Section 7.1](#/l/bk07-gm): about $5\,\text{mV}$ across the junction for 10%).
+
+        ### How to recognize it
+
+        A resistor in the emitter, a signal into the emitter, or an output taken at the emitter: reach for the T model and $r_e$. A signal into the base with the emitter grounded: either model; hybrid-$\pi$ is usually quicker.
+      `),
+      R(md`
+        ### Worked example
+
+        $I_C = 1\,\text{mA}$, $\beta = 100$, $R_C = 10\kO$, $R_E = 470\,\Omega$ (unbypassed). Find $r_e$, $A_v$ and $R_{in}$.
+
+        1. $g_m = 40\,\text{mS}$, $\alpha = 100/101$, $r_e = \alpha/g_m = 24.75\,\Omega$.
+        2. $A_v = -\dfrac{0.9901\times10\kO}{24.75 + 470\,\Omega} = -20.01$. (The rule of thumb with $r_e\approx25\,\Omega$ and $\alpha\approx1$: $-10\kO/495\,\Omega = -20.2$.)
+        3. $R_{in} = (\beta + 1)(r_e + R_E) = 101\times494.75\,\Omega = 49.97\kO$.
+
+        Without $R_E$ the gain would be $-g_mR_C = -400$, but it would follow $I_C$ (and temperature); with it, $-20$ set mainly by $R_C/R_E$.
+
+        !!mistake Common mistakes
+          - Using $r_\pi$ where $r_e$ belongs. Looking into the **emitter** you see $r_e = r_\pi/(\beta + 1)$; looking into the **base** you see $r_\pi$.
+          - Dropping $r_e$ next to a small $R_E$. With $R_E = 100\,\Omega$ and $r_e = 25\,\Omega$, that is a 25% error.
+          - Forgetting that $r_e$ changes with the bias: $25\,\Omega$ is for $1\,\text{mA}$ only.
+          - Mixing the models: in the T model the controlled source feeds the **base node**, not the emitter.
+      `),
+      Q(md`What is $r_e$ for a BJT at $I_C = 2\,\text{mA}$ (large $\beta$)?`,
+        ['$12.5\\,\\Omega$', '$25\\,\\Omega$', '$50\\,\\Omega$', '$1.25\\kO$'], 0,
+        [null, 'That is at $1\\,\\text{mA}$.', 'That would be at $0.5\\,\\text{mA}$.', 'That is $r_\\pi$ for $\\beta = 100$.'],
+        md`$r_e\approx1/g_m = V_T/I_C = 25\,\text{mV}/2\,\text{mA} = 12.5\,\Omega$.`),
+      Q(md`A common emitter has $R_C = 6.8\kO$ in the collector and $R_E = 330\,\Omega$ in the emitter, at $I_C = 1\,\text{mA}$. Roughly what is the gain?`,
+        ['$-19$', '$-272$', '$-21$', '$+19$'], 0,
+        [null, 'That is $-g_mR_C$, ignoring $R_E$.', 'That ignores $r_e$: $-6.8\\kO/330\\,\\Omega$. Close, but add the $25\\,\\Omega$.', 'A common emitter inverts.'],
+        md`$-R_C/(r_e + R_E) = -6800/(25 + 330) = -19.2$.`),
+      Q(md`Why does a large emitter resistor make a common emitter's gain predictable?`,
+        ['The gain becomes about $-R_C/R_E$, which no longer depends on $I_C$, $\\beta$ or temperature', 'It raises $g_m$', 'It makes $r_e$ larger', 'It removes the base current'], 0,
+        [null, '$g_m$ is set by $I_C$ alone.', '$r_e$ depends only on the bias current.', 'The base current is still $i_e/(\\beta + 1)$.'],
+        md`$A_v = -\alpha R_C/(r_e + R_E)\to-R_C/R_E$ when $R_E\gg r_e$: everything that varies ($r_e$, $\alpha$) drops out.`),
+      Q(md`Holding the base fixed, what resistance do you see looking into the emitter?`,
+        ['$r_e = r_\\pi/(\\beta + 1)\\approx1/g_m$', '$r_\\pi$', '$(\\beta + 1)r_\\pi$', '$r_o$'], 0,
+        [null, 'That is looking into the base.', 'Backwards: from the emitter, base-side resistances are divided by $(\\beta + 1)$.', 'That is looking into the collector.'],
+        md`The T model shows it directly: from the emitter to the (held) base there is just $r_e$. [Chapter 8](#/l/bk08-emitter) adds resistors around it.`),
+      P({
+        id: 'bk07-t-re', title: 'Intrinsic emitter resistances',
+        q: md`Find $r_e = \alpha/g_m$ for (a) $I_C = 2\,\text{mA}$, $\beta = 100$ and (b) $I_C = 0.25\,\text{mA}$, $\beta = 50$.`,
+        parts: [{ lbl: 'r_e\\ (a)', unit: 'Ω', ans: 12.3762, accept: [12.5] }, { lbl: 'r_e\\ (b)', unit: 'Ω', ans: 98.0392, accept: [100] }],
+        hints: [md`$g_m = I_C/V_T$, $\alpha = \beta/(\beta + 1)$.`],
+        sol: md`(a) $g_m = 80\,\text{mS}$, $r_e = (100/101)/80\,\text{mS} = 12.38\,\Omega$ ($\approx12.5\,\Omega$). (b) $g_m = 10\,\text{mS}$, $r_e = (50/51)/10\,\text{mS} = 98.0\,\Omega$ ($\approx100\,\Omega$).`,
+      }),
+      P({
+        id: 'bk07-t-deg', title: 'A degenerated common emitter',
+        q: md`$I_C = 2\,\text{mA}$, $\beta = 150$, $R_C = 6.8\kO$, $R_E = 220\,\Omega$ unbypassed, $r_o$ ignored. Find $r_e$, $A_v$ and the input resistance at the base.`,
+        fig: degCkt,
+        parts: [{ lbl: 'r_e', unit: 'Ω', ans: 12.4172, accept: [12.5] }, { lbl: 'A_v', unit: '', ans: -29.064, accept: [-6800 / 232.5], traps: [{ v: -544, msg: 'That is $-g_mR_C$: the emitter is not grounded here.' }] }, { lbl: 'R_{in}', unit: 'kΩ', ans: 35.095 }],
+        hints: [md`$A_v = -\alpha R_C/(r_e + R_E)$; $R_{in} = (\beta + 1)(r_e + R_E)$.`],
+        sol: md`$r_e = (150/151)/80\,\text{mS} = 12.42\,\Omega$. $A_v = -\dfrac{0.9934\times6800}{12.42 + 220} = -29.06$ (rule of thumb $-6800/232.5 = -29.2$). $R_{in} = 151\times232.4\,\Omega = 35.1\kO$.`,
+      }),
+      P({
+        id: 'bk07-t-fol', title: 'A follower with a source resistance',
+        q: md`An emitter follower at $I_C = 1\,\text{mA}$, $\beta = 100$, $R_E = 1\kO$, driven from a source with $R_S = 10\kO$ ($r_o$ ignored). Find $v_{out}/v_s$.`,
+        parts: [{ lbl: 'v_{out}/v_s', unit: '', ans: 0.889868, tol: { rel: 0.003 } }],
+        hints: [md`From the emitter, $R_S$ looks like $R_S/(\beta + 1)$.`],
+        sol: md`$r_e = 24.75\,\Omega$, $R_S/(\beta + 1) = 99.0\,\Omega$. $v_{out}/v_s = \dfrac{1000}{1000 + 24.75 + 99.0} = 0.8899$. The source resistance, shrunk by $\beta + 1$, costs more than $r_e$ here.`,
+      }),
+      P({
+        id: 'bk07-t-cb', title: 'A common-base gain',
+        q: md`A common base at $I_C = 0.5\,\text{mA}$, $\beta = 100$, $R_C = 10\kO$, driven at the emitter from a $50\,\Omega$ source ($r_o$ ignored). Find $r_e$ and $A_v = v_{out}/v_s$.`,
+        parts: [{ lbl: 'r_e', unit: 'Ω', ans: 49.505, accept: [50] }, { lbl: 'A_v', unit: '', ans: 99.5025, accept: [100], traps: [{ v: -99.5025, msg: 'The common base does not invert.' }] }],
+        hints: [md`$A_v = \alpha R_C/(r_e + R_S)$.`],
+        sol: md`$r_e = (100/101)/20\,\text{mS} = 49.5\,\Omega$. $A_v = \dfrac{0.9901\times10\kO}{49.5 + 50\,\Omega} = 99.5$. A $50\,\Omega$ source matched to the low input resistance loses half the signal.`,
+      }),
+      P({
+        id: 'bk07-t-sym', title: 'The degenerated gain, typed',
+        q: md`Type the gain $v_{out}/v_{in}$ of a common emitter with $R_E$ unbypassed and $R_C$ in the collector ($r_o$ ignored). Use any of \`gm\`, \`beta\`, \`rpi\`, \`RC\`, \`RE\` ($r_\pi = \beta/g_m$ is built in).`,
+        parts: [ex('-beta*RC/(rpi + (beta + 1)*RE)', ['gm', 'beta', 'rpi', 'RC', 'RE'], 'A_v', { exact: true })],
+        sol: md`$A_v = -\dfrac{\beta R_C}{r_\pi + (\beta + 1)R_E} = -\dfrac{\alpha R_C}{r_e + R_E} = -\dfrac{g_mR_C}{1 + g_mR_E(\beta + 1)/\beta}$: three forms of one expression.`,
+      }),
+      P({
+        id: 'bk07-t-lin', title: 'Degeneration and linearity',
+        q: md`A common emitter at $1\,\text{mA}$ ($\beta = 100$) has $R_E = 470\,\Omega$. How large can $v_{in}$ be if the junction may see at most $5\,\text{mV}$ (about 10% distortion)?`,
+        parts: [{ lbl: 'v_{in,max}', unit: 'mV', ans: 99.94, tol: { rel: 0.02 } }],
+        hints: [md`$v_{be} = v_{in}\,r_e/(r_e + R_E)$.`],
+        sol: md`$r_e = 24.75\,\Omega$; $v_{in} = 5\,\text{mV}\times(24.75 + 470)/24.75 = 99.9\,\text{mV}$: twenty times what a grounded emitter tolerates.`,
+      }),
+      R(md`
+        ### Drill: quick gains
+
+        Degenerated common emitters, followers and common bases, all through $r_e$.
+      `),
+      G('bk_tgain', { need: 5 }),
+    ],
+  });
+
+  // ================================================================== 7.6 the PNP model
+  const pnpCE = [['rail', [1, -0.4], { n: 'V_{CC}' }], ['w', [1, 0], [1, -0.4]], ['pnp', [1, 1]], ['R', [1, 2], [1, 3.2], { n: 'R_C', side: 'l' }], ['gnd', [1, 3.2]],
+    ['w', [1, 2], [1.8, 2]], ['term', [1.8, 2], { n: 'v_{out}' }], ['w', [0, 1], [-0.6, 1], [-0.6, 1.4]], ['Vac', [-0.6, 1.4], [-0.6, 2.4], { n: 'v_{in}', side: 'l' }],
+    ['V', [-0.6, 2.4], [-0.6, 3.4], { n: 'V_B', side: 'l' }], ['gnd', [-0.6, 3.4]]];
+  // the same hybrid-pi model, drawn the PNP way up: emitter on top (at V_CC, an incremental ground), collector below
+  const pnpMdl = [['w', [1, 0], [3, 0]], ['w', [2, 0], [2, -0.4]], ['gndu', [2, -0.4]], ['R', [1, 0], [1, 2], { n: 'r_\\pi', side: 'l' }],
+    ['vlab', [1.35, 1.65], [1.35, 0.35], { n: 'v_\\pi' }], ['w', [1, 2], [-0.2, 2]], ['Vac', [-0.2, 2], [-0.2, 3.2], { n: 'v_{in}', side: 'l' }], ['gnd', [-0.2, 3.2]],
+    ['G', [3, 2], [3, 0], { n: 'g_mv_\\pi', side: 'l' }], ['w', [3, 2], [4.2, 2]], ['R', [4.2, 2], [4.2, 3.4], { n: 'R_C' }], ['gnd', [4.2, 3.4]],
+    ['w', [4.2, 2], [4.8, 2]], ['term', [4.8, 2], { n: 'v_{out}' }], ['txt', [1.12, -0.28], '$E$', { a: 'l' }], ['txt', [0.88, 2.3], '$B$', { a: 'r' }], ['txt', [3.12, 2.3], '$C$', { a: 'l' }]];
+
+  L({
+    id: 'bk07-pnpmodel', title: 'Why the PNP uses the same model', ref: 'Lecture 24',
+    steps: [
+      R(md`
+        ### The question
+
+        A PNP's currents flow the other way: into the emitter, out of the collector and out of the base ([Section 6.4](#/l/bk06-pnp)). Should its small-signal model be flipped too: $r_\pi$ reversed, the $g_mv_\pi$ arrow pointing the other way? **No.** The model is identical, arrow and all. This section shows why, so that you never have to wonder on an exam, exactly as with NMOS and PMOS ([Chapter 2](#/l/bk02-pmodel)).
+      `),
+      R(md`
+        ### The physical picture: small signals are changes
+
+        The model describes *changes*, not the DC currents. Think about what a PNP does when its base moves **up** by a millivolt, emitter fixed: $V_{EB}$ shrinks by $1\,\text{mV}$, so the current flowing *out of* the collector shrinks by 4%. Less current flowing out is the same as **more current flowing in** (or rather, less negative inflow). An NPN in the same situation: base up, more current flows in at the collector.
+
+        So in both devices, **base up relative to emitter means the current into the collector increases**. That is all the model says: $i_c = g_mv_{be}$, with $i_c$ measured into the collector.
+      `),
+      R(md`
+        ### The derivation
+
+        Measure every small-signal quantity with the NPN's conventions: $v_{be} = v_b - v_e$, $v_{ce} = v_c - v_e$, $i_b$ into the base, $i_c$ into the collector. The PNP's large-signal law, with its own (positive) currents:
+        $$I_{C,out} = I_Se^{V_{EB}/V_T}\Big(1 + \frac{V_{EC}}{V_A}\Big),\qquad I_{B,out} = \frac{I_{C,out}}{\beta}.$$
+        **Collector.** The current *into* the collector is $-I_{C,out}$. Its change, to first order:
+        $$i_c = -\Big(\frac{\partial I_{C,out}}{\partial V_{EB}}v_{eb} + \frac{\partial I_{C,out}}{\partial V_{EC}}v_{ec}\Big) = -\Big(\frac{I_C}{V_T}v_{eb} + \frac{1}{r_o}v_{ec}\Big).$$
+        Now $v_{eb} = -v_{be}$ and $v_{ec} = -v_{ce}$, so the minus signs cancel:
+        $$i_c = g_mv_{be} + \frac{v_{ce}}{r_o},\qquad g_m = \frac{|I_C|}{V_T},\ r_o = \frac{V_A}{|I_C|}.$$
+        **Base.** The current *into* the base is $-I_{B,out}$, so $i_b = -\dfrac{I_B}{V_T}v_{eb} = \dfrac{v_{be}}{r_\pi}$, with $r_\pi = \beta/g_m$.
+
+        These are **exactly** the NPN's equations. The same circuit realizes them: $r_\pi$ from base to emitter with $v_\pi = v_b - v_e$ ($+$ at the base), $g_mv_\pi$ from collector to emitter, $r_o$ across it.
+
+        !!key One model for NPN and PNP
+          $$i_b = \frac{v_\pi}{r_\pi},\qquad i_c = g_mv_\pi + \frac{v_{ce}}{r_o},\qquad v_\pi = v_b - v_e$$
+          with $g_m$, $r_\pi$, $r_o$ computed from the magnitude of the bias current. Never flip the arrow.
+      `),
+      RF(md`
+        ### Check it: a PNP common emitter
+
+        Emitter at $V_{CC}$, the input on the base, $R_C$ from the collector to ground. Physically: base up, $V_{EB}$ down, less current out of the collector, less drop across $R_C$, the output falls: **inverting**.
+
+        [[fig:p]]
+
+        In the model (drawn here the PNP's way up, emitter on top at incremental ground): $v_\pi = v_{in}$, the source pulls $g_mv_\pi$ from the collector node up toward the emitter, so the collector node must be fed from ground through $R_C$: $v_{out} = -g_mv_{in}R_C$. **$A_v = -g_mR_C$, exactly the NPN result** ✓, and the sign agrees with the physical story ✓.
+      `, { p: { fig: row([[pnpCE, 'a PNP common emitter'], [pnpMdl, 'its small-signal circuit']]), cap: 'The PNP stage and its model: the same hybrid-$\\pi$, rotated so the emitter is on top. The $g_mv_\\pi$ arrow still points from collector to emitter.' } }),
+      R(md`
+        ### What it means, and how to recognize it
+
+        A small-signal circuit cannot tell an NPN from a PNP: both are "a transconductance from $v_{be}$ to the collector current, $r_\pi$ at the base, $r_o$ at the collector". The differences live entirely in the DC bias (which way the currents flow, where the emitter sits), and that is Chapter 6's business.
+
+        When you replace a PNP by its model, keep the model's labels attached to the right terminals: $r_\pi$ between **B** and **E** with $+$ at B, the source from **C** to **E**. If the PNP is drawn upside down, draw the model upside down too (as above), rather than flipping anything.
+
+        ### Worked example
+
+        A PNP common emitter at $|I_C| = 0.5\,\text{mA}$, $\beta = 100$, $R_C = 4\kO$, $r_o$ ignored. $g_m = 20\,\text{mS}$, $r_\pi = 5\kO$, $A_v = -g_mR_C = -80$. With a $5\kO$ source resistance: $v_\pi = v_s\cdot5/(5 + 5)$ and $A_v = -40$. With $R_E = 500\,\Omega$ unbypassed between the emitter and $V_{CC}$ (and $|I_C| = 1\,\text{mA}$, $R_C = 5\kO$): the T model gives $-\alpha R_C/(r_e + R_E) = -0.990\times5000/524.75 = -9.43$. Every formula is the NPN's.
+
+        !!mistake Common mistakes
+          - Reversing the $g_mv_\pi$ arrow for a PNP. Then every PNP gain comes out with the wrong sign.
+          - Defining $v_\pi$ as $v_e - v_b$ for a PNP while keeping the arrow: the same error.
+          - Using a negative $I_C$ in $g_m$. The parameters use the magnitude: $g_m = |I_C|/V_T$.
+          - Thinking a PNP common emitter does not invert. It does: the model is the same.
+      `),
+      Q(md`In the small-signal model of a PNP, which way does the controlled source $g_mv_\pi$ point?`,
+        ['From collector to emitter, exactly as for an NPN, with $v_\\pi = v_b - v_e$', 'From emitter to collector, because PNP current flows into the emitter', 'It depends on whether the PNP is drawn upside down', 'There is no controlled source in a PNP model'], 0,
+        [null, 'That is the DC current direction. The model describes changes, and with $v_\\pi = v_b - v_e$ the equations are identical to the NPN\'s.', 'Drawing orientation cannot change the physics; rotate the model with the drawing.', 'A PNP amplifies the same way an NPN does.'],
+        md`$i_c$ (into the collector) $= g_mv_{be}$ for both. The DC current direction is a bias matter, not a model matter.`),
+      Q(md`For a PNP biased at $|I_C| = 2\,\text{mA}$, what is $g_m$?`,
+        ['$80\\,\\text{mS}$', '$-80\\,\\text{mS}$', '$40\\,\\text{mS}$', '$12.5\\,\\Omega$'], 0,
+        [null, '$g_m$ uses the magnitude of the current; it is positive for both devices.', 'That is for $1\\,\\text{mA}$.', 'That is $1/g_m$, a resistance.'],
+        md`$g_m = |I_C|/V_T = 2\,\text{mA}/25\,\text{mV} = 80\,\text{mS}$.`),
+      Q(md`Does a PNP common emitter (emitter at $V_{CC}$, $R_C$ to ground, input on the base) invert?`,
+        ['Yes: $A_v = -g_mR_C$, as for an NPN', 'No: PNP currents flow the other way, so it is non-inverting', 'Only if $\\beta$ is large', 'Only with an emitter resistor'], 0,
+        [null, 'Base up reduces $V_{EB}$, less current flows out of the collector into $R_C$, so the output falls: inverting.', '$\\beta$ affects only $r_\\pi$.', 'An emitter resistor reduces the gain but does not change its sign.'],
+        md`Physically and in the model: base up, less collector current into $R_C$, output down. $A_v = -g_mR_C$.`),
+      P({
+        id: 'bk07-pnp-ce', title: 'A PNP common emitter',
+        q: md`A PNP common emitter at $|I_C| = 0.5\,\text{mA}$, $\beta = 100$, $R_C = 4\kO$ ($r_o$ ignored). Find $g_m$, $r_\pi$ and $A_v$.`,
+        fig: pnpCE,
+        parts: [{ lbl: 'g_m', unit: 'mS', ans: 20 }, { lbl: 'r_\\pi', unit: 'kΩ', ans: 5 }, { lbl: 'A_v', unit: '', ans: -80, traps: [{ v: 80, msg: 'The PNP common emitter inverts too: same model, same sign.' }] }],
+        sol: md`$g_m = 20\,\text{mS}$, $r_\pi = 5\kO$, $A_v = -g_mR_C = -80$.`,
+      }),
+      P({
+        id: 'bk07-pnp-rs', title: 'With a source resistance',
+        q: md`The same PNP stage ($|I_C| = 0.5\,\text{mA}$, $\beta = 100$, $R_C = 4\kO$) is driven through $R_S = 5\kO$. Find $v_{out}/v_s$.`,
+        parts: [{ lbl: 'v_{out}/v_s', unit: '', ans: -40 }],
+        sol: md`$v_\pi = v_s\,r_\pi/(r_\pi + R_S) = v_s/2$, so $v_{out}/v_s = -80/2 = -40$.`,
+      }),
+      P({
+        id: 'bk07-pnp-deg', title: 'A degenerated PNP stage',
+        q: md`A PNP at $|I_C| = 1\,\text{mA}$, $\beta = 100$, with $R_E = 500\,\Omega$ (unbypassed) from the emitter to $V_{CC}$ and $R_C = 5\kO$ from the collector to ground, input on the base. Find $A_v$.`,
+        parts: [{ lbl: 'A_v', unit: '', ans: -9.43396, accept: [-5000 / 525] }],
+        hints: [md`Same T-model formula as the NPN: $-\alpha R_C/(r_e + R_E)$.`],
+        sol: md`$r_e = 0.990/40\,\text{mS} = 24.75\,\Omega$; $A_v = -\dfrac{0.990\times5000}{524.75} = -9.43$.`,
+      }),
+      P({
+        id: 'bk07-pnp-fol', title: 'A PNP emitter follower',
+        q: md`A PNP follower: $R_E = 2\kO$ from the emitter (the output) to $V_{CC}$, the collector grounded, the input on the base, $|I_C| = 0.5\,\text{mA}$, $\beta = 100$. Find $v_{out}/v_{in}$.`,
+        parts: [{ lbl: 'v_{out}/v_{in}', unit: '', ans: 0.975845, tol: { rel: 0.003 }, traps: [{ v: -0.975845, msg: 'A follower does not invert, PNP or NPN.' }] }],
+        hints: [md`$R_E/(R_E + r_e)$.`],
+        sol: md`$r_e = 0.990/20\,\text{mS} = 49.5\,\Omega$; $v_{out}/v_{in} = 2000/2049.5 = 0.976$. Same as an NPN follower: $V_{CC}$ is ground for signals, so $R_E$ goes from the emitter to ground in the model.`,
+      }),
+      P({
+        id: 'bk07-pnp-sym', title: 'The PNP gain, typed',
+        q: md`Type the gain of the PNP common emitter of the first problem (input on the base, emitter at $V_{CC}$, $R_C$ to ground, $r_o$ ignored). Use \`gm\` and \`RC\`.`,
+        parts: [ex('-gm*RC', ['gm', 'RC'], 'A_v', { exact: true, free: true })],
+        sol: md`$A_v = -g_mR_C$: the NPN result, sign included.`,
+      }),
+      R(md`
+        ### Drill: PNP stages
+
+        DC with the PNP's flipped currents, then the unchanged small-signal model.
+      `),
+      G('bk_pnpgain', { need: 4 }),
+    ],
+  });
 })();
