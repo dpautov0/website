@@ -8,7 +8,8 @@
 
   // ---------------------------------------------------------------- helpers
   const clean = (x) => (Math.abs(x) < 1e-12 ? 0 : x);
-  const f = (x, s = 4) => U.fmt(clean(x), s);
+  const f = (x, s = 4) => U.fmt(x, s);
+  const sci = (x, s = 3) => { const e = Math.floor(Math.log10(Math.abs(x))); return `${+(x / 10 ** e).toPrecision(s)}\\times10^{${e}}`; };
   const gcd = (a, b) => { a = Math.abs(a); b = Math.abs(b); while (b) [a, b] = [b, a % b]; return a || 1; };
   // reduced fraction as TeX (integers in, sign out front)
   const fr = (p, q) => {
@@ -141,7 +142,7 @@
       const x0 = clean(A * Math.cos(PH[0])), p0 = clean(A * Math.sin(PH[0]));
       q = md`A harmonic oscillator starts in ${st}. Find $\langle x\rangle$ at $t = 0$ in units of $\sqrt{\hbar/2m\omega}$ and $\langle p\rangle$ at $t = 0$ in units of $\sqrt{\hbar m\omega/2}$.`;
       parts = [{ lbl: md`\langle x\rangle(0)`, ans: x0 }, { lbl: md`\langle p\rangle(0)`, ans: p0 }];
-      sol = md`With $c_{${n1}} = ${p}A$ and $c_{${n2}} = ${qq}Ae^{i\phi}$, $\phi = ${PH[1]}$: $\langle x\rangle = 2\sqrt{\tfrac{\hbar}{2m\omega}}\,${rt(n1 + 1)}\,\text{Re}\left(c_{${n1}}^*c_{${n2}}e^{-i\omega t}\right) = ${f(A)}\cos(\phi - \omega t)$ units, and by Ehrenfest $\langle p\rangle = m\,d\langle x\rangle/dt = ${f(A)}\sin(\phi - \omega t)$ units of $\sqrt{\hbar m\omega/2}$. At $t = 0$: $\langle x\rangle = ${f(A)}\cos(${PH[1]}) = ${f(x0)}$, $\langle p\rangle = ${f(A)}\sin(${PH[1]}) = ${f(p0)}$. **The relative phase sets where on the (clockwise) phase-space circle the state starts.**`;
+      sol = md`With $c_{${n1}} = ${p === 1 ? '' : p}A$ and $c_{${n2}} = ${qq === 1 ? '' : qq}Ae^{i\phi}$, $\phi = ${PH[1]}$, $A^2 = 1/${N}$, and $\bra{${n1}}\hat x\ket{${n2}} = ${rt(n1 + 1)}\sqrt{\tfrac{\hbar}{2m\omega}}$: $\langle x\rangle = 2${n1 ? rt(n1 + 1) : ''}\,\text{Re}\left(c_{${n1}}^*c_{${n2}}e^{-i\omega t}\right) = ${f(A)}\cos(\phi - \omega t)$ units, and by Ehrenfest $\langle p\rangle = m\,d\langle x\rangle/dt = ${f(A)}\sin(\phi - \omega t)$ units of $\sqrt{\hbar m\omega/2}$. At $t = 0$: $\langle x\rangle = ${f(A)}\cos(${PH[1]}) = ${f(x0)}$, $\langle p\rangle = ${f(A)}\sin(${PH[1]}) = ${f(p0)}$. **The relative phase sets where on the (clockwise) phase-space circle the state starts.**`;
     }
     return { title: 'Oscillator superposition', q, parts, hints, sol };
   };
@@ -186,7 +187,7 @@
       q = md`A trapped ion $${ion[0]}$ (mass $${ion[1]}$ u, $1\text{ u} = 1.661\times10^{-27}$ kg) sits in a harmonic trap with $\omega = 2\pi\times${fM}$ MHz. Find its ground-state width $w_x = \sqrt{\hbar/m\omega}$ in nm.`;
       parts = [{ lbl: 'w_x', ans: w, unit: 'nm' }];
       hints = [md`$\hbar = 1.055\times10^{-34}$ J·s; work in SI and convert at the end.`];
-      sol = md`$m = ${f(m, 4)}$ kg, $\omega = ${f(om, 4)}$ s$^{-1}$, $w_x = \sqrt{\dfrac{1.055\times10^{-34}}{${f(m, 4)}\times${f(om, 4)}}}$ m $= ${f(w, 3)}$ nm. Tens of nanometers: much bigger than an atom, which is why trapped ions can be laser-cooled into the oscillator ground state and imaged as quantum oscillators.`;
+      sol = md`$m = ${sci(m)}$ kg, $\omega = ${sci(om)}$ s$^{-1}$, $w_x = \sqrt{\dfrac{1.055\times10^{-34}}{(${sci(m)})(${sci(om)})}}$ m $= ${f(w, 3)}$ nm. Tens of nanometers: much bigger than an atom, which is why trapped ions can be laser-cooled into the oscillator ground state and imaged as quantum oscillators.`;
     } else {
       const k = pick([1, 10, 100]), A = pick([1, 2, 5]), mkg = 0.1;
       const om = Math.sqrt(k / mkg), E = 0.5 * k * (A / 100) ** 2, n = E / (1.054572e-34 * om);
@@ -248,7 +249,7 @@
       return r || i;
     })();
     const intro = md`An oscillator is in the coherent state $\ket\alpha$ with $\alpha = ${atex}$ ($\hat a_-\ket\alpha = \alpha\ket\alpha$).`;
-    const hints = [md`$\ket\alpha = e^{-|\alpha|^2/2}\sum_n\dfrac{\alpha^n}{\sqrt{n!}}\ket{n}$, $\alpha(t) = \alpha e^{-i\omega t}$; $\langle x\rangle = \sqrt{\tfrac{\hbar}{2m\omega}}(\alpha + \alpha^*)$, $\langle p\rangle = i\sqrt{\tfrac{\hbar m\omega}{2}}(\alpha^* - \alpha)$.`];
+    let hints = [md`$\ket\alpha = e^{-|\alpha|^2/2}\sum_n\dfrac{\alpha^n}{\sqrt{n!}}\ket{n}$, $\alpha(t) = \alpha e^{-i\omega t}$; $\langle x\rangle = \sqrt{\tfrac{\hbar}{2m\omega}}(\alpha + \alpha^*)$, $\langle p\rangle = i\sqrt{\tfrac{\hbar m\omega}{2}}(\alpha^* - \alpha)$.`];
     let q, parts, sol;
     if (v === 'nbar') {
       q = md`${intro} Find $\langle n\rangle$, the mean number of quanta.`;
@@ -422,7 +423,7 @@
     const l = ri(1, 4);
     const LL = l * (l + 1);
     let q, parts, sol;
-    const hints = [md`$\hat L_\pm\ket{\ell, m} = \hbar\sqrt{\ell(\ell+1) - m(m\pm1)}\,\ket{\ell, m\pm1}$.`];
+    let hints = [md`$\hat L_\pm\ket{\ell, m} = \hbar\sqrt{\ell(\ell+1) - m(m\pm1)}\,\ket{\ell, m\pm1}$.`];
     if (v === 'coef') {
       const up = Math.random() < 0.5;
       const m = ri(-l, l);
