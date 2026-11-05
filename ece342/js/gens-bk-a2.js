@@ -165,6 +165,8 @@
 
   // ================================================================ generators
   const T = (window.BK3F._test = {});
+  // a resistance answer box; traps closer than 3.5% to the answer are dropped (a correctly rounded answer must never hit one)
+  const RES = (lbl, ans, traps = []) => BK.res(lbl, ans, undefined, traps.filter((t) => isFinite(t.v) && Math.abs(t.v - ans) > 0.035 * Math.abs(ans)));
   // number pools (SI units)
   const GM = [0.5e-3, 1e-3, 2e-3, 4e-3], RDS = [20e3, 25e3, 40e3, 50e3, 100e3], RSMALL = [500, 1e3, 2e3, 5e3], RBIG = [10e3, 20e3, 50e3, 100e3];
   const dio = (g, r) => 1 / (g + 1 / r);                       // 1/g_m || r_ds
@@ -234,7 +236,7 @@
       q: `${name}, $g_m = ${MS(gm)}$, $r_{ds} = ${RT(rds)}$${xs}. A test source $v_t$ drives the ${cf.look} at the arrow; triangles are incremental grounds. First name $v_{gs}$ ($v_s$ is the small-signal voltage of the source node), then find $R$ (keep $r_{ds}$).`,
       parts: [
         { lbl: '1. $v_{gs} =$', mc: VGS_OPTS, a: cf.a, why: VGS_OPTS.map((_, j) => (j === cf.a ? null : `${VGS_WHEN[j]} ${cf.here}`)) },
-        BK.res('R', ans, undefined, traps),
+        RES('R', ans, traps),
       ],
       hints: ['Write $v_{gs} = v_g - v_s$ with small-signal voltages: 0 at every rail and every held gate.', 'Then write KCL for the current the test source pushes in, using $i_d = g_mv_{gs} + v_{ds}/r_{ds}$ (drain to source).'],
       sol: `**Small-signal circuit.** ${rails}; the transistor becomes $g_mv_{gs}$ (drain to source) in parallel with $r_{ds}$.\n\n**$v_{gs}$.** ${cf.here}\n\n**KCL.** ${kcl}\n\n$$${res}$$${pnote(pm)}`,
@@ -278,7 +280,7 @@
     return {
       fig: [...stage, ...net],
       q: `A ${sf ? 'source follower' : 'common-source stage'} with its gate bias network (capacitors are large). Find the small-signal resistance $R_{in}$ at the arrow. The transistor has $g_m = 2\\,\\text{mS}$, $r_{ds} = 50\\kO$; $R_D$ and $R_S$ are a few kΩ.`,
-      parts: [BK.res('R_{in}', ans, undefined, traps)],
+      parts: [RES('R_{in}', ans, traps)],
       hints: ['$V_{DD}$ and $V_B$ are incremental grounds; large capacitors are shorts.', 'The gate is an open circuit: list the resistors that carry current from the input node to ground.'],
       sol: `**Recognize it:** the signal arrives at a gate, which takes no current. Only the bias resistors can carry current.\n\n${how}\n\nNone of $g_m$, $r_{ds}$, $R_D$ or $R_S$ appears: they sit on the far side of an open circuit.`,
       _t: { g: 'gate', k, sf, R1, R2, RG, Rsig, ans },
@@ -295,7 +297,7 @@
       return {
         fig: F.drain({ p: pm, look: 'R' }),
         q: `A ${pm ? 'PMOS' : 'NMOS'} current source (gate on a fixed bias, source on its rail) carries $I_D = ${MA(I)}$ with $\\lambda = ${lamT(lam)}$. Find the resistance looking into its drain.`,
-        parts: [BK.res('R', ans, undefined, [{ v: lam / I, msg: '$r_{ds} = 1/(\\lambda I_D)$: multiply $\\lambda$ by the current, then invert.' }])],
+        parts: [RES('R', ans, [{ v: lam / I, msg: '$r_{ds} = 1/(\\lambda I_D)$: multiply $\\lambda$ by the current, then invert.' }])],
         hints: ['Gate and source are both still, so $v_{gs} = 0$ and the dependent source is open.', '$r_{ds} = 1/(\\lambda I_D)$.'],
         sol: `Gate held and source on a rail: $v_{gs} = 0$, so only $r_{ds}$ connects the drain to ground.\n$$R = r_{ds} = \\frac{1}{\\lambda I_D} = \\frac{1}{(${f(lam, 3)}\\,\\text{V}^{-1})(${MA(I)})} = ${RT(ans)}$$${pnote(pm)}`,
         _t: { g: 'drain', k, lam, I, ans },
@@ -306,7 +308,7 @@
       return {
         fig: F.node(['drain', { n: 'M_2' }], ['drain', { n: 'M_1' }], { look: 'R_{out}' }),
         q: `A common-source stage: $M_1$ (NMOS, $\\lambda_n = ${lamT(ln)}$) with a PMOS current-source load $M_2$ ($\\lambda_p = ${lamT(lp)}$), both at $I_D = ${MA(I)}$. With the input off (the triangle on $M_1$'s gate), find $R_{out}$.`,
-        parts: [BK.res('R_{out}', ans, undefined, [{ v: r1 + r2, msg: 'Both transistors connect the output to an incremental ground: they are in parallel, not in series.' }, { v: r1, msg: 'That is $r_{ds1}$ alone; $M_2$ is a branch too.' }, { v: r2, msg: 'That is $r_{ds2}$ alone; $M_1$ is a branch too.' }])],
+        parts: [RES('R_{out}', ans, [{ v: r1 + r2, msg: 'Both transistors connect the output to an incremental ground: they are in parallel, not in series.' }, { v: r1, msg: 'That is $r_{ds1}$ alone; $M_2$ is a branch too.' }, { v: r2, msg: 'That is $r_{ds2}$ alone; $M_1$ is a branch too.' }])],
         hints: ['Each transistor has a still gate and its source on a rail: each one is just its $r_{ds}$.', '$R_{out} = r_{ds1}\\parallel r_{ds2}$.'],
         sol: `Input off: both gates are still and both sources sit on rails, so each transistor is a drain with $v_{gs} = 0$: just its $r_{ds}$.\n$$r_{ds1} = \\frac{1}{\\lambda_nI_D} = ${RT(r1)},\\qquad r_{ds2} = \\frac{1}{\\lambda_pI_D} = ${RT(r2)}$$\nOne goes up to $V_{DD}$ (ground), one down to ground: parallel.\n$$R_{out} = r_{ds1}\\parallel r_{ds2} = ${RT(ans)}$$`,
         _t: { g: 'drain', k, I, ln, lp, ans },
@@ -317,7 +319,7 @@
       fig: [['rail', [1, -0.4]], ['I', [1, -0.4], [1, 0.8], { n: 'I_{REF}', side: 'l' }], ['w', [1, 0.8], [1, 1]], ['nmos', [1, 2], { n: 'M_1', flip: true, dc: true }], ['gnd', [1, 3]],
         ['nmos', [3, 2], { n: 'M_2' }], ['gnd', [3, 3]], ['w', [3, 1], [3, 0.4]], lookDn([3, 0.4], 'R_{out}')],
       q: `A current mirror: $I_{REF} = ${MA(Iref)}$ into the diode $M_1$; $M_2$ is ${m === 1 ? 'identical to $M_1$' : `$${m}$ times wider than $M_1$`}. $\\lambda = ${lamT(lam)}$. Find the resistance looking into $M_2$'s drain.`,
-      parts: [BK.res('R_{out}', ans, undefined, m > 1 ? [{ v: 1 / (lam * Iref), msg: `$M_2$ carries $${m}I_{REF}$, not $I_{REF}$: use its own current in $r_{ds}$.` }] : [])],
+      parts: [RES('R_{out}', ans, m > 1 ? [{ v: 1 / (lam * Iref), msg: `$M_2$ carries $${m}I_{REF}$, not $I_{REF}$: use its own current in $r_{ds}$.` }] : [])],
       hints: ['First the bias: a mirror copies the current in proportion to $W/L$.', 'Nothing pushes signal current into the shared gate node, so $M_2$ has a still gate: $R_{out} = r_{ds2}$.'],
       sol: `**Bias.** Same $V_{GS}$, ${m} times the width: $I_{D2} = ${m}\\times${MA(Iref)} = ${MA(I2)}$.\n\n**Small signal.** The gate node touches $I_{REF}$ (open), the diode $M_1$, and $M_2$'s gate (no current). A test source on $M_2$'s drain cannot push current into that node, so $v_{g2} = 0$: $M_2$ is a drain with a still gate.\n$$R_{out} = r_{ds2} = \\frac{1}{\\lambda I_{D2}} = \\frac{1}{(${f(lam, 3)})(${MA(I2)})} = ${RT(ans)}$$`,
       _t: { g: 'drain', k, Iref, m, lam, ans },
@@ -337,7 +339,7 @@
         parts: [
           { lbl: '1. Looking into the source:', mc: ['$\\infty$', '$1/g_m$', '$\\tfrac{1}{g_m}\\parallel r_{ds}$', '$2/g_m$'], a: 0,
             why: [null, 'That needs a path for the current at the drain. $I_B$ is open, so no current can enter the source at all.', 'That is the source with its drain on a rail. Here the drain has no path to ground.', 'That is the case of part 2 (a real current source with $r_{ds}$), not of an ideal one.'] },
-          BK.res('R', ans2, undefined, [{ v: dio(gm, rds), msg: 'That ignores the load: $r_{ds2}$ on the drain adds $r_{ds2}/(1 + g_mr_{ds})$.' }, { v: rds, msg: 'That is a drain resistance, not a source resistance.' }]),
+          RES('R', ans2, [{ v: dio(gm, rds), msg: 'That ignores the load: $r_{ds2}$ on the drain adds $r_{ds2}/(1 + g_mr_{ds})$.' }, { v: rds, msg: 'That is a drain resistance, not a source resistance.' }]),
         ],
         hints: ['Whatever enters the source must leave through the drain. What else is at the drain?', 'Part 2: $R_S = (r_{ds} + R_D)/(1 + g_mr_{ds})$ with $R_D = r_{ds}$.'],
         sol: `**1.** The gate takes no current, so the test current must leave through the drain; there the only other element is $I_B$, an open circuit. No current can flow: $R = \\infty$. (Formula: $R_D\\to\\infty$.)\n\n**2.** With $R_D = r_{ds}$:\n$$R = \\frac{r_{ds} + r_{ds}}{1 + g_mr_{ds}} = \\frac{${RT(2 * rds)}}{${f(1 + gr, 4)}} = ${RT(ans2)}\\approx\\frac{2}{g_m}$$${pnote(pm)}`,
@@ -353,7 +355,7 @@
     return {
       fig,
       q: `${dev} $M_1$: $g_m = ${MS(gm)}$, $r_{ds} = ${RT(rds)}$, gate held; ${load}. Find the resistance looking into the source of $M_1$ (keep $r_{ds}$).`,
-      parts: [BK.res('R_S', ans, undefined, traps)],
+      parts: [RES('R_S', ans, traps)],
       hints: ['Gate held: $v_{gs} = -v_t$. The test current flows through the device and out through whatever is on the drain.', '$R_S = \\dfrac{r_{ds} + R_D}{1 + g_mr_{ds}}$, with $R_D = 0$ for a drain on a rail.'],
       sol: `**Recognize it:** a source with a held gate. $g_mr_{ds} = (${MS(gm)})(${RT(rds)}) = ${f(gr, 4)}$.\n\n${ld === 'rail' ? `The drain is at incremental ground ($R_D = 0$):\n$$R_S = \\frac{1}{g_m + 1/r_{ds}} = \\frac{r_{ds}}{1 + g_mr_{ds}} = \\frac{${RT(rds)}}{${f(1 + gr, 4)}} = ${RT(ans)}$$` : `The test current leaves through ${ld === 'R' ? '$R_D$' : '$M_2$ (a drain with a still gate: $r_{ds2}$)'}, so the drain moves by $i_tR_D$ with $R_D = ${RT(RD)}$:\n$$R_S = \\frac{r_{ds} + R_D}{1 + g_mr_{ds}} = \\frac{${RT(rds + RD)}}{${f(1 + gr, 4)}} = ${RT(ans)}$$\nCompare $1/g_m = ${RT(1 / gm)}$: the drain load adds $R_D/(1 + g_mr_{ds}) = ${RT(RD / (1 + gr))}$.`}${pnote(pm)}`,
       _t: { g: 'src', ld, gm, rds, RD, ans },
@@ -384,7 +386,7 @@
     return {
       fig,
       q: `A diode-connected ${pm ? 'PMOS (source toward $V_{DD}$)' : 'NMOS'} with ${devTxt}${isFinite(rds) ? `, $r_{ds} = ${RT(rds)}$` : ' (ignore $r_{ds}$)'}${rTxt}. Find the small-signal resistance $R_{in}$ at the arrow.`,
-      parts: [BK.res('R_{in}', ans, undefined, traps)],
+      parts: [RES('R_{in}', ans, traps)],
       hints: ['Gate and drain are one node, so $v_{gs} = v_{ds}$: the transistor is a two-terminal resistor $\\tfrac{1}{g_m}\\parallel r_{ds}$.', 'A resistor in series with it simply adds (no magnification: the gate is not held).'],
       sol: `${gmLine}**The diode.** Gate tied to drain: $v_{gs} = v_{ds}$, so the transistor is a resistor ${isFinite(rds) ? `$\\tfrac{1}{g_m}\\parallel r_{ds} = \\dfrac{1}{${MS(gm)} + ${MS(1 / rds)}} = ${RT(rd)}$` : `$1/g_m = ${RT(rd)}$`}.\n\n${withR ? `**The resistor** carries the same current (the gate takes none), so it adds in series:\n$$R_{in} = R + ${isFinite(rds) ? '\\tfrac{1}{g_m}\\parallel r_{ds}' : '\\tfrac{1}{g_m}'} = ${RT(Rs)} + ${RT(rd)} = ${RT(ans)}$$` : `$$R_{in} = ${RT(ans)}$$`}${pnote(pm)}`,
       _t: { g: 'diode', pm, gm, rds: isFinite(rds) ? rds : null, Rs, top, wl: useSize ? wl : null, I: useSize ? I : null, ans },
@@ -417,7 +419,7 @@
     return {
       fig,
       q: `${pm ? 'PMOS' : 'NMOS'} $M_1$: $g_m = ${MS(gm)}$, $r_{ds} = ${RT(rds)}$, gate held; ${under}. Find the resistance looking into the drain of $M_1$.`,
-      parts: [BK.res(pm ? 'R_{UP}' : 'R_{DN}', ans, undefined, traps)],
+      parts: [RES(pm ? 'R_{UP}' : 'R_{DN}', ans, traps)],
       hints: ['First reduce whatever is under the source to one resistance $R_S$ (a diode is $\\tfrac{1}{g_m}\\parallel r_{ds}$; a held-gate transistor is $r_{ds}$).', 'Then $R = r_{ds} + R_S + g_mr_{ds}R_S$ for the transistor you look into.'],
       sol: `${extra}**Degeneration.** The gate of $M_1$ is held and all of $i_t$ flows through $R_S$, so $v_s = i_tR_S$ and $v_{gs} = -i_tR_S$; the transistor fights the change. With $g_mr_{ds} = ${f(gr, 4)}$:\n$$R = r_{ds} + R_S + g_mr_{ds}R_S = ${RT(rds)} + ${RT(Rs)} + ${f(gr, 4)}\\times${RT(Rs)} = ${RT(ans)}$$\nCheck: $r_{ds}(1 + g_mR_S) = ${RT(rds * (1 + gm * Rs))}$.${pnote(pm)}`,
       _t: { g: 'degen', kind, pm, gm, rds, Rs, ...(kind === 'R' ? {} : T.lastDeg), ans },
@@ -433,8 +435,8 @@
       return {
         fig: F.kdiv({ rs: RS ? 1 : 0, rav: RT(Ra), rbv: RT(Rb), rsv: RS ? RT(RS) : undefined, look: 'R_{EQ}' }),
         q: `$g_m = ${MS(gm)}$, $r_{ds} = ${RT(rds)}$${RS ? `, $R_S = ${RT(RS)}$` : ' (source grounded)'}. The divider hangs from the drain node, with the gate at its middle. Find $K$ (how much the gate moves per volt at the node) and the node resistance $R_{EQ}$.`,
-        parts: [{ lbl: 'K', unit: '', ans: K, traps: [{ v: Ra / (Ra + Rb), msg: 'The gate sits across the **bottom** resistor: $K = R_b/(R_a + R_b)$.' }].filter((t) => Math.abs(t.v - K) > 0.02 * K) },
-          BK.res('R_{EQ}', Req, undefined, [{ v: Rk, msg: 'That is the transistor branch alone. The divider also connects the node to ground: put $R_a + R_b$ in parallel.' }, { v: par(top, Ra + Rb), msg: 'That treats the gate as held ($K = 0$). The gate moves with the node, which divides the transistor branch by $1 + g_mr_{ds}K$.' }])],
+        parts: [{ lbl: 'K', unit: '', ans: K, traps: [{ v: Ra / (Ra + Rb), msg: 'The gate sits across the **bottom** resistor: $K = R_b/(R_a + R_b)$.' }].filter((t) => Math.abs(t.v - K) > 0.035 * K) },
+          RES('R_{EQ}', Req, [{ v: Rk, msg: 'That is the transistor branch alone. The divider also connects the node to ground: put $R_a + R_b$ in parallel.' }, { v: par(top, Ra + Rb), msg: 'That treats the gate as held ($K = 0$). The gate moves with the node, which divides the transistor branch by $1 + g_mr_{ds}K$.' }])],
         hints: ['The gate takes no current, so the divider is unloaded: $K = R_b/(R_a + R_b)$.', 'Transistor branch: $\\dfrac{r_{ds} + R_S + g_mr_{ds}R_S}{1 + g_mr_{ds}K}$; then put the divider $R_a + R_b$ in parallel.'],
         sol: `**$K$.** The gate draws nothing, so $K = \\dfrac{R_b}{R_a + R_b} = \\dfrac{${RT(Rb)}}{${RT(Ra + Rb)}} = ${f(K, 4)}$.\n\n**The transistor branch (K rule).** $g_mr_{ds} = ${f(gr, 4)}$.\n$$R_{DN} = \\frac{r_{ds} + R_S + g_mr_{ds}R_S}{1 + g_mr_{ds}K} = \\frac{${RT(top)}}{${f(1 + gr * K, 4)}} = ${RT(Rk)}$$\n**The node.** The divider is a branch too:\n$$R_{EQ} = R_{DN}\\parallel(R_a + R_b) = ${RT(Rk)}\\parallel${RT(Ra + Rb)} = ${RT(Req)}$$`,
         _t: { g: 'k', kind, gm, rds, RS, Ra, Rb, K, ans: Req, map: { K: 'K', 'R_{EQ}': 'R' } },
@@ -445,8 +447,8 @@
     return {
       fig: F.kstack({ look: 'R_{EQ}' }),
       q: `Diodes $M_a$ ($g_{ma} = ${MS(ga)}$) over $M_b$ ($g_{mb} = ${MS(gb)}$) hang from the node (ignore their $r_{ds}$). $M_c$ ($g_{mc} = ${MS(gc)}$, $r_{dsc} = ${RT(rc)}$) has its drain on the node, its source grounded and its gate on $X$. Find $K$ for $M_c$ and $R_{EQ}$.`,
-      parts: [{ lbl: 'K', unit: '', ans: K, traps: [{ v: Ra / (Ra + Rb), msg: '$X$ sits on top of $M_b$: $K$ is the bottom diode\'s share, $\\dfrac{1/g_{mb}}{1/g_{ma} + 1/g_{mb}}$.' }].filter((t) => Math.abs(t.v - K) > 0.02 * K) },
-        BK.res('R_{EQ}', Req, undefined, [{ v: Rc, msg: 'That is $M_c$ alone; the diode stack is a branch of the node too.' }, { v: Ra + Rb, msg: 'That is the stack alone; $M_c$ is a branch too, and its gate moves.' }, { v: par(Ra + Rb, rc), msg: 'That treats $M_c$\'s gate as held. It moves by $Kv_t$.' }])],
+      parts: [{ lbl: 'K', unit: '', ans: K, traps: [{ v: Ra / (Ra + Rb), msg: '$X$ sits on top of $M_b$: $K$ is the bottom diode\'s share, $\\dfrac{1/g_{mb}}{1/g_{ma} + 1/g_{mb}}$.' }].filter((t) => Math.abs(t.v - K) > 0.035 * K) },
+        RES('R_{EQ}', Req, [{ v: Rc, msg: 'That is $M_c$ alone; the diode stack is a branch of the node too.' }, { v: Ra + Rb, msg: 'That is the stack alone; $M_c$ is a branch too, and its gate moves.' }, { v: par(Ra + Rb, rc), msg: 'That treats $M_c$\'s gate as held. It moves by $Kv_t$.' }])],
       hints: ['The stack carries $v_t/(1/g_{ma} + 1/g_{mb})$, and $X$ sits at that current times $1/g_{mb}$.', '$M_c$ has $R_S = 0$: $r_{dsc}/(1 + g_{mc}r_{dsc}K)$. Then put the stack in parallel.'],
       sol: `**$K$.** Each diode is $1/g_m$: $1/g_{ma} = ${RT(Ra)}$, $1/g_{mb} = ${RT(Rb)}$. $X$ is the divider point:\n$$K = \\frac{1/g_{mb}}{1/g_{ma} + 1/g_{mb}} = \\frac{${RT(Rb)}}{${RT(Ra + Rb)}} = ${f(K, 4)}$$\n**$M_c$ (K rule, $R_S = 0$).** $g_{mc}r_{dsc} = ${f(gc * rc, 4)}$:\n$$R_{Mc} = \\frac{r_{dsc}}{1 + g_{mc}r_{dsc}K} = ${RT(Rc)}\\quad(\\approx 1/(Kg_{mc}) = ${RT(1 / (K * gc))})$$\n**The node.** $R_{EQ} = ${RT(Ra + Rb)}\\parallel${RT(Rc)} = ${RT(Req)}$.`,
       _t: { g: 'k', kind, ga, gb, gc, rc, K, ans: Req, map: { K: 'K', 'R_{EQ}': 'R' } },
@@ -462,7 +464,7 @@
       return {
         fig: F.reg({ ryv: RT(RY) }),
         q: `Regulated cascode: $M_1$ has $g_{m1} = ${MS(g1)}$, $r_{ds1} = ${RT(r1)}$ and sits on $R_Y = ${RT(RY)}$; the booster $M_3$ has $g_{m3} = ${MS(g3)}$, $r_{ds3} = ${RT(r3)}$, and $I_B$ is ideal. Find $R_{out}$.`,
-        parts: [BK.res('R_{out}', ans, undefined, [{ v: plain, msg: 'That is the plain cascode: the booster multiplies the big term by $1 + A$ with $A = g_{m3}r_{ds3}$.' }, { v: r1 + RY, msg: 'Series only: the feedback terms are missing.' }])],
+        parts: [RES('R_{out}', ans, [{ v: plain, msg: 'That is the plain cascode: the booster multiplies the big term by $1 + A$ with $A = g_{m3}r_{ds3}$.' }, { v: r1 + RY, msg: 'Series only: the feedback terms are missing.' }])],
         hints: ['$I_B$ is open, so $M_3$ is a common source with gain $-A = -g_{m3}r_{ds3}$ from $Y$ to $M_1$\'s gate.', '$R_{out} = r_{ds1} + R_Y + g_{m1}r_{ds1}(1 + A)R_Y$.'],
         sol: `**The booster.** $I_B$ is open, so $v_N = -g_{m3}r_{ds3}v_Y = -Av_Y$ with $A = ${f(A, 4)}$, and $v_{gs1} = v_N - v_Y = -(1 + A)v_Y$.\n\n**$M_1$.** With $v_Y = i_tR_Y$, the degeneration algebra gives\n$$R_{out} = r_{ds1} + R_Y + g_{m1}r_{ds1}(1 + A)R_Y = ${RT(r1)} + ${RT(RY)} + (${f(g1 * r1, 4)})(${f(1 + A, 4)})(${RT(RY)}) = ${RT(ans)}$$\nWithout the booster: $${RT(plain)}$.`,
         _t: { g: 'casc', kind, g1, r1, g3, r3, RY, ans },
@@ -477,14 +479,14 @@
       q = `${pm ? 'PMOS cascode: $M_1$ on $V_{DD}$, $M_2$ below it' : 'Cascode: $M_2$ on top of $M_1$'}, both gates held. $M_1$: $r_{ds1} = ${RT(r1)}$; $M_2$: $g_{m2} = ${MS(g2)}$, $r_{ds2} = ${RT(r2)}$. Find the resistance looking into $M_2$'s drain.`;
       sol = `$M_1$ has $v_{gs1} = 0$: it is just $r_{ds1}$, sitting under $M_2$'s source. $M_2$ is degenerated by it (bottom-up rule):\n$$R = r_{ds2} + r_{ds1}(1 + g_{m2}r_{ds2}) = ${RT(r2)} + ${RT(r1)}\\times${f(1 + g2 * r2, 4)} = ${RT(ans)}$$${pnote(pm)}`;
       traps = [{ v: r1 + r2, msg: 'Series only: $M_2$ magnifies $r_{ds1}$ by $1 + g_{m2}r_{ds2}$.' }, { v: up(r2, g1, r1), msg: 'You used the bottom transistor as the magnifier. $M_2$, the one you look into, multiplies what is under it.' }];
-      return { fig, q, parts: [BK.res('R', ans, undefined, traps)], hints: ['$M_1$ has a still gate and a source on a rail: it is just $r_{ds1}$.', 'Then degeneration: $r_{ds2} + r_{ds1}(1 + g_{m2}r_{ds2})$.'], sol, _t: { g: 'casc', kind, g2, r2, r1, ans } };
+      return { fig, q, parts: [RES('R', ans, traps)], hints: ['$M_1$ has a still gate and a source on a rail: it is just $r_{ds1}$.', 'Then degeneration: $r_{ds2} + r_{ds1}(1 + g_{m2}r_{ds2})$.'], sol, _t: { g: 'casc', kind, g2, r2, r1, ans } };
     }
     if (kind === 'rs') {
       const R1 = up(RS, g1, r1); ans = up(R1, g2, r2);
       return {
         fig: F.casc({ rs: 1, rsv: RT(RS), look: 'R_{out}' }),
         q: `$M_2$ on $M_1$ on $R_S = ${RT(RS)}$, gates held. $M_1$: $g_{m1} = ${MS(g1)}$, $r_{ds1} = ${RT(r1)}$; $M_2$: $g_{m2} = ${MS(g2)}$, $r_{ds2} = ${RT(r2)}$. Find $R_{out}$.`,
-        parts: [BK.res('R_{out}', ans, undefined, [{ v: up(r1, g2, r2), msg: 'You dropped $R_S$: first reduce $M_1$ on $R_S$ to $R_1 = r_{ds1} + R_S(1 + g_{m1}r_{ds1})$.' }, { v: R1, msg: 'That is $R_1$, looking into $M_1$; now add $M_2$ on top.' }])],
+        parts: [RES('R_{out}', ans, [{ v: up(r1, g2, r2), msg: 'You dropped $R_S$: first reduce $M_1$ on $R_S$ to $R_1 = r_{ds1} + R_S(1 + g_{m1}r_{ds1})$.' }, { v: R1, msg: 'That is $R_1$, looking into $M_1$; now add $M_2$ on top.' }])],
         hints: ['Bottom-up: $R_1 = r_{ds1} + R_S(1 + g_{m1}r_{ds1})$.', 'Then $R_{out} = r_{ds2} + R_1(1 + g_{m2}r_{ds2})$.'],
         sol: `**Bottom-up.**\n$$R_1 = r_{ds1} + R_S(1 + g_{m1}r_{ds1}) = ${RT(r1)} + ${RT(RS)}\\times${f(1 + g1 * r1, 4)} = ${RT(R1)}$$\n$$R_{out} = r_{ds2} + R_1(1 + g_{m2}r_{ds2}) = ${RT(r2)} + ${RT(R1)}\\times${f(1 + g2 * r2, 4)} = ${RT(ans)}$$`,
         _t: { g: 'casc', kind, g1, r1, g2, r2, RS, ans },
@@ -494,7 +496,7 @@
     return {
       fig: F.casc({ triple: 1, look: 'R_{out}' }),
       q: `A triple cascode, all gates held: $M_1$ (bottom) $r_{ds1} = ${RT(r1)}$; $M_2$: $g_{m2} = ${MS(g2)}$, $r_{ds2} = ${RT(r2)}$; $M_3$ (top): $g_{m3} = ${MS(g3)}$, $r_{ds3} = ${RT(r3)}$. Find $R_{out}$.`,
-      parts: [BK.res('R_{out}', ans, undefined, [{ v: R2, msg: 'That is the two-transistor cascode $R_2$; $M_3$ multiplies it again.' }, { v: r1 + r2 + r3, msg: 'Series only: each held-gate transistor multiplies what is below it.' }])],
+      parts: [RES('R_{out}', ans, [{ v: R2, msg: 'That is the two-transistor cascode $R_2$; $M_3$ multiplies it again.' }, { v: r1 + r2 + r3, msg: 'Series only: each held-gate transistor multiplies what is below it.' }])],
       hints: ['Bottom-up: $R_2 = r_{ds2} + r_{ds1}(1 + g_{m2}r_{ds2})$.', 'Then $R_{out} = r_{ds3} + R_2(1 + g_{m3}r_{ds3})$.'],
       sol: `**Bottom-up.**\n$$R_2 = r_{ds2} + r_{ds1}(1 + g_{m2}r_{ds2}) = ${RT(R2)}$$\n$$R_{out} = r_{ds3} + R_2(1 + g_{m3}r_{ds3}) = ${RT(r3)} + ${RT(R2)}\\times${f(1 + g3 * r3, 4)} = ${RT(ans)}$$\nRoughly $(g_{m3}r_{ds3})(g_{m2}r_{ds2})\\,r_{ds1}$.`,
       _t: { g: 'casc', kind, r1, g2, r2, g3, r3, ans },
@@ -523,7 +525,7 @@
     return {
       fig,
       q: `Find $R_{UP}$, $R_{DN}$ and the node resistance $R_{EQ}$. ${vals}. Triangles are incremental grounds.`,
-      parts: [BK.res('R_{UP}', ru), BK.res('R_{DN}', rd), BK.res('R_{EQ}', req, undefined, [{ v: ru + rd, msg: 'The two branches both connect the node to (incremental) ground: parallel, not series.' }])],
+      parts: [RES('R_{UP}', ru), RES('R_{DN}', rd), RES('R_{EQ}', req, [{ v: ru + rd, msg: 'The two branches both connect the node to (incremental) ground: parallel, not series.' }])],
       hints: ['Name each branch: what are you looking into, going up and going down?', '$R_{EQ} = R_{UP}\\parallel R_{DN}$; the smaller branch dominates.'],
       sol: `**Up:** ${UPS[uk]} $= ${RT(ru)}$.\n\n**Down:** ${DNS[dk]} $= ${RT(rd)}$.\n\n$$R_{EQ} = R_{UP}\\parallel R_{DN} = ${RT(ru)}\\parallel${RT(rd)} = ${RT(req)}$$\nThe ${ru < rd ? 'up' : 'down'} branch is the smaller one, so it sets the answer${Math.max(ru, rd) > 20 * Math.min(ru, rd) ? ' almost by itself' : ''}.`,
       _t: { g: 'node', uk, dk, ...p, ru, rd, ans: req, map: { 'R_{UP}': 'U', 'R_{DN}': 'D', 'R_{EQ}': 'R' } },
