@@ -55,14 +55,14 @@
     if (E === 'test') e.push(['w', p(1, 2), p(1, 2.5)], ['V', p(1, 2.5), p(1, 3.7), { n: 'v_t', side: 'l' }], ['gnd', p(1, 3.7)], ['iarr', p(1, 2.3), 'u', { n: 'i_t' }]);
     if (E === 'REtest') e.push(['V', p(1, 3.4), p(1, 4.6), { n: 'v_t', side: 'l' }], ['gnd', p(1, 4.6)], ['iarr', p(1, 3.0), 'u', { n: 'i_t', off: [14, 0] }]);
     if (E === 'REout') e.push(['w', p(xr, 2), p(xr + 0.8, 2)], ['term', p(xr + 0.8, 2), { n: 'v_{out}' }]);
-    if (E === 'REshort') e.push(['w', p(xr, 2), p(xr + 1.4, 2), p(xr + 1.4, 2.5)], ['gnd', p(xr + 1.4, 2.5)], ['iarr', p(xr + 0.75, 2), 'l', { n: 'i_{out}', side: 'b' }]);
-    if (E === 'REtestR') e.push(['w', p(xr, 2), p(xr + 1.4, 2)], ['V', p(xr + 1.4, 2), p(xr + 1.4, 3.2), { n: 'v_t' }], ['gnd', p(xr + 1.4, 3.2)], ['iarr', p(xr + 0.75, 2), 'l', { n: 'i_t', side: 'b' }]);
+    if (E === 'REshort') e.push(['w', p(xr, 2), p(xr + 1.7, 2), p(xr + 1.7, 2.5)], ['gnd', p(xr + 1.7, 2.5)], ['iarr', p(xr + 1.05, 2), 'l', { n: 'i_{out}', side: 'b' }]);
+    if (E === 'REtestR') e.push(['w', p(xr, 2), p(xr + 1.7, 2)], ['V', p(xr + 1.7, 2), p(xr + 1.7, 3.2), { n: 'v_t' }], ['gnd', p(xr + 1.7, 3.2)], ['iarr', p(xr + 1.05, 2), 'l', { n: 'i_t', side: 'b' }]);
     // ---- collector (node C at x = 2, y = 0)
     const Cc = o.c || 'gnd';
     if (Cc === 'gnd') e.push(['w', p(2, 0), p(2, -0.5)], ['gndu', p(2, -0.5)]);
     if (/^RC/.test(Cc)) e.push(['R', p(2, -1.4), p(2, 0), { n: N.RC, side: 'l' }], ['gndu', p(2, -1.4)]);
-    if (Cc === 'RCshort' || Cc === 'short') e.push(['w', p(xr, 0), p(xr + 1.4, 0), p(xr + 1.4, 0.5)], ['gnd', p(xr + 1.4, 0.5)], ['iarr', p(xr + 0.75, 0), 'l', { n: 'i_{out}' }]);
-    if (Cc === 'RCtest' || Cc === 'test') e.push(['w', p(xr, 0), p(xr + 1.4, 0)], ['V', p(xr + 1.4, 0), p(xr + 1.4, 1.2), { n: 'v_t' }], ['gnd', p(xr + 1.4, 1.2)], ['iarr', p(xr + 0.75, 0), 'l', { n: 'i_t' }]);
+    if (Cc === 'RCshort' || Cc === 'short') e.push(['w', p(xr, 0), p(xr + 1.7, 0), p(xr + 1.7, 0.5)], ['gnd', p(xr + 1.7, 0.5)], ['iarr', p(xr + 1.05, 0), 'l', { n: 'i_{out}' }]);
+    if (Cc === 'RCtest' || Cc === 'test') e.push(['w', p(xr, 0), p(xr + 1.7, 0)], ['V', p(xr + 1.7, 0), p(xr + 1.7, 1.2), { n: 'v_t' }], ['gnd', p(xr + 1.7, 1.2)], ['iarr', p(xr + 1.05, 0), 'l', { n: 'i_t' }]);
     if (Cc === 'RCout') e.push(['w', p(xr, 0), p(xr + 0.8, 0)], ['term', p(xr + 0.8, 0), { n: 'v_{out}' }]);
     return e;
   }
@@ -188,6 +188,7 @@
       ['w', [0, 3], [-0.6, 3], [-0.6, 3.3]], ['Vac', [-0.6, 3.3], [-0.6, 4.3], { n: 'v_{in}', side: 'l' }], ['gnd', [-0.6, 4.3]], ['w', [1, 0], [1.8, 0]], ['term', [1.8, 0], { n: 'v_{out}' }]];
     if (o.load === 'I') e.push(['I', [1, -1.2], [1, 0], { n: 'I_{C}' }], ['rail', [1, -1.2], { n: 'V_{CC}' }]);
     else if (o.load === 'pnp') e.push(['pnp', [1, -1], { n: 'Q_3' }], ['acg', [0, -1]], ['pnp', [1, -3], { n: 'Q_4' }], ['acg', [0, -3]], ['rail', [1, -4], { n: 'V_{CC}' }]);
+    else if (o.load === 'pnp1') e.push(['pnp', [1, -1], { n: 'Q_3' }], ['acg', [0, -1]], ['rail', [1, -2], { n: 'V_{CC}' }]);
     else e.push(['R', [1, -1.2], [1, 0], { n: o.RC || 'R_C', side: 'l' }], ['rail', [1, -1.2], { n: 'V_{CC}' }]);
     return e;
   }
@@ -732,5 +733,188 @@ $$R_{in} = ${RE ? 'R_E + ' : ''}\\frac{${RB ? 'R_B + ' : ''}r_\\pi}{\\beta + 1} 
 
 **6. Input:** $R_{in} = ${RB ? 'R_B + ' : ''}r_\\pi + (\\beta + 1)\\times${RT(REp)} = ${RT(Rin)}$.${pnp ? ' (PNP: $R_E$ hangs from $V_{CC}$, the output is the emitter on top; same model.)' : ''}`;
     return { fig, q: qq, parts, hints: ['Everything on the emitter node is in parallel: $R_E$, the load, and $r_o$ if kept.', '$A_v = R_{load}/(R_{load} + (r_\\pi + R_B)/(\\beta + 1))$.'], sol, _v: { g: 'cc', pnp, IC: q.IC, beta: q.beta, VA: q.VA, RB, RE, RL, withRo } };
+  };
+  // ---------------------------------------------------------------- bk9_casc: the cascode amplifier
+  GENS.bk9_casc = () => {
+    const q = randDev({ IC: [0.25, 0.5, 1, 2], VA: [50, 100], beta: [50, 100, 100, 200] });
+    const load = pick(['R', 'R', 'I', 'pnp1', 'pnp']);
+    const VAp = pick([25, 50]), qp = dev(q.IC, q.beta, VAp), RC = pick([2000, 5000, 10000, 20000]);
+    const Rx = par(q.ro, q.rpi), Rcasc = q.ro * (1 + q.gm * Rx) + Rx;
+    const GM = q.gm * q.ro * q.rpi * (q.gm * q.ro + 1) / (q.gm * q.ro * q.ro * q.rpi + q.ro * q.ro + 2 * q.ro * q.rpi);
+    const Rp = par(qp.ro, qp.rpi);
+    const Rup = load === 'R' ? RC : load === 'I' ? Infinity : load === 'pnp1' ? qp.ro : qp.ro * (1 + qp.gm * Rp) + Rp;
+    const Rout = par(Rcasc, Rup), Av = -GM * Rout, alpha = q.beta / (q.beta + 1);
+    const loadTxt = { R: `a resistor $R_C = ${RT(RC)}$`, I: 'an ideal current source', pnp1: `a single PNP current source (base held, $V_{A,p} = ${VAp}\\,\\text{V}$)`, pnp: `a PNP cascode (both bases held, $V_{A,p} = ${VAp}\\,\\text{V}$)` }[load];
+    const fig = cascAmp({ load: load === 'R' ? undefined : load, RC: `R_C = ${RT(RC)}` });
+    const qq = `A BJT cascode amplifier: both NPNs at ${devLine(q, true)}; the load is ${loadTxt}${load === 'pnp1' || load === 'pnp' ? ` at the same current, $\\beta = ${q.beta}$` : ''}. Find $G_M$, the resistance looking down into $Q_2$'s collector, $R_{out}$ and $A_v$.`;
+    const parts = [numBox('G_M', 'mS', GM * 1e3, [q.gm * 1e3, alpha * q.gm * 1e3], [{ v: q.gm * q.gm * 1e3 * q.ro, msg: 'The current passes through $Q_2$; it is not amplified twice.' }]),
+      resBox('R_{casc}', Rcasc, [(q.beta + 1) * q.ro], [{ v: q.ro, msg: 'That is one transistor. $Q_2$ is degenerated by $r_{o1}$.' }, { v: q.gm * q.ro * q.ro, msg: 'That is the MOSFET cascode; a BJT stops near $\\beta r_o$.' }]),
+      resBox('R_{out}', Rout, [], isFinite(Rup) ? [{ v: Rcasc, msg: 'The load is in parallel.' }, { v: Rup, msg: 'The cascode is in parallel with the load.' }] : []),
+      numBox('A_v', '', Av, [-q.gm * Rout, -alpha * q.gm * Rout], [{ v: -Av, msg: 'The cascode inverts, like the common emitter at its bottom.' }, ...(isFinite(Rup) ? [{ v: -q.gm * par(Rup, q.ro), msg: 'That is a plain common emitter: the cascode raised the transistor side from $r_o$ to $\\approx\\beta r_o$.' }] : [])])];
+    const upTxt = load === 'R' ? `$R_C = ${RT(RC)}$` : load === 'I' ? '$\\infty$ (ideal source)' : load === 'pnp1' ? `$r_{op} = ${RT(qp.ro)}$` : `the PNP cascode, $r_{op}[1 + g_m(r_{op}\\parallel r_\\pi)] + r_{op}\\parallel r_\\pi = ${RT(Rup)}$`;
+    const sol = `**1. Devices.** ${devSteps(q, true)}
+
+**2. $G_M$.** $Q_1$ sinks $g_{m1}v_{in}$ from node $X$; $Q_2$ passes $\\alpha$ of it to the short (and $r_{o1}$ steals a sliver): $G_M = ${MS(GM)}\\approx g_{m1}$.
+
+**3. Down into $Q_2$'s collector** ($v_{in}$ off, $Q_1$ is $r_{o1}$): $r_{o1}\\parallel r_\\pi = ${RT(Rx)}$, $R_{casc} = r_o[1 + g_m(r_{o1}\\parallel r_\\pi)] + r_{o1}\\parallel r_\\pi = ${RT(Rcasc)}\\approx\\beta r_o$.
+
+**4. Up:** ${upTxt}. $R_{out} = ${RT(Rout)}$.
+
+**5. Gain:** $A_v = -G_MR_{out} = ${f(Av, 4)}$.${load === 'pnp1' ? ' The single PNP\'s $r_o$ sets the gain: cascode the load too.' : load === 'R' ? ' About $-g_mR_C$: with a resistor load the cascode buys bandwidth, not gain.' : ''}`;
+    return { fig, q: qq, parts, hints: ['$G_M\\approx g_{m1}$: the current passes through $Q_2$.', '$R_{out}$ = load $\\parallel$ (Chapter 8 cascode, $\\approx\\beta r_o$).'], sol, _v: { g: 'casc9', load, IC: q.IC, beta: q.beta, VA: q.VA, VAp, RC } };
+  };
+
+  // ---------------------------------------------------------------- bk9_bias: DC point, then the gain
+  const kv = (r) => RT(r);
+  function biasFig(t, v) {
+    const S = (n, r) => ({ n, s: RT(r) });
+    const div = (top) => [['rail', [-0.6, top], { n: 'V_{CC}' }], ['R', [-0.6, top], [-0.6, 0], Object.assign(S('R_1', v.R1), { side: 'l' })], ['R', [-0.6, 0], [-0.6, 2], Object.assign(S('R_2', v.R2), { side: 'l' })], ['gnd', [-0.6, 2]], ['w', [-0.6, 0], [0, 0]]];
+    const src = v.RS ? [['w', [-0.6, 0], [-1.2, 0]], ['C', [-1.2, 0], [-2, 0], { n: 'C_1' }], ['R', [-2, 0], [-3.2, 0], S('R_S', v.RS)], ['w', [-3.2, 0], [-3.2, 0.3]], ['Vac', [-3.2, 0.3], [-3.2, 1.3], { n: 'v_s', side: 'l' }], ['gnd', [-3.2, 1.3]]]
+      : [['w', [-0.6, 0], [-1.2, 0]], ['C', [-1.2, 0], [-2, 0], { n: 'C_1' }], ['w', [-2, 0], [-2.4, 0], [-2.4, 0.3]], ['Vac', [-2.4, 0.3], [-2.4, 1.3], { n: 'v_s', side: 'l' }], ['gnd', [-2.4, 1.3]]];
+    const outAt = (y) => (v.RL ? [['w', [1, y], [1.7, y]], ['C', [1.7, y], [2.5, y], { n: 'C_2' }], ['w', [2.5, y], [3.2, y]], ['R', [3.2, y], [3.2, y + 1.4], S('R_L', v.RL)], ['gnd', [3.2, y + 1.4]], ['term', [3.2, y], { n: 'v_{out}', side: 'a' }]]
+      : [['w', [1, y], [1.8, y]], ['term', [1.8, y], { n: 'v_{out}' }]]);
+    const e = [];
+    if (t === 'divCE') {
+      e.push(['rail', [1, -2.2], { n: `V_{CC} = ${v.VCC}\\,\\text{V}` }], ['R', [1, -2.2], [1, -1], S('R_C', v.RC)], ['npn', [1, 0]], ...div(-2.2), ...src, ...outAt(-1));
+      if (v.mode === 'partial') e.push(['R', [1, 1], [1, 2.2], S('R_{E1}', v.RE1)], ['R', [1, 2.2], [1, 3.4], S('R_{E2}', v.RE - v.RE1)], ['gnd', [1, 3.4]], ['w', [1, 2.2], [2.1, 2.2]], ['C', [2.1, 2.2], [2.1, 3.4], { n: 'C_E' }], ['w', [2.1, 3.4], [1, 3.4]]);
+      else if (v.mode === 'full') e.push(['R', [1, 1], [1, 2.4], S('R_E', v.RE)], ['gnd', [1, 2.4]], ['w', [1, 1], [2.1, 1]], ['C', [2.1, 1], [2.1, 2.4], { n: 'C_E' }], ['w', [2.1, 2.4], [1, 2.4]]);
+      else e.push(['R', [1, 1], [1, 2.4], S('R_E', v.RE)], ['gnd', [1, 2.4]]);
+    } else if (t === 'divCC') {
+      e.push(['rail', [1, -1], { n: `V_{CC} = ${v.VCC}\\,\\text{V}` }], ['npn', [1, 0]], ['R', [1, 1], [1, 2.4], Object.assign(S('R_E', v.RE), { side: 'l' })], ['gnd', [1, 2.4]], ...div(-1.4), ...src, ...outAt(1));
+    } else if (t === 'pnpCE') {
+      e.push(['rail', [1, -2.2], { n: `V_{CC} = ${v.VCC}\\,\\text{V}` }], ['R', [1, -2.2], [1, -1], S('R_E', v.RE)], ['w', [1, -1], [2.1, -1]], ['C', [2.1, -1], [2.1, -2.2], { n: 'C_E' }], ['w', [2.1, -2.2], [1, -2.2]],
+        ['pnp', [1, 0]], ['R', [1, 1], [1, 2.4], Object.assign(S('R_C', v.RC), { side: 'l' })], ['gnd', [1, 2.4]], ...div(-2.2), ...src, ...outAt(1));
+    } else {
+      e.push(['rail', [1, -2.2], { n: `V_{CC} = ${v.VCC}\\,\\text{V}` }], ['R', [1, -2.2], [1, -1], S('R_C', v.RC)], ['npn', [1, 0]], ['w', [1, -1], [1.8, -1]], ['term', [1.8, -1], { n: 'v_{out}' }],
+        ...div(-2.2).filter((x) => x[0] !== 'w'), ['w', [-0.6, 0], [0, 0], [0, 0.7]], ['C', [0, 0.7], [0, 2], { n: 'C_B', side: 'r' }], ['gnd', [0, 2]],
+        ['R', [1, 1], [1, 2.4], Object.assign(S('R_E', v.RE), { side: 'l' })], ['gnd', [1, 2.4]], ['w', [1, 1], [2, 1]], ['C', [2, 1], [2.8, 1], { n: 'C_1' }], ['R', [2.8, 1], [4, 1], S('R_S', v.RS)], ['w', [4, 1], [4, 1.3]], ['Vac', [4, 1.3], [4, 2.3], { n: 'v_s' }], ['gnd', [4, 2.3]]);
+    }
+    return e;
+  }
+  GENS.bk9_bias = () => {
+    for (let tries = 0; tries < 500; tries++) {
+      const t = pick(['divCE', 'divCE', 'divCC', 'pnpCE', 'cb']);
+      const beta = pick([80, 100, 100, 150, 200]);
+      const v = { t, beta };
+      v.VCC = pick(t === 'cb' ? [12, 15] : [9, 10, 12, 15]);
+      v.R1 = pick([20, 30, 47, 50, 68, 82, 100]) * 1e3; v.R2 = pick([10, 12, 15, 20, 22, 47]) * 1e3;
+      if (t === 'divCC') v.R2 = v.R1;
+      if (t === 'pnpCE') [v.R1, v.R2] = [pick([10, 15, 20, 30]) * 1e3, pick([30, 47, 60, 68]) * 1e3];
+      v.RE = pick([1000, 1200, 1500, 2000, 3300, 4300]);
+      v.RC = pick([2000, 3000, 4700, 5000, 6800, 10000]);
+      v.RL = t === 'cb' ? 0 : pick([0, 5000, 10000, 20000, t === 'divCC' ? 1000 : 6000]);
+      v.RS = t === 'cb' ? pick([25, 50, 100]) : t === 'pnpCE' ? 0 : pick([0, 600, 1000, 2000]);
+      v.mode = t === 'divCE' ? pick(['full', 'partial', 'partial', 'none']) : t === 'pnpCE' ? 'full' : t === 'cb' ? 'full' : 'none';
+      v.RE1 = v.mode === 'partial' ? pick([100, 200, 330]) : 0;
+      const VTH = v.VCC * v.R2 / (v.R1 + v.R2), RTH = par(v.R1, v.R2);
+      let IB, VB, VC;
+      if (t === 'pnpCE') { IB = (v.VCC - 0.7 - VTH) / (RTH + (beta + 1) * v.RE); VB = VTH + IB * RTH; VC = beta * IB * v.RC; if (!(IB > 0) || VC > VB - 0.3) continue; }
+      else { IB = (VTH - 0.7) / (RTH + (beta + 1) * v.RE); VB = VTH - IB * RTH; VC = t === 'divCC' ? v.VCC : v.VCC - beta * IB * v.RC; if (!(IB > 0) || VC < VB + 0.3) continue; }
+      const IC = beta * IB;
+      if (IC < 0.2e-3 || IC > 5e-3) continue;
+      const q = dev(IC, beta);
+      const parts = [numBox('I_C', 'mA', IC * 1e3, [], [{ v: beta * (VTH - 0.7) / ((beta + 1) * v.RE) * 1e3, msg: 'That ignores the base current through $R_{TH}$; use the full base-loop KVL.' }]), numBox('g_m', 'mS', q.gm * 1e3)];
+      let steps, gainTxt;
+      const RLp = v.RL ? par(v.RC, v.RL) : v.RC;
+      if (t === 'divCE') {
+        const REac = v.mode === 'full' ? 0 : v.mode === 'partial' ? v.RE1 : v.RE;
+        const Rb = q.rpi + (beta + 1) * REac, Av = -beta * RLp / Rb, Rin = par(RTH, Rb), Avs = Av * Rin / (Rin + v.RS);
+        parts.push(numBox('A_v', '', Av, [-RLp / (q.re + REac), -RLp / (1 / q.gm + REac)], [{ v: -beta * RLp / (q.rpi + (beta + 1) * v.RE), msg: 'Only the unbypassed part of $R_E$ is in the signal path.' }, ...(v.RL ? [{ v: -beta * v.RC / Rb, msg: 'Include $R_L$: through $C_2$ it is in parallel with $R_C$.' }] : [])]),
+          resBox('R_{in}', Rin, [], [{ v: Rb, msg: 'Include the bias divider $R_1\\parallel R_2$.' }]));
+        if (v.RS) parts.push(numBox('v_{out}/v_s', '', Avs));
+        gainTxt = `**AC.** ${v.mode === 'full' ? 'All of $R_E$ is bypassed: a plain common emitter.' : v.mode === 'partial' ? `$R_{E2}$ is bypassed; $R_{E1} = ${RT(v.RE1)}$ stays in the signal path.` : 'Nothing is bypassed: all of $R_E$ stays.'} Collector load ${v.RL ? `$R_C\\parallel R_L = ${RT(RLp)}$` : `$R_C = ${RT(v.RC)}$`}. The base looks like $r_\\pi + (\\beta + 1)R_{E,ac} = ${RT(Rb)}$.
+$$A_v = \\frac{v_{out}}{v_b} = -\\frac{\\beta\\,${RT(RLp)}}{${RT(Rb)}} = ${f(Av, 4)}$$
+$R_{in} = R_{TH}\\parallel${RT(Rb)} = ${RT(Rin)}$.${v.RS ? ` From the source: $${f(Av, 4)}\\times\\dfrac{${RT(Rin)}}{${RT(Rin)} + ${RT(v.RS)}} = ${f(Avs, 4)}$.` : ''}`;
+      } else if (t === 'divCC') {
+        const REp = v.RL ? par(v.RE, v.RL) : v.RE;
+        const Rb = q.rpi + (beta + 1) * REp, Av = (beta + 1) * REp / Rb, Rin = par(RTH, Rb), Avs = Av * Rin / (Rin + v.RS);
+        parts.push(numBox('A_v', '', Av, [REp / (REp + 1 / q.gm)], [{ v: 1, msg: 'Close: the junction\'s $r_e$ divides with the load.' }]), resBox('R_{in}', Rin, [], [{ v: Rb, msg: 'Include the bias divider $R_1\\parallel R_2$.' }]));
+        if (v.RS) parts.push(numBox('v_{out}/v_s', '', Avs));
+        gainTxt = `**AC.** A follower; the emitter's load is ${v.RL ? `$R_E\\parallel R_L = ${RT(REp)}$` : `$R_E = ${RT(REp)}$`}. The base looks like $r_\\pi + (\\beta + 1)\\times${RT(REp)} = ${RT(Rb)}$.
+$$A_v = \\frac{v_{out}}{v_b} = \\frac{(\\beta + 1)${RT(REp)}}{${RT(Rb)}} = ${f(Av, 4)}$$
+$R_{in} = R_{TH}\\parallel${RT(Rb)} = ${RT(Rin)}$.${v.RS ? ` From the source: $${f(Av, 4)}\\times\\dfrac{${RT(Rin)}}{${RT(Rin)} + ${RT(v.RS)}} = ${f(Avs, 4)}$.` : ''}`;
+      } else if (t === 'pnpCE') {
+        const Av = -q.gm * RLp, Rin = par(RTH, q.rpi);
+        parts.push(numBox('A_v', '', Av, [], [{ v: -q.gm * RLp / (1 + q.gm * v.RE), msg: '$R_E$ is bypassed: the signal does not see it.' }, ...(v.RL ? [{ v: -q.gm * v.RC, msg: 'Include $R_L$.' }] : [])]), resBox('R_{in}', Rin, [], [{ v: q.rpi, msg: 'Include the bias divider.' }]));
+        gainTxt = `**AC.** $R_E$ is bypassed: a plain common emitter (upside down). Load ${v.RL ? `$R_C\\parallel R_L = ${RT(RLp)}$` : `$R_C = ${RT(v.RC)}$`}: $A_v = -g_m\\times${RT(RLp)} = ${f(Av, 4)}$; $R_{in} = R_{TH}\\parallel r_\\pi = ${RT(Rin)}$.`;
+      } else {
+        const Rn = par(v.RE, q.re), ratio = Rn / (Rn + v.RS), Avs = ratio * q.gm * v.RC;
+        parts.push(resBox('R_E\\parallel r_e', Rn, [par(v.RE, 1 / q.gm)], [{ v: v.RE, msg: 'The emitter itself, $r_e$, is in parallel with $R_E$ and is far smaller.' }]), numBox('v_{out}/v_s', '', Avs, [], [{ v: q.gm * v.RC, msg: 'That is from the emitter. The source resistance divides with the emitter node first.' }, { v: -Avs, msg: 'The common base does not invert.' }]));
+        gainTxt = `**AC.** $C_B$ grounds the base: a common base driven at the emitter through $R_S$. The emitter node: $R_E\\parallel r_e = ${RT(v.RE)}\\parallel${RT(q.re)} = ${RT(Rn)}$, so $v_e = v_s\\dfrac{${RT(Rn)}}{${RT(Rn)} + ${RT(v.RS)}} = ${f(ratio, 3)}\\,v_s$. Then $v_{out} = g_mR_C\\,v_e = ${f(q.gm * v.RC, 4)}\\,v_e$:
+$$\\frac{v_{out}}{v_s} = ${f(Avs, 4)}$$`;
+      }
+      steps = `**DC.** Capacitors open. $V_{TH} = ${v.VCC}\\times\\dfrac{${kv(v.R2)}}{${kv(v.R1 + v.R2)}} = ${VV(VTH)}$, $R_{TH} = R_1\\parallel R_2 = ${RT(RTH)}$.${t === 'pnpCE' ? ` For the PNP the base current flows **out** of the base: $V_{CC} - (\\beta + 1)I_BR_E - 0.7 - I_BR_{TH} = V_{TH}$, so $I_B = \\dfrac{${v.VCC} - 0.7 - ${f(VTH, 4)}}{${RT(RTH)} + ${beta + 1}\\times${RT(v.RE)}}$` : ` DC sees ${v.mode === 'partial' ? 'all of $R_{E1} + R_{E2}$' : 'all of $R_E$'}: $I_B = \\dfrac{${f(VTH, 4)} - 0.7}{${RT(RTH)} + ${beta + 1}\\times${RT(v.RE)}}$`} $= ${f(IB * 1e6, 4)}\\,\\mu\\text{A}$, $I_C = ${MA(IC)}$.
+Check: $V_B = ${VV(VB)}$, $V_C = ${VV(VC)}$: forward active ✓.
+
+**Small signal.** $g_m = ${MS(q.gm)}$, $r_\\pi = ${RT(q.rpi)}$, $r_e = ${RT(q.re)}$.
+
+${gainTxt}`;
+      const nm = { divCE: 'a divider-biased common emitter', divCC: 'a divider-biased emitter follower', pnpCE: 'a PNP common emitter', cb: 'a common base with its base bypassed' }[t];
+      const qq = `${nm[0].toUpperCase()}${nm.slice(1)}; $\\beta = ${beta}$, $V_{BE} = 0.7\\,\\text{V}$, $r_o\\to\\infty$, capacitors large. Find $I_C$, $g_m$, then ${t === 'cb' ? 'the emitter node\'s resistance $R_E\\parallel r_e$ and $v_{out}/v_s$' : `the gain from the base to $v_{out}$, the input resistance $R_{in}$ seen through $C_1$${v.RS ? ', and the overall gain $v_{out}/v_s$' : ''}`}.`;
+      return { fig: biasFig(t, v), q: qq, parts, hints: ['DC: Thévenin the divider, then KVL around the base loop with $(\\beta + 1)R_E$.', 'AC: short the capacitors, ground $V_{CC}$, keep only the unbypassed resistors.'], sol: steps, _v: Object.assign({ g: 'bias' }, v) };
+    }
+    return GENS.bk9_ce();
+  };
+
+  // ---------------------------------------------------------------- bk9_chain: two stages
+  function chainFig(t, v) {
+    const S = (n, r) => ({ n, s: RT(r) });
+    const in1 = [['w', [0, 1], [-0.6, 1], [-0.6, 1.3]], ['Vac', [-0.6, 1.3], [-0.6, 2.3], { n: 'v_{in}', side: 'l' }], ['gnd', [-0.6, 2.3]]];
+    const st1 = t === 'cscc' ? [['rail', [1, -1.2], { n: 'V_{DD}' }], ['R', [1, -1.2], [1, 0], Object.assign(S('R_D', v.RC1), { side: 'l' })], ['nmos', [1, 1], { n: 'M_1' }], ['gnd', [1, 2]], ...in1]
+      : [['rail', [1, -1.2], { n: 'V_{CC}' }], ['R', [1, -1.2], [1, 0], Object.assign(S('R_{C1}', v.RC1), { side: 'l' })], ['npn', [1, 1], { n: 'Q_1' }], ['gnd', [1, 2]], ...in1];
+    if (t === 'cecc' || t === 'cscc') return [...st1, ['w', [1, 0], [1, 0.4], [2, 0.4]], ['npn', [3, 0.4], { n: 'Q_2' }], ['rail', [3, -0.6], { n: 'V_{CC}' }], ['R', [3, 1.4], [3, 2.6], Object.assign(S('R_{E2}', v.RE2), { side: 'l' })], ['gnd', [3, 2.6]],
+      ['w', [3, 1.4], [3.8, 1.4]], ['R', [3.8, 1.4], [3.8, 2.6], S('R_L', v.RL)], ['gnd', [3.8, 2.6]], ['term', [3.8, 1.4], { n: 'v_{out}', side: 'r' }]];
+    if (t === 'cece' || t === 'cecs') return [...st1, ['w', [1, 0], [1, 0.4], [2, 0.4], [2, 1], [2.4, 1]], [t === 'cece' ? 'npn' : 'nmos', [3.4, 1], { n: t === 'cece' ? 'Q_2' : 'M_2' }],
+      ...(v.RE2 ? [['R', [3.4, 2], [3.4, 3.2], S('R_{E2}', v.RE2)], ['gnd', [3.4, 3.2]]] : [['gnd', [3.4, 2]]]), ['R', [3.4, -1.2], [3.4, 0], S(t === 'cece' ? 'R_{C2}' : 'R_{D2}', v.RC2)], ['rail', [3.4, -1.2], { n: t === 'cece' ? 'V_{CC}' : 'V_{DD}' }],
+      ['w', [3.4, 0], [4.1, 0]], ['term', [4.1, 0], { n: 'v_{out}' }]];
+    return [['rail', [1, 0], { n: 'V_{CC}' }], ['npn', [1, 1], { n: 'Q_1' }], ['R', [-1.3, 1], [0, 1], S('R_S', v.RS)], ['w', [-1.3, 1], [-1.8, 1], [-1.8, 1.3]], ['Vac', [-1.8, 1.3], [-1.8, 2.3], { n: 'v_{in}', side: 'l' }], ['gnd', [-1.8, 2.3]],
+      ['R', [1, 2], [1, 3.4], Object.assign(S('R_{E1}', v.RE1), { side: 'l' })], ['gnd', [1, 3.4]], ['w', [1, 2], [2.4, 2]], ['npn', [3.4, 2], { n: 'Q_2' }], ['gnd', [3.4, 3]],
+      ['R', [3.4, -0.2], [3.4, 1], S('R_{C2}', v.RC2)], ['rail', [3.4, -0.2], { n: 'V_{CC}' }], ['w', [3.4, 1], [4.1, 1]], ['term', [4.1, 1], { n: 'v_{out}' }]];
+  }
+  GENS.bk9_chain = () => {
+    const t = pick(['cecc', 'cece', 'cscc', 'cecs', 'ccce']);
+    const beta = pick([50, 100, 100, 200]);
+    const v = { t, beta, IC1: pick([0.5, 1, 2]) * 1e-3, IC2: pick([0.5, 1, 2]) * 1e-3, RC1: pick([5000, 10000, 20000]), RC2: pick([2000, 5000, 10000]),
+      RE2: t === 'cece' ? pick([0, 0, 200, 500]) : pick([500, 1000, 2000]), RL: pick([100, 200, 500, 1000]), RE1: pick([5000, 10000, 20000]), RS: pick([10000, 20000, 50000]),
+      gm1: pick([1, 2, 4]) * 1e-3, gm2: pick([1, 2, 5]) * 1e-3 };
+    const q1 = dev(v.IC1, beta), q2 = dev(v.IC2, beta);
+    let parts, sol, qq;
+    const A = (x) => f(x, 4);
+    if (t === 'cecc' || t === 'cscc') {
+      const g1 = t === 'cscc' ? v.gm1 : q1.gm, REp = par(v.RE2, v.RL), Rin2 = q2.rpi + (beta + 1) * REp;
+      const A1 = -g1 * par(v.RC1, Rin2), A2 = (beta + 1) * REp / Rin2, Av = A1 * A2;
+      qq = `${t === 'cscc' ? `A MOSFET common source ($g_m = ${MS(v.gm1)}$, $R_D = ${RT(v.RC1)}$, $r_{ds}\\to\\infty$)` : `A common emitter ($Q_1$ at $${MA(v.IC1)}$, $R_{C1} = ${RT(v.RC1)}$)`} drives an emitter follower ($Q_2$ at $${MA(v.IC2)}$, $R_{E2} = ${RT(v.RE2)}$, load $R_L = ${RT(v.RL)}$). $\\beta = ${beta}$, $r_o\\to\\infty$. Find $R_{in2}$, $A_{v1}$ (loaded), $A_{v2}$ and $A_v$.`;
+      parts = [resBox('R_{in2}', Rin2, [q2.rpi + beta * REp], [{ v: q2.rpi + REp, msg: 'Under the emitter is $R_{E2}\\parallel R_L$, counted $\\beta + 1$ times.' }]), numBox('A_{v1}', '', A1, [], [{ v: -g1 * v.RC1, msg: 'That is unloaded: the follower\'s base is in parallel with the first stage\'s load.' }]), numBox('A_{v2}', '', A2, [], [{ v: 1, msg: 'Close: $r_{e2}$ divides with the load.' }]), numBox('A_v', '', Av)];
+      sol = `**1. Stage 2's input.** $r_{\\pi2} = ${RT(q2.rpi)}$, load $R_{E2}\\parallel R_L = ${RT(REp)}$: $R_{in2} = r_{\\pi2} + (\\beta + 1)\\times${RT(REp)} = ${RT(Rin2)}$.
+
+**2. Stage 1, loaded:** $A_{v1} = -${t === 'cscc' ? 'g_m' : 'g_{m1}'}(${t === 'cscc' ? 'R_D' : 'R_{C1}'}\\parallel R_{in2}) = -${MS(g1)}\\times${RT(par(v.RC1, Rin2))} = ${A(A1)}$.
+
+**3. Stage 2 from its base:** $A_{v2} = \\dfrac{(\\beta + 1)${RT(REp)}}{${RT(Rin2)}} = ${A(A2)}$.
+
+**4. Total:** $A_v = ${A(Av)}$.`;
+    } else if (t === 'cece' || t === 'cecs') {
+      const bjt2 = t === 'cece';
+      const Rin2 = bjt2 ? q2.rpi + (beta + 1) * v.RE2 : Infinity;
+      const A1 = -q1.gm * par(v.RC1, Rin2), A2 = bjt2 ? -beta * v.RC2 / Rin2 : -v.gm2 * v.RC2, Av = A1 * A2;
+      qq = `Two stages: a common emitter ($Q_1$ at $${MA(v.IC1)}$, $R_{C1} = ${RT(v.RC1)}$) drives ${bjt2 ? `a second common emitter ($Q_2$ at $${MA(v.IC2)}$, $R_{C2} = ${RT(v.RC2)}$${v.RE2 ? `, $R_{E2} = ${RT(v.RE2)}$` : ', emitter grounded'})` : `a MOSFET common source ($g_m = ${MS(v.gm2)}$, $R_{D2} = ${RT(v.RC2)}$, $r_{ds}\\to\\infty$)`}. $\\beta = ${beta}$, $r_o\\to\\infty$. Find $A_{v1}$ (loaded), $A_{v2}$ and $A_v$.`;
+      parts = [numBox('A_{v1}', '', A1, [], bjt2 ? [{ v: -q1.gm * v.RC1, msg: '$Q_2$\'s base loads node 1.' }] : [{ v: -q1.gm * par(v.RC1, 1 / v.gm2), msg: 'A gate draws no current: no loading.' }]), numBox('A_{v2}', '', A2), numBox('A_v', '', Av, [], [{ v: -Av, msg: 'Two inverting stages give a positive gain.' }])];
+      sol = `**1. Stage 2's input:** ${bjt2 ? `$R_{in2} = r_{\\pi2}${v.RE2 ? ' + (\\beta + 1)R_{E2}' : ''} = ${RT(Rin2)}$.` : 'a gate: $R_{in2} = \\infty$, no loading.'}
+
+**2. Stage 1:** $A_{v1} = -g_{m1}${bjt2 ? `(R_{C1}\\parallel R_{in2}) = -${MS(q1.gm)}\\times${RT(par(v.RC1, Rin2))}` : `R_{C1} = -${MS(q1.gm)}\\times${RT(v.RC1)}`} = ${A(A1)}$.
+
+**3. Stage 2:** ${bjt2 ? `$A_{v2} = -\\dfrac{\\beta R_{C2}}{${RT(Rin2)}} = ${A(A2)}$` : `$A_{v2} = -g_{m2}R_{D2} = ${A(A2)}$`}.
+
+**4. Total:** $A_v = ${A(Av)}$.`;
+    } else {
+      const RE1p = par(v.RE1, q2.rpi), A1 = (beta + 1) * RE1p / (v.RS + q1.rpi + (beta + 1) * RE1p), A2 = -q2.gm * v.RC2, Av = A1 * A2;
+      qq = `A source with $R_S = ${RT(v.RS)}$ drives an emitter follower ($Q_1$ at $${MA(v.IC1)}$, $R_{E1} = ${RT(v.RE1)}$), which drives a common emitter ($Q_2$ at $${MA(v.IC2)}$, $R_{C2} = ${RT(v.RC2)}$, emitter grounded). $\\beta = ${beta}$, $r_o\\to\\infty$. Find $Q_1$'s load $R_{E1}\\parallel r_{\\pi2}$, $v_{e1}/v_{in}$ and $A_v$.`;
+      parts = [resBox('R_{E1}\\parallel r_{\\pi2}', RE1p), numBox('v_{e1}/v_{in}', '', A1, [], [{ v: (beta + 1) * v.RE1 / (v.RS + q1.rpi + (beta + 1) * v.RE1), msg: '$Q_2$\'s base ($r_{\\pi2}$) is in parallel with $R_{E1}$.' }]), numBox('A_v', '', Av)];
+      sol = `**1. $Q_1$'s load:** $R_{E1}\\parallel r_{\\pi2} = ${RT(v.RE1)}\\parallel${RT(q2.rpi)} = ${RT(RE1p)}$.
+
+**2. The follower:** $\\dfrac{v_{e1}}{v_{in}} = \\dfrac{(\\beta + 1)${RT(RE1p)}}{R_S + r_{\\pi1} + (\\beta + 1)${RT(RE1p)}} = \\dfrac{${RT((beta + 1) * RE1p)}}{${RT(v.RS + q1.rpi + (beta + 1) * RE1p)}} = ${A(A1)}$.
+
+**3. The common emitter:** $-g_{m2}R_{C2} = ${A(A2)}$. **Total:** $A_v = ${A(Av)}$ (directly from the source it would be $-\\beta R_{C2}/(R_S + r_{\\pi2}) = ${A(-beta * v.RC2 / (v.RS + q2.rpi))}$).`;
+    }
+    return { fig: chainFig(t, v), q: qq, parts, hints: ['Find each stage\'s input resistance first; a base loads, a gate does not.', 'Loaded stage gains multiply.'], sol, _v: Object.assign({ g: 'chain' }, v) };
   };
 })();

@@ -665,4 +665,168 @@ Ignoring the Early effect would give $${T.mA(I0)}$ and $${T.V(VC0)}$: ${f((IC / 
       _chk: { kind: 'early', mode: 'fixed', VCC, RC, b0, IB, VA },
     };
   };
+
+  // ================================================================ Chapter 7: the small-signal model
+  // ---------------------------------------------------------------- g_m, r_pi, r_o from the bias (given as I_C, I_B, I_E or a circuit)
+  GENS.bk_gm = (opts = {}) => {
+    const mode = opts.mode || pick(['IC', 'IC', 'IB', 'IE', 'circ']);
+    let beta = pick([50, 80, 100, 100, 120, 150, 200]), VA = pick([25, 50, 75, 100, 120]);
+    let IC, given, pre = '', fig, s, p;
+    if (mode === 'circ') {
+      for (let t = 0; t < 500; t++) {
+        const VCC = pick([9, 10, 12, 15]), R1 = pick([22, 33, 47, 56, 68, 82]) * 1e3, R2 = pick([4.7, 6.8, 10, 12, 15]) * 1e3;
+        const RE = pick([0.5, 1, 1.2, 1.5, 2.2]) * 1e3, RC = pick([2.2, 3.3, 4.7, 5.6]) * 1e3;
+        const th = thev(VCC, R1, R2);
+        s = npnDC({ VCC, VBB: th.VBB, RB: th.RB, RC, RE, beta });
+        if (s.reg === 'act' && s.IC > 0.2e-3 && s.IC < 5e-3 && s.VC - s.VB > 0.5) { p = { VCC, R1, R2, RE, RC, th }; break; }
+      }
+      IC = s.IC;
+      fig = biasFig({ type: 'npn', base: 'div', VCC: p.VCC, R1: p.R1, R2: p.R2, RE: p.RE, RC: p.RC });
+      given = `The transistor below has $\\beta = ${beta}$ and $V_A = ${VA}\\,\\text{V}$. Find its bias current $I_C$ first (keep the base current), then`;
+      pre = `**Step 0: the bias** ([Chapter 6](#/l/bk06-divider)). $V_{TH} = ${T.V(p.th.VBB)}$, $R_{TH} = ${T.kO(p.th.RB)}$, $I_B = \\dfrac{V_{TH} - 0.7}{R_{TH} + (\\beta + 1)R_E} = ${T.uA(s.IB)}$, so $I_C = ${T.mA(IC)}$ (and $V_C = ${T.V(s.VC)}\\ge V_B$ ✓).\n\n`;
+    } else {
+      IC = pick([0.1, 0.2, 0.25, 0.4, 0.5, 0.8, 1, 1.5, 2, 2.5, 4]) * 1e-3;
+      if (mode === 'IC') given = `A BJT with $\\beta = ${beta}$ and Early voltage $V_A = ${VA}\\,\\text{V}$ is biased at $I_C = ${T.mA(IC)}$. Find`;
+      if (mode === 'IB') { given = `A forward-active BJT with $\\beta = ${beta}$ and $V_A = ${VA}\\,\\text{V}$ draws $I_B = ${T.uA(IC / beta)}$ into its base. Find`; pre = `**Step 0.** $I_C = \\beta I_B = ${T.mA(IC)}$.\n\n`; }
+      if (mode === 'IE') { given = `A forward-active BJT with $\\beta = ${beta}$ and $V_A = ${VA}\\,\\text{V}$ carries $I_E = ${T.mA(IC * (beta + 1) / beta)}$ in its emitter. Find`; pre = `**Step 0.** $I_C = \\alpha I_E = \\dfrac{\\beta}{\\beta + 1}I_E = ${T.mA(IC)}$ (using $I_C\\approx I_E$ is within $1/\\beta$ and also accepted).\n\n`; }
+    }
+    const gm = IC / VT, rpi = beta / gm, ro = VA / IC;
+    const parts = [
+      { lbl: 'g_m', unit: 'mS', ans: gm * 1e3, traps: notNear([{ v: 2 * IC / 0.2 * 1e3, msg: 'That is the MOSFET formula $2I_D/V_{ov}$ (with $0.2\\,\\text{V}$). A BJT has $g_m = I_C/V_T$.' }, { v: IC / 0.7 * 1e3, msg: 'Divide by $V_T = 25\\,\\text{mV}$, not by $V_{BE} = 0.7\\,\\text{V}$.' }], [gm * 1e3]) },
+      { lbl: 'r_\\pi', unit: 'kΩ', ans: rpi / 1e3, traps: notNear([{ v: 1 / gm / 1e3, msg: 'That is $1/g_m$, the emitter-side resistance. Looking into the base is $\\beta$ times bigger: $r_\\pi = \\beta/g_m$.' }], [rpi / 1e3]) },
+      { lbl: 'r_o', unit: 'kΩ', ans: ro / 1e3, traps: notNear([{ v: VA * IC, msg: 'Divide: $r_o = V_A/I_C$.' }], [ro / 1e3]) },
+    ];
+    if (mode === 'IE') { const IEv = IC * (beta + 1) / beta; parts[0].accept = [IEv / VT * 1e3]; parts[1].accept = [beta * VT / IEv / 1e3]; parts[2].accept = [VA / IEv / 1e3]; }
+    if (mode === 'circ') parts.unshift({ lbl: 'I_C', unit: 'mA', ans: IC * 1e3 });
+    return {
+      fig,
+      q: `${given} $g_m$, $r_\\pi$ and $r_o$ ($V_T = 25\\,\\text{mV}$).`,
+      parts,
+      hints: ['$g_m = I_C/V_T$: $40\\,\\text{mS}$ per mA.', '$r_\\pi = \\beta/g_m$ and $r_o = V_A/I_C$.'],
+      sol: `${pre}$$g_m = \\frac{I_C}{V_T} = \\frac{${T.mA(IC)}}{25\\,\\text{mV}} = ${T.mS(gm)}\\qquad\\Big(\\frac{1}{g_m} = ${T.R(1 / gm)}\\Big)$$
+$$r_\\pi = \\frac{\\beta}{g_m} = ${beta}\\times${T.R(1 / gm)} = ${T.kO(rpi)},\\qquad r_o = \\frac{V_A}{I_C} = \\frac{${VA}\\,\\text{V}}{${T.mA(IC)}} = ${T.kO(ro)}$$
+Checks: $g_mr_\\pi = \\beta = ${beta}$ ✓; $g_mr_o = V_A/V_T = ${f(VA / VT, 4)}$, the transistor's intrinsic gain, the same at any current.`,
+      _chk: { kind: 'gm', mode, beta, VA, IC, p: p ? { VCC: p.VCC, R1: p.R1, R2: p.R2, RE: p.RE, RC: p.RC } : null },
+    };
+  };
+
+  // ---------------------------------------------------------------- how small is "small"?
+  GENS.bk_lin = () => {
+    const mode = pick(['err', 'err', 'max', 'mos']);
+    if (mode === 'err') {
+      const v = pick([0.5, 1, 2, 2.5, 4, 5, 8, 10]) * 1e-3, IC = pick([0.5, 1, 2]) * 1e-3, x = v / VT;
+      const lin = IC / VT * v, ex = IC * (Math.exp(x) - 1);
+      return {
+        q: `A BJT at $I_C = ${T.mA(IC)}$ gets a step $v_{be} = ${f(v * 1e3, 3)}\\,\\text{mV}$. Find the change of collector current predicted by $g_m$, the exact change from the exponential, and the size of the second-order term relative to the first, $v_{be}/(2V_T)$, in percent.`,
+        parts: [{ lbl: 'i_c\\ (g_mv_{be})', unit: 'µA', ans: lin * 1e6 }, { lbl: 'i_c\\ \\text{(exact)}', unit: 'µA', ans: ex * 1e6, tol: { rel: 0.004 } }, { lbl: 'v_{be}/(2V_T)', unit: '%', ans: x / 2 * 100, tol: { rel: 0.01 } }],
+        hints: ['Linear: $g_mv_{be} = (I_C/V_T)v_{be}$. Exact: $I_C(e^{v_{be}/V_T} - 1)$.', '$e^x = 1 + x + x^2/2 + \\dots$: the second term over the first is $x/2$.'],
+        sol: `With $x = v_{be}/V_T = ${f(x, 4)}$:
+- linear: $i_c = g_mv_{be} = I_Cx = ${T.uA(lin)}$;
+- exact: $i_c = I_C(e^x - 1) = ${T.mA(IC)}\\times${f(Math.exp(x) - 1, 5)} = ${T.uA(ex)}$;
+- second-order over first-order term: $\\dfrac{x^2/2}{x} = \\dfrac{x}{2} = ${f(x / 2 * 100, 3)}\\%$ (the exact excess is $${f((ex / lin - 1) * 100, 3)}\\%$, a little more because of the higher terms).
+
+${x / 2 <= 0.05 ? 'Small enough: the straight line is a good model.' : 'That is a noticeable error: for this step the BJT is not "small-signal".'} Rule: $v_{be}$ must be small next to $2V_T = 50\\,\\text{mV}$; a few millivolts at most.`,
+        _chk: { kind: 'lin', mode, v, IC },
+      };
+    }
+    if (mode === 'max') {
+      const e = pick([1, 2, 5, 10]) / 100;
+      return {
+        q: `How large can $v_{be}$ be before the second-order term of the exponential is ${f(e * 100, 3)}% of the linear term? And for a MOSFET with $V_{ov} = 0.2\\,\\text{V}$, where the same ratio is $v_{gs}/(2V_{ov})$, how large can $v_{gs}$ be?`,
+        parts: [{ lbl: 'v_{be,max}', unit: 'mV', ans: 2 * VT * e * 1e3 }, { lbl: 'v_{gs,max}', unit: 'mV', ans: 2 * 0.2 * e * 1e3 }],
+        hints: ['Set $v_{be}/(2V_T)$ equal to the allowed fraction.'],
+        sol: `BJT: $v_{be}/(2V_T) = ${f(e, 3)}\\Rightarrow v_{be} = ${f(e, 3)}\\times50\\,\\text{mV} = ${f(2 * VT * e * 1e3, 3)}\\,\\text{mV}$.
+MOSFET: $v_{gs}/(2V_{ov}) = ${f(e, 3)}\\Rightarrow v_{gs} = ${f(e, 3)}\\times400\\,\\text{mV} = ${f(2 * 0.2 * e * 1e3, 3)}\\,\\text{mV}$, eight times more.
+The BJT buys its large $g_m$ ($I/V_T$ against $2I/V_{ov}$) with a small linear range: the same $V_T$ sets both.`,
+        _chk: { kind: 'lin', mode, e },
+      };
+    }
+    const Vov = pick([0.1, 0.15, 0.2, 0.25, 0.3, 0.4]), I = pick([0.5, 1, 2]) * 1e-3;
+    return {
+      q: `A BJT and a MOSFET ($V_{ov} = ${f(Vov, 3)}\\,\\text{V}$) both carry $${T.mA(I)}$. Find each $g_m$. For the same 10% second-order error, find the largest input step for each.`,
+      parts: [{ lbl: 'g_{m,BJT}', unit: 'mS', ans: I / VT * 1e3 }, { lbl: 'g_{m,MOS}', unit: 'mS', ans: 2 * I / Vov * 1e3 }, { lbl: 'v_{be,max}', unit: 'mV', ans: 5 }, { lbl: 'v_{gs,max}', unit: 'mV', ans: 2 * Vov * 0.1 * 1e3 }],
+      hints: ['$g_m = I_C/V_T$ and $g_m = 2I_D/V_{ov}$.', 'The second-order term over the first: $v_{be}/(2V_T)$ and $v_{gs}/(2V_{ov})$.'],
+      sol: `$g_{m,BJT} = I/V_T = ${T.mS(I / VT)}$; $g_{m,MOS} = 2I/V_{ov} = ${T.mS(2 * I / Vov)}$: the BJT has $V_{ov}/(2V_T) = ${f(Vov / (2 * VT), 3)}$ times more.
+Linear range: $v_{be} = 0.1\\times2V_T = 5\\,\\text{mV}$; $v_{gs} = 0.1\\times2V_{ov} = ${f(2 * Vov * 0.1 * 1e3, 3)}\\,\\text{mV}$. The product $g_m\\times(\\text{range})$ is $0.2I$ for the BJT and $0.4I$ for the MOSFET, the same order: at a given current a device trades transconductance for linear range.`,
+      _chk: { kind: 'lin', mode, Vov, I },
+    };
+  };
+
+  // ---------------------------------------------------------------- BJT against MOSFET transconductance
+  GENS.bk_gmmos = () => {
+    const mode = pick(['same', 'target']);
+    const Vov = pick([0.1, 0.2, 0.25, 0.3, 0.4, 0.5]);
+    if (mode === 'same') {
+      const I = pick([0.1, 0.25, 0.5, 1, 2]) * 1e-3;
+      const gB = I / VT, gM = 2 * I / Vov;
+      return {
+        q: `At the same current $I = ${T.mA(I)}$, compare a BJT with a MOSFET biased at $V_{ov} = ${f(Vov, 3)}\\,\\text{V}$: find both $g_m$ and their ratio $g_{m,BJT}/g_{m,MOS}$.`,
+        parts: [{ lbl: 'g_{m,BJT}', unit: 'mS', ans: gB * 1e3 }, { lbl: 'g_{m,MOS}', unit: 'mS', ans: gM * 1e3, traps: notNear([{ v: I / Vov * 1e3, msg: 'The square law gives $g_m = 2I_D/V_{ov}$: you dropped the 2.' }], [gM * 1e3]) }, { lbl: '\\text{ratio}', unit: '', ans: gB / gM }],
+        hints: ['$g_{m,BJT} = I_C/V_T$, $g_{m,MOS} = 2I_D/V_{ov}$; the ratio is $V_{ov}/(2V_T)$.'],
+        sol: `$g_{m,BJT} = ${T.mA(I)}/25\\,\\text{mV} = ${T.mS(gB)}$. $g_{m,MOS} = 2(${T.mA(I)})/${f(Vov, 3)}\\,\\text{V} = ${T.mS(gM)}$. Ratio $= \\dfrac{I/V_T}{2I/V_{ov}} = \\dfrac{V_{ov}}{2V_T} = \\dfrac{${f(Vov, 3)}}{0.05} = ${f(gB / gM, 4)}$.
+The current cancels: the BJT wins by $V_{ov}/(2V_T)$ at any current. A MOSFET would need $V_{ov} = 2V_T = 50\\,\\text{mV}$ to match, the edge of weak inversion, where it too becomes exponential.`,
+        _chk: { kind: 'gmmos', mode, I, Vov },
+      };
+    }
+    const gT = pick([4, 10, 20, 40, 80, 100]) * 1e-3;
+    const IB = gT * VT, IM = gT * Vov / 2;
+    return {
+      q: `A stage needs $g_m = ${T.mS(gT)}$. What collector current does a BJT need, and what drain current does a MOSFET at $V_{ov} = ${f(Vov, 3)}\\,\\text{V}$ need?`,
+      parts: [{ lbl: 'I_C', unit: 'mA', ans: IB * 1e3 }, { lbl: 'I_D', unit: 'mA', ans: IM * 1e3, traps: notNear([{ v: gT * Vov * 1e3, msg: 'From $g_m = 2I_D/V_{ov}$: $I_D = g_mV_{ov}/2$. You dropped the 2.' }], [IM * 1e3]) }],
+      hints: ['$I_C = g_mV_T$; $I_D = g_mV_{ov}/2$.'],
+      sol: `BJT: $I_C = g_mV_T = ${T.mS(gT)}\\times25\\,\\text{mV} = ${T.mA(IB)}$. MOSFET: $I_D = g_mV_{ov}/2 = ${T.mS(gT)}\\times${f(Vov / 2, 3)}\\,\\text{V} = ${T.mA(IM)}$: ${f(IM / IB, 3)} times the current (and the power) for the same $g_m$.`,
+      _chk: { kind: 'gmmos', mode, gT, Vov },
+    };
+  };
+
+  // ---------------------------------------------------------------- r_o: intrinsic gain, when r_o matters, current-source loads
+  // common-emitter drawings: resistor load, ideal current-source load, PNP current-source load
+  function ceFig(load) {
+    const e = [['npn', [1, 1], { n: load === 'pnp' ? 'Q_1' : undefined }], ['gnd', [1, 2]], ['w', [0, 1], [-0.6, 1], [-0.6, 1.4]], ['Vac', [-0.6, 1.4], [-0.6, 2.4], { n: 'v_{in}', side: 'l' }],
+      ['V', [-0.6, 2.4], [-0.6, 3.4], { n: 'V_{BE}', side: 'l' }], ['gnd', [-0.6, 3.4]], ['w', [1, 0], [1.9, 0]], ['term', [1.9, 0], { n: 'v_{out}' }]];
+    if (load === 'R') e.push(['rail', [1, -1.2], { n: 'V_{CC}' }], ['R', [1, -1.2], [1, 0], { n: 'R_C' }]);
+    else if (load === 'I') e.push(['rail', [1, -1.4], { n: 'V_{CC}' }], ['I', [1, -1.4], [1, 0], { n: 'I_{bias}' }]);
+    else e.push(['rail', [1, -2], { n: 'V_{CC}' }], ['pnp', [1, -1], { n: 'Q_2' }], ['acg', [0, -1], { dir: 'l' }]);
+    return e;
+  }
+  GENS.bk_ro = () => {
+    const mode = pick(['intr', 'matter', 'matter', 'pnp']);
+    const VA = pick([25, 40, 50, 60, 80, 100, 120]), IC = pick([0.1, 0.2, 0.25, 0.5, 1, 2]) * 1e-3;
+    const gm = IC / VT, ro = VA / IC;
+    if (mode === 'intr') {
+      return {
+        fig: ceFig('I'),
+        q: `A common-emitter stage at $I_C = ${T.mA(IC)}$ ($V_A = ${VA}\\,\\text{V}$) has an ideal current-source load, so the collector sees only $r_o$. Find $g_m$, $r_o$ and the voltage gain $A_v = v_{out}/v_{in}$.`,
+        parts: [{ lbl: 'g_m', unit: 'mS', ans: gm * 1e3 }, { lbl: 'r_o', unit: 'kΩ', ans: ro / 1e3 }, { lbl: 'A_v', unit: '', ans: -gm * ro, traps: notNear([{ v: gm * ro, msg: 'Magnitude right, sign wrong: a rising base pulls more current out of the collector node, so $v_{out}$ falls.' }], [-gm * ro]) }],
+        hints: ['An ideal current source is an open circuit for signals, so the collector node has only $r_o$ to (incremental) ground.', '$A_v = -g_mr_o = -V_A/V_T$.'],
+        sol: `$g_m = ${T.mS(gm)}$, $r_o = V_A/I_C = ${T.kO(ro)}$. The current source is open for signals, so all of $g_mv_{in}$ flows in $r_o$: $v_{out} = -g_mv_{in}r_o$ and
+$$A_v = -g_mr_o = -\\frac{I_C}{V_T}\\cdot\\frac{V_A}{I_C} = -\\frac{V_A}{V_T} = -${f(VA / VT, 4)}.$$
+This is the **intrinsic gain**, the most one transistor can give, and the current cancels: any bias current gives $${f(VA / VT, 4)}$.`,
+        _chk: { kind: 'ro', mode, VA, IC },
+      };
+    }
+    if (mode === 'matter') {
+      const RC = pick([1, 2.2, 4.7, 10, 22, 47]) * 1e3, Rp = par(RC, ro);
+      return {
+        fig: ceFig('R'),
+        q: `A common emitter at $I_C = ${T.mA(IC)}$ with $R_C = ${kOs(RC)}$ and $V_A = ${VA}\\,\\text{V}$. Find the gain ignoring $r_o$, the gain with $r_o$, and by how many percent $r_o$ reduces it.`,
+        parts: [{ lbl: 'A_v\\ (r_o\\to\\infty)', unit: '', ans: -gm * RC }, { lbl: 'A_v\\ (\\text{with } r_o)', unit: '', ans: -gm * Rp }, { lbl: '\\text{reduction}', unit: '%', ans: (1 - Rp / RC) * 100, tol: { rel: 0.03, abs: 0.05 } }],
+        hints: ['In the model $R_C$ and $r_o$ both run from the collector to incremental ground: they are in parallel.'],
+        sol: `$g_m = ${T.mS(gm)}$, $r_o = ${T.kO(ro)}$. Without $r_o$: $A_v = -g_mR_C = ${f(-gm * RC, 4)}$. With it: $R_C\\parallel r_o = ${T.kO(Rp)}$ and $A_v = -g_m(R_C\\parallel r_o) = ${f(-gm * Rp, 4)}$, ${f((1 - Rp / RC) * 100, 3)}% less. ${RC < 0.1 * ro ? `Here $R_C$ is under a tenth of $r_o$, so dropping $r_o$ is a fair approximation.` : `Here $R_C$ is not small next to $r_o$: keep it.`} The reduction is $R_C/(R_C + r_o)$.`,
+        _chk: { kind: 'ro', mode, VA, IC, RC },
+      };
+    }
+    const VA2 = pick([25, 40, 50, 80]), ro2 = VA2 / IC, Rp = par(ro, ro2);
+    return {
+      fig: ceFig('pnp'),
+      q: `An NPN common emitter $Q_1$ ($V_A = ${VA}\\,\\text{V}$) has a PNP current-source load $Q_2$ ($V_A = ${VA2}\\,\\text{V}$, base held at a fixed bias). Both carry $${T.mA(IC)}$. Find $r_{o1}$, $r_{o2}$ and $A_v$.`,
+      parts: [{ lbl: 'r_{o1}', unit: 'kΩ', ans: ro / 1e3 }, { lbl: 'r_{o2}', unit: 'kΩ', ans: ro2 / 1e3 }, { lbl: 'A_v', unit: '', ans: -gm * Rp, traps: notNear([{ v: -gm * ro, msg: 'The PNP load is not ideal: its own $r_{o2}$ is in parallel with $r_{o1}$ at the output.' }], [-gm * Rp]) }],
+      hints: ['Looking down into $Q_1$\'s collector you see $r_{o1}$; looking up into $Q_2$\'s collector (base and emitter held) you see $r_{o2}$.', '$A_v = -g_{m1}(r_{o1}\\parallel r_{o2})$.'],
+      sol: `$g_{m1} = ${T.mS(gm)}$, $r_{o1} = ${T.kO(ro)}$, $r_{o2} = ${T.kO(ro2)}$. With $Q_2$'s base and emitter at incremental ground, its collector looks like $r_{o2}$ (its $g_mv_\\pi$ source is dead: $v_{\\pi2} = 0$). The output node sees $r_{o1}\\parallel r_{o2} = ${T.kO(Rp)}$, so
+$$A_v = -g_{m1}(r_{o1}\\parallel r_{o2}) = ${f(-gm * Rp, 4)}.$$
+With equal Early voltages this is half the intrinsic gain, $-V_A/(2V_T)$: the classic active-load result, as for the MOSFET ([Chapter 4](#/l/bk04-loads)).`,
+      _chk: { kind: 'ro', mode: 'pnp', VA, VA2, IC },
+    };
+  };
+  window.BK5.ceFig = ceFig;
 })();

@@ -1479,4 +1479,378 @@ Between the two lies soft saturation: only 4% more base current takes the collec
       G('bk_dcsat', { need: 4 }),
     ],
   });
+
+  // ================================================================== 6.8 the Early effect
+  const profEarly = plot(Object.assign({}, profAxes, {
+    xt: [[0, '0'], [0.82, 'W_B - \\Delta W'], [1, 'W_B']], yt: [[1, 'n_p(0)']], y: [0, 1.5],
+    curves: [{ pts: [[0, 1], [1, 0]] }, { pts: [[0, 1], [0.82, 0]], cls: 'dash' }],
+    labels: [{ x: 0.05, y: 0.2, t: '\\text{dashed: larger } V_{CB}', a: 'l' }, { x: 0.6, y: 0.56, t: '\\text{solid: small } V_{CB}', a: 'l' }],
+    aria: 'base narrowing',
+  }));
+  const emIcA = (I0, v, VA) => { const k = Math.exp(-v / 0.025); return I0 / 100 * (1 - 11 * k) / (0.01 + 10 * k) * (1 + v / VA); };
+  const earlyPlot = plot({
+    w: 460, h: 270, x: [-45, 12], y: [0, 3.4], xt: [[-40, '-V_A'], [-30, '-30'], [-20, '-20'], [-10, '-10'], [0, '0'], [10, '10']], yt: [0, 1, 2, 3],
+    xl: 'V_{CE}\\ (\\text{V})', yl: 'I_C\\ (\\text{mA})',
+    curves: [0.8, 1.6, 2.4].map((I0) => ({ f: (v) => emIcA(I0, v, 40), from: 0.05, to: 12 })).concat([0.8, 1.6, 2.4].map((I0) => ({ pts: [[-40, 0], [0, I0]], cls: 'dash' }))),
+    marks: [{ x: -40, y: 0, n: '' }],
+    labels: [{ x: -43, y: 1.25, t: '\\text{all lines meet at } -V_A', a: 'l' }],
+    aria: 'Early effect: output curves extrapolate to minus V_A',
+  });
+
+  L({
+    id: 'bk06-early', title: 'The Early effect and $r_o$', ref: 'Lecture 23',
+    steps: [
+      R(md`
+        ### The question
+
+        In forward active the collector current is "independent of $V_{CE}$". Look closely at the output curves and they are not quite flat: they rise slowly. That slope is the **Early effect** (after James Early, who explained it in 1952), and it gives the collector a finite output resistance $r_o$, the third element of the small-signal model in [Chapter 7](#/l/bk07-ro). It is the BJT's version of channel-length modulation and $r_{ds}$ ([Chapter 2](#/l/bk02-clm)).
+      `),
+      RF(md`
+        ### The physical picture: the base gets thinner
+
+        The reverse-biased BC junction has a depletion region, and raising $V_{CB}$ widens it. Most of the widening is into the lightly doped collector, but some of it eats into the base. The **neutral** base, the part the electrons must diffuse across, gets thinner: $W_B$ shrinks by a little $\Delta W$.
+
+        The electron density at the emitter end is still $n_p(0) = n_{p0}e^{V_{BE}/V_T}$ (set by $V_{BE}$), and it still falls to zero at the collector end. So the same drop happens over a shorter distance: **the slope is steeper, and the current is larger.**
+
+        [[fig:pe]]
+      `, { pe: { fig: profEarly, cap: 'Base-width modulation: the same $n_p(0)$, a shorter base, a steeper slope, a little more $I_C$.' } }),
+      RF(md`
+        ### The model: lines that all meet at $-V_A$
+
+        For the small changes involved, the extra current grows linearly with $V_{CE}$, and we write
+        $$I_C = I_S\,e^{V_{BE}/V_T}\Big(1 + \frac{V_{CE}}{V_A}\Big).$$
+        $V_A$, the **Early voltage**, measures how resistant the base is to thinning: tens of volts to more than a hundred for small-signal transistors. (A heavily doped base resists depletion better and has a large $V_A$, at the cost of $\beta$.)
+
+        The equation has a picture. For each $V_{BE}$ it is a straight line, and every one of those lines reaches $I_C = 0$ at $1 + V_{CE}/V_A = 0$, i.e. at $V_{CE} = -V_A$. **Extend the active-region parts of the output curves to the left and they all meet at one point, $-V_A$.**
+
+        [[fig:ep]]
+      `, { ep: { fig: earlyPlot, cap: 'Output curves with $V_A = 40\\,\\text{V}$ (exaggerated so you can see it). Extended to the left (dashed), the active-region lines meet on the axis at $V_{CE} = -V_A$.' } }),
+      R(md`
+        ### The derivation: the slope, and $r_o$
+
+        At a fixed $V_{BE}$, differentiate with respect to $V_{CE}$. Only the bracket depends on it:
+        $$\frac{\partial I_C}{\partial V_{CE}} = I_Se^{V_{BE}/V_T}\cdot\frac{1}{V_A} = \frac{I_C}{1 + V_{CE}/V_A}\cdot\frac{1}{V_A} = \frac{I_C}{V_A + V_{CE}}.$$
+        The reciprocal of that slope is a resistance: how many volts of $V_{CE}$ it takes to change $I_C$ by one amp. That is the output resistance,
+        $$r_o = \frac{V_A + V_{CE}}{I_C}\approx\frac{V_A}{I_C},$$
+        where the approximation drops $V_{CE}$ (a few volts) next to $V_A$ (tens of volts). The same result falls out of the picture: a line through $(-V_A, 0)$ and $(V_{CE}, I_C)$ has slope $I_C/(V_A + V_{CE})$.
+
+        !!key The output resistance (course formula)
+          $$r_o = \frac{V_A}{I_C}$$
+          Inversely proportional to the current: $V_A = 100\,\text{V}$ gives $100\kO$ at $1\,\text{mA}$ and $1\,\text{M}\Omega$ at $0.1\,\text{mA}$.
+      `),
+      R(md`
+        ### Check it, and what it means
+
+        - **Units:** volts over amperes is ohms ✓.
+        - **$V_A\to\infty$:** flat curves, $r_o\to\infty$, the ideal current source of [Section 6.1](#/l/bk06-how) ✓.
+        - **More current, smaller $r_o$:** every line aims at the same $-V_A$, so a higher line must be steeper ✓.
+
+        **What it means.** The collector is a current source $\beta I_B$ (more precisely $I_Se^{V_{BE}/V_T}$) with a resistor $r_o$ in parallel: a good current source, not a perfect one. **MOSFET twin:** $I_D = \tfrac12\mu C_{ox}\tfrac WL V_{ov}^2(1 + \lambda V_{DS})$ and $r_{ds} = 1/(\lambda I_D)$; the dictionary is $V_A\leftrightarrow1/\lambda$, $r_o\leftrightarrow r_{ds}$.
+
+        **Does it matter at DC?** Usually not, and the course ignores $V_A$ in DC analysis unless a problem says otherwise. How much it moves the bias depends on the circuit. With fixed bias ($I_B$ set by $R_B$) and $V_A = 50\,\text{V}$, a transistor with $V_{CE}\approx5\,\text{V}$ carries about 9% more than $\beta I_B$, because nothing pushes back. With the emitter-resistor bias of [Section 6.5](#/l/bk06-dc) (Example 2), including the same $V_A$ changes $I_C$ by about 0.5%: the feedback that made the bias insensitive to $\beta$ makes it insensitive to this too. For **signals** it is a different story: $r_o$ sets the maximum gain of every amplifier ([Chapter 7](#/l/bk07-ro)).
+      `),
+      R(md`
+        ### Worked example: measure $V_A$
+
+        At a fixed $V_{BE}$: $I_C = 1.00\,\text{mA}$ at $V_{CE} = 2\,\text{V}$ and $1.06\,\text{mA}$ at $V_{CE} = 8\,\text{V}$.
+
+        1. **Slope:** $\Delta I_C/\Delta V_{CE} = 0.06\,\text{mA}/6\,\text{V} = 10\,\mu\text{A/V}$, so $\Delta V_{CE}/\Delta I_C = 100\kO$.
+        2. **Extrapolate:** from the first point, walking down the line to $I_C = 0$ takes $1.00\,\text{mA}/(10\,\mu\text{A/V}) = 100\,\text{V}$, so the line meets the axis at $V_{CE} = 2 - 100 = -98\,\text{V}$: $V_A = 98\,\text{V}$.
+        3. **Course formula** at $1\,\text{mA}$: $r_o = V_A/I_C = 98\kO$, within 2% of the measured $100\kO$ (the difference is the dropped $V_{CE} = 2\,\text{V}$).
+
+        !!mistake Common mistakes
+          - Placing the intercept at $+V_A$. The lines meet at **negative** $V_{CE}$, a distance $V_A$ to the left of the origin.
+          - Thinking more current gives more $r_o$. It is the other way: $r_o = V_A/I_C$.
+          - Mixing units: volts over milliamps gives **kilohms**.
+          - Including the Early effect in a DC problem that did not ask for it (the course's DC model is $I_C = \beta I_B$).
+      `),
+      Q(md`Why does $I_C$ rise slowly with $V_{CE}$ in forward active?`,
+        ['A larger reverse bias on the BC junction widens its depletion region into the base, so the neutral base gets thinner and the electron slope steeper', 'The BC junction starts to break down', 'The BE junction gets more forward bias as $V_{CE}$ rises', 'More holes are injected into the emitter'], 0,
+        [null, 'Breakdown happens at much higher voltages and is sudden, not a gentle slope.', '$V_{BE}$ is held fixed along an output curve; only $V_{CE}$ changes.', 'Back-injection depends on $V_{BE}$, which is fixed here.'],
+        md`Base-width modulation: $I_C\propto n_p(0)/W_B$, and $W_B$ shrinks as $V_{CB}$ grows.`),
+      Q(md`A transistor's collector current is doubled (same $V_A$). Its $r_o$`,
+        ['halves', 'doubles', 'stays the same', 'quadruples'], 0,
+        [null, '$r_o = V_A/I_C$: more current, less resistance.', 'It depends on the current through $1/I_C$.', 'It is inversely proportional to $I_C$, not to $I_C^2$.'],
+        md`All the active-region lines aim at the same $-V_A$, so a line twice as high is twice as steep: $r_o = V_A/I_C$ halves.`),
+      Q(md`Extended to the left, the active-region parts of a BJT's output curves (different $I_B$)`,
+        ['all meet at one point on the $V_{CE}$ axis, $V_{CE} = -V_A$', 'are parallel', 'meet at $V_{CE} = +V_A$', 'meet at the origin'], 0,
+        [null, 'Parallel lines would mean the same slope at every current, i.e. $r_o$ independent of $I_C$. It is not.', 'The intercept is on the negative side: $1 + V_{CE}/V_A = 0$.', 'At the origin the transistor is saturated; the active-region lines extrapolate much further.'],
+        md`$I_C = I_0(1 + V_{CE}/V_A)$ is zero at $V_{CE} = -V_A$ for every $I_0$. That common point is what makes $r_o = V_A/I_C$.`),
+      Q(md`Which MOSFET quantity plays the role of $V_A$?`,
+        ['$1/\\lambda$, since $r_{ds} = 1/(\\lambda I_D)$ matches $r_o = V_A/I_C$', '$\\lambda$', '$V_{ov}$', '$V_{TN}$'], 0,
+        [null, '$\\lambda$ has units of 1/V. Its reciprocal is the voltage.', '$V_{ov}$ sets $g_m$, not the output slope.', '$V_{TN}$ is the threshold; it has nothing to do with the output slope.'],
+        md`Channel-length modulation $I_D\propto(1 + \lambda V_{DS})$ and the Early effect $I_C\propto(1 + V_{CE}/V_A)$ have the same form, with $V_A\leftrightarrow1/\lambda$.`),
+      P({
+        id: 'bk06-early-ro', title: 'Output resistances',
+        q: md`Find $r_o$ for (a) $V_A = 50\,\text{V}$, $I_C = 0.25\,\text{mA}$ and (b) $V_A = 80\,\text{V}$, $I_C = 2\,\text{mA}$.`,
+        parts: [{ lbl: 'r_o\\ (a)', unit: 'kΩ', ans: 200 }, { lbl: 'r_o\\ (b)', unit: 'kΩ', ans: 40, traps: [{ v: 160, msg: 'That is $V_A\\times I_C$. Divide: $r_o = V_A/I_C$.' }] }],
+        hints: [md`$r_o = V_A/I_C$; volts over mA gives kΩ.`],
+        sol: md`(a) $50\,\text{V}/0.25\,\text{mA} = 200\kO$. (b) $80\,\text{V}/2\,\text{mA} = 40\kO$. Low currents make good current sources.`,
+      }),
+      P({
+        id: 'bk06-early-two', title: 'Find V_A from a curve',
+        q: md`At a fixed $V_{BE}$: $I_C = 2.00\,\text{mA}$ at $V_{CE} = 1\,\text{V}$, and $2.25\,\text{mA}$ at $V_{CE} = 11\,\text{V}$. Find $V_A$ and $\Delta V_{CE}/\Delta I_C$.`,
+        parts: [{ lbl: 'V_A', unit: 'V', ans: 79, traps: [{ v: 81, msg: 'That is where the line meets the axis measured from $V_{CE} = 1\\,\\text{V}$; the intercept is at $1 - 80 = -79\\,\\text{V}$.' }] }, { lbl: '\\Delta V_{CE}/\\Delta I_C', unit: 'kΩ', ans: 40 }],
+        hints: [md`Slope: $0.25\,\text{mA}/10\,\text{V}$.`, md`From $(1\,\text{V}, 2\,\text{mA})$, the line drops to zero after $2\,\text{mA}$ divided by the slope.`],
+        sol: md`
+1. Slope $= 0.25/10 = 0.025\,\text{mA/V}$, so $\Delta V_{CE}/\Delta I_C = 40\kO$.
+2. From $(1\,\text{V}, 2\,\text{mA})$ the line reaches zero after $2/0.025 = 80\,\text{V}$, at $V_{CE} = 1 - 80 = -79\,\text{V}$: $V_A = 79\,\text{V}$.
+3. Check: $(V_A + 1)/(V_A + 11) = 80/90 = 2/2.25$ ✓.`,
+      }),
+      P({
+        id: 'bk06-early-new', title: 'A small change of current',
+        q: md`A BJT with $V_A = 60\,\text{V}$ carries $0.5\,\text{mA}$ at $V_{CE} = 3\,\text{V}$. At the same $V_{BE}$, what does it carry at $V_{CE} = 12\,\text{V}$? (Four significant figures.)`,
+        parts: [{ lbl: 'I_C', unit: 'mA', ans: 0.571429, tol: { rel: 0.002 } }],
+        hints: [md`$I_C\propto V_A + V_{CE}$ at a fixed $V_{BE}$.`],
+        sol: md`$I_C = 0.5\,\text{mA}\times\dfrac{60 + 12}{60 + 3} = 0.5\times\dfrac{72}{63} = 0.5714\,\text{mA}$: 14% more for a $9\,\text{V}$ step.`,
+      }),
+      P({
+        id: 'bk06-early-fixed', title: 'The Early effect in a fixed-bias circuit',
+        q: md`A fixed-bias circuit has $V_{CC} = 12\,\text{V}$, $R_C = 4.7\kO$ and $I_B = 10\,\mu\text{A}$ (set by $R_B$). The transistor follows $I_C = \beta I_B(1 + V_{CE}/V_A)$ with $\beta = 120$ and $V_A = 60\,\text{V}$. Find $I_C$ and $V_C$, and compare with the values that ignore the Early effect.`,
+        fig: B.biasFig({ type: 'npn', base: 'fixed', VCC: 12, RB: '', RC: 4.7e3 }),
+        parts: [{ lbl: 'I_C', unit: 'mA', ans: 1.31627, traps: [{ v: 1.2, msg: 'That is $\\beta I_B$, the value without the Early effect.' }] }, { lbl: 'V_C', unit: 'V', ans: 5.81353 }],
+        hints: [md`$I_C = 1.2\,\text{mA}\times(1 + V_{CE}/60)$ and $V_{CE} = 12 - 4.7I_C$ (mA, kΩ).`],
+        sol: md`
+1. With $I_0 = \beta I_B = 1.2\,\text{mA}$: $I_C = 1.2\big(1 + (12 - 4.7I_C)/60\big) = 1.2\times1.2 - 0.094I_C$, so $1.094I_C = 1.44$ and $I_C = 1.316\,\text{mA}$.
+2. $V_C = 12 - (1.316)(4.7) = 5.814\,\text{V}$.
+3. Without the Early effect: $1.2\,\text{mA}$ and $6.36\,\text{V}$. The Early effect added 10% to the current here, because fixed bias has no feedback to resist it.`,
+      }),
+      R(md`
+        ### Drill: the Early effect
+
+        $r_o$ from $V_A$, $V_A$ from two measured points, a new current at a new $V_{CE}$, and the effect on a fixed-bias circuit.
+      `),
+      G('bk_early', { need: 4 }),
+    ],
+  });
+
+  // ================================================================== Chapter 6 problems
+  const mirrorFig = [['rail', [2, -1.2], { n: '10\\,\\text{V}' }], ['w', [1, -1.2], [3, -1.2]],
+    ['R', [1, -1.2], [1, 0], { n: 'R', s: '9.3\\,\\text{k}\\Omega', side: 'l' }], ['R', [3, -1.2], [3, 0], { n: 'R_C', s: '5\\,\\text{k}\\Omega' }],
+    ['npn', [1, 1], { n: 'Q_1', flip: true, dc: true }], ['npn', [3, 1], { n: 'Q_2' }], ['gnd', [1, 2]], ['gnd', [3, 2]],
+    ['txt', [3.2, 0.24], '$V_{C2}$', { a: 'l' }]];
+  const cascFig = [['rail', [2.8, -2.2], { n: '12\\,\\text{V}' }], ['w', [2, -2.2], [3.6, -2.2]],
+    ['R', [2, -2.2], [2, 0], { n: 'R_{C1}', s: '6.8\\,\\text{k}\\Omega', side: 'l' }], ['R', [3.6, -2.2], [3.6, -1], { n: 'R_{C2}', s: '1.5\\,\\text{k}\\Omega' }],
+    ['npn', [2, 1], { n: 'Q_1' }], ['R', [-0.2, 1], [1, 1], { n: 'R_B', s: '10\\,\\text{k}\\Omega' }], ['V', [-0.2, 1], [-0.2, 2.2], { n: 'V_{BB}', s: '1.7\\,\\text{V}', side: 'l' }], ['gnd', [-0.2, 2.2]],
+    ['R', [2, 2], [2, 3.2], { n: 'R_{E1}', s: '1\\,\\text{k}\\Omega' }], ['gnd', [2, 3.2]],
+    ['w', [2, 0], [2.6, 0]], ['npn', [3.6, 0], { n: 'Q_2' }], ['R', [3.6, 1], [3.6, 2.4], { n: 'R_{E2}', s: '2.2\\,\\text{k}\\Omega' }], ['gnd', [3.6, 2.4]]];
+  const exam1 = { VCC: 12, R1: 68e3, R2: 12e3, RC: 4.7e3, RE: 1.2e3, RL: 10e3, RS: 1e3, bypass: true };
+
+  L({
+    id: 'bk06-problems', title: 'Chapter 6 problems', kind: 'review', ref: 'Lectures 21–23',
+    steps: [
+      RF(md`
+        ### Chapter 6 summary
+
+        | Result | Why it is true | Section |
+        |---|---|---|
+        | $I_C = I_Se^{V_{BE}/V_T}$ | $V_{BE}$ sets the electron density at the emitter end of the thin base (a Boltzmann factor); the density falls linearly to zero at the collector; the current is proportional to that slope | [6.1](#/l/bk06-how) |
+        | $I_B = I_C/\beta$ | the base supplies two small leaks, back-injection and recombination, both proportional to $e^{V_{BE}/V_T}$ | [6.1](#/l/bk06-how) |
+        | $I_E = (\beta + 1)I_B$, $\alpha = \beta/(\beta + 1)$ | KCL on the transistor | [6.1](#/l/bk06-how) |
+        | $\Delta V_{BE} = V_T\ln(I_{C2}/I_{C1})$: $57.6\,\text{mV}$ per decade | divide two exponential laws; why $0.7\,\text{V}$ is good enough at DC | [6.2](#/l/bk06-laws) |
+        | regions: BE and BC each on or off; active test $V_C\ge V_B$ (NPN) | two junctions, four combinations | [6.3](#/l/bk06-regions) |
+        | $V_{CE,sat} = V_{BE} - V_{BC}\approx0.2\,\text{V}$ | KVL around two forward-biased junctions | [6.3](#/l/bk06-regions) |
+        | PNP: $V_{EB} = 0.7\,\text{V}$, currents in at E, out at C and B, test $V_C\le V_B$ | every doping type, voltage and current flipped | [6.4](#/l/bk06-pnp) |
+        | $I_B = \dfrac{V_{BB} - 0.7}{R_B + (\beta + 1)R_E}$ | $R_E$ carries $(\beta + 1)I_B$ | [6.5](#/l/bk06-dc) |
+        | divider: $V_{TH}$, $R_{TH} = R_1\parallel R_2$; stiff if $R_{TH}\le0.1(\beta + 1)R_E$ | Thévenin; the error is $R_{TH}/((\beta + 1)R_E)$ | [6.6](#/l/bk06-divider) |
+        | capacitors open at DC | $i = C\,dv/dt = 0$ | [6.6](#/l/bk06-divider) |
+        | saturation: $V_{BE} = 0.7$, $V_{CE} = 0.2\,\text{V}$, two loops, then $I_C < \beta I_B$ | both junctions on; the outside circuit sets $I_C$ | [6.7](#/l/bk06-sat) |
+        | $r_o = V_A/I_C$ | base-width modulation; all active lines meet at $-V_A$ | [6.8](#/l/bk06-early) |
+
+        [[fig:x]]
+
+        [[fig:m]]
+
+        !!method Every DC problem
+          Capacitors open → Thévenin any divider → assume active ($0.7\,\text{V}$, $\beta I_B$) → base-loop KVL with the current each resistor really carries → node voltages → check $V_C$ against $V_B$ → if it fails, saturation: $0.7\,\text{V}$ and $0.2\,\text{V}$, two loops, check $I_C < \beta I_B$.
+      `, { x: { fig: xsec(false), cap: 'Section 6.1: injection, diffusion across a thin base, collection.' },
+        m: { fig: row([[dcModel, 'forward active'], [satModel, 'saturated']]), cap: 'The two DC models of an NPN (PNP: flip every polarity).' } }),
+      P({
+        id: 'bk06-x-cur', title: '1. Currents',
+        q: md`A forward-active BJT with $\beta = 80$ carries $I_E = 2.43\,\text{mA}$. Find $I_B$, $I_C$ (to four significant figures) and $\alpha$ (four decimals).`,
+        parts: [{ lbl: 'I_B', unit: 'µA', ans: 30 }, { lbl: 'I_C', unit: 'mA', ans: 2.4, tol: { rel: 0.002 } }, { lbl: '\\alpha', unit: '', ans: 80 / 81, tol: { rel: 0.0006 } }],
+        hints: [md`$I_B = I_E/(\beta + 1)$.`],
+        sol: md`$I_B = 2.43\,\text{mA}/81 = 30\,\mu\text{A}$; $I_C = 80\times30\,\mu\text{A} = 2.400\,\text{mA}$; $\alpha = 80/81 = 0.9877$.`,
+      }),
+      P({
+        id: 'bk06-x-vbe', title: '2. Five times the current',
+        q: md`By how much must $V_{BE}$ rise to make $I_C$ five times larger? A transistor gives $0.6\,\text{mA}$ at $680\,\text{mV}$; what $V_{BE}$ gives $3\,\text{mA}$?`,
+        parts: [{ lbl: '\\Delta V_{BE}', unit: 'mV', ans: 40.2359 }, { lbl: 'V_{BE}', unit: 'mV', ans: 720.236, tol: { rel: 0, abs: 1.5 } }],
+        hints: [md`$\Delta V_{BE} = V_T\ln5$.`],
+        sol: md`$\Delta V_{BE} = 25\,\text{mV}\times\ln5 = 40.2\,\text{mV}$, so $V_{BE} = 680 + 40.2 = 720.2\,\text{mV}$ ($3/0.6 = 5$).`,
+      }),
+      P({
+        id: 'bk06-x-reg', title: '3. Three regions',
+        q: md`(a) NPN: $V_B = 2.1\,\text{V}$, $V_E = 1.4\,\text{V}$, $V_C = 1.6\,\text{V}$. (b) PNP: $V_E = 9\,\text{V}$, $V_B = 8.3\,\text{V}$, $V_C = 4\,\text{V}$. (c) NPN: $V_B = 0.3\,\text{V}$, $V_E = 0$, $V_C = 10\,\text{V}$. Name each region.`,
+        parts: [
+          { lbl: '(a)', mc: ['Forward active', 'Saturation', 'Cutoff'], a: 1, fixed: true, why: ['$V_C = 1.6\\,\\text{V}$ is below $V_B = 2.1\\,\\text{V}$: the BC junction is forward biased by $0.5\\,\\text{V}$.', null, '$V_{BE} = 0.7\\,\\text{V}$: on.'] },
+          { lbl: '(b)', mc: ['Forward active', 'Saturation', 'Cutoff'], a: 0, fixed: true, why: [null, 'For a PNP the collector must be **above** the base to saturate; here it is $4.3\\,\\text{V}$ below.', '$V_{EB} = 0.7\\,\\text{V}$: on.'] },
+          { lbl: '(c)', mc: ['Forward active', 'Saturation', 'Cutoff'], a: 2, fixed: true, why: ['$V_{BE} = 0.3\\,\\text{V}$ injects almost nothing ($e^{-16}$ of the current at $0.7\\,\\text{V}$).', 'Saturation needs the BE junction on.', null] }],
+        sol: md`(a) $V_{BE} = 0.7$, $V_{BC} = 0.5\,\text{V}$: both on, **saturation** ($V_{CE} = 0.2\,\text{V}$). (b) $V_{EB} = 0.7$, $V_{CB} = -4.3\,\text{V}$: **forward active**. (c) $V_{BE} = 0.3\,\text{V}$: **cutoff**.`,
+      }),
+      P({
+        id: 'bk06-x-fixed', title: '4. Fixed bias meets a high-beta part',
+        q: md`$V_{CC} = 15\,\text{V}$, $R_B = 1.43\,\text{M}\Omega$ from $V_{CC}$ to the base, $R_C = 6.8\kO$, emitter grounded. Find $V_C$ for $\beta = 100$, then $I_C$ for $\beta = 250$.`,
+        fig: B.biasFig({ type: 'npn', base: 'fixed', VCC: 15, RB: '1.43\\,\\text{M}\\Omega', RC: 6.8e3 }),
+        parts: [{ lbl: 'V_C\\ (\\beta = 100)', unit: 'V', ans: 8.2 }, { lbl: 'I_C\\ (\\beta = 250)', unit: 'mA', ans: 2.17647, traps: [{ v: 2.5, msg: '$2.5\\,\\text{mA}$ would need $V_C = -2\\,\\text{V}$. The transistor saturates.' }] }],
+        hints: [md`$I_B = 14.3\,\text{V}/1.43\,\text{M}\Omega$ whatever $\beta$ is.`],
+        sol: md`
+$I_B = 14.3/1.43\,\text{M}\Omega = 10\,\mu\text{A}$.
+- $\beta = 100$: $I_C = 1\,\text{mA}$, $V_C = 15 - 6.8 = 8.2\,\text{V}$ ✓ active.
+- $\beta = 250$: active would need $2.5\,\text{mA}$ and $V_C = -2\,\text{V}$: saturated. $I_C = (15 - 0.2)/6.8\kO = 2.176\,\text{mA}$.`,
+      }),
+      P({
+        id: 'bk06-x-re', title: '5. Base and emitter resistors',
+        q: md`$V_{CC} = 9\,\text{V}$, $V_{BB} = 2\,\text{V}$ through $R_B = 20\kO$, $R_E = 1\kO$, $R_C = 4.7\kO$, $\beta = 120$. Find $I_C$, $V_E$ and $V_{CE}$.`,
+        fig: B.biasFig({ type: 'npn', base: 'vbb', VCC: 9, VBB: 2, RB: 20e3, RE: 1e3, RC: 4.7e3 }),
+        parts: [{ lbl: 'I_C', unit: 'mA', ans: 1.10638 }, { lbl: 'V_E', unit: 'V', ans: 1.1156 }, { lbl: 'V_{CE}', unit: 'V', ans: 2.68440 }],
+        hints: [md`$I_B = 1.3/(20 + 121\times1)\,\text{mA}$.`],
+        sol: md`$I_B = 1.3/141\,\text{mA} = 9.220\,\mu\text{A}$, $I_C = 1.106\,\text{mA}$, $I_E = 1.116\,\text{mA}$, $V_E = 1.116\,\text{V}$, $V_C = 9 - (1.106)(4.7) = 3.800\,\text{V}$, $V_{CE} = 2.684\,\text{V}$; $V_C\ge V_B = 1.816\,\text{V}$ ✓.`,
+      }),
+      P({
+        id: 'bk06-x-pnpsplit', title: '6. A PNP on split supplies',
+        q: md`A PNP ($\beta = 100$): $R_E = 4.3\kO$ from $+5\,\text{V}$ to the emitter, $R_B = 10\kO$ from the base to ground, $R_C = 4\kO$ from the collector to $-5\,\text{V}$. Find $I_C$, $V_B$ and $V_C$.`,
+        fig: B.biasFig({ type: 'pnp', base: 'gnd', VCC: 5, VEE: 5, RB: 10e3, RE: 4.3e3, RC: 4e3 }),
+        parts: [{ lbl: 'I_C', unit: 'mA', ans: 0.967815 }, { lbl: 'V_B', unit: 'V', ans: 0.0967815, tol: { rel: 0.03, abs: 0.004 }, traps: [{ v: -0.0967815, msg: 'A PNP\'s base current flows **out** of the base, down through $R_B$: the base sits slightly **above** ground.' }] }, { lbl: 'V_C', unit: 'V', ans: -1.12874, tol: { rel: 0.015, abs: 0.02 } }],
+        hints: [md`From $+5\,\text{V}$: $5 - (\beta + 1)I_BR_E - 0.7 - I_BR_B = 0$.`],
+        sol: md`
+1. $I_B = \dfrac{5 - 0.7}{10 + 101\times4.3}\,\text{mA} = \dfrac{4.3}{444.3}\,\text{mA} = 9.678\,\mu\text{A}$, $I_C = 0.9678\,\text{mA}$.
+2. $V_B = +I_BR_B = +0.0968\,\text{V}$ (the base current leaves the base and flows down $R_B$ to ground).
+3. $V_C = -5 + I_CR_C = -5 + 3.871 = -1.129\,\text{V}\le V_B$ ✓ active.`,
+      }),
+      P({
+        id: 'bk06-x-div', title: '7. Divider bias',
+        q: md`$V_{CC} = 10\,\text{V}$, $R_1 = 33\kO$, $R_2 = 6.8\kO$, $R_E = 560\,\Omega$, $R_C = 3.3\kO$, $\beta = 100$. Find $V_{TH}$, $R_{TH}$, $I_C$ and $V_C$.`,
+        fig: B.biasFig({ type: 'npn', base: 'div', VCC: 10, R1: 33e3, R2: 6.8e3, RE: '560\\,\\Omega', RC: 3.3e3 }),
+        parts: [{ lbl: 'V_{TH}', unit: 'V', ans: 1.70854 }, { lbl: 'R_{TH}', unit: 'kΩ', ans: 5.63819 }, { lbl: 'I_C', unit: 'mA', ans: 1.6215 }, { lbl: 'V_C', unit: 'V', ans: 4.64906 }],
+        hints: [md`$V_{TH} = 10\times6.8/39.8$, $R_{TH} = 33\parallel6.8$.`],
+        sol: md`$V_{TH} = 1.709\,\text{V}$, $R_{TH} = 5.638\kO$. $I_B = \dfrac{1.009}{5.638 + 101\times0.56}\,\text{mA} = \dfrac{1.0085}{62.20}\,\text{mA} = 16.21\,\mu\text{A}$, $I_C = 1.622\,\text{mA}$, $V_C = 10 - (1.622)(3.3) = 4.649\,\text{V}$ ✓ ($V_B = 1.617\,\text{V}$).`,
+      }),
+      P({
+        id: 'bk06-x-pnpdiv', title: '8. PNP divider bias',
+        q: md`A PNP ($\beta = 60$): $V_{CC} = 9\,\text{V}$, $R_1 = 10\kO$ (to $V_{CC}$) and $R_2 = 27\kO$ (to ground) at the base, $R_E = 1\kO$, $R_C = 2.2\kO$. Find $I_C$ and $V_{EC}$.`,
+        fig: B.biasFig({ type: 'pnp', base: 'div', VCC: 9, R1: 10e3, R2: 27e3, RE: 1e3, RC: 2.2e3 }),
+        parts: [{ lbl: 'I_C', unit: 'mA', ans: 1.52196 }, { lbl: 'V_{EC}', unit: 'V', ans: 4.10435 }],
+        hints: [md`$V_{TH} = 9\times27/37$, $R_{TH} = 10\parallel27$; drive $= V_{CC} - 0.7 - V_{TH}$.`],
+        sol: md`$V_{TH} = 6.568\,\text{V}$, $R_{TH} = 7.297\kO$. $I_B = \dfrac{9 - 0.7 - 6.568}{7.297 + 61\times1}\,\text{mA} = \dfrac{1.732}{68.30}\,\text{mA} = 25.37\,\mu\text{A}$, $I_C = 1.522\,\text{mA}$. $V_E = 9 - 1.547 = 7.453\,\text{V}$, $V_C = (1.522)(2.2) = 3.348\,\text{V}$, $V_{EC} = 4.104\,\text{V}$; $V_C\le V_B = 6.753\,\text{V}$ ✓.`,
+      }),
+      P({
+        id: 'bk06-x-sat', title: '9. Too much drive',
+        q: md`$V_{CC} = 5\,\text{V}$, $V_{BB} = 5\,\text{V}$ through $R_B = 10\kO$, $R_E = 470\,\Omega$, $R_C = 1\kO$, $\beta = 100$. Find the region, $I_C$ and $I_B$.`,
+        fig: B.biasFig({ type: 'npn', base: 'vbb', VCC: 5, VBB: 5, RB: 10e3, RE: '470\\,\\Omega', RC: 1e3 }),
+        parts: [{ lbl: 'Region', mc: ['Saturation', 'Forward active', 'Cutoff'], a: 0, fixed: true, why: [null, 'Active gives $I_C = 7.66\\,\\text{mA}$ and $V_C = -2.7\\,\\text{V}$.', 'There is plenty of base drive.'] },
+          { lbl: 'I_C', unit: 'mA', ans: 3.17963 }, { lbl: 'I_B', unit: 'µA', ans: 267.963 }],
+        hints: [md`Saturated (mA, kΩ): $10.47I_B + 0.47I_C = 4.3$ and $0.47I_B + 1.47I_C = 4.8$.`],
+        sol: md`
+1. Active guess: $I_B = 4.3/(10 + 101\times0.47)\,\text{mA} = 76.6\,\mu\text{A}$, $I_C = 7.66\,\text{mA}$, $V_C = 5 - 7.66 = -2.66\,\text{V}$: saturated.
+2. Two loops: $10.47I_B + 0.47I_C = 4.3$, $0.47I_B + 1.47I_C = 4.8$. Solving: $I_C = 3.180\,\text{mA}$, $I_B = 268.0\,\mu\text{A}$ (forced $\beta = 11.9$ ✓).`,
+      }),
+      P({
+        id: 'bk06-x-early', title: '10. Early voltage',
+        q: md`A transistor with $V_A = 75\,\text{V}$ carries $1.5\,\text{mA}$ at $V_{CE} = 2\,\text{V}$. Find $r_o$ (course formula), and $I_C$ at $V_{CE} = 10\,\text{V}$ with the same $V_{BE}$ (four significant figures).`,
+        parts: [{ lbl: 'r_o', unit: 'kΩ', ans: 50 }, { lbl: 'I_C', unit: 'mA', ans: 1.65584, tol: { rel: 0.002 } }],
+        hints: [md`$I_C\propto V_A + V_{CE}$.`],
+        sol: md`$r_o = 75/1.5 = 50\kO$. $I_C = 1.5\times\dfrac{75 + 10}{75 + 2} = 1.656\,\text{mA}$.`,
+      }),
+      P({
+        id: 'bk06-x-fbdesign', title: '11. Design a feedback bias',
+        q: md`Collector-to-base feedback: $R_C = 4.7\kO$ from $V_{CC} = 10\,\text{V}$, $R_B$ from the collector to the base, emitter grounded, $\beta = 100$. Choose $R_B$ to put the collector at $5\,\text{V}$.`,
+        fig: B.biasFig({ type: 'npn', base: 'fb', VCC: 10, RB: '', RC: 4.7e3 }),
+        parts: [{ lbl: 'R_B', unit: 'kΩ', ans: 408.242, tol: { rel: 0.004 } }],
+        hints: [md`$R_C$ has $5\,\text{V}$ across it and carries $I_E$. Then $I_B = I_E/(\beta + 1)$, and $R_B$ has $5 - 0.7\,\text{V}$ across it.`],
+        sol: md`$I_E = 5\,\text{V}/4.7\kO = 1.064\,\text{mA}$, $I_B = 1.064/101 = 10.53\,\mu\text{A}$, $R_B = (5 - 0.7)/10.53\,\mu\text{A} = 408\kO$. Check: $V_C - V_B = I_BR_B = 4.3\,\text{V} > 0$ ✓ (this bias cannot saturate).`,
+      }),
+      P({
+        id: 'bk06-x-mirror', title: '12. A BJT current mirror',
+        q: md`$Q_1$ and $Q_2$ are identical ($\beta = 100$) and share a base; $Q_1$ is diode-connected (base tied to collector) and fed from $10\,\text{V}$ through $R = 9.3\kO$; $Q_2$'s collector goes to $10\,\text{V}$ through $R_C = 5\kO$. Find the reference current $I_{REF}$ through $R$, the copied current $I_{C2}$ (four significant figures), and $V_{C2}$.`,
+        fig: mirrorFig,
+        parts: [{ lbl: 'I_{REF}', unit: 'mA', ans: 1 }, { lbl: 'I_{C2}', unit: 'mA', ans: 0.980392, tol: { rel: 0.002 } }, { lbl: 'V_{C2}', unit: 'V', ans: 5.09804 }],
+        hints: [md`$Q_1$'s base–collector tie puts its collector at $0.7\,\text{V}$. Same $V_{BE}$, same transistor: $I_{C1} = I_{C2} = I_C$.`, md`KCL at $Q_1$'s collector: $I_{REF} = I_C + 2I_C/\beta$.`],
+        sol: md`
+1. The tie makes $V_{C1} = V_B = 0.7\,\text{V}$, so $I_{REF} = (10 - 0.7)/9.3\kO = 1\,\text{mA}$.
+2. Same $V_{BE}$ on identical transistors gives equal collector currents ([Section 6.2](#/l/bk06-laws)). KCL at the tied node: $I_{REF} = I_C + I_{B1} + I_{B2} = I_C(1 + 2/\beta)$, so $I_{C2} = \dfrac{1\,\text{mA}}{1.02} = 0.9804\,\text{mA}$.
+3. $V_{C2} = 10 - (0.9804)(5) = 5.098\,\text{V}\ge0.7\,\text{V}$ ✓ active.
+
+The base currents cost a 2% copying error; [Chapter 8](#/l/bk08-base) and the Exam 2 mirrors ([Chapter 5](#/l/bk05-mirror)) build on this.`,
+      }),
+      P({
+        id: 'bk06-x-casc', title: '13. Two direct-coupled stages (exam style)', big: true,
+        q: md`$Q_1$'s collector drives $Q_2$'s base directly, so $R_{C1}$ carries $I_{C1}$ **plus** $Q_2$'s base current. $\beta = 100$ for both. Find (a) $I_{C1}$, (b) $I_{C2}$, (c) $V_{C1}$, (d) $V_{C2}$, and (e) confirm both regions.`,
+        fig: cascFig,
+        parts: [{ lbl: 'I_{C1}', unit: 'mA', ans: 0.9009 }, { lbl: 'I_{C2}', unit: 'mA', ans: 2.25929, traps: [{ v: 100 * (12 - 0.9009 * 6.8 - 0.7) / (101 * 2.2), msg: 'That ignores $Q_2$\'s base current in $R_{C1}$, i.e. it assumed $V_{C1} = 12 - I_{C1}R_{C1}$.' }] },
+          { lbl: 'V_{C1}', unit: 'V', ans: 5.72023 }, { lbl: 'V_{C2}', unit: 'V', ans: 8.61107 },
+          { lbl: '(e) Regions', mc: ['Both forward active', '$Q_1$ saturated', '$Q_2$ saturated'], a: 0, fixed: true, why: [null, '$V_{C1} = 5.72\\,\\text{V}$ is far above $V_{B1} = 1.61\\,\\text{V}$.', '$V_{C2} = 8.61\\,\\text{V}$ is above $V_{B2} = V_{C1} = 5.72\\,\\text{V}$.'] }],
+        hints: [md`$Q_1$ first: $I_{B1} = (1.7 - 0.7)/(10 + 101\times1)\,\text{mA}$. $Q_1$ does not care what its collector is connected to (current source).`,
+          md`At node $C_1$: $(12 - V_{C1})/R_{C1} = I_{C1} + I_{B2}$, and $V_{C1} = V_{B2} = 0.7 + (\beta + 1)I_{B2}R_{E2}$.`],
+        sol: md`
+**(a)** $I_{B1} = \dfrac{1.7 - 0.7}{10 + 101\times1}\,\text{mA} = 9.009\,\mu\text{A}$, so $I_{C1} = 0.9009\,\text{mA}$. ($Q_1$'s collector is a current source: what hangs on it does not change $I_{C1}$, as long as $Q_1$ stays active.)
+
+**(b)** KCL at node $C_1$, with $V_{C1} = V_{B2} = 0.7 + 101I_{B2}(2.2\kO)$:
+$$\frac{12 - 0.7 - 222.2\kO\cdot I_{B2}}{6.8\kO} = 0.9009\,\text{mA} + I_{B2}\quad\Rightarrow\quad 11.3 - 222.2I_{B2} = 6.126 + 6.8I_{B2}$$
+(mA, kΩ), so $I_{B2} = 5.174/229.0 = 22.59\,\mu\text{A}$ and $I_{C2} = 2.259\,\text{mA}$.
+
+**(c)** $V_{C1} = 0.7 + (2.282\,\text{mA})(2.2\kO) = 5.720\,\text{V}$.
+
+**(d)** $V_{C2} = 12 - (2.259)(1.5) = 8.611\,\text{V}$.
+
+**(e)** $Q_1$: $V_{C1} = 5.72\ge V_{B1} = 1.61\,\text{V}$ ✓. $Q_2$: $V_{C2} = 8.61\ge V_{B2} = 5.72\,\text{V}$ ✓. Both forward active.`,
+      }),
+      P({
+        id: 'bk06-x-exam1', title: '14. A complete bias analysis (exam style)', big: true,
+        q: md`The amplifier below has $V_{CC} = 12\,\text{V}$, $R_1 = 68\kO$, $R_2 = 12\kO$, $R_C = 4.7\kO$, $R_E = 1.2\kO$ (bypassed), $R_L = 10\kO$, $R_S = 1\kO$, $\beta = 150$; the capacitors are large. Find (a) $V_{TH}$ and (b) $R_{TH}$ of the bias divider, (c) $I_C$, (d) $V_{CE}$, (e) the region, and (f) the largest $R_C$ that would keep the transistor forward active.`,
+        fig: B.ampFig(Object.assign({ vals: false }, exam1)),
+        parts: [{ lbl: 'V_{TH}', unit: 'V', ans: 1.8 }, { lbl: 'R_{TH}', unit: 'kΩ', ans: 10.2 }, { lbl: 'I_C', unit: 'mA', ans: 0.862069 }, { lbl: 'V_{CE}', unit: 'V', ans: 6.90690 },
+          { lbl: '(e) Region', mc: ['Forward active', 'Saturation', 'Cutoff'], a: 0, fixed: true, why: [null, '$V_C = 7.95\\,\\text{V}$ is far above $V_B = 1.74\\,\\text{V}$.', '$V_{TH} = 1.8\\,\\text{V}$ is enough to turn the junction on.'] },
+          { lbl: 'R_{C,max}', unit: 'kΩ', ans: 11.9, traps: [{ v: (12 - 0.2 - 1.04138) / 0.862069, msg: 'That allows $V_{CE}$ down to $0.2\\,\\text{V}$. The course test is $V_C\\ge V_B$.' }] }],
+        hints: [md`DC: erase the capacitors ($R_L$, $R_S$ go; $R_E$ stays).`, md`(f) $I_C$ does not depend on $R_C$ while active; require $12 - I_CR_C\ge V_B$.`],
+        sol: md`
+**(a), (b)** $V_{TH} = 12\times12/80 = 1.8\,\text{V}$, $R_{TH} = 68\parallel12 = 10.2\kO$.
+
+**(c)** $I_B = \dfrac{1.8 - 0.7}{10.2 + 151\times1.2}\,\text{mA} = \dfrac{1.1}{191.4}\,\text{mA} = 5.747\,\mu\text{A}$, $I_C = 150I_B = 0.8621\,\text{mA}$.
+
+**(d)** $V_E = (0.8678\,\text{mA})(1.2\kO) = 1.041\,\text{V}$, $V_C = 12 - (0.8621)(4.7) = 7.948\,\text{V}$, $V_{CE} = 6.907\,\text{V}$.
+
+**(e)** $V_C = 7.95\ge V_B = 1.74\,\text{V}$: forward active.
+
+**(f)** $12 - (0.8621)R_C\ge1.741$ gives $R_C\le11.9\kO$.
+
+(Chapter 7 continues this circuit: $g_m = I_C/V_T = 34.5\,\text{mS}$.)`,
+      }),
+      P({
+        id: 'bk06-x-exam2', title: '15. How stable is a PNP bias? (exam style)', big: true,
+        q: md`A PNP stage: $V_{CC} = 10\,\text{V}$, $R_1 = 20\kO$ (to $V_{CC}$) and $R_2 = 47\kO$ (to ground) at the base, $R_E = 1.5\kO$, $R_C = 3.3\kO$. (a) Find $I_C$ and (b) $V_{EC}$ for $\beta = 100$. (c) Find $I_C$ for $\beta = 200$, and (d) the percentage change.`,
+        fig: B.biasFig({ type: 'pnp', base: 'div', VCC: 10, R1: 20e3, R2: 47e3, RE: 1.5e3, RC: 3.3e3 }),
+        parts: [{ lbl: 'I_C\\ (\\beta = 100)', unit: 'mA', ans: 1.38046 }, { lbl: 'V_{EC}', unit: 'V', ans: 3.35308 }, { lbl: 'I_C\\ (\\beta = 200)', unit: 'mA', ans: 1.4484 }, { lbl: '\\text{change}', unit: '%', ans: 4.92216, tol: { rel: 0.05 } }],
+        hints: [md`$V_{TH} = 10\times47/67 = 7.015\,\text{V}$, $R_{TH} = 20\parallel47 = 14.03\kO$.`, md`PNP loop: $I_B = (V_{CC} - 0.7 - V_{TH})/(R_{TH} + (\beta + 1)R_E)$.`],
+        sol: md`
+$V_{TH} = 7.015\,\text{V}$, $R_{TH} = 14.03\kO$, drive $= 10 - 0.7 - 7.015 = 2.285\,\text{V}$.
+
+**(a)** $I_B = 2.285/(14.03 + 151.5)\,\text{mA} = 13.80\,\mu\text{A}$, $I_C = 1.380\,\text{mA}$.
+
+**(b)** $V_E = 10 - (1.394)(1.5) = 7.909\,\text{V}$, $V_C = (1.380)(3.3) = 4.556\,\text{V}$, $V_{EC} = 3.353\,\text{V}$ ($V_C\le V_B = 7.209\,\text{V}$ ✓).
+
+**(c)** $I_B = 2.285/(14.03 + 301.5)\,\text{mA} = 7.242\,\mu\text{A}$, $I_C = 1.448\,\text{mA}$.
+
+**(d)** $+4.9\%$ for twice the $\beta$: $R_{TH}/(\beta + 1)R_E$ is $0.093$ at $\beta = 100$, so the divider is about at the rule-of-thumb stiffness.`,
+      }),
+      P({
+        id: 'bk06-x-exam3', title: '16. An LED driver (exam style)', big: true,
+        q: md`An NPN switch drives an LED from $V_{CC} = 5\,\text{V}$: $R_C$ in series with the LED (which drops $2\,\text{V}$ when lit) from $V_{CC}$ to the collector; emitter grounded; the base is driven from a $3.3\,\text{V}$ logic output through $R_B$. (a) Choose $R_C$ for $10\,\text{mA}$ in the LED with the transistor saturated. (b) Choose $R_B$ for a forced $\beta$ of 10. (c) Someone swaps in $1.8\,\text{V}$ logic. Down to what transistor $\beta$ does the LED still get its full $10\,\text{mA}$?`,
+        parts: [{ lbl: 'R_C', unit: 'Ω', ans: 280, traps: [{ v: 300, msg: 'Leave $0.2\\,\\text{V}$ across the saturated transistor: $(5 - 2 - 0.2)/10\\,\\text{mA}$.' }] }, { lbl: 'R_B', unit: 'kΩ', ans: 2.6 }, { lbl: '\\beta_{min}', unit: '', ans: 23.6364 }],
+        hints: [md`Saturated: the collector sits at $0.2\,\text{V}$; the LED takes $2\,\text{V}$; $R_C$ takes the rest.`, md`(c) $I_B = (1.8 - 0.7)/R_B$; saturation needs $\beta I_B\ge10\,\text{mA}$.`],
+        sol: md`
+**(a)** $R_C = (5 - 2 - 0.2)\,\text{V}/10\,\text{mA} = 280\,\Omega$.
+
+**(b)** Forced $\beta = 10$: $I_B = 1\,\text{mA}$, $R_B = (3.3 - 0.7)/1\,\text{mA} = 2.6\kO$.
+
+**(c)** $I_B = 1.1\,\text{V}/2.6\kO = 0.423\,\text{mA}$. Saturation (full current) needs $\beta\ge10\,\text{mA}/0.423\,\text{mA} = 23.6$. Typical small-signal transistors have $\beta\ge50$, so the design still works: that margin is exactly why we overdrive the base.`,
+      }),
+      R(md`
+        ### Mixed drill
+
+        Every Chapter 6 skill, shuffled: currents, the exponential, regions, base-resistor, divider and saturated circuits, and the Early effect. Eight correct answers complete it.
+      `),
+      G('bk_cur', { need: 8, pool: ['bk_cur', 'bk_vbe', 'bk_reg', 'bk_dcrb', 'bk_dcrb', 'bk_dcdiv', 'bk_dcdiv', 'bk_dcsat', 'bk_early'] }),
+    ],
+  });
 })();

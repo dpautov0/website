@@ -915,7 +915,7 @@ Find (a) the straight-line unity-gain frequency, (b) the exact $\omega_u$, and (
 
 **(b)** Exactly, with $u = \omega^2$: $(1 + u/\omega_{p1}^2)(1 + u/\omega_{p2}^2) = A_0^2$, a quadratic in $u$; its positive root gives $\omega_u = ${wT(eu, 4)}$.
 
-**(c)** The same with $2$ on the right: $\omega_{3\text{dB}} = ${wT(e3, 4)}$, ${Math.abs(e3 / w1 - 1) < 0.02 ? 'essentially the lower pole (the second one is far away)' : `${f((1 - e3 / w1) * 100, 2)}\\%$ below the lower pole, because the second pole is close`}.
+**(c)** The same with $2$ on the right: $\omega_{3\text{dB}} = ${wT(e3, 4)}$, ${Math.abs(e3 / w1 - 1) < 0.02 ? 'essentially the lower pole (the second one is far away)' : `$${f((1 - e3 / w1) * 100, 2)}\\%$ below the lower pole, because the second pole is close`}.
 
 [[fig:p]]`,
       figs: { p: { svg: EB().svg(sp, { marks: [{ w: w1, n: '\\omega_{p1}' }, { w: w2, n: '\\omega_{p2}' }, { w: su, n: '\\omega_u' }] }) } },

@@ -28,18 +28,18 @@
     const acc = accepts.filter((x) => Math.abs(x - exact) > 0.012 * a);
     if (acc.length) p.accept = acc.map((x) => x * s);
     const good = [exact, ...accepts];
-    const t = traps.filter((x) => isFinite(x.v) && good.every((g) => Math.abs(x.v - g) > 0.03 * Math.abs(g)));
+    const t = traps.filter((x) => isFinite(x.v) && good.every((g) => Math.abs(x.v - g) > 0.05 * Math.abs(g)));
     if (t.length) p.traps = t.map((x) => ({ v: x.v * s, msg: x.msg }));
     return p;
   };
   // a current answer box in µA or mA
   const curAns = (lbl, exact, traps = []) => {
     const [unit, s] = Math.abs(exact) < 1e-3 ? ['µA', 1e6] : ['mA', 1e3];
-    const t = traps.filter((x) => isFinite(x.v) && Math.abs(x.v - exact) > 0.03 * Math.abs(exact));
+    const t = traps.filter((x) => isFinite(x.v) && Math.abs(x.v - exact) > 0.05 * Math.abs(exact));
     return Object.assign({ lbl, unit, ans: exact * s }, t.length ? { traps: t.map((x) => ({ v: x.v * s, msg: x.msg })) } : {});
   };
   const numAns = (lbl, unit, exact, traps = [], accept = []) => {
-    const t = traps.filter((x) => isFinite(x.v) && [exact, ...accept].every((g) => Math.abs(x.v - g) > 0.03 * Math.abs(g)));
+    const t = traps.filter((x) => isFinite(x.v) && [exact, ...accept].every((g) => Math.abs(x.v - g) > 0.05 * Math.abs(g)));
     return Object.assign({ lbl, unit, ans: exact }, accept.length ? { accept } : {}, t.length ? { traps: t } : {});
   };
   window.BKA1 = { ohm, amp, volt, mv, ms, kk, resAns, curAns, numAns, par };
@@ -409,6 +409,174 @@ ${reg === 0 ? '' : md`2. $V_D = ${f(VD)}\,\text{V}$ against $V_G - V_{TN} = ${f(
       hints: [md`$W/L = \dfrac{2I_D}{\mu_nC_{ox}V_{ov}^2}$ with $V_{ov} = ${f(ov)}\,\text{V}$.`],
       sol: md`$W/L = \dfrac{2(${amp(ID)})}{(100\,\mu\text{A/V}^2)(${f(ov)})^2} = ${f(WL)}$, which is $${f(WL)}/${unit} = ${f(mult)}X$.`,
       _v: { mode, WL, ov },
+    };
+  };
+
+  // ================================================================ Ch 2.2  PMOS
+  const pmosRD = (vdd, vg, rd) => [
+    ['rail', [1, -0.4], { n: `V_{DD} = ${vdd}` }], ['w', [1, -0.4], [1, 0.8]],
+    ['pmos', [1, 1.8]], ['w', [0, 1.8], [-0.6, 1.8]], ['term', [-0.6, 1.8], { n: `V_G = ${vg}`, side: 'l' }],
+    ['R', [1, 2.8], [1, 4.2], { n: 'R_D', s: rd }], ['gnd', [1, 4.2]], ['w', [1, 2.8], [1.8, 2.8]], ['term', [1.8, 2.8], { n: 'V_D' }],
+  ];
+  GENS.bk_pmos = () => {
+    let VDD, WL, VSG, RD, kp, ov, I, VG, VD, tries = 0;
+    do {
+      VDD = pick([3, 5, 5]); WL = pick([20, 50, 100, 200, 400]); VSG = pick([1.2, 1.3, 1.4, 1.5, 1.6, 2]); RD = pick([1, 2, 2.5, 4, 5, 10]) * 1e3;
+      kp = MUP * WL; ov = VSG - 1; I = 0.5 * kp * ov * ov; VG = +(VDD - VSG).toFixed(2); VD = I * RD; tries++;
+    } while ((VD > VG + 1 - 0.1 || VD < 0.2 || I > 5e-3) && tries < 500);
+    const RDmax = (VG + 1) / I;
+    return {
+      fig: pmosRD(`${VDD}\\,\\text{V}`, volt(VG), ohm(RD)),
+      q: md`A PMOS ($\mu_pC_{ox} = 50\,\mu\text{A/V}^2$, $|V_{TP}| = 1\,\text{V}$, $W/L = ${WL}$) has its source on $V_{DD} = ${VDD}\,\text{V}$ and its gate at $${volt(VG)}$; $R_D = ${ohm(RD)}$ runs from its drain to ground. Find $V_{SG}$, $I_D$, $V_D$, and the largest $R_D$ that keeps it in saturation.`,
+      parts: [
+        numAns('V_{SG}', 'V', VSG, [{ v: -VSG, msg: 'Source minus gate: $V_{SG}$ is positive for a PMOS that is on.' }]),
+        curAns('I_D', I, [{ v: 2 * I, msg: 'Use $\\mu_pC_{ox} = 50\\,\\mu\\text{A/V}^2$ (or you dropped the $\\tfrac12$).' }]),
+        numAns('V_D', 'V', VD, [{ v: VDD - VD, msg: 'The drain current flows down through $R_D$ to ground: $V_D = I_DR_D$.' }]),
+        resAns('R_{D,max}', RDmax, [], [{ v: (VG - 1) / I, msg: 'That is the NMOS rule. For a PMOS: $V_D\\le V_G + |V_{TP}|$.' }]),
+      ],
+      hints: [md`$V_{SG} = V_S - V_G$, $V_{ov} = V_{SG} - 1$, $k_p = \mu_pC_{ox}W/L$.`, md`PMOS saturation: $V_D\le V_G + 1\,\text{V}$.`],
+      sol: md`
+1. $V_{SG} = ${VDD} - ${f(VG)} = ${volt(VSG)}$, so $V_{ov} = ${volt(ov)}$.
+2. $k_p = (50\,\mu\text{A/V}^2)(${WL}) = ${kk(kp)}$; $I_D = \tfrac12k_pV_{ov}^2 = \tfrac12(${kk(kp)})(${f(ov)})^2 = ${amp(I)}$, flowing out of the drain.
+3. $V_D = I_DR_D = (${amp(I)})(${ohm(RD)}) = ${volt(VD)}$. Check: $V_D\le V_G + 1 = ${volt(VG + 1)}$ ✓.
+4. The edge is $V_D = V_G + 1 = ${volt(VG + 1)}$: $R_{D,max} = ${f(VG + 1)}\,\text{V}/${amp(I)} = ${ohm(RDmax)}$.`,
+      _v: { VDD, WL, VG, RD },
+    };
+  };
+
+  // ================================================================ Ch 2.3  r_ds and lambda
+  GENS.bk_rds = () => {
+    if (Math.random() < 0.5) {
+      const lam = pick([0.01, 0.02, 0.025, 0.04, 0.05, 0.1]), I = pick([0.05, 0.1, 0.2, 0.25, 0.4, 0.5, 1, 2]) * 1e-3;
+      const r = 1 / (lam * I), I2 = I * pick([2, 4]);
+      return {
+        q: md`A saturated MOSFET has $\lambda = ${f(lam)}\,\text{V}^{-1}$ and carries $I_D = ${amp(I)}$. Find $r_{ds}$. Then the bias current is raised to $${amp(I2)}$: find the new $r_{ds}$.`,
+        parts: [resAns('r_{ds}', r, [], [{ v: lam / I, msg: 'It is $1/(\\lambda I_D)$, not $\\lambda/I_D$.' }]), resAns('r_{ds}\\ \\text{(new)}', 1 / (lam * I2), [], [{ v: r * I2 / I, msg: 'More current gives a *smaller* $r_{ds}$.' }])],
+        hints: [md`$r_{ds} = 1/(\lambda I_D)$.`],
+        sol: md`$r_{ds} = \dfrac{1}{(${f(lam)}\,\text{V}^{-1})(${amp(I)})} = ${ohm(r)}$. At $${amp(I2)}$ (${f(I2 / I)} times the current): $${ohm(1 / (lam * I2))}$, ${f(I2 / I)} times smaller.`,
+        _v: { mode: 'fwd', lam, I, I2 },
+      };
+    }
+    const lam = pick([0.02, 0.04, 0.05, 0.1]), I0 = pick([0.2, 0.5, 1, 2]) * 1e-3, V1 = pick([1, 2]), V2 = V1 + pick([2, 3, 4]);
+    const I1 = I0 * (1 + lam * V1), I2 = I0 * (1 + lam * V2), sl = (I2 - I1) / (V2 - V1);
+    return {
+      q: md`A saturated MOSFET at fixed $V_{GS}$ carries $${f(I1 * 1e3, 5)}\,\text{mA}$ at $V_{DS} = ${V1}\,\text{V}$ and $${f(I2 * 1e3, 5)}\,\text{mA}$ at $V_{DS} = ${V2}\,\text{V}$. Find $r_{ds}$, the extrapolated current $I_{D0}$ at $V_{DS} = 0$, and $\lambda$.`,
+      parts: [resAns('r_{ds}', 1 / sl), numAns('I_{D0}', 'mA', I0 * 1e3, [{ v: I1 * 1e3, msg: 'Extrapolate the line back to $V_{DS} = 0$.' }]), numAns('\\lambda', 'V^{-1}', lam, [{ v: sl / I1, msg: 'Divide the slope by $I_{D0}$ (the current at $V_{DS} = 0$), not by the current at the first point.' }].filter(() => Math.abs(sl / I1 - lam) > 0.03 * lam))],
+      hints: [md`Slope $=\Delta I/\Delta V_{DS}$; $r_{ds}$ is its inverse.`, md`$I_{D0} = I_1 - \text{slope}\times V_1$, and $\lambda = \text{slope}/I_{D0}$.`],
+      sol: md`
+1. Slope: $\dfrac{${f(I2 * 1e3, 5)} - ${f(I1 * 1e3, 5)}}{${V2} - ${V1}} = ${f(sl * 1e6, 4)}\,\mu\text{A/V}$, so $r_{ds} = ${ohm(1 / sl)}$.
+2. $I_{D0} = ${f(I1 * 1e3, 5)} - (${f(sl * 1e3, 4)})(${V1}) = ${f(I0 * 1e3, 4)}\,\text{mA}$.
+3. $\lambda = \text{slope}/I_{D0} = ${f(lam)}\,\text{V}^{-1}$. Check: $1/(\lambda I_{D0}) = ${ohm(1 / (lam * I0))}$ ✓, and the line crosses zero at $-1/\lambda = ${f(-1 / lam)}\,\text{V}$.`,
+      _v: { mode: 'meas', V1, V2, I1, I2 },
+    };
+  };
+
+  // ================================================================ Ch 2.4  g_m
+  GENS.bk_gm = () => {
+    const p = Math.random() < 0.35, mu = p ? MUP : MUN, WL = pick([10, 20, 50, 100, 200, 500]), k = mu * WL;
+    const lam = pick([0.02, 0.04, 0.05, 0.1]), mode = pick(['VGS', 'ID', 'IDov']);
+    let ov, I;
+    if (mode === 'ID') { I = pick([0.05, 0.1, 0.2, 0.25, 0.5, 1]) * 1e-3; ov = Math.sqrt(2 * I / k); } else { ov = pick([0.1, 0.15, 0.2, 0.25, 0.3, 0.4, 0.5]); I = 0.5 * k * ov * ov; }
+    const gm = 2 * I / ov, rds = 1 / (lam * I);
+    const dev = p ? 'PMOS ($\\mu_pC_{ox} = 50\\,\\mu\\text{A/V}^2$, $|V_{TP}| = 1\\,\\text{V}$)' : 'NMOS ($\\mu_nC_{ox} = 100\\,\\mu\\text{A/V}^2$, $V_{TN} = 1\\,\\text{V}$)';
+    const vg = p ? 'V_{SG}' : 'V_{GS}';
+    const given = mode === 'VGS' ? md`with $W/L = ${WL}$ is biased at $${vg} = ${volt(1 + ov)}$` : mode === 'ID' ? md`with $W/L = ${WL}$ is biased by a current source at $I_D = ${amp(I)}$` : md`carries $I_D = ${amp(I)}$ at an overdrive $V_{ov} = ${volt(ov)}$`;
+    const parts = [resAns('1/g_m', 1 / gm, [], [{ v: ov / I, msg: 'That is $1/(I_D/V_{ov})$: the slope is $2I_D/V_{ov}$.' }]), resAns('r_{ds}', rds, [], [{ v: lam / I, msg: '$r_{ds} = 1/(\\lambda I_D)$.' }]), numAns('g_mr_{ds}', '', gm * rds)];
+    parts.unshift(numAns('g_m', 'mS', gm * 1e3, [{ v: gm * 500, msg: 'Missing a factor of 2: $g_m = 2I_D/V_{ov}$.' }, { v: k * (1 + ov) * 1e3, msg: 'Use the overdrive, not the full gate voltage: $g_m = kV_{ov}$.' }]));
+    const sol1 = mode === 'VGS' ? md`$k = ${kk(k)}$, $V_{ov} = ${volt(ov)}$. Form 1: $g_m = kV_{ov} = (${kk(k)})(${f(ov)}\,\text{V}) = ${ms(gm)}$ (and $I_D = \tfrac12kV_{ov}^2 = ${amp(I)}$).`
+      : mode === 'ID' ? md`$k = ${kk(k)}$. Only $I_D$ and the size are known, so Form 3: $g_m = \sqrt{2kI_D} = \sqrt{2(${kk(k)})(${amp(I)})} = ${ms(gm)}$ (so $V_{ov} = 2I_D/g_m = ${volt(ov)}$).`
+        : md`Form 2: $g_m = 2I_D/V_{ov} = 2(${amp(I)})/${volt(ov)} = ${ms(gm)}$.`;
+    return {
+      q: md`A ${dev} ${given}, in saturation, with $\lambda = ${f(lam)}\,\text{V}^{-1}$. Find $g_m$, $1/g_m$, $r_{ds}$ and the intrinsic gain $g_mr_{ds}$.`,
+      parts,
+      hints: [mode === 'VGS' ? md`Form 1: $g_m = \mu C_{ox}\tfrac WL V_{ov}$.` : mode === 'ID' ? md`Form 3: $g_m = \sqrt{2\mu C_{ox}\tfrac WL I_D}$.` : md`Form 2: $g_m = 2I_D/V_{ov}$.`, md`$r_{ds} = 1/(\lambda I_D)$; $g_mr_{ds} = 2/(\lambda V_{ov})$.`],
+      sol: md`
+1. ${sol1}
+2. $1/g_m = ${ohm(1 / gm)}$.
+3. $r_{ds} = \dfrac{1}{\lambda I_D} = \dfrac{1}{(${f(lam)})(${amp(I)})} = ${ohm(rds)}$.
+4. $g_mr_{ds} = ${f(gm * rds, 4)}$, the same as $2/(\lambda V_{ov}) = 2/(${f(lam)}\times${f(ov, 4)})$.`,
+      _v: { p, WL, lam, mode, ov, I },
+    };
+  };
+
+  GENS.bk_gm_scale = () => {
+    const I1 = pick([0.1, 0.2, 0.5, 1]) * 1e-3, ov1 = pick([0.2, 0.25, 0.4]), gm1 = 2 * I1 / ov1, n = pick([2, 4, 9]);
+    const mode = pick(['I', 'WL', 'both']);
+    const gm2 = mode === 'both' ? gm1 * n : gm1 * Math.sqrt(n);
+    const ov2 = mode === 'I' ? ov1 * Math.sqrt(n) : mode === 'WL' ? ov1 / Math.sqrt(n) : ov1;
+    const what = mode === 'I' ? md`the bias current is multiplied by ${n} in the **same** transistor` : mode === 'WL' ? md`the transistor is made ${n} times wider ($W/L\times${n}$) at the **same** bias current` : md`both the current and $W/L$ are multiplied by ${n} (${n} identical transistors in parallel)`;
+    return {
+      q: md`A MOSFET in saturation carries $${amp(I1)}$ at $V_{ov} = ${volt(ov1)}$, so $g_m = ${ms(gm1)}$. Now ${what}. Find the new $g_m$ and the new $V_{ov}$.`,
+      parts: [numAns('g_m', 'mS', gm2 * 1e3, mode === 'both' ? [{ v: gm1 * Math.sqrt(n) * 1e3, msg: 'Here $V_{ov}$ is unchanged, so $g_m = 2I_D/V_{ov}$ grows with $I_D$ itself.' }] : [{ v: gm1 * n * 1e3, msg: 'Not linear: with one of $I_D$, $W/L$ held, $g_m = \\sqrt{2kI_D}$ grows as a square root.' }]),
+        numAns('V_{ov}', 'V', ov2, mode === 'both' ? [] : [{ v: ov1, msg: '$V_{ov}$ changes here: $I_D = \\tfrac12kV_{ov}^2$ must still hold.' }])],
+      hints: [md`$g_m = \sqrt{2kI_D}$ and $V_{ov} = \sqrt{2I_D/k}$, with $k\propto W/L$.`],
+      sol: md`
+$g_m = \sqrt{2kI_D}$ and $V_{ov} = \sqrt{2I_D/k}$.
+${mode === 'I' ? md`- $I_D\times${n}$, $k$ fixed: $g_m\times\sqrt{${n}}$, $V_{ov}\times\sqrt{${n}}$.` : mode === 'WL' ? md`- $k\times${n}$, $I_D$ fixed: $g_m\times\sqrt{${n}}$, $V_{ov}\div\sqrt{${n}}$.` : md`- $k\times${n}$ and $I_D\times${n}$: $g_m\times\sqrt{${n}\cdot${n}} = \times${n}$, $V_{ov}$ unchanged (each of the ${n} parallel devices is exactly the old one).`}
+
+New $g_m = ${ms(gm2)}$, new $V_{ov} = ${volt(ov2)}$. Check with Form 2: $2I_D/V_{ov} = 2(${amp(mode === 'WL' ? I1 : I1 * n)})/${f(ov2, 4)} = ${ms(gm2)}$ ✓.`,
+      _v: { mode, I1, ov1, n },
+    };
+  };
+
+  // ================================================================ Ch 2.5–2.6  the model: common-source gain, NMOS and PMOS
+  const csFig = (vdd, rd, vgs, rl, sz) => [['rail', [1, -1.2], { n: `V_{DD} = ${vdd}` }], ['R', [1, -1.2], [1, 0], { n: 'R_D', s: rd }], ['w', [1, 0], [2.6, 0]], ['term', [2.6, 0], { n: 'v_{out}' }],
+    ...(rl ? [['R', [2, 0], [2, 1.4], { n: 'R_L', s: rl }], ['gnd', [2, 1.4]]] : []),
+    ['nmos', [1, 1], { sz }], ['gnd', [1, 2]], ['w', [0, 1], [-0.6, 1], [-0.6, 1.4]], ['Vac', [-0.6, 1.4], [-0.6, 2.4], { n: 'v_{in}', side: 'l' }],
+    ['V', [-0.6, 2.4], [-0.6, 3.4], { n: 'V_{GS}', s: vgs, side: 'l' }], ['gnd', [-0.6, 3.4]]];
+  const pcsFig = (vdd, vg, rd, rl) => [['rail', [1, -0.2], { n: `V_{DD} = ${vdd}` }], ['pmos', [1, 0.8]], ['w', [0, 0.8], [-0.6, 0.8], [-0.6, 1.2]],
+    ['Vac', [-0.6, 1.2], [-0.6, 2.2], { n: 'v_{in}', side: 'l' }], ['V', [-0.6, 2.2], [-0.6, 3.2], { n: 'V_G', s: vg, side: 'l' }], ['gnd', [-0.6, 3.2]],
+    ['R', [1, 1.8], [1, 3.2], { n: 'R_D', s: rd }], ['gnd', [1, 3.2]], ['w', [1, 1.8], [2.6, 1.8]], ['term', [2.6, 1.8], { n: 'v_{out}' }],
+    ...(rl ? [['R', [2, 1.8], [2, 3.2], { n: 'R_L', s: rl }], ['gnd', [2, 3.2]]] : [])];
+  const csParts = (I, gm, rds, Av, RD, RL) => [
+    curAns('I_D', I, [{ v: 2 * I, msg: 'Missing the $\\tfrac12$.' }]),
+    numAns('g_m', 'mS', gm * 1e3, [{ v: gm * 500, msg: '$g_m = 2I_D/V_{ov}$: you dropped the 2.' }]),
+    resAns('r_{ds}', rds),
+    numAns('A_v', 'V/V', Av, [{ v: -gm * (RL ? par(RD, RL) : RD), msg: 'Include $r_{ds}$: it is in parallel at the drain.' }, ...(RL ? [{ v: -gm * par(RD, rds), msg: 'The load is in parallel at the drain too.' }] : [])]),
+  ];
+  GENS.bk_cs_model = () => {
+    let unit, mult, WL, ov, lam, RD, VDD, I, VD, tries = 0;
+    do {
+      unit = pick([100, 200, 250, 500]); mult = pick([0.5, 1, 2, 4]); WL = unit * mult; ov = pick([0.2, 0.25, 0.3, 0.4, 0.5]);
+      lam = pick([0.02, 0.04, 0.05, 0.1]); RD = pick([1, 2, 2.5, 4, 5, 10]) * 1e3; VDD = pick([3, 5, 5]);
+      I = 0.5 * MUN * WL * ov * ov; VD = VDD - I * RD; tries++;
+    } while ((VD < ov + 0.2 || VD > VDD - 0.3 || I > 4e-3) && tries < 500);
+    const RL = pick([null, null, 10e3, 20e3]);
+    const gm = 2 * I / ov, rds = 1 / (lam * I), Rout = RL ? par(RD, rds, RL) : par(RD, rds), Av = -gm * Rout;
+    const sz = mult === 0.5 ? '\\tfrac12X' : `${mult}X`;
+    return {
+      fig: csFig(`${VDD}\\,\\text{V}`, ohm(RD), volt(1 + ov), RL ? ohm(RL) : null, sz),
+      q: md`A common-source stage: NMOS of size $${sz}$ with $1X = ${unit}/1$ ($\mu_nC_{ox} = 100\,\mu\text{A/V}^2$, $V_{TN} = 1\,\text{V}$), $V_{GS} = ${volt(1 + ov)}$, $R_D = ${ohm(RD)}$ to $V_{DD} = ${VDD}\,\text{V}$${RL ? md`, a load $R_L = ${ohm(RL)}$ at the output` : ''}, $\lambda = ${f(lam)}\,\text{V}^{-1}$ (use $\lambda = 0$ for DC). Find $I_D$, $g_m$, $r_{ds}$ and $A_v = v_{out}/v_{in}$.`,
+      parts: csParts(I, gm, rds, Av, RD, RL),
+      hints: [md`DC: $k = \mu_nC_{ox}W/L$, $I_D = \tfrac12kV_{ov}^2$; check $V_D\ge V_{ov}$.`, md`Small signal: $A_v = -g_m(R_D\parallel r_{ds}${RL ? '\\parallel R_L' : ''})$.`],
+      sol: md`
+1. **DC.** $W/L = ${f(WL)}$, $k = ${kk(MUN * WL)}$, $V_{ov} = ${volt(ov)}$: $I_D = \tfrac12kV_{ov}^2 = ${amp(I)}$. $V_D = ${VDD} - (${amp(I)})(${ohm(RD)}) = ${volt(VD)}\ge V_{ov}$: saturated.
+2. **Slopes.** $g_m = 2I_D/V_{ov} = ${ms(gm)}$; $r_{ds} = 1/(\lambda I_D) = ${ohm(rds)}$.
+3. **Model.** $v_{gs} = v_{in}$; KCL at the drain gives $A_v = -g_m(R_D\parallel r_{ds}${RL ? '\\parallel R_L' : ''})$, with $R_D\parallel r_{ds}${RL ? '\\parallel R_L' : ''} = ${ohm(Rout)}$:
+$$A_v = -(${ms(gm)})(${ohm(Rout)}) = ${f(Av, 4)}$$`,
+      _v: { WL, ov, lam, RD, VDD, RL },
+    };
+  };
+
+  GENS.bk_pmos_model = () => {
+    let WL, ov, lam, RD, VDD, I, VD, VG, tries = 0;
+    do {
+      WL = pick([50, 100, 200, 400, 1000]); ov = pick([0.2, 0.25, 0.3, 0.4, 0.5]); lam = pick([0.02, 0.04, 0.05, 0.1]);
+      RD = pick([1, 2, 2.5, 4, 5, 10]) * 1e3; VDD = pick([3, 5, 5]); I = 0.5 * MUP * WL * ov * ov; VG = +(VDD - 1 - ov).toFixed(3); VD = I * RD; tries++;
+    } while ((VD > VG + 1 - 0.2 || VD < 0.3 || I > 4e-3) && tries < 500);
+    const RL = pick([null, null, 10e3, 20e3]);
+    const gm = 2 * I / ov, rds = 1 / (lam * I), Rout = RL ? par(RD, rds, RL) : par(RD, rds), Av = -gm * Rout;
+    return {
+      fig: pcsFig(`${VDD}\\,\\text{V}`, volt(VG), ohm(RD), RL ? ohm(RL) : null),
+      q: md`A PMOS common-source stage: $W/L = ${WL}$ ($\mu_pC_{ox} = 50\,\mu\text{A/V}^2$, $|V_{TP}| = 1\,\text{V}$), source on $V_{DD} = ${VDD}\,\text{V}$, gate biased at $${volt(VG)}$, $R_D = ${ohm(RD)}$ from the drain to ground${RL ? md`, a load $R_L = ${ohm(RL)}$` : ''}, $\lambda = ${f(lam)}\,\text{V}^{-1}$ ($\lambda = 0$ for DC). Find $I_D$, $g_m$, $r_{ds}$ and $A_v$.`,
+      parts: csParts(I, gm, rds, Av, RD, RL),
+      hints: [md`$V_{SG} = V_{DD} - V_G$, $V_{ov} = V_{SG} - 1$, $k_p = \mu_pC_{ox}W/L$.`, md`Same model as the NMOS: $A_v = -g_m(R_D\parallel r_{ds}${RL ? '\\parallel R_L' : ''})$.`],
+      sol: md`
+1. **DC.** $V_{SG} = ${VDD} - ${f(VG)} = ${volt(1 + ov)}$, $V_{ov} = ${volt(ov)}$, $k_p = ${kk(MUP * WL)}$: $I_D = ${amp(I)}$, out of the drain. $V_D = I_DR_D = ${volt(VD)}\le V_G + 1$: saturated.
+2. **Slopes.** $g_m = 2I_D/V_{ov} = ${ms(gm)}$ (positive); $r_{ds} = ${ohm(rds)}$.
+3. **Model** (arrow from drain up to the grounded source): $v_{gs} = v_{in}$, and KCL at the drain gives the same result as for an NMOS:
+$$A_v = -g_m(R_D\parallel r_{ds}${RL ? '\\parallel R_L' : ''}) = -(${ms(gm)})(${ohm(Rout)}) = ${f(Av, 4)}$$`,
+      _v: { WL, ov, lam, RD, VDD, RL },
     };
   };
 })();
