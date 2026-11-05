@@ -217,7 +217,8 @@
     const tan = Schem.plot({ w: 360, h: 230, x: [a, b], y: [-ys, ys], xl: 'V_D\\,(\\text{V})', yl: 'f\\,(\\text{mA})', xt: [c.v0], yt: [0],
       curves: [{ pts: clipPts(fm, a, b, -ys, ys), cls: 'dc' }, { pts: clipPts((v) => f0 - g0 * (v - c.v0), a, b, -ys, ys) }],
       pts: [{ x: c.v0, y: f0, n: 'V_{D,0}' }, { x: v1, y: 0, n: 'V_{D,1}' }] });
-    const tbl = rows.map((r) => `| ${r.i} | ${r.v.toFixed(5)} | ${f(r.fv * 1e3)} | ${f(-r.g * 1e3)} | ${(r.dv * 1e3).toFixed(3)} |`).join('\n');
+    // f() writes tiny residuals as TeX (1.2\times10^{-8}), so the cells are math
+    const tbl = rows.map((r) => `| ${r.i} | ${r.v.toFixed(5)} | $${f(r.fv * 1e3)}$ | $${f(-r.g * 1e3)}$ | ${(r.dv * 1e3).toFixed(3)} |`).join('\n');
     return {
       fig: FIGS.vrd(Vv(c.Vs), kO(c.R)),
       q: md`$V_S = ${f(c.Vs)}\,\text{V}$ drives a diode through $R_S = ${kO(c.R)}$. The diode obeys $${law}$ with ${params}. Use Newton–Raphson from $V_{D,0} = ${f(c.v0)}\,\text{V}$: find $f(V_{D,0})$, $f'(V_{D,0})$ and $V_{D,1}$, then iterate to the operating current $I_D$.`,
