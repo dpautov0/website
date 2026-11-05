@@ -152,10 +152,10 @@
         ex('gm1 + gm2*rds2/(rds2 + RS + gm2*rds2*RS)', ['gm1', 'gm2', 'rds2', 'RS'], 'G_M', { ranges: { gm1: [2e-3, 10e-3], gm2: [2e-3, 10e-3], RS: [1e3, 5e3] } }),
         ex('ro1 || (rds2 + RS + gm2*rds2*RS)', ['ro1', 'rds2', 'RS', 'gm2'], 'R_{out}', { ranges: { gm2: [2e-3, 10e-3], RS: [1e3, 5e3] } }),
         ex('-(gm1 + gm2*rds2/(rds2 + RS + gm2*rds2*RS))*(ro1 || (rds2 + RS + gm2*rds2*RS))', ['gm1', 'gm2', 'ro1', 'rds2', 'RS'], 'A_v', { ranges: { gm1: [2e-3, 10e-3], gm2: [2e-3, 10e-3], RS: [1e3, 5e3] } }),
-        { lbl: 'A_v\\ \\text{(numbers)}', unit: '', ans: -3369, accept: [-3367], traps: [
-          { v: -3340, msg: 'That is $-g_{m1}R_{out}$: it drops $M_2$\'s own (degenerated) transconductance, $0.4\\,\\text{mS}$.' },
+        { lbl: 'A_v\\ \\text{(numbers)}', unit: '', ans: -3600, traps: [
+          { v: -3200, msg: 'That is $-g_{m1}R_{out}$: it drops $M_2$\'s own (degenerated) transconductance, $0.5\\,\\text{mS}$.' },
           { v: -3000, msg: 'That treats $M_2$ as undegenerated: $G_{M2} = g_{m2}$ and $R_{UP} = r_{ds2}$. With $R_S$, $G_{M2} = g_{m2}/(1 + g_{m2}R_S)$ and $R_{UP} = r_{ds2}(1 + g_{m2}R_S)$.' },
-          { v: -4040, msg: 'That uses $r_{o1}$ alone for $R_{out}$. Looking up into $M_2$\'s drain you see $502\\,\\text{k}\\Omega$, in parallel.' }] },
+          { v: -4500, msg: 'That uses $r_{o1}$ alone for $R_{out}$. Looking up into $M_2$\'s drain you see $4\\,\\text{M}\\Omega$, in parallel.' }] },
         { lbl: '(f) Why do the two transconductances add instead of cancelling?', mc: ['Raising $v_{in}$ makes $Q_1$ sink more current and $M_2$ source less: both take current away from the output node', 'They do cancel: one device is NPN and the other PMOS', 'Because $R_G$ connects the gate to the base', 'Because the PMOS has a negative $g_m$'], a: 0,
           why: [null, 'Opposite device types are exactly why they **add**: the same input change turns the NPN on harder and the PMOS off, and both push the output the same way (down), as in a CMOS inverter.', '$R_G$ only sets the gate\'s DC level; for signals the coupling capacitor ties the gate to $v_{in}$.', 'No transistor has a negative $g_m$; the PMOS model is the same as the NMOS model with $i_d$ drawn from drain to source.'] },
       ],
