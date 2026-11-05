@@ -569,4 +569,532 @@ The gain is capped by the supply, not by the transistor: more gain from a resist
       G('bk_cs', { need: 4 }),
     ],
   });
+
+  // ================================================================== 3. the three loads
+  L({
+    id: 'bk04-loads', title: 'Three loads: resistor, diode, current source', ref: 'Lectures 15–16',
+    steps: [
+      RF(md`
+        ### The question
+
+        The common source turns $v_{in}$ into a current, $g_{m1}v_{in}$, and something above the drain turns that current back into a voltage. That something is the **load**. In an integrated circuit it is rarely a resistor: it is usually another transistor, wired either as a **diode** (gate tied to drain) or as a **current source** (gate held at a fixed bias). Which load gives how much gain, and why? Exam 2 asked for all three, and for the CMOS inverter, where both transistors are driven.
+
+        ### The physical picture
+
+        The load's job is to convert a change of current into a change of voltage. How much voltage it makes per unit of current is its **small-signal resistance**: the inverse slope of its $I$–$V$ curve at the operating point. Here are the three loads, each carrying $0.1\,\text{mA}$, plotted as current against the voltage across them:
+
+        [[fig:iv]]
+
+        - The **diode-connected** transistor's curve is very steep: a few millivolts more across it and its current changes a lot, because its own gate is pushed open by the same voltage. It absorbs $M_1$'s current changes with almost no voltage change: a **small** resistance, $1/g_m$, here $1\kO$.
+        - The **resistor** is a straight line: $20\kO$, whatever the current.
+        - The **current source** is nearly flat: it insists on its current, so any change of current forced on it by $M_1$ has to show up as a big change of voltage. A **large** resistance, its $r_{ds}$.
+
+        !!intuition Stiff and soft
+          $M_1$ says "the current changes by $g_{m1}v_{in}$". A soft load (the diode) accepts that with a shrug: the output barely moves. A stiff load (the current source) refuses to change its current, so the only way to settle the argument is for the output voltage to swing a lot. Big gain comes from a load that refuses.
+      `, { iv: { fig: F.loadsIV(), cap: 'Current against the voltage across each load. Dots: each carrying $0.1\\,\\text{mA}$. The steeper the curve, the smaller the small-signal resistance.' } }),
+      RF(md`
+        ### What every load shares: $G_M = g_{m1}$
+
+        **Short the output.** Whatever the load is, both of its ends are now at incremental ground: the output (shorted) and $V_{DD}$. A resistor with 0 V across it carries nothing. A load transistor has its drain, source and (for a diode or a current source) its gate all at incremental ground, so its $v_{gs} = 0$ and its $r_{ds}$ has 0 V across it: it carries nothing either. $M_1$'s own $r_{ds1}$ also has 0 V across it. The short supplies only $M_1$'s dependent-source current:
+        $$G_M = g_{m1}\quad\text{for every load}$$
+
+        **Turn the input off.** $M_1$'s gate and source are grounded, so $v_{gs1} = 0$ and $M_1$ is just $r_{ds1}$ from the output to ground. The load runs from the output to $V_{DD}$, also incremental ground, so it is in parallel:
+        $$R_{out} = r_{ds1}\parallel R_{load},\qquad A_v = -g_{m1}\,(r_{ds1}\parallel R_{load})$$
+        The whole section is therefore one question: **what does each load look like from the output?**
+
+        ### Load 1: a resistor
+
+        It looks like itself, $R_D$. That gives $A_v = -g_{m1}(R_D\parallel r_{ds1})$, [Section 2](#/l/bk04-cs). Typical size: $-10$ to $-30$, capped by the supply.
+
+        ### Load 2: a diode-connected transistor
+
+        $M_2$ is a PMOS with its source on $V_{DD}$ and its **gate tied to its own drain**, which is the output.
+
+        [[fig:dc]]
+
+        **Its resistance, from the model.** Put a test source $v_t$ on the drain with everything else at incremental ground ([Chapter 3](#/l/bk03-diode) did the same).
+
+        *Step 1: $v_{gs2}$.* The gate is wired to the drain, so it sits at $v_t$; the source is on $V_{DD}$, at 0: $v_{gs2} = v_t - 0 = v_t$.
+
+        *Step 2: the current.* From drain to source the dependent source carries $g_{m2}v_{gs2} = g_{m2}v_t$ and $r_{ds2}$ carries $v_t/r_{ds2}$. Both leave the test node, so $i_t = g_{m2}v_t + v_t/r_{ds2}$.
+
+        *Step 3: divide.*
+        $$R_{diode} = \frac{v_t}{i_t} = \frac{1}{g_{m2} + 1/r_{ds2}} = \frac{1}{g_{m2}}\parallel r_{ds2}\approx\frac{1}{g_{m2}}$$
+        A current source whose current is proportional to the voltage across it **is** a resistor: $1/g_{m2}$.
+
+        [[fig:dm]]
+
+        **The gain.** Three things in parallel at the output: $r_{ds1}$, $r_{ds2}$ and $1/g_{m2}$. With $1/g_m$ near $1\kO$ and $r_{ds}$ near $100\kO$, the smallest wins:
+        $$A_v = -g_{m1}\Big(r_{ds1}\parallel r_{ds2}\parallel\frac{1}{g_{m2}}\Big)\approx-\frac{g_{m1}}{g_{m2}}$$
+        No resistor anywhere: the gain is a ratio of two transconductances.
+
+        [[fig:dg]]
+      `, {
+        dc: { fig: F.csDiodeP(), cap: 'A diode-connected PMOS load: gate and drain tied together at the output.' },
+        dm: { fig: F.pdiodeM(), cap: 'The diode alone, with a test source: $v_{gs2} = v_t$, so it draws $g_{m2}v_t$: a resistor $1/g_{m2}$.' },
+        dg: { fig: F.twoM({ g1: 'g_{m1}\\cdot 0', g2: 'g_{m2}v_t', t2: '\\text{diode}', mode: 'test' }), cap: '$R_{out}$ of the whole stage ($v_{in} = 0$): $r_{ds1}$, $r_{ds2}$ and the diode\'s $1/g_{m2}$ in parallel.' },
+      }),
+      R(md`
+        ### Gain from geometry
+
+        $g_m$ depends on the bias, so it looks as if the gain must too. It does not.
+
+        **Step 1: same current.** $M_1$ and $M_2$ are in series between $V_{DD}$ and ground, so they carry the same $I_D$.
+
+        **Step 2: $g_m$ in terms of the current and the size.** From $I_D = \tfrac12\mu C_{ox}\tfrac WLV_{ov}^2$, $V_{ov} = \sqrt{2I_D/(\mu C_{ox}W/L)}$. Put that into $g_m = 2I_D/V_{ov}$:
+        $$g_m = \frac{2I_D}{\sqrt{2I_D/(\mu C_{ox}W/L)}} = \sqrt{2\mu C_{ox}\tfrac WLI_D}$$
+
+        **Step 3: the ratio.** The same $I_D$ sits under both square roots and cancels, and so do the 2's:
+        $$|A_v|\approx\frac{g_{m1}}{g_{m2}} = \sqrt{\frac{\mu_nC_{ox}(W/L)_1}{\mu_pC_{ox}(W/L)_2}}$$
+        Equivalently, with $g_m = 2I_D/V_{ov}$ and the same $I_D$: $|A_v|\approx V_{ov2}/V_{ov1}$, the load's overdrive over the input's.
+
+        **Example.** $M_1$: NMOS, $40/1$. $M_2$: PMOS diode, $5/1$. $\sqrt{\dfrac{100\times40}{50\times5}} = \sqrt{16} = 4$, so $A_v\approx-4$, at any bias current.
+
+        **What it is good for.** The gain is set by geometry, so it is predictable and nearly independent of temperature and bias; and the diode biases the output by itself, at $V_{DD} - |V_{GS2}|$. **What it costs:** the square root. A gain of 10 needs a $\mu C_{ox}W/L$ ratio of 100. Diode loads give small gains.
+
+        **An NMOS diode load** (gate and drain on $V_{DD}$, source at the output) also looks like $\tfrac1{g_{m2}}\parallel r_{ds2}$: with the gate on $V_{DD}$, $v_{gs2} = 0 - v_t$, so $M_2$ carries $g_{m2}v_t$ from its source up to its drain, again proportional to $v_t$. Same type, same mobility: $|A_v|\approx\sqrt{(W/L)_1/(W/L)_2}$.
+      `),
+      RF(md`
+        ### Load 3: a current source
+
+        $M_2$ is a PMOS with its source on $V_{DD}$ and its **gate held** at a fixed bias $V_B$.
+
+        [[fig:ic]]
+
+        *Step 1: $v_{gs2}$.* The gate is held (0 for signals) and the source is on $V_{DD}$ (0): $v_{gs2} = 0$.
+
+        *Step 2:* its dependent source carries $g_{m2}\cdot0 = 0$: open. Only $r_{ds2}$ is left between the output and $V_{DD}$.
+        $$R_{out} = r_{ds1}\parallel r_{ds2},\qquad A_v = -g_{m1}\,(r_{ds1}\parallel r_{ds2})$$
+
+        [[fig:im]]
+
+        **How big?** Both carry the same $I_D$, so $r_{ds1} = 1/(\lambda_nI_D)$ and $r_{ds2} = 1/(\lambda_pI_D)$. In parallel, conductances add: $r_{ds1}\parallel r_{ds2} = \dfrac{1}{(\lambda_n + \lambda_p)I_D}$. With $g_{m1} = 2I_D/V_{ov1}$:
+        $$A_v = -\frac{2I_D}{V_{ov1}}\cdot\frac{1}{(\lambda_n + \lambda_p)I_D} = -\frac{2}{(\lambda_n + \lambda_p)\,V_{ov1}}$$
+        The current cancels. With $\lambda_n = \lambda_p = 0.05\,\text{V}^{-1}$ and $V_{ov1} = 0.2\,\text{V}$: $A_v = -\dfrac{2}{(0.1)(0.2)} = -100$. With equal $\lambda$'s this is half the intrinsic gain, $-\tfrac12g_{m1}r_{ds1}$: the output sees two $r_{ds}$ in parallel, $M_1$'s and the load's.
+
+        **Why it wins.** The PMOS stays a current source as long as it has $|V_{DS}|\ge|V_{ov2}|$, about $0.2\,\text{V}$, yet it presents $r_{ds2}$, say $200\kO$ at $0.1\,\text{mA}$. A $200\kO$ resistor carrying $0.1\,\text{mA}$ would need $20\,\text{V}$ across it. The current source has a big **small-signal** resistance and a small **DC** drop: exactly what the resistor could not offer ([Section 2](#/l/bk04-cs)).
+      `, {
+        ic: { fig: F.csIsrc(), cap: 'A PMOS current-source load: its gate is held at a fixed bias $V_B$ (the triangle).' },
+        im: { fig: F.twoM({ g1: 'g_{m1}\\cdot 0', g2: 'g_{m2}\\cdot 0', t2: '\\text{gate held}', mode: 'test' }), cap: '$R_{out}$ ($v_{in} = 0$): both dependent sources are dead; only $r_{ds1}$ and $r_{ds2}$ remain.' },
+      }),
+      RF(md`
+        ### Both gates driven: the CMOS inverter as an amplifier
+
+        Tie the PMOS gate to the NMOS gate and drive both with $v_{in}$.
+
+        [[fig:inv]]
+
+        **Physically:** when $v_{in}$ rises, the NMOS opens (pulls harder down) **and** the PMOS closes (pushes less current in from the top). Both push the output the same way, down, so they cooperate.
+
+        **$G_M$, with the model.** Short the output. $M_1$: $v_{gs1} = v_{in}$, so it pulls $g_{m1}v_{in}$ down to ground. $M_2$: its source is on $V_{DD}$ (0) and its gate at $v_{in}$, so $v_{gs2} = v_{in}$ and it carries $g_{m2}v_{in}$ from its drain (the output) up to $V_{DD}$: also **out of** the output node. The short supplies both:
+        $$G_M = g_{m1} + g_{m2}$$
+
+        [[fig:invm]]
+
+        **$R_{out}$:** $v_{in} = 0$ kills both dependent sources: $r_{ds1}\parallel r_{ds2}$.
+        $$A_v = -(g_{m1} + g_{m2})(r_{ds1}\parallel r_{ds2})$$
+        **Example:** $g_{m1} = g_{m2} = 1\,\text{mS}$, $r_{ds1} = r_{ds2} = 200\kO$: $A_v = -(2\,\text{mS})(100\kO) = -200$, twice the current-source-loaded stage, because the load transistor now works too.
+
+        **The catch: bias.** Both transistors must be saturated at the same current, which happens only in a narrow window of $V_{in}$ (the steep middle of the inverter's transfer curve). In practice the input is coupled through a capacitor and a large resistor from output to input sets the DC point: the gate draws no DC current, so $V_{IN} = V_{OUT}$, right in the middle.
+      `, {
+        inv: { fig: F.inv(), cap: 'The CMOS inverter as an amplifier: one input drives both gates.' },
+        invm: { fig: F.twoM({ g2: 'g_{m2}v_{in}', mode: 'short' }), cap: 'Output shorted: both dependent sources take current out of the output node, so their transconductances add.' },
+      }),
+      R(md`
+        ### Check it, and the summary
+
+        - **Limits.** Diode load with $r_{ds}\to\infty$: $-g_{m1}/g_{m2}$. Current-source load with $\lambda_p\to0$ (an ideal source): $-g_{m1}r_{ds1}$, the intrinsic gain. Inverter with $g_{m2} = 0$: back to the current-source load.
+        - **Units:** every gain is (mS)(kΩ) or a ratio of mS's.
+        - **One number each:** $g_{m1} = 1\,\text{mS}$, all $r_{ds} = 200\kO$: resistor $10\kO$ gives $-9.5$; diode with $g_{m2} = 1\,\text{mS}$ gives $-0.99$; current source gives $-100$; inverter with $g_{m2} = 1\,\text{mS}$ gives $-200$.
+
+        | Load (above the output) | What it looks like | $R_{out}$ | $A_v$ | Typical |
+        |---|---|---|---|---|
+        | resistor $R_D$ | $R_D$ | $R_D\parallel r_{ds1}$ | $-g_{m1}(R_D\parallel r_{ds1})$ | $-10$ to $-30$ |
+        | diode-connected $M_2$ | $\tfrac1{g_{m2}}$ (its gate moves with the output) | $\tfrac1{g_{m2}}\parallel r_{ds1}\parallel r_{ds2}$ | $\approx-\dfrac{g_{m1}}{g_{m2}} = -\sqrt{\dfrac{\mu_1(W/L)_1}{\mu_2(W/L)_2}}$ | $-2$ to $-5$ |
+        | current source $M_2$ (gate held) | $r_{ds2}$ (its gate is still) | $r_{ds1}\parallel r_{ds2}$ | $-\dfrac{2}{(\lambda_n + \lambda_p)V_{ov1}}$ | about $-100$ |
+        | $M_2$ driven too (inverter) | $r_{ds2}$, and it adds $g_{m2}$ | $r_{ds1}\parallel r_{ds2}$ | $-(g_{m1} + g_{m2})(r_{ds1}\parallel r_{ds2})$ | about $-200$ |
+
+        **What it means.** One fact runs the whole table: **a transistor whose gate moves with the output looks small ($1/g_m$); a transistor whose gate holds still looks big ($r_{ds}$); a transistor whose gate is driven by the input adds its $g_m$ to $G_M$.**
+
+        ### How to recognize it
+
+        Find the transistor above the output and look at its gate: wired to the output (diode: $1/g_m$), tied to a bias or a triangle (current source: $r_{ds}$), or tied to $v_{in}$ (inverter: it joins $G_M$).
+
+        !!mistake Common mistakes
+          - **Size ratio without the square root.** The gain is the ratio of $g_m$'s, which is the square root of the ratio of $\mu C_{ox}W/L$.
+          - **Forgetting $\mu_n/\mu_p = 2$** when the load is a PMOS and the input an NMOS.
+          - **A current-source load as an open circuit.** An ideal one is, but a real transistor current source is $r_{ds2}$, and it sets half the gain.
+          - **Doubling $I_D$ to double the gain** of a current-source-loaded stage. $A_v = -2/((\lambda_n + \lambda_p)V_{ov1})$: more current at fixed size raises $V_{ov1}$ and **lowers** the gain.
+          - **One transconductance for the inverter.** Both gates are driven: $G_M = g_{m1} + g_{m2}$.
+      `),
+      Q(md`At the same bias current and the same input transistor, which load gives the largest gain?`,
+        ['A transistor current source (gate held at a bias).', 'A resistor, because it has no $1/g_m$.', 'A diode-connected transistor.', 'All give the same gain, since $G_M = g_{m1}$ for all three.'], 0,
+        [null,
+          'A resistor large enough to compete with $r_{ds}$ would need a huge DC drop; with any realistic supply it stays near $10\\,\\text{k}\\Omega$.',
+          'The diode is the **smallest** load ($1/g_m$): it gives the smallest gain.',
+          '$G_M$ is the same, but the gain is $G_MR_{out}$ and $R_{out}$ is very different.'],
+        md`$G_M = g_{m1}$ for every load, so the gain follows $R_{out}$. The current source presents $r_{ds2}$ (about $100\kO$ or more) while needing only a few tenths of a volt; the diode presents $1/g_{m2}$ (about $1\kO$); a resistor sits in between and is limited by the supply.`),
+      Q(md`A common source with a diode-connected load has a gain of $-3$. You want $-6$ by changing only the input transistor's $W/L$. By what factor must $(W/L)_1$ grow?`,
+        ['4', '2', '$\\sqrt2$', '36'], 0,
+        [null, 'The gain goes as the **square root** of $(W/L)_1$: doubling the size gives only $\\sqrt2$ times the gain.', 'That would raise the gain by $2^{1/4}$.', 'That is the size ratio for a gain of 6 from scratch, not the factor of change.'],
+        md`$|A_v|\approx\sqrt{\mu_1(W/L)_1/(\mu_2(W/L)_2)}$. To double the gain, the quantity under the root must grow by $2^2 = 4$.`),
+      Q(md`A common source with a current-source load has $A_v = -100$ at $I_D = 0.1\,\text{mA}$. Keeping all sizes, the bias current is raised to $0.2\,\text{mA}$. The new gain is about:`,
+        ['$-71$ (it falls by $\\sqrt2$)', '$-100$ (unchanged)', '$-200$ (it doubles)', '$-50$ (it halves)'], 0,
+        [null,
+          'That would be true at a fixed **overdrive**. At a fixed size, doubling $I_D$ raises $V_{ov1}$ by $\\sqrt2$.',
+          '$g_{m1}$ grows by $\\sqrt2$ but $r_{ds1}\\parallel r_{ds2}$ halves.',
+          '$A_v = -2/((\\lambda_n + \\lambda_p)V_{ov1})$ and $V_{ov1}$ grows by $\\sqrt2$, not 2.'],
+        md`$A_v = -\dfrac{2}{(\lambda_n + \lambda_p)V_{ov1}}$ and, at fixed $W/L$, $V_{ov1} = \sqrt{2I_D/(\mu C_{ox}W/L)}$ grows by $\sqrt2$ when $I_D$ doubles. So $|A_v|$ drops to $100/\sqrt2\approx71$. In factors: $g_{m1}$ up by $\sqrt2$, $r_{ds1}\parallel r_{ds2}$ down by 2.`),
+      Q(md`In a CMOS inverter used as an amplifier, why is $G_M = g_{m1} + g_{m2}$ rather than $g_{m1} - g_{m2}$?`,
+        ['When $v_{in}$ rises, the NMOS pulls more current down and the PMOS pushes less current in: both lower the output.', 'Because the two transistors are in parallel at DC.', 'Because PMOS transconductance is negative.', 'It is $g_{m1} - g_{m2}$; the two cancel when they are equal.'], 0,
+        [null,
+          'At DC they are in series (same current). What matters is the direction each one moves the output.',
+          '$g_m$ is positive for both; with $i_d$ drawn from drain to source the same model serves NMOS and PMOS.',
+          'They would cancel only if one pushed the output up while the other pulled it down. Here both pull it down.'],
+        md`With the output shorted, $M_1$ carries $g_{m1}v_{in}$ from the output down to ground and $M_2$ (with $v_{gs2} = v_{in}$) carries $g_{m2}v_{in}$ from the output up to $V_{DD}$. Both currents leave the output node, so the short supplies their sum.`),
+      P({
+        id: 'bk04-loads-size', title: 'Diode load: gain from sizes',
+        q: md`$M_1$ is an NMOS with $W/L = 72/1$; its load is a diode-connected PMOS $M_2$ with $W/L = 4/1$. Course parameters. Ignoring $r_{ds}$, find $A_v$.`,
+        fig: F.csDiodeP({ sz1: '72/1', sz2: '4/1' }),
+        parts: [{ lbl: 'A_v', unit: '', ans: -6, traps: [{ v: -36, msg: 'That is the ratio of $\\mu C_{ox}W/L$; the gain is its square root.' }, { v: -Math.sqrt(18), msg: 'Include the mobility ratio $\\mu_nC_{ox}/\\mu_pC_{ox} = 2$ under the square root.' }, { v: 6, msg: 'A common source inverts.' }] }],
+        hints: [md`$A_v\approx-g_{m1}/g_{m2}$ and, at equal currents, $g_{m1}/g_{m2} = \sqrt{\mu_n(W/L)_1/(\mu_p(W/L)_2)}$.`],
+        sol: md`
+1. The diode looks like $1/g_{m2}$, so $A_v\approx-g_{m1}/g_{m2}$.
+2. Same $I_D$ in both: $\dfrac{g_{m1}}{g_{m2}} = \sqrt{\dfrac{100\times72}{50\times4}} = \sqrt{\dfrac{7200}{200}} = \sqrt{36} = 6$.
+3. $A_v\approx-6$.`,
+      }),
+      P({
+        id: 'bk04-loads-diode-rds', title: 'Diode load, keeping $r_{ds}$',
+        q: md`Common source with a diode-connected PMOS load: $g_{m1} = 2\,\text{mS}$, $g_{m2} = 0.5\,\text{mS}$, $r_{ds1} = r_{ds2} = 100\kO$. Find $R_{out}$ and $A_v$ exactly, and compare with $-g_{m1}/g_{m2}$.`,
+        fig: F.csDiodeP(),
+        parts: [{ lbl: 'R_{out}', unit: 'kΩ', ans: 1 / 0.52, traps: [{ v: 2, msg: 'That is $1/g_{m2}$ alone. Both $r_{ds}$ are in parallel with it.' }] },
+          { lbl: 'A_v', unit: '', ans: -2 / 0.52, traps: [{ v: -4, msg: 'That is the approximation $-g_{m1}/g_{m2}$; the question asks for the exact value with both $r_{ds}$.' }] }],
+        hints: [md`Add conductances: $g_{m2} + 1/r_{ds1} + 1/r_{ds2}$.`],
+        sol: md`
+1. Conductances at the output, in mS: $g_{m2} = 0.5$, $1/r_{ds1} = 0.01$, $1/r_{ds2} = 0.01$. Total $0.52\,\text{mS}$, so $R_{out} = 1/0.52\,\text{mS} = 1.923\kO$.
+2. $A_v = -(2\,\text{mS})(1.923\kO) = -3.85$.
+3. The approximation $-g_{m1}/g_{m2} = -4$ is $4\%$ high: the two $r_{ds}$ steal a little of the signal current.`,
+      }),
+      P({
+        id: 'bk04-loads-isrc', title: 'Current-source load from $\\lambda$ and $V_{ov}$',
+        q: md`A common source with a PMOS current-source load runs at $I_D = 0.1\,\text{mA}$ with $V_{ov1} = 0.25\,\text{V}$; $\lambda_n = 0.04\,\text{V}^{-1}$, $\lambda_p = 0.06\,\text{V}^{-1}$. Find $g_{m1}$, $r_{ds1}$, $r_{ds2}$ and $A_v$.`,
+        fig: F.csIsrc(),
+        parts: [{ lbl: 'g_{m1}', unit: 'mS', ans: 0.8 }, { lbl: 'r_{ds1}', unit: 'kΩ', ans: 250 }, { lbl: 'r_{ds2}', unit: 'kΩ', ans: 500 / 3 },
+          { lbl: 'A_v', unit: '', ans: -80, traps: [{ v: -200, msg: 'That is $-g_{m1}r_{ds1}$: the load\'s $r_{ds2}$ is in parallel with $r_{ds1}$.' }] }],
+        hints: [md`$g_m = 2I_D/V_{ov}$, $r_{ds} = 1/(\lambda I_D)$.`, md`Or directly: $A_v = -2/((\lambda_n + \lambda_p)V_{ov1})$.`],
+        sol: md`
+1. $g_{m1} = \dfrac{2(0.1\,\text{mA})}{0.25\,\text{V}} = 0.8\,\text{mS}$.
+2. $r_{ds1} = \dfrac{1}{(0.04)(0.1\,\text{mA})} = 250\kO$; $r_{ds2} = \dfrac{1}{(0.06)(0.1\,\text{mA})} = 166.7\kO$.
+3. $r_{ds1}\parallel r_{ds2} = \dfrac{1}{(0.04 + 0.06)(0.1\,\text{mA})} = 100\kO$, so $A_v = -(0.8\,\text{mS})(100\kO) = -80$.
+4. Check with the shortcut: $-\dfrac{2}{(0.1)(0.25)} = -80$.`,
+      }),
+      P({
+        id: 'bk04-loads-inv', title: 'The inverter as an amplifier',
+        q: md`A CMOS inverter is biased with both transistors saturated at $I_D = 0.2\,\text{mA}$. The NMOS has $V_{ov} = 0.2\,\text{V}$, the PMOS $|V_{ov}| = 0.4\,\text{V}$, and $\lambda = 0.05\,\text{V}^{-1}$ for both. Find $G_M$, $R_{out}$ and $A_v$.`,
+        fig: F.inv(),
+        parts: [{ lbl: 'G_M', unit: 'mS', ans: 3, traps: [{ v: 2, msg: 'That is $g_{m1}$ alone: the PMOS is driven by $v_{in}$ too, and its current change adds.' }, { v: 1, msg: 'The two do not fight: both lower the output when $v_{in}$ rises, so $G_M = g_{m1} + g_{m2}$.' }] },
+          { lbl: 'R_{out}', unit: 'kΩ', ans: 50 }, { lbl: 'A_v', unit: '', ans: -150 }],
+        hints: [md`$g_{m1} = 2I_D/V_{ov,n}$, $g_{m2} = 2I_D/|V_{ov,p}|$, $r_{ds} = 1/(\lambda I_D)$.`, md`$G_M = g_{m1} + g_{m2}$, $R_{out} = r_{ds1}\parallel r_{ds2}$.`],
+        sol: md`
+1. $g_{m1} = 0.4/0.2 = 2\,\text{mS}$, $g_{m2} = 0.4/0.4 = 1\,\text{mS}$, $r_{ds1} = r_{ds2} = \dfrac{1}{(0.05)(0.2\,\text{mA})} = 100\kO$.
+2. $G_M = g_{m1} + g_{m2} = 3\,\text{mS}$; $R_{out} = 100\text{k}\parallel100\text{k} = 50\kO$.
+3. $A_v = -(3\,\text{mS})(50\kO) = -150$.`,
+      }),
+      P({
+        id: 'bk04-loads-ndiode', title: 'An NMOS diode load',
+        q: md`$M_1$ (NMOS, $W/L = 50/1$) has an NMOS diode-connected load $M_2$ ($W/L = 2/1$): $M_2$'s gate and drain are on $V_{DD}$ and its source is the output. Ignoring $r_{ds}$, find $A_v$.`,
+        fig: F.csDiodeN({ sz1: '50/1', sz2: '2/1' }),
+        parts: [{ lbl: 'A_v', unit: '', ans: -5, traps: [{ v: -25, msg: 'Square root: the gain is the ratio of $g_m$\'s.' }, { v: -5 / Math.SQRT2, msg: 'No mobility factor here: both transistors are NMOS.' }] }],
+        hints: [md`Seen from its source with its gate on $V_{DD}$, $M_2$ looks like $1/g_{m2}$.`],
+        sol: md`
+1. $M_2$: gate at incremental ground, source at the output, so $v_{gs2} = -v_{out}$ and it carries $g_{m2}v_{out}$ up out of the output node: a resistor $1/g_{m2}$.
+2. $A_v\approx-g_{m1}/g_{m2} = -\sqrt{50/2} = -\sqrt{25} = -5$ (same type: no mobility ratio).`,
+      }),
+      P({
+        id: 'bk04-loads-pin', title: 'Upside down: PMOS input, NMOS current source',
+        q: md`The input transistor $M_1$ is a PMOS (source on $V_{DD}$, gate driven by $v_{in}$) and the load $M_2$ is an NMOS current source (gate held at $V_B$). $g_{m1} = 0.5\,\text{mS}$, $r_{ds1} = 400\kO$, $r_{ds2} = 200\kO$. Find $A_v$.`,
+        fig: F.csPisrc(),
+        parts: [{ lbl: 'A_v', unit: '', ans: -0.5 * (400 * 200) / 600, traps: [{ v: 0.5 * (400 * 200) / 600, msg: 'A PMOS common source inverts too: the model is the same.' }, { v: -200, msg: 'That is $-g_{m1}r_{ds1}$: $r_{ds2}$ is in parallel.' }] }],
+        hints: [md`Same model, same result: $A_v = -g_{m1}(r_{ds1}\parallel r_{ds2})$.`],
+        sol: md`
+1. $G_M = g_{m1} = 0.5\,\text{mS}$ (output shorted: $v_{gs1} = v_{in}$, and $M_1$ carries $g_{m1}v_{in}$ from the output up to $V_{DD}$).
+2. $R_{out} = r_{ds1}\parallel r_{ds2} = 400\text{k}\parallel200\text{k} = 133.3\kO$.
+3. $A_v = -(0.5\,\text{mS})(133.3\kO) = -66.7$.`,
+      }),
+      P({
+        id: 'bk04-loads-sym', title: 'The loads, in symbols',
+        q: md`Type $A_v$ for (a) the diode-connected PMOS load and (b) the CMOS inverter, keeping every $r_{ds}$. Use \`gm1\`, \`gm2\`, \`rds1\`, \`rds2\`.`,
+        fig: F.csDiodeP(),
+        parts: [ex('-gm1*(rds1 || rds2 || 1/gm2)', ['gm1', 'gm2', 'rds1', 'rds2'], 'A_v\\text{ (a) diode}', { exact: true, ranges: { gm2: [2e-4, 2e-3], rds1: [2e4, 2e5], rds2: [2e4, 2e5] } }),
+          ex('-(gm1 + gm2)*(rds1 || rds2)', ['gm1', 'gm2', 'rds1', 'rds2'], 'A_v\\text{ (b) inverter}', { exact: true })],
+        hints: [md`(a) Three things in parallel at the output. (b) Two transconductances, two $r_{ds}$.`],
+        sol: md`(a) $A_v = -g_{m1}\big(r_{ds1}\parallel r_{ds2}\parallel\tfrac1{g_{m2}}\big)$: \`-gm1*(rds1 || rds2 || 1/gm2)\`. (b) $A_v = -(g_{m1} + g_{m2})(r_{ds1}\parallel r_{ds2})$: \`-(gm1 + gm2)*(rds1 || rds2)\`.`,
+      }),
+      G('bk_loads', { need: 4 }),
+    ],
+  });
+
+  // ================================================================== 4. source degeneration
+  L({
+    id: 'bk04-degen', title: 'Source degeneration', ref: 'Lectures 16–17',
+    steps: [
+      RF(md`
+        ### The question
+
+        Put a resistor $R_S$ between the source and ground. What happens to $G_M$, to $R_{out}$ and to the gain, exactly, with $r_{ds}$ kept? And why would anyone throw gain away like this? Exam 2 asked for degenerated stages in every form: alone, with a diode or a current source in the source, and as the bottom of a stack.
+
+        [[fig:c]]
+
+        ### The physical picture
+
+        In a plain common source the source is nailed to ground, so all of $v_{in}$ lands across gate and source. With $R_S$ underneath, the source is free to move, and it moves **with the current**: $v_s = i_dR_S$. When $v_{in}$ rises, the current rises, the source rises behind it, and $v_{gs} = v_{in} - v_s$ grows by less than $v_{in}$ did. The transistor gets only part of its input.
+
+        **Numbers.** $g_m = 2\,\text{mS}$, $R_S = 1\kO$, $v_{in} = 30\,\text{mV}$. Try $v_{gs} = 10\,\text{mV}$: then $i_d = g_mv_{gs} = 20\,\mu\text{A}$, so $v_s = (20\,\mu\text{A})(1\kO) = 20\,\text{mV}$, and indeed $v_{gs} + v_s = 30\,\text{mV}$. Two thirds of the input is used up across $R_S$; the stage delivers $20\,\mu\text{A}$ per $30\,\text{mV}$, a transconductance of $0.67\,\text{mS}$ instead of $2\,\text{mS}$.
+
+        This is **negative feedback** inside one transistor: more current raises the source, which closes the valve a little, which holds the current back. The Art of Electronics puts it as "the emitter (here: the source) follows the base (gate)". In the limit of a very large $R_S$, almost all of $v_{in}$ appears across $R_S$, the current is simply $v_{in}/R_S$, and the transistor's own $g_m$, which drifts with temperature, bias and process, drops out.
+      `, { c: { fig: F.csDeg(), cap: 'The degenerated common source: $R_S$ between the source and ground.' } }),
+      RF(md`
+        ### The model
+
+        Saturation, small signals. $R_S$ stays in the small-signal circuit (it is not a supply). We first drop $r_{ds}$ to see the main result cleanly, then put it back and get the exact answer.
+
+        ### Derivation 1: $G_M$, ignoring $r_{ds}$
+
+        Short the drain. Call the transistor's current $i_d$ (drain to source).
+
+        **Step 1: the same current flows in $R_S$.** The gate draws nothing, so the only paths at the source node are the transistor and $R_S$: KCL gives the current down $R_S$ as $i_d$. So $v_s = i_dR_S$.
+
+        **Step 2: what is $v_{gs}$?** $v_{gs} = v_{in} - v_s = v_{in} - i_dR_S$.
+
+        **Step 3: the transistor.** $i_d = g_mv_{gs} = g_mv_{in} - g_mR_S\,i_d$.
+
+        **Step 4: collect $i_d$.** $i_d(1 + g_mR_S) = g_mv_{in}$. With the drain shorted, $R_D$ carries nothing, so $i_{out} = i_d$:
+        $$G_M = \frac{g_m}{1 + g_mR_S}$$
+
+        [[fig:s0]]
+
+        ### Derivation 2: $G_M$ with $r_{ds}$
+
+        Same circuit with $r_{ds}$ from drain to source. Unknowns: $v_s$ and $i_{out}$.
+
+        **Step 1: current down through the transistor**, dependent source plus $r_{ds}$. The drain is at 0 V (shorted), the source at $v_s$:
+        $$i_{out} = g_m(v_{in} - v_s) + \frac{0 - v_s}{r_{ds}}$$
+
+        **Step 2: the same current goes down $R_S$** (nothing else touches the source node, and all of $i_{out}$ goes down the transistor because $R_D$ carries nothing): $v_s = i_{out}R_S$.
+
+        **Step 3: substitute** $v_s$:
+        $$i_{out} = g_mv_{in} - g_mR_S\,i_{out} - \frac{R_S}{r_{ds}}\,i_{out}$$
+
+        **Step 4: collect $i_{out}$:**
+        $$G_M = \frac{g_m}{1 + g_mR_S + R_S/r_{ds}}$$
+        The extra $R_S/r_{ds}$ is tiny ($1\text{k}/50\text{k} = 0.02$ next to $1 + g_mR_S\approx3$), which is why Derivation 1 is usually good enough.
+
+        [[fig:s1]]
+      `, {
+        s0: { fig: F.degM('short', { rds: false }), cap: 'Output shorted, $r_{ds}$ dropped: the source rises to $v_s = i_dR_S$ and eats part of $v_{in}$.' },
+        s1: { fig: F.degM('short'), cap: 'The same with $r_{ds}$: one more path from drain to source.' },
+      }),
+      RF(md`
+        ### $R_{out}$: turn the input off
+
+        The gate is grounded, $R_S$ sits under the source, a test source $v_t$ is on the drain. Its current splits: up through $R_D$, and down into the transistor, call that part $i_{dn}$. So $R_{out} = R_D\parallel R_{DN}$ with $R_{DN} = v_t/i_{dn}$. [Chapter 3](#/l/bk03-degen) derived $R_{DN}$; here it is again in four lines.
+
+        **Step 1:** $i_{dn}$ goes on down through $R_S$: $v_s = i_{dn}R_S$, and with the gate grounded $v_{gs} = -v_s$. The dependent source is **alive**, driven by $v_s$.
+
+        **Step 2: current down through the transistor:** $i_{dn} = g_m(-v_s) + \dfrac{v_t - v_s}{r_{ds}}$.
+
+        **Step 3: substitute $v_s$ and multiply by $r_{ds}$:** $i_{dn}r_{ds} = -g_mr_{ds}R_S\,i_{dn} + v_t - R_S\,i_{dn}$.
+
+        **Step 4: collect:** $i_{dn}(r_{ds} + R_S + g_mr_{ds}R_S) = v_t$, so
+        $$R_{DN} = r_{ds} + R_S + g_mr_{ds}R_S\approx r_{ds}(1 + g_mR_S),\qquad R_{out} = R_D\parallel R_{DN}$$
+
+        [[fig:t]]
+
+        **Why the drain looks so big.** Push the drain up and the current tries to grow through $r_{ds}$; but any extra current raises the source, which lowers $v_{gs}$, which throttles the current. The same feedback that shrank $G_M$ by $(1 + g_mR_S)$ grows the drain resistance by about the same factor.
+
+        ### The gain
+
+        $$A_v = -G_MR_{out}$$
+        **The compact form.** Multiply the top and bottom of $G_M$ by $r_{ds}$: $G_M = \dfrac{g_mr_{ds}}{N}$ with $N = r_{ds} + R_S + g_mr_{ds}R_S$, the same $N$ as $R_{DN}$. Then $R_{out} = \dfrac{R_DN}{R_D + N}$, and in the product the $N$ cancels:
+        $$A_v = -\frac{g_mr_{ds}R_D}{R_D + r_{ds} + R_S + g_mr_{ds}R_S}$$
+        **The usual approximation** ($r_{ds}\to\infty$, so $R_{out}\to R_D$):
+
+        !!key Source degeneration (Lectures 16–17)
+          $$G_M = \frac{g_m}{1 + g_mR_S + R_S/r_{ds}}\approx\frac{g_m}{1 + g_mR_S},\qquad R_{out} = R_D\parallel(r_{ds} + R_S + g_mr_{ds}R_S)\approx R_D$$
+          $$A_v\approx-\frac{g_mR_D}{1 + g_mR_S} = -\frac{R_D}{1/g_m + R_S}\ \xrightarrow{\ g_mR_S\gg1\ }\ -\frac{R_D}{R_S}$$
+      `, { t: { fig: F.degM('test'), cap: '$R_{out}$: gate grounded, test source on the drain. The dependent source is driven by $v_{gs} = -v_s$: alive.' } }),
+      RF(md`
+        ### Check it
+
+        - **$R_S = 0$:** the compact form gives $-\dfrac{g_mr_{ds}R_D}{R_D + r_{ds}} = -g_m(R_D\parallel r_{ds})$, the plain common source.
+        - **$r_{ds}\to\infty$:** divide top and bottom by $r_{ds}$: $-\dfrac{g_mR_D}{1 + g_mR_S}$.
+        - **$R_D\to\infty$** (an ideal current-source load): $A_v\to-g_mr_{ds}$, the intrinsic gain, **whatever $R_S$ is**. With an ideal current source on the drain, the drain current cannot change at all; no signal current flows in $R_S$, so $v_s = 0$, and all of $g_mv_{in}$ circulates through $r_{ds}$. In the $G_MR_{out}$ picture, $G_M$ fell by $(1 + g_mR_S)$ and $R_{out}$ rose by the same factor.
+        - **Units** and **one number:** the worked example below.
+
+        ### What it means
+
+        **1. A ratio of resistances.** $A_v\approx-\dfrac{R_D}{1/g_m + R_S}$ reads: the resistance in the drain over the resistance in the source path, where the transistor itself contributes $1/g_m$ ([Section 1](#/l/bk04-norton), method 3). $v_{in}$ drives a current through $1/g_m + R_S$, and the same current is pulled out of $R_D$.
+
+        **2. Desensitization.** Write $A_v\approx-\dfrac{R_D}{R_S}\cdot\dfrac{g_mR_S}{1 + g_mR_S}$. Once $g_mR_S$ is large the second factor is close to 1, so the gain hardly depends on $g_m$. Differentiating, a fractional change in $g_m$ moves the gain by only $\dfrac{1}{1 + g_mR_S}$ of it: with $g_mR_S = 9$, a $10\%$ drop in $g_m$ costs about $1\%$ of gain.
+
+        [[fig:gm]]
+
+        **3. Linearity.** The square law is curved. With $R_S$, most of $V_{in}$ lands across a linear resistor and the transistor sees only $v_{gs} = v_{in}/(1 + g_mR_S)$, so its curvature matters $(1 + g_mR_S)$ times less ([Chapter 1](#/l/bk01-tangent): the distortion grows with $v_{gs}/V_{ov}$).
+
+        [[fig:lin]]
+
+        You pay for all three with gain: the plain common source with the same $R_D$ would have $|A_v| = g_mR_D$, $(1 + g_mR_S)$ times more.
+      `, {
+        gm: { fig: F.degGM(), cap: '$G_M$ in units of $1/R_S$: it starts like $g_m$ and saturates at $1/R_S$ once $g_mR_S\\gg1$.' },
+        lin: { fig: F.degLin(), cap: 'Drain current against $V_{in}$ ($K = 2\\,\\text{mA/V}^2$): the square law alone, and with $R_S = 1\\,\\text{k}\\Omega$, where it straightens toward a slope of $1/R_S$.' },
+      }),
+      RF(md`
+        ### Other things in the source
+
+        **A bypass capacitor.** Put a large capacitor $C_S$ across $R_S$. At DC the capacitor is open: $R_S$ sets and stabilizes the bias. For signals it is a short: the source is at incremental ground and the gain is the full $-g_m(R_D\parallel r_{ds})$. The best of both, as long as the signal frequency is high enough for $C_S$ to act as a short ([Chapter 10](#/l/bk10-cap)).
+
+        [[fig:cap]]
+
+        **A diode-connected transistor** $M_3$ under the source. Seen from its drain it is a resistor $1/g_{m3}$ ([Section 3](#/l/bk04-loads)). Use $R_S = 1/g_{m3}$:
+        $$G_M\approx\frac{g_{m1}}{1 + g_{m1}/g_{m3}} = \frac{g_{m1}g_{m3}}{g_{m1} + g_{m3}}$$
+        With $g_{m1} = g_{m3}$, $G_M = g_{m1}/2$.
+
+        [[fig:dio]]
+
+        **An ideal current source** under the source: an open circuit for signals, $R_S = \infty$, so $G_M = 0$. The drain current is pinned; nothing $v_{in}$ does can change it.
+
+        **PMOS.** A PMOS with $R_S$ between $V_{DD}$ and its source: the same model, the same formulas.
+
+        ### How to recognize it
+
+        Gate in, drain out, and something with resistance between the source and its supply that is **not** bypassed. Say: "degenerated: $-R_D$ over ($1/g_m + R_S$)", and remember the drain now looks like $r_{ds}(1 + g_mR_S)$.
+
+        ### Worked example
+
+        $g_m = 2\,\text{mS}$, $r_{ds} = 50\kO$, $R_S = 1\kO$, $R_D = 10\kO$.
+        1. $g_mR_S = 2$, $R_S/r_{ds} = 0.02$: $G_M = \dfrac{2\,\text{mS}}{3.02} = 0.662\,\text{mS}$.
+        2. $R_{DN} = 50 + 1 + (2)(50)(1) = 151\kO$; $R_{out} = 10\text{k}\parallel151\text{k} = 9.38\kO$.
+        3. $A_v = -(0.662\,\text{mS})(9.38\kO) = -6.21$. Compact form: $-\dfrac{(2)(50)(10)}{10 + 151} = -\dfrac{1000}{161} = -6.21$.
+        4. Without $r_{ds}$: $-\dfrac{20}{3} = -6.67$. The limit $-R_D/R_S = -10$ is far off: $g_mR_S = 2$ is not $\gg1$.
+
+        !!mistake Common mistakes
+          - **$v_{gs} = v_{in}$.** The source moves: $v_{gs} = v_{in} - v_s$.
+          - **$R_S$ in series with $R_D$** in $R_{out}$. $R_S$ is under the source; it multiplies the drain resistance, it does not add to $R_D$.
+          - **$-R_D/R_S$ when $g_mR_S$ is not large.** Keep the $1/g_m$: $-R_D/(1/g_m + R_S)$.
+          - **Keeping $R_S$ when it is bypassed.** A bypass capacitor removes $R_S$ from the signal path.
+          - **Forgetting that the drain resistance grows.** In a stack, the next transistor up sees $r_{ds}(1 + g_mR_S)$, not $r_{ds}$.
+      `, {
+        cap: { fig: F.csDegC(), cap: '$R_S$ bypassed by a large $C_S$: $R_S$ for DC, a short for signals.' },
+        dio: { fig: F.csDegDiode(), cap: 'A diode-connected $M_3$ under the source acts as $R_S = 1/g_{m3}$.' },
+      }),
+      Q(md`A degenerated common source has $g_mR_S = 9$. Its $g_m$ doubles (a different bias, or a different chip). By about how much does the gain change? (Ignore $r_{ds}$.)`,
+        ['About $+5\\%$', 'It doubles', 'About $+41\\%$', 'It does not change at all'], 0,
+        [null,
+          'That is the plain common source. With degeneration the gain is $\\frac{R_D}{R_S}\\cdot\\frac{g_mR_S}{1 + g_mR_S}$, and that second factor is already near 1.',
+          'That would be a square-root dependence; here the factor goes from $9/10$ to $18/19$.',
+          'It changes a little: $g_mR_S/(1 + g_mR_S)$ is close to 1 but not equal to it.'],
+        md`$A_v\approx-\dfrac{R_D}{R_S}\cdot\dfrac{g_mR_S}{1 + g_mR_S}$. The second factor goes from $\dfrac{9}{10} = 0.900$ to $\dfrac{18}{19} = 0.947$: a $5\%$ rise for a $100\%$ rise in $g_m$. That insensitivity is the reason for degeneration.`),
+      Q(md`A degenerated common source drives an **ideal** current-source load (instead of $R_D$). Keeping $r_{ds}$, its gain is:`,
+        ['$-g_mr_{ds}$, as if $R_S$ were not there', '$-\\dfrac{g_mr_{ds}}{1 + g_mR_S}$', '$-r_{ds}/R_S$', 'zero, because the current cannot change'], 0,
+        [null,
+          'That divides by $(1 + g_mR_S)$ but forgets that $R_{out}$ is multiplied by the same factor.',
+          'That is the resistor-ratio limit with $R_D = r_{ds}$, which does not describe this circuit.',
+          'The current cannot change, but the voltage can: the output moves until $r_{ds}$ carries $-g_mv_{gs}$.'],
+        md`With an ideal current source on the drain, the drain current is fixed, so no signal current flows in $R_S$: $v_s = 0$ and $v_{gs} = v_{in}$. The dependent source's $g_mv_{in}$ must then flow back through $r_{ds}$, giving $v_{out} = -g_mr_{ds}v_{in}$. In $G_MR_{out}$ terms: $G_M\approx g_m/(1 + g_mR_S)$ and $R_{out}\approx r_{ds}(1 + g_mR_S)$; the factors cancel.`),
+      Q(md`$R_S$ is bypassed by a large capacitor $C_S$. What is the small-signal gain at signal frequencies (ignore $r_{ds}$)?`,
+        ['$-g_mR_D$, the full common-source gain', '$-\\dfrac{g_mR_D}{1 + g_mR_S}$', '$-R_D/R_S$', 'Zero, because the source is shorted to ground'], 0,
+        [null,
+          'That is the unbypassed stage. For signals the capacitor shorts $R_S$.',
+          'With $R_S$ shorted there is nothing in the source path but $1/g_m$.',
+          'A grounded source is exactly the plain common source; it has full gain.'],
+        md`For signals the capacitor is a short, so the source is at incremental ground and $v_{gs} = v_{in}$: $A_v = -g_mR_D$ (with $r_{ds}$: $-g_m(R_D\parallel r_{ds})$). $R_S$ still matters at DC, where it sets and stabilizes the bias current.`),
+      Q(md`How does $R_S$ change the resistance looking down into the drain of the transistor?`,
+        ['It multiplies it: from $r_{ds}$ to about $r_{ds}(1 + g_mR_S)$.', 'It adds to it: $r_{ds} + R_S$.', 'It divides it by $1 + g_mR_S$.', 'Not at all: the drain resistance is always $r_{ds}$.'], 0,
+        [null,
+          'That forgets the feedback: the dependent source, driven by $v_{gs} = -v_s$, fights any change of current.',
+          'That is what happens to $G_M$, not to the drain resistance.',
+          'Only with the source at incremental ground.'],
+        md`$R_{DN} = r_{ds} + R_S + g_mr_{ds}R_S\approx r_{ds}(1 + g_mR_S)$. Raising the drain pushes more current, which raises the source, which lowers $v_{gs}$ and throttles the current: the drain resists being moved, so it looks large. This is the impedance scaler of [Chapter 3](#/l/bk03-degen).`),
+      P({
+        id: 'bk04-degen-approx', title: 'Degenerated gain from the bias',
+        q: md`A degenerated common source runs at $I_D = 0.25\,\text{mA}$ with $V_{ov} = 0.25\,\text{V}$; $R_S = 2\kO$, $R_D = 20\kO$. Ignoring $r_{ds}$, find $g_m$ and $A_v$. How far is it from $-R_D/R_S$?`,
+        fig: F.csDeg({ RD: '20\\,\\text{k}\\Omega', RS: '2\\,\\text{k}\\Omega' }),
+        parts: [{ lbl: 'g_m', unit: 'mS', ans: 2 }, { lbl: 'A_v', unit: '', ans: -8, traps: [{ v: -10, msg: 'That is the $g_mR_S\\gg1$ limit; here $g_mR_S = 4$, so keep the $1/g_m$.' }, { v: -40, msg: 'That is the plain common source: $R_S$ divides the gain by $1 + g_mR_S = 5$.' }] }],
+        hints: [md`$g_m = 2I_D/V_{ov}$.`, md`$A_v = -R_D/(1/g_m + R_S)$.`],
+        sol: md`
+1. $g_m = \dfrac{2(0.25\,\text{mA})}{0.25\,\text{V}} = 2\,\text{mS}$, so $1/g_m = 500\,\Omega$ and $g_mR_S = 4$.
+2. $A_v = -\dfrac{R_D}{1/g_m + R_S} = -\dfrac{20\kO}{0.5\kO + 2\kO} = -8$.
+3. $-R_D/R_S = -10$ is $25\%$ too big: $g_mR_S = 4$ is not large enough for the limit.`,
+      }),
+      P({
+        id: 'bk04-degen-exact', title: 'Degeneration with $r_{ds}$, exactly',
+        q: md`$g_m = 4\,\text{mS}$, $r_{ds} = 25\kO$, $R_S = 500\,\Omega$, $R_D = 10\kO$. Find $G_M$, the resistance $R_{DN}$ looking down into the drain, $R_{out}$ and $A_v$.`,
+        fig: F.csDeg({ RD: '10\\,\\text{k}\\Omega', RS: '500\\,\\Omega' }),
+        parts: [{ lbl: 'G_M', unit: 'mS', ans: 4 / 3.02 }, { lbl: 'R_{DN}', unit: 'kΩ', ans: 75.5, traps: [{ v: 25.5, msg: '$R_S$ does not just add: $g_mr_{ds}R_S$ is the big term.' }] }, { lbl: 'R_{out}', unit: 'kΩ', ans: 10 * 75.5 / 85.5 },
+          { lbl: 'A_v', unit: '', ans: -1000 / 85.5, traps: [{ v: -40 / 3, msg: 'That is the $r_{ds}\\to\\infty$ approximation; here $r_{ds}$ is only $2.5R_D$, so it matters.' }] }],
+        hints: [md`$G_M = g_m/(1 + g_mR_S + R_S/r_{ds})$; $R_{DN} = r_{ds} + R_S + g_mr_{ds}R_S$.`, md`$A_v = -\dfrac{g_mr_{ds}R_D}{R_D + R_{DN}}$.`],
+        sol: md`
+1. $g_mR_S = 2$, $R_S/r_{ds} = 0.02$: $G_M = \dfrac{4\,\text{mS}}{3.02} = 1.325\,\text{mS}$.
+2. $R_{DN} = 25 + 0.5 + (4)(25)(0.5) = 75.5\kO$.
+3. $R_{out} = 10\text{k}\parallel75.5\text{k} = 8.83\kO$.
+4. $A_v = -(1.325)(8.83) = -11.70$. Compact form: $-\dfrac{(4)(25)(10)}{10 + 75.5} = -\dfrac{1000}{85.5} = -11.70$.
+
+The approximation $-\dfrac{g_mR_D}{1 + g_mR_S} = -13.3$ is $14\%$ high: with $r_{ds}$ only $25\kO$, it steals a real share of the current.`,
+      }),
+      P({
+        id: 'bk04-degen-design', title: 'Designing for a gain that does not drift',
+        q: md`A common source has $g_m = 2\,\text{mS}$ and $R_D = 10\kO$ (ignore $r_{ds}$). (a) What $R_S$ makes $A_v = -5$? (b) If $g_m$ then drops by $20\%$, what is the new gain? (A plain common source would fall from $-20$ to $-16$.)`,
+        fig: F.csDeg(),
+        parts: [{ lbl: 'R_S', unit: 'kΩ', ans: 1.5, traps: [{ v: 2, msg: '$R_D/R_S = 5$ forgets the transistor\'s own $1/g_m = 0.5\\,\\text{k}\\Omega$ in the source path.' }] }, { lbl: 'A_v\\text{ after the drop}', unit: '', ans: -10 / (1 / 1.6 + 1.5) }],
+        hints: [md`$|A_v| = R_D/(1/g_m + R_S)$, so $1/g_m + R_S = 2\kO$.`, md`New $g_m = 1.6\,\text{mS}$, $1/g_m = 0.625\kO$.`],
+        sol: md`
+1. $1/g_m + R_S = R_D/5 = 2\kO$ and $1/g_m = 0.5\kO$, so $R_S = 1.5\kO$.
+2. With $g_m = 1.6\,\text{mS}$: $A_v = -\dfrac{10}{0.625 + 1.5} = -4.71$.
+3. The gain moved $6\%$ for a $20\%$ change in $g_m$; the plain stage would have moved $20\%$. The price: $5$ instead of $20$.`,
+      }),
+      P({
+        id: 'bk04-degen-diode', title: 'A diode in the source',
+        q: md`$M_1$ has a diode-connected NMOS $M_3$ under its source and $R_D = 10\kO$ on its drain. $g_{m1} = g_{m3} = 4\,\text{mS}$; ignore $r_{ds}$. Find $G_M$ and $A_v$.`,
+        fig: F.csDegDiode(),
+        parts: [{ lbl: 'G_M', unit: 'mS', ans: 2, traps: [{ v: 4, msg: 'That ignores $M_3$: it acts as $R_S = 1/g_{m3}$.' }] }, { lbl: 'A_v', unit: '', ans: -20 }],
+        hints: [md`$M_3$ looks like $R_S = 1/g_{m3} = 250\,\Omega$.`],
+        sol: md`
+1. $M_3$ is a diode: $R_S = 1/g_{m3} = 250\,\Omega$, so $g_{m1}R_S = 1$.
+2. $G_M = \dfrac{g_{m1}}{1 + g_{m1}R_S} = \dfrac{4}{2} = 2\,\text{mS}$ (or $\dfrac{g_{m1}g_{m3}}{g_{m1} + g_{m3}} = \dfrac{16}{8}$).
+3. $A_v = -(2\,\text{mS})(10\kO) = -20$.`,
+      }),
+      P({
+        id: 'bk04-degen-isrc', title: 'Degeneration under a current-source load',
+        q: md`A degenerated stage ($g_m = 2\,\text{mS}$, $r_{ds} = 100\kO$, $R_S = 1\kO$) has an **ideal** current source as its load. Find $G_M$, $R_{out}$ and $A_v$.`,
+        fig: F.csDegI(),
+        parts: [{ lbl: 'G_M', unit: 'mS', ans: 2 / 3.01 }, { lbl: 'R_{out}', unit: 'kΩ', ans: 301, traps: [{ v: 100, msg: 'The drain is degenerated: $r_{ds} + R_S + g_mr_{ds}R_S$.' }] },
+          { lbl: 'A_v', unit: '', ans: -200, traps: [{ v: -200 / 3.01, msg: 'That is $-G_Mr_{ds}$: the output resistance is the degenerated drain, which is $1 + g_mR_S$ times bigger.' }] }],
+        hints: [md`An ideal current source is an open circuit: $R_{out} = R_{DN}$.`, md`$G_MR_{DN} = g_mr_{ds}$ exactly.`],
+        sol: md`
+1. $G_M = \dfrac{2}{1 + 2 + 0.01} = 0.6645\,\text{mS}$.
+2. The load is open, so $R_{out} = R_{DN} = 100 + 1 + (2)(100)(1) = 301\kO$.
+3. $A_v = -(0.6645)(301) = -200 = -g_mr_{ds}$.
+
+Degeneration cost nothing here: the drain current cannot change, so $R_S$ carries no signal current and the source stays still.`,
+      }),
+      P({
+        id: 'bk04-degen-pmos', title: 'A degenerated PMOS stage',
+        q: md`A PMOS common source has $R_S = 2\kO$ between $V_{DD}$ and its source and $R_D = 12\kO$ from its drain to ground; $g_m = 1\,\text{mS}$, $r_{ds}$ ignored. Find $A_v$.`,
+        fig: F.csDegP({ RS: '2\\,\\text{k}\\Omega', RD: '12\\,\\text{k}\\Omega' }),
+        parts: [{ lbl: 'A_v', unit: '', ans: -4, traps: [{ v: 4, msg: 'A PMOS common source inverts too; the model is the same.' }, { v: -6, msg: 'Keep the $1/g_m = 1\\,\\text{k}\\Omega$ in the source path.' }] }],
+        hints: [md`Same model, same formula: $A_v = -R_D/(1/g_m + R_S)$.`],
+        sol: md`$V_{DD}$ is incremental ground, so $R_S$ runs from the source to ground for signals, exactly as in the NMOS stage. $A_v = -\dfrac{12\kO}{1\kO + 2\kO} = -4$.`,
+      }),
+      P({
+        id: 'bk04-degen-sym', title: 'Degeneration in symbols',
+        q: md`Keeping $r_{ds}$, type $G_M$ and $A_v$ of the degenerated common source. Use \`gm\`, \`rds\`, \`RS\`, \`RD\`.`,
+        fig: F.csDeg(),
+        parts: [ex('gm/(1 + gm*RS + RS/rds)', ['gm', 'rds', 'RS'], 'G_M', { exact: true, ranges: { rds: [5e3, 2e4] } }),
+          ex('-gm*rds*RD/(RD + rds + RS + gm*rds*RS)', ['gm', 'rds', 'RS', 'RD'], 'A_v', { exact: true, ranges: { rds: [1e4, 5e4] } })],
+        hints: [md`$G_M$: Derivation 2. $A_v$: the compact form, or type $-G_M(R_D\parallel R_{DN})$.`],
+        sol: md`$G_M = \dfrac{g_m}{1 + g_mR_S + R_S/r_{ds}}$ and $A_v = -\dfrac{g_mr_{ds}R_D}{R_D + r_{ds} + R_S + g_mr_{ds}R_S}$. Typed: \`gm/(1 + gm*RS + RS/rds)\` and \`-gm*rds*RD/(RD + rds + RS + gm*rds*RS)\` (or \`-gm/(1 + gm*RS + RS/rds)*(RD || (rds + RS + gm*rds*RS))\`).`,
+      }),
+      G('bk_degen', { need: 4 }),
+    ],
+  });
 })();

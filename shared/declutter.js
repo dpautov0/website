@@ -13,7 +13,7 @@
   function pathSegs(d) {
     const segs = [];
     let x = 0, y = 0, sx = 0, sy = 0;
-    const re = /([MLHVAZ])([^MLHVAZ]*)/gi;
+    const re = /([MLHVAZCSQT])([^MLHVAZCSQT]*)/gi;
     let m;
     while ((m = re.exec(d))) {
       const c = m[1].toUpperCase();
@@ -29,6 +29,12 @@
         for (const v of n) { segs.push([x, y, x, v]); y = v; }
       } else if (c === 'A') {
         for (let i = 0; i + 6 < n.length; i += 7) { segs.push([x, y, n[i + 5], n[i + 6]]); x = n[i + 5]; y = n[i + 6]; }
+      } else if (c === 'C') {
+        for (let i = 0; i + 5 < n.length; i += 6) { segs.push([x, y, n[i], n[i + 1]], [n[i], n[i + 1], n[i + 2], n[i + 3]], [n[i + 2], n[i + 3], n[i + 4], n[i + 5]]); x = n[i + 4]; y = n[i + 5]; }
+      } else if (c === 'S' || c === 'Q') {
+        for (let i = 0; i + 3 < n.length; i += 4) { segs.push([x, y, n[i], n[i + 1]], [n[i], n[i + 1], n[i + 2], n[i + 3]]); x = n[i + 2]; y = n[i + 3]; }
+      } else if (c === 'T') {
+        for (let i = 0; i + 1 < n.length; i += 2) { segs.push([x, y, n[i], n[i + 1]]); x = n[i]; y = n[i + 1]; }
       } else if (c === 'Z') {
         segs.push([x, y, sx, sy]); x = sx; y = sy;
       }

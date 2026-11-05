@@ -324,7 +324,7 @@
     const R = K.R(p);
     return {
       fig: FIG[k]({ hi: c, v: shown(k, p) }),
-      q: `A ${T.name} stage. ${devLine(k, p)} For the open-circuit time constant of the boxed capacitor $${K.tex}$: zero $v_{in}$, remove every other capacitor, and find the resistance between its two ends. Triangles are incremental grounds.`,
+      q: `${/^[aeiou]/.test(T.name) ? 'An' : 'A'} ${T.name} stage. ${devLine(k, p)} For the open-circuit time constant of the boxed capacitor $${K.tex}$: zero $v_{in}$, remove every other capacitor, and find the resistance between its two ends. Triangles are incremental grounds.`,
       parts: [
         { lbl: `1. What resistance does $${K.tex}$ see?`, mc: opt, a: 0, why: whyAligned },
         resPart(`R_{${K.tex}}`, R, undefined, noGain(k, c, p)),
@@ -413,7 +413,7 @@ $$\\omega_{-3dB}\\approx\\frac{1}{\\sum\\tau} = ${f(w / 1e6, 4)}\\,\\text{Mrad/s
     const tbl = ts.map((t) => `| $${gname(t.g)}$ | $${resTeX(t.R)}$ | $${ns(t.tau)}$ |`).join('\n');
     return {
       fig: FIG[k]({ v: shown(k, p) }),
-      q: `A ${T.name} stage. ${devLine(k, p)} Without computing everything exactly, reason it out: which capacitor limits the bandwidth, and which single change raises the bandwidth the most?`,
+      q: `${/^[aeiou]/.test(T.name) ? 'An' : 'A'} ${T.name} stage. ${devLine(k, p)} Without computing everything exactly, reason it out: which capacitor limits the bandwidth, and which single change raises the bandwidth the most?`,
       parts: [
         { lbl: '1. Which time constant is the biggest?', mc: ts.map((t) => `$${gname(t.g)}$`), a: domI, fixed: true,
           why: ts.map((t, j) => (j === domI ? null : `$\\tau = ${resTeX(t.R)}\\times${pF(t.C)} = ${ns(t.tau)}$; the biggest is $${gname(ts[domI].g)}$ with $${ns(ts[domI].tau)}$.`)) },

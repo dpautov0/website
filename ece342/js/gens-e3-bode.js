@@ -742,7 +742,7 @@ The bigger $\tau$ is the lower pole, and the lower pole sets the bandwidth: **${
     else fig = E2F.cascode();
     return {
       _chk: { kind: 'mwhich', k },
-      q: md`A ${M.t} stage (high-frequency model: ${M.bjt ? '$C_\\pi$ base–emitter, $C_\\mu$ base–collector' : '$C_{gs}$ gate–source, $C_{gd}$ gate–drain'}). What happens to the capacitor between input and output at the input node?`,
+      q: md`${/^[aeiou]/.test(M.t) ? 'An' : 'A'} ${M.t} stage (high-frequency model: ${M.bjt ? '$C_\\pi$ base–emitter, $C_\\mu$ base–collector' : '$C_{gs}$ gate–source, $C_{gd}$ gate–drain'}). What happens to the capacitor between input and output at the input node?`,
       fig,
       parts: [{ mc: opts, a: M.a, why: opts.map((_, j) => (j === M.a ? null : [
         'That is the common source / common emitter: input on the gate/base, output on the drain/collector, inverting gain.',

@@ -779,7 +779,7 @@
       P({
         id: 'bk07-t-sym', title: 'The degenerated gain, typed',
         q: md`Type the gain $v_{out}/v_{in}$ of a common emitter with $R_E$ unbypassed and $R_C$ in the collector ($r_o$ ignored). Use any of \`gm\`, \`beta\`, \`rpi\`, \`RC\`, \`RE\` ($r_\pi = \beta/g_m$ is built in).`,
-        parts: [ex('-beta*RC/(rpi + (beta + 1)*RE)', ['gm', 'beta', 'rpi', 'RC', 'RE'], 'A_v', { exact: true })],
+        parts: [ex('-beta*RC/(rpi + (beta + 1)*RE)', ['gm', 'beta', 'rpi', 'RC', 'RE'], 'A_v')],
         sol: md`$A_v = -\dfrac{\beta R_C}{r_\pi + (\beta + 1)R_E} = -\dfrac{\alpha R_C}{r_e + R_E} = -\dfrac{g_mR_C}{1 + g_mR_E(\beta + 1)/\beta}$: three forms of one expression.`,
       }),
       P({
@@ -1030,7 +1030,7 @@
         id: 'bk07-dict-coll', title: 'Translate the degenerated drain',
         q: md`Type the resistance looking into a collector with $R_E$ from the emitter to ground and the base held at incremental ground. Use \`ro\`, \`gm\`, \`rpi\`, \`RE\` (and \`beta\` if you like; $r_\pi = \beta/g_m$ is built in).`,
         fig: collTest,
-        parts: [ex('ro + RE*rpi/(RE + rpi) + gm*ro*RE*rpi/(RE + rpi)', ['ro', 'gm', 'rpi', 'beta', 'RE'], 'R_X', { exact: true })],
+        parts: [ex('ro + RE*rpi/(RE + rpi) + gm*ro*RE*rpi/(RE + rpi)', ['ro', 'gm', 'rpi', 'beta', 'RE'], 'R_X')],
         hints: [md`The MOSFET answer with $R_S\to R_E\parallel r_\pi$: the emitter node has $r_\pi$ to the held base as a second path to ground.`],
         sol: md`$R_X = r_o + (R_E\parallel r_\pi) + g_mr_o(R_E\parallel r_\pi)$ (typing \`ro + (RE||rpi) + gm*ro*(RE||rpi)\` works). Derived above with a test source.`,
       }),
@@ -1043,7 +1043,7 @@
       P({
         id: 'bk07-dict-in', title: 'Translate the degenerated input',
         q: md`The input resistance at a gate with $R_S$ under the source is $\infty$. Type the BJT twin: the resistance looking into a base with $R_E$ under the emitter ($r_o$ ignored). Use \`rpi\`, \`beta\`, \`RE\` (or \`gm\`).`,
-        parts: [ex('rpi + (beta + 1)*RE', ['rpi', 'beta', 'gm', 'RE'], 'R_{in}', { exact: true })],
+        parts: [ex('rpi + (beta + 1)*RE', ['rpi', 'beta', 'gm', 'RE'], 'R_{in}')],
         sol: md`$R_{in} = r_\pi + (\beta + 1)R_E = (\beta + 1)(r_e + R_E)$: the base current flows through $r_\pi$, and $(\beta + 1)$ times it through $R_E$ ([Chapter 8](#/l/bk08-base) derives it with a test source).`,
       }),
       P({
@@ -1064,6 +1064,198 @@
         A MOSFET result; pick its BJT twin. Then a few BJT-against-MOSFET transconductance comparisons.
       `),
       G('bk_twin', { need: 5, pool: ['bk_twin', 'bk_twin', 'bk_gmmos'] }),
+    ],
+  });
+
+  // ================================================================== Chapter 7 problems
+  const ex1Amp = [['rail', [3, -1.2], { n: '12\\,\\text{V}' }], ['w', [1.6, -1.2], [3, -1.2]],
+    ['R', [1.6, -1.2], [1.6, 1], { n: 'R_1', s: '56\\,\\text{k}\\Omega' }], ['R', [1.6, 1], [1.6, 2.6], { n: 'R_2', s: '15\\,\\text{k}\\Omega' }], ['gnd', [1.6, 2.6]],
+    ['w', [1.6, 1], [2, 1]], ['R', [3, -1.2], [3, 0], { n: 'R_C', s: '5.6\\,\\text{k}\\Omega' }], ['npn', [3, 1]],
+    ['R', [3, 2], [3, 3], { n: 'R_{E1}', s: '220\\,\\Omega', side: 'l' }], ['R', [3, 3], [3, 4.2], { n: 'R_{E2}', s: '1\\,\\text{k}\\Omega', side: 'l' }], ['gnd', [3, 4.2]],
+    ['w', [3, 3], [3.8, 3]], ['C', [3.8, 3], [3.8, 4.2], { n: 'C_E' }], ['w', [3.8, 4.2], [3, 4.2]],
+    ['C', [0.5, 1], [1.6, 1], { n: 'C_1' }], ['R', [-0.8, 1], [0.5, 1], { n: 'R_S', s: '600\\,\\Omega' }], ['Vac', [-0.8, 1], [-0.8, 2.2], { n: 'v_s', side: 'l' }], ['gnd', [-0.8, 2.2]],
+    ['w', [3, 0], [3.5, 0]], ['C', [3.5, 0], [4.6, 0], { n: 'C_2' }], ['R', [4.6, 0], [4.6, 1.4], { n: 'R_L', s: '10\\,\\text{k}\\Omega' }], ['gnd', [4.6, 1.4]], ['w', [4.6, 0], [5.1, 0]], ['term', [5.1, 0], { n: 'v_{out}' }]];
+  // a PNP amplifier: divider bias, R_E (bypassed) on top, R_C to ground, coupling capacitors
+  const ex2Amp = [['rail', [3, -1.4], { n: '10\\,\\text{V}' }], ['w', [1.6, -1.4], [3.8, -1.4]],
+    ['R', [1.6, -1.4], [1.6, 1], { n: 'R_1', s: '22\\,\\text{k}\\Omega', side: 'l' }], ['R', [1.6, 1], [1.6, 2.6], { n: 'R_2', s: '47\\,\\text{k}\\Omega', side: 'l' }], ['gnd', [1.6, 2.6]],
+    ['w', [1.6, 1], [2, 1]], ['pnp', [3, 1]], ['R', [3, -1.4], [3, 0], { n: 'R_E', s: '1.5\\,\\text{k}\\Omega', side: 'l' }], ['C', [3.8, -1.4], [3.8, 0], { n: 'C_E' }], ['w', [3.8, 0], [3, 0]],
+    ['R', [3, 2], [3, 3.2], { n: 'R_C', s: '3.3\\,\\text{k}\\Omega', side: 'l' }], ['gnd', [3, 3.2]],
+    ['C', [0.5, 1], [1.6, 1], { n: 'C_1' }], ['R', [-0.8, 1], [0.5, 1], { n: 'R_S', s: '1\\,\\text{k}\\Omega' }], ['Vac', [-0.8, 1], [-0.8, 2.2], { n: 'v_s', side: 'l' }], ['gnd', [-0.8, 2.2]],
+    ['w', [3, 2], [3.5, 2]], ['C', [3.5, 2], [4.6, 2], { n: 'C_2', side: 'b' }], ['R', [4.6, 2], [4.6, 3.4], { n: 'R_L', s: '6.8\\,\\text{k}\\Omega' }], ['gnd', [4.6, 3.4]], ['w', [4.6, 2], [5.1, 2]], ['term', [5.1, 2], { n: 'v_{out}' }]];
+  const cascSig = [['rail', [2.8, -2.2], { n: '12\\,\\text{V}' }], ['w', [2, -2.2], [3.6, -2.2]],
+    ['R', [2, -2.2], [2, 0], { n: 'R_{C1}', s: '6.8\\,\\text{k}\\Omega', side: 'l' }], ['R', [3.6, -2.2], [3.6, -1], { n: 'R_{C2}', s: '1.5\\,\\text{k}\\Omega' }],
+    ['npn', [2, 1], { n: 'Q_1' }], ['R', [-0.2, 1], [1, 1], { n: 'R_B', s: '10\\,\\text{k}\\Omega' }], ['Vac', [-0.2, 1], [-0.2, 2], { n: 'v_s', side: 'l' }], ['V', [-0.2, 2], [-0.2, 3.2], { n: 'V_{BB}', s: '1.7\\,\\text{V}', side: 'l' }], ['gnd', [-0.2, 3.2]],
+    ['R', [2, 2], [2, 3.2], { n: 'R_{E1}', s: '1\\,\\text{k}\\Omega' }], ['gnd', [2, 3.2]],
+    ['w', [2, 0], [2.6, 0]], ['npn', [3.6, 0], { n: 'Q_2' }], ['R', [3.6, 1], [3.6, 2.4], { n: 'R_{E2}', s: '2.2\\,\\text{k}\\Omega' }], ['gnd', [3.6, 2.4]],
+    ['w', [3.6, -1], [4.3, -1]], ['term', [4.3, -1], { n: 'v_{out}' }]];
+
+  L({
+    id: 'bk07-problems', title: 'Chapter 7 problems', kind: 'review', ref: 'Lectures 23–24',
+    steps: [
+      RF(md`
+        ### Chapter 7 summary
+
+        | Result | Why it is true | Section |
+        |---|---|---|
+        | $g_m = I_C/V_T$ ($40\,\text{mS}$ per mA) | the slope of the exponential: $1\,\text{mV}$ is $1/25$ of $V_T$, so 4% more current | [7.1](#/l/bk07-gm) |
+        | small means $v_{be}\ll2V_T$ (a few mV) | the second-order term over the first is $v_{be}/(2V_T)$ | [7.1](#/l/bk07-gm) |
+        | $r_\pi = \beta/g_m = V_T/I_B$ | the base–emitter junction is a diode carrying $I_B$ | [7.2](#/l/bk07-rpi) |
+        | $r_o = V_A/I_C$; $g_mr_o = V_A/V_T$ | the Early effect: $\partial i_C/\partial v_{CE} = I_C/V_A$ | [7.3](#/l/bk07-ro) |
+        | hybrid-$\pi$: $r_\pi$; $g_mv_\pi = \beta i_b$; $r_o$ | three small-signal facts, three elements | [7.4](#/l/bk07-hybrid) |
+        | common emitter $A_v = -g_m(R_C\parallel r_o)\approx-V_{R_C}/V_T$ | KCL at the collector | [7.4](#/l/bk07-hybrid) |
+        | T model: $r_e = \alpha/g_m\approx1/g_m$, source $\alpha i_e$ | $i_e = v_\pi(\beta + 1)/r_\pi$; same terminal currents | [7.5](#/l/bk07-tmodel) |
+        | $-\alpha R_C/(r_e + R_E)$; $R_E/(R_E + r_e + R_S/(\beta + 1))$; $\alpha R_C/(r_e + R_S)$ | the T model: KVL through $r_e$ | [7.5](#/l/bk07-tmodel) |
+        | the PNP uses the same model | $v_{eb} = -v_{be}$ cancels the flipped current directions | [7.6](#/l/bk07-pnpmodel) |
+        | MOSFET ↔ BJT: same result unless the base current matters; $\beta\to\infty$ check | $r_\pi$ is the only structural difference | [7.7](#/l/bk07-dict) |
+
+        [[fig:m]]
+
+        !!method Every small-signal problem
+          DC first ($I_C$, check the region) → $g_m$, $r_\pi$, $r_o$ → kill the DC (supplies and big capacitors to ground, current sources open) → replace each BJT by its model (hybrid-$\pi$, or T when an emitter resistor or emitter input is involved) → KCL/KVL or $-G_MR_{out}$ → sanity: sign, limits, the $V_{R_C}/V_T$ or $R_C/R_E$ estimate.
+      `, { m: { fig: row([[hpV, 'hybrid-$\\pi$'], [tMod, 'T']]), cap: 'The two models of Chapter 7 (for NPN and PNP alike).' } }),
+      P({
+        id: 'bk07-x-par', title: '1. Parameters from the emitter current',
+        q: md`A forward-active BJT carries $I_E = 1.01\,\text{mA}$; $\beta = 100$, $V_A = 75\,\text{V}$. Find $g_m$, $r_\pi$ and $r_o$.`,
+        parts: [{ lbl: 'g_m', unit: 'mS', ans: 40 }, { lbl: 'r_\\pi', unit: 'kΩ', ans: 2.5 }, { lbl: 'r_o', unit: 'kΩ', ans: 75 }],
+        sol: md`$I_C = \alpha I_E = 1\,\text{mA}$; $g_m = 40\,\text{mS}$, $r_\pi = 2.5\kO$, $r_o = 75\kO$.`,
+      }),
+      P({
+        id: 'bk07-x-ib', title: '2. From the base current',
+        q: md`A BJT with $\beta = 125$ draws $I_B = 8\,\mu\text{A}$. Find $I_C$ and $r_\pi$.`,
+        parts: [{ lbl: 'I_C', unit: 'mA', ans: 1 }, { lbl: 'r_\\pi', unit: 'kΩ', ans: 3.125 }],
+        sol: md`$I_C = 1\,\text{mA}$; $r_\pi = V_T/I_B = 25\,\text{mV}/8\,\mu\text{A} = 3.125\kO$ ($= 125/40\,\text{mS}$ ✓).`,
+      }),
+      P({
+        id: 'bk07-x-lin', title: '3. A 3 mV step',
+        q: md`At $I_C = 1\,\text{mA}$, a step $v_{be} = 3\,\text{mV}$. Find $i_c$ from $g_m$ and from the exponential.`,
+        parts: [{ lbl: 'i_c\\ (g_m)', unit: 'µA', ans: 120 }, { lbl: 'i_c\\ \\text{(exact)}', unit: 'µA', ans: 127.497, tol: { rel: 0.004 } }],
+        sol: md`$g_mv_{be} = 40\,\text{mS}\times3\,\text{mV} = 120\,\mu\text{A}$; exact $1\,\text{mA}(e^{0.12} - 1) = 127.5\,\mu\text{A}$: 6% more ($v_{be}/(2V_T) = 6\%$).`,
+      }),
+      P({
+        id: 'bk07-x-mos', title: '4. The current a g_m costs',
+        q: md`For $g_m = 20\,\text{mS}$, what current does a BJT need, and what does a MOSFET at $V_{ov} = 0.3\,\text{V}$ need?`,
+        parts: [{ lbl: 'I_C', unit: 'mA', ans: 0.5 }, { lbl: 'I_D', unit: 'mA', ans: 3 }],
+        sol: md`$I_C = g_mV_T = 0.5\,\text{mA}$; $I_D = g_mV_{ov}/2 = 3\,\text{mA}$: six times more.`,
+      }),
+      P({
+        id: 'bk07-x-ce', title: '5. A loaded common emitter',
+        q: md`A common emitter at $I_C = 1.5\,\text{mA}$ ($\beta = 100$, $V_A = 60\,\text{V}$) has $R_C = 3.3\kO$ and a $3.3\kO$ load through a large coupling capacitor; input on the base, emitter grounded. Find $g_m$, $r_o$ and $A_v$.`,
+        parts: [{ lbl: 'g_m', unit: 'mS', ans: 60 }, { lbl: 'r_o', unit: 'kΩ', ans: 40 }, { lbl: 'A_v', unit: '', ans: -95.078 }],
+        sol: md`$g_m = 60\,\text{mS}$, $r_o = 40\kO$; $R_C\parallel R_L\parallel r_o = 1.65\parallel40 = 1.585\kO$; $A_v = -60\,\text{mS}\times1.585\kO = -95.1$.`,
+      }),
+      P({
+        id: 'bk07-x-cers', title: '6. With a source resistance',
+        q: md`A common emitter at $I_C = 0.8\,\text{mA}$, $\beta = 80$, $R_C = 6.8\kO$ ($r_o$ ignored), driven through $R_S = 2\kO$. Find $r_\pi$ and $v_{out}/v_s$.`,
+        parts: [{ lbl: 'r_\\pi', unit: 'kΩ', ans: 2.5 }, { lbl: 'v_{out}/v_s', unit: '', ans: -120.889 }],
+        sol: md`$g_m = 32\,\text{mS}$, $r_\pi = 2.5\kO$; $A_v = -32\,\text{mS}\times6.8\kO\times\dfrac{2.5}{4.5} = -217.6\times0.5556 = -120.9$.`,
+      }),
+      P({
+        id: 'bk07-x-active', title: '7. An active load',
+        q: md`An NPN common emitter ($V_A = 120\,\text{V}$) with a PNP current-source load ($V_A = 60\,\text{V}$), both at $0.25\,\text{mA}$. Find $A_v$.`,
+        parts: [{ lbl: 'A_v', unit: '', ans: -1600 }],
+        sol: md`$g_m = 10\,\text{mS}$; $r_{o1} = 480\kO$, $r_{o2} = 240\kO$, parallel $160\kO$; $A_v = -1600$.`,
+      }),
+      P({
+        id: 'bk07-x-re', title: '8. r_e at low and high current',
+        q: md`Find $r_e = \alpha/g_m$ at $0.1\,\text{mA}$ and at $5\,\text{mA}$ ($\beta = 100$).`,
+        parts: [{ lbl: 'r_e\\ (0.1\\,\\text{mA})', unit: 'Ω', ans: 247.525, accept: [250] }, { lbl: 'r_e\\ (5\\,\\text{mA})', unit: 'Ω', ans: 4.9505, accept: [5] }],
+        sol: md`$r_e\approx25\,\Omega/I_C(\text{mA})$: $247.5\,\Omega$ and $4.95\,\Omega$ (with $\alpha = 0.990$).`,
+      }),
+      P({
+        id: 'bk07-x-deg', title: '9. Degenerated common emitter',
+        q: md`$I_C = 0.5\,\text{mA}$, $\beta = 120$, $R_C = 12\kO$, $R_E = 1.2\kO$ unbypassed, $r_o$ ignored. Find $A_v$ and the input resistance at the base.`,
+        parts: [{ lbl: 'A_v', unit: '', ans: -9.52381, accept: [-12000 / 1250] }, { lbl: 'R_{in}', unit: 'kΩ', ans: 151.2 }],
+        sol: md`$r_e = (120/121)/20\,\text{mS} = 49.59\,\Omega$. $A_v = -\dfrac{0.9917\times12\kO}{49.59 + 1200\,\Omega} = -9.524$. $R_{in} = 121\times1249.6\,\Omega = 151.2\kO$.`,
+      }),
+      P({
+        id: 'bk07-x-fol', title: '10. Emitter follower',
+        q: md`A follower at $I_C = 2\,\text{mA}$, $\beta = 100$, $R_E = 470\,\Omega$, driven through $R_S = 1\kO$. Find $v_{out}/v_s$ and the output resistance at the emitter (including $R_E$).`,
+        parts: [{ lbl: 'v_{out}/v_s', unit: '', ans: 0.954747, tol: { rel: 0.003 } }, { lbl: 'R_{out}', unit: 'Ω', ans: 21.2691 }],
+        sol: md`$r_e = 12.38\,\Omega$, $R_S/(\beta + 1) = 9.90\,\Omega$. Gain $= 470/(470 + 12.38 + 9.90) = 0.9547$. $R_{out} = 470\parallel22.28 = 21.27\,\Omega$.`,
+      }),
+      P({
+        id: 'bk07-x-cb', title: '11. Common base',
+        q: md`A common base at $I_C = 1\,\text{mA}$, $\beta = 100$, $R_C = 4.7\kO$, driven at the emitter by an ideal source ($r_o$ ignored). Find $A_v$ and $R_{in}$.`,
+        parts: [{ lbl: 'A_v', unit: '', ans: 188 }, { lbl: 'R_{in}', unit: 'Ω', ans: 24.7525, accept: [25] }],
+        sol: md`$A_v = \alpha R_C/r_e = g_mR_C = 40\,\text{mS}\times4.7\kO = 188$, non-inverting. $R_{in} = r_e = 24.75\,\Omega$.`,
+      }),
+      P({
+        id: 'bk07-x-pnp', title: '12. A degenerated PNP',
+        q: md`A PNP common emitter at $|I_C| = 0.8\,\text{mA}$, $\beta = 80$, with $R_E = 330\,\Omega$ unbypassed and $R_C = 4.7\kO$. Find $A_v$.`,
+        parts: [{ lbl: 'A_v', unit: '', ans: -12.8635, accept: [-4700 / (31.25 + 330)] }],
+        sol: md`$r_e = (80/81)/32\,\text{mS} = 30.86\,\Omega$; $A_v = -\dfrac{0.9877\times4700}{30.86 + 330} = -12.86$. Same formula as an NPN.`,
+      }),
+      P({
+        id: 'bk07-x-sym1', title: '13. The follower, typed',
+        q: md`Type the gain $v_{out}/v_s$ of an emitter follower with emitter resistor $R_E$ and source resistance $R_S$ ($r_o$ ignored). Use \`RE\`, \`RS\`, \`rpi\`, \`beta\` (\`gm\` allowed).`,
+        parts: [ex('(beta + 1)*RE/(RS + rpi + (beta + 1)*RE)', ['RE', 'RS', 'rpi', 'beta', 'gm'], 'A_v', { ranges: { RS: [2e4, 2e5], RE: [100, 1000] } })],
+        sol: md`KVL: $v_s = i_b(R_S + r_\pi) + (\beta + 1)i_bR_E$, $v_{out} = (\beta + 1)i_bR_E$, so $A_v = \dfrac{(\beta + 1)R_E}{R_S + r_\pi + (\beta + 1)R_E} = \dfrac{R_E}{R_E + r_e + R_S/(\beta + 1)}$.`,
+      }),
+      P({
+        id: 'bk07-x-sym2', title: '14. The common base, typed',
+        q: md`Type the gain of a common base driven at the emitter through $R_S$, with $R_C$ in the collector ($r_o$ ignored). Use \`gm\`, \`beta\`, \`rpi\`, \`RC\`, \`RS\`.`,
+        parts: [ex('beta*RC/(rpi + (beta + 1)*RS)', ['gm', 'beta', 'rpi', 'RC', 'RS'], 'A_v')],
+        sol: md`$A_v = \dfrac{\alpha R_C}{r_e + R_S}$; multiply top and bottom by $\beta + 1$: $\dfrac{\beta R_C}{r_\pi + (\beta + 1)R_S}$. (Lecture 24 writes the same thing as $G_m = -1/((R_B + r_\pi)/\beta + (\beta + 1)R_E/\beta)$ with the roles named differently.)`,
+      }),
+      P({
+        id: 'bk07-x-exam1', title: '15. A partly bypassed emitter (exam style)', big: true,
+        q: md`$\beta = 120$, $r_o$ ignored, large capacitors. $C_E$ bypasses only $R_{E2}$. Find (a) $I_C$, (b) $g_m$ and $r_\pi$, (c) $R_{in}$ to the right of $R_S$, and (d) $A_v = v_{out}/v_s$.`,
+        fig: ex1Amp,
+        parts: [{ lbl: 'I_C', unit: 'mA', ans: 1.38115 }, { lbl: 'g_m', unit: 'mS', ans: 55.2459 }, { lbl: 'r_\\pi', unit: 'kΩ', ans: 2.17211 },
+          { lbl: 'R_{in}', unit: 'kΩ', ans: 8.38535, traps: [{ v: 1.83518, msg: 'That treats the whole emitter as grounded. Only $R_{E2}$ is bypassed: $R_{E1}$ stays in the signal path, so the base shows $r_\\pi + (\\beta + 1)R_{E1}$.' }] },
+          { lbl: 'A_v', unit: '', ans: -13.9623, traps: [{ v: -149.455, msg: 'That ignores $R_{E1}$, as if the whole emitter resistance were bypassed.' }] }],
+        hints: [md`DC: both $R_{E1}$ and $R_{E2}$ are in the emitter ($C_E$ open): $R_E = 1.22\kO$.`, md`Signal: $R_{E2}$ is shorted by $C_E$; $R_{E1} = 220\,\Omega$ remains. Base resistance $r_\pi + (\beta + 1)R_{E1}$; gain from the base $-\beta(R_C\parallel R_L)/(r_\pi + (\beta + 1)R_{E1})$.`],
+        sol: md`
+**(a) DC.** $V_{TH} = 12\times15/71 = 2.535\,\text{V}$, $R_{TH} = 56\parallel15 = 11.83\kO$, emitter resistance $1.22\kO$: $I_B = \dfrac{1.835}{11.83 + 121\times1.22}\,\text{mA} = 11.51\,\mu\text{A}$, $I_C = 1.381\,\text{mA}$. ($V_C = 4.27\,\text{V}\ge V_B = 2.40\,\text{V}$ ✓.)
+
+**(b)** $g_m = 55.25\,\text{mS}$, $r_\pi = 120/55.25\,\text{mS} = 2.172\kO$.
+
+**(c)** Into the base: $r_\pi + (\beta + 1)R_{E1} = 2.172 + 121\times0.22 = 28.79\kO$, in parallel with $R_1\parallel R_2 = 11.83\kO$: $R_{in} = 8.385\kO$.
+
+**(d)** From the base: $-\dfrac{120\times(5.6\parallel10)}{28.79} = -\dfrac{120\times3.590}{28.79} = -14.96$; input divider $8.385/(8.385 + 0.6) = 0.9332$; $A_v = -13.96$.
+
+Splitting $R_E$ this way lets the DC see $1.22\kO$ (a stable bias) while the signal sees only $220\,\Omega$ (a gain near $-R_C\parallel R_L/R_{E1} = -16$).`,
+      }),
+      P({
+        id: 'bk07-x-exam2', title: '16. A PNP amplifier (exam style)', big: true,
+        q: md`A PNP amplifier ($\beta = 100$, $r_o$ ignored, large capacitors; $C_E$ bypasses $R_E$). Find (a) $I_C$ and confirm the region, (b) $g_m$, (c) $R_{in}$ to the right of $R_S$, (d) $A_v = v_{out}/v_s$.`,
+        fig: ex2Amp,
+        parts: [{ lbl: 'I_C', unit: 'mA', ans: 1.49467 }, { lbl: 'g_m', unit: 'mS', ans: 59.7867 }, { lbl: 'R_{in}', unit: 'kΩ', ans: 1.50467 }, { lbl: 'A_v', unit: '', ans: -79.7989, traps: [{ v: 79.7989, msg: 'A PNP common emitter inverts: same model as the NPN.' }] }],
+        hints: [md`PNP DC: $V_{TH} = 10\times47/69$, $R_{TH} = 22\parallel47$, $I_B = (V_{CC} - 0.7 - V_{TH})/(R_{TH} + (\beta + 1)R_E)$.`, md`Signal: the same hybrid-$\pi$ model; the emitter is grounded by $C_E$.`],
+        sol: md`
+**(a)** $V_{TH} = 6.812\,\text{V}$, $R_{TH} = 14.99\kO$. $I_B = \dfrac{10 - 0.7 - 6.812}{14.99 + 101\times1.5}\,\text{mA} = \dfrac{2.488}{166.5}\,\text{mA} = 14.95\,\mu\text{A}$, $I_C = 1.495\,\text{mA}$. $V_E = 10 - 1.510\times1.5 = 7.735\,\text{V}$, $V_B = 7.035\,\text{V}$, $V_C = 1.495\times3.3 = 4.932\,\text{V}\le V_B$ ✓ active.
+
+**(b)** $g_m = 59.79\,\text{mS}$, $r_\pi = 1.673\kO$.
+
+**(c)** $R_{in} = (22\parallel47)\parallel1.673 = 14.99\parallel1.673 = 1.505\kO$.
+
+**(d)** $A_v = -59.79\,\text{mS}\times(3.3\parallel6.8)\kO\times\dfrac{1.505}{1.505 + 1} = -59.79\times2.222\times0.6007 = -79.8$.`,
+      }),
+      P({
+        id: 'bk07-x-exam3', title: '17. Two stages (exam style)', big: true,
+        q: md`The two-stage circuit of [Chapter 6, problem 13](#/l/bk06-problems), now with a small signal $v_s$ in series with $V_{BB}$ ($\beta = 100$, $r_o$ ignored). There it was found that $I_{C1} = 0.9009\,\text{mA}$ and $I_{C2} = 2.259\,\text{mA}$. Find (a) $g_{m1}$ and $g_{m2}$, (b) the resistance $R_{in2}$ looking into $Q_2$'s base, (c) the gain of the first stage $v_{c1}/v_{b1}$, (d) of the second stage $v_{out}/v_{c1}$, and (e) the overall $v_{out}/v_s$.`,
+        fig: cascSig,
+        parts: [{ lbl: 'g_{m1}', unit: 'mS', ans: 36.036 }, { lbl: 'g_{m2}', unit: 'mS', ans: 90.3733 }, { lbl: 'R_{in2}', unit: 'kΩ', ans: 223.307 },
+          { lbl: 'v_{c1}/v_{b1}', unit: '', ans: -6.359, traps: [{ v: -6.55264, msg: 'That ignores the loading of $R_{C1}$ by $Q_2$\'s base: $R_{C1}\\parallel R_{in2}$.' }] },
+          { lbl: 'v_{out}/v_{c1}', unit: '', ans: -0.671722 }, { lbl: 'v_{out}/v_s', unit: '', ans: 3.89605 }],
+        hints: [md`$R_{in2} = r_{\pi2} + (\beta + 1)R_{E2}$; the first stage drives $R_{C1}\parallel R_{in2}$.`, md`Each stage: $-\alpha R_{load}/(r_e + R_E)$. The input divider: $R_B$ against $R_{in1} = (\beta + 1)(r_{e1} + R_{E1})$.`],
+        sol: md`
+**(a)** $g_{m1} = 36.04\,\text{mS}$ ($r_{e1} = 27.47\,\Omega$, $r_{\pi1} = 2.775\kO$); $g_{m2} = 90.37\,\text{mS}$ ($r_{e2} = 10.96\,\Omega$, $r_{\pi2} = 1.107\kO$).
+
+**(b)** $R_{in2} = 1.107 + 101\times2.2 = 223.3\kO$.
+
+**(c)** Stage 1 is a degenerated common emitter whose collector sees $R_{C1}\parallel R_{in2} = 6.8\parallel223.3 = 6.599\kO$: $\dfrac{v_{c1}}{v_{b1}} = -\dfrac{\beta(6.599)}{r_{\pi1} + 101\times1} = -\dfrac{100\times6.599}{103.78} = -6.359$.
+
+**(d)** Stage 2: $-\dfrac{\beta R_{C2}}{r_{\pi2} + 101R_{E2}} = -\dfrac{100\times1.5}{223.3} = -0.6717$ (more emitter than collector resistance: a gain below 1).
+
+**(e)** Input divider: $R_{in1} = r_{\pi1} + 101\times1 = 103.8\kO$, so $v_{b1}/v_s = 103.8/113.8 = 0.9121$. Overall: $0.9121\times(-6.359)\times(-0.6717) = +3.896$. Two inversions make it non-inverting.`,
+      }),
+      R(md`
+        ### Mixed drill
+
+        Every Chapter 7 skill, shuffled: parameters, linearity, $r_o$, common-emitter gains, quick T-model gains, PNP stages, the full exam chain, and MOSFET twins. Eight correct answers complete it.
+      `),
+      G('bk_gm', { need: 8, pool: ['bk_gm', 'bk_lin', 'bk_gmmos', 'bk_ro', 'bk_cegain', 'bk_cegain', 'bk_tgain', 'bk_tgain', 'bk_pnpgain', 'bk_full', 'bk_full', 'bk_twin'] }),
     ],
   });
 })();

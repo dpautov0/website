@@ -307,4 +307,135 @@ ${s1}
       hints: [md`Short the output and add the current each transistor pulls out of it; a gate on $v_1$ contributes $g_mA_1$, sign included.`, md`$R_{out}$ with $v_{in} = 0$: every internal node driven only by $v_{in}$ is still.`],
     };
   };
+
+  // ================================================================ 4. mirrors that carry signal
+  const sigFigs = {
+    cs: () => [
+      ['rail', [1, -2]], ['pmos', [1, -1], { n: 'M_2', flip: true, dc: true }], ['nmos', [1, 1], { n: 'M_1' }], ['gnd', [1, 2]],
+      ['w', [0, 1], [-0.6, 1], [-0.6, 1.4]], ...vin(-0.6, 1.4), ['node', [1, 0], { n: 'a', side: 'l' }],
+      ['rail', [3, -2]], ['pmos', [3, -1], { n: 'M_3' }], ['R', [3, 0], [3, 1.4], { n: 'R_L' }], ['gnd', [3, 1.4]], ['w', [3, 0], [3.8, 0]], ['term', [3.8, 0], { n: 'v_{out}', side: 'r' }],
+    ],
+    cg: () => [
+      ['rail', [1, -2]], ['pmos', [1, -1], { n: 'M_2', flip: true, dc: true }], ['nmos', [1, 1], { n: 'M_1' }], ['acg', [0, 1]],
+      ['node', [1, 0], { n: 'a', side: 'l' }], ['R', [1, 2], [1, 3.2], { n: 'R_S' }], ...vin(1, 3.2),
+      ['rail', [3, -2]], ['pmos', [3, -1], { n: 'M_3' }], ['R', [3, 0], [3, 1.4], { n: 'R_L' }], ['gnd', [3, 1.4]], ['w', [3, 0], [3.8, 0]], ['term', [3.8, 0], { n: 'v_{out}', side: 'r' }],
+    ],
+    dio: () => [
+      ['rail', [1, -0.6]], ['I', [1, -0.6], [1, 0.6], { n: 'I_B', side: 'l' }], ['w', [1, 0.6], [1, 1]],
+      ['nmos', [1, 2], { n: 'M_1', flip: true, dc: true }], ['gnd', [1, 3]], ['node', [1, 1], { n: 'a', side: 'ar' }],
+      ['w', [1, 1], [-0.2, 1]], ['R', [-0.2, 1], [-1.6, 1], { n: 'R_S' }], ['w', [-1.6, 1], [-1.8, 1]], ['C', [-1.8, 1], [-2.6, 1], { n: '\\infty' }], ['w', [-2.6, 1], [-2.8, 1], [-2.8, 1.4]], ...vin(-2.8, 1.4),
+      ['nmos', [3, 2], { n: 'M_2' }], ['gnd', [3, 3]], ['rail', [3, -0.6]], ['R', [3, -0.6], [3, 1], { n: 'R_L' }], ['w', [3, 1], [3.8, 1]], ['term', [3.8, 1], { n: 'v_{out}', side: 'r' }],
+    ],
+  };
+  Object.assign(window.BK4.fig, { sig: sigFigs });
+  T.sig = (v) => {
+    const r = {};
+    if (v.kind === 'cs') {
+      r.va = -v.gm1 / (v.gm2 + 1 / v.rds1 + 1 / v.rds2);
+      r.GM = v.gm3 * r.va; r.Rout = par(v.RL, v.rds3);
+    } else if (v.kind === 'cg') {
+      r.Ra = 1 / (v.gm2 + 1 / v.rds2);
+      r.Rin1 = (v.rds1 + r.Ra) / (1 + v.gm1 * v.rds1);
+      r.GM = v.gm3 * r.Ra / (v.RS + r.Rin1); r.Rout = par(v.RL, v.rds3);
+    } else {
+      r.Ra = 1 / (v.gm1 + 1 / v.rds1);
+      r.va = r.Ra / (v.RS + r.Ra);
+      r.GM = v.gm2 * r.va; r.Rout = par(v.RL, v.rds2);
+    }
+    r.Av = -r.GM * r.Rout;
+    return r;
+  };
+  GENS.bk_sigmirror = () => {
+    const kind = pick(['cs', 'cs', 'cg', 'dio']);
+    const N = pick([1, 2, 3, 4]);
+    const gb = pick([0.5, 1, 2]) * 1e-3, rb = pick([100, 200]) * 1e3;
+    let v;
+    if (kind === 'cs') v = { kind, N, gm1: pick([0.5, 1, 2]) * 1e-3, rds1: pick([100, 200]) * 1e3, gm2: gb, rds2: rb, gm3: N * gb, rds3: rb / N, RL: pick([5, 10, 20]) * 1e3 };
+    else if (kind === 'cg') v = { kind, N, gm1: pick([0.5, 1, 2]) * 1e-3, rds1: pick([100, 200]) * 1e3, gm2: gb, rds2: rb, gm3: N * gb, rds3: rb / N, RS: pick([0.5, 1, 2]) * 1e3, RL: pick([5, 10, 20]) * 1e3 };
+    else v = { kind, N, gm1: gb, rds1: rb, gm2: N * gb, rds2: rb / N, RS: pick([0.5, 1, 2]) * 1e3, RL: pick([5, 10, 20]) * 1e3 };
+    const r = T.sig(v);
+    const g = (x) => f(x, 4);
+    const sz = N === 1 ? 'the same size as' : `${N} times wider than`;
+    let q, parts, sol;
+    if (kind === 'cs') {
+      q = md`A common source $M_1$ pulls its current through the diode-connected PMOS $M_2$ (node $a$); the PMOS $M_3$, ${sz} $M_2$, copies it into $R_L$. $g_{m1} = ${MS(v.gm1)}$, $r_{ds1} = ${KO(v.rds1)}$; $g_{m2} = ${MS(v.gm2)}$, $r_{ds2} = ${KO(v.rds2)}$; $g_{m3} = ${MS(v.gm3)}$, $r_{ds3} = ${KO(v.rds3)}$; $R_L = ${KO(v.RL)}$. Find $v_a/v_{in}$, $G_M$, $R_{out}$ and $A_v$.`;
+      parts = [num('v_a/v_{in}', '', r.va, { accept: [-v.gm1 / v.gm2] }), num('G_M', 'mS', r.GM * 1e3, { traps: [{ v: -r.GM * 1e3, msg: 'Current is pushed **into** the output when $v_{in}$ rises: $G_M$ (pulled out) is negative.' }] }),
+        res('R_{out}', r.Rout), num('A_v', '', r.Av, { traps: [{ v: -r.Av, msg: 'The mirror turns the pull into a push: the stage is non-inverting.' }] })];
+      sol = md`
+1. **Node $a$** (KCL, currents leaving): $g_{m1}v_{in} + v_a(g_{m2} + 1/r_{ds1} + 1/r_{ds2}) = 0$, so $\dfrac{v_a}{v_{in}} = -\dfrac{${MS(v.gm1)}}{${MS(v.gm2 + 1 / v.rds1 + 1 / v.rds2)}} = ${g(r.va)}$.
+2. **Output shorted.** $M_3$'s source is $V_{DD}$, so $v_{gs3} = v_a$ and it pulls $g_{m3}v_a$ out of the output: $G_M = (${MS(v.gm3)})(${g(r.va)}) = ${MS(r.GM)}$. Negative: when $v_{in}$ rises, $M_3$ pushes current in.
+3. **$v_{in} = 0$** makes $v_a = 0$: $R_{out} = R_L\parallel r_{ds3} = ${RT(r.Rout)}$.
+4. $A_v = -G_MR_{out} = +${g(r.Av)}$, close to $g_{m1}\tfrac{g_{m3}}{g_{m2}}R_L = ${g(v.gm1 * N * v.RL)}$ without the $r_{ds}$'s.`;
+    } else if (kind === 'cg') {
+      q = md`A common gate $M_1$ (gate held) is driven at its source through $R_S$; its drain feeds the diode-connected PMOS $M_2$ (node $a$), and the PMOS $M_3$, ${sz} $M_2$, copies the current into $R_L$. $g_{m1} = ${MS(v.gm1)}$, $r_{ds1} = ${KO(v.rds1)}$; $g_{m2} = ${MS(v.gm2)}$, $r_{ds2} = ${KO(v.rds2)}$; $g_{m3} = ${MS(v.gm3)}$, $r_{ds3} = ${KO(v.rds3)}$; $R_S = ${RT(v.RS)}$, $R_L = ${KO(v.RL)}$. Find the resistance $R_{in1}$ looking up into $M_1$'s source, $G_M$ and $A_v$.`;
+      parts = [res('R_{in1}', r.Rin1, { accept: [1 / v.gm1] }), num('G_M', 'mS', r.GM * 1e3), num('A_v', '', r.Av, { traps: [{ v: -r.Av, msg: 'A common gate alone does not invert, but here its current is mirrored: $v_{in}$ up means less current through the diode, $v_a$ up, and $M_3$ pushes less.' }] })];
+      sol = md`
+1. **Into $M_1$'s source.** Its drain sees only the diode, $R_a = \dfrac{1}{g_{m2} + 1/r_{ds2}} = ${RT(r.Ra)}$, so $R_{in1} = \dfrac{r_{ds1} + R_a}{1 + g_{m1}r_{ds1}} = ${RT(r.Rin1)}$.
+2. **The signal current.** $i = \dfrac{v_{in}}{R_S + R_{in1}}$ flows from $v_{in}$ up through $M_1$ into node $a$ and out through the diode, so $v_a = iR_a$ (it **rises** with $v_{in}$).
+3. **Output shorted.** $M_3$ pulls $g_{m3}v_a$ out of the output: $G_M = \dfrac{g_{m3}R_a}{R_S + R_{in1}} = ${MS(r.GM)}$.
+4. $R_{out} = R_L\parallel r_{ds3} = ${RT(r.Rout)}$ and $A_v = -G_MR_{out} = ${g(r.Av)}$: **inverting**, about $-\tfrac{g_{m3}}{g_{m2}}\tfrac{R_L}{R_S + 1/g_{m1}}$.`;
+    } else {
+      q = md`A current-input amplifier: $v_{in}$ drives the diode-connected NMOS $M_1$ (biased by the ideal $I_B$) through a large coupling capacitor and $R_S$; $M_2$, ${sz} $M_1$, shares its gate and drives $R_L$ (to $V_{DD}$). $g_{m1} = ${MS(v.gm1)}$, $r_{ds1} = ${KO(v.rds1)}$; $g_{m2} = ${MS(v.gm2)}$, $r_{ds2} = ${KO(v.rds2)}$; $R_S = ${RT(v.RS)}$, $R_L = ${KO(v.RL)}$. Find $v_a/v_{in}$ and $A_v$.`;
+      parts = [num('v_a/v_{in}', '', r.va, { traps: [{ v: 1, msg: 'The diode is a small resistor ($1/g_{m1}$): it forms a divider with $R_S$.' }] }), num('A_v', '', r.Av, { traps: [{ v: -r.Av, msg: '$M_2$ is a common source from node $a$: inverting.' }] })];
+      sol = md`
+1. **The diode is a resistor.** $R_a = \tfrac1{g_{m1}}\parallel r_{ds1} = ${RT(r.Ra)}$ (the ideal $I_B$ is open, the capacitor a short, $M_2$'s gate draws nothing).
+2. **Divider.** $\dfrac{v_a}{v_{in}} = \dfrac{R_a}{R_S + R_a} = ${g(r.va)}$.
+3. **The copy.** $M_2$ pulls $g_{m2}v_a$ out of the output, which sees $R_L\parallel r_{ds2} = ${RT(r.Rout)}$: $A_v = -g_{m2}\dfrac{v_a}{v_{in}}(R_L\parallel r_{ds2}) = ${g(r.Av)}$.`;
+    }
+    return {
+      _v: v, fig: sigFigs[kind](), q, parts, sol,
+      hints: [md`The diode converts current to voltage ($\approx1/g_m$); the copy converts it back ($g_m$). Find the diode node's voltage first.`, md`Then short the output for $G_M$, and set $v_{in} = 0$ for $R_{out}$ (the diode node goes still).`],
+    };
+  };
+
+  // ================================================================ 5. the folded cascode and current division
+  // M1 NMOS input (drain X), M3 PMOS current source into X, M4 PMOS common gate (source X, drain = out),
+  // optional M2 (NMOS, drain on V_DD, gate held, source X); load R_D or an NMOS cascode sink M5 on M6.
+  const foldedFig = (o = {}) => [
+    ...(o.m2 ? [['rail', [1, -0.6]], ['nmos', [1, 0.4], { n: 'M_2' }], ['acg', [0, 0.4]]] : []),
+    ['node', [1, 1.4], { n: 'X', side: o.m2 ? 'l' : 'al' }], ['nmos', [1, 2.4], { n: 'M_1' }], ['gnd', [1, 3.4]],
+    ['w', [0, 2.4], [-0.6, 2.4], [-0.6, 2.8]], ...vin(-0.6, 2.8),
+    ['w', [1, 1.4], [3, 1.4]], ['rail', [3, -0.6]], ['pmos', [3, 0.4], { n: 'M_3' }], ['acg', [2, 0.4]],
+    ['pmos', [3, 2.4], { n: 'M_4', flip: true }], ['acg', [4, 2.4], { dir: 'u' }], ['w', [3, 3.4], [3.9, 3.4]], ['term', [3.9, 3.4], { n: 'v_{out}', side: 'r' }],
+    ...(o.casc ? [['nmos', [3, 4.4], { n: 'M_5' }], ['acg', [2, 4.4]], ['nmos', [3, 6.4], { n: 'M_6' }], ['acg', [2, 6.4]], ['gnd', [3, 7.4]]]
+      : [['R', [3, 3.4], [3, 4.6], { n: 'R_D' }], ['gnd', [3, 4.6]]]),
+  ];
+  Object.assign(window.BK4.fig, { folded: foldedFig });
+  T.folded = (v) => {
+    const RX = v.m2 ? par(v.rds1, v.rds3, 1 / (v.gm2 + 1 / v.rds2)) : par(v.rds1, v.rds3);
+    const R4 = 1 / (v.gm4 + 1 / v.rds4);
+    const GM = v.gm1 * RX / (RX + R4);
+    const RUP = v.rds4 + RX * (1 + v.gm4 * v.rds4);
+    const RDN = v.casc ? v.rds5 + v.rds6 + v.gm5 * v.rds5 * v.rds6 : v.RD;
+    const Rout = par(RUP, RDN);
+    return { RX, R4, GM, RUP, RDN, Rout, Av: -GM * Rout };
+  };
+  GENS.bk_folded = () => {
+    const m2 = Math.random() < 0.4, casc = Math.random() < 0.35;
+    const G = () => pick([0.5, 1, 2]) * 1e-3, Rd = () => pick([100, 200]) * 1e3;
+    const v = { m2, casc, gm1: G(), rds1: Rd(), rds3: Rd(), gm4: G(), rds4: Rd() };
+    if (m2) Object.assign(v, { gm2: G(), rds2: Rd() });
+    if (casc) Object.assign(v, { gm5: G(), rds5: Rd(), rds6: Rd() }); else v.RD = pick([5, 10, 20]) * 1e3;
+    const r = T.folded(v);
+    const g = (x) => f(x, 4);
+    const given = [`$g_{m1} = ${MS(v.gm1)}$`, `$r_{ds1} = ${KO(v.rds1)}$`, ...(m2 ? [`$g_{m2} = ${MS(v.gm2)}$`, `$r_{ds2} = ${KO(v.rds2)}$`] : []), `$r_{ds3} = ${KO(v.rds3)}$`, `$g_{m4} = ${MS(v.gm4)}$`, `$r_{ds4} = ${KO(v.rds4)}$`,
+      ...(casc ? [`$g_{m5} = ${MS(v.gm5)}$`, `$r_{ds5} = ${KO(v.rds5)}$`, `$r_{ds6} = ${KO(v.rds6)}$`] : [`$R_D = ${KO(v.RD)}$`])].join(', ');
+    const parts = [
+      res('R_X', r.RX, { traps: m2 ? [{ v: par(v.rds1, v.rds3), msg: '$M_2$\'s source is also at $X$: add $\\tfrac1{g_{m2}}\\parallel r_{ds2}$ in parallel.' }] : [] }),
+      num('G_M', 'mS', r.GM * 1e3, { accept: m2 ? [] : [v.gm1 * 1e3], traps: m2 ? [{ v: v.gm1 * 1e3, msg: 'With $M_2$ at $X$, the current divides between two sources: only the part entering $M_4$ reaches the output.' }] : [] }),
+      res('R_{out}', r.Rout, { traps: [{ v: casc ? par(v.rds4, r.RDN) : par(v.RD, v.rds4), msg: '$M_4$ is degenerated by $R_X$: looking up you see $r_{ds4} + R_X(1 + g_{m4}r_{ds4})$, not $r_{ds4}$.' }] }),
+      num('A_v', '', r.Av, { traps: [{ v: -r.Av, msg: 'Inverting: $v_{in}$ up pulls $X$ down, which turns $M_4$ (a PMOS) down.' }] }),
+    ];
+    return {
+      _v: v, fig: foldedFig({ m2, casc }),
+      q: md`A folded cascode${m2 ? ' with the extra device $M_2$ (NMOS, drain on $V_{DD}$, gate held, source at $X$)' : ''}: $M_1$ pulls on node $X$, $M_3$ is a PMOS current source into $X$, and the PMOS common gate $M_4$ (source at $X$, gate held) carries the signal to the output, loaded by ${casc ? 'the NMOS cascode current sink $M_5$ on $M_6$ (gates held)' : '$R_D$'}. ${given}. Find $R_X$ (everything at $X$ except $M_4$), $G_M$, $R_{out}$ and $A_v$.`,
+      parts,
+      hints: [md`Output shorted, $M_4$ looks like $\tfrac1{g_{m4}}\parallel r_{ds4}$ from $X$. $M_1$'s current $g_{m1}v_{in}$ divides between $R_X$ and $M_4$: $G_M = g_{m1}\dfrac{R_X}{R_X + 1/(g_{m4} + 1/r_{ds4})}$.`, md`$R_{out} = [r_{ds4} + R_X(1 + g_{m4}r_{ds4})]\parallel R_{DN}$.`],
+      sol: md`
+1. **$R_X$.** ${m2 ? `$r_{ds1}\\parallel r_{ds3}\\parallel(\\tfrac1{g_{m2}}\\parallel r_{ds2}) = ${RT(r.RX)}$: $M_2$'s source dominates.` : `$r_{ds1}\\parallel r_{ds3} = ${RT(r.RX)}$.`}
+2. **Current division.** $M_4$ from $X$ (output shorted): $\tfrac1{g_{m4}}\parallel r_{ds4} = ${RT(r.R4)}$. The share of $g_{m1}v_{in}$ that enters $M_4$: $\dfrac{R_X}{R_X + ${RT(r.R4).replace(/\\,/g, '\\,')}} = ${g(r.GM / v.gm1)}$, so $G_M = ${MS(r.GM)}$.
+3. **Looking up** into $M_4$'s drain: $r_{ds4} + R_X(1 + g_{m4}r_{ds4}) = ${RT(r.RUP)}$. **Looking down:** ${casc ? `$r_{ds5} + r_{ds6} + g_{m5}r_{ds5}r_{ds6} = ${RT(r.RDN)}$` : `$R_D = ${KO(v.RD)}$`}. $R_{out} = ${RT(r.Rout)}$.
+4. $A_v = -G_MR_{out} = ${g(r.Av)}$.`,
+    };
+  };
 })();

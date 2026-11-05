@@ -1737,4 +1737,402 @@ $$R_{DN} = \frac{r_{ds} + R_S + g_mr_{ds}R_S}{1 + g_mr_{ds}K}$$`,
       G('bk_mi_casc', { need: 3 }),
     ],
   });
+
+  // ================================================================== 9. a node: R_UP || R_DN
+  const nodeBox = [['box', [0.4, -2], [1.6, -0.8], { n: 'up branch' }], ['w', [1, -0.8], [1, 0]], ['w', [1, -2], [1, -2.3]], ['gndu', [1, -2.3]],
+    ['box', [0.4, 0.8], [1.6, 2], { n: 'down branch' }], ['w', [1, 0], [1, 0.8]], ['w', [1, 2], [1, 2.3]], ['gnd', [1, 2.3]],
+    ['w', [1, 0], [2.6, 0]], ['nmos', [3.6, 0], { n: 'M_g' }], ['rail', [3.6, -1]], ['R', [3.6, 1], [3.6, 2.2], { n: 'R_L' }], ['gnd', [3.6, 2.2]],
+    ['txt', [2.2, -0.4], '$\\text{a gate: }\\infty$'], ['node', [1, 0], { n: 'X', side: 'al', dot: true }],
+    ['w', [1, 0], [-0.6, 0]], ['V', [-0.6, 0], [-0.6, 1.2], { n: 'v_t', side: 'l' }], ['gnd', [-0.6, 1.2]], ['iarr', [0.2, 0], 'r', { n: 'i_t' }]];
+  const LT = 'style="fill:var(--fg);font:13px var(--sans)"', LD = 'style="fill:var(--dim);font:12px var(--sans)"';
+  const lad = [[497.5, 326, 'source, or a diode: 1/gm ≈ 500 Ω'], [995, 298, 'source with another rds on its drain: ≈ 2/gm'], [1e4, 268, 'a typical resistor'],
+    [1e5, 236, 'drain, gate held: rds = 100 kΩ'], [3.01e5, 206, 'drain with RS = 1 kΩ: rds(1 + gmRS)'], [2.02e7, 144, 'cascode: (gm rds) rds ≈ 20 MΩ'], [4.06e9, 58, 'triple cascode ≈ 4 GΩ']];
+  const yOf = (R) => 340 - (Math.log10(R) - 2) * 37.5;
+  const ladder = `<svg class="schem" viewBox="0 0 600 360" width="600" role="img" aria-label="the size ladder of resistances">
+    <path d="M120,345V30"/>${[2, 3, 4, 5, 6, 7, 8, 9, 10].map((d) => `<path class="dim" d="M114,${yOf(10 ** d)}H120"/><text x="108" y="${yOf(10 ** d) + 4}" text-anchor="end" ${LD}>${['100 Ω', '1 kΩ', '10 kΩ', '100 kΩ', '1 MΩ', '10 MΩ', '100 MΩ', '1 GΩ', '10 GΩ'][d - 2]}</text>`).join('')}
+    ${lad.map(([R, y, t]) => `<circle class="fill" cx="120" cy="${yOf(R).toFixed(1)}" r="3.6"/><path class="dim thin" d="M124,${yOf(R).toFixed(1)}L150,${y}"/><text x="156" y="${y + 4}" ${LT}>${t.replace(/\b(r|g|R)(ds|m|S)\b/g, '$1<tspan baseline-shift="sub" font-size="9">$2</tspan>')}</text>`).join('')}
+    <path class="dim" d="M120,30L114,40M120,30L126,40"/><text x="156" y="26" ${LT}>gate: ∞</text><path class="dim thin" d="M124,24L150,22"/>
+  </svg>`;
+  const p1Node = F.node(['diodeR', { n: 'M_2', rn: 'R_1' }], ['degen', { n: 'M_1' }], { look: 'R_{eq1}', name: 'N' });
+  const sfNode = F.node(['src', { n: 'M_1' }], ['drain', { n: 'M_2' }], { look: 'R_{out}' });
+  const p6Node = [...F.UPB.diodeR(1, { n: 'M_3', rn: 'R_1' }), ...F.DNB.casc(1, { n: 'M_2', n2: 'M_1' }), ['node', [1, 0], { n: 'X', side: 'l' }],
+    ['w', [1, 0], [2.4, 0], [2.4, 0.6], [2.6, 0.6]], ['rail', [3.6, -0.4]], ['nmos', [3.6, 0.6], { n: 'M_4' }], ['I', [3.6, 1.6], [3.6, 2.8], { n: 'I_B' }], ['gnd', [3.6, 2.8]],
+    ['w', [1, 0], [1.6, 0], [1.6, -0.7], [2.2, -0.7]], F.lookR([2.2, -0.7], 'R_X')];
+
+  L({
+    id: 'bk03-node', title: 'A node: $R_{UP}\\parallel R_{DN}$', ref: 'Lecture 15, Problem Set 5',
+    steps: [
+      RF(md`
+        ### The question
+
+        Real circuits put several things on one node: a load above, a transistor below, maybe a gate or a bias resistor on the side. What is the resistance of the **node**? This is $R_{out}$ in every gain $A_v = -G_MR_{out}$, the $R_{EQ}$ of Exam 2's Problem 2, and the $R$ in every $1/RC$ of Chapters 12 and 13.
+
+        ### The physical picture: currents add
+
+        Wiggle the node by $v_t$. Every branch from the node to (incremental) ground takes its own share of current, $v_t/R_{branch}$, and the test source has to supply all of them. Currents add, so **conductances add**: the branches are in parallel. Water poured into a junction of several pipes leaves through all of them; the widest pipe takes most of it.
+        [[fig:a]]
+        ### Why splitting works, in three lines
+
+        If the branches share nothing but the node and ground, each branch's current depends only on $v_t$ and its own parts: $i_{UP} = v_t/R_{UP}$, $i_{DN} = v_t/R_{DN}$. KCL at the node:
+        $$i_t = \frac{v_t}{R_{UP}} + \frac{v_t}{R_{DN}}\quad\Rightarrow\quad R = \frac{v_t}{i_t} = R_{UP}\parallel R_{DN}$$
+        A gate on the node adds a branch of $\infty$, which changes nothing.
+
+        !!method The node procedure
+          1. Turn off the input and the DC sources: $V_{DD}$ is ground, so "up" branches end at ground too.
+          2. List every branch from the node: up, down, sideways. Cross off gates.
+          3. Find each branch with this chapter's results: each one is "looking into" a drain, a source, a diode, a stack.
+          4. Combine in parallel: $R = R_{UP}\parallel R_{DN}\ (\parallel\text{any other branch})$.
+          5. **Check for a hidden $K$:** if some transistor's gate moves with the node (or with a node inside another branch), that branch is not independent: use [the K rule](#/l/bk03-k).
+      `, { a: { fig: nodeBox, cap: 'each branch takes $v_t/R_{branch}$; the gate takes nothing' } }),
+      RF(md`
+        ### The size ladder
+
+        In a parallel combination **the smallest branch wins**: the result is smaller than the smallest branch, and if one branch is a hundred times smaller than the others it **is** the answer to within about 1%. So the first thing to do at any node is to spot the small branches. With the typical transistor of this chapter ($g_m = 2\,\text{mS}$, $r_{ds} = 100\kO$):
+        [[fig:l]]
+        Sources and diodes live near $1/g_m$; drains near $r_{ds}$ and above; gates at infinity. A node with a source or a diode on it is a **low-impedance node**, whatever else is there. A node that touches only drains (and gates) is a **high-impedance node**, and that is where voltage gain happens.
+      `, { l: { svg: ladder, cap: 'typical resistances, on a log scale (each step up is ten times bigger)' } }),
+      RF(md`
+        ### Many examples
+
+        All with $g_m = 2\,\text{mS}$, $r_{ds} = 100\kO$ for every transistor (input off):
+
+        | Node | Up | Down | $R$ | Number |
+        |---|---|---|---|---|
+        | CS, resistor load $R_D = 10\kO$ | $R_D$ | $r_{ds1}$ | $R_D\parallel r_{ds}$ | $9.09\kO$ |
+        | CS, current-source load | $r_{ds2}$ | $r_{ds1}$ | $r_{ds}/2$ | $50\kO$ |
+        | CS, PMOS diode load | $\tfrac{1}{g_{m2}}\parallel r_{ds2}$ | $r_{ds1}$ | $\approx1/g_{m2}$ | $495.0\,\Omega$ |
+        | source follower, current-sink bias | $\tfrac{1}{g_{m1}}\parallel r_{ds1}$ | $r_{ds2}$ | $\approx1/g_{m1}$ | $495.0\,\Omega$ |
+        | cascode with a cascode load | $20.2\,\text{M}\Omega$ | $20.2\,\text{M}\Omega$ | half of each | $10.1\,\text{M}\Omega$ |
+        | Practice 1 #2(a), $R_1 = R_S = 1\kO$ | $R_1 + \tfrac{1}{g_{m2}}\parallel r_{ds2}$ | $r_{ds1} + R_S(1 + g_{m1}r_{ds1})$ | $\approx R_1 + 1/g_{m2}$ | $1.490\kO$ |
+
+        ### Worked example: Practice 1 #2(a)
+
+        **Up:** a diode-connected PMOS $M_2$ (gate tied to its drain, which is the node $N$) with $R_1$ between its source and $V_{DD}$. **Down:** $M_1$ with its gate held and $R_S$ under its source.
+        [[fig:a]]
+        **Step 1: $v_{gs}$ of each transistor.** $M_2$: gate = drain = $N$, so $v_{gs2} = v_t - v_{S2}$: a diode. $M_1$: gate held, $v_{gs1} = -v_X$: degeneration. The two branches meet only at $N$ and at ground, and neither gate depends on the other branch, so they split.
+
+        **Step 2: up.** [A diode with a resistor in series](#/l/bk03-diode): $R_{UP} = R_1 + \tfrac{1}{g_{m2}}\parallel r_{ds2} = 1\kO + 0.4975\kO = 1.4975\kO$.
+
+        **Step 3: down.** [Degeneration](#/l/bk03-degen): $R_{DN} = r_{ds1} + R_S(1 + g_{m1}r_{ds1}) = 100 + 1\times201 = 301\kO$.
+
+        **Step 4: combine.**
+        $$R_{eq1} = 1.4975\kO\parallel301\kO = \frac{1.4975\times301}{302.5}\kO = 1.490\kO$$
+        The short answer $R_1 + 1/g_{m2} = 1.5\kO$ is within 1%: the $301\kO$ branch barely matters.
+
+        ### Worked example: the source-follower output
+
+        $M_1$ (gate on the input, drain on $V_{DD}$) drives the output from its source; $M_2$ (gate held) sinks the bias current. Up: a source with its drain on a rail, $\tfrac{1}{g_{m1}}\parallel r_{ds1}$. Down: a drain, $r_{ds2}$.
+        [[fig:b]]
+        $$R_{out} = \frac{1}{g_{m1} + 1/r_{ds1} + 1/r_{ds2}} = \frac{1}{2\,\text{mS} + 0.01\,\text{mS} + 0.01\,\text{mS}} = 495.0\,\Omega$$
+        Add a load $R_L = 1\kO$ and it becomes $1/(2.02\,\text{mS} + 1\,\text{mS}) = 331\,\Omega$: still dominated by $1/g_{m1}$.
+      `, { a: { fig: p1Node, cap: 'Practice 1 #2(a): a PMOS diode over a degenerated NMOS' }, b: { fig: sfNode, cap: 'source follower: a source up, a drain down' } }),
+      R(md`
+        ### How to recognize it
+
+        Every "find $R_{out}$" or "find $R_{EQ}$ at node X" question is this lesson. Label each branch with what you are looking into (drain, source, diode, stack), write each branch from memory, and combine. Then sanity-check against the ladder: is the answer near the smallest branch?
+
+        !!mistake Common mistakes
+          - Adding the branches in **series**. They both connect the node to ground: parallel.
+          - Forgetting the branch to $V_{DD}$: $V_{DD}$ is ground for signals.
+          - Counting a gate as a branch (writing $1/g_m$ for a gate): a gate is $\infty$.
+          - Splitting a node where a gate moves with it (a diode in another branch driving a gate on this node): that is the K rule.
+          - Forgetting to turn the input off: the input transistor's gate is held for $R_{out}$.
+      `),
+      Q(md`A node has a diode-connected transistor ($g_m = 2\,\text{mS}$) above it and a cascode ($20\,\text{M}\Omega$) below. About what is the node resistance?`,
+        ['$500\\,\\Omega$', '$20\\,\\text{M}\\Omega$', '$10\\,\\text{M}\\Omega$', '$20.0005\\,\\text{M}\\Omega$'], 0,
+        [null, 'In parallel the **smallest** branch wins.', 'That would be two equal branches.', 'Branches to (incremental) ground are in parallel, not in series.'],
+        md`$500\,\Omega\parallel20\,\text{M}\Omega\approx500\,\Omega$. A diode on a node makes it a low-impedance node.`),
+      Q(md`In the small-signal circuit, a resistor from a node to $V_{DD}$ is`,
+        ['a branch from the node to ground', 'an open circuit', 'a branch to a $V_{DD}$ source that must be kept', 'shorted out'], 0,
+        [null, 'A resistor carries current whenever there is voltage across it; its far end is at 0.', '$V_{DD}$ does not change, so in the small-signal circuit it is 0: ground.', 'Its two ends are at $v_t$ and 0, so it is not shorted.'],
+        md`$V_{DD}$ is an incremental ground, so the resistor goes from the node to ground: it is one of the parallel branches.`),
+      Q(md`Branches of $1\kO$, $100\kO$ and $10\,\text{M}\Omega$ meet at a node. The node resistance is closest to`,
+        ['$0.99\\kO$', '$1\\kO$ exactly', '$10.1\\,\\text{M}\\Omega$', '$33\\kO$'], 0,
+        [null, 'Parallel is always **below** the smallest branch: $1\\kO\\parallel100\\kO = 0.990\\kO$.', 'That is the series sum.', 'That would be an average; parallel is not an average.'],
+        md`$1/(1 + 0.01 + 0.0001)\,\text{mS} = 0.990\kO$: the $1\kO$ branch dominates; the $100\kO$ one trims 1%.`),
+      P({
+        id: 'bk03-node-p1', title: 'Practice 1 #2(a), new numbers',
+        q: md`Same circuit as the worked example (PMOS diode $M_2$ under $R_1$; $M_1$ with a held gate on $R_S$). All transistors $g_m = 4\,\text{mS}$, $r_{ds} = 25\kO$; $R_1 = 1\kO$, $R_S = 0.5\kO$. Find $R_{UP}$, $R_{DN}$ and $R_{eq1}$.`,
+        fig: p1Node,
+        parts: [{ lbl: 'R_{UP}', unit: 'kΩ', ans: 1.24752 }, { lbl: 'R_{DN}', unit: 'kΩ', ans: 75.5, traps: [{ v: 25.5, msg: 'Degeneration: add $g_mr_{ds}R_S$.' }] }, { lbl: 'R_{eq1}', unit: 'kΩ', ans: 1.22725, traps: [{ v: 76.7475, msg: 'Parallel, not series.' }] }],
+        hints: [md`Up: $R_1 + 1/(g_m + 1/r_{ds})$. Down: $r_{ds} + R_S(1 + g_mr_{ds})$ with $g_mr_{ds} = 100$.`],
+        sol: md`
+1. $R_{UP} = 1\kO + \dfrac{1}{4\,\text{mS} + 0.04\,\text{mS}} = 1\kO + 247.5\,\Omega = 1.2475\kO$.
+2. $R_{DN} = 25 + 0.5\times101 = 75.5\kO$.
+3. $R_{eq1} = 1.2475\parallel75.5 = \dfrac{1.2475\times75.5}{76.75}\kO = 1.227\kO$.`,
+      }),
+      P({
+        id: 'bk03-node-sf', title: 'A follower output, with and without a load',
+        q: md`Source follower: $M_1$ ($g_{m1} = 2\,\text{mS}$, $r_{ds1} = 50\kO$) with its drain on $V_{DD}$; bias transistor $M_2$ below ($r_{ds2} = 50\kO$, gate held). Find $R_{out}$, then $R_{out}$ with a $1\kO$ load from the output to ground.`,
+        fig: sfNode,
+        parts: [{ lbl: 'R_{out}', unit: 'Ω', ans: 490.196, traps: [{ v: 25000, msg: 'That is $r_{ds1}\\parallel r_{ds2}$: $M_1$ is looked into at its **source**, about $1/g_{m1}$.' }] }, { lbl: 'R_{out,L}', unit: 'Ω', ans: 328.947 }],
+        hints: [md`Up: a source with its drain on a rail. Down: a drain.`],
+        sol: md`
+1. Conductances: $g_{m1} + 1/r_{ds1} + 1/r_{ds2} = 2 + 0.02 + 0.02 = 2.04\,\text{mS}$, so $R_{out} = 490.2\,\Omega$.
+2. With $R_L$: $2.04 + 1 = 3.04\,\text{mS}$, $R_{out,L} = 328.9\,\Omega$.`,
+      }),
+      P({
+        id: 'bk03-node-dd', title: 'Two diodes on one node',
+        q: md`A PMOS diode ($g_m = 1\,\text{mS}$) hangs from $V_{DD}$ to the node and an NMOS diode ($g_m = 2\,\text{mS}$) from the node to ground; both $r_{ds} = 50\kO$. Find the node resistance.`,
+        fig: F.node(['diode', { n: 'M_2' }], ['diode', { n: 'M_1' }], { look: 'R' }),
+        parts: [{ lbl: 'R', unit: 'Ω', ans: 328.947, traps: [{ v: 1480.39, msg: 'The diodes are not in series here: each goes from the node to (incremental) ground.' }] }],
+        hints: [md`Each diode is $\tfrac{1}{g_m}\parallel r_{ds}$; both connect the node to ground.`],
+        sol: md`Add conductances: $(1 + 0.02) + (2 + 0.02) = 3.04\,\text{mS}$, so $R = 328.9\,\Omega$, about $\tfrac{1}{g_{m1} + g_{m2}}$.`,
+      }),
+      P({
+        id: 'bk03-node-sym', title: 'A diode-loaded output, typed',
+        q: md`Common-source stage, input off: $M_1$ below (gate held), a PMOS diode $M_2$ above. Type $R_{out}$ (exact, or the $g_mr_{ds}\gg1$ form). Variables: gm2, rds1, rds2.`,
+        fig: F.node(['diode', { n: 'M_2' }], ['drain', { n: 'M_1' }], { look: 'R_{out}' }),
+        parts: [BK.ex('1/(gm2 + 1/rds1 + 1/rds2)', ['gm2', 'rds1', 'rds2'], 'R_{out}')],
+        hints: [md`Up: $\tfrac{1}{g_{m2}}\parallel r_{ds2}$. Down: $r_{ds1}$. Parallel.`],
+        sol: md`$R_{out} = r_{ds1}\parallel\tfrac{1}{g_{m2}}\parallel r_{ds2} = \dfrac{1}{g_{m2} + 1/r_{ds1} + 1/r_{ds2}}\approx\dfrac{1}{g_{m2}}$.`,
+      }),
+      P({
+        id: 'bk03-node-ladder', title: 'Which branch matters?',
+        q: md`A node has three branches (all transistors $g_m = 2\,\text{mS}$, $r_{ds} = 100\kO$): a $50\kO$ resistor to $V_{DD}$; a PMOS with its gate held and $1\kO$ between its source and $V_{DD}$; an NMOS cascode below. Find the node resistance, and pick the branch that sets it.`,
+        fig: [...F.UPB.degen(1, { n: 'M_3', rn: 'R_1' }), ...F.DNB.casc(1, {}), ['w', [1, 0], [2.4, 0]], ['R', [2.4, 0], [2.4, -1.2], { n: '50\\,\\text{k}\\Omega' }], ['rail', [2.4, -1.2]],
+          ['w', [2.4, 0], [3.2, 0]], F.lookR([3.2, 0], 'R')],
+        parts: [{ lbl: 'R', unit: 'kΩ', ans: 42.7867 },
+          { lbl: 'Which branch dominates?', mc: ['the $50\\kO$ resistor', 'the degenerated PMOS', 'the cascode', 'all three equally'], a: 0,
+            why: [null, 'It is $301\\kO$: six times the resistor, so it trims the answer by about 14%, but does not set it.', 'At $20\\,\\text{M}\\Omega$ it barely matters.', 'Parallel is dominated by the smallest branch.'] }],
+        hints: [md`PMOS: $r_{ds} + R_1(1 + g_mr_{ds}) = 301\kO$. Cascode: $20.2\,\text{M}\Omega$.`],
+        sol: md`
+1. Branches: $50\kO$; PMOS degenerated: $100 + 1\times201 = 301\kO$; cascode: $100 + 100 + 200\times100 = 20{,}200\kO$.
+2. $R = 1\Big/\Big(\dfrac{1}{50} + \dfrac{1}{301} + \dfrac{1}{20{,}200}\Big)\kO = \dfrac{1}{0.02 + 0.003322 + 0.0000495}\kO = 42.79\kO$.
+3. The resistor sets it; the PMOS trims 14%; the cascode is invisible.`,
+      }),
+      P({
+        id: 'bk03-node-exam', title: 'A node with a diode, a cascode and a gate (exam style)',
+        q: md`Node $X$: up, a PMOS diode $M_3$ ($g_m = 1\,\text{mS}$, $r_{ds} = 50\kO$) with $R_1 = 1\kO$ to $V_{DD}$; down, a cascode $M_2$ on $M_1$ (both $g_m = 2\,\text{mS}$, $r_{ds} = 100\kO$, gates held); and the gate of a follower $M_4$. Find $R_{UP}$, $R_{DN}$, $R_X$.`,
+        fig: p6Node,
+        parts: [{ lbl: 'R_{UP}', unit: 'kΩ', ans: 1.98039 }, { lbl: 'R_{DN}', unit: 'MΩ', ans: 20.2 }, { lbl: 'R_X', unit: 'kΩ', ans: 1.9802, traps: [{ v: 0.988, msg: 'Do not add a $1/g_m$ for $M_4$: a gate is an open circuit.' }] }],
+        hints: [md`$M_4$'s gate adds nothing. Up: diode plus $R_1$. Down: cascode.`],
+        sol: md`
+1. $R_{UP} = 1\kO + \dfrac{1}{1\,\text{mS} + 0.02\,\text{mS}} = 1\kO + 0.9804\kO = 1.980\kO$.
+2. $R_{DN} = 100 + 100 + 200\times100\kO = 20.2\,\text{M}\Omega$.
+3. $M_4$'s gate: $\infty$. $R_X = 1.9804\kO\parallel20.2\,\text{M}\Omega = 1.9802\kO$.`,
+      }),
+      G('bk_mi_node', { need: 4 }),
+    ],
+  });
+
+  // ================================================================== 10. chapter problems
+  const gallery = rowSvg([
+    { fig: F.gate({ look: 'R' }), cap: 'gate: $\\infty$' }, { fig: F.drain({}), cap: 'drain: $r_{ds}$' }, { fig: F.source({}), cap: 'source: $\\tfrac{1}{g_m}\\parallel r_{ds}$' },
+    { fig: F.source({ load: 'R' }), cap: '$\\dfrac{r_{ds} + R_D}{1 + g_mr_{ds}}$' }, { fig: F.diode({}), cap: 'diode: $\\tfrac{1}{g_m}\\parallel r_{ds}$' },
+    { fig: F.drain({ rs: 'R_S' }), cap: '$r_{ds} + R_S + g_mr_{ds}R_S$' }, { fig: F.k({}), cap: 'K rule' }, { fig: F.casc({}), cap: 'cascode' },
+    { fig: F.reg({}), cap: 'regulated cascode' }, { fig: F.node(['diode', {}], ['drain', {}], { look: 'R' }), cap: 'node: $R_{UP}\\parallel R_{DN}$' }]);
+  const nLoad = [['rail', [1, -2]], ['nmos', [1, -1], { n: 'M_2', dc: true }], ['nmos', [1, 1], { n: 'M_1' }], ['acg', [0, 1]], ['gnd', [1, 2]], ['w', [1, 0], [2, 0]], F.lookR([2, 0], 'R_{out}')];
+  const cgR = [['rail', [1, -1.2]], ['R', [1, -1.2], [1, 0], { n: 'R_D' }], ['nmos', [1, 1]], ['acg', [0, 1]], ['R', [1, 2], [1, 3.2], { n: 'R_S' }], ['gnd', [1, 3.2]], ['w', [1, 2], [2, 2]], F.lookR([2, 2], 'R_{in}')];
+  const stackEx = [...F.UPB.casc(1, {}), ['nmos', [1, 1], { n: 'M_2' }], ['acg', [0, 1]], ['nmos', [1, 3], { n: 'M_1' }], ['acg', [0, 3]], ['R', [1, 4], [1, 5.2], { n: 'R_S' }], ['gnd', [1, 5.2]],
+    ['w', [1, 0], [2, 0]], F.lookR([2, 0], 'R_{out}')];
+  const cgEx = [['rail', [1, -2]], ['pmos', [1, -1], { n: 'M_2' }], ['acg', [0, -1]], ['node', [1, 0], { n: 'D', side: 'l' }], ['w', [1, 0], [2, 0]], F.lookR([2, 0], 'R_{out}'),
+    ['nmos', [1, 1], { n: 'M_1' }], ['acg', [0, 1]], ['R', [1, 2], [1, 3.2], { n: 'R_S' }], ['gnd', [1, 3.2]], ['w', [1, 2], [2, 2]], F.lookR([2, 2], 'R_{in}')];
+  const kEx = [['rail', [1, -2.4]], ['pmos', [1, -1.4], { n: 'M_3', dc: true }], ...F.kdiv({ rs: 1, n: 'M_1', look: 'R_X' })];
+  const ALLG = ['bk_mi_vgs', 'bk_mi_gate', 'bk_mi_drain', 'bk_mi_src', 'bk_mi_diode', 'bk_mi_degen', 'bk_mi_k', 'bk_mi_casc', 'bk_mi_node', 'bk_mi_sym'];
+
+  L({
+    id: 'bk03-problems', title: 'Chapter 3 problems', kind: 'review', ref: 'Chapter 3',
+    steps: [
+      R(md`
+        ### Chapter summary
+
+        Every result, with the one-line reason it has the shape it has. All of them come from one model (a current $g_mv_{gs}$ plus $v_{ds}/r_{ds}$ from drain to source, nothing into the gate) and one method ([the test source](#/l/bk03-test)).
+
+        | Looking into | Result | Why |
+        |---|---|---|
+        | [the gate](#/l/bk03-gate) | $\infty$ | nothing in the model touches the gate |
+        | [a drain](#/l/bk03-drain), gate and source still | $r_{ds} = 1/(\lambda I_D)$ | $v_{gs} = 0$: only the weak handle acts |
+        | [a source](#/l/bk03-source), gate still, drain on a rail | $\tfrac{1}{g_m}\parallel r_{ds}$ | $v_{gs} = -v_t$: the strong handle acts |
+        | a source with $R_D$ on the drain | $\dfrac{r_{ds} + R_D}{1 + g_mr_{ds}}\approx\dfrac{1}{g_m} + \dfrac{R_D}{g_mr_{ds}}$ | the drain moves, and reaches the source only through $r_{ds}$ |
+        | a source with an ideal current source on the drain | $\infty$ | no path for the current |
+        | [a diode](#/l/bk03-diode), NMOS or PMOS | $\tfrac{1}{g_m}\parallel r_{ds}$ | $v_{gs} = v_{ds}$: a resistor $1/g_m$ |
+        | a diode with $R$ in series | $R + \tfrac{1}{g_m}\parallel r_{ds}$ | a two-terminal resistor; the gate is not held, so no magnification |
+        | [a degenerated drain](#/l/bk03-degen) | $r_{ds} + R_S + g_mr_{ds}R_S$ | negative feedback: current in $R_S$ lowers $v_{gs}$ |
+        | [a drain whose gate moves by $Kv_t$](#/l/bk03-k) | $\dfrac{r_{ds} + R_S + g_mr_{ds}R_S}{1 + g_mr_{ds}K}$ | the moving gate helps the current, amplified by $g_mr_{ds}$ |
+        | [a cascode](#/l/bk03-cascode) | $r_{ds1} + r_{ds2} + g_{m2}r_{ds2}r_{ds1}$ | degeneration with $R_S = r_{ds1}$ |
+        | a regulated cascode | $r_{ds1} + R_Y + g_{m1}r_{ds1}(1 + g_{m3}r_{ds3})R_Y$ | the booster multiplies $v_{gs1}$ by $1 + A$ |
+        | [a node](#/l/bk03-node) | $R_{UP}\parallel R_{DN}$ | currents add; the smallest branch wins |
+
+        **The impedance scaler:** with the gate held, a transistor multiplies what is under its source by $1 + g_mr_{ds}$ (seen from the drain) and divides what is on its drain by the same factor (seen from the source).
+      `, gallery),
+      P({
+        id: 'bk03-pr-three', title: 'The three looks, one transistor',
+        q: md`A transistor has $g_m = 2.5\,\text{mS}$ and $r_{ds} = 80\kO$. With the other two terminals at incremental ground, what do you see looking into each terminal?`,
+        figHtml: rowSvg([{ fig: F.gate({ look: 'R_G' }) }, { fig: F.drain({ look: 'R_D' }) }, { fig: F.source({ look: 'R_S' }) }]),
+        parts: [{ lbl: 'R_G', mc: ['$\\infty$', '$400\\,\\Omega$', '$80\\kO$'], a: 0, why: [null, 'That is the source.', 'That is the drain.'] },
+          { lbl: 'R_D', unit: 'kΩ', ans: 80 }, { lbl: 'R_S', unit: 'Ω', ans: 398.01, traps: [{ v: 400, msg: 'Close: keep $r_{ds}$ in parallel.' }] }],
+        hints: [md`Gate: nothing attached. Drain: $v_{gs} = 0$. Source: $v_{gs} = -v_t$.`],
+        sol: md`Gate $\infty$; drain $r_{ds} = 80\kO$; source $1/(2.5\,\text{mS} + 0.0125\,\text{mS}) = 398.0\,\Omega$.`,
+      }),
+      P({
+        id: 'bk03-pr-pload', title: 'A PMOS load from its bias',
+        q: md`A PMOS current-source load carries $0.25\,\text{mA}$ with $\lambda = 0.08\,\text{V}^{-1}$. The NMOS below it has $r_{ds1} = 200\kO$. Find the load's $r_{ds2}$ and the output resistance with the input off.`,
+        fig: F.node(['drain', { n: 'M_2' }], ['drain', { n: 'M_1' }], { look: 'R_{out}' }),
+        parts: [{ lbl: 'r_{ds2}', unit: 'kΩ', ans: 50 }, { lbl: 'R_{out}', unit: 'kΩ', ans: 40 }],
+        hints: [md`$r_{ds} = 1/(\lambda I_D)$; then two drains in parallel.`],
+        sol: md`$r_{ds2} = 1/(0.08\times0.25\,\text{mA}) = 50\kO$; $R_{out} = 200\parallel50 = 40\kO$.`,
+      }),
+      P({
+        id: 'bk03-pr-diosz', title: 'A diode from its size, with a resistor',
+        q: md`An NMOS diode with $W/L = 50$ carries $0.5\,\text{mA}$ ($\mu_nC_{ox} = 100\,\mu\text{A/V}^2$); ignore $r_{ds}$. Find $g_m$, then the resistance looking into the diode when it sits on $R_S = 1\kO$.`,
+        fig: F.diode({ rs: 'R_S', look: 'R' }),
+        parts: [{ lbl: 'g_m', unit: 'mS', ans: 2.23607 }, { lbl: 'R', unit: 'kΩ', ans: 1.44721 }],
+        hints: [md`$g_m = \sqrt{2\mu_nC_{ox}(W/L)I_D}$; series resistor adds.`],
+        sol: md`$g_m = \sqrt{2(100\,\mu)(50)(0.5\,\text{m})} = 2.236\,\text{mS}$, so $1/g_m = 447.2\,\Omega$ and $R = 1\kO + 0.4472\kO = 1.447\kO$.`,
+      }),
+      P({
+        id: 'bk03-pr-src2', title: 'A source loaded by a transistor',
+        q: md`Gate held; $g_m = 1\,\text{mS}$, $r_{ds} = 100\kO$. The drain load is a PMOS current source with $r_{ds2} = 200\kO$. Find the resistance looking into the source.`,
+        fig: F.source({ load: 'M', look: 'R' }),
+        parts: [{ lbl: 'R', unit: 'kΩ', ans: 2.9703, traps: [{ v: 0.990099, msg: 'That ignores the drain load: $r_{ds2}$ is twice $r_{ds}$, so it matters a lot.' }] }],
+        hints: [md`$(r_{ds} + R_D)/(1 + g_mr_{ds})$ with $R_D = r_{ds2}$.`],
+        sol: md`$R = \dfrac{100 + 200}{1 + 100}\kO = \dfrac{300}{101}\kO = 2.970\kO$, three times $1/g_m$.`,
+      }),
+      P({
+        id: 'bk03-pr-pdeg', title: 'A degenerated PMOS',
+        q: md`A PMOS ($g_m = 1.5\,\text{mS}$, $r_{ds} = 60\kO$) has $R_S = 3\kO$ to $V_{DD}$ and a held gate. Find the resistance looking up into its drain.`,
+        fig: F.drain({ p: 1, rs: 'R_S', look: 'R' }),
+        parts: [{ lbl: 'R', unit: 'kΩ', ans: 333 }],
+        hints: [md`$g_mr_{ds} = 90$.`],
+        sol: md`$R = 60 + 3 + 90\times3 = 333\kO$.`,
+      }),
+      P({
+        id: 'bk03-pr-kdiv', title: 'The K rule with a divider',
+        q: md`$g_m = 1\,\text{mS}$, $r_{ds} = 100\kO$, $R_S = 1\kO$; the gate sits on a divider $R_a = 40\kO$, $R_b = 10\kO$ hung from the drain. Find $K$, the transistor branch, and $R_{EQ}$.`,
+        fig: F.kdiv({ rs: 1, look: 'R_{EQ}' }),
+        parts: [{ lbl: 'K', unit: '', ans: 0.2 }, { lbl: 'R_{DN}', unit: 'kΩ', ans: 9.57143 }, { lbl: 'R_{EQ}', unit: 'kΩ', ans: 8.03357 }],
+        hints: [md`$K = 10/50$; $g_mr_{ds} = 100$.`],
+        sol: md`$K = 0.2$; $R_{DN} = \dfrac{100 + 1 + 100\times1}{1 + 100\times0.2} = \dfrac{201}{21}\kO = 9.571\kO$; $R_{EQ} = 50\parallel9.571 = 8.034\kO$.`,
+      }),
+      P({
+        id: 'bk03-pr-cascrs', title: 'A degenerated cascode',
+        q: md`$M_2$ on $M_1$ on $R_S = 1\kO$; both $g_m = 2\,\text{mS}$, $r_{ds} = 50\kO$; gates held. Find $R_{out}$.`,
+        fig: F.casc({ rs: 1, look: 'R_{out}' }),
+        parts: [{ lbl: 'R_{out}', unit: 'MΩ', ans: 15.301 }],
+        hints: [md`Bottom-up with $1 + g_mr_{ds} = 101$.`],
+        sol: md`$R_1 = 50 + 1\times101 = 151\kO$; $R_{out} = 50 + 151\times101 = 15{,}301\kO = 15.30\,\text{M}\Omega$.`,
+      }),
+      P({
+        id: 'bk03-pr-reg', title: 'A regulated cascode on a transistor',
+        q: md`Regulated cascode: $M_1$ ($g_{m1} = 1\,\text{mS}$, $r_{ds1} = 100\kO$) sits on $R_Y = 100\kO$; the booster $M_3$ has $g_{m3} = 1\,\text{mS}$, $r_{ds3} = 100\kO$ and an ideal current-source load. Find $R_{out}$.`,
+        fig: F.reg({ look: 'R_{out}' }),
+        parts: [{ lbl: 'R_{out}', unit: 'MΩ', ans: 1010.2 }],
+        hints: [md`$A = 100$; $R_{out} = r_{ds1} + R_Y + g_{m1}r_{ds1}(1 + A)R_Y$.`],
+        sol: md`$R_{out} = 100\kO + 100\kO + (100)(101)(100\kO) = 1{,}010{,}200\kO\approx1.01\,\text{G}\Omega$.`,
+      }),
+      P({
+        id: 'bk03-pr-nload', title: 'An NMOS load with its gate on $V_{DD}$',
+        q: md`$M_2$ is an NMOS with its drain **and** gate on $V_{DD}$, its source on the output; $g_{m2} = 0.5\,\text{mS}$, $r_{ds2} = 100\kO$. $M_1$ below has $r_{ds1} = 50\kO$ (input off). Find $R_{out}$.`,
+        fig: nLoad,
+        parts: [{ lbl: 'R_{out}', unit: 'kΩ', ans: 1.88679 }],
+        hints: [md`Looking up into $M_2$'s **source**: its gate and drain are both at incremental ground.`],
+        sol: md`Up: a source with gate and drain on a rail, $\dfrac{1}{g_{m2} + 1/r_{ds2}}$. Down: $r_{ds1}$. Conductances: $0.5 + 0.01 + 0.02 = 0.53\,\text{mS}$, so $R_{out} = 1.887\kO$.`,
+      }),
+      P({
+        id: 'bk03-pr-sym1', title: 'Typed: a drain degenerated by a diode',
+        q: md`$M_1$ (gate held) sits on a diode-connected $M_2$. Type the resistance looking into $M_1$'s drain (exact or the $g_mr_{ds}\gg1$ form). Variables: gm1, gm2, rds1, rds2.`,
+        fig: degDiode,
+        parts: [BK.ex('rds1 + (1/(gm2 + 1/rds2))*(1 + gm1*rds1)', ['gm1', 'gm2', 'rds1', 'rds2'], 'R')],
+        hints: [md`$R_S = \tfrac{1}{g_{m2}}\parallel r_{ds2}$, then degeneration.`],
+        sol: md`$R = r_{ds1} + \Big(\tfrac{1}{g_{m2}}\parallel r_{ds2}\Big)(1 + g_{m1}r_{ds1})\approx r_{ds1}\Big(1 + \dfrac{g_{m1}}{g_{m2}}\Big)$.`,
+      }),
+      P({
+        id: 'bk03-pr-sym2', title: 'Typed: a common-gate input node',
+        q: md`Gate held, $R_D$ on the drain, and a resistor $R_S$ from the source to ground. Type the resistance at the source node (exact or within 3%). Variables: gm, rds, RD, RS.`,
+        fig: cgR,
+        parts: [BK.ex('(RS) || ((rds + RD)/(1 + gm*rds))', ['gm', 'rds', 'RD', 'RS'], 'R_{in}', { ranges: { gm: [1e-3, 4e-3], rds: [5e4, 2e5], RD: [5e4, 5e5], RS: [200, 2000] } })],
+        hints: [md`Two branches at the source node: $R_S$, and the transistor's source.`],
+        sol: md`$R_{in} = R_S\parallel\dfrac{r_{ds} + R_D}{1 + g_mr_{ds}}$ (Lecture 29: $R_S\parallel\tfrac{1}{g_m}[1 + R_D/r_{ds}]$).`,
+      }),
+      P({
+        id: 'bk03-pr-rank', title: 'Rank the resistances',
+        q: md`One transistor type, $g_m = 2\,\text{mS}$, $r_{ds} = 100\kO$. Pick the largest and the smallest of: (A) a drain with $R_S = 1\kO$ under the source; (B) a source with $R_D = 100\kO$ on the drain; (C) a diode on a $1\kO$ resistor; (D) a plain drain.`,
+        parts: [{ lbl: 'Largest', mc: ['A', 'B', 'C', 'D'], a: 0, why: [null, '$\\approx2/g_m = 1\\kO$: small.', '$1.5\\kO$: small.', '$100\\kO$; A is three times that.'] },
+          { lbl: 'Smallest', mc: ['A', 'B', 'C', 'D'], a: 1, why: ['That is the largest ($301\\kO$).', null, '$1\\kO + 0.5\\kO = 1.5\\kO$, a bit more than B.', '$100\\kO$.'] }],
+        hints: [md`A: $301\kO$; B: $200\kO/201$; C: $R + 1/g_m$; D: $r_{ds}$.`],
+        sol: md`A $= 301\kO$, B $= 995\,\Omega$, C $= 1.4975\kO$, D $= 100\kO$. Largest A, smallest B.`,
+      }),
+      P({
+        id: 'bk03-pr-fb', title: 'Feedback through a diode, new numbers',
+        q: md`The circuit of [the K-rule example](#/l/bk03-k) ($M_1$ held over the diode $M_2$; $M_4$'s gate on $X$), with all transistors $g_m = 1\,\text{mS}$, $r_{ds} = 200\kO$. Find $R_{b1}$, $K$, $R_{M4}$ and $R_{EQ}$.`,
+        fig: kMirror,
+        parts: [{ lbl: 'R_{b1}', unit: 'kΩ', ans: 400 }, { lbl: 'K', unit: '', ans: 0.00248756 }, { lbl: 'R_{M4}', unit: 'kΩ', ans: 133.555 }, { lbl: 'R_{EQ}', unit: 'kΩ', ans: 100.125 }],
+        hints: [md`$R_X = 1/(1.005\,\text{mS})$; $g_mr_{ds} = 200$.`],
+        sol: md`
+1. $R_X = 995.0\,\Omega$; $R_{b1} = 200 + 0.995\times201 = 400\kO$.
+2. $K = 995.0/400{,}000 = 0.002488$.
+3. $R_{M4} = \dfrac{200}{1 + 200\times0.002488}\kO = \dfrac{200}{1.4975}\kO = 133.6\kO$.
+4. $R_{EQ} = 400\parallel133.6 = 100.1\kO\approx r_{ds}/2$.`,
+      }),
+      P({
+        id: 'bk03-pr-stack', title: 'Exam style: a cascode stack with a cascode load', big: true,
+        q: md`Input off. Up: a PMOS cascode ($M_4$ on $V_{DD}$, $M_3$ below). Down: $M_2$ on $M_1$ on $R_S = 1\kO$. All transistors $g_m = 2\,\text{mS}$, $r_{ds} = 50\kO$; all gates held. Find (a) the resistance $R_1$ looking into $M_1$'s drain, (b) $R_{DN}$, (c) $R_{UP}$, (d) $R_{out}$, (e) $R_{out}$ if a large capacitor bypassed $R_S$.`,
+        fig: stackEx,
+        parts: [{ lbl: 'R_1', unit: 'kΩ', ans: 151 }, { lbl: 'R_{DN}', unit: 'MΩ', ans: 15.301 }, { lbl: 'R_{UP}', unit: 'MΩ', ans: 5.1 }, { lbl: 'R_{out}', unit: 'MΩ', ans: 3.82506 }, { lbl: 'R_{out,bypassed}', unit: 'MΩ', ans: 2.55 }],
+        hints: [md`$1 + g_mr_{ds} = 101$. Bottom-up for the down stack; the up stack is a plain cascode.`, md`Bypassing $R_S$ makes the down stack a plain cascode too.`],
+        sol: md`
+**(a)** $R_1 = r_{ds} + R_S(1 + g_mr_{ds}) = 50 + 101 = 151\kO$.
+
+**(b)** $R_{DN} = 50 + 151\times101 = 15{,}301\kO = 15.30\,\text{M}\Omega$.
+
+**(c)** $R_{UP} = 50 + 50\times101 = 5{,}100\kO = 5.1\,\text{M}\Omega$.
+
+**(d)** $R_{out} = 15.30\parallel5.1 = \dfrac{15.30\times5.1}{20.40}\,\text{M}\Omega = 3.825\,\text{M}\Omega$.
+
+**(e)** Without $R_S$ both stacks are $5.1\,\text{M}\Omega$: $R_{out} = 2.55\,\text{M}\Omega$. The degeneration helped, but the up stack now limits the output.`,
+      }),
+      P({
+        id: 'bk03-pr-cg', title: 'Exam style: both ends of a common-gate stage', big: true,
+        q: md`$M_1$ ($g_m = 2\,\text{mS}$, $r_{ds} = 50\kO$, gate held) has $R_S = 1\kO$ from its source to ground and a PMOS current-source load $M_2$ ($r_{ds2} = 50\kO$). Find (a) the resistance looking up into $M_1$'s source alone, (b) $R_{in}$ at the source node, (c) $R_{out}$ at the drain node (input off), (d) which approximation of (c) is good.`,
+        fig: cgEx,
+        parts: [{ lbl: 'R_{S1}', unit: 'Ω', ans: 990.099 }, { lbl: 'R_{in}', unit: 'Ω', ans: 497.512 }, { lbl: 'R_{out}', unit: 'kΩ', ans: 37.5622, traps: [{ v: 25, msg: 'That treats $M_1$ as plain $r_{ds}$: $R_S$ degenerates it.' }] },
+          { lbl: '(d) A good estimate of $R_{out}$ is', mc: ['$r_{ds2}\\parallel r_{ds1}(1 + g_mR_S)$', '$r_{ds2}\\parallel r_{ds1}$', '$1/g_m$', '$r_{ds2} + r_{ds1}$'], a: 0,
+            why: [null, 'That ignores the degeneration by $R_S$, which triples $M_1$\'s drain resistance here.', 'The output is a drain node, not a source node.', 'The two branches are in parallel.'] }],
+        hints: [md`(a) $(r_{ds1} + r_{ds2})/(1 + g_mr_{ds1})$. (b) put $R_S$ in parallel.`, md`(c) $M_2$ is $r_{ds2}$ up; $M_1$ with $R_S$ under its source is a degenerated drain down.`],
+        sol: md`
+**(a)** $\dfrac{50 + 50}{101}\kO = 990.1\,\Omega$.
+
+**(b)** $R_{in} = 1\kO\parallel990.1\,\Omega = 497.5\,\Omega$.
+
+**(c)** Down: $50 + 1\times101 = 151\kO$. Up: $50\kO$. $R_{out} = 50\parallel151 = 37.56\kO$.
+
+**(d)** $r_{ds2}\parallel r_{ds1}(1 + g_mR_S) = 50\parallel150 = 37.5\kO$, within 0.2%.`,
+      }),
+      P({
+        id: 'bk03-pr-kexam', title: 'Exam style: a node with a moving gate', big: true,
+        q: md`Node $X$: a PMOS diode $M_3$ ($g_m = 1\,\text{mS}$, $r_{ds} = 100\kO$) up to $V_{DD}$; $M_1$ ($g_m = 2\,\text{mS}$, $r_{ds} = 100\kO$, $R_S = 2\kO$) with its drain on $X$ and its gate on a divider $R_a = 30\kO$, $R_b = 10\kO$ hung from $X$. Find $K$, the $M_1$ branch $R_K$, $R_{UP}$, and $R_X$.`,
+        fig: kEx,
+        parts: [{ lbl: 'K', unit: '', ans: 0.25 }, { lbl: 'R_K', unit: 'kΩ', ans: 9.84314, traps: [{ v: 502, msg: 'That is the held-gate value; the gate moves by $Kv_t$.' }] }, { lbl: 'R_{UP}', unit: 'Ω', ans: 990.099 },
+          { lbl: 'R_X', unit: 'Ω', ans: 879.822, traps: [{ v: 898.5, msg: 'You left out the divider branch ($40\\kO$).' }] }],
+        hints: [md`Three branches: the diode, $M_1$ (K rule), and the divider $R_a + R_b$.`],
+        sol: md`
+1. $K = 10/40 = 0.25$.
+2. $g_mr_{ds} = 200$: $R_K = \dfrac{100 + 2 + 200\times2}{1 + 200\times0.25}\kO = \dfrac{502}{51}\kO = 9.843\kO$.
+3. $R_{UP} = 1/(1.01\,\text{mS}) = 990.1\,\Omega$.
+4. Conductances: $1.01 + 0.1016 + 0.025 = 1.1366\,\text{mS}$, so $R_X = 879.8\,\Omega$: the diode dominates.`,
+      }),
+      P({
+        id: 'bk03-pr-pfollow', title: 'A PMOS follower output',
+        q: md`$M_1$ (PMOS, $g_m = 1\,\text{mS}$, $r_{ds} = 50\kO$) has its drain grounded and its source on the output; a PMOS current source $M_2$ ($r_{ds2} = 50\kO$) feeds the output from $V_{DD}$. Input off. Find $R_{out}$.`,
+        fig: F.node(['drain', { n: 'M_2' }], ['src', { n: 'M_1' }], { look: 'R_{out}' }),
+        parts: [{ lbl: 'R_{out}', unit: 'Ω', ans: 961.538 }],
+        hints: [md`Down: looking into a PMOS **source** whose drain is on ground. Up: a drain.`],
+        sol: md`Down: $\tfrac{1}{g_m}\parallel r_{ds}$; up: $r_{ds2}$. Conductances $1 + 0.02 + 0.02 = 1.04\,\text{mS}$: $R_{out} = 961.5\,\Omega$.`,
+      }),
+      P({
+        id: 'bk03-pr-limits', title: 'Limits you should know cold',
+        q: md`Answer each from the formulas' limits.`,
+        parts: [
+          { lbl: '(a) Looking into a source when the drain hangs on an ideal current source:', mc: ['$\\infty$', '$1/g_m$', '$2/g_m$'], a: 0, why: [null, 'That needs a path at the drain.', 'That is a transistor current source with $r_{ds}$ equal to the device\'s.'] },
+          { lbl: '(b) A degenerated drain with $\\lambda\\to0$:', mc: ['$\\infty$', '$R_S(1 + g_m)$', '$R_S$'], a: 0, why: [null, 'Not dimensionally sensible; $r_{ds}\\to\\infty$ makes every term grow.', '$r_{ds}\\to\\infty$ makes $r_{ds}(1 + g_mR_S)$ infinite.'] },
+          { lbl: '(c) The K rule with $K = 1$ and $R_S = 0$:', mc: ['$\\tfrac{1}{g_m}\\parallel r_{ds}$', '$r_{ds}$', '$\\infty$'], a: 0, why: [null, 'That is $K = 0$.', 'A moving gate lowers the resistance.'] },
+          { lbl: '(d) A source with $R_D$ on the drain, when $r_{ds}\\to\\infty$:', mc: ['$1/g_m$', '$\\infty$', '$R_D$'], a: 0, why: [null, '$R_D$ is divided by $g_mr_{ds}\\to\\infty$.', 'The drain resistance reaches the source divided by $g_mr_{ds}$.'] },
+        ],
+        hints: [md`Write each formula, then take the limit term by term.`],
+        sol: md`(a) $\infty$ (no current path). (b) $\infty$ (an ideal current source stays ideal). (c) $\dfrac{r_{ds}}{1 + g_mr_{ds}} = \tfrac{1}{g_m}\parallel r_{ds}$, a diode. (d) $\dfrac{r_{ds} + R_D}{1 + g_mr_{ds}}\to\dfrac{1}{g_m}$.`,
+      }),
+      G('bk_mi_vgs', { need: 8, pool: ALLG }),
+    ],
+  });
 })();

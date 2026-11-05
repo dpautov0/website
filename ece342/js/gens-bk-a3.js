@@ -66,7 +66,7 @@
       }
     }
     if (o.letters !== false) {
-      e.push(['txt', [x + 0.15, y - 0.22], o.up ? '$S$' : '$D$', { a: 'l' }], ['txt', [x + 0.15, y + 2.25], o.up ? '$D$' : '$S$', { a: 'l' }]);
+      e.push(['txt', [x + 0.15, y - 0.22], o.up ? '$S$' : `$${o.dl || 'D'}$`, { a: 'l' }], ['txt', [x + 0.15, y + 2.25], o.up ? '$D$' : `$${o.sl || 'S'}$`, { a: 'l' }]);
     }
     return e;
   }
@@ -104,6 +104,54 @@
     return e;
   };
 
+  // ---- degeneration, common gate, follower, cascode: circuits and models
+  F.csDegP = (o = {}) => [rail([1, -1.2]), ['R', [1, -1.2], [1, 0], { n: 'R_S', s: o.RS }], ['pmos', [1, 1], { n: 'M_1' }], ['w', [1, 2], [1.8, 2]], out([1.8, 2]),
+    ['R', [1, 2], [1, 3.2], { n: 'R_D', s: o.RD }], ['gnd', [1, 3.2]], ...gin(0, 1, o)];
+  F.csDegC = (o = {}) => [rail([1, -1.2]), ['R', [1, -1.2], [1, 0], { n: 'R_D' }], ['w', [1, 0], [1.8, 0]], out([1.8, 0]), ['nmos', [1, 1], { n: 'M_1' }],
+    ['R', [1, 2], [1, 3.4], { n: 'R_S' }], ['gnd', [1, 3.4]], ['w', [1, 2], [2.2, 2]], ['C', [2.2, 2], [2.2, 3.4], { n: 'C_S' }], ['gnd', [2.2, 3.4]], ...gin(0, 1, o)];
+  F.csDegI = (o = {}) => [rail([1, -1.4]), ['I', [1, -1.4], [1, 0], { n: 'I_B' }], ['w', [1, 0], [1.8, 0]], out([1.8, 0]), ['nmos', [1, 1], { n: 'M_1' }],
+    ['R', [1, 2], [1, 3.2], { n: 'R_S' }], ['gnd', [1, 3.2]], ...gin(0, 1, o)];
+  F.csDegDiode = (o = {}) => [rail([1, -1.2]), ['R', [1, -1.2], [1, 0], { n: 'R_D' }], ['w', [1, 0], [1.8, 0]], out([1.8, 0]), ['nmos', [1, 1], { n: 'M_1' }],
+    ['nmos', [1, 3], { n: 'M_3', dc: true }], ['gnd', [1, 4]], ...gin(0, 1, o)];
+  // a PMOS common gate: v_in through R_S into the source (on top), gate held, R_D from the drain to ground
+  F.cgP = (o = {}) => [['gndu', [1, -2.4]], ['Vac', [1, -2.4], [1, -1.3], { n: 'v_{in}', side: 'l' }], ['R', [1, -1.3], [1, 0], { n: 'R_S', s: o.RS }],
+    ['pmos', [1, 1], { n: 'M_1' }], ['acg', [0, 1]], ['txt', [-0.25, 0.7], '$V_B$', { a: 'r' }], ['w', [1, 2], [1.8, 2]], out([1.8, 2]),
+    ['R', [1, 2], [1, 3.2], { n: 'R_D', s: o.RD }], ['gnd', [1, 3.2]]];
+  // degenerated common source model: mode 'short' (G_M), 'test' (R_out); o.rds false drops r_ds
+  F.degM = (mode = 'short', o = {}) => {
+    const e = [...mm(3, 0, { rds: o.rds, sl: 'v_s' }), ['R', [3, -1.4], [3, 0], { n: 'R_D' }], ['gndu', [3, -1.4]], ['R', [3, 2], [3, 3.4], { n: 'R_S' }], ['gnd', [3, 3.4]]];
+    e.push(...(mode === 'test' ? gGnd(3, 0) : gVin(3, 0)));
+    const dn = o.rds === false ? [3, 0] : [4.6, 0], len = o.rds === false ? 2.2 : 1.5;
+    e.push(...(mode === 'test' ? testAt(dn, len) : shortAt(dn, len)));
+    return e;
+  };
+  // common gate model: gate grounded, v_in through R_S into the source. mode 'short' | 'test' | 'rin'
+  F.cgM = (mode = 'short') => {
+    const e = [...mm(3, 0, { sl: 'v_s' }), ['R', [3, -1.4], [3, 0], { n: 'R_D' }], ['gndu', [3, -1.4]], ...gGnd(3, 0)];
+    if (mode === 'short') e.push(['R', [3, 2], [3, 3.4], { n: 'R_S' }], ['Vac', [3, 3.4], [3, 4.4], { n: 'v_{in}', side: 'l' }], ['gnd', [3, 4.4]], ...shortAt([4.6, 0]));
+    if (mode === 'test') e.push(['R', [3, 2], [3, 3.4], { n: 'R_S' }], ['gnd', [3, 3.4]], ...testAt([4.6, 0]));
+    if (mode === 'rin') e.push(['w', [3, 2], [3, 2.8]], ['V', [3, 2.8], [3, 4], { n: 'v_t', side: 'l' }], ['gnd', [3, 4]], ['iarr', [3, 2.45], 'u', { n: 'i_t', side: 'l', off: [-14, 0] }]);
+    return e;
+  };
+  // follower model: drain on V_DD (ground), gate at v_in (or grounded), output at the source with R_L
+  F.cdM = (mode = 'short', o = {}) => {
+    const e = [...mm(3, 0, { sl: 'v_{out}' }), ['w', [3, 0], [3, -0.6]], ['gndu', [3, -0.6]], ['R', [3, 2], [3, 3.4], { n: o.RL || 'R_L' }], ['gnd', [3, 3.4]]];
+    e.push(...(mode === 'short' || mode === 'open' ? gVin(3, 0) : gGnd(3, 0)));
+    if (mode === 'short') e.push(...shortAt([4.6, 2]));
+    if (mode === 'test') e.push(...testAt([4.6, 2]));
+    if (mode === 'open') e.push(...outAt([4.6, 2]));
+    return e;
+  };
+  // cascode model: M2 on top (drain = out, source = x, gate grounded), M1 below (drain = x, gate v_in, source ground)
+  F.cascM = (mode = 'short') => {
+    const e = [...mm(3, 0, { g: 'g_{m2}v_{gs2}', rds: 'r_{ds2}', vgs: 'v_{gs2}', G: 'G_2', sl: 'x', gdx: 2.2 }), ['R', [3, -1.4], [3, 0], { n: 'R_D' }], ['gndu', [3, -1.4]], ...gGnd(3, 0, { gdx: 2.2 }),
+      ...mm(3, 2, { g: mode === 'test' ? 'g_{m1}\\cdot 0' : 'g_{m1}v_{in}', rds: 'r_{ds1}', vgs: 'v_{gs1}', G: 'G_1', letters: false }), ['w', [3, 4], [3, 4.5]], ['gnd', [3, 4.5]]];
+    e.push(...(mode === 'test' ? gGnd(3, 2) : gVin(3, 2)));
+    if (mode === 'short') e.push(...shortAt([4.6, 0]));
+    if (mode === 'test') e.push(...testAt([4.6, 0]));
+    return e;
+  };
+
   // a PMOS common source with an NMOS current-source load (gate held)
   F.csPisrc = (o = {}) => [rail([1, -2]), ['pmos', [1, -1], { n: 'M_1', sz: o.sz1 }], ['w', [1, 0], [1.8, 0]], out([1.8, 0]),
     ['nmos', [1, 1], { n: 'M_2', sz: o.sz2 }], ['acg', [0, 1]], ['txt', [-0.3, 1.25], '$V_B$', { a: 'r' }], ['gnd', [1, 2]], ...gin(0, -1, o)];
@@ -121,7 +169,7 @@
     return e;
   };
   // a diode-connected PMOS alone, with a test source on its drain: gate tied to the drain, source on V_DD
-  F.pdiodeM = () => [...mm(3, 0, { up: true }), ['w', [3, 0], [3, -0.6]], ['gndu', [3, -0.6]], ['w', [1.2, 1.6], [1.2, 2.5], [3, 2.5], [3, 2]],
+  F.pdiodeM = () => [...mm(3, 0, { up: true, g: 'g_{m2}v_{gs2}', rds: 'r_{ds2}', vgs: 'v_{gs2}' }), ['w', [3, 0], [3, -0.6]], ['gndu', [3, -0.6]], ['w', [1.2, 1.6], [1.2, 2.5], [3, 2.5], [3, 2]],
     ...testAt([4.6, 2]), ['txt', [0.95, 2.25], '$\\text{gate tied to drain}$', { a: 'r' }]];
 
   // ---- plots: Schem.plot plus TeX annotations at data coordinates, t = [{x, y, s, a: 'l' | 'r' | 'c'}]
@@ -157,6 +205,14 @@
     [{ x: 1.32, y: 0.178, s: '\\text{diode: steep, } 1/g_m = 1\\,\\text{k}\\Omega', a: 'l' }, { x: 2.12, y: 0.062, s: 'R_D = 20\\,\\text{k}\\Omega', a: 'l' },
       { x: 0.22, y: 0.128, s: '\\text{current source: flat}', a: 'l' }]);
   };
+  // degeneration: G_M R_S against g_m R_S (it saturates at 1: G_M -> 1/R_S), with the undegenerated G_M = g_m
+  F.degGM = () => F.plot({ x: [0, 10], y: [0, 1.3], xl: 'g_mR_S', yl: 'G_MR_S', w: 440, h: 260, xt: [0, 2, 4, 6, 8, 10], yt: [0, 0.5, 1],
+    curves: [{ f: (x) => x / (1 + x) }, { f: (x) => x, to: 1.3, cls: 'dc' }, { f: () => 1, cls: 'dash' }] },
+  [{ x: 1.45, y: 1.2, s: 'G_M = g_m\\ (R_S = 0)', a: 'l' }, { x: 9.8, y: 0.6, s: 'G_M = \\dfrac{g_m}{1 + g_mR_S}', a: 'r' }, { x: 6, y: 1.09, s: '1/R_S', a: 'c' }]);
+  // degeneration and linearity: I_D against V_in with R_S = 0 and R_S = 1 kOhm (K = 2 mA/V^2, V_TN = 1 V)
+  F.degLin = () => F.plot({ x: [1, 4], y: [0, 2.5], xl: 'V_{in}\\ (\\text{V})', yl: 'I_D\\ (\\text{mA})', w: 440, h: 270, xt: [1, 2, 3, 4], yt: [0, 0.5, 1, 1.5, 2, 2.5],
+    curves: [{ f: (v) => 2 * (v - 1) * (v - 1), to: 2.118, cls: 'dc' }, { f: (v) => { const u = (-1 + Math.sqrt(1 + 8 * (v - 1))) / 4; return 2 * u * u; } }] },
+  [{ x: 2.0, y: 2.2, s: 'R_S = 0\\text{: a parabola}', a: 'r' }, { x: 3.95, y: 0.42, s: 'R_S = 1\\,\\text{k}\\Omega\\text{: nearly straight}', a: 'r' }]);
   // the common source transfer curve (same numbers): off, saturation (the amplifier), triode; tangent at Q
   F.csTransfer = () => {
     const vout = (vin) => { if (vin <= 1) return 5; const ov = vin - 1, vs = 5 - 10 * ov * ov; if (vs >= ov) return vs; const b = 20 * ov + 1; return (b - Math.sqrt(b * b - 200)) / 20; };
@@ -410,6 +466,60 @@ Shortcut: $A_v = -\\dfrac{2}{(\\lambda_n + \\lambda_p)V_{ov1}} = -\\dfrac{2}{(${
 3. **$R_{out}$:** $v_{in} = 0$ kills both; $r_{ds1}\\parallel r_{ds2} = ${OH(Ro)}$.
 4. $A_v = -(${MS(GMv)})(${OH(Ro)}) = ${G4(Av)}$.`,
       _v: { k: 'load', p: { load: 'inv', gm1, rds1: rds, gm2, rds2: rds }, a: { GM: GMv, Ro, Av } },
+    };
+  };
+
+  // ---------------------------------------------------------------- 4. source degeneration
+  GENS.bk_degen = () => {
+    const form = pick(['approx', 'approx', 'exact', 'exact', 'design']);
+    const gm = pick([1, 2, 4, 5]) * 1e-3, RS = pick([0.25, 0.5, 1, 2, 2.5]) * 1e3;
+    if (form === 'design') {
+      const A = pick([2, 4, 5, 8, 10]), RD = A * (1 / gm + RS);
+      return {
+        fig: F.csDeg({ RD: KO(RD) }),
+        q: `A degenerated common source has $g_m = ${MS(gm)}$ and $R_D = ${KO(RD)}$. Ignoring $r_{ds}$, what $R_S$ gives $A_v = -${A}$?`,
+        parts: [resBox('R_S', RS, { key: 'RS', traps: [{ v: RD / A, msg: 'That makes $R_D/R_S = ' + A + '$, but the source path also contains the transistor\'s own $1/g_m$: $R_S = R_D/|A_v| - 1/g_m$.' }] })],
+        hints: ['$A_v = -\\dfrac{R_D}{1/g_m + R_S}$: the resistance in the drain over the resistance in the source path.', `So $1/g_m + R_S = R_D/${A}$.`],
+        sol: `1. $A_v = -\\dfrac{g_mR_D}{1 + g_mR_S} = -\\dfrac{R_D}{1/g_m + R_S}$ (divide top and bottom by $g_m$).
+2. For $|A_v| = ${A}$: $1/g_m + R_S = \\dfrac{${KO(RD)}}{${A}} = ${OH(RD / A)}$.
+3. $1/g_m = ${OH(1 / gm)}$, so $R_S = ${OH(RD / A)} - ${OH(1 / gm)} = ${OH(RS)}$.
+
+Check: $g_mR_S = ${f(gm * RS, 3)}$, and $-\\dfrac{g_mR_D}{1 + g_mR_S} = -\\dfrac{${f(gm * RD, 3)}}{${f(1 + gm * RS, 3)}} = -${A}$.`,
+        _v: { k: 'deg', p: { gm, rds: 1e12, RD, RS }, a: { RS, Av: -A } },
+      };
+    }
+    const RD = pick([5, 8, 10, 20]) * 1e3;
+    if (form === 'approx') {
+      const GMv = gm / (1 + gm * RS), Av = -GMv * RD;
+      return {
+        fig: F.csDeg({ RD: KO(RD), RS: OH(RS) }),
+        q: `A common source with $R_S = ${OH(RS)}$ in its source and $R_D = ${KO(RD)}$: $g_m = ${MS(gm)}$. Ignoring $r_{ds}$, find $G_M$ and $A_v$.`,
+        parts: [gBox('G_M', GMv, { key: 'GM', traps: [{ v: gm, msg: 'That is $g_m$: with $R_S$ under the source, $v_{gs}$ is only part of $v_{in}$.' }] }),
+          nBox('A_v', Av, { key: 'Av', traps: [{ v: -gm * RD, msg: 'That is the plain common source. $R_S$ divides the gain by $1 + g_mR_S$.' }, { v: -RD / RS, msg: `That is the limit $-R_D/R_S$, good only when $g_mR_S\\gg1$; here $g_mR_S = ${f(gm * RS, 3)}$.` }] })],
+        hints: ['$v_{gs} = v_{in} - v_s$ and $v_s = i_dR_S$: $G_M = \\dfrac{g_m}{1 + g_mR_S}$.', '$A_v = -G_MR_D = -\\dfrac{R_D}{1/g_m + R_S}$.'],
+        sol: `1. $g_mR_S = (${MS(gm)})(${OH(RS)}) = ${f(gm * RS, 3)}$.
+2. $G_M = \\dfrac{g_m}{1 + g_mR_S} = \\dfrac{${MS(gm)}}{${f(1 + gm * RS, 3)}} = ${MS(GMv)}$.
+3. $A_v = -G_MR_D = ${G4(Av)}$. Same as $-\\dfrac{R_D}{1/g_m + R_S} = -\\dfrac{${KO(RD)}}{${OH(1 / gm)} + ${OH(RS)}}$.
+
+Sign: $v_{in}$ up, more current pulled down through $R_D$ (a bit less than without $R_S$, because the source rises too), the drain falls.`,
+        _v: { k: 'deg', p: { gm, rds: 1e12, RD, RS }, a: { GM: GMv, Av } },
+      };
+    }
+    const rds = pick([20, 25, 50, 100]) * 1e3, N = rds + RS + gm * rds * RS;
+    const GMv = gm / (1 + gm * RS + RS / rds), Ro = par(RD, N), Av = -GMv * Ro;
+    return {
+      fig: F.csDeg({ RD: KO(RD), RS: OH(RS) }),
+      q: `Degenerated common source: $g_m = ${MS(gm)}$, $r_{ds} = ${KO(rds)}$, $R_S = ${OH(RS)}$, $R_D = ${KO(RD)}$. Keeping $r_{ds}$, find $G_M$, $R_{out}$ and $A_v$.`,
+      parts: [gBox('G_M', GMv, { key: 'GM', traps: [{ v: gm, msg: 'That ignores $R_S$: the source moves, so $v_{gs}$ is smaller than $v_{in}$.' }] }),
+        resBox('R_{out}', Ro, { key: 'Ro', traps: [{ v: par(RD, rds), msg: 'That treats the transistor as a plain $r_{ds}$. With $R_S$ under it, the drain looks like $r_{ds} + R_S + g_mr_{ds}R_S$.' }, { v: RD + RS, msg: '$R_S$ is not in series with $R_D$: it multiplies the resistance looking down into the drain.' }] }),
+        nBox('A_v', Av, { key: 'Av', traps: [{ v: -gm * RD / (1 + gm * RS), msg: 'That is the $r_{ds}\\to\\infty$ approximation; keep $r_{ds}$.' }] })],
+      hints: ['$G_M = \\dfrac{g_m}{1 + g_mR_S + R_S/r_{ds}}$.', '$R_{out} = R_D\\parallel(r_{ds} + R_S + g_mr_{ds}R_S)$; or in one line $A_v = -\\dfrac{g_mr_{ds}R_D}{R_D + r_{ds} + R_S + g_mr_{ds}R_S}$.'],
+      sol: `1. $g_mR_S = ${f(gm * RS, 3)}$, $R_S/r_{ds} = ${f(RS / rds, 3)}$. $G_M = \\dfrac{${MS(gm)}}{${f(1 + gm * RS + RS / rds, 4)}} = ${MS(GMv)}$.
+2. Looking down into the drain: $r_{ds} + R_S + g_mr_{ds}R_S = ${KO(rds)} + ${OH(RS)} + ${KO(gm * rds * RS)} = ${OH(N)}$. $R_{out} = ${KO(RD)}\\parallel${OH(N)} = ${OH(Ro)}$.
+3. $A_v = -G_MR_{out} = ${G4(Av)}$. One line: $-\\dfrac{g_mr_{ds}R_D}{R_D + ${OH(N)}} = -\\dfrac{${f(gm * rds, 3)}\\times${KO(RD)}}{${OH(RD + N)}}$, the same.
+
+Without $r_{ds}$: $-\\dfrac{g_mR_D}{1 + g_mR_S} = ${G4(-gm * RD / (1 + gm * RS))}$.`,
+      _v: { k: 'deg', p: { gm, rds, RD, RS }, a: { GM: GMv, Ro, Av } },
     };
   };
 })();

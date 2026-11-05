@@ -1059,4 +1059,228 @@ Both paths pull current out of the output when $v_{in}$ rises, so they add.`,
       G('bk_paths', { need: 4 }),
     ],
   });
+
+  // ================================================================ 4. signal mirrors: figures
+  const SG = FG.sig;
+  const sigModel = [
+    ['w', [0, 0], [1.2, 0]], ['node', [0.6, 0], { n: 'a', side: 'a' }],
+    ...ssm(0, 0, 1.8, 'g_{m1}v_{in}', 'r_{ds1}'), ['gnd', [0.6, 1.8]],
+    ...ssm(0, 0, -1.8, 'g_{m2}v_a', 'r_{ds2}'), ['gndu', [0.6, -1.8]],
+    ['txt', [0.6, 2.6], '$M_1\\ (\\text{below}),\\ M_2\\ (\\text{diode, above})$'],
+    ['w', [4.2, 0], [7, 0]], out([7, 0]),
+    ...ssm(4.2, 0, -1.8, 'g_{m3}v_a', 'r_{ds3}'), ['gndu', [4.8, -1.8]],
+    ['R', [6.2, 0], [6.2, 1.8], { n: 'R_L' }], ['gnd', [6.2, 1.8]],
+    ['txt', [4.8, 1.0], '$M_3\\ (\\text{above})$'],
+  ];
+  const twoMirrorFig = [
+    ['rail', [1, -2]], ['pmos', [1, -1], { n: 'M_2', flip: true, dc: true }], ['nmos', [1, 1], { n: 'M_1' }], ['gnd', [1, 2]],
+    ['w', [0, 1], [-0.6, 1], [-0.6, 1.4]], ...vin(-0.6, 1.4), ['node', [1, 0], { n: 'a', side: 'l' }],
+    ['rail', [3, -2]], ['pmos', [3, -1], { n: 'M_3' }], ['nmos', [3, 1], { n: 'M_4', flip: true, dc: true }], ['gnd', [3, 2]], ['node', [3, 0], { n: 'b', side: 'l' }],
+    ['rail', [5, -2]], ['pmos', [5, -1], { n: 'M_6' }], ['acg', [4, -1], { dir: 'u' }], ['nmos', [5, 1], { n: 'M_5' }], ['gnd', [5, 2]],
+    ['w', [5, 0], [5.8, 0]], out([5.8, 0]),
+  ];
+
+  // ================================================================ 4. mirrors that carry signal
+  L({
+    id: 'bk05-sigmirror', title: 'Mirrors that carry signal', ref: 'Practice 3 #1–2, 4 #1; Problem Set 4 #3',
+    steps: [
+      R(md`
+        ### The question
+
+        In [the first section](#/l/bk05-mirror) a mirror copied a DC current, and its reference was ideal, so in small signal the diode node never moved. Now let the reference **carry signal**: a transistor driven by $v_{in}$ pulls a varying current through the diode, and the copy delivers a varying current somewhere else. Practice Exam 3 #1 and #2, Practice 4 #1 and Problem Set 4 #3 are built this way.
+
+        We want the gain of such a circuit, and above all its **sign**, which is where most mistakes happen.
+      `),
+      R(md`
+        ### The physical picture: a current amplifier made of two converters
+
+        A diode-connected transistor turns a current into a voltage: push $i$ into it and its gate moves by $i/g_{m1}$ (it looks like $1/g_{m1}$). A copy turns that voltage back into a current: $g_{m2}$ times it. Back to back, they form a **current amplifier** with gain $g_{m2}/g_{m1}$, which is the size ratio. The diode node is a low-resistance node: it barely moves ($10\,\mu\text{A}$ into $1/g_m = 1\kO$ is $10\,\text{mV}$), so the signal travels as a current.
+
+        **Direction.** The copy flows **the same way through the copy** as the input flows through the diode. In an NMOS mirror, more current *into* the diode's drain means more current *into* the copy's drain. In a PMOS mirror on top, more current *pulled out* of the diode (down from its drain) means more current *pushed out* of the copy (down into its load).
+
+        **The sign trick.** A common source *pulls* current out of its drain node. Put a PMOS mirror on top of it, and that pull reappears in another branch as a **push** into the load. A pull lowers a node; a push raises it. So a common source seen through one mirror is **non-inverting**.
+      `),
+      RF(md`
+        ### The model and the derivation: a common source through a PMOS mirror
+
+        $M_1$ (NMOS, gate at $v_{in}$) pulls its current through the diode-connected PMOS $M_2$ at node $a$. The PMOS $M_3$ shares $M_2$'s gate and copies the current into $R_L$; the output is $M_3$'s drain. Every transistor saturated, $r_{ds}$ kept.
+
+        [[fig:f]]
+
+        **Step 1: each $v_{gs}$.** The PMOS sources sit on $V_{DD}$, an incremental ground. $M_1$: $v_{gs1} = v_{in}$. $M_2$: gate and drain at $a$, so $v_{gs2} = v_a$. $M_3$: gate at $a$, so $v_{gs3} = v_a$.
+
+        **Step 2: the model.** Node $a$ holds $M_1$ (pulling $g_{m1}v_{in}$ down) and $M_2$ (from $a$ up to incremental ground, $g_{m2}v_a$ with $r_{ds2}$). The output holds $M_3$ ($g_{m3}v_a$ from the output up to incremental ground, $r_{ds3}$) and $R_L$. The halves are joined only by $v_a$ controlling $M_3$.
+
+        [[fig:m]]
+
+        **Step 3: KCL at $a$** (currents leaving):
+        $$g_{m1}v_{in} + \frac{v_a}{r_{ds1}} + g_{m2}v_a + \frac{v_a}{r_{ds2}} = 0\quad\Rightarrow\quad v_a = -\frac{g_{m1}}{g_{m2} + 1/r_{ds1} + 1/r_{ds2}}\,v_{in}\approx-\frac{g_{m1}}{g_{m2}}v_{in}$$
+        A common source with a diode load ([Chapter 4](#/l/bk04-loads)).
+
+        **Step 4: $G_M$, output shorted.** Only $M_3$'s dependent source carries current at the shorted output, from the output (drain) up to $V_{DD}$ (source): it **pulls** $g_{m3}v_a$ out of the output.
+        $$G_M = \frac{g_{m3}v_a}{v_{in}} = -\frac{g_{m1}g_{m3}}{g_{m2} + 1/r_{ds1} + 1/r_{ds2}}$$
+        Negative: when $v_{in}$ rises, $v_a$ falls and $M_3$ pushes current **into** the output.
+
+        **Step 5: $R_{out}$.** With $v_{in} = 0$ nothing drives node $a$, so $v_a = 0$ and $M_3$ is $r_{ds3}$: $R_{out} = R_L\parallel r_{ds3}$.
+
+        !!key Gain through a mirror
+          $$A_v = -G_MR_{out} = +\frac{g_{m1}g_{m3}}{g_{m2} + 1/r_{ds1} + 1/r_{ds2}}\,(R_L\parallel r_{ds3})\approx+g_{m1}\,\frac{(W/L)_3}{(W/L)_2}\,R_L$$
+          Non-inverting: the mirror turns $M_1$'s pull into a push.
+      `, {
+        f: { fig: SG.cs(), cap: 'A common source $M_1$ through the PMOS mirror $M_2$–$M_3$ into $R_L$.' },
+        m: { fig: sigModel, cap: 'The small-signal model: node $a$ on the left, the output on the right, joined only through $v_a$.' },
+      }),
+      R(md`
+        ### Check it, with numbers
+
+        $g_{m1} = g_{m2} = 1\,\text{mS}$, $M_3$ twice as wide as $M_2$ (so $g_{m3} = 2\,\text{mS}$ at the same overdrive, and $r_{ds3} = 100\kO$ at twice the current), $r_{ds1} = r_{ds2} = 200\kO$, $R_L = 10\kO$.
+
+        1. $v_a/v_{in} = -\dfrac{1}{1 + 0.005 + 0.005} = -0.990$.
+        2. $G_M = (2\,\text{mS})(-0.990) = -1.980\,\text{mS}$.
+        3. $R_{out} = 10\kO\parallel100\kO = 9.09\kO$.
+        4. $A_v = +(1.980\,\text{mS})(9.09\kO) = +18.0$, against the estimate $g_{m1}\cdot2\cdot R_L = 20$.
+
+        **Limits.** $r_{ds}\to\infty$: $A_v = g_{m1}(g_{m3}/g_{m2})R_L$ exactly. Remove the mirror and put $R_L$ straight on $M_1$'s drain: $A_v = -g_{m1}R_L$. Same size, opposite sign: the mirror changes the sign and scales by the size ratio.
+
+        **Sign in words:** $v_{in}$ up, $M_1$ pulls more out of $a$, $a$ (the PMOS gates) goes down, $M_3$'s $v_{sg}$ grows, $M_3$ pushes more current into $R_L$, $v_{out}$ up.
+      `),
+      RF(md`
+        ### Example 2: a common gate through a mirror (inverting!)
+
+        Now $M_1$ is a **common gate**: gate held, $v_{in}$ applied to its source through $R_S$, drain into the PMOS diode $M_2$. $M_3$ (twice $M_2$) copies into $R_L$. Same numbers as above, $R_S = 1\kO$.
+
+        [[fig:f]]
+
+        **Step 1: the current into $M_1$'s source.** $M_1$'s drain sees only the diode, $R_a = \tfrac1{g_{m2}}\parallel r_{ds2} = 995\,\Omega$ ($M_3$'s gate draws nothing). Looking into the source ([Chapter 3](#/l/bk03-source)): $R_{in1} = \dfrac{r_{ds1} + R_a}{1 + g_{m1}r_{ds1}} = 1.000\kO$. So a current
+        $$i = \frac{v_{in}}{R_S + R_{in1}} = \frac{v_{in}}{2\kO}$$
+        flows from $v_{in}$ **up** through $M_1$ into node $a$.
+
+        **Step 2: the diode node.** That current leaves $a$ through the diode: $v_a = iR_a$. It **rises** with $v_{in}$ (opposite to the common source).
+
+        **Step 3: $G_M$ and the gain.** Output shorted: $M_3$ pulls $g_{m3}v_a$ out of it, so $G_M = \dfrac{g_{m3}R_a}{R_S + R_{in1}} = \dfrac{(2\,\text{mS})(995\,\Omega)}{2\kO} = 0.995\,\text{mS}$, positive. $R_{out} = 9.09\kO$ again:
+        $$A_v = -(0.995\,\text{mS})(9.09\kO) = -9.05\approx-\frac{g_{m3}}{g_{m2}}\cdot\frac{R_L}{R_S + 1/g_{m1}}$$
+
+        **In words:** $v_{in}$ up, $M_1$'s $v_{gs}$ shrinks, it pulls **less** from the diode, $a$ rises, $M_3$ pushes less, $v_{out}$ falls. A common gate is non-inverting by itself; one mirror makes it inverting.
+      `, { f: { fig: SG.cg(), cap: 'A common gate $M_1$ driven at its source through $R_S$, mirrored by $M_2$–$M_3$ into $R_L$.' } }),
+      R(md`
+        ### What it means, and how to recognize it
+
+        A mirror is a **current amplifier with a gain equal to the size ratio and no sign change through the devices**. The voltage sign of the whole stage then depends only on where the copy delivers its current: a PMOS copy pushes into its load (the node rises when the input current grows), an NMOS copy pulls from its load (the node falls).
+
+        **Recognize it:** a diode-connected transistor whose gate wire continues to another transistor, *and* a transistor driven by $v_{in}$ (or by an earlier stage) feeding the diode. Then: (1) find the signal current into the diode; (2) multiply by the size ratio; (3) decide push or pull at the output; (4) multiply by the output node's resistance.
+
+        | Input device feeding the diode | Current into the diode when $v_{in}$ rises | PMOS copy into $R_L$ |
+        |---|---|---|
+        | common source (gate at $v_{in}$) | more | $+g_m\frac{(W/L)_3}{(W/L)_2}R_L$ |
+        | common gate (source at $v_{in}$) | less | $-\frac{(W/L)_3}{(W/L)_2}\frac{R_L}{R_S + 1/g_m}$ |
+        | a resistor from $v_{in}$ (current input) | depends on the side | $\pm\frac{(W/L)_{copy}}{(W/L)_{diode}}\frac{R_L}{R_S + 1/g_m}$ |
+
+        !!mistake Common mistakes with signal mirrors
+          - **Inverting twice in your head.** A common source inverts at its *own* drain; the mirror does not invert again. CS + one mirror is non-inverting.
+          - **Treating the diode node as an output.** $v_a$ is small ($\approx g_{m1}/g_{m2}$ times $v_{in}$); the gain appears at the copy's output, through $R_L$.
+          - **Forgetting the size ratio.** The copy carries $g_{m3}/g_{m2} = (W/L)_3/(W/L)_2$ times the diode's signal current.
+          - **$R_{out}$ with the diode moving.** With $v_{in} = 0$ the diode node is still: the copy is just $r_{ds}$.
+      `),
+      RF(md`
+        ### Example 3: turning the current around twice
+
+        $M_1$ (CS) pulls through the PMOS diode $M_2$; the PMOS copy $M_3$ (twice $M_2$) pushes into the NMOS diode $M_4$; the NMOS copy $M_5$ (twice $M_4$) pulls from the output, whose load is the PMOS current source $M_6$ (gate held). $g_{m1} = g_{m2} = g_{m4} = 1\,\text{mS}$, $g_{m3} = g_{m5} = 2\,\text{mS}$; $r_{ds1} = r_{ds2} = r_{ds4} = 200\kO$, $r_{ds3} = r_{ds5} = r_{ds6} = 100\kO$.
+
+        [[fig:f]]
+
+        1. **Node $a$.** As before: $v_a = -\dfrac{g_{m1}}{g_{m2} + 1/r_{ds1} + 1/r_{ds2}}v_{in} = -0.990\,v_{in}$.
+        2. **Node $b$.** $M_3$ (from $b$ up to $V_{DD}$) carries $g_{m3}v_a + v_b/r_{ds3}$ out of $b$; the diode $M_4$ carries $(g_{m4} + 1/r_{ds4})v_b$ out of $b$. KCL: $v_b = -\dfrac{g_{m3}v_a}{g_{m4} + 1/r_{ds3} + 1/r_{ds4}} = -\dfrac{(2)(-0.990)}{1 + 0.01 + 0.005}v_{in} = +1.951\,v_{in}$.
+        3. **Output.** $M_5$ pulls $g_{m5}v_b$ out of the shorted output: $G_M = (2\,\text{mS})(1.951) = 3.902\,\text{mS}$. $R_{out} = r_{ds5}\parallel r_{ds6} = 50\kO$.
+        4. $A_v = -(3.902\,\text{mS})(50\kO) = -195$, against the estimate $-g_{m1}\cdot2\cdot2\cdot50\kO = -200$.
+
+        **Sign:** the PMOS mirror turns the pull into a push, the NMOS mirror turns it back into a pull: inverting overall, like a plain common source with a current gain of 4.
+      `, { f: { fig: twoMirrorFig, cap: 'Two mirrors in a row: PMOS $M_2$–$M_3$, then NMOS $M_4$–$M_5$, into the output loaded by the current source $M_6$.' } }),
+      Q(md`A small signal current $i$ flows **into** the drain of a diode-connected NMOS $M_1$. $M_2$ (three times wider, same $L$) mirrors it. What does $M_2$ do?`,
+        ['Pulls $3i$ into its drain', 'Pushes $3i$ out of its drain', 'Pulls $i/3$ into its drain', 'Pulls $\\sqrt3\\,i$ into its drain'], 0,
+        [null, 'The copy flows the same way through the copy device as through the diode: into the drain.', 'Upside down: the wider device carries more.', 'Same overdrive, so the current is linear in $W/L$.'],
+        md`The diode's gate rises by $i/g_{m1}$; $M_2$ has the same $v_{gs}$ and pulls $g_{m2}i/g_{m1} = 3i$ into its drain.`),
+      Q(md`A common source $M_1$ feeds a PMOS mirror whose copy drives $R_L$ to ground. Why is the gain positive?`,
+        ['The mirror delivers $M_1$\'s extra pull as an extra push into $R_L$', 'A PMOS has a negative $g_m$', '$M_3$ is a source follower, and followers do not invert', 'The mirror copies the voltage of node $a$ to the output'], 0,
+        [null, 'Every $g_m$ is positive; the model is the same for NMOS and PMOS.', 'The output is $M_3$\'s **drain**, not its source. From node $a$, $M_3$ is a (PMOS) common source, which inverts; the overall sign is positive because node $a$ was already inverted.',
+          'A mirror copies a **current**. The output voltage is the copied current times $R_L\\parallel r_{ds3}$, far larger than $v_a$.'],
+        md`$v_{in}$ up: $M_1$ pulls more, the PMOS gates fall, $M_3$ pushes more into $R_L$, $v_{out}$ rises. The same story as a chain: $M_1$ with its diode load is a common source (inverting, $v_a\approx-\tfrac{g_{m1}}{g_{m2}}v_{in}$), and $M_3$ is a PMOS common source from node $a$ (inverting again). Two inversions: positive.`),
+      Q(md`In the CS-through-mirror circuit, what is $R_{out}$?`,
+        ['$R_L\\parallel r_{ds3}$', '$R_L\\parallel\\tfrac1{g_{m3}}$', '$R_L\\parallel r_{ds3}\\parallel\\tfrac1{g_{m2}}$', '$R_L$'], 0,
+        [null, '$M_3$\'s gate is not its drain: with $v_{in} = 0$ the gate node is still, so $M_3$ is a drain with a held gate.', 'The diode $M_2$ is on the other side of a gate: no current path to the output.', 'Channel-length modulation leaves $r_{ds3}$ in parallel.'],
+        md`With $v_{in} = 0$, KCL at $a$ gives $v_a = 0$, so $M_3$ is $r_{ds3}$ in parallel with $R_L$.`),
+      P({
+        id: 'bk05-sm-num', title: 'Through a mirror, with numbers',
+        q: md`In the CS-through-mirror circuit, $g_{m1} = 2\,\text{mS}$, $r_{ds1} = 100\kO$; $M_2$: $g_{m2} = 1\,\text{mS}$, $r_{ds2} = 200\kO$; $M_3$ is three times wider than $M_2$ ($g_{m3} = 3\,\text{mS}$, $r_{ds3} = 66.7\kO$); $R_L = 5\kO$. Find $v_a/v_{in}$, $G_M$ and $A_v$.`,
+        fig: SG.cs(),
+        parts: [
+          { lbl: 'v_a/v_{in}', unit: '', ans: -1.9704, accept: [-2] },
+          { lbl: 'G_M', unit: 'mS', ans: -5.9113, traps: [{ v: 5.9113, msg: 'When $v_{in}$ rises, $M_3$ pushes current in: $G_M$ (pulled out) is negative.' }] },
+          { lbl: 'A_v', unit: '', ans: 27.495, traps: [{ v: -27.495, msg: 'The mirror makes the stage non-inverting.' }] },
+        ],
+        hints: [md`$v_a/v_{in} = -g_{m1}/(g_{m2} + 1/r_{ds1} + 1/r_{ds2})$.`, md`$G_M = g_{m3}\,v_a/v_{in}$; $R_{out} = R_L\parallel r_{ds3}$.`],
+        sol: md`
+1. $v_a/v_{in} = -\dfrac{2}{1 + 0.01 + 0.005} = -1.970$.
+2. $G_M = (3\,\text{mS})(-1.970) = -5.911\,\text{mS}$.
+3. $R_{out} = 5\kO\parallel66.7\kO = 4.651\kO$; $A_v = +(5.911\,\text{mS})(4.651\kO) = +27.5$ (estimate $g_{m1}\cdot3\cdot R_L = 30$).`,
+      }),
+      P({
+        id: 'bk05-sm-sym', title: 'Through a mirror, symbolically',
+        q: md`Type $A_v$ for the CS-through-mirror circuit, keeping every $r_{ds}$. Use \`gm1\`, \`rds1\`, \`gm2\`, \`rds2\`, \`gm3\`, \`rds3\`, \`RL\`.`,
+        fig: SG.cs(),
+        parts: [ex('gm1*gm3/(gm2 + 1/rds1 + 1/rds2)*(RL || rds3)', ['gm1', 'rds1', 'gm2', 'rds2', 'gm3', 'rds3', 'RL'], 'A_v', { ranges: { RL: [2e4, 1e5] } })],
+        hints: [md`$v_a = -g_{m1}v_{in}/(g_{m2} + 1/r_{ds1} + 1/r_{ds2})$; $M_3$ pushes $-g_{m3}v_a$ into the output.`],
+        sol: md`$$A_v = \frac{g_{m1}g_{m3}}{g_{m2} + 1/r_{ds1} + 1/r_{ds2}}\,(R_L\parallel r_{ds3})\approx\frac{g_{m1}g_{m3}}{g_{m2}}(R_L\parallel r_{ds3})$$
+Keep $r_{ds3}$ in parallel with $R_L$: nothing makes it negligible. The $1/r_{ds}$ terms next to $g_{m2}$ can go ($g_mr_{ds}\gg1$).`,
+      }),
+      P({
+        id: 'bk05-sm-cg', title: 'A common gate through a mirror',
+        q: md`In Example 2's circuit, take $g_{m1} = 2\,\text{mS}$, $r_{ds1} = 100\kO$, $g_{m2} = 1\,\text{mS}$, $r_{ds2} = 200\kO$, $M_3$ the same size as $M_2$ ($g_{m3} = 1\,\text{mS}$, $r_{ds3} = 200\kO$), $R_S = 500\,\Omega$, $R_L = 20\kO$. Find $R_{in1}$ (into $M_1$'s source), the signal current $i/v_{in}$ through $M_1$, and $A_v$.`,
+        fig: SG.cg(),
+        parts: [
+          { lbl: 'R_{in1}', unit: 'Ω', ans: 502.46, accept: [500] },
+          { lbl: 'i/v_{in}', unit: 'mS', ans: 0.99754, accept: [1] },
+          { lbl: 'A_v', unit: '', ans: -18.047, accept: [-18.18], traps: [{ v: 18.047, msg: 'One mirror after a common gate makes it inverting: less current through the diode lifts its gate.' }] },
+        ],
+        hints: [md`$R_a = \tfrac1{g_{m2}}\parallel r_{ds2}$ is all that $M_1$'s drain sees; $R_{in1} = \dfrac{r_{ds1} + R_a}{1 + g_{m1}r_{ds1}}$.`, md`$v_a = iR_a$ rises with $v_{in}$; $A_v = -g_{m3}R_a\dfrac{i}{v_{in}}(R_L\parallel r_{ds3})$.`],
+        sol: md`
+1. **The diode.** $R_a = \dfrac{1}{1\,\text{mS} + 0.005\,\text{mS}} = 995\,\Omega$ is all that $M_1$'s drain sees.
+2. **Into $M_1$'s source.** $R_{in1} = \dfrac{r_{ds1} + R_a}{1 + g_{m1}r_{ds1}} = \dfrac{100\kO + 0.995\kO}{201} = 502.5\,\Omega$, close to $1/g_{m1} = 500\,\Omega$.
+3. **The signal current.** $\dfrac{i}{v_{in}} = \dfrac{1}{R_S + R_{in1}} = \dfrac{1}{1002.5\,\Omega} = 0.9975\,\text{mS}$.
+4. **The gain.** $v_a = iR_a$ and $M_3$ pulls $g_{m3}v_a$ out of the output, which sees $20\kO\parallel200\kO = 18.18\kO$:
+$$A_v = -g_{m3}R_a\frac{i}{v_{in}}(R_L\parallel r_{ds3}) = -(1\,\text{mS})(995\,\Omega)(0.9975\,\text{mS})(18.18\kO) = -18.05$$
+The estimate $-\tfrac{g_{m3}}{g_{m2}}\cdot\tfrac{R_L\parallel r_{ds3}}{R_S + 1/g_{m1}} = -18.18$ is within 1%.`,
+      }),
+      P({
+        id: 'bk05-sm-dio', title: 'A current-input amplifier',
+        q: md`$v_{in}$ drives the diode-connected NMOS $M_1$ (biased by an ideal $I_B$) through a large capacitor and $R_S = 1\kO$. $M_2$, three times wider than $M_1$, shares its gate and drives $R_L = 5\kO$ to $V_{DD}$. $g_{m1} = 1\,\text{mS}$, $r_{ds1} = 200\kO$, $g_{m2} = 3\,\text{mS}$, $r_{ds2} = 66.7\kO$. Find $v_a/v_{in}$ and $A_v$.`,
+        fig: SG.dio(),
+        parts: [
+          { lbl: 'v_a/v_{in}', unit: '', ans: 0.49875, accept: [0.5] },
+          { lbl: 'A_v', unit: '', ans: -6.9593, accept: [-7.5], traps: [{ v: 6.9593, msg: '$M_2$ pulls from its drain: from node $a$ to the output it is a common source.' }] },
+        ],
+        hints: [md`The diode is $R_a = \tfrac1{g_{m1}}\parallel r_{ds1}$: a divider with $R_S$.`, md`$A_v = -g_{m2}\dfrac{v_a}{v_{in}}(R_L\parallel r_{ds2})$.`],
+        sol: md`
+1. $R_a = 995\,\Omega$, so $v_a/v_{in} = \dfrac{995}{1000 + 995} = 0.499$.
+2. $R_L\parallel r_{ds2} = 5\kO\parallel66.7\kO = 4.651\kO$.
+3. $A_v = -(3\,\text{mS})(0.499)(4.651\kO) = -6.96$. Seen as currents: $i = v_{in}/(R_S + 1/g_{m1})$ enters the diode, $3i$ is pulled from the output.`,
+      }),
+      P({
+        id: 'bk05-sm-two', title: 'Two mirrors in a row, symbolically', big: true,
+        q: md`For Example 3 (CS, PMOS mirror $M_2$–$M_3$, NMOS mirror $M_4$–$M_5$, current-source load $M_6$), find $A_v$ symbolically, keeping every $r_{ds}$; then give its value with Example 3's numbers.`,
+        fig: twoMirrorFig,
+        parts: [
+          ex('-gm5*gm3*gm1/((gm2 + 1/rds1 + 1/rds2)*(gm4 + 1/rds3 + 1/rds4))*(rds5 || rds6)', ['gm1', 'rds1', 'gm2', 'rds2', 'gm3', 'rds3', 'gm4', 'rds4', 'gm5', 'rds5', 'rds6'], 'A_v'),
+          { lbl: 'A_v\\ (\\text{numbers})', unit: '', ans: -195.09, accept: [-200] },
+        ],
+        hints: [md`$v_a = -\dfrac{g_{m1}v_{in}}{g_{m2} + 1/r_{ds1} + 1/r_{ds2}}$.`, md`Node $b$ holds $M_3$ ($g_{m3}v_a$ and $r_{ds3}$) and the diode $M_4$: $v_b = -\dfrac{g_{m3}v_a}{g_{m4} + 1/r_{ds3} + 1/r_{ds4}}$.`, md`$G_M = g_{m5}v_b/v_{in}$, $R_{out} = r_{ds5}\parallel r_{ds6}$.`],
+        sol: md`
+**Recognize it first:** a common source whose current is turned around twice: a pull, then a push into $M_4$, then a pull again at the output.
+
+$$A_v = -\frac{g_{m1}\,g_{m3}\,g_{m5}}{\big(g_{m2} + \frac1{r_{ds1}} + \frac1{r_{ds2}}\big)\big(g_{m4} + \frac1{r_{ds3}} + \frac1{r_{ds4}}\big)}\,(r_{ds5}\parallel r_{ds6})\approx-g_{m1}\frac{g_{m3}}{g_{m2}}\frac{g_{m5}}{g_{m4}}(r_{ds5}\parallel r_{ds6})$$
+
+Numbers (Example 3): $-195$. The two size ratios multiply ($2\times2 = 4$), and the two mirrors cancel each other's sign change.`,
+      }),
+      G('bk_sigmirror', { need: 4 }),
+    ],
+  });
 })();

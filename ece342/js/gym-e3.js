@@ -238,7 +238,10 @@
     rule: md`Every branch from the node to ground **or to the supply** is in parallel (the supply is incremental ground). **In parallel, the smallest wins.** Size ladder: $1/g_m$ (a source, an emitter, a diode: tens to hundreds of ohms) $\ll$ resistors and $r_\pi$ (kilohms) $\ll r_o$, $r_{ds}$ (about 100 kΩ) $\ll$ degenerated or cascoded drains/collectors (megohms) $\ll$ a gate or an ideal current source ($\infty$). A gate hanging on the node adds nothing; **a BJT base adds $r_\pi$.**`,
     make() {
       const B = pick([false, true]), K = sizeBlocks(B);
-      const uk = pick(Object.keys(K.up)), dk = pick(Object.keys(K.dn)), sk = Math.random() < 0.45 ? pick(Object.keys(K.side)) : null;
+      const uk = pick(Object.keys(K.up)), dk = pick(Object.keys(K.dn));
+      let sk = Math.random() < 0.45 ? pick(Object.keys(K.side)) : null;
+      // an ideal current source on top leaves a single finite branch (a trivial item): hang a base on the node too
+      if (K.up[uk].c === 5 && sk !== 'base') sk = 'base';
       const blocks = [K.up[uk], K.dn[dk]].concat(sk ? [K.side[sk]] : []);
       const minC = Math.min(...blocks.map((b) => b.c));
       const win = blocks.filter((b) => b.c === minC);
@@ -395,7 +398,7 @@
       const capName = { gs: B ? 'C_\\pi' : 'C_{gs}', gd: B ? 'C_\\mu' : 'C_{gd}', L: 'C_L', gs1: B ? 'C_{\\pi1}' : 'C_{gs1}', gd1: B ? 'C_{\\mu1}' : 'C_{gd1}', gs2: B ? 'C_{\\pi2}' : 'C_{gs2}' }[cap];
       return {
         fig: capCircuit(B, fam, cap),
-        q: `A ${FAMNAME[B ? 'bjt' : 'mos'][fam]}${B ? ' ($\\beta$, $r_\\pi$, $g_m$)' : ''}; $r_o$, $r_{ds}\\to\\infty$. Only $${capName}$ is drawn (the others are removed) and $v_{in}$ is shorted. **What resistance does $${capName}$ see?**`,
+        q: `${fam === 'cd' && B ? 'An' : 'A'} ${FAMNAME[B ? 'bjt' : 'mos'][fam]}${B ? ' ($\\beta$, $r_\\pi$, $g_m$)' : ''}; $r_o$, $r_{ds}\\to\\infty$. Only $${capName}$ is drawn (the others are removed) and $v_{in}$ is shorted. **What resistance does $${capName}$ see?**`,
         ...mc(right, wrong),
         rule: capWhy(B, fam, cap),
       };

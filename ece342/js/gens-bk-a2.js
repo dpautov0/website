@@ -500,4 +500,73 @@
       _t: { g: 'casc', kind, r1, g2, r2, g3, r3, ans },
     };
   };
+
+  // ---------------------------------------------------------------- bk03-node: R_UP || R_DN with random branches
+  const UPR = {
+    R: (p) => p.RD, drain: (p) => p.rp, degen: (p) => p.rp + p.R1 * (1 + p.gp * p.rp), diode: (p) => dio(p.gp, p.rp),
+    diodeR: (p) => p.R1 + dio(p.gp, p.rp), casc: (p) => p.rp + p.rp * (1 + p.gp * p.rp),
+  };
+  const DNR = {
+    drain: (p) => p.rn, degen: (p) => p.rn + p.RS * (1 + p.gn * p.rn), diode: (p) => dio(p.gn, p.rn),
+    diodeR: (p) => p.RS + dio(p.gn, p.rn), casc: (p) => p.rn + p.rn * (1 + p.gn * p.rn),
+  };
+  const UPS = { R: 'a resistor to $V_{DD}$ (ground): $R_D$', drain: 'a PMOS drain with a still gate: $r_{dsp}$', degen: 'a degenerated PMOS: $r_{dsp} + R_1(1 + g_{mp}r_{dsp})$', diode: 'a PMOS diode: $\\tfrac{1}{g_{mp}}\\parallel r_{dsp}$', diodeR: 'a PMOS diode plus $R_1$ in series: $R_1 + \\tfrac{1}{g_{mp}}\\parallel r_{dsp}$', casc: 'a PMOS cascode: $r_{dsp} + r_{dsp}(1 + g_{mp}r_{dsp})$' };
+  const DNS = { drain: 'an NMOS drain with a still gate: $r_{dsn}$', degen: 'a degenerated NMOS: $r_{dsn} + R_S(1 + g_{mn}r_{dsn})$', diode: 'an NMOS diode: $\\tfrac{1}{g_{mn}}\\parallel r_{dsn}$', diodeR: 'an NMOS diode on $R_S$: $R_S + \\tfrac{1}{g_{mn}}\\parallel r_{dsn}$', casc: 'an NMOS cascode: $r_{dsn} + r_{dsn}(1 + g_{mn}r_{dsn})$' };
+  GENS.bk_mi_node = () => {
+    const uk = pick(Object.keys(UPR)), dk = pick(Object.keys(DNR));
+    const p = { gn: pick(GM), rn: pick(RDS), gp: pick(GM), rp: pick(RDS), RD: pick([5e3, 10e3, 20e3, 50e3]), R1: pick([500, 1e3, 2e3]), RS: pick([500, 1e3, 2e3]) };
+    const ru = UPR[uk](p), rd = DNR[dk](p), req = par(ru, rd);
+    const usesR = { RD: uk === 'R', R1: uk === 'degen' || uk === 'diodeR', RS: dk === 'degen' || dk === 'diodeR' };
+    const vals = [`NMOS: $g_{mn} = ${MS(p.gn)}$, $r_{dsn} = ${RT(p.rn)}$`, uk === 'R' ? '' : `PMOS: $g_{mp} = ${MS(p.gp)}$, $r_{dsp} = ${RT(p.rp)}$`,
+      usesR.RD ? `$R_D = ${RT(p.RD)}$` : '', usesR.R1 ? `$R_1 = ${RT(p.R1)}$` : '', usesR.RS ? `$R_S = ${RT(p.RS)}$` : ''].filter(Boolean).join('; ');
+    const fig = F.node([uk, { rv: usesR.RD ? RT(p.RD) : usesR.R1 ? RT(p.R1) : undefined }], [dk, { rv: usesR.RS ? RT(p.RS) : undefined }], { look: 'R_{EQ}' });
+    return {
+      fig,
+      q: `Find $R_{UP}$, $R_{DN}$ and the node resistance $R_{EQ}$. ${vals}. Triangles are incremental grounds.`,
+      parts: [BK.res('R_{UP}', ru), BK.res('R_{DN}', rd), BK.res('R_{EQ}', req, undefined, [{ v: ru + rd, msg: 'The two branches both connect the node to (incremental) ground: parallel, not series.' }])],
+      hints: ['Name each branch: what are you looking into, going up and going down?', '$R_{EQ} = R_{UP}\\parallel R_{DN}$; the smaller branch dominates.'],
+      sol: `**Up:** ${UPS[uk]} $= ${RT(ru)}$.\n\n**Down:** ${DNS[dk]} $= ${RT(rd)}$.\n\n$$R_{EQ} = R_{UP}\\parallel R_{DN} = ${RT(ru)}\\parallel${RT(rd)} = ${RT(req)}$$\nThe ${ru < rd ? 'up' : 'down'} branch is the smaller one, so it sets the answer${Math.max(ru, rd) > 20 * Math.min(ru, rd) ? ' almost by itself' : ''}.`,
+      _t: { g: 'node', uk, dk, ...p, ru, rd, ans: req, map: { 'R_{UP}': 'U', 'R_{DN}': 'D', 'R_{EQ}': 'R' } },
+    };
+  };
+
+  // ---------------------------------------------------------------- symbolic: write the result for a random circuit
+  // ranges chosen so that a form missing a term differs by more than the 3% tolerance (and the g_m r_ds >> 1 forms pass)
+  const RG = { gm: [1e-3, 4e-3], rds: [1e5, 3e5] };
+  const SYM = [
+    { k: 'src', fig: () => F.source({ load: 'R', look: 'R' }), what: 'looking into the source (gate held, $R_D$ on the drain)', expr: '(rds + RD)/(1 + gm*rds)', names: ['gm', 'rds', 'RD'], ranges: { ...RG, RD: [5e4, 5e5] },
+      why: 'Source with a drain load: $\\dfrac{r_{ds} + R_D}{1 + g_mr_{ds}}\\approx\\dfrac{1}{g_m} + \\dfrac{R_D}{g_mr_{ds}}$.' },
+    { k: 'deg', fig: () => F.drain({ rs: 'R_S', look: 'R' }), what: 'looking into the drain (gate held, $R_S$ under the source)', expr: 'rds + RS + gm*rds*RS', names: ['gm', 'rds', 'RS'], ranges: { ...RG, RS: [200, 2000] },
+      why: 'Degeneration: $r_{ds} + R_S + g_mr_{ds}R_S\\approx r_{ds}(1 + g_mR_S)$.' },
+    { k: 'dios', fig: () => F.diode({ rs: 'R_S', look: 'R' }), what: 'looking into a diode-connected transistor sitting on $R_S$', expr: 'RS + 1/(gm + 1/rds)', names: ['gm', 'rds', 'RS'], ranges: { ...RG, RS: [200, 2000] },
+      why: 'A diode is a two-terminal resistor $\\tfrac{1}{g_m}\\parallel r_{ds}$; $R_S$ adds in series.' },
+    { k: 'k', fig: () => F.k({ look: 'R' }), what: 'looking into the drain when the gate moves by $Kv_t$ ($R_S$ under the source); type the exact form', expr: '(rds + RS + gm*rds*RS)/(1 + gm*rds*K)', names: ['gm', 'rds', 'RS', 'K'], ranges: { gm: [1e-3, 4e-3], rds: [5e4, 2e5], RS: [200, 2000], K: [0.02, 0.9] }, exact: true,
+      why: 'K rule: $\\dfrac{r_{ds} + R_S + g_mr_{ds}R_S}{1 + g_mr_{ds}K}$.' },
+    { k: 'casc', fig: () => F.casc({ look: 'R' }), what: 'looking into the top of a cascode ($M_2$ on $M_1$, gates held)', expr: 'rds1 + rds2 + gm2*rds2*rds1', names: ['gm1', 'gm2', 'rds1', 'rds2'], ranges: {},
+      why: 'Cascode: $r_{ds1} + r_{ds2} + g_{m2}r_{ds2}r_{ds1}\\approx g_{m2}r_{ds2}r_{ds1}$ (the top transistor magnifies).' },
+    { k: 'csl', fig: () => F.node(['drain', { n: 'M_2' }], ['drain', { n: 'M_1' }], { look: 'R' }), what: 'at the output of a common-source stage with a PMOS current-source load (input off)', expr: '(rds1) || (rds2)', names: ['gm1', 'rds1', 'rds2'], ranges: {},
+      why: 'Two drains with still gates: $r_{ds1}\\parallel r_{ds2}$.' },
+    { k: 'csd', fig: () => F.node(['diode', { n: 'M_2' }], ['drain', { n: 'M_1' }], { look: 'R' }), what: 'at the output of a common-source stage with a PMOS diode load (input off)', expr: '1/(gm2 + 1/rds1 + 1/rds2)', names: ['gm1', 'gm2', 'rds1', 'rds2'], ranges: {},
+      why: 'A diode up, a drain down: $r_{ds1}\\parallel\\tfrac{1}{g_{m2}}\\parallel r_{ds2}\\approx\\tfrac{1}{g_{m2}}$.' },
+    { k: 'p1', fig: () => F.node(['diodeR', { n: 'M_2', rn: 'R_1' }], ['degen', { n: 'M_1' }], { look: 'R' }), what: 'at the node (PMOS diode $M_2$ under $R_1$; $M_1$ with a held gate on $R_S$)', expr: '(R1 + 1/(gm2 + 1/rds2)) || (rds1 + RS + gm1*rds1*RS)', names: ['gm1', 'gm2', 'rds1', 'rds2', 'R1', 'RS'], ranges: { gm1: [1e-3, 4e-3], gm2: [1e-3, 4e-3], rds1: [5e4, 2e5], rds2: [5e4, 2e5], R1: [5e3, 2e4], RS: [200, 2000] },
+      why: 'Up: $R_1 + \\tfrac{1}{g_{m2}}\\parallel r_{ds2}$. Down: $r_{ds1} + R_S + g_{m1}r_{ds1}R_S$. In parallel.' },
+    { k: 'reg', fig: () => F.reg({ look: 'R' }), what: 'looking into the regulated cascode ($M_1$ on $R_Y$, booster $M_3$ with an ideal current-source load)', expr: 'rds1 + RY + gm1*rds1*(1 + gm3*rds3)*RY', names: ['gm1', 'gm3', 'rds1', 'rds3', 'RY'], ranges: {},
+      why: 'The booster gives $v_{gs1} = -(1 + g_{m3}r_{ds3})v_Y$: $r_{ds1} + R_Y + g_{m1}r_{ds1}(1 + g_{m3}r_{ds3})R_Y$.' },
+    { k: 'mid', fig: () => [['rail', [1, -1.2]], ['R', [1, -1.2], [1, 0], { n: 'R_L' }], ['nmos', [1, 1], { n: 'M_2' }], ['acg', [0, 1]], ['nmos', [1, 3], { n: 'M_1' }], ['acg', [0, 3]], ['gnd', [1, 4]], ['w', [1, 2], [2, 2]], lookR([2, 2], 'R')],
+      what: 'at the middle node of a cascode with a resistor $R_L$ on top', expr: '(rds1) || ((rds2 + RL)/(1 + gm2*rds2))', names: ['gm1', 'gm2', 'rds1', 'rds2', 'RL'], ranges: { gm1: [1e-3, 4e-3], gm2: [1e-3, 4e-3], rds1: [2e4, 1e5], rds2: [5e4, 2e5], RL: [1e5, 1e6] },
+      why: 'Down: $r_{ds1}$. Up: the source of $M_2$ with $R_L$ on its drain, $\\dfrac{r_{ds2} + R_L}{1 + g_{m2}r_{ds2}}$. In parallel.' },
+  ];
+  T.SYM = SYM;
+  GENS.bk_mi_sym = () => {
+    const s = pick(SYM);
+    const part = BK.ex(s.expr, s.names, 'R', { ranges: s.ranges, exact: s.exact });
+    return {
+      fig: s.fig(),
+      q: `Type the small-signal resistance ${s.what}${s.exact ? '' : ' (exact, or a form within 3% of it)'}. Variables: ${s.names.join(', ')}. Triangles are incremental grounds.`,
+      parts: [part],
+      hints: ['Name what you are looking into at each branch: a drain, a source, a diode, a stack.', 'Write each canonical result, then combine branches in parallel.'],
+      sol: `${s.why}\n\nIn the box: \`${s.expr.replace(/\(rds1\) \|\| \(rds2\)/, 'rds1 || rds2')}\`.`,
+      _t: { g: 'sym', k: s.k, expr: s.expr, vars: part.vars },
+    };
+  };
 })();
