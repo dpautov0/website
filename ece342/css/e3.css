@@ -1,1 +1,49 @@
 /* ECE 342 Exam 3 additions (the recognition gym). Colours come from the shared tokens in ../shared/site.css. */
+.gym { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
+.gym-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.gym-chip {
+  border: 0; border-radius: 999px; padding: 7px 12px; font: 500 14px/1.2 var(--sans); cursor: pointer;
+  background: var(--fill); color: var(--dim); display: inline-flex; gap: 6px; align-items: baseline;
+}
+.gym-chip.on { background: var(--tint); color: var(--accent); }
+.gym-chip-a { font-size: 12px; opacity: .8; font-variant-numeric: tabular-nums; }
+.gym-chip.weak .gym-chip-a { color: var(--bad); opacity: 1; font-weight: 600; }
+.gym-stats { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 14px; color: var(--dim); font-variant-numeric: tabular-nums; }
+.gym-stats b { color: var(--fg); font-weight: 600; }
+.gym-card { --halo: var(--card); background: var(--card); border-radius: var(--r); padding: 16px 20px 14px; min-width: 0; }
+.gym-meta { display: flex; justify-content: space-between; gap: 12px; margin: 0 0 4px; font-size: 13px; color: var(--faint); font-variant-numeric: tabular-nums; }
+.gym-card .fig { margin: 6px 0 8px; }
+.gym-q p { margin: .35em 0; }
+.gym-opts { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 8px; margin-top: 10px; }
+.gym-opt {
+  display: flex; gap: 10px; align-items: center; text-align: left; padding: 10px 14px; border-radius: 12px; border: 0; min-width: 0;
+  background: var(--card-2); color: var(--fg); font: 400 16px/1.4 var(--sans); cursor: pointer; overflow-wrap: anywhere;
+  box-shadow: inset 0 0 0 1px var(--line); transition: box-shadow .12s, background .12s;
+}
+.gym-opt > span { min-width: 0; }
+.gym-opt:hover:not(:disabled) { box-shadow: inset 0 0 0 1px var(--line-2); }
+.gym-opt:disabled { cursor: default; }
+.gym-opt kbd {
+  flex: 0 0 auto; font: 600 12px/1 var(--sans); color: var(--dim); background: var(--fill); border-radius: 6px; padding: 4px 6px;
+}
+.gym-opt.right { box-shadow: inset 0 0 0 2px var(--good); background: var(--good-tint); }
+.gym-opt.wrong { box-shadow: inset 0 0 0 2px var(--bad); background: var(--bad-tint); }
+.gym-fb { margin-top: 12px; border-top: 1px solid var(--line); padding-top: 8px; }
+.gym-verdict { margin: 0 0 6px; }
+.gym-fb.good .gym-verdict b { color: var(--good); }
+.gym-fb.bad .gym-verdict b { color: var(--bad); }
+.gym-slow { color: var(--warn); }
+.gym-why { padding: 8px 12px; border-radius: 10px; background: var(--bad-tint); margin: 6px 0; }
+.gym-why p, .gym-rule p { margin: .3em 0; }
+.gym-rule { padding: 10px 14px; border-radius: 12px; background: var(--fill-2); }
+.gym-rule > span { display: block; font-size: 12px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--dim); margin-bottom: 2px; }
+.gym-nextrow { margin: 12px 0 2px; }
+.gym-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; margin: 0; font-size: 14px; color: var(--dim); }
+.gym-auto { display: inline-flex; gap: 6px; align-items: center; cursor: pointer; }
+.gym-keys { color: var(--faint); font-size: 13px; margin-left: auto; }
+@media (max-width: 600px) {
+  .gym-card { padding: 14px 14px 12px; }
+  .gym-opts { grid-template-columns: minmax(0, 1fr); }
+  .gym-keys { display: none; }
+  .gym-opt kbd { display: none; }
+}
