@@ -33,6 +33,7 @@
   const G = 64;       // pixels per grid unit
   const PAD = 30;
   const TWO = new Set(['R', 'V', 'I', 'E', 'G', 'D', 'Vac', 'Iac', 'X', 'C']);
+  const KNOWN = new Set([...TWO, 'w', 'gnd', 'gndu', 'acg', 'rail', 'term', 'node', 'dot', 'vlab', 'iarr', 'nmos', 'pmos', 'npn', 'pnp', 'opamp', 'box', 'txt']);
   const k = (p) => `${Math.round(p[0] * 1000)},${Math.round(p[1] * 1000)}`;
 
   function parseEntry(e) {
@@ -404,6 +405,11 @@
         body += label(x + w / 2, y + h / 2, o.n ? `<span class="boxtxt">${o.n}</span>` : '', 'c');
       } else if (t === 'txt') {
         body += label(X(el.pts[0][0]), Y(el.pts[0][1]), el.strs[0], o.a || 'c', o.cls || '');
+      } else if (!KNOWN.has(t)) {
+        // never fail silently: an element this file cannot draw shows as a red box and is reported
+        const [x, y] = el.pts[0] || [0, 0];
+        body += `<rect class="unknown-el" x="${X(x) - 16}" y="${Y(y) - 16}" width="32" height="32" style="stroke:#d70015;fill:none;stroke-dasharray:3 2"/>`;
+        if (window.console) console.error(`schem: cannot draw element type "${t}"`);
       }
     }
 

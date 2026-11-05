@@ -82,12 +82,13 @@
     ],
   });
 
-  const E3G = Object.keys(GENS).filter((k) => /^e3_/.test(k));
+  // the book's drills are named bk_*; the Exam 3 units' e3_*
+  const E3G = Object.keys(GENS).filter((k) => /^(e3|bk)_/.test(k));
   const E2G = ['e2_updn', 'e2_k', 'e2_stage', 'e2_gm', 'e2_chain', 'e2_sign', 'e2_look'].filter((k) => GENS[k]);
-  const E3U = ['e3start', 'e3u10', 'e3u11', 'e3u12', 'e3u13', 'e3u14', 'e3u15'];
+  const E3U = ['e3start', 'e3u10', 'e3u11', 'e3u12', 'e3u13', 'e3u14', 'e3u15'].concat(COURSE.units.filter((u) => /^bk\d/.test(u.id)).map((u) => u.id));
   if (E3G.length) {
     L({
-      id: 'e3-mix', title: 'Mixed practice: every Exam 3 drill', kind: 'review', sub: `Randomized drills from Units 10–15 (${E3G.length} kinds), mixed`,
+      id: 'e3-mix', title: 'Mixed practice: every drill in the book and the units', kind: 'review', sub: `Randomized drills (${E3G.length} kinds), mixed`,
       steps: [
         R(md`New circuits and numbers every time, every Exam 3 skill mixed: BJT bias, impedances, stage gains, Bode plots, poles, Miller and time constants. Ten in a row without opening a solution completes it. For one-tap recognition use the [gym](#/gym); for recall, the [flashcards](#/cards).`),
         G(E3G[0], { need: 10, pool: E3G }),
