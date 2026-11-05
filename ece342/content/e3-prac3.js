@@ -66,8 +66,8 @@
     ['node', [0, 0], { n: 'B', side: 'a' }], ['R', [0, 0], [0, 1.6], { n: 'r_\\pi', side: 'l' }],
     ['vlab', [0.35, 0.25], [0.35, 1.35], { n: 'v_\\pi' }],
     ['w', [0, 1.6], [2.6, 1.6]], ['node', [2.6, 1.6], { n: 'E', side: 'r' }],
-    ['G', [1.8, 0], [1.8, 1.6], { n: 'g_mv_\\pi' }], ['w', [1.8, 0], [1.8, -0.5]], ['gnd', [1.8, -0.5]],
-    ['I', [0, -0.9], [2.6, -0.9], { n: 'i_t' }], ['w', [0, 0], [0, -0.9]], ['w', [2.6, -0.9], [2.6, 1.6]],
+    ['G', [1.8, 0], [1.8, 1.6], { n: 'g_mv_\\pi' }], ['w', [1.8, 0], [1.8, -0.4]], ['gndu', [1.8, -0.4]],
+    ['I', [2.6, -0.9], [0, -0.9], { n: 'i_t' }], ['w', [0, 0], [0, -0.9]], ['w', [2.6, -0.9], [2.6, 1.6]],
   ];
 
   const Iex = [
@@ -154,7 +154,7 @@
         ex('-(gm1 + gm2*rds2/(rds2 + RS + gm2*rds2*RS))*(ro1 || (rds2 + RS + gm2*rds2*RS))', ['gm1', 'gm2', 'ro1', 'rds2', 'RS'], 'A_v', { ranges: { gm1: [2e-3, 10e-3], gm2: [2e-3, 10e-3], RS: [1e3, 5e3] } }),
         { lbl: 'A_v\\ \\text{(numbers)}', unit: '', ans: -3369, accept: [-3367], traps: [
           { v: -3340, msg: 'That is $-g_{m1}R_{out}$: it drops $M_2$\'s own (degenerated) transconductance, $0.4\\,\\text{mS}$.' },
-          { v: -2020, msg: 'That treats $M_2$ as undegenerated: $G_{M2} = g_{m2}$ and $R_{UP} = r_{ds2}$. With $R_S$, $G_{M2} = g_{m2}/(1 + g_{m2}R_S)$ and $R_{UP} = r_{ds2}(1 + g_{m2}R_S)$.' },
+          { v: -2100, msg: 'That treats $M_2$ as undegenerated: $G_{M2} = g_{m2}$ and $R_{UP} = r_{ds2}$. With $R_S$, $G_{M2} = g_{m2}/(1 + g_{m2}R_S)$ and $R_{UP} = r_{ds2}(1 + g_{m2}R_S)$.' },
           { v: -4040, msg: 'That uses $r_{o1}$ alone for $R_{out}$. Looking up into $M_2$\'s drain you see $502\\,\\text{k}\\Omega$, in parallel.' }] },
         { lbl: '(f) Why do the two transconductances add instead of cancelling?', mc: ['Raising $v_{in}$ makes $Q_1$ sink more current and $M_2$ source less: both take current away from the output node', 'They do cancel: one device is NPN and the other PMOS', 'Because $R_G$ connects the gate to the base', 'Because the PMOS has a negative $g_m$'], a: 0,
           why: [null, 'Opposite device types are exactly why they **add**: the same input change turns the NPN on harder and the PMOS off, and both push the output the same way (down), as in a CMOS inverter.', '$R_G$ only sets the gate\'s DC level; for signals the coupling capacitor ties the gate to $v_{in}$.', 'No transistor has a negative $g_m$; the PMOS model is the same as the NMOS model with $i_d$ drawn from drain to source.'] },
@@ -190,7 +190,7 @@
         $$R_{UP} = 100\,\text{k} + 2\,\text{k} + (2\,\text{m})(100\,\text{k})(2\,\text{k}) = 502\kO,\qquad R_{out} = 100\,\text{k}\parallel502\,\text{k} = 83.4\kO$$
         $$A_v = -(40.4\,\text{mS})(83.4\kO) = -3.37\times10^3$$
 
-        **What it means.** The degenerated PMOS adds only $1\%$ to $G_M$ (its $g_m$ is small and divided by $1 + g_{m2}R_S = 5$), but its drain resistance, $5\times$ bigger than $r_{ds2}$, keeps $R_{out}$ close to $r_{o1}$. Without $R_S$ the PMOS would add $2\,\text{mS}$ but halve $R_{out}$ to $50\kO$: the gain would drop to $-2020$.
+        **What it means.** The degenerated PMOS adds only $1\%$ to $G_M$ (its $g_m$ is small and divided by $1 + g_{m2}R_S = 5$), but its drain resistance, $5\times$ bigger than $r_{ds2}$, keeps $R_{out}$ close to $r_{o1}$. Without $R_S$ the PMOS would add $2\,\text{mS}$ but halve $R_{out}$ to $50\kO$: the gain would drop to $-2100$.
 
         **(f)** Raise $v_{in}$: the NPN turns on harder and sinks more current from the output; the PMOS's $V_{SG}$ shrinks, so it sources less current into the output. Both changes take current away from the output node, so both pull $v_{out}$ down: the transconductances add.
 
@@ -227,7 +227,7 @@
         md`OCTC: open the other capacitors, zero $v_{in}$, put a test source across the capacitor you want. $C_\mu$ goes from the base to ground (the collector). $C_\pi$ **bridges** base and emitter. $C_L$ goes from the emitter to ground.`,
         md`For $C_\pi$: inject $i_t$ into the base and take it out of the emitter. The emitter has nothing else connected, so KCL there gives $i_t = v_\pi/r_\pi + g_mv_\pi$.`,
       ],
-      figs: { test: { fig: I3Test, cap: 'The test for $C_\\pi$: $Q_1$\'s hybrid-$\\pi$ model (collector grounded), $R_S$ from the base to ground, the current source open, and $i_t$ pushed into the base and out of the emitter. Every ampere of $i_t$ must leave the emitter through $r_\\pi$ and the $g_mv_\\pi$ source.' } },
+      figs: { test: { fig: I3Test, cap: 'The test for $C_\\pi$: $Q_1$\'s hybrid-$\\pi$ model (collector grounded), $R_S$ from the base to ground, the current source open, and the test source pulling $i_t$ out of the emitter and pushing it back into the base. Every ampere of $i_t$ must leave the emitter through $r_\\pi$ and the $g_mv_\\pi$ source.' } },
       sol: md`
         **Recognize it first.** In at the **base**, out at the **emitter**, collector on ground (a rail): an **emitter follower**, drawn as a PNP (emitter on top, arrow pointing in). Gain about $1$, small output resistance: its job is to drive $C_L$. Now place the capacitors: $C_\mu$ (base to collector) goes from the input node to ground. $C_\pi$ (base to emitter) **bridges** input and output of a gain of about $+1$: it is bootstrapped, both its ends move together. $C_L$ sits on the output.
 
