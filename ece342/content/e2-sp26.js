@@ -139,9 +139,10 @@ $$A_V = -g_m(R_{C1}\parallel R_L) = -(40\,\text{mS})(1\,\text{k}\Omega) = -40$$
   });
 
   // ---------------------------------------------------------------- saved for Exam 3
-  C.exam({ id: 'e3', title: 'Exam 3', when: 'Thu Nov 19, 7–8 pm, 1002 ECEB', scope: 'BJTs, frequency response, open-circuit time constants' });
-  C.unit({ id: 'e3-bjt', exam: 'e3', num: 'Exam 3', title: 'BJT problems saved for later', lessons: [{
-    id: 'e3-sp26-bjt', title: 'Spring 2026 Midterm 2: the BJT problems', kind: 'exam',
-    steps: [R(md`The two BJT problems from last semester's Midterm 2, kept here for Exam 3. The full paper is under [Practice exams](#/l/e2-sp26).`), p1b, p3],
-  }] });
+  // (Exam 3 is registered in site.js; e3-units.js files this lesson under the Exam 3 practice exams.)
+  window.E3_SAVED = [{
+    id: 'e3-sp26-bjt', title: 'Spring 2026 Midterm 2: the two BJT problems', kind: 'exam',
+    sub: 'A Darlington current gain, and a common emitter with bypass capacitors',
+    steps: [R(md`The two BJT problems from last semester's Midterm 2. This term they belong to Exam 3. The full paper is under [Exam 2 practice exams](#/l/e2-sp26).`), p1b, p3],
+  }];
 })();

@@ -240,6 +240,8 @@
         const [lo, hi] = spec.vars[n];
         env[n] = (lo > 0 && hi / lo > 10) ? Math.exp(U.rand(Math.log(lo), Math.log(hi))) : U.rand(lo, hi);
       }
+      // derived variables (a BJT's r_pi = beta/g_m): set from the others, so 1/g_m and r_pi/(beta+1) can agree
+      if (spec.derived) for (const [n, fn] of Object.entries(spec.derived)) env[n] = fn(env);
       const r = evaluate(ra, env);
       if (!isFinite(r) || Math.abs(r) < 1e-300) continue;
       let u;
