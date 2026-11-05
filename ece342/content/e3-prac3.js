@@ -145,7 +145,7 @@
       id: 'e3pI-2', src: 'Exam 3 practice I · Problem 2 (35 pts)', title: 'Two transistors, one output: an NPN and a degenerated PMOS', big: true,
       q: md`$v_{in}$ drives two transistors at once: the base of $Q_1$ (NPN, emitter grounded) directly, and the gate of $M_2$ (PMOS) through an infinite capacitor; $R_G$ holds $M_2$'s gate at its DC bias. $M_2$ has $R_S$ between its source and $V_{DD}$. $M_2$'s drain and $Q_1$'s collector are joined: that node is the output. Both devices carry the same DC current and are in the active/saturation region. Keep $r_{o1}$ and $r_{ds2}$. In symbols:
 
-(a) $R_{in}$, the resistance $v_{in}$ sees. (b) The transconductance $G_M$ of the stage. (c) $R_{out}$. (d) $A_v = v_{out}/v_{in}$. (e) A number for (d) with $g_{m1} = 40\,\text{mS}$, $r_{o1} = 100\kO$, $g_{m2} = 2\,\text{mS}$, $r_{ds2} = 100\kO$, $R_S = 2\kO$. (f) Why the two transconductances add.`,
+(a) $R_{in}$, the resistance $v_{in}$ sees. (b) The transconductance $G_M$ of the stage. (c) $R_{out}$. (d) $A_v = v_{out}/v_{in}$. (e) A number for (d), with both devices at $0.1\,\text{mA}$: $g_{m1} = 4\,\text{mS}$, $r_{o1} = 1\,\text{M}\Omega$, $g_{m2} = 2\,\text{mS}$, $r_{ds2} = 1\,\text{M}\Omega$, $R_S = 1.5\kO$. (f) Why the two transconductances add.`,
       fig: I2Fig,
       parts: [
         ex('rpi1 || RG', ['rpi1', 'RG'], 'R_{in}', { ranges: { rpi1: [1e3, 2e4], RG: [5e3, 5e4] } }),
@@ -154,7 +154,7 @@
         ex('-(gm1 + gm2*rds2/(rds2 + RS + gm2*rds2*RS))*(ro1 || (rds2 + RS + gm2*rds2*RS))', ['gm1', 'gm2', 'ro1', 'rds2', 'RS'], 'A_v', { ranges: { gm1: [2e-3, 10e-3], gm2: [2e-3, 10e-3], RS: [1e3, 5e3] } }),
         { lbl: 'A_v\\ \\text{(numbers)}', unit: '', ans: -3369, accept: [-3367], traps: [
           { v: -3340, msg: 'That is $-g_{m1}R_{out}$: it drops $M_2$\'s own (degenerated) transconductance, $0.4\\,\\text{mS}$.' },
-          { v: -2100, msg: 'That treats $M_2$ as undegenerated: $G_{M2} = g_{m2}$ and $R_{UP} = r_{ds2}$. With $R_S$, $G_{M2} = g_{m2}/(1 + g_{m2}R_S)$ and $R_{UP} = r_{ds2}(1 + g_{m2}R_S)$.' },
+          { v: -3000, msg: 'That treats $M_2$ as undegenerated: $G_{M2} = g_{m2}$ and $R_{UP} = r_{ds2}$. With $R_S$, $G_{M2} = g_{m2}/(1 + g_{m2}R_S)$ and $R_{UP} = r_{ds2}(1 + g_{m2}R_S)$.' },
           { v: -4040, msg: 'That uses $r_{o1}$ alone for $R_{out}$. Looking up into $M_2$\'s drain you see $502\\,\\text{k}\\Omega$, in parallel.' }] },
         { lbl: '(f) Why do the two transconductances add instead of cancelling?', mc: ['Raising $v_{in}$ makes $Q_1$ sink more current and $M_2$ source less: both take current away from the output node', 'They do cancel: one device is NPN and the other PMOS', 'Because $R_G$ connects the gate to the base', 'Because the PMOS has a negative $g_m$'], a: 0,
           why: [null, 'Opposite device types are exactly why they **add**: the same input change turns the NPN on harder and the PMOS off, and both push the output the same way (down), as in a CMOS inverter.', '$R_G$ only sets the gate\'s DC level; for signals the coupling capacitor ties the gate to $v_{in}$.', 'No transistor has a negative $g_m$; the PMOS model is the same as the NMOS model with $i_d$ drawn from drain to source.'] },
@@ -185,12 +185,12 @@
 
         **(d)** $A_v = -G_MR_{out}$, with (b) and (c) inserted.
 
-        **(e) Numbers.** $g_{m2}R_S = 4$:
-        $$G_{M2} = \frac{2\,\text{m}}{1 + 4 + 0.02} = 0.40\,\text{mS},\qquad G_M = 40 + 0.40 = 40.4\,\text{mS}$$
-        $$R_{UP} = 100\,\text{k} + 2\,\text{k} + (2\,\text{m})(100\,\text{k})(2\,\text{k}) = 502\kO,\qquad R_{out} = 100\,\text{k}\parallel502\,\text{k} = 83.4\kO$$
-        $$A_v = -(40.4\,\text{mS})(83.4\kO) = -3.37\times10^3$$
+        **(e) Numbers.** $g_{m2}R_S = (2\,\text{m})(1.5\,\text{k}) = 3$:
+        $$G_{M2}\approx\frac{2\,\text{m}}{1 + 3} = 0.5\,\text{mS},\qquad G_M = 4 + 0.5 = 4.5\,\text{mS}$$
+        $$R_{UP} = 1\,\text{M} + 1.5\,\text{k} + (2\,\text{m})(1\,\text{M})(1.5\,\text{k})\approx4\,\text{M}\Omega,\qquad R_{out} = 1\,\text{M}\parallel4\,\text{M} = 0.8\,\text{M}\Omega$$
+        $$A_v = -(4.5\,\text{mS})(0.8\,\text{M}\Omega) = -3600$$
 
-        **What it means.** The degenerated PMOS adds only $1\%$ to $G_M$ (its $g_m$ is small and divided by $1 + g_{m2}R_S = 5$), but its drain resistance, $5\times$ bigger than $r_{ds2}$, keeps $R_{out}$ close to $r_{o1}$. Without $R_S$ the PMOS would add $2\,\text{mS}$ but halve $R_{out}$ to $50\kO$: the gain would drop to $-2100$.
+        **What it means.** The PMOS contributes $0.5$ of the $4.5\,\text{mS}$, and its degenerated drain ($4\,\text{M}\Omega$, four times $r_{ds2}$) keeps $R_{out}$ close to $r_{o1}$. Without $R_S$ it would add more transconductance ($G_M = 6\,\text{mS}$) but its drain would be only $r_{ds2} = 1\,\text{M}\Omega$, halving $R_{out}$ to $0.5\,\text{M}\Omega$: the gain would drop to $-3000$. Degeneration trades a little $g_m$ for a lot of output resistance.
 
         **(f)** Raise $v_{in}$: the NPN turns on harder and sinks more current from the output; the PMOS's $V_{SG}$ shrinks, so it sources less current into the output. Both changes take current away from the output node, so both pull $v_{out}$ down: the transconductances add.
 
@@ -209,7 +209,7 @@
           { v: 2.7, msg: 'Close: that ignores the base current. A PNP\'s base current flows **out** of the base, through $R_S$, into the source: $V_B = 2 + I_BR_S = 2.1\\,\\text{V}$.' },
           { v: 1.4, msg: 'For a PNP the emitter sits $0.7\\,\\text{V}$ **above** the base, not below.' },
           { v: 1.3, msg: 'For a PNP the emitter sits $0.7\\,\\text{V}$ **above** the base, not below.' }] },
-        { lbl: 'A_{v0}', unit: '', ans: 1, traps: [{ v: 0.99, msg: 'With only a current source on the emitter, no signal current can leave it, so no base current flows and nothing drops across $R_S$ or $r_\\pi$: the gain is exactly $1$.' }] },
+        { lbl: 'A_{v0}', unit: '', ans: 1 },
         { lbl: 'R_{C\\mu}', unit: 'kΩ', ans: 10, traps: [{ v: 2.525, msg: '$C_\\mu$ goes from the base to the grounded collector, so it sees everything at the base node: $R_S$ in parallel with the resistance looking into the base, which is infinite here.' }] },
         { lbl: 'R_{C\\pi}', unit: 'Ω', ans: 25, traps: [
           { v: 2525, msg: 'That is $r_\\pi$ alone. The emitter is not grounded: the transistor\'s own $g_mv_\\pi$ also flows through the test source, so you see $r_\\pi/(\\beta + 1)$.' },
