@@ -121,7 +121,7 @@
     vlines: [[0, '']], xt: [[0, '0'], [1, '1']], yt: [[2, '2'], [6, '6']],
     curves: [[0, 0], [1, 0], [1, 1], [2, 0], [2, 1], [2, 2]].map(([l, m]) => ({
       f: (e) => l * (l + 1) - e * m * m / (1 + e), from: -0.5, to: 1, cls: m === 0 ? 'dim' : m === 1 ? '' : 'dash',
-      lab: l === 0 ? '' : `\\ell${l},\\,|m|${m}`, labAt: 1, dy: m === 0 ? -9 : 2,
+      lab: l === 0 ? '' : `\\ell=${l},\\ |m|=${m}`, labAt: 1, dy: m === 0 ? -9 : 2,
     })),
   });
   const figBreathe = PF.plot({
@@ -160,7 +160,7 @@
         },
         {
           q: md`**(b)** Keep only the two states $\ket0 = (1, 0)^T$ and $\ket1 = (0, 1)^T$: a two-level system. Write the $2\times2$ matrices of $\hat H$ and $\hat x$ in this subspace and express them with Pauli matrices. Find $\langle\hat\sigma_x\rangle$, $\langle\hat\sigma_y\rangle$, $\langle\hat\sigma_z\rangle$ in $\ket{\Psi(t)}$ and describe the motion of the Bloch vector.`,
-          ans: md`$H = \hbar\omega\begin{pmatrix}\tfrac12 & 0\\ 0 & \tfrac32\end{pmatrix} = \hbar\omega\,\mathbb 1 - \tfrac{\hbar\omega}{2}\sigma_z$; $x \to \sqrt{\tfrac{\hbar}{2m\omega}}\,\sigma_x$ (and $p \to \sqrt{\tfrac{\hbar m\omega}{2}}\,\sigma_y$). $\langle\sigma_x\rangle = \cos\omega t$, $\langle\sigma_y\rangle = -\sin\omega t$, $\langle\sigma_z\rangle = 0$: the Bloch vector goes around the equator at angular frequency $\omega$.`,
+          ans: md`$H = \hbar\omega\begin{pmatrix}\tfrac12 & 0\\ 0 & \tfrac32\end{pmatrix} = \hbar\omega\,I - \tfrac{\hbar\omega}{2}\sigma_z$; $x \to \sqrt{\tfrac{\hbar}{2m\omega}}\,\sigma_x$ (and $p \to \sqrt{\tfrac{\hbar m\omega}{2}}\,\sigma_y$). $\langle\sigma_x\rangle = \cos\omega t$, $\langle\sigma_y\rangle = -\sin\omega t$, $\langle\sigma_z\rangle = 0$: the Bloch vector goes around the equator at angular frequency $\omega$.`,
           sol: md`
             **How to see it.** In this subspace position is $\sigma_x$ and momentum is $\sigma_y$ (up to constants), and $\hat H$ is a $\sigma_z$ field. The oscillation of $\langle x\rangle$ *is* the qubit precession from Lecture 9.
 
@@ -191,7 +191,7 @@
         },
         {
           q: md`**(d)** Use (b) and (c) to give a physical interpretation of $\hat\sigma_x$ for this particle and of $\langle\hat\sigma_x\rangle(t)$. Find $P_R(t)$, the probability of finding the particle at $x > 0$ at time $t$, without a new integral. Finally, a friend says "$\hat\sigma_x$ *is* the observable 'is the particle at $x > 0$?'". Is that right? Justify.`,
-          ans: md`$\sigma_x = +1$ means "lopsided right", $-1$ "lopsided left"; $\langle\sigma_x\rangle = \cos\omega t$ tracks $\langle x\rangle$: the particle sloshes right → left → right with period $2\pi/\omega$. $P_R(t) = \tfrac12 + J\cos\omega t$. The friend is wrong: "is $x > 0$?" is the step function $\Theta(\hat x)$, whose eigenstates are not in the two-level subspace; projected onto it, it is $\tfrac12\mathbb 1 + J\sigma_x$, not $\sigma_x$.`,
+          ans: md`$\sigma_x = +1$ means "lopsided right", $-1$ "lopsided left"; $\langle\sigma_x\rangle = \cos\omega t$ tracks $\langle x\rangle$: the particle sloshes right → left → right with period $2\pi/\omega$. $P_R(t) = \tfrac12 + J\cos\omega t$. The friend is wrong: "is $x > 0$?" is the step function $\Theta(\hat x)$, whose eigenstates are not in the two-level subspace; projected onto it, it is $\tfrac12 I + J\sigma_x$, not $\sigma_x$.`,
           sol: md`
             **How to see it.** This is Midterm 1 Problem 1(d) in the oscillator: $\sigma_x$ asks "left or right?" in the coarse two-level language.
 
@@ -199,7 +199,7 @@
 
             **$P_R(t)$.** The $\psi_n$ are real, so $|\Psi(x,t)|^2 = \tfrac12\left[\psi_0^2 + \psi_1^2 + 2\psi_0\psi_1\cos\omega t\right]$ and $P_R(t) = \tfrac12 + J\cos\omega t$: from 0.899 down to 0.101 and back.
 
-            **The friend.** "Is the particle at $x > 0$?" is the operator $\Theta(\hat x)$ (multiply by the step function), eigenvalues 1 and 0. Its eigenfunctions are functions that vanish on one side, which are not combinations of $\psi_0$ and $\psi_1$ only. In the subspace, its matrix is $\bra0\Theta\ket0 = \bra1\Theta\ket1 = \tfrac12$, $\bra0\Theta\ket1 = J$, i.e. $\tfrac12\mathbb 1 + J\sigma_x$. So $\sigma_x = +1$ does not guarantee $x > 0$ (10% of the time it isn't), and a real "right side" measurement leaves the state cut off at $x = 0$, which contains all the $\ket n$.
+            **The friend.** "Is the particle at $x > 0$?" is the operator $\Theta(\hat x)$ (multiply by the step function), eigenvalues 1 and 0. Its eigenfunctions are functions that vanish on one side, which are not combinations of $\psi_0$ and $\psi_1$ only. In the subspace, its matrix is $\bra0\Theta\ket0 = \bra1\Theta\ket1 = \tfrac12$, $\bra0\Theta\ket1 = J$, i.e. $\tfrac12 I + J\sigma_x$. So $\sigma_x = +1$ does not guarantee $x > 0$ (10% of the time it isn't), and a real "right side" measurement leaves the state cut off at $x = 0$, which contains all the $\ket n$.
           ` + rub(['Interpretation, $P_R(t)$, and a correct reason the friend is wrong.', md`One of the three weak (e.g. agrees with the friend, but $P_R(t)$ and the interpretation are right).`, md`$P_R(t)$ right, no interpretation.`, md`$P_R$ time-independent or oscillating at the wrong frequency.`, 'Little progress.']),
         },
       ],
@@ -669,7 +669,7 @@
     parts: [
       { lbl: md`\langle T\rangle/E`, ans: 2 / 3 },
       { lbl: md`\sigma_H\Delta t/\hbar`, ans: 1 / SQ(2) },
-      { lbl: md`\alpha\ (\ell=2)`, ans: Math.acos(2 / SQ(6)) * 180 / PI, unit: '°' },
+      { lbl: md`\alpha\ (\ell=2)\text{ in degrees}`, ans: Math.acos(2 / SQ(6)) * 180 / PI },
       { lbl: md`P(r>2a)`, ans: 13 * EXP(-4) },
       { lbl: md`\langle r\rangle/a`, ans: 1.5 },
     ],
@@ -940,7 +940,7 @@
           sol: md`
             **How to see it.** A force along $z$ exerts torque $\vb r\times\vb F$ with no $z$ component: angular momentum about the force direction is conserved, like a projectile's about the vertical. The other components are twisted by the torque.
 
-            $[\hat z, \hat L_x] = [\hat z, \hat y\hat p_z - \hat z\hat p_y] = \hat y[\hat z, \hat p_z] = i\hbar\hat y$. So $[\hat H, \hat L_x] = -F\cdot i\hbar\hat y$ and $\tfrac{d\langle L_x\rangle}{dt} = \tfrac i\hbar(-i\hbar F)\langle y\rangle = F\langle y\rangle$ ✓. Similarly $\tfrac{d\langle L_y\rangle}{dt} = -F\langle x\rangle$. $L^2$ changes whenever $\langle\vb N\rangle\cdot\vb L \ne 0$ (e.g. a state with $\langle y\rangle \ne 0$ and $L_x$ content). This is HW7's torque theorem with a non-central force.
+            $[\hat z, \hat L_x] = [\hat z, \hat y\hat p_z - \hat z\hat p_y] = \hat y[\hat z, \hat p_z] = i\hbar\hat y$. So $[\hat H, \hat L_x] = -F\cdot i\hbar\hat y$ and $\tfrac{d\langle L_x\rangle}{dt} = \tfrac i\hbar(-i\hbar F)\langle y\rangle = F\langle y\rangle$ ✓. Similarly $\tfrac{d\langle L_y\rangle}{dt} = -F\langle x\rangle$. $\langle L^2\rangle$ is not conserved either: $[\hat z, \hat L^2] \ne 0$, so the torque changes the size of $\vb L$ as well as its direction. This is HW7's torque theorem with a non-central force.
           ` + rub(['Correct verdicts, the commutator, the torque interpretation.', 'Verdicts right, sign or factor slip in dL_x/dt.', 'L_z conserved argued, the rest asserted.', 'Claims everything is conserved because V is central.', 'Little progress.']),
         },
       ],
