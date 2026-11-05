@@ -56,20 +56,20 @@
     curves: BOX.map((s) => {
       let mx = 0;
       for (let i = 1; i <= 200; i++) mx = Math.max(mx, Math.abs((i / 200) * jl(s.l, s.b * i / 200)));
-      return { f: (x) => s.b * s.b + 3.2 * x * jl(s.l, s.b * x) / mx, from: 0, to: 1, lab: s.t, labAt: 1, dx: 8, dy: 0 };
+      return { f: (x) => s.b * s.b + 2.6 * x * jl(s.l, s.b * x) / mx, from: 0, to: 1, lab: s.t, labAt: 1, dx: 8, dy: 0 };
     }).concat([{ pts: [[1, 0], [1, 46]], cls: 'dim' }]),
   });
 
   // columns of short level lines (as in Unit 3)
   function ladder(cols, lv, yr, o = {}) {
     const f = PF.fig({});
-    const W = o.W || 80, top = 16, H = o.h || 200, x0 = 46;
+    const W = o.W || 62, top = 16, H = o.h || 200, x0 = 46;
     const Y = (y) => top + (yr[1] - y) / (yr[1] - yr[0]) * H;
     f.line(x0 - 16, top + H + 4, x0 - 16, top - 10, { cls: 'dim', arrow: 'end', hs: 5 });
     f.label(x0 - 22, top - 8, o.yl || 'E', 'r', 'small');
     (o.ticks || []).forEach(([v, t]) => f.label(x0 - 22, Y(v), t, 'r', 'small accent'));
-    cols.forEach((c, i) => f.label(x0 + i * W + 20, top + H + 14, c, 't', 'small'));
-    lv.forEach((l) => { const x = x0 + l.c * W, y = Y(l.y); f.line(x, y, x + 40, y, { cls: 'thick' }); if (l.t) f.label(x + 44, y, l.t, 'l', 'small'); });
+    cols.forEach((c, i) => f.label(x0 + i * W + 16, top + H + 14, c, 't', 'small'));
+    lv.forEach((l) => { const x = x0 + l.c * W, y = Y(l.y); f.line(x, y, x + 32, y, { cls: 'thick' }); if (l.t) f.label(x + 35, y, l.t, 'l', 'small'); });
     return f.svg();
   }
   const boxLadder = ladder(['s', 'p', 'd', 'f'], [
@@ -93,7 +93,7 @@
     curves: [
       { f: (x) => 4 * x * x * Math.exp(-2 * x), lab: '1s', labAt: 1.25, dy: -10 },
       { f: (x) => x * x * (1 - x / 2) ** 2 * Math.exp(-x) / 2, cls: 'dim', lab: '2s', labAt: 7, dy: -10 },
-      { f: (x) => x ** 4 * Math.exp(-x) / 24, cls: 'dash', lab: '2p', labAt: 3.2, dx: -16, dy: -16 },
+      { f: (x) => x ** 4 * Math.exp(-x) / 24, cls: 'dash', lab: '2p', labAt: 3, dx: -4, dy: -12 },
     ],
   });
 
