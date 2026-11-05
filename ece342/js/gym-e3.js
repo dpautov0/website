@@ -586,6 +586,22 @@
     },
   };
 
-  const DECKS = [stageDeck, predictDeck, lookDeck, sizeDeck, twinDeck, capDeck, bodeDeck, dbDeck, millerDeck, biasDeck];
+  // decks borrowed from the unit generators that ask a single multiple-choice question (Units 13–14)
+  const fromGen = (id, title, chip, rule, gen) => (GENS[gen] ? {
+    id, title, chip, rule,
+    make() {
+      const g = GENS[gen](), pt = g.parts[0];
+      const right = pt.mc[pt.a];
+      const m = mc(right, pt.mc.map((o, j) => (j === pt.a ? null : [o, (pt.why && pt.why[j]) || 'Not this one.'])).filter(Boolean));
+      return { fig: g.fig, figHtml: g.figHtml, q: `${g.q}${pt.lbl ? `\n\n**${pt.lbl}**` : ''}`, ...m, rule: g.sol || '' };
+    },
+  } : null);
+  const bodePick = fromGen('bodepick', 'Which $H(s)$ drew this plot?', 'Plot → H(s)',
+    md`Read a magnitude plot left to right: the flat level is $20\log_{10}|A_{dc}|$; every bend down by 20 dB/decade is a pole at that frequency, every bend up a zero; two bends at once (40 dB/decade) are two poles there. Then write $A_{dc}\prod(1 + s/\omega_z)/\prod(1 + s/\omega_p)$.`, 'e3_bode_pick');
+  const bwNode = fromGen('bwnode', 'Which node limits the bandwidth?', 'Slow node',
+    md`Each node has a pole $1/(R_{node}C_{node})$. The **slowest** node (the biggest $RC$) sets the bandwidth. A node with a big resistance (a drain or collector with a current-source load, a gate driven through a large $R_S$) and a Miller-multiplied capacitance is the usual culprit; a node at a source or emitter ($\approx 1/g_m$) is fast.`, 'e3_bw_node');
+  const millerWhich = fromGen('millerwhich', 'What does Miller do here?', 'Miller where?',
+    md`Miller multiplies a capacitor that bridges the input and output of an **inverting** gain: $C(1 + |A|)$ (CS, CE). A grounded gate/base (CG, CB) leaves nothing bridging. A follower ($A_v\approx+1$) shrinks its bridging capacitor to $C(1 - A_v)$. A cascode holds the input device's drain at a low-resistance node, so its Miller factor is only about 2.`, 'e3_miller_which');
+  const DECKS = [stageDeck, predictDeck, lookDeck, sizeDeck, twinDeck, capDeck, bodeDeck, bodePick, dbDeck, millerDeck, millerWhich, bwNode, biasDeck].filter(Boolean);
   window.GYM = { DECKS, byId: Object.fromEntries(DECKS.map((d) => [d.id, d])), mc, DEV, stageFig, lookFig, capCircuit };
 })();

@@ -269,4 +269,35 @@
       `),
     ],
   });
+
+  L({
+    id: 'e3-start-e2', title: 'Exam 2, again: the skills Exam 3 reuses, and where', ref: 'Fixing Midterm 2 while learning Exam 3',
+    steps: [
+      R(md`
+        ### Why this lesson
+
+        Exam 3 is not a new subject on top of Exam 2. Every BJT problem is an Exam 2 problem with $r_\pi$ and $(\beta + 1)$ added, and every frequency problem asks "what resistance sits at this node?", the Exam 2 question, once per capacitor. So a weak Exam 2 skill costs you twice. This page lines up each Exam 2 skill with the places it comes back, so you can repair it and learn the new material in the same sitting.
+
+        **How to use it.** Go down the table. For each row, do the gym deck first (two minutes). If you are below about 80% or slower than about 5 seconds, do the Exam 2 lesson, then its Exam 3 twin.
+
+        | Exam 2 skill | Exam 2 lesson | On Exam 3, as a BJT | On Exam 3, in frequency | Gym deck |
+        |---|---|---|---|---|
+        | Which lead is which (NMOS/PMOS) | [Which end is which?](#/l/e2-u7-look) | [NPN and PNP](#/l/e3-u10-look) | (every circuit) | [Look in](#/l/e3-gym-look) |
+        | Small-signal model, test source | [One model](#/l/e2-u6-model), [test source](#/l/e2-u6-test) | [Hybrid-$\pi$](#/l/e3-u10-model) | [Capacitances in the model](#/l/e3-u14-caps) | [MOS ↔ BJT](#/l/e3-gym-twin) |
+        | Gate, drain, source | [Gate, drain, source](#/l/e2-u7-three) | [Base](#/l/e3-u11-base), [emitter](#/l/e3-u11-emitter), [collector](#/l/e3-u11-collector) | [One pole per node](#/l/e3-u14-node) | [Look in](#/l/e3-gym-look) |
+        | Diodes | [Diode-connected](#/l/e2-u7-diode) | [Diode-connected BJT](#/l/e3-u11-diode) | (a diode node is a fast node) | [Look in](#/l/e3-gym-look) |
+        | Degeneration as a scaler | [Impedance scaler](#/l/e2-u7-scaler) | [The $(\beta + 1)$ elevator](#/l/e3-u11-elevator) | [Degenerated CS time constants](#/l/e3-u15-deg) | [Node size](#/l/e3-gym-size) |
+        | $R_{UP}\parallel R_{DN}$ | [A node](#/l/e2-u7-node) | [A node with BJTs](#/l/e3-u11-node) | [The OCTC recipe](#/l/e3-u15-recipe) | [Node size](#/l/e3-gym-size) |
+        | Cascodes | [Cascodes](#/l/e2-u7-cascode), [three ways](#/l/e2-u8-cascode) | [BJT cascode, $\beta r_o$](#/l/e3-u12-cascode) | [Cascode bandwidth](#/l/e3-u15-cg) | [Cap sees R](#/l/e3-gym-cap) |
+        | $G_MR_{out}$ | [The method](#/l/e2-u8-gmrout) | [For a BJT](#/l/e3-u12-gmrout) | (the low-frequency gain $A_{dc}$ of every $H(s)$) | [Predict it](#/l/e3-gym-predict) |
+        | CS, degenerated CS | [CS](#/l/e2-u8-cs), [degeneration](#/l/e2-u8-csdeg) | [CE](#/l/e3-u12-ce), [CE with $R_E$](#/l/e3-u12-cedeg) | [CS/CE with Miller](#/l/e3-u14-csce), [CS/CE time constants](#/l/e3-u15-cs) | [Name it](#/l/e3-gym-stage) |
+        | Common gate | [Common gate](#/l/e2-u8-cg) | [Common base](#/l/e3-u12-cb) | [CG node poles](#/l/e3-u14-node) | [Name it](#/l/e3-gym-stage) |
+        | Follower | [Source follower](#/l/e2-u8-cd) | [Emitter follower](#/l/e3-u12-cc) | [Follower time constants](#/l/e3-u15-follow) | [Predict it](#/l/e3-gym-predict) |
+        | Chains and loading | [Gain chains](#/l/e2-u9-chain) | [BJT–MOSFET chains](#/l/e3-u12-chain) | (each stage's $R_{out}$ is the next node's $R$) | [Node size](#/l/e3-gym-size) |
+        | Numbers without a calculator | [Numeric gains](#/l/e2-u8-numbers) | [Bias to a number](#/l/e3-u12-bias) | [Decibels](#/l/e3-u13-db) | [Bias](#/l/e3-gym-bias), [dB](#/l/e3-gym-db) |
+
+        Exam 2's [practice exams](#/l/e2-p1) are still worth redoing under time: the MOSFET half of Exam 3 looks exactly like them. The [both-exams mix](#/l/e3-mix2) serves Exam 2 and Exam 3 drills in one stream.
+      `),
+    ],
+  });
 })();

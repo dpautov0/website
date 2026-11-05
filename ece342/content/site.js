@@ -32,7 +32,7 @@
     planTitle: 'Two weeks, in this order',
     plan: [
       '<b>Every day, 10 minutes: the <a href="#/gym">recognition gym</a>.</b> One tap per circuit: name the stage, the resistance at the arrow, the resistance a capacitor sees, the slope of a Bode plot. It mixes MOSFET and BJT, and it serves your weakest deck most. This is the fix for "I can\'t just recognize circuits".',
-      '<b>Start here</b> (the five-second read): the three questions you ask of every transistor, the one table that covers MOS and BJT, and how to find the input, the output and the common terminal.',
+      '<b>Start here</b>, three short lessons: the five-second read (the questions you ask of every transistor, the one table that covers MOS and BJT, how to find the input, the output and the common terminal), six exam-shaped circuits read aloud, and <a href="#/l/e3-start-e2">a map of where each Exam 2 skill comes back</a> so you can repair Midterm 2 as you go.',
       '<b>Units 10–12 (BJT)</b>. They are the Exam 2 ideas again with $r_\\pi$ and $\\beta$. If a BJT step feels shaky, do the matching Exam 2 unit right after (Unit 7 for impedances, Unit 8 for gain): the gym and the flashcards mix both devices on purpose.',
       '<b>Units 13–15 (frequency)</b> as the lectures reach them: Bode plots, a pole at each node, Miller, then open-circuit time constants. The time-constant method is the Exam 2 impedance skill pointed at capacitors.',
       '<b>Practice exams</b> under time (60 minutes, no notes), then the <b>flashcards</b> until every card is known.',

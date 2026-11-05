@@ -197,7 +197,7 @@ $V_{OUT} = R_1\\dfrac{G_MV_X^2}{2V_T} = \\dfrac{V_T}{${den}G_MR_1}$, and $V_{IN}
 
 **$M_3$** (${xs(c.p3).replace('\\tfrac12', '½')} PMOS): $V_{ov} = ${f(c.v3)}$, $V_{SG} = ${f(1 + c.v3)}$, so $V_3 = 5 - ${f(1 + c.v3)} = ${f(c.V3)}\\,\\text{V}$.
 
-**$M_4$** (${f(c.m)}\\times$ the size of $M_3$, same $V_{SG}$): $I_{M4} = ${mA(c.I4)}$. KCL at its drain: $I_{R_1} = ${f(c.I4 * 1e3)} - ${f(c.I2 * 1e3)} = ${mA(c.IR)}$.
+**$M_4$** ($${f(c.m)}\\times$ the size of $M_3$, same $V_{SG}$): $I_{M4} = ${mA(c.I4)}$. KCL at its drain: $I_{R_1} = ${f(c.I4 * 1e3)} - ${f(c.I2 * 1e3)} = ${mA(c.IR)}$.
 
 **Saturation:** $V_D = I_{R_1}R_1 \\le V_G + |V_T| = ${f(c.V3 + 1)}\\,\\text{V} \\Rightarrow R_{1,max} = \\dfrac{${f(c.V3 + 1)}}{${f(c.IR * 1e3)}\\,\\text{mA}} = ${kO(c.Rmax)}$.`,
     };
