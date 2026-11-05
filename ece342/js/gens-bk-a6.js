@@ -621,4 +621,116 @@ ${side !== 'none' ? `**3. Sideways.** ${sideTxt}
 ` : ''}**${side !== 'none' ? 4 : 3}. Combine in parallel:** $R_X = ${side === 'base' ? `${RT(Rup)}\\parallel${RT(Rdn)}\\parallel${RT(Rside)}` : `${RT(Rup)}\\parallel${RT(Rdn)}`} = ${RT(RX)}$. The smallest path (${small}) matters most.`;
     return { fig: e, q: qq, parts, hints: ['Name the terminal that touches the node for each transistor, and what sits on its other terminals.', 'A base is a path to ground; a gate is not. Paths combine in parallel.'], sol, _v: { g: 'node', I, beta, VAn, VAp, lamM, up, dn, side, RC, REu, REd, RBu, IC3, RE3 } };
   };
+  // ================================================================ Chapter 9: single stages
+  const Rch = [2000, 3000, 4000, 5000, 8000, 10000, 20000];
+  const lbl = (n, v) => (v ? `${n} = ${RT(v)}` : false);
+
+  // ---------------------------------------------------------------- bk9_ce: the common emitter
+  GENS.bk9_ce = () => {
+    const active = Math.random() < 0.25;
+    const pnp = !active && Math.random() < 0.3;
+    const q = randDev();
+    const RB = pick([0, 0, 1000, 2000, 5000, 10000]);
+    const withRo = active || Math.random() < 0.5;
+    const RC = pick(Rch), VAp = pick([25, 50]);
+    const ro2 = VAp / q.IC;
+    const GM = q.gm * q.rpi / (q.rpi + RB);
+    const Rout = active ? par(q.ro, ro2) : withRo ? par(RC, q.ro) : RC;
+    const Av = -GM * Rout, Rin = RB + q.rpi;
+    const fig = amp({ kind: 'ce', pnp, RB: lbl('R_B', RB), RC: lbl('R_C', RC), load: active ? 'pnp' : undefined });
+    const qq = `A${pnp ? ' PNP' : 'n NPN'} common emitter: ${devLine(q, withRo)}${active ? `; the load is a PNP current source (base held) with $V_{A,p} = ${VAp}\\,\\text{V}$ at the same current` : `, $R_C = ${RT(RC)}$`}${RB ? `, source resistance $R_B = ${RT(RB)}$` : ', input directly on the base'}.${withRo ? '' : ' Ignore $r_o$.'} Find $g_m$, $G_M$, $R_{out}$, $A_v$ and the resistance the source sees.`;
+    const parts = [numBox('g_m', 'mS', q.gm * 1e3), numBox('G_M', 'mS', GM * 1e3, [], RB ? [{ v: q.gm * 1e3, msg: 'That is $g_m$. $R_B$ and $r_\\pi$ divide the input before it reaches $v_\\pi$.' }, { v: -GM * 1e3, msg: 'For a common emitter $G_M > 0$: the output current flows from the short into the collector.' }] : [{ v: -GM * 1e3, msg: 'For a common emitter $G_M > 0$: the output current flows from the short into the collector.' }]),
+      resBox('R_{out}', Rout, [], active ? [{ v: q.ro, msg: 'The load\'s $r_{o2}$ is in parallel.' }, { v: ro2, msg: '$Q_1$\'s own $r_{o1}$ is in parallel.' }] : withRo ? [] : [{ v: par(RC, 100 / q.IC), msg: 'No $V_A$ is given: ignore $r_o$.' }]),
+      numBox('A_v', '', Av, [], [{ v: -Av, msg: 'The common emitter inverts.' }, ...(RB ? [{ v: -q.gm * Rout, msg: 'That ignores the input divider $r_\\pi/(r_\\pi + R_B)$.' }] : []), ...(withRo && !active ? [{ v: -GM * RC, msg: 'With $V_A$ given, $r_o$ is in parallel with $R_C$.' }] : [])]),
+      resBox('R_{in}', Rin, [], [{ v: q.rpi * (RB ? 0 : 1) + (RB ? q.rpi : 0) + (q.beta + 1) * RB, msg: 'Nothing is under the emitter; $R_B$ just adds.' }])];
+    const sol = `**1. The device.** ${devSteps(q, withRo)}${active ? ` The load: $r_{o2} = ${VAp}\\,\\text{V}/${MA(q.IC)} = ${RT(ro2)}$.` : ''}
+
+**2. $G_M$ (output shorted).** ${RB ? `The base current flows through $R_B$ and $r_\\pi$ (the emitter is grounded), so $v_\\pi = v_{in}\\dfrac{r_\\pi}{r_\\pi + R_B}$ and $G_M = g_m\\dfrac{r_\\pi}{r_\\pi + R_B} = ${MS(q.gm)}\\times\\dfrac{${RT(q.rpi)}}{${RT(q.rpi + RB)}} = ${MS(GM)}$.` : `$v_\\pi = v_{in}$, so $G_M = g_m = ${MS(GM)}$.`}${withRo ? ' ($r_o$ has 0 V across it and does not matter here.)' : ''}
+
+**3. $R_{out}$ (input off, $v_\\pi = 0$).** ${active ? `Down: $r_{o1} = ${RT(q.ro)}$; up into the PNP's collector: $r_{o2} = ${RT(ro2)}$. $R_{out} = ${RT(Rout)}$.` : withRo ? `$R_C\\parallel r_o = ${RT(RC)}\\parallel${RT(q.ro)} = ${RT(Rout)}$.` : `$R_{out} = R_C = ${RT(RC)}$.`}${pnp ? ' (PNP: upside down, same model; $V_{CC}$ is ground.)' : ''}
+
+**4. Gain:** $A_v = -G_MR_{out} = -${MS(GM)}\\times${RT(Rout)} = ${f(Av, 4)}$.
+
+**5. The source sees** ${RB ? '$R_B + r_\\pi$' : '$r_\\pi$'} $= ${RT(Rin)}$.`;
+    return { fig, q: qq, parts, hints: ['$g_m = I_C/V_T$, $r_\\pi = \\beta/g_m$.', RB ? 'A source resistance divides the input with $r_\\pi$.' : '$G_M = g_m$; $R_{out}$ is what the collector sees with the input off.'], sol, _v: { g: 'ce', pnp, active, IC: q.IC, beta: q.beta, VA: q.VA, VAp, RB, RC, withRo } };
+  };
+
+  // ---------------------------------------------------------------- bk9_cedeg: with R_E
+  GENS.bk9_cedeg = () => {
+    const pnp = Math.random() < 0.3;
+    const q = randDev();
+    const RE = pick([100, 200, 250, 470, 500, 1000, 2000]), RC = pick(Rch), RB = pick([0, 0, 1000, 5000, 10000]);
+    const b = q.beta, den = RB + q.rpi + (b + 1) * RE;
+    const GM = b / den, Av = -GM * RC, Rin = den;
+    const fig = amp({ kind: 'ce', pnp, RE: lbl('R_E', RE), RC: lbl('R_C', RC), RB: lbl('R_B', RB) });
+    const qq = `A${pnp ? ' PNP' : 'n NPN'} common emitter with an unbypassed emitter resistor: ${devLine(q, false)}, $R_C = ${RT(RC)}$, $R_E = ${RT(RE)}$${RB ? `, source resistance $R_B = ${RT(RB)}$` : ''}; $r_o\\to\\infty$. Find $G_M$ (exact), $A_v$, and the input resistance the source sees.`;
+    const GMa = 1 / (1 / q.gm + RE + RB / b), Ava = -RC / (q.re + RE + RB / (b + 1));
+    const parts = [numBox('G_M', 'mS', GM * 1e3, [GMa * 1e3], [{ v: q.gm * 1e3, msg: 'That is $g_m$: the undegenerated stage.' }]),
+      numBox('A_v', '', Av, [Ava, -RC * GMa], [{ v: -RC / RE, msg: `That is $-R_C/R_E$, which ignores $r_e = ${RT(q.re)}$${RB ? ' and $R_B/(\\beta + 1)$' : ''} in series with $R_E$.` }, { v: -q.gm * RC, msg: 'That ignores $R_E$.' }, { v: -Av, msg: 'The common emitter inverts.' }]),
+      resBox('R_{in}', Rin, [RB + q.rpi + b * RE], [{ v: RB + q.rpi + RE, msg: '$R_E$ counts $\\beta + 1$ times from the base.' }])];
+    const sol = `**1. The device.** ${devSteps(q, false)} $r_e = r_\\pi/(\\beta + 1) = ${RT(q.re)}$.
+
+**2. $G_M$ (output shorted).** KVL from the source through ${RB ? '$R_B$, ' : ''}$r_\\pi$ and $R_E$ (Lecture 24): $v_{in} = ${RB ? '\\frac{i_{out}}{\\beta}R_B + ' : ''}\\frac{i_{out}}{g_m} + \\big(1 + \\frac1\\beta\\big)i_{out}R_E$, so
+$$G_M = \\frac{\\beta}{${RB ? 'R_B + ' : ''}r_\\pi + (\\beta + 1)R_E} = \\frac{${b}}{${RT(den)}} = ${MS(GM)}$$
+${RB ? '' : `(the same as $\\dfrac{g_m}{1 + \\frac{\\beta + 1}{\\beta}g_mR_E}$).`}
+
+**3. Gain.** $R_{out} = R_C$ ($r_o\\to\\infty$): $A_v = -G_MR_C = ${f(Av, 4)}$. With $r_e$: $-\\dfrac{R_C}{r_e + R_E${RB ? ' + R_B/(\\beta + 1)' : ''}} = ${f(Ava, 4)}$ (the small difference is $\\alpha$).${pnp ? ' (PNP: same model, upside down.)' : ''}
+
+**4. Input:** the source sees $${RB ? 'R_B + ' : ''}r_\\pi + (\\beta + 1)R_E = ${RT(Rin)}$.`;
+    return { fig, q: qq, parts, hints: ['Lecture 24: $v_{in} = v_\\pi + (1 + 1/\\beta)i_{out}R_E$ with $i_{out} = g_mv_\\pi$.', 'Quick check: $A_v\\approx-R_C/(r_e + R_E + R_B/(\\beta + 1))$.'], sol, _v: { g: 'cedeg', pnp, IC: q.IC, beta: q.beta, RE, RC, RB } };
+  };
+
+  // ---------------------------------------------------------------- bk9_cb: the common base
+  GENS.bk9_cb = () => {
+    const q = randDev();
+    const RE = pick([0, 25, 50, 100, 200, 500]), RB = pick([0, 0, 1000, 5000, 10000]), RC = pick(Rch);
+    const b = q.beta, alpha = b / (b + 1);
+    const Rin = RE + (RB + q.rpi) / (b + 1), GM = -alpha / Rin, Av = alpha * RC / Rin;
+    const fig = amp({ kind: 'cb', RE: lbl('R_E', RE), RB: lbl('R_B', RB), RC: lbl('R_C', RC) });
+    const qq = `A common base: ${devLine(q, false)}, $R_C = ${RT(RC)}$, ${RE ? `source resistance $R_E = ${RT(RE)}$ in series with $v_{in}$` : '$v_{in}$ directly on the emitter'}, base ${RB ? `held through $R_B = ${RT(RB)}$ (no bypass capacitor)` : 'held'}; $r_o\\to\\infty$. Find $R_{in}$ (seen by $v_{in}$), $G_M$ and $A_v$.`;
+    const Rina = RE + 1 / q.gm + RB / b;
+    const parts = [resBox('R_{in}', Rin, [Rina], [{ v: RE || (RB + q.rpi), msg: 'Add the emitter itself: the base side divided by $\\beta + 1$.' }, { v: RE + RB + q.rpi, msg: 'From the emitter, the base side is divided by $\\beta + 1$.' }, { v: RE + q.rpi, msg: 'That is $r_\\pi$, the base. The emitter is $r_\\pi/(\\beta + 1)$.' }]),
+      numBox('G_M', 'mS', GM * 1e3, [-1e3 / Rina, -1e3 / ((RB + q.rpi) / b + RE)], [{ v: -GM * 1e3, msg: 'For a common base $G_M < 0$.' }]),
+      numBox('A_v', '', Av, [RC / Rina, RC / Rin], [{ v: -Av, msg: 'The common base does not invert.' }, ...(RE ? [{ v: RC / RE, msg: 'That is $R_C/R_E$: it forgets the emitter\'s own resistance.' }] : [])])];
+    const sol = `**1. The device.** ${devSteps(q, false)} $r_e = ${RT(q.re)}$.
+
+**2. $R_{in}$.** The emitter divides the base side by $\\beta + 1$${RE ? '; $R_E$ adds in series' : ''}:
+$$R_{in} = ${RE ? 'R_E + ' : ''}\\frac{${RB ? 'R_B + ' : ''}r_\\pi}{\\beta + 1} = ${RE ? `${RT(RE)} + ` : ''}${RT((RB + q.rpi) / (b + 1))} = ${RT(Rin)}$$
+
+**3. $G_M$** (Lecture 24's KVL, output shorted): $G_M = \\dfrac{-1}{\\frac{R_B + r_\\pi}{\\beta} + \\frac{\\beta + 1}{\\beta}R_E} = -\\dfrac{\\alpha}{R_{in}} = ${MS(GM)}$.
+
+**4. Gain:** $A_v = -G_MR_C = \\dfrac{\\alpha R_C}{R_{in}} = \\dfrac{${f(alpha, 4)}\\times${RT(RC)}}{${RT(Rin)}} = ${f(Av, 4)}$, non-inverting.`;
+    return { fig, q: qq, parts, hints: ['$R_{in} = R_E + (R_B + r_\\pi)/(\\beta + 1)$.', '$G_M = -\\alpha/R_{in}$; $A_v = +\\alpha R_C/R_{in}$.'], sol, _v: { g: 'cb', IC: q.IC, beta: q.beta, RE, RB, RC } };
+  };
+
+  // ---------------------------------------------------------------- bk9_cc: the emitter follower
+  GENS.bk9_cc = () => {
+    const pnp = Math.random() < 0.3;
+    const q = randDev();
+    const RB = pick([0, 1000, 5000, 10000, 50000]), RE = pick([500, 1000, 2000, 5000]), RL = pick([0, 0, 100, 200, 500, 1000]);
+    const withRo = Math.random() < 0.3;
+    const b = q.beta;
+    const REp = par(RE, RL || Infinity, withRo ? q.ro : Infinity);
+    const up = (q.rpi + RB) / (b + 1);
+    const GM = -(b + 1) / (q.rpi + RB), Rout = par(REp, up), Av = REp / (REp + up), Rin = RB + q.rpi + (b + 1) * REp;
+    const fig = amp({ kind: 'cc', pnp, RB: lbl('R_B', RB), RE: lbl('R_E', RE), RL: lbl('R_L', RL) });
+    const qq = `A${pnp ? ' PNP' : 'n NPN'} emitter follower: ${devLine(q, withRo)}, $R_E = ${RT(RE)}$${RB ? `, source resistance $R_B = ${RT(RB)}$` : ''}${RL ? `, load $R_L = ${RT(RL)}$ on the output` : ''}.${withRo ? ' Keep $r_o$ (the collector is on its supply).' : ' Ignore $r_o$.'} Find $G_M$, $R_{in}$, $R_{out}$ (everything on the output node included) and $A_v$.`;
+    const upa = 1 / q.gm + RB / b;
+    const parts = [numBox('G_M', 'mS', GM * 1e3, [-1e3 / upa], [{ v: -GM * 1e3, msg: 'With the output shorted, current flows out of the stage into the short: $G_M < 0$ for a follower.' }]),
+      resBox('R_{in}', Rin, [RB + q.rpi + b * REp], [{ v: RB + q.rpi, msg: 'Something hangs under the emitter: add $(\\beta + 1)$ times it.' }, { v: RB + q.rpi + (b + 1) * RE, msg: RL || withRo ? `Under the emitter is $R_E\\parallel${RL ? 'R_L' : ''}${RL && withRo ? '\\parallel' : ''}${withRo ? 'r_o' : ''}$, not $R_E$ alone.` : '' }].filter((t) => t.msg)),
+      resBox('R_{out}', Rout, [par(REp, upa)], [{ v: REp, msg: 'That is the load side alone. The emitter looking up is in parallel with it, and it is much smaller.' }, { v: up, msg: 'Include $R_E$' + (RL ? ' and $R_L$' : '') + ': they hang on the same node.' }]),
+      numBox('A_v', '', Av, [REp / (REp + upa)], [{ v: 1, msg: 'Close, but the emitter\'s output resistance and the load form a divider.' }, { v: -Av, msg: 'A follower does not invert.' }])];
+    const sol = `**1. The device.** ${devSteps(q, withRo)}
+
+**2. Load on the emitter:** $R_E${RL ? '\\parallel R_L' : ''}${withRo ? '\\parallel r_o' : ''} = ${RT(REp)}$${withRo ? ' ($r_o$ runs to the grounded collector)' : ''}.
+
+**3. $G_M$** (emitter shorted; Lecture 24): $G_M = \\dfrac{-(\\beta + 1)}{r_\\pi + R_B} = \\dfrac{-${b + 1}}{${RT(q.rpi + RB)}} = ${MS(GM)}$.
+
+**4. $R_{out}$:** looking up, $\\dfrac{r_\\pi + R_B}{\\beta + 1} = ${RT(up)}$; in parallel with $${RT(REp)}$: $R_{out} = ${RT(Rout)}$.
+
+**5. Gain:** $A_v = -G_MR_{out} = \\dfrac{${RT(REp)}}{${RT(REp)} + ${RT(up)}} = ${f(Av, 4)}$.
+
+**6. Input:** $R_{in} = ${RB ? 'R_B + ' : ''}r_\\pi + (\\beta + 1)\\times${RT(REp)} = ${RT(Rin)}$.${pnp ? ' (PNP: $R_E$ hangs from $V_{CC}$, the output is the emitter on top; same model.)' : ''}`;
+    return { fig, q: qq, parts, hints: ['Everything on the emitter node is in parallel: $R_E$, the load, and $r_o$ if kept.', '$A_v = R_{load}/(R_{load} + (r_\\pi + R_B)/(\\beta + 1))$.'], sol, _v: { g: 'cc', pnp, IC: q.IC, beta: q.beta, VA: q.VA, RB, RE, RL, withRo } };
+  };
 })();
