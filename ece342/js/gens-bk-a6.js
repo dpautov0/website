@@ -145,7 +145,54 @@
     return e;
   }
 
-  window.BK6 = { ss, lookB, lookE, lookC, diode, term, inL, upA, dnA, vinAt, KO, RT, MS, MA, VV, VT, f, par };
+  // One amplifier stage at transistor level. o.kind: 'ce' | 'cb' | 'cc'; o.pnp (ce, cc); o.RB (series base resistor, or
+  // for cb the base resistor to incremental ground); o.RE (ce: emitter resistor; cb: source resistance in series with
+  // v_in; cc: the emitter resistor); o.RC; o.load 'pnp' (an active PNP load instead of R_C, NPN ce); o.RL (a load).
+  // Labels: pass a TeX string, or true for the default name.
+  function amp(o = {}) {
+    const e = [], lab = (v, d) => (v === true || v === undefined ? d : v);
+    const pnp = !!o.pnp;
+    let out;
+    e.push([pnp ? 'pnp' : 'npn', [1, 1], { n: o.n || '' }]);
+    if (o.kind === 'cc') {
+      if (!pnp) { e.push(['rail', [1, 0], { n: 'V_{CC}' }], ['R', [1, 2], [1, 3.2], { n: lab(o.RE, 'R_E'), side: 'l' }], ['gnd', [1, 3.2]]); out = [1, 2]; }
+      else { e.push(['gnd', [1, 2]], ['R', [1, -1.2], [1, 0], { n: lab(o.RE, 'R_E'), side: 'l' }], ['rail', [1, -1.2], { n: 'V_{CC}' }]); out = [1, 0]; }
+    } else if (o.kind === 'cb') {
+      e.push(['R', [1, -1.2], [1, 0], { n: lab(o.RC, 'R_C'), side: 'l' }], ['rail', [1, -1.2], { n: 'V_{CC}' }]);
+      if (o.RE) e.push(['R', [1, 2], [1, 3.2], { n: lab(o.RE, 'R_E'), side: 'l' }], ['Vac', [1, 3.2], [1, 4.2], { n: 'v_{in}', side: 'l' }], ['gnd', [1, 4.2]]);
+      else e.push(['Vac', [1, 2], [1, 3], { n: 'v_{in}', side: 'l' }], ['gnd', [1, 3]]);
+      e.push(...(o.RB ? [['R', [-1.3, 1], [0, 1], { n: lab(o.RB, 'R_B') }], ['acg', [-1.3, 1]]] : [['acg', [0, 1]]]));
+      out = [1, 0];
+    } else if (!pnp) {
+      if (o.load === 'pnp') e.push(['pnp', [1, -1], { n: 'Q_2' }], ['acg', [0, -1]], ['rail', [1, -2], { n: 'V_{CC}' }]);
+      else e.push(['R', [1, -1.2], [1, 0], { n: lab(o.RC, 'R_C'), side: 'l' }], ['rail', [1, -1.2], { n: 'V_{CC}' }]);
+      e.push(...(o.RE ? [['R', [1, 2], [1, 3.2], { n: lab(o.RE, 'R_E'), side: 'l' }], ['gnd', [1, 3.2]]] : [['gnd', [1, 2]]]));
+      out = [1, 0];
+    } else {
+      e.push(['R', [1, 2], [1, 3.2], { n: lab(o.RC, 'R_C'), side: 'l' }], ['gnd', [1, 3.2]]);
+      e.push(...(o.RE ? [['R', [1, -1.2], [1, 0], { n: lab(o.RE, 'R_E'), side: 'l' }], ['rail', [1, -1.2], { n: 'V_{CC}' }]] : [['rail', [1, 0], { n: 'V_{CC}' }]]));
+      out = [1, 2];
+    }
+    if (o.kind !== 'cb') {
+      if (o.RB) e.push(['R', [-1.3, 1], [0, 1], { n: lab(o.RB, 'R_B') }], ['w', [-1.3, 1], [-1.8, 1], [-1.8, 1.3]], ['Vac', [-1.8, 1.3], [-1.8, 2.3], { n: 'v_{in}', side: 'l' }], ['gnd', [-1.8, 2.3]]);
+      else e.push(['w', [0, 1], [-0.6, 1], [-0.6, 1.3]], ['Vac', [-0.6, 1.3], [-0.6, 2.3], { n: 'v_{in}', side: 'l' }], ['gnd', [-0.6, 2.3]]);
+    }
+    const [ox, oy] = out;
+    if (o.RL) e.push(['w', [ox, oy], [2.2, oy]], ['R', [2.2, oy], [2.2, oy + 1.2], { n: lab(o.RL, 'R_L') }], ['gnd', [2.2, oy + 1.2]], ['w', [2.2, oy], [2.8, oy]], ['term', [2.8, oy], { n: 'v_{out}' }]);
+    else e.push(['w', [ox, oy], [1.8, oy]], ['term', [1.8, oy], { n: 'v_{out}' }]);
+    return e;
+  }
+  // the cascode amplifier: Q_1 (input at its base) under Q_2 (base held); load R_C, an ideal source, or a PNP cascode
+  function cascAmp(o = {}) {
+    const e = [['npn', [1, 1], { n: 'Q_2' }], ['acg', [0, 1]], ['npn', [1, 3], { n: 'Q_1' }], ['gnd', [1, 4]], ['node', [1, 2], { n: 'X', side: 'r' }],
+      ['w', [0, 3], [-0.6, 3], [-0.6, 3.3]], ['Vac', [-0.6, 3.3], [-0.6, 4.3], { n: 'v_{in}', side: 'l' }], ['gnd', [-0.6, 4.3]], ['w', [1, 0], [1.8, 0]], ['term', [1.8, 0], { n: 'v_{out}' }]];
+    if (o.load === 'I') e.push(['I', [1, -1.2], [1, 0], { n: 'I_{C}' }], ['rail', [1, -1.2], { n: 'V_{CC}' }]);
+    else if (o.load === 'pnp') e.push(['pnp', [1, -1], { n: 'Q_3' }], ['acg', [0, -1]], ['pnp', [1, -3], { n: 'Q_4' }], ['acg', [0, -3]], ['rail', [1, -4], { n: 'V_{CC}' }]);
+    else e.push(['R', [1, -1.2], [1, 0], { n: o.RC || 'R_C', side: 'l' }], ['rail', [1, -1.2], { n: 'V_{CC}' }]);
+    return e;
+  }
+
+  window.BK6 = { ss, lookB, lookE, lookC, diode, amp, cascAmp, term, inL, upA, dnA, vinAt, KO, RT, MS, MA, VV, VT, f, par };
 
   // ================================================================ answer boxes
   // A resistance answer in a sensible unit. accepts: other forms that count as right (the beta >> 1 forms; only those
@@ -371,5 +418,207 @@ $$R_{in1} = r_{\\pi1} + (\\beta + 1)R_{in2} = ${RT(q1.rpi)} + ${beta + 1}\\times
       hints = ['A current source is open for signals.', 'Bottom up: $Q_2$\'s base first.'];
     }
     return { fig, q: qq, parts, hints, sol, _v: vb };
+  };
+  // ================================================================ bk8_coll: looking into the collector
+  GENS.bk8_coll = () => {
+    const pnp = Math.random() < 0.35;
+    const q = randDev({ VA: [25, 40, 50, 100] });
+    const variant = pick(['plain', 'RE', 'RE', 'RE', 'RB', 'ceil']);
+    const RE = variant === 'plain' ? 0 : variant === 'ceil' ? Infinity : pick([100, 200, 500, 1000, 2000, 5000, 10000]);
+    const RB = variant === 'RB' ? pick([1000, 2000, 5000, 10000]) : 0;
+    const R = fColl(q, RE, RB);
+    let fig;
+    if (variant === 'ceil') {
+      fig = pnp ? [['I', [1, -1.2], [1, 0], { n: 'I_{EE}' }], ['rail', [1, -1.2], { n: 'V_{CC}' }], ['pnp', [1, 1]], ['acg', [0, 1]], ['w', [1, 2], [1, 2.5]], upA([1, 2.5])]
+        : [['npn', [1, 1]], ['acg', [0, 1]], ['I', [1, 2], [1, 3.2], { n: 'I_{EE}' }], ['gnd', [1, 3.2]], ['w', [1, 0], [1, -0.5]], dnA([1, -0.5])];
+    } else fig = lookC({ pnp, RE: RE ? `R_E = ${RT(RE)}` : false, RB: RB ? `R_B = ${RT(RB)}` : false });
+    const Rp = isFinite(RE) ? par(RE, q.rpi + RB) : q.rpi;
+    const qq = `A${pnp ? ' PNP' : 'n NPN'} runs at ${devLine(q, true)}. Its base is ${RB ? `held through $R_B = ${RT(RB)}$` : 'held'}; ${variant === 'plain' ? 'its emitter is on its rail' : variant === 'ceil' ? 'its emitter is fed by an ideal current source' : `$R_E = ${RT(RE)}$ connects its emitter to ${pnp ? '$V_{CC}$' : 'ground'}`}. Find $r_o$ and the resistance looking into the collector.`;
+    const traps = [{ v: q.ro, msg: 'That is $r_o$ alone. Something under the emitter degenerates it.' }];
+    if (variant === 'RE') traps.push({ v: q.ro * (1 + q.gm * RE) + RE, msg: 'That is the MOSFET formula. The held base sits behind $r_\\pi$, in parallel with $R_E$: use $R_E\\parallel r_\\pi$.' });
+    if (variant === 'RB') traps.push({ v: fColl(q, RE, 0), msg: 'That treats the base as held directly. Through $R_B$, only $r_\\pi/(r_\\pi + R_B)$ of the emitter\'s rise reaches $v_\\pi$.' });
+    const accs = variant === 'ceil' ? [q.beta * q.ro, (q.beta + 1) * q.ro] : [];
+    const parts = [resBox('r_o', q.ro), resBox('R', R, accs, variant === 'plain' ? [{ v: 1 / q.gm, msg: 'That is $1/g_m$: the emitter, not the collector.' }] : traps)];
+    let step;
+    if (variant === 'plain') step = `Base and emitter held: $v_\\pi = 0$, the controlled source is dead, $R = r_o = ${RT(R)}$.`;
+    else if (variant === 'ceil') step = `The current source is open, so the emitter's only exit is $r_\\pi$ to the held base: every bit of $i_t$ becomes base current. That is the ceiling:
+$$R = r_o(1 + g_mr_\\pi) + r_\\pi = (\\beta + 1)r_o + r_\\pi = ${RT(R)}$$`;
+    else if (variant === 'RE') step = `$r_\\pi = ${RT(q.rpi)}$, so $R_E\\parallel r_\\pi = ${RT(Rp)}$ and $g_m(R_E\\parallel r_\\pi) = ${f(q.gm * Rp, 4)}$:
+$$R = r_o\\big[1 + g_m(R_E\\parallel r_\\pi)\\big] + R_E\\parallel r_\\pi = ${RT(q.ro)}\\times${f(1 + q.gm * Rp, 4)} + ${RT(Rp)} = ${RT(R)}$$
+${q.gm * RE > 1.05 * q.gm * Rp ? `(The MOSFET formula with $R_E$ would give $${RT(q.ro * (1 + q.gm * RE) + RE)}$: too high, because the base leaks part of the feedback.)` : ''}`;
+    else step = `$r_\\pi = ${RT(q.rpi)}$. With the base behind $R_B$, the leak path is $r_\\pi + R_B = ${RT(q.rpi + RB)}$: the emitter rises by $i_t\\,(R_E\\parallel(r_\\pi + R_B)) = i_t\\times${RT(Rp)}$, and only $r_\\pi/(r_\\pi + R_B) = ${f(q.rpi / (q.rpi + RB), 3)}$ of that reaches $v_\\pi$:
+$$R = r_o\\Big[1 + g_m\\frac{r_\\pi}{r_\\pi + R_B}\\big(R_E\\parallel(r_\\pi + R_B)\\big)\\Big] + R_E\\parallel(r_\\pi + R_B) = ${RT(R)}$$
+With the base held directly it would be $${RT(fColl(q, RE, 0))}$.`;
+    const sol = `**1. The device.** ${devSteps(q, true)}
+
+**2. Look in.** ${pnp ? '(A PNP: upside down, same model.) ' : ''}${step}`;
+    return { fig, q: qq, parts, hints: ['$r_o = V_A/I_C$, $r_\\pi = \\beta/g_m$.', 'The emitter rises by $i_t(R_E\\parallel r_\\pi)$; $r_o$ carries $i_t[1 + g_m(R_E\\parallel r_\\pi)]$.'], sol, _v: { g: 'coll', pnp, IC: q.IC, beta: q.beta, VA: q.VA, RE: isFinite(RE) ? RE : null, RB } };
+  };
+
+  // ================================================================ bk8_diode: the diode-connected BJT
+  GENS.bk8_diode = () => {
+    const variant = pick(['plain', 'plain', 'RB', 'RB', 'RE']);
+    const pnp = variant !== 'RE' && Math.random() < 0.35;
+    const withRo = variant !== 'RE' && Math.random() < 0.6;
+    const q = randDev();
+    const RB = variant === 'RB' ? pick([1000, 2000, 5000, 10000, 20000, 50000]) : 0;
+    const RE = variant === 'RE' ? pick([50, 100, 200, 470, 1000]) : 0;
+    const base = (RB + q.rpi) / (q.beta + 1);
+    const R = variant === 'RE' ? base + RE : withRo ? par(q.ro, base) : base;
+    const fig = diode({ pnp, RB: RB ? `R_B = ${RT(RB)}` : false, RE: RE ? `R_E = ${RT(RE)}` : false });
+    const qq = `A diode-connected ${pnp ? 'PNP' : 'NPN'}${RB ? ` with $R_B = ${RT(RB)}$ from its collector to its base (instead of a wire)` : ''}${RE ? ` with $R_E = ${RT(RE)}$ from its emitter to ground` : ''} runs at ${devLine(q, withRo)}. ${withRo ? 'Keep $r_o$.' : 'Ignore $r_o$.'} Find the resistance looking in.`;
+    const accs = variant === 'RE' ? [1 / q.gm + RE] : withRo ? [par(q.ro, 1 / q.gm + RB / q.beta), base] : [1 / q.gm + RB / q.beta];
+    const traps = [{ v: q.rpi + RB, msg: 'That is the base path alone. The collector draws $\\beta$ times the base current too: divide by $\\beta + 1$.' }, { v: q.ro, msg: 'That is $r_o$: a collector with its base **held**. Here the base moves with the collector.' }];
+    if (RE) traps.push({ v: base + (q.beta + 1) * RE, msg: 'From the top of the diode, $R_E$ carries the same current you supply: it adds once, not $\\beta + 1$ times.' }, { v: base, msg: 'That ignores $R_E$, which carries the whole current.' });
+    if (RB) traps.push({ v: (q.rpi) / (q.beta + 1), msg: 'That ignores $R_B$: the base current flows through it.' });
+    const parts = [resBox('R', R, accs, traps)];
+    let step;
+    if (variant === 'plain') step = withRo ? `$v_\\pi = v_t$, so the top node feeds $r_\\pi$, the controlled source ($g_mv_t$) and $r_o$:
+$$R = \\frac{1}{g_m + 1/r_\\pi + 1/r_o} = \\frac{1}{${MS(q.gm)} + ${MS(1 / q.rpi)} + ${MS(1 / q.ro)}} = ${RT(R)}$$`
+      : `$v_\\pi = v_t$; the top node feeds $r_\\pi$ and the controlled source: $R = r_\\pi\\parallel\\dfrac1{g_m} = \\dfrac{r_\\pi}{\\beta + 1} = ${RT(R)}\\approx1/g_m$.`;
+    else if (variant === 'RB') step = `The base current $i_b = v_t/(R_B + r_\\pi)$ flows through $R_B$ and $r_\\pi$; the collector draws $\\beta i_b$ more:
+$$\\frac{R_B + r_\\pi}{\\beta + 1} = \\frac{${RT(RB + q.rpi)}}{${q.beta + 1}} = ${RT(base)}$$
+${withRo ? `In parallel with $r_o = ${RT(q.ro)}$: $R = ${RT(R)}$.` : `$R = ${RT(R)}$.`}`;
+    else step = `The whole test current flows down through the junction ($r_e = r_\\pi/(\\beta + 1) = ${RT(base)}$) and then through $R_E$, in series:
+$$R = r_e + R_E = ${RT(base)} + ${RT(RE)} = ${RT(R)}$$`;
+    const sol = `**1. The device.** ${devSteps(q, withRo)}
+
+**2. Look in.** ${pnp ? '(A PNP diode hangs from $V_{CC}$; same model.) ' : ''}${step}`;
+    return { fig, q: qq, parts, hints: ['A diode-connected BJT is a diode carrying the total current: about $1/g_m$.', RB ? 'The base current flows through $R_B + r_\\pi$; the terminal carries $\\beta + 1$ times it.' : RE ? '$R_E$ carries the same current as the terminal.' : '$v_\\pi = v_t$.'], sol, _v: { g: 'diode', variant, pnp, withRo, IC: q.IC, beta: q.beta, VA: q.VA, RB, RE } };
+  };
+
+  // ================================================================ bk8_casc: cascodes
+  GENS.bk8_casc = () => {
+    const kind = pick(['bjt', 'bjt', 'pnp', 'mosTop', 'bjtTop', 'RE']);
+    const q = randDev({ IC: [0.25, 0.5, 1, 2], VA: [25, 50, 100], beta: [50, 100, 100, 200] });
+    const Vov = pick([0.2, 0.25, 0.4, 0.5]), lam = pick([0.02, 0.05, 0.1]);
+    const gmM = 2 * q.IC / Vov, rds = 1 / (lam * q.IC);
+    const RE = kind === 'RE' ? pick([200, 500, 1000, 2000]) : 0;
+    let R, fig, qq, step, parts;
+    const bjtLine = `$I_C = ${MA(q.IC)}$, $\\beta = ${q.beta}$, $V_A = ${q.VA}\\,\\text{V}$`;
+    const mosLine = `the NMOS carries the same current with $V_{ov} = ${f(Vov)}\\,\\text{V}$ and $\\lambda = ${f(lam)}\\,\\text{V}^{-1}$`;
+    if (kind === 'bjt' || kind === 'pnp' || kind === 'RE') {
+      const Rlow = kind === 'RE' ? fColl(q, RE) : q.ro;
+      R = q.ro * (1 + q.gm * par(Rlow, q.rpi)) + par(Rlow, q.rpi);
+      fig = kind === 'pnp' ? [['rail', [1, -0.2], { n: 'V_{CC}' }], ['pnp', [1, 0.8], { n: 'Q_1' }], ['acg', [0, 0.8]], ['pnp', [1, 2.8], { n: 'Q_2' }], ['acg', [0, 2.8]], ['w', [1, 3.8], [1, 4.3]], upA([1, 4.3], 'R_{out}')]
+        : [['npn', [1, 1], { n: 'Q_2' }], ['acg', [0, 1]], ['npn', [1, 3], { n: 'Q_1' }], ['acg', [0, 3]], ...(RE ? [['R', [1, 4], [1, 5.2], { n: 'R_E', s: RT(RE) }], ['gnd', [1, 5.2]]] : [['gnd', [1, 4]]]), ['w', [1, 0], [1, -0.5]], dnA([1, -0.5], 'R_{out}')];
+      qq = `Two matched ${kind === 'pnp' ? 'PNPs (a cascode load hanging from $V_{CC}$)' : 'NPNs'} form a cascode current source, both bases held${RE ? `, with $R_E = ${RT(RE)}$ under the bottom transistor's emitter` : ''}. ${bjtLine}. Find the resistance $Q_1$ presents to node $X$ (between the transistors) and $R_{out}$.`;
+      step = `**2. The bottom transistor** (base held${RE ? ', degenerated by $R_E$' : ', emitter on its rail'}) looks like ${RE ? `a degenerated collector: $R_X = r_o[1 + g_m(R_E\\parallel r_\\pi)] + R_E\\parallel r_\\pi = ${RT(Rlow)}$.` : `$R_X = r_o = ${RT(Rlow)}$.`}
+
+**3. The top transistor** is a collector with $R_E\\to R_X$: $R_X\\parallel r_\\pi = ${RT(par(Rlow, q.rpi))}$, so
+$$R_{out} = r_o\\big[1 + g_m(R_X\\parallel r_\\pi)\\big] + R_X\\parallel r_\\pi = ${RT(R)}$$
+Ceiling: $(\\beta + 1)r_o + r_\\pi = ${RT((q.beta + 1) * q.ro + q.rpi)}$. ${RE ? 'The bottom degeneration barely helps: the top transistor was already at its ceiling.' : ''}`;
+      parts = [resBox('R_X', Rlow), resBox('R_{out}', R, [], [{ v: q.ro * q.gm * q.ro, msg: 'That is $g_mr_o^2$, the MOSFET cascode. The top BJT\'s base current caps it near $\\beta r_o$.' }, { v: 2 * q.ro, msg: 'That only adds the two $r_o$: the top transistor\'s feedback multiplies.' }, { v: q.ro * (1 + q.gm * Rlow) + Rlow, msg: 'That uses $R_X$ instead of $R_X\\parallel r_\\pi$.' }])];
+    } else if (kind === 'mosTop') {
+      R = rds + q.ro + gmM * rds * q.ro;
+      fig = [['nmos', [1, 1], { n: 'M_2' }], ['acg', [0, 1]], ['npn', [1, 3], { n: 'Q_1' }], ['acg', [0, 3]], ['gnd', [1, 4]], ['w', [1, 0], [1, -0.5]], dnA([1, -0.5], 'R_{out}')];
+      qq = `A BiCMOS cascode current source: an NMOS $M_2$ on top of an NPN $Q_1$, both control terminals held. The NPN has ${bjtLine}; ${mosLine}. Find $g_m$ and $r_{ds}$ of the NMOS and $R_{out}$.`;
+      step = `**2. $Q_1$** (base and emitter held) is $r_{o1} = ${RT(q.ro)}$.
+
+**3. $M_2$** is a MOSFET degenerated by $r_{o1}$; its gate draws no current, so there is no ceiling:
+$$R_{out} = r_{ds2} + r_{o1} + g_{m2}r_{ds2}r_{o1} = ${RT(rds)} + ${RT(q.ro)} + ${MS(gmM)}\\times${RT(rds)}\\times${RT(q.ro)} = ${RT(R)}$$`;
+      parts = [numBox('g_{m2}', 'mS', gmM * 1e3), resBox('r_{ds2}', rds), resBox('R_{out}', R, [], [{ v: q.ro * (1 + gmM * par(q.ro, q.rpi)), msg: 'A gate draws no current: no $\\parallel r_\\pi$ here.' }])];
+    } else {
+      R = q.ro * (1 + q.gm * par(rds, q.rpi)) + par(rds, q.rpi);
+      fig = [['npn', [1, 1], { n: 'Q_2' }], ['acg', [0, 1]], ['nmos', [1, 3], { n: 'M_1' }], ['acg', [0, 3]], ['gnd', [1, 4]], ['w', [1, 0], [1, -0.5]], dnA([1, -0.5], 'R_{out}')];
+      qq = `A BiCMOS cascode current source: an NPN $Q_2$ on top of an NMOS $M_1$, both control terminals held. The NPN has ${bjtLine}; ${mosLine}. Find $r_{ds1}$ and $R_{out}$.`;
+      step = `**2. $M_1$** (gate and source held) is $r_{ds1} = ${RT(rds)}$.
+
+**3. $Q_2$** is a collector degenerated by $r_{ds1}$, with its base leak: $r_{ds1}\\parallel r_\\pi = ${RT(par(rds, q.rpi))}$,
+$$R_{out} = r_o\\big[1 + g_m(r_{ds1}\\parallel r_\\pi)\\big] + r_{ds1}\\parallel r_\\pi = ${RT(R)}$$
+The BJT on top brings back the ceiling, $(\\beta + 1)r_o + r_\\pi = ${RT((q.beta + 1) * q.ro + q.rpi)}$.`;
+      parts = [resBox('r_{ds1}', rds), resBox('R_{out}', R, [], [{ v: rds + q.ro + q.gm * rds * q.ro, msg: 'That is the MOSFET-on-top formula. A BJT on top leaks through $r_\\pi$: use $r_{ds1}\\parallel r_\\pi$.' }])];
+    }
+    const sol = `**1. The devices.** ${devSteps(q, true)}${kind === 'mosTop' || kind === 'bjtTop' ? ` NMOS: $g_m = 2I_D/V_{ov} = ${MS(gmM)}$, $r_{ds} = 1/(\\lambda I_D) = ${RT(rds)}$.` : ''}
+
+${step}`;
+    return { fig, q: qq, parts, hints: ['The bottom device, with its control terminal held, is just its output resistance (or a degenerated one).', 'The top device is a collector (or drain) degenerated by that resistance.'], sol, _v: { g: 'casc', kind, IC: q.IC, beta: q.beta, VA: q.VA, Vov, lam, RE } };
+  };
+  // ================================================================ bk8_node: R_UP || R_DN || side branch
+  // The node X is at [2, 2]. Above it (to V_CC), below it (to ground), and optionally a base or a gate to its right.
+  GENS.bk8_node = () => {
+    const I = pick([0.25, 0.5, 1, 2]) * 1e-3;
+    const beta = pick([50, 100, 100, 200]);
+    const VAn = pick([50, 100]), VAp = pick([25, 50]);
+    const qn = dev(I, beta, VAn), qp = dev(I, beta, VAp);
+    const lamM = pick([0.02, 0.05, 0.1]), rdsM = 1 / (lamM * I);
+    const up = pick(['R', 'pnp', 'pnpRE', 'pnpD', 'pmos', 'npnE']);
+    const dn = pick(['R', 'npn', 'npnRE', 'nmos', 'npnD']);
+    const side = pick(['none', 'base', 'base', 'gate']);
+    const RC = pick([2000, 5000, 10000, 20000]), REu = pick([200, 500, 1000, 2000]), REd = pick([200, 500, 1000, 2000]), RBu = pick([0, 1000, 10000]);
+    const IC3 = pick([0.5, 1, 2]) * 1e-3, RE3 = pick([0, 500, 1000, 2000, 5000]);
+    const q3 = dev(IC3, beta);
+    const e = [];
+    const lines = [];
+    let Rup, Rdn, upTxt, dnTxt;
+    // above
+    if (up === 'R') { e.push(['rail', [2, 0.6], { n: 'V_{CC}' }], ['R', [2, 0.6], [2, 2], { n: 'R_C', s: RT(RC), side: 'l' }]); Rup = RC; upTxt = `$R_{UP} = R_C = ${RT(RC)}$ ($V_{CC}$ is incremental ground).`; }
+    else if (up === 'pnp' || up === 'pnpRE') {
+      e.push(['pnp', [2, 1], { n: 'Q_2' }], ['acg', [1, 1]]);
+      if (up === 'pnpRE') e.push(['R', [2, -0.2], [2, 0], { n: 'R_{E2}', s: RT(REu) }], ['rail', [2, -0.2], { n: 'V_{CC}' }]); else e.push(['rail', [2, 0], { n: 'V_{CC}' }]);
+      Rup = up === 'pnpRE' ? fColl(qp, REu) : qp.ro;
+      lines.push(`$Q_2$ (PNP, base held): $${f(I * 1e3)}\\,\\text{mA}$, $V_A = ${VAp}\\,\\text{V}$${up === 'pnpRE' ? `, $R_{E2} = ${RT(REu)}$` : ''}`);
+      upTxt = up === 'pnpRE' ? `$Q_2$ is a degenerated collector: $r_{o2} = ${RT(qp.ro)}$, $R_{E2}\\parallel r_\\pi = ${RT(par(REu, qp.rpi))}$, so $R_{UP} = r_{o2}[1 + g_m(R_{E2}\\parallel r_\\pi)] + R_{E2}\\parallel r_\\pi = ${RT(Rup)}$.` : `$Q_2$'s base and emitter are held: $R_{UP} = r_{o2} = V_A/I = ${RT(Rup)}$.`;
+    } else if (up === 'pnpD') {
+      e.push(['rail', [2, 0], { n: 'V_{CC}' }], ['pnp', [2, 1], { n: 'Q_2', dc: true }]);
+      Rup = par(1 / qp.gm, qp.rpi, qp.ro);
+      lines.push(`$Q_2$ (PNP diode): $${f(I * 1e3)}\\,\\text{mA}$, $V_A = ${VAp}\\,\\text{V}$`);
+      upTxt = `$Q_2$ is a diode: $R_{UP} = \\dfrac{1}{g_m + 1/r_\\pi + 1/r_o} = ${RT(Rup)}\\approx1/g_m$.`;
+    } else if (up === 'pmos') {
+      e.push(['rail', [2, 0], { n: 'V_{DD}' }], ['pmos', [2, 1], { n: 'M_2' }], ['acg', [1, 1]]);
+      Rup = rdsM; lines.push(`$M_2$ (PMOS, gate held): $\\lambda = ${f(lamM)}\\,\\text{V}^{-1}$ at $${f(I * 1e3)}\\,\\text{mA}$`);
+      upTxt = `$M_2$'s gate and source are held: $R_{UP} = r_{ds2} = 1/(\\lambda I_D) = ${RT(Rup)}$.`;
+    } else {
+      e.push(['rail', [2, 0], { n: 'V_{CC}' }], ['npn', [2, 1], { n: 'Q_2' }], ...(RBu ? [['R', [-0.3, 1], [1, 1], { n: 'R_{B2}', s: RT(RBu) }], ['acg', [-0.3, 1]]] : [['acg', [1, 1]]]));
+      Rup = par(qn.ro, (RBu + qn.rpi) / (beta + 1));
+      lines.push(`$Q_2$ (NPN, collector on $V_{CC}$, base held${RBu ? ` through $R_{B2} = ${RT(RBu)}$` : ''}): $${f(I * 1e3)}\\,\\text{mA}$, $V_A = ${VAn}\\,\\text{V}$`);
+      upTxt = `The node touches $Q_2$'s **emitter**: $\\dfrac{${RBu ? 'R_{B2} + ' : ''}r_\\pi}{\\beta + 1} = ${RT((RBu + qn.rpi) / (beta + 1))}$, in parallel with $r_o = ${RT(qn.ro)}$ (collector held): $R_{UP} = ${RT(Rup)}$.`;
+    }
+    // below
+    if (dn === 'R') { e.push(['R', [2, 2], [2, 3.4], { n: 'R_D', s: RT(RC), side: 'l' }], ['gnd', [2, 3.4]]); Rdn = RC; dnTxt = `$R_{DN} = ${RT(RC)}$.`; }
+    else if (dn === 'npn' || dn === 'npnRE') {
+      e.push(['npn', [2, 3], { n: 'Q_1' }], ['acg', [1, 3]]);
+      if (dn === 'npnRE') e.push(['R', [2, 4], [2, 5.2], { n: 'R_{E1}', s: RT(REd) }], ['gnd', [2, 5.2]]); else e.push(['gnd', [2, 4]]);
+      Rdn = dn === 'npnRE' ? fColl(qn, REd) : qn.ro;
+      lines.push(`$Q_1$ (NPN, base held): $${f(I * 1e3)}\\,\\text{mA}$, $V_A = ${VAn}\\,\\text{V}$${dn === 'npnRE' ? `, $R_{E1} = ${RT(REd)}$` : ''}`);
+      dnTxt = dn === 'npnRE' ? `$Q_1$ is a degenerated collector: $R_{E1}\\parallel r_\\pi = ${RT(par(REd, qn.rpi))}$, $R_{DN} = ${RT(Rdn)}$.` : `$Q_1$'s base and emitter are held: $R_{DN} = r_{o1} = ${RT(Rdn)}$.`;
+    } else if (dn === 'nmos') {
+      e.push(['nmos', [2, 3], { n: 'M_1' }], ['acg', [1, 3]], ['gnd', [2, 4]]);
+      Rdn = rdsM; lines.push(`$M_1$ (NMOS, gate held): $\\lambda = ${f(lamM)}\\,\\text{V}^{-1}$ at $${f(I * 1e3)}\\,\\text{mA}$`);
+      dnTxt = `$M_1$: $R_{DN} = r_{ds1} = ${RT(Rdn)}$.`;
+    } else {
+      e.push(['npn', [2, 3], { n: 'Q_1', dc: true }], ['gnd', [2, 4]]);
+      Rdn = par(1 / qn.gm, qn.rpi, qn.ro);
+      lines.push(`$Q_1$ (NPN diode): $${f(I * 1e3)}\\,\\text{mA}$, $V_A = ${VAn}\\,\\text{V}$`);
+      dnTxt = `$Q_1$ is a diode: $R_{DN} = ${RT(Rdn)}\\approx1/g_m$.`;
+    }
+    // side branch and the look-in terminal
+    let Rside = Infinity, sideTxt = '';
+    if (side === 'base') {
+      e.push(['w', [2, 2], [3, 2]], ['npn', [4, 2], { n: 'Q_3' }], ['rail', [4, 1], { n: 'V_{CC}' }], ...(RE3 ? [['R', [4, 3], [4, 4.2], { n: 'R_{E3}', s: RT(RE3) }], ['gnd', [4, 4.2]]] : [['gnd', [4, 3]]]));
+      Rside = q3.rpi + (beta + 1) * RE3;
+      lines.push(`$Q_3$ (NPN, base on the node): $${MA(IC3)}$${RE3 ? `, $R_{E3} = ${RT(RE3)}$` : ', emitter grounded'}, $r_{o3}$ ignored`);
+      sideTxt = `The node drives $Q_3$'s **base**, a path to ground: $R_{side} = r_{\\pi3} + (\\beta + 1)R_{E3} = ${RT(q3.rpi)}${RE3 ? ` + ${beta + 1}\\times${RT(RE3)}` : ''} = ${RT(Rside)}$.`;
+    } else if (side === 'gate') {
+      e.push(['w', [2, 2], [3, 2]], ['nmos', [4, 2], { n: 'M_3' }], ['rail', [4, 1], { n: 'V_{DD}' }], ['R', [4, 3], [4, 4.2], { n: 'R_S' }], ['gnd', [4, 4.2]]);
+      lines.push('$M_3$ (NMOS source follower, gate on the node)');
+      sideTxt = '$M_3$\'s **gate** hangs on the node: a gate draws no current, so it adds no path.';
+    }
+    const tx = up === 'pnpD' ? 0.4 : 1.3;
+    e.push(['w', [2, 2], [tx, 2]], term([tx, 2], 'R_X\\rightarrow', 'l'), ['node', [2, 2], { n: 'X', side: 'ar' }]);
+    const RX = par(Rup, Rdn, Rside);
+    const qq = `Find the small-signal resistance of node $X$ to ground. $\\beta = ${beta}$ for every BJT. ${lines.join('; ')}.`;
+    const parts = [resBox('R_{UP}', Rup), resBox('R_{DN}', Rdn)];
+    if (side === 'base') parts.push(resBox('R_{side}', Rside, [q3.rpi + beta * RE3], [{ v: q3.rpi + RE3, msg: '$R_{E3}$ counts $\\beta + 1$ times from the base.' }]));
+    parts.push(resBox('R_X', RX, [], [{ v: Rup + Rdn, msg: 'Paths from one node to ground are in parallel, not in series.' }, ...(side === 'base' ? [{ v: par(Rup, Rdn), msg: 'That leaves out $Q_3$\'s base: a base is a path to ground (unlike a gate).' }] : [])]));
+    const small = Rup <= Math.min(Rdn, Rside) ? 'up' : Rdn <= Rside ? 'down' : 'the base';
+    const sol = `**1. Up.** ${upTxt}
+
+**2. Down.** ${dnTxt}
+
+${side !== 'none' ? `**3. Sideways.** ${sideTxt}
+
+` : ''}**${side !== 'none' ? 4 : 3}. Combine in parallel:** $R_X = ${side === 'base' ? `${RT(Rup)}\\parallel${RT(Rdn)}\\parallel${RT(Rside)}` : `${RT(Rup)}\\parallel${RT(Rdn)}`} = ${RT(RX)}$. The smallest path (${small}) matters most.`;
+    return { fig: e, q: qq, parts, hints: ['Name the terminal that touches the node for each transistor, and what sits on its other terminals.', 'A base is a path to ground; a gate is not. Paths combine in parallel.'], sol, _v: { g: 'node', I, beta, VAn, VAp, lamM, up, dn, side, RC, REu, REd, RBu, IC3, RE3 } };
   };
 })();

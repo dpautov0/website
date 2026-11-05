@@ -64,7 +64,7 @@
   // o.areas: [{ f, g, from, to }] shaded between two functions; o.marks: [{ x, n }] dashed verticals (x in real units)
   // o.pts: [{ x, y, n, pos }] dots
   function plot2(o) {
-    const W = o.w || 460, H = o.h || 250, ml = o.ml || 52, mr = o.mr || 18, mt = o.mt || 20, mb = o.mb || 44;
+    const W = o.w || 460, H = o.h || 250, ml = o.ml || 52, mr = o.mr || 18, mt = o.mt || 32, mb = o.mb || 44;
     const tx = (x) => (o.logx ? Math.log10(x) : x), ty = (y) => (o.logy ? Math.log10(y) : y);
     const X = (a) => ml + (a - o.x[0]) / (o.x[1] - o.x[0]) * (W - ml - mr);
     const Y = (a) => H - mb - (a - o.y[0]) / (o.y[1] - o.y[0]) * (H - mt - mb);
@@ -107,7 +107,7 @@
       if (p.n) s += (p.pos === 'l' ? lab(px - 7, py, p.n, 'r', 'small') : p.pos === 'b' ? lab(px, py + 7, p.n, 't', 'small') : p.pos === 'a' ? lab(px, py - 7, p.n, 'b', 'small') : lab(px + 7, py - 7, p.n, 'l', 'small'));
     }
     if (o.xl) s += lab((X(o.x[0]) + X(o.x[1])) / 2, H - 2, o.xl, 'b', 'small');
-    if (o.yl) s += lab(X(o.x[0]) + 6, Y(o.y[1]) - 4, o.yl, 'l', 'small');
+    if (o.yl) s += lab(X(o.x[0]) - 30, Y(o.y[1]) - 14, o.yl, 'l', 'small');
     return s + '</svg>';
   }
   const dec = (k) => ({ v: k, t: `$10^{${k}}$` });
@@ -170,8 +170,8 @@
       ['rail', [3, -1.6], { n: sup }], ['R', [3, -1.6], [3, 0], RLb(o, 'RL', 'R_L')],
       ...(has(o, K[0]) ? [['C', [3, 2.6], [3, 3.9], CLb(o, K[0], N[0])], ['acg', [3, 3.9]]] : []),
       ...(has(o, K[1]) ? [['C', [3.9, 0], [3.9, 1.3], CLb(o, K[1], N[1])], ['acg', [3.9, 1.3]]] : []),
-      ...(has(o, 'CL') ? [['C', [5.1, 0], [5.1, 1.3], CLb(o, 'CL', 'C_L')], ['gnd', [5.1, 1.3]]] : []),
-      ['w', [3, 0], [6, 0]], outT(6, 0),
+      ...(has(o, 'CL') ? [['C', [5.4, 0], [5.4, 1.3], CLb(o, 'CL', 'C_L')], ['gnd', [5.4, 1.3]]] : []),
+      ['w', [3, 0], [6.4, 0]], outT(6.4, 0),
     ];
   };
   F.cb = (o = {}) => F.cg(o, 'npn');
@@ -204,8 +204,8 @@
       ...(has(o, K[1]) ? [['C', [1.6, 3], [1.6, 2], CLb(o, K[1], N[1], 'l')], ['w', [1.6, 2], [3, 2]]] : []),
       ...(has(o, K[2]) ? [['w', [3, 2], [4.4, 2]], ['C', [4.4, 2], [4.4, 3.3], CLb(o, K[2], N[2])], ['acg', [4.4, 3.3]]] : []),
       ...(has(o, K[3]) ? [['C', [3.9, 0], [3.9, 1.2], CLb(o, K[3], N[3])], ['acg', [3.9, 1.2]]] : []),
-      ...(has(o, 'CL') ? [['C', [5.2, 0], [5.2, 1.2], CLb(o, 'CL', 'C_L')], ['gnd', [5.2, 1.2]]] : []),
-      ['w', [3, 0], [6, 0]], outT(6, 0),
+      ...(has(o, 'CL') ? [['C', [5.5, 0], [5.5, 1.2], CLb(o, 'CL', 'C_L')], ['gnd', [5.5, 1.2]]] : []),
+      ['w', [3, 0], [6.4, 0]], outT(6.4, 0),
     ];
   };
   F.bjtcasc = (o = {}) => F.casc(o, 'npn');
@@ -288,8 +288,8 @@
     ['R', [-0.6, 1], [0.8, 1], { n: 'R_{TH}' }], ['w', [0.8, 1], [1.7, 1]], ['node', [1.2, 1], { n: 'X', side: 'a', dot: true }],
     ['C', [1.2, 1], [1.2, 2.2], { n: 'C_{in}', side: 'l' }], ['gnd', [1.2, 2.2]], ['vlab', [1.6, 1.3], [1.6, 2.0], { n: 'v_X' }],
     ['w', [1.7, 1], [1.7, -0.2]], ['C', [1.7, -0.2], [3.3, -0.2], { n: o.hiXY ? '\\boxed{C_{xy}}' : 'C_{xy}' }], ['w', [3.3, -0.2], [3.3, 0.4]],
-    ['G', [3.3, 0.4], [3.3, 2.2], { n: 'g_mv_X', side: 'l' }], ['gnd', [3.3, 2.2]], ['w', [3.3, -0.2], [5.6, -0.2]], ['node', [3.9, -0.2], { n: 'Y', side: 'a', dot: true }],
-    ['C', [4.3, -0.2], [4.3, 1], { n: 'C_{out}' }], ['gnd', [4.3, 1]], ['R', [5.1, -0.2], [5.1, 1], { n: 'R_L' }], ['gnd', [5.1, 1]], outT(5.6, -0.2),
+    ['G', [3.3, 0.4], [3.3, 2.2], { n: 'g_mv_X', side: 'l' }], ['gnd', [3.3, 2.2]], ['w', [3.3, -0.2], [6.1, -0.2]], ['node', [3.9, -0.2], { n: 'Y', side: 'a', dot: true }],
+    ['C', [4.3, -0.2], [4.3, 1], { n: 'C_{out}' }], ['gnd', [4.3, 1]], ['R', [5.5, -0.2], [5.5, 1], { n: 'R_L' }], ['gnd', [5.5, 1]], outT(6.1, -0.2),
   ];
   // the CS small-signal model with every capacitor (Lecture 28, page 2)
   M.csSS = () => [
@@ -315,9 +315,9 @@
     ['w', [2.5, 0], [3.4, 0], [3.4, 0.4]], ['node', [3.4, 0], { n: '2', side: 'a', dot: true }],
     ['vlab', [-0.3, 0.55], [-0.3, 1.45], { n: 'v_1', side: 'l' }], ['gnd', [0, 1.6]],
     ['vlab', [3.7, 0.55], [3.7, 1.45], { n: 'v_2' }], ['gnd', [3.4, 1.6]],
-    ['txt', [4.2, 0.8], '$\\Longleftrightarrow$'],
-    ['w', [5, 0.4], [5, 0]], ['node', [5, 0], { n: '1', side: 'a', dot: true }], ['box', [4.7, 0.4], [5.3, 1.2], { n: '$Z_1$' }], ['w', [5, 1.2], [5, 1.6]], ['gnd', [5, 1.6]],
-    ['w', [6.6, 0.4], [6.6, 0]], ['node', [6.6, 0], { n: '2', side: 'a', dot: true }], ['box', [6.3, 0.4], [6.9, 1.2], { n: '$Z_2$' }], ['w', [6.6, 1.2], [6.6, 1.6]], ['gnd', [6.6, 1.6]],
+    ['txt', [4.65, 0.8], '$\\Longleftrightarrow$'],
+    ['w', [5.6, 0.4], [5.6, 0]], ['node', [5.6, 0], { n: '1', side: 'a', dot: true }], ['box', [5.3, 0.4], [5.9, 1.2], { n: '$Z_1$' }], ['w', [5.6, 1.2], [5.6, 1.6]], ['gnd', [5.6, 1.6]],
+    ['w', [7.2, 0.4], [7.2, 0]], ['node', [7.2, 0], { n: '2', side: 'a', dot: true }], ['box', [6.9, 0.4], [7.5, 1.2], { n: '$Z_2$' }], ['w', [7.2, 1.2], [7.2, 1.6]], ['gnd', [7.2, 1.6]],
   ];
   M.millerA = (o = {}) => [['term', [0, 1], { n: 'v_{in}', side: 'l' }], ['w', [0, 1], [1, 1]], ['box', [1, 0.4], [2.6, 1.6], { n: `$${o.gain || '-A_0'}$` }], ['w', [2.6, 1], [3.8, 1]], outT(3.8, 1),
     ['w', [0.5, 1], [0.5, -0.3]], ['C', [0.5, -0.3], [3.2, -0.3], { n: o.cf || 'C_F' }], ['w', [3.2, -0.3], [3.2, 1]], ['node', [0.5, 1], { n: '1', side: 'b', dot: true }], ['node', [3.2, 1], { n: '2', side: 'b', dot: true }]];
@@ -400,8 +400,8 @@
     // channel: inversion layer, thinning toward the drain and pinched off before it (saturation)
     s += '<path class="carr nodecl" d="M200,150H352V151Q300,156 200,160Z"/><path class="nodecl" style="stroke:var(--accent);stroke-width:1.6" d="M200,160Q300,156 352,151"/>';
     // terminals
-    s += '<path d="M130,150V30M290,86V30M450,150V30M290,280V300"/>';
-    s += lab(130, 26, '$S$', 'b') + lab(290, 26, '$G$', 'b') + lab(450, 26, '$D$', 'b') + lab(300, 300, '$B$', 'l');
+    s += '<path d="M108,150V30M290,86V30M472,150V30M290,280V300"/>';
+    s += lab(108, 26, '$S$', 'b') + lab(290, 26, '$G$', 'b') + lab(472, 26, '$D$', 'b') + lab(300, 300, '$B$', 'l');
     // capacitor glyphs: oxide (gate-channel), the two overlaps, the two junctions
     s += capV(255, 120, 150) + capV(390, 120, 150) + capV(190, 120, 150);
     s += capV(160, 200, 236) + capV(470, 200, 236);
@@ -569,7 +569,7 @@
       ['C', 2, 0, p.C.Cpi1], ['C', 2, 3, p.C.Cmu1], ['C', 3, 0, p.C.Cpi2], ['C', 4, 0, p.C.Cmu2], ['C', 4, 0, p.C.CL]] }),
   };
   // |H(jw)| and the exact -3 dB frequency (first crossing of |H(0)|/sqrt 2, by a sweep and bisection)
-  function hmag(kind, p, w) { const N = NETS[kind](p); const v = cxSolve(N.els, N.n + 1, w, N.out); return Math.hypot(v[0], v[1]); }
+  function hmag(kind, p, w) { const N = NETS[kind](p); const v = cxSolve(N.els, N.n, w, N.out); return Math.hypot(v[0], v[1]); }
   function w3db(kind, p) {
     const h0 = hmag(kind, p, 0), tgt = h0 / Math.SQRT2;
     let lo = 1e3, prev = lo;
@@ -587,5 +587,306 @@
     return { rows, sum, west: 1 / sum };
   }
 
-  window.BK8 = { F, M, T, X, lab, words, plot2, dec, STG, NETS, hmag, w3db, octc, srcR, num, RT, CT, TT, WT, FT, GT, IT, KOs, INF };
+  // ================================================================ Chapter 12 generators
+  const MS = (g) => `${f(g * 1e3, 3)}\\,\\text{mS}`;
+  // CS / CE parameter sets and Lecture 28's two-node model
+  function csParams(dev) {
+    if (dev === 'bjt') {
+      const IC = pick([0.25, 0.5, 1]) * 1e-3, gm = IC / 0.025, beta = 100;
+      return { dev, IC, gm, beta, rpi: beta / gm, RS: pick([1, 2, 2.5, 5]) * 1e3, RL: pick([2, 4, 5]) * 1e3,
+        C: { Cpi: pick([2, 4, 5, 10]) * 1e-12, Cmu: pick([0.1, 0.2, 0.25, 0.5]) * 1e-12, CL: pick([0.5, 1, 2]) * 1e-12 } };
+    }
+    return { dev, gm: pick([2, 4, 5]) * 1e-3, RS: pick([2, 4, 5, 10]) * 1e3, RL: pick([4, 5, 8, 10]) * 1e3,
+      C: { Cgs: pick([50, 100, 200]) * 1e-15, Cgd: pick([10, 20, 25]) * 1e-15, CL: pick([100, 200, 300]) * 1e-15 } };
+  }
+  function twoNode(p) {
+    const bj = p.dev === 'bjt';
+    const RTH = bj ? par(p.RS, p.rpi) : p.RS, k = bj ? p.rpi / (p.RS + p.rpi) : 1;
+    const Cin = bj ? p.C.Cpi : p.C.Cgs, Cxy = bj ? p.C.Cmu : p.C.Cgd, Cout = p.C.CL, RL = p.RL, gm = p.gm;
+    const a = RTH * RL * (Cin * Cxy + Cout * Cxy + Cin * Cout);
+    const b = (1 + gm * RL) * Cxy * RTH + RTH * Cin + RL * (Cxy + Cout);
+    const d = Math.sqrt(b * b - 4 * a);
+    return { RTH, k, Cin, Cxy, Cout, RL, gm, a, b, r1: 2 / (b + d), r2: (b + d) / (2 * a), wz: gm / Cxy,
+      tMil: (1 + gm * RL) * Cxy * RTH, tIn: RTH * Cin, tOut: RL * (Cxy + Cout), CM: (1 + gm * RL) * Cxy, C2: (1 + 1 / (gm * RL)) * Cxy,
+      win: 1 / (RTH * (Cin + (1 + gm * RL) * Cxy)), wout: 1 / (RL * (Cout + (1 + 1 / (gm * RL)) * Cxy)), A0: -gm * RL * k,
+      names: bj ? { in: 'C_\\pi', xy: 'C_\\mu' } : { in: 'C_{gs}', xy: 'C_{gd}' } };
+  }
+  const csShown = (p) => (p.dev === 'bjt'
+    ? { RS: KOs(p.RS), RL: KOs(p.RL), Cpi: CT(p.C.Cpi), Cmu: CT(p.C.Cmu), CL: CT(p.C.CL) }
+    : { RS: KOs(p.RS), RL: KOs(p.RL), Cgs: CT(p.C.Cgs), Cgd: CT(p.C.Cgd), CL: CT(p.C.CL) });
+  const csDev = (p) => (p.dev === 'bjt'
+    ? `$I_C = ${IT(p.IC)}$ (so $g_m = I_C/V_T = ${MS(p.gm)}$), $\\beta = ${p.beta}$ (so $r_\\pi = \\beta/g_m = ${RT(p.rpi)}$), $r_o\\to\\infty$`
+    : `$g_m = ${MS(p.gm)}$, $r_{ds}\\to\\infty$ ($C_L$ includes $C_{db}$)`);
+  const csFig = (p, hi) => (p.dev === 'bjt' ? F.ce({ v: csShown(p), hi }) : F.cs({ v: csShown(p), hi }));
+
+  // ---------------------------------------------------------------- MOS capacitances from the geometry, and f_T
+  GENS.bk_cap_mos = () => {
+    const W = pick([10, 20, 30, 40, 50, 60]), L = pick([0.5, 1, 2]), Lov = pick([0.05, 0.1]), Vov = pick([0.1, 0.2, 0.25, 0.3]), Cox = 2.5;
+    const WLC = W * L * Cox * 1e-15, Cov = W * Lov * Cox * 1e-15, Cgs = (2 / 3) * WLC + Cov, Cgd = Cov;
+    const gm = 100e-6 * (W / L) * Vov, wT = gm / (Cgs + Cgd), fT = wT / (2 * Math.PI);
+    return {
+      q: `An NMOS has $W = ${W}\\,\\mu\\text{m}$, $L = ${L}\\,\\mu\\text{m}$, gate overlap $L_{ov} = ${Lov}\\,\\mu\\text{m}$ on each side, $C_{ox} = 2.5\\,\\text{fF}/\\mu\\text{m}^2$ ($\\mu_nC_{ox} = 100\\,\\mu\\text{A/V}^2$), and is biased in saturation at $V_{ov} = ${Vov}\\,\\text{V}$. Find $C_{gs}$, $C_{gd}$, $g_m$ and the transit frequency $f_T = \\dfrac{g_m}{2\\pi(C_{gs} + C_{gd})}$.`,
+      parts: [
+        num('C_{gs}', Cgs, 'C', [{ v: WLC + Cov, msg: 'In saturation the channel is pinched off at the drain end: only $\\tfrac{2}{3}$ of $WLC_{ox}$ belongs to $C_{gs}$.' }, { v: (2 / 3) * WLC, msg: 'Add the source-side overlap $WL_{ov}C_{ox}$.' }]),
+        num('C_{gd}', Cgd, 'C', [{ v: Cgd + WLC / 3, msg: 'The channel does not reach the drain in saturation: $C_{gd}$ is only the overlap.' }]),
+        num('g_m', gm, 'g'),
+        num('f_T', fT, 'f', [{ v: wT, msg: 'That is $\\omega_T$ in rad/s. Divide by $2\\pi$ for hertz.' }, { v: gm / Cgs / (2 * Math.PI), msg: 'Use $C_{gs} + C_{gd}$: with the drain shorted, both capacitors hang on the gate.' }]),
+      ],
+      hints: [`$WLC_{ox} = ${W}\\times${L}\\times2.5\\,\\text{fF} = ${f(WLC * 1e15, 4)}\\,\\text{fF}$; the overlap is $WL_{ov}C_{ox}$.`, '$g_m = \\mu_nC_{ox}\\tfrac{W}{L}V_{ov}$.'],
+      sol: `**Gate-oxide capacitance of the whole gate:** $WLC_{ox} = ${W}\\,\\mu\\text{m}\\times${L}\\,\\mu\\text{m}\\times2.5\\,\\text{fF}/\\mu\\text{m}^2 = ${f(WLC * 1e15, 4)}\\,\\text{fF}$. **Each overlap:** $WL_{ov}C_{ox} = ${W}\\times${Lov}\\times2.5 = ${f(Cov * 1e15, 4)}\\,\\text{fF}$.
+
+**In saturation** the channel charge tapers to zero at the drain end, so the gate sees two thirds of $WLC_{ox}$ through the source, plus the source overlap; the drain sees only its overlap:
+$$C_{gs} = \\tfrac{2}{3}WLC_{ox} + WL_{ov}C_{ox} = ${f((2 / 3) * WLC * 1e15, 4)} + ${f(Cov * 1e15, 4)} = ${CT(Cgs)},\\qquad C_{gd} = WL_{ov}C_{ox} = ${CT(Cgd)}$$
+
+**Transconductance:** $g_m = \\mu_nC_{ox}\\tfrac{W}{L}V_{ov} = 100\\,\\mu\\text{A/V}^2\\times${f(W / L, 3)}\\times${Vov}\\,\\text{V} = ${MS(gm)}$.
+
+**Transit frequency:**
+$$\\omega_T = \\frac{g_m}{C_{gs} + C_{gd}} = \\frac{${MS(gm)}}{${CT(Cgs + Cgd)}} = ${WT(wT)},\\qquad f_T = \\frac{\\omega_T}{2\\pi} = ${FT(fT)}$$
+Without the overlaps it would be $\\tfrac{3}{2}\\mu_nV_{ov}/L^2$ (with $\\mu_n = 0.04\\,\\text{m}^2/\\text{V·s}$): $${FT(1.5 * 0.04 * Vov / (L * 1e-6) ** 2 / (2 * Math.PI))}$. The overlaps cost speed, and a shorter $L$ buys it back as $1/L^2$.`,
+      _chk: { k: 'cap_mos', W, L, Lov, Vov, Cgs, Cgd, gm, fT },
+    };
+  };
+
+  // ---------------------------------------------------------------- the BJT: C_b from the stored base charge, and f_T
+  GENS.bk_cap_bjt = () => {
+    const IC = pick([0.1, 0.2, 0.5, 1, 2, 5]) * 1e-3, tF = pick([10, 20, 50]) * 1e-12, Cje = pick([0.1, 0.2, 0.5]) * 1e-12, Cmu = pick([0.05, 0.1, 0.2]) * 1e-12;
+    const gm = IC / 0.025, Cb = tF * gm, Cpi = Cb + Cje, wT = gm / (Cpi + Cmu), fT = wT / (2 * Math.PI);
+    return {
+      q: `An NPN has a forward transit time $\\tau_F = ${f(tF * 1e12, 3)}\\,\\text{ps}$, $C_{je} = ${CT(Cje)}$ and $C_\\mu = ${CT(Cmu)}$, and runs at $I_C = ${IT(IC)}$ ($V_T = 25\\,\\text{mV}$). Find $g_m$, the base-charging capacitance $C_b$, $C_\\pi$, and $f_T = \\dfrac{g_m}{2\\pi(C_\\pi + C_\\mu)}$.`,
+      parts: [
+        num('g_m', gm, 'g'),
+        num('C_b', Cb, 'C', [{ v: tF * IC, msg: 'That is $\\tau_FI_C = Q_F$, the stored charge itself (in coulombs). The capacitance is how fast it grows with $V_{BE}$: $C_b = dQ_F/dV_{BE} = \\tau_Fg_m$.' }]),
+        num('C_\\pi', Cpi, 'C', [{ v: Cb, msg: '$C_\\pi = C_b + C_{je}$: add the base–emitter depletion capacitance.' }]),
+        num('f_T', fT, 'f', [{ v: wT, msg: 'That is $\\omega_T$ in rad/s. Divide by $2\\pi$.' }, { v: gm / Cpi / (2 * Math.PI), msg: 'Include $C_\\mu$: with the collector shorted it also hangs on the base.' }]),
+      ],
+      hints: ['$g_m = I_C/V_T$.', '$Q_F = \\tau_FI_C$, so $C_b = dQ_F/dV_{BE} = \\tau_F\\,dI_C/dV_{BE} = \\tau_Fg_m$.'],
+      sol: `$g_m = I_C/V_T = ${IT(IC)}/25\\,\\text{mV} = ${MS(gm)}$.
+
+**Base charging.** The electrons in transit across the base are a stored charge $Q_F = \\tau_FI_C$. Raising $V_{BE}$ raises $I_C$ and so the stored charge: $C_b = \\dfrac{dQ_F}{dV_{BE}} = \\tau_Fg_m = ${f(tF * 1e12, 3)}\\,\\text{ps}\\times${MS(gm)} = ${CT(Cb)}$.
+
+$C_\\pi = C_b + C_{je} = ${CT(Cb)} + ${CT(Cje)} = ${CT(Cpi)}$.
+
+$$\\omega_T = \\frac{g_m}{C_\\pi + C_\\mu} = \\frac{${MS(gm)}}{${CT(Cpi + Cmu)}} = ${WT(wT)},\\qquad f_T = ${FT(fT)}$$
+${Cb > 3 * (Cje + Cmu) ? `Here $C_b$ dominates, so $\\omega_T$ is close to its ceiling $1/\\tau_F = ${WT(1 / tF)}$: more current would barely help.` : `Here the fixed capacitances $C_{je} + C_\\mu$ still matter, so more current would raise $f_T$ (toward the ceiling $1/\\tau_F = ${WT(1 / tF)}$).`}`,
+      _chk: { k: 'cap_bjt', IC, tF, Cje, Cmu, gm, Cb, Cpi, fT },
+    };
+  };
+
+  // ---------------------------------------------------------------- one pole per node
+  const NODE_K = ['gate', 'base', 'source', 'emitter', 'drain', 'collector', 'sfout', 'efin'];
+  GENS.bk_node_pole = (opts = {}) => {
+    const k = pick(opts.kinds || NODE_K);
+    const bj = ['base', 'emitter', 'collector', 'efin'].includes(k);
+    const p = bj ? (() => { const IC = pick([0.5, 1, 2]) * 1e-3, gm = IC / 0.025, beta = pick([100, 200]); return { IC, gm, beta, rpi: beta / gm }; })() : { gm: pick([1, 2, 4, 5]) * 1e-3 };
+    p.RS = pick([0.5, 1, 2, 5, 10]) * 1e3; p.RL = pick([1, 2, 5, 10]) * 1e3; p.rds = pick([50, 100, 200]) * 1e3; p.ro = pick([50, 100]) * 1e3;
+    const Cv = pick([0.2, 0.5, 1, 2, 5]) * 1e-12;
+    let R, fig, what, cname, why, traps = [];
+    const v = { RS: KOs(p.RS), RL: KOs(p.RL) };
+    if (k === 'gate') { cname = 'C_{gs}'; R = p.RS; fig = F.cs({ caps: ['Cgs'], hi: 'Cgs', v: Object.assign(v, { Cgs: CT(Cv) }) });
+      what = 'the gate node of a common source ($C_{gd}$ ignored)'; why = 'The gate draws no current, so the only path from the gate node to ground is $R_S$ (to the zeroed source).';
+      traps = [{ v: par(p.RS, 1 / p.gm), msg: 'A gate is an open circuit: the transistor adds nothing in parallel here.' }]; }
+    if (k === 'base') { cname = 'C_\\pi'; R = par(p.RS, p.rpi); fig = F.ce({ caps: ['Cpi'], hi: 'Cpi', v: Object.assign(v, { Cpi: CT(Cv) }) });
+      what = 'the base node of a common emitter ($C_\\mu$ ignored)'; why = 'Two paths to ground: $R_S$ to the zeroed source, and $r_\\pi$ through the grounded emitter. A base is not a gate.';
+      traps = [{ v: p.RS, msg: 'That is the MOSFET answer. The base also has $r_\\pi$ to ground (through the grounded emitter).' }, { v: p.RS + p.rpi, msg: 'Both paths go from the base to ground: parallel, not series.' }]; }
+    if (k === 'source') { cname = 'C_{gs}'; R = par(p.RS, 1 / p.gm); fig = F.cg({ caps: ['Cgs'], hi: 'Cgs', v: Object.assign(v, { Cgs: CT(Cv) }) });
+      what = 'the input (source) node of a common gate ($r_{ds}$ ignored)'; why = 'Looking up into the source with the gate held you see $1/g_m$; in parallel with $R_S$ down to the zeroed source.';
+      traps = [{ v: p.RS, msg: 'The source node also has the transistor on it: about $1/g_m$, in parallel with $R_S$.' }]; }
+    if (k === 'emitter') { cname = 'C_\\pi'; R = par(p.RS, p.rpi / (p.beta + 1)); fig = F.cb({ caps: ['Cpi'], hi: 'Cpi', v: Object.assign(v, { Cpi: CT(Cv) }) });
+      what = 'the input (emitter) node of a common base ($r_o$ ignored)'; why = 'Looking into the emitter with the base held you see $r_\\pi/(\\beta + 1)\\approx 1/g_m$; in parallel with $R_S$.';
+      traps = [{ v: p.RS, msg: 'The emitter node also has the transistor on it: $r_\\pi/(\\beta + 1)\\approx1/g_m$.' }, { v: par(p.RS, p.rpi), msg: 'Looking into an emitter, $r_\\pi$ is divided by $\\beta + 1$.' }]; }
+    if (k === 'drain') { cname = 'C_L'; R = par(p.RL, p.rds); fig = F.cs({ caps: ['CL'], hi: 'CL', v: Object.assign(v, { CL: CT(Cv) }) });
+      what = `the output (drain) node of a common source with $r_{ds} = ${RT(p.rds)}$`; why = 'With the input zeroed the gate is at 0, so the transistor is just $r_{ds}$ from the drain to ground, in parallel with $R_L$.';
+      traps = [{ v: p.RL, msg: 'Keep $r_{ds}$: it also runs from the drain to ground.' }, { v: par(p.RL, 1 / p.gm), msg: 'A drain is not a source: the transistor adds $r_{ds}$, not $1/g_m$.' }]; }
+    if (k === 'collector') { cname = 'C_L'; R = par(p.RL, p.ro); fig = F.ce({ caps: ['CL'], hi: 'CL', v: Object.assign(v, { CL: CT(Cv) }) });
+      what = `the output (collector) node of a common emitter with $r_o = ${RT(p.ro)}$`; why = 'With the input zeroed $v_\\pi = 0$, so the BJT is just $r_o$ from the collector to ground, in parallel with $R_L$.';
+      traps = [{ v: p.RL, msg: 'Keep $r_o$: it also runs from the collector to ground.' }]; }
+    if (k === 'sfout') { cname = 'C_L'; R = par(p.RL, 1 / p.gm); fig = F.sf({ caps: ['CL'], hi: 'CL', v: Object.assign(v, { CL: CT(Cv) }) });
+      what = 'the output (source) node of a source follower ($r_{ds}$ ignored)'; why = 'The gate sits at 0 (no current in $R_S$), so looking up into the source you see $1/g_m$, in parallel with $R_L$.';
+      traps = [{ v: p.RL, msg: 'The output is a source: the transistor adds about $1/g_m$ in parallel, and it is small.' }]; }
+    if (k === 'efin') { cname = 'C_\\mu'; R = par(p.RS, p.rpi + (p.beta + 1) * p.RL); fig = F.ef({ caps: ['Cmu'], hi: 'Cmu', v: Object.assign(v, { Cmu: CT(Cv) }) });
+      what = 'the input (base) node of an emitter follower ($C_\\pi$ ignored; $C_\\mu$ runs from the base to $V_{CC}$)'; why = 'Two paths: $R_S$, and the base looking in, $r_\\pi + (\\beta + 1)R_L$ (the $(\\beta + 1)$ rule).';
+      traps = [{ v: p.RS, msg: 'A base draws current: looking in you see $r_\\pi + (\\beta + 1)R_L$, in parallel with $R_S$.' }, { v: par(p.RS, p.rpi), msg: 'The emitter is not grounded: $R_L$ appears $(\\beta + 1)$ times bigger from the base.' }]; }
+    const w = 1 / (R * Cv), fr = w / (2 * Math.PI);
+    const devT = bj ? `$I_C = ${IT(p.IC)}$ ($g_m = ${MS(p.gm)}$), $\\beta = ${p.beta}$ ($r_\\pi = ${RT(p.rpi)}$)` : `$g_m = ${MS(p.gm)}$`;
+    return {
+      fig,
+      q: `The boxed capacitor $${cname} = ${CT(Cv)}$ sits on ${what}. ${devT}. Find the resistance from that node to ground (input zeroed) and the pole it makes, in rad/s and in Hz.`,
+      parts: [
+        BK.res('R_{node}', R, undefined, traps),
+        num('\\omega_p', w, 'w', traps.map((t) => ({ v: 1 / (t.v * Cv), msg: t.msg }))),
+        num('f_p', fr, 'f', [{ v: w, msg: 'That is $\\omega_p$ in rad/s; $f = \\omega/2\\pi$.' }]),
+      ],
+      hints: ['Zero $v_{in}$ (its resistor stays), then list every path from the node to ground: resistors, and what each transistor terminal looks like (gate: open, base: $r_\\pi$ and more, source/emitter: about $1/g_m$, drain/collector: $r_{ds}$/$r_o$).', '$\\omega_p = 1/(RC)$ and $f_p = \\omega_p/2\\pi$.'],
+      sol: `**The node.** ${why}
+$$R = ${RT(R)}$$
+**The pole.** $\\omega_p = \\dfrac{1}{RC} = \\dfrac{1}{${RT(R)}\\times${CT(Cv)}} = \\dfrac{1}{${TT(R * Cv)}} = ${WT(w)}$, and $f_p = \\omega_p/2\\pi = ${FT(fr)}$.
+
+**Recognize it.** ${R < 1.5e3 && (k === 'source' || k === 'emitter' || k === 'sfout') ? 'A capacitor on a source or emitter node sees something small, so its pole is fast.' : 'Big resistance (a gate fed from a big $R_S$, a drain, a collector) means a slow node.'}`,
+      _chk: { k: 'node', kind: k, p, C: Cv, R, w },
+    };
+  };
+
+  // ---------------------------------------------------------------- the CS/CE stage exactly (Lecture 28)
+  GENS.bk_cs_exact = (opts = {}) => {
+    const p = csParams(opts.dev || pick(['mos', 'mos', 'bjt']));
+    const t = twoNode(p), N = t.names, bj = p.dev === 'bjt';
+    const parts = [];
+    if (bj) parts.push(BK.res('R_{TH}', t.RTH, undefined, [{ v: p.RS, msg: 'The base also has $r_\\pi$ to ground: Thévenin of $v_{in}$, $R_S$ and $r_\\pi$ gives $R_S\\parallel r_\\pi$.' }]));
+    parts.push(num('b', t.b, 't', [{ v: t.tIn + t.tOut + t.Cxy * t.RTH, msg: `The ${N.xy} term carries the factor $1 + g_mR_L$.` }, { v: t.tIn + t.tOut + t.gm * t.RL * t.Cxy * t.RTH, msg: 'The factor is $1 + g_mR_L$, not $g_mR_L$.' }]));
+    parts.push(num('\\omega_{p1}\\approx1/b', 1 / t.b, 'w', [], [t.r1]));
+    parts.push(num('\\omega_{p2}\\approx b/a', t.b / t.a, 'w', [], [t.r2]));
+    parts.push(num('\\omega_z', t.wz, 'w'));
+    return {
+      fig: csFig(p),
+      q: `A common ${bj ? 'emitter' : 'source'} as in Lecture 28: ${csDev(p)}, $R_S = ${KOs(p.RS)}$, $R_L = ${KOs(p.RL)}$, $${N.in} = ${CT(t.Cin)}$, $${N.xy} = ${CT(t.Cxy)}$, $C_L = ${CT(t.Cout)}$. Its transfer function is $\\dfrac{v_{out}}{v_{TH}} = \\dfrac{(C_{xy}s - g_m)R_L}{as^2 + bs + 1}$. ${bj ? 'Find $R_{TH}$, then ' : 'Find '}$b$, the dominant-pole estimates of both poles, and the zero.`,
+      parts,
+      hints: [bj ? 'Two-node model: $R_{TH} = R_S\\parallel r_\\pi$, $C_{in} = C_\\pi$, $C_{xy} = C_\\mu$, $C_{out} = C_L$.' : 'Two-node model: $R_{TH} = R_S$, $C_{in} = C_{gs}$, $C_{xy} = C_{gd}$, $C_{out} = C_L$.',
+        '$b = (1 + g_mR_L)C_{xy}R_{TH} + R_{TH}C_{in} + R_L(C_{xy} + C_{out})$ and $a = R_{TH}R_L(C_{in}C_{xy} + C_{out}C_{xy} + C_{in}C_{out})$.', '$\\omega_{p1}\\approx1/b$, $\\omega_{p2}\\approx b/a$, $\\omega_z = g_m/C_{xy}$.'],
+      sol: `**Map to the two-node model.** ${bj ? `The base has $r_\\pi = ${RT(p.rpi)}$ to ground, so Thévenin of $v_{in}$, $R_S$, $r_\\pi$: $R_{TH} = R_S\\parallel r_\\pi = ${RT(t.RTH)}$ and $v_{TH} = ${f(t.k, 3)}\\,v_{in}$.` : '$R_{TH} = R_S$, $v_{TH} = v_{in}$ (a gate draws no current).'} $C_{in} = ${N.in}$, $C_{xy} = ${N.xy}$, $C_{out} = C_L$; $g_mR_L = ${f(t.gm * t.RL, 4)}$.
+
+**The $s$ coefficient, term by term:**
+$$b = \\underbrace{(1 + g_mR_L)C_{xy}R_{TH}}_{${TT(t.tMil)}} + \\underbrace{R_{TH}C_{in}}_{${TT(t.tIn)}} + \\underbrace{R_L(C_{xy} + C_{out})}_{${TT(t.tOut)}} = ${TT(t.b)}$$
+**The $s^2$ coefficient:** $a = R_{TH}R_L(C_{in}C_{xy} + C_{out}C_{xy} + C_{in}C_{out}) = ${f(t.a, 4)}\\,\\text{s}^2$.
+
+**Dominant-pole estimates:** $\\omega_{p1}\\approx\\dfrac1b = ${WT(1 / t.b)}$ and $\\omega_{p2}\\approx\\dfrac ba = ${WT(t.b / t.a)}$. The exact roots of $as^2 + bs + 1$ are $${WT(t.r1)}$ and $${WT(t.r2)}$: the poles are ${f(t.r2 / t.r1, 3)} times apart, so the estimates are off by ${f(100 * Math.abs(1 / t.b / t.r1 - 1), 2)}% and ${f(100 * Math.abs(t.b / t.a / t.r2 - 1), 2)}%.
+
+**Zero:** $\\omega_z = g_m/C_{xy} = ${MS(t.gm)}/${CT(t.Cxy)} = ${WT(t.wz)}$, in the right half plane, far above both poles.
+
+**Read it.** The Miller term $(1 + g_mR_L)C_{xy}R_{TH}$ is ${f(100 * t.tMil / t.b, 3)}% of $b$${t.tMil > 0.4 * t.b && t.Cxy < Math.min(t.Cin, t.Cout) ? `, although $${N.xy}$ is the smallest capacitor` : ''}.`,
+      _chk: { k: 'cs_exact', p, b: t.b, a: t.a, RTH: t.RTH },
+    };
+  };
+
+  // ---------------------------------------------------------------- Miller's theorem
+  GENS.bk_miller = () => {
+    const kind = pick(['inv', 'inv', 'fol', 'res']);
+    if (kind === 'inv') {
+      const A = pick([4, 9, 19, 24, 49, 99]), CF = pick([10, 20, 50, 100]) * 1e-15;
+      const C1 = (1 + A) * CF, C2 = (1 + 1 / A) * CF;
+      return {
+        figHtml: Schem.render(M.millerA({ gain: `-${A}` })),
+        q: `A capacitor $C_F = ${CT(CF)}$ connects the input and output of an inverting amplifier with gain $v_2/v_1 = -${A}$. Use Miller's theorem: what capacitance does it look like at the input (node 1 to ground), and at the output (node 2 to ground)?`,
+        parts: [num('C_1', C1, 'C', [{ v: A * CF, msg: 'The factor is $1 - A_v = 1 + ' + A + '$, not ' + A + '.' }, { v: CF, msg: 'The far end moves the opposite way, so the capacitor charges $1 + A_0$ times harder than a grounded one.' }]),
+          num('C_2', C2, 'C', [{ v: C1, msg: 'At the output the factor is $1 - 1/A_v = 1 + 1/' + A + '$.' }])],
+        hints: ['$C_1 = (1 - A_v)C_F$, $C_2 = (1 - 1/A_v)C_F$ with $A_v = -' + A + '$.'],
+        sol: `$A_v = -${A}$. Node 1 draws $(v_1 - v_2)sC_F = v_1(1 - A_v)sC_F$, the current of a capacitor $(1 - A_v)C_F$ to ground:
+$$C_1 = (1 + ${A})\\times${CT(CF)} = ${CT(C1)},\\qquad C_2 = \\Big(1 + \\frac{1}{${A}}\\Big)${CT(CF)} = ${CT(C2)}$$
+The input sees ${1 + A} times $C_F$: a $${CT(CF)}$ capacitor across a gain of $-${A}$ loads the input like $${CT(C1)}$. The output sees about $C_F$ itself.`,
+        _chk: { k: 'miller', kind, A: -A, CF, C1, C2 },
+      };
+    }
+    if (kind === 'fol') {
+      const g = pick([0.75, 0.8, 0.9, 0.95]), CF = pick([100, 200, 500]) * 1e-15, C1 = (1 - g) * CF;
+      return {
+        figHtml: Schem.render(M.millerA({ gain: `+${g}` })),
+        q: `A capacitor $C_F = ${CT(CF)}$ connects the input and output of a follower with gain $v_2/v_1 = +${g}$ (think of $C_{gs}$ of a source follower). What capacitance does the input see?`,
+        parts: [num('C_1', C1, 'C', [{ v: (1 + g) * CF, msg: 'The gain is positive: $1 - A_v = 1 - ' + g + '$.' }, { v: CF, msg: 'The far end follows the input, so the capacitor barely charges.' }])],
+        hints: ['$C_1 = (1 - A_v)C_F$ with $A_v = +' + g + '$.'],
+        sol: `$C_1 = (1 - A_v)C_F = (1 - ${g})\\times${CT(CF)} = ${CT(C1)}$. The output follows the input, so only $${f(1 - g, 3)}$ of the input swing appears across $C_F$: it is **bootstrapped**, ${f(1 / (1 - g), 3)} times smaller than it looks.`,
+        _chk: { k: 'miller', kind, A: g, CF, C1 },
+      };
+    }
+    const A = pick([9, 19, 49, 99]), RF = pick([10, 50, 100, 200]) * 1e3, R1 = RF / (1 + A);
+    return {
+      q: `A resistor $R_F = ${RT(RF)}$ connects the input and output of an inverting amplifier with gain $-${A}$. What resistance does it look like from the input to ground?`,
+      parts: [BK.res('R_1', R1, undefined, [{ v: RF * (1 + A), msg: 'Dividing an impedance by $1 - A_v$ makes it smaller, not bigger.' }, { v: RF / A, msg: 'The factor is $1 + A_0 = ' + (1 + A) + '$.' }])],
+      hints: ['$Z_1 = Z_F/(1 - A_v)$.'],
+      sol: `$Z_1 = \\dfrac{Z_F}{1 - A_v} = \\dfrac{${RT(RF)}}{1 + ${A}} = ${RT(R1)}$. The output swings ${A} times the input the other way, so $R_F$ carries ${1 + A} times the current a grounded $R_F$ would. This is why the input of an inverting op-amp stage looks like a near short (a "virtual ground").`,
+      _chk: { k: 'miller', kind, A: -A, RF, R1 },
+    };
+  };
+
+  // ---------------------------------------------------------------- CS / CE with Miller: two node poles
+  GENS.bk_cs_miller = (opts = {}) => {
+    const p = csParams(opts.dev || pick(['mos', 'bjt']));
+    const t = twoNode(p), N = t.names, bj = p.dev === 'bjt';
+    const dom = t.win < t.wout ? 0 : 1;
+    return {
+      fig: csFig(p),
+      q: `Common ${bj ? 'emitter' : 'source'}: ${csDev(p)}, $R_S = ${KOs(p.RS)}$, $R_L = ${KOs(p.RL)}$, $${N.in} = ${CT(t.Cin)}$, $${N.xy} = ${CT(t.Cxy)}$, $C_L = ${CT(t.Cout)}$. Split $${N.xy}$ with Miller's theorem (gain $-g_mR_L$) and find the input pole, the output pole, and which one sets the bandwidth.`,
+      parts: [
+        num(`(1 + g_mR_L)${N.xy}`, t.CM, 'C', [{ v: t.gm * t.RL * t.Cxy, msg: 'The Miller factor is $1 + g_mR_L$.' }]),
+        num('\\omega_{p,in}', t.win, 'w', [{ v: 1 / (t.RTH * t.Cin), msg: 'Add the Miller capacitance to ' + N.in + '.' }, ...(bj ? [{ v: 1 / (p.RS * (t.Cin + t.CM)), msg: 'At a base the resistance is $R_S\\parallel r_\\pi$, not $R_S$.' }] : [])]),
+        num('\\omega_{p,out}', t.wout, 'w', [{ v: 1 / (t.RL * t.Cout), msg: 'The output side gets $C_2 = (1 + 1/g_mR_L)' + N.xy + '$ too.' }]),
+        { lbl: 'Which pole sets the bandwidth?', mc: ['The input pole', 'The output pole'], a: dom, why: dom === 0 ? [null, `The output pole is at $${WT(t.wout)}$, above the input pole.`] : [`The input pole is at $${WT(t.win)}$, above the output pole.`, null] },
+      ],
+      hints: [`Miller: $C_1 = (1 + g_mR_L)${N.xy}$ at the input, $C_2 = (1 + \\tfrac{1}{g_mR_L})${N.xy}$ at the output.`, bj ? 'The base node sees $R_S\\parallel r_\\pi$.' : 'The gate node sees $R_S$.'],
+      sol: `$g_mR_L = ${f(t.gm * t.RL, 4)}$, so $C_1 = ${f(1 + t.gm * t.RL, 4)}\\times${CT(t.Cxy)} = ${CT(t.CM)}$ and $C_2 = ${f(1 + 1 / (t.gm * t.RL), 4)}\\times${CT(t.Cxy)} = ${CT(t.C2)}$.
+
+**Input node** (${bj ? `$R_S\\parallel r_\\pi = ${RT(t.RTH)}$` : `$R_S = ${RT(t.RTH)}$`}):
+$$\\omega_{p,in} = \\frac{1}{${RT(t.RTH)}\\times(${CT(t.Cin)} + ${CT(t.CM)})} = \\frac{1}{${TT(1 / t.win)}} = ${WT(t.win)}$$
+**Output node** ($R_L$):
+$$\\omega_{p,out} = \\frac{1}{${RT(t.RL)}\\times(${CT(t.Cout)} + ${CT(t.C2)})} = \\frac{1}{${TT(1 / t.wout)}} = ${WT(t.wout)}$$
+The **${dom === 0 ? 'input' : 'output'}** pole is lower and sets the bandwidth. For comparison, the exact dominant pole (Lecture 28's quadratic) is $${WT(t.r1)}$${dom === 0 ? `: Miller's input pole is ${f(100 * (t.win / t.r1 - 1), 2)}% high because it leaves out the output's share of $b$ ($${TT(t.tOut)}$).` : ': when the output is the slow node, use $1/b$ (or the next chapter\'s time constants) rather than one Miller pole.'}`,
+      _chk: { k: 'cs_miller', p, win: t.win, wout: t.wout, CM: t.CM },
+    };
+  };
+
+  // ---------------------------------------------------------------- common gate, follower, cascode at high frequency
+  GENS.bk_hf_stage = (opts = {}) => {
+    const k = pick(opts.kinds || ['cg', 'sf', 'casc']);
+    const gm = pick([2, 4, 5]) * 1e-3, RS = pick([1, 2, 4, 5, 10]) * 1e3, RL = pick([2, 4, 5, 8, 10]) * 1e3;
+    const Cgs = pick([100, 200]) * 1e-15, Cgd = pick([10, 20, 25]) * 1e-15, CL = pick([100, 200, 300]) * 1e-15;
+    const C = { Cgs, Cgd, CL, Cgs1: Cgs, Cgd1: Cgd, Cgs2: Cgs, Cgd2: Cgd };
+    const v = { RS: KOs(RS), RL: KOs(RL) };
+    if (k === 'cg') {
+      const Rin = par(RS, 1 / gm), win = 1 / (Rin * Cgs), wout = 1 / (RL * (Cgd + CL));
+      const p = { gm, RS, RL, C }, wex = w3db('cg', p);
+      return {
+        fig: F.cg({ v: Object.assign(v, { Cgs: CT(Cgs), Cgd: CT(Cgd), CL: CT(CL) }) }),
+        q: `Common gate: $g_m = ${MS(gm)}$, $r_{ds}\\to\\infty$, $R_S = ${KOs(RS)}$, $R_L = ${KOs(RL)}$, $C_{gs} = ${CT(Cgs)}$, $C_{gd} = ${CT(Cgd)}$, $C_L = ${CT(CL)}$. The gate is held. Find the pole at the input (source) node and the pole at the output node.`,
+        parts: [num('\\omega_{p,in}', win, 'w', [{ v: 1 / (RS * Cgs), msg: 'The source node also has the transistor: $1/g_m$ in parallel with $R_S$.' }]),
+          num('\\omega_{p,out}', wout, 'w', [{ v: 1 / (RL * CL), msg: '$C_{gd}$ runs from the drain to the held gate: it adds to $C_L$.' }, { v: 1 / (RL * (CL + (1 + gm * RL) * Cgd)), msg: 'No Miller here: the gate does not move, so $C_{gd}$ is just a capacitor to ground.' }])],
+        hints: ['Input node: $R_S\\parallel\\tfrac1{g_m}$ with $C_{gs}$ (the gate is incremental ground).', 'Output node: $R_L$ with $C_{gd} + C_L$.'],
+        sol: `**Input.** The source node sees $R_S\\parallel\\tfrac{1}{g_m} = ${RT(RS)}\\parallel${RT(1 / gm)} = ${RT(Rin)}$, and $C_{gs}$ hangs from it to the held gate:
+$$\\omega_{p,in} = \\frac{1}{${RT(Rin)}\\times${CT(Cgs)}} = ${WT(win)}$$
+**Output.** $C_{gd}$ goes from the drain to the held gate, so it simply adds to $C_L$; the drain node sees $R_L$:
+$$\\omega_{p,out} = \\frac{1}{${RT(RL)}\\times${CT(Cgd + CL)}} = ${WT(wout)}$$
+No capacitor bridges a gain, so there is no Miller multiplication. The output pole is ${f(win / wout, 3)} times lower and sets the bandwidth (an exact solve gives $${WT(wex)}$).`,
+        _chk: { k: 'hf', kind: k, p, win, wout, wex },
+      };
+    }
+    if (k === 'sf') {
+      const RLs = pick([1, 2, 5]) * 1e3, A = gm * RLs / (1 + gm * RLs), Cin = Cgd + Cgs * (1 - A), win = 1 / (RS * Cin);
+      const p = { gm, RS, RL: RLs, C }, wex = w3db('sf', p);
+      return {
+        fig: F.sf({ v: { RS: KOs(RS), RL: KOs(RLs), Cgs: CT(Cgs), Cgd: CT(Cgd), CL: CT(CL) } }),
+        q: `Source follower: $g_m = ${MS(gm)}$, $r_{ds}\\to\\infty$, $R_S = ${KOs(RS)}$, $R_L = ${KOs(RLs)}$, $C_{gs} = ${CT(Cgs)}$, $C_{gd} = ${CT(Cgd)}$. Find the low-frequency gain, the capacitance the input node sees (Miller on $C_{gs}$), and the input pole.`,
+        parts: [num('A_v', A, 'x', [{ v: gm * RLs, msg: 'A follower\'s gain is $\\dfrac{g_mR_L}{1 + g_mR_L}$, just under 1.' }]),
+          num('C_{in}', Cin, 'C', [{ v: Cgd + Cgs, msg: 'The source follows the gate, so $C_{gs}$ is bootstrapped: multiply it by $1 - A_v$.' }, { v: Cgs * (1 - A), msg: 'Add $C_{gd}$: it runs from the gate to $V_{DD}$, an incremental ground.' }]),
+          num('\\omega_{p,in}', win, 'w')],
+        hints: ['$A_v = g_mR_L/(1 + g_mR_L)$.', '$C_{in} = C_{gd} + (1 - A_v)C_{gs}$; the gate node sees $R_S$.'],
+        sol: `$A_v = \\dfrac{g_mR_L}{1 + g_mR_L} = \\dfrac{${f(gm * RLs, 3)}}{${f(1 + gm * RLs, 3)}} = ${f(A, 4)}$.
+
+**Input capacitance.** $C_{gd}$ goes from the gate to $V_{DD}$: it counts fully. $C_{gs}$ bridges the gate and the source, which follows with gain $A_v$: Miller gives $(1 - A_v)C_{gs} = C_{gs}/(1 + g_mR_L) = ${CT(Cgs * (1 - A))}$.
+$$C_{in} = ${CT(Cgd)} + ${CT(Cgs * (1 - A))} = ${CT(Cin)},\\qquad \\omega_{p,in} = \\frac{1}{R_SC_{in}} = \\frac{1}{${RT(RS)}\\times${CT(Cin)}} = ${WT(win)}$$
+A common source with the same transistor would load the gate with $C_{gs}$ plus a multiplied $C_{gd}$; the follower hides almost all of $C_{gs}$. (An exact solve with $C_L = ${CT(CL)}$ at the output gives a bandwidth of $${WT(wex)}$.)`,
+        _chk: { k: 'hf', kind: k, p, A, Cin, win, wex },
+      };
+    }
+    // cascode, identical transistors, r_ds ignored
+    const RX = 1 / gm, Cin = Cgs + 2 * Cgd, win = 1 / (RS * Cin), wX = 1 / (RX * (Cgs + 2 * Cgd)), wout = 1 / (RL * (Cgd + CL));
+    const tA = gm * RL, wcs = 1 / (RS * (Cgs + (1 + tA) * Cgd));
+    const p = { gm1: gm, gm2: gm, RS, RL, C }, wex = w3db('casc', p);
+    return {
+      fig: F.casc({ v: { RS: KOs(RS), RL: KOs(RL) } }),
+      q: `Cascode with identical transistors: $g_m = ${MS(gm)}$, $r_{ds}\\to\\infty$, $C_{gs} = ${CT(Cgs)}$, $C_{gd} = ${CT(Cgd)}$ each; $R_S = ${KOs(RS)}$, $R_L = ${KOs(RL)}$, $C_L = ${CT(CL)}$. Find the gain from the gate of $M_1$ to node $X$, the input pole (Miller on $C_{gd1}$), and the output pole.`,
+      parts: [num('v_X/v_{g1}', -1, 'x', [{ v: -tA, msg: 'That is the gain to the output. $C_{gd1}$ ends on node $X$, which only sees $1/g_{m2}$.' }]),
+        num('\\omega_{p,in}', win, 'w', [{ v: wcs, msg: 'That is the plain common source: there $C_{gd}$ bridged a gain of $-g_mR_L$. Here the gain across $C_{gd1}$ is only $-1$.' }]),
+        num('\\omega_{p,out}', wout, 'w', [{ v: 1 / (RL * CL), msg: '$C_{gd2}$ runs from the output to the held gate of $M_2$: add it to $C_L$.' }])],
+      hints: ['Node $X$ sees the source of $M_2$: $1/g_{m2}$. Gain gate-to-$X$: $-g_{m1}/g_{m2}$.', 'Input: $C_{gs1} + (1 + 1)C_{gd1}$ with $R_S$. Output: $R_L$ with $C_{gd2} + C_L$.'],
+      sol: `**Node $X$** is the source of $M_2$ (gate held): $R_X = 1/g_{m2} = ${RT(RX)}$. The gain from the gate of $M_1$ to $X$ is $-g_{m1}R_X = -g_{m1}/g_{m2} = -1$.
+
+**Input.** Miller on $C_{gd1}$ with gain $-1$: $C_1 = (1 + 1)C_{gd1} = ${CT(2 * Cgd)}$.
+$$\\omega_{p,in} = \\frac{1}{R_S(C_{gs1} + 2C_{gd1})} = \\frac{1}{${RT(RS)}\\times${CT(Cin)}} = ${WT(win)}$$
+**Node $X$** (for completeness): $C_{gs2}$ plus the output side of $C_{gd1}$, $(1 + 1)C_{gd1}$, on $1/g_m$: $${WT(wX)}$, far out.
+
+**Output.** $C_{gd2}$ goes to the held gate of $M_2$, so it adds to $C_L$:
+$$\\omega_{p,out} = \\frac{1}{${RT(RL)}\\times${CT(Cgd + CL)}} = ${WT(wout)}$$
+A plain common source with the same parts would have its input pole at $${WT(wcs)}$ (Miller factor $${f(1 + tA, 3)}$ instead of $2$). Exact cascode bandwidth: $${WT(wex)}$.`,
+      _chk: { k: 'hf', kind: 'casc', p, win, wout, wX, wex },
+    };
+  };
+
+  window.BK8 = { F, M, T, X, lab, words, plot2, dec, STG, NETS, hmag, w3db, octc, srcR, num, RT, CT, TT, WT, FT, GT, IT, KOs, MS, INF, twoNode, csParams };
 })();

@@ -105,12 +105,13 @@
     } else if (b === 'gnd') {
       e.push(['R', [-0.2, 1], [1, 1], { n: 'R_B', s: s(o.RB) }], ['w', [-0.2, 1], [-0.2, 1.4]], ['gnd', [-0.2, 1.4]]);
     } else if (b === 'fb') {                // R_B from the collector (NPN) back to the base
-      e.push(['w', [2, 0], [0.6, 0]], ['R', [0.6, 0], [0.6, 1.25], { n: 'R_B', s: s(o.RB), side: 'l' }], ['w', [0.6, 1.25], [0.6, 1], [1, 1]]);
+      e.push(['w', [2, 0], [0.6, 0]], ['R', [0.6, 0], [0.6, 1], { n: 'R_B', s: s(o.RB), side: 'l' }], ['w', [0.6, 1], [1, 1]]);
     }
     if (o.nodes) {
       const lab = (pt, t, a = 'l') => ['txt', pt, `$${t}$`, { a }];
-      if (pnp) e.push(lab([2.18, -0.12], 'V_E'), lab([2.18, 2.14], 'V_C'), lab([1.05, 0.62], 'V_B', 'r'));
-      else e.push(lab([2.18, -0.12], 'V_C'), lab([2.18, 2.14], 'V_E'), lab([1.05, 0.62], 'V_B', 'r'));
+      // top node on the right of its lead, bottom node on the left of its lead, V_B under the base wire
+      if (pnp) e.push(lab([2.18, 0.24], 'V_E'), lab([1.82, 2.14], 'V_C', 'r'), lab([0.86, 1.26], 'V_B', 'c'));
+      else e.push(lab([2.18, 0.24], 'V_C'), lab([1.82, 2.14], 'V_E', 'r'), lab([0.86, 1.26], 'V_B', 'c'));
     }
     return e;
   }
@@ -196,7 +197,41 @@
   };
   const rect = (x, y, w, h, style) => `<rect class="nodecl" x="${x}" y="${y}" width="${w}" height="${h}" style="${style}"/>`;
 
-  window.BK5 = { VT, VON, VSAT, T, kOs, Vs, npnDC, pnpDC, thev, biasFig, plot, label, texL, svg, lab, head, arrow, rect, par };
+  // one transistor with its three node voltages written at the leads
+  function nodesFig(pnp, V, name) {
+    const top = pnp ? 'E' : 'C', bot = pnp ? 'C' : 'E';
+    return [[pnp ? 'pnp' : 'npn', [1, 1], { n: name }], ['w', [1, 0], [1, -0.3]], ['w', [1, 2], [1, 2.3]], ['w', [0, 1], [-0.3, 1]],
+      ['txt', [1.2, -0.3], `$V_${top} = ${f(V[top], 3)}\\,\\text{V}$`, { a: 'l' }],
+      ['txt', [1.2, 2.3], `$V_${bot} = ${f(V[bot], 3)}\\,\\text{V}$`, { a: 'l' }],
+      ['txt', [-0.4, 1], `$V_B = ${f(V.B, 3)}\\,\\text{V}$`, { a: 'r' }]];
+  }
+
+  // a common-emitter amplifier with divider bias, coupling capacitors C_1, C_2 and (optionally) a bypassed R_E.
+  // NPN at [3, 1]: C [3, 0], B [2, 1], E [3, 2]. o: { VCC, R1, R2, RC, RE, RL, RS, bypass, dc (draw only the DC circuit), vals }
+  function ampFig(o) {
+    const show = o.vals !== false;
+    const s = (r) => (show && typeof r === 'number' ? kOs(r) : undefined);
+    const railN = typeof o.VCC === 'number' ? `${f(o.VCC, 3)}\\,\\text{V}` : 'V_{CC}';
+    const e = [['npn', [3, 1]], ['rail', [3, -1.2], { n: railN }], ['w', [1.6, -1.2], [3, -1.2]],
+      ['R', [1.6, -1.2], [1.6, 1], { n: 'R_1', s: s(o.R1) }], ['R', [1.6, 1], [1.6, 2.6], { n: 'R_2', s: s(o.R2) }], ['gnd', [1.6, 2.6]],
+      ['w', [1.6, 1], [2, 1]], ['R', [3, -1.2], [3, 0], { n: 'R_C', s: s(o.RC) }]];
+    const byp = o.bypass && !o.dc;
+    if (o.RE) {
+      e.push(['R', [3, 2], [3, 3.2], { n: 'R_E', s: s(o.RE), side: byp ? 'l' : 'r' }], ['gnd', [3, 3.2]]);
+      if (byp) e.push(['w', [3, 2], [3.8, 2]], ['C', [3.8, 2], [3.8, 3.2], { n: 'C_E' }], ['w', [3.8, 3.2], [3, 3.2]]);
+    } else e.push(['gnd', [3, 2]]);
+    if (!o.dc) {
+      e.push(['C', [0.5, 1], [1.6, 1], { n: 'C_1' }]);
+      if (o.RS) e.push(['R', [-0.8, 1], [0.5, 1], { n: 'R_S', s: s(o.RS) }], ['Vac', [-0.8, 1], [-0.8, 2.2], { n: 'v_s', side: 'l' }], ['gnd', [-0.8, 2.2]]);
+      else e.push(['w', [0.5, 1], [0.2, 1]], ['Vac', [0.2, 1], [0.2, 2.2], { n: 'v_s', side: 'l' }], ['gnd', [0.2, 2.2]]);
+      e.push(['w', [3, 0], [3.5, 0]], ['C', [3.5, 0], [4.6, 0], { n: 'C_2' }]);
+      if (o.RL) e.push(['R', [4.6, 0], [4.6, 1.4], { n: 'R_L', s: s(o.RL) }], ['gnd', [4.6, 1.4]], ['w', [4.6, 0], [5.1, 0]], ['term', [5.1, 0], { n: 'v_{out}' }]);
+      else e.push(['w', [4.6, 0], [4.9, 0]], ['term', [4.9, 0], { n: 'v_{out}' }]);
+    }
+    return e;
+  }
+
+  window.BK5 = { VT, VON, VSAT, T, kOs, Vs, npnDC, pnpDC, thev, biasFig, nodesFig, ampFig, plot, label, texL, svg, lab, head, arrow, rect, par };
 
   // ================================================================ drills
   const r2 = (x, n = 2) => Math.round(x * 10 ** n) / 10 ** n;
@@ -264,6 +299,9 @@ A measurement like this needs care: $I_B$ is a small difference of two nearly eq
 
 Rule of thumb: the base current is about $1/\\beta$ of the collector current, here ${f(100 / beta, 3)}%, and the emitter current is bigger than $I_C$ by the same small amount.`;
     }
+    // I_C and I_E differ by only 1/beta: their boxes need four significant figures to tell them apart
+    parts.forEach((p) => { if (p.lbl === 'I_E' || p.lbl === 'I_C') { p.tol = { rel: 0.001 }; delete p.traps; } });
+    q += ' Give currents to four significant figures.';
     return { q, parts, hints, sol, _chk: { kind: 'cur', mode, beta, IC } };
   };
 
@@ -331,6 +369,300 @@ $I_S$ is tiny because it is proportional to $n_i^2\\approx10^{20}\\,\\text{cm}^{
 $$V_{BE2} - V_{BE1} = V_T\\ln\\frac{I_{S1}}{I_{S2}} = -V_T\\ln ${n} = -${f(dV * 1e3, 4)}\\,\\text{mV}$$
 $V_{BE2} = ${f((VBE1 - dV) * 1e3, 4)}\\,\\text{mV}$. The current per unit area is ${n} times smaller in $Q_2$, so its junction needs less push. (Note what does **not** change with area: $g_m = I_C/V_T$, Chapter 7.)`,
       _chk: { kind: 'vbe', mode: 'area', VBE1, n, ans: [(VBE1 - dV) * 1e3] },
+    };
+  };
+
+  // ---------------------------------------------------------------- regions from node voltages
+  const REGS = ['Forward active', 'Saturation', 'Cutoff', 'Reverse active'];
+  GENS.bk_reg = (opts = {}) => {
+    const pnp = opts.pnp ? true : opts.mix ? pick([false, true]) : false;
+    const reg = pick([0, 0, 0, 1, 1, 2, 3]);
+    // build in NPN coordinates (x = V for an NPN, x = V_top - V for a PNP)
+    const e = pick([0, 0, 0.3, 0.5, 1, 1.3, 2]);
+    let b, c;
+    if (reg === 0) { b = e + pick([0.65, 0.7, 0.7, 0.75]); c = b + pick([0.3, 0.8, 1.5, 2.5, 3.3, 4.5]); }
+    else if (reg === 1) { b = e + pick([0.7, 0.75, 0.8]); c = e + pick([0.1, 0.15, 0.2, 0.25]); }
+    else if (reg === 2) { b = e + pick([0, 0.1, 0.2, 0.3, -0.5, -1]); c = b + pick([1, 2, 4]); }
+    else { c = e - pick([1, 1.5, 2, 3]); b = c + pick([0.65, 0.7]); }
+    const r2v = (x) => Math.round(x * 100) / 100;
+    const top0 = Math.max(e, b, c) > 4.5 ? 10 : pick([5, 10]);
+    const V = pnp ? { E: r2v(top0 - e), B: r2v(top0 - b), C: r2v(top0 - c) } : { E: r2v(e), B: r2v(b), C: r2v(c) };
+    const vbe = r2v(pnp ? V.E - V.B : V.B - V.E), vbc = r2v(pnp ? V.C - V.B : V.B - V.C);
+    const nm = pnp ? ['V_{EB}', 'V_{CB}'] : ['V_{BE}', 'V_{BC}'];
+    const beOn = vbe >= 0.6, bcOn = vbc >= 0.4;
+    const why = [
+      'Forward active needs the BE junction **on** and the BC junction **off**.',
+      'Saturation needs **both** junctions on (and then $|V_{CE}|$ is only about $0.2\\,\\text{V}$).',
+      'Cutoff needs **both** junctions off: no injection, no current.',
+      'Reverse active is BE off with BC on: the transistor used upside down.',
+    ].map((w, j) => (j === reg ? null : w));
+    const meaning = [
+      'Forward active: the BE junction injects, the reverse-biased BC junction collects, and $I_C = \\beta I_B$. This is the amplifier region.',
+      `Saturation: both junctions inject, the collector has fallen to within $${f(Math.abs(V.C - V.E), 3)}\\,\\text{V}$ of the emitter, and the outside circuit, not $\\beta$, sets $I_C$ (now $I_C < \\beta I_B$). A closed switch.`,
+      `Cutoff: with $${nm[0]} = ${f(vbe, 3)}\\,\\text{V}$ the injected current is negligible (every $60\\,\\text{mV}$ below about $0.7\\,\\text{V}$ is another factor of 10 less). An open switch.`,
+      'Reverse active: the collector junction injects and the emitter collects. It works badly ($\\beta_R$ is about 0.1 to 5), and no circuit in this course uses it on purpose.',
+    ][reg];
+    const jv = (k) => (k === 0 ? (pnp ? `V_E - V_B = ${f(V.E, 3)} - ${f(V.B, 3)}` : `V_B - V_E = ${f(V.B, 3)} - ${f(V.E, 3)}`)
+      : (pnp ? `V_C - V_B = ${f(V.C, 3)} - ${f(V.B, 3)}` : `V_B - V_C = ${f(V.B, 3)} - ${f(V.C, 3)}`));
+    return {
+      fig: nodesFig(pnp, V),
+      q: `A${pnp ? ' PNP' : 'n NPN'} has the node voltages shown. Find the two junction voltages, then the region. (A junction is on with about $0.7\\,\\text{V}$ of forward bias; take a base–collector junction as forward biased from about $0.4\\,\\text{V}$.)`,
+      parts: [
+        { lbl: nm[0], unit: 'V', ans: vbe, tol: { rel: 0, abs: 0.006 } },
+        { lbl: nm[1], unit: 'V', ans: vbc, tol: { rel: 0, abs: 0.006 } },
+        { lbl: 'Region', mc: REGS, a: reg, fixed: true, why },
+      ],
+      hints: [pnp ? 'PNP: every voltage is flipped. $V_{EB} = V_E - V_B$ and $V_{CB} = V_C - V_B$; a junction is forward biased when its **p** side (emitter or collector) is above its **n** side (the base).'
+        : 'NPN: $V_{BE} = V_B - V_E$ and $V_{BC} = V_B - V_C$; a junction is forward biased when its **p** side (the base) is above its **n** side.',
+      'BE on and BC off: forward active. Both on: saturation. Both off: cutoff. BE off, BC on: reverse active.'],
+      sol: `**Junction voltages.** $${nm[0]} = ${jv(0)} = ${f(vbe, 3)}\\,\\text{V}$: the BE junction is ${beOn ? '**on**' : '**off**'}. $${nm[1]} = ${jv(1)} = ${f(vbc, 3)}\\,\\text{V}$: the BC junction is ${bcOn ? '**forward biased**' : '**reverse biased** (off)'}.
+
+| BE | BC | Region |
+|---|---|---|
+| on | off | forward active |
+| on | on | saturation |
+| off | off | cutoff |
+| off | on | reverse active |
+
+**Region: ${REGS[reg]}.** ${meaning}
+
+Quick check for active: ${pnp ? '$V_C\\le V_B$ for a PNP' : '$V_C\\ge V_B$ for an NPN'}; here $V_C = ${f(V.C, 3)}\\,\\text{V}$ and $V_B = ${f(V.B, 3)}\\,\\text{V}$.`,
+      _chk: { kind: 'reg', pnp, V, reg },
+    };
+  };
+
+  // ---------------------------------------------------------------- DC analysis of one NPN: four bias networks
+  // 'vbb' base source + R_B (+ R_E); 'fixed' R_B from V_CC; 'split' R_B to ground, R_E to -V_EE; 'fb' R_B from the collector
+  function solveRB(p) {
+    const b1 = p.beta + 1;
+    if (p.kind === 'fb') {
+      const IB = (p.VCC - VON) / (p.RB + b1 * (p.RC + p.RE)), IC = p.beta * IB, IE = IB + IC;
+      const VE = IE * p.RE, VB = VE + VON, VC = p.VCC - IE * p.RC;
+      return { reg: 'act', IB, IC, IE, VE, VB, VC };
+    }
+    const VBB = p.kind === 'fixed' ? p.VCC : p.kind === 'split' ? 0 : p.VBB;
+    return npnDC({ VCC: p.VCC, VBB, RB: p.RB, RC: p.RC, RE: p.RE, VEE: p.VEE || 0, beta: p.beta });
+  }
+  function rbFig(p) {
+    if (p.kind === 'fb') return biasFig({ type: 'npn', base: 'fb', VCC: p.VCC, RB: p.RB, RC: p.RC, RE: p.RE });
+    if (p.kind === 'fixed') return biasFig({ type: 'npn', base: 'fixed', VCC: p.VCC, RB: p.RB, RC: p.RC, RE: p.RE });
+    if (p.kind === 'split') return biasFig({ type: 'npn', base: 'gnd', VCC: p.VCC, RB: p.RB, RC: p.RC, RE: p.RE, VEE: p.VEE });
+    return biasFig({ type: 'npn', base: 'vbb', VCC: p.VCC, VBB: p.VBB, RB: p.RB, RC: p.RC, RE: p.RE });
+  }
+  function rbSol(p, s) {
+    const b = p.beta, b1 = b + 1, RE = p.RE;
+    const reT = RE ? ` + (\\beta + 1)R_E` : '';
+    let loop, drive, den;
+    if (p.kind === 'fb') {
+      loop = `**Step 1: KVL around the loop** from $V_{CC}$, down through $R_C$ (which carries $I_E = I_C + I_B$, both the collector current and the current that turns off into $R_B$), through $R_B$ (which carries $I_B$), across the junction${RE ? ' and through $R_E$' : ''} to ground:
+$$V_{CC} - (\\beta + 1)I_BR_C - I_BR_B - 0.7${RE ? ' - (\\beta + 1)I_BR_E' : ''} = 0$$
+$$I_B = \\frac{V_{CC} - 0.7}{R_B + (\\beta + 1)(R_C${RE ? ' + R_E' : ''})} = \\frac{${f(p.VCC - VON, 4)}\\,\\text{V}}{${kOs(p.RB)} + ${b1}\\times${kOs(p.RC + RE)}} = ${T.uA(s.IB)}$$`;
+    } else {
+      const VBBt = p.kind === 'fixed' ? `V_{CC} = ${f(p.VCC, 4)}\\,\\text{V}` : p.kind === 'split' ? '0' : `V_{BB} = ${f(p.VBB, 4)}\\,\\text{V}`;
+      drive = p.kind === 'split' ? `0 - 0.7 + ${f(p.VEE, 4)}` : `${f(p.kind === 'fixed' ? p.VCC : p.VBB, 4)} - 0.7`;
+      den = RE ? `${kOs(p.RB)} + ${b1}\\times${kOs(RE)}` : kOs(p.RB);
+      loop = `**Step 1: KVL around the base loop**, from ${p.kind === 'split' ? 'ground, up through $R_B$ (the base sits slightly *below* ground because $I_B$ flows into it through $R_B$)' : `$${VBBt}$, through $R_B$`}, across the $0.7\\,\\text{V}$ junction${RE ? `, through $R_E$ (which carries $I_E = (\\beta + 1)I_B$)` : ''}, to ${p.kind === 'split' ? `$-V_{EE} = -${f(p.VEE, 4)}\\,\\text{V}$` : 'ground'}:
+$$I_B = \\frac{${p.kind === 'split' ? 'V_{EE} - 0.7' : (p.kind === 'fixed' ? 'V_{CC} - 0.7' : 'V_{BB} - 0.7')}}{R_B${reT}} = \\frac{${drive}}{${den}} = ${T.uA(s.IB)}$$`;
+    }
+    const lines = [loop, `**Step 2: the other currents.** $I_C = \\beta I_B = ${b}\\times${T.uA(s.IB)} = ${T.mA(s.IC)}$ and $I_E = (\\beta + 1)I_B = ${T.mA(s.IE)}$.`];
+    const vE = RE ? (p.kind === 'split' ? `V_E = -${f(p.VEE, 4)} + I_ER_E = ${T.V(s.VE)}` : `V_E = I_ER_E = ${T.V(s.VE)}`) : (p.kind === 'split' ? `V_E = -${f(p.VEE, 4)}\\,\\text{V}` : 'V_E = 0');
+    const vC = p.kind === 'fb' ? `V_C = V_{CC} - I_ER_C = ${f(p.VCC, 4)} - (${T.mA(s.IE)})(${kOs(p.RC)}) = ${T.V(s.VC)}` : `V_C = V_{CC} - I_CR_C = ${f(p.VCC, 4)} - (${T.mA(s.IC)})(${kOs(p.RC)}) = ${T.V(s.VC)}`;
+    lines.push(`**Step 3: node voltages.** $${vE}$, $V_B = V_E + 0.7 = ${T.V(s.VB)}$, $${vC}$.`);
+    lines.push(`**Step 4: check.** $V_C = ${T.V(s.VC)}\\ge V_B = ${T.V(s.VB)}$ ✓: forward active, so the answers stand.${p.kind === 'fb' ? ' (This bias can never saturate: $V_C - V_B = I_BR_B > 0$ always.)' : ''}`);
+    if (RE && p.kind !== 'fb') {
+      const stiff = (p.kind === 'split' ? p.VEE - VON : (p.kind === 'fixed' ? p.VCC : p.VBB) - VON) / RE;
+      lines.push(`**Feel.** The same result read from the emitter: $I_E = \\dfrac{${p.kind === 'split' ? 'V_{EE}' : (p.kind === 'fixed' ? 'V_{CC}' : 'V_{BB}')} - 0.7}{R_E + R_B/(\\beta + 1)}$, with $R_B/(\\beta + 1) = ${T.R(p.RB / b1)}$ next to $R_E = ${kOs(RE)}$. ${p.RB / b1 < 0.1 * RE ? `That is small, so $I_E\\approx${T.mA(stiff)}$ almost regardless of $\\beta$: a well-designed bias.` : `That is not small next to $R_E$, so $\\beta$ still matters here (the $\\beta\\to\\infty$ value would be $${T.mA(stiff)}$).`}`);
+    } else if (p.kind === 'fixed') lines.push(`**Feel.** $I_C = \\beta I_B$ with $I_B$ fixed by $R_B$: the collector current is proportional to $\\beta$. Swap in a transistor with twice the $\\beta$ and you get twice the current (or saturation). That is why fixed bias is a poor design.`);
+    return lines.join('\n\n');
+  }
+  GENS.bk_dcrb = (opts = {}) => {
+    let p, s;
+    for (let t = 0; t < 800; t++) {
+      const kind = opts.kind || pick(['vbb', 'vbb', 'fixed', 'split', 'fb']);
+      const beta = pick([50, 80, 100, 100, 120, 150, 200]);
+      const VCC = pick([5, 9, 10, 12, 15]);
+      const RC = pick([1, 1.5, 2, 2.2, 3.3, 4.7, 5.6, 6.8, 10]) * 1e3;
+      p = { kind, beta, VCC, RC, RE: 0, VEE: 0 };
+      if (kind === 'vbb') { p.VBB = pick([1.5, 2, 2.7, 3, 4, 5]); p.RB = pick([10, 20, 47, 100]) * 1e3; p.RE = pick([0.5, 1, 1.5, 2, 3.3]) * 1e3; if (p.VBB >= VCC) continue; }
+      else if (kind === 'fixed') { p.RB = pick([100, 220, 330, 470, 680, 1000, 1500]) * 1e3; p.RE = pick([0, 0, 0.5, 1]) * 1e3; }
+      else if (kind === 'split') { p.VEE = pick([5, 9, 10, 12, 15]); p.RB = pick([10, 20, 47, 100]) * 1e3; p.RE = pick([2.2, 3.3, 4.7, 5.6, 10]) * 1e3; }
+      else { p.RB = pick([47, 100, 200, 330]) * 1e3; p.RE = pick([0, 0, 0.5, 1]) * 1e3; }
+      s = solveRB(p);
+      if (s.reg === 'act' && s.IC > 0.1e-3 && s.IC < 8e-3 && s.VC - s.VB > 0.5) break;
+      s = null;
+    }
+    const VBBv = p.kind === 'split' ? p.VEE : p.kind === 'fixed' ? p.VCC : p.VBB;
+    const traps = [];
+    if (p.kind !== 'fb') {
+      if (p.RE) traps.push({ v: p.beta * (VBBv - VON) / (p.RB + p.RE) * 1e3, msg: '$R_E$ counted once: it carries $(\\beta + 1)I_B$, so in the base loop it counts as $(\\beta + 1)R_E$.' });
+      traps.push({ v: p.beta * VBBv / (p.RB + (p.beta + 1) * p.RE) * 1e3, msg: 'The $0.7\\,\\text{V}$ across the base–emitter junction is missing from the loop.' });
+    } else traps.push({ v: p.beta * (p.VCC - VON) / p.RB * 1e3, msg: 'That ignores the drop across $R_C$: it carries $(\\beta + 1)I_B$ and counts $(\\beta + 1)$ times in the loop.' });
+    const good = [s.IC * 1e3];
+    return {
+      fig: rbFig(p),
+      q: `$\\beta = ${p.beta}$, $V_{BE} = 0.7\\,\\text{V}$ when on. Assume forward active, find $I_B$, $I_C$ and $V_C$, and check the assumption.`,
+      parts: [{ lbl: 'I_B', unit: 'µA', ans: s.IB * 1e6 }, { lbl: 'I_C', unit: 'mA', ans: s.IC * 1e3, traps: notNear(traps, good) }, { lbl: 'V_C', unit: 'V', ans: s.VC, tol: { rel: 0.015, abs: 0.03 } }],
+      hints: [p.kind === 'fb' ? 'One loop: $V_{CC}$, $R_C$ (carrying $I_E$), $R_B$ (carrying $I_B$), the $0.7\\,\\text{V}$ junction' + (p.RE ? ', $R_E$' : '') + ', ground.' : 'KVL around the base loop, writing every current in terms of $I_B$: the emitter resistor carries $(\\beta + 1)I_B$.',
+        'Then $I_C = \\beta I_B$, the node voltages, and the check $V_C\\ge V_B$.'],
+      sol: rbSol(p, s),
+      _chk: { kind: 'dcrb', p, ans: [s.IB * 1e6, s.IC * 1e3, s.VC] },
+    };
+  };
+
+  // ---------------------------------------------------------------- DC: divider bias (NPN or PNP), optionally drawn as a full amplifier
+  GENS.bk_dcdiv = (opts = {}) => {
+    let p, s, th;
+    for (let t = 0; t < 1000; t++) {
+      const pnp = opts.pnp ? true : opts.npn ? false : pick([false, false, true]);
+      const beta = pick([60, 80, 100, 100, 120, 150, 200]);
+      const VCC = pick([9, 10, 12, 15]);
+      const big = pick([10, 15, 22, 33, 47, 56, 68, 82, 100]) * 1e3, small = pick([2.2, 3.3, 4.7, 6.8, 10, 12, 15, 22]) * 1e3;
+      if (big <= 1.5 * small) continue;
+      const R1 = pnp ? small : big, R2 = pnp ? big : small;
+      const RE = pick([0.5, 1, 1.2, 1.5, 2.2]) * 1e3, RC = pick([1, 2.2, 3.3, 4.7, 5.6]) * 1e3;
+      th = thev(VCC, R1, R2);
+      const drive = pnp ? VCC - VON - th.VBB : th.VBB - VON;
+      if (drive < 0.8) continue;
+      s = pnp ? pnpDC({ VCC, VBB: th.VBB, RB: th.RB, RC, RE, beta }) : npnDC({ VCC, VBB: th.VBB, RB: th.RB, RC, RE, beta });
+      if (s.reg !== 'act' || s.IC < 0.2e-3 || s.IC > 8e-3 || Math.abs(s.VC - s.VB) < 0.5) { s = null; continue; }
+      p = { pnp, beta, VCC, R1, R2, RE, RC, amp: !pnp && (opts.amp ?? Math.random() < 0.4) };
+      if (p.amp) { p.RL = pick([4.7, 10, 22]) * 1e3; p.RS = pick([0.5, 1, 2]) * 1e3; p.bypass = pick([true, false]); }
+      break;
+    }
+    const { pnp, beta, VCC, R1, R2, RE, RC } = p;
+    const b1 = beta + 1, drive = pnp ? VCC - VON - th.VBB : th.VBB - VON;
+    const stiffIE = drive / RE, stiffIC = stiffIE * beta / b1;
+    const fig = p.amp ? ampFig({ VCC, R1, R2, RC, RE, RL: p.RL, RS: p.RS, bypass: p.bypass }) : biasFig({ type: pnp ? 'pnp' : 'npn', base: 'div', VCC, R1, R2, RC, RE });
+    const icTraps = notNear([{ v: stiffIE * 1e3, msg: 'That ignores the base current: it treats the divider as perfectly stiff ($V_B = V_{TH}$). Keep $R_{TH}/(\\beta + 1)$ next to $R_E$.' },
+      { v: beta * drive / (th.RB + RE) * 1e3, msg: '$R_E$ counted once in the base loop; it carries $(\\beta + 1)I_B$.' }], [s.IC * 1e3]);
+    const err = (stiffIE / s.IE - 1) * 100;
+    const sol = [
+      p.amp ? `**Step 0: the DC circuit.** At DC every capacitor is an open circuit. Erase $C_1$, $C_2$${p.bypass ? ' and $C_E$' : ''}: the source, $R_S$ and $R_L$ are cut off, and what is left is the transistor with its divider, $R_C$ and $R_E$.` : '',
+      `**Step 1: Thévenin twin of the divider.** $V_{TH} = V_{CC}\\dfrac{R_2}{R_1 + R_2} = ${f(VCC, 3)}\\times\\dfrac{${kOs(R2)}}{${kOs(R1 + R2)}} = ${T.V(th.VBB)}$, $R_{TH} = R_1\\parallel R_2 = ${T.kO(th.RB)}$.`,
+      pnp ? `**Step 2: the base loop** (PNP: from $V_{CC}$ down through $R_E$, which carries $(\\beta + 1)I_B$, across the $0.7\\,\\text{V}$ junction, through $R_{TH}$ to $V_{TH}$):
+$$I_B = \\frac{V_{CC} - 0.7 - V_{TH}}{R_{TH} + (\\beta + 1)R_E} = \\frac{${f(drive, 4)}\\,\\text{V}}{${T.kO(th.RB)} + ${b1}\\times${kOs(RE)}} = ${T.uA(s.IB)}$$`
+        : `**Step 2: the base loop** (from $V_{TH}$ through $R_{TH}$, the $0.7\\,\\text{V}$ junction and $R_E$, which carries $(\\beta + 1)I_B$):
+$$I_B = \\frac{V_{TH} - 0.7}{R_{TH} + (\\beta + 1)R_E} = \\frac{${f(drive, 4)}\\,\\text{V}}{${T.kO(th.RB)} + ${b1}\\times${kOs(RE)}} = ${T.uA(s.IB)}$$`,
+      `**Step 3.** $I_C = \\beta I_B = ${T.mA(s.IC)}$, $I_E = ${T.mA(s.IE)}$. ${pnp ? `$V_E = V_{CC} - I_ER_E = ${T.V(s.VE)}$, $V_B = V_E - 0.7 = ${T.V(s.VB)}$, $V_C = I_CR_C = ${T.V(s.VC)}$.` : `$V_E = I_ER_E = ${T.V(s.VE)}$, $V_B = ${T.V(s.VB)}$, $V_C = V_{CC} - I_CR_C = ${T.V(s.VC)}$.`}`,
+      `**Step 4: check.** ${pnp ? `$V_C = ${T.V(s.VC)}\\le V_B = ${T.V(s.VB)}$` : `$V_C = ${T.V(s.VC)}\\ge V_B = ${T.V(s.VB)}$`} ✓ forward active.`,
+      `**How stiff is the divider?** Ignoring the base current would give $I_E = ${f(drive, 4)}\\,\\text{V}/${kOs(RE)} = ${T.mA(stiffIE)}$, ${f(Math.abs(err), 2)}% ${err > 0 ? 'high' : 'low'}. The reason: $R_{TH}/(\\beta + 1) = ${T.R(th.RB / b1)}$ next to $R_E = ${kOs(RE)}$. ${th.RB < 0.1 * b1 * RE ? 'Since $R_{TH} < 0.1(\\beta + 1)R_E$, the divider is stiff and the shortcut is fine for an estimate.' : 'Since $R_{TH}$ is not small next to $(\\beta + 1)R_E$, the divider is soft: keep the base current.'}`,
+    ].filter(Boolean).join('\n\n');
+    return {
+      fig,
+      q: `$\\beta = ${beta}$, $|V_{BE}| = 0.7\\,\\text{V}$.${p.amp ? ' The capacitors are large.' : ''} Find the Thévenin equivalent of the base divider, then $I_C$ and $V_C$ (keep the base current), and check the region.`,
+      parts: [{ lbl: 'V_{TH}', unit: 'V', ans: th.VBB }, { lbl: 'R_{TH}', unit: 'kΩ', ans: th.RB / 1e3 }, { lbl: 'I_C', unit: 'mA', ans: s.IC * 1e3, traps: icTraps }, { lbl: 'V_C', unit: 'V', ans: s.VC, tol: { rel: 0.015, abs: 0.03 } }],
+      hints: ['$V_{TH} = V_{CC}R_2/(R_1 + R_2)$, $R_{TH} = R_1\\parallel R_2$.' + (p.amp ? ' Capacitors are open at DC.' : ''),
+        pnp ? 'PNP base loop: $V_{CC} - (\\beta + 1)I_BR_E - 0.7 - I_BR_{TH} = V_{TH}$.' : 'Base loop: $V_{TH} - I_BR_{TH} - 0.7 - (\\beta + 1)I_BR_E = 0$.'],
+      sol,
+      _chk: { kind: 'dcdiv', p, ans: [th.VBB, th.RB / 1e3, s.IC * 1e3, s.VC] },
+    };
+  };
+
+  // ---------------------------------------------------------------- DC: circuits that saturate (NPN with or without R_E, PNP)
+  GENS.bk_dcsat = () => {
+    let p, s;
+    for (let t = 0; t < 2000; t++) {
+      const kind = pick(['ge', 're', 're', 'pnp']);
+      const beta = pick([50, 80, 100, 100, 150, 200]);
+      const VCC = pick([5, 6, 9, 10, 12]);
+      const RC = pick([1, 2.2, 3.3, 4.7, 6.8, 10]) * 1e3, RB = pick([4.7, 10, 15, 22, 47]) * 1e3;
+      const RE = kind === 'ge' ? 0 : pick([0.5, 1, 1.5, 2.2]) * 1e3;
+      p = { kind, beta, VCC, RC, RB, RE };
+      if (kind === 'pnp') { p.VBB = r2(VCC - pick([2, 3, 4, 5, VCC])); if (p.VBB < 0) continue; s = pnpDC(p); }
+      else { p.VBB = pick([2, 3, 4, 5]); if (p.VBB > VCC) continue; s = npnDC(p); }
+      if (s.reg !== 'sat' || s.IB <= 0 || s.IC <= 0.1e-3 || s.IC > 0.8 * beta * s.IB) { s = null; continue; }
+      if (kind === 'pnp' ? s.act.VC - s.act.VB < 0.5 : s.act.VB - s.act.VC < 0.5) { s = null; continue; }
+      break;
+    }
+    const pn = p.kind === 'pnp', a = s.act, b1 = p.beta + 1, R = (x) => f(x / 1e3, 4);
+    const drive = pn ? p.VCC - VON - p.VBB : p.VBB - VON;
+    const fb = s.IC / s.IB;
+    const loopA = `**Step 1: assume forward active.** $I_B = \\dfrac{${pn ? 'V_{CC} - 0.7 - V_{BB}' : 'V_{BB} - 0.7'}}{R_B${p.RE ? ' + (\\beta + 1)R_E' : ''}} = \\dfrac{${f(drive, 4)}\\,\\text{V}}{${kOs(p.RB)}${p.RE ? ` + ${b1}\\times${kOs(p.RE)}` : ''}} = ${T.uA(a.IB)}$, so $I_C = \\beta I_B = ${T.mA(a.IC)}$ and $V_C = ${pn ? `I_CR_C = ${T.V(a.VC)}` : `V_{CC} - I_CR_C = ${T.V(a.VC)}`}$.`;
+    const chk = `**Step 2: check.** ${pn ? `$V_C = ${T.V(a.VC)} > V_B = ${T.V(a.VB)}$` : `$V_C = ${T.V(a.VC)} < V_B = ${T.V(a.VB)}$`}: the collector has crossed the base, so the BC junction is forward biased. **Saturated.** (No real circuit can deliver that $${T.mA(a.IC)}$: there are not enough volts for $R_C$.)`;
+    let satT;
+    if (!p.RE) satT = `**Step 3: redo in saturation** ($V_{BE} = 0.7\\,\\text{V}$, $V_{CE} = 0.2\\,\\text{V}$, $I_B$ and $I_C$ now separate unknowns). With no emitter resistor the two loops do not share a resistor:
+$$I_B = \\frac{${f(drive, 4)}\\,\\text{V}}{${kOs(p.RB)}} = ${T.uA(s.IB)},\\qquad I_C = \\frac{${f(p.VCC, 4)} - 0.2}{${kOs(p.RC)}} = ${T.mA(s.IC)}.$$`;
+    else satT = `**Step 3: redo in saturation** ($|V_{BE}| = 0.7\\,\\text{V}$, $|V_{CE}| = 0.2\\,\\text{V}$, $I_B$ and $I_C$ now separate unknowns). Both loops pass through $R_E$, which carries $I_B + I_C$. In mA and kΩ:
+$$\\text{base loop: } ${R(p.RB)}\\,I_B + ${R(p.RE)}\\,(I_B + I_C) = ${f(drive, 4)},\\qquad \\text{collector loop: } ${R(p.RC)}\\,I_C + ${R(p.RE)}\\,(I_B + I_C) = ${f(p.VCC - VSAT, 4)}$$
+Solving the pair: $I_B = ${T.uA(s.IB)}$, $I_C = ${T.mA(s.IC)}$.`;
+    const vc = pn ? `$V_E = V_{CC} - (I_B + I_C)R_E = ${T.V(s.VE)}$, $V_C = V_E - 0.2 = ${T.V(s.VC)}$` : `$V_E = ${T.V(s.VE)}$, $V_C = V_E + 0.2 = ${T.V(s.VC)}$`;
+    return {
+      fig: pn ? biasFig({ type: 'pnp', base: 'vbb', VCC: p.VCC, VBB: p.VBB, RB: p.RB, RC: p.RC, RE: p.RE }) : biasFig({ type: 'npn', base: 'vbb', VCC: p.VCC, VBB: p.VBB, RB: p.RB, RC: p.RC, RE: p.RE }),
+      q: `$\\beta = ${p.beta}$, $|V_{BE}| = 0.7\\,\\text{V}$ when on, $|V_{CE,sat}| = 0.2\\,\\text{V}$. (1) Assume forward active and find the $V_C$ that predicts. (2) That fails the check: find the actual $I_C$. (3) Find the forced $\\beta = I_C/I_B$.`,
+      parts: [{ lbl: 'V_C\\ \\text{(active guess)}', unit: 'V', ans: a.VC, tol: { rel: 0.015, abs: 0.03 } },
+        { lbl: 'I_C', unit: 'mA', ans: s.IC * 1e3, traps: notNear([{ v: a.IC * 1e3, msg: 'That is the forward-active value $\\beta I_B$, which the check just ruled out.' }], [s.IC * 1e3]) },
+        { lbl: '\\beta_{forced}', unit: '', ans: fb }],
+      hints: ['Active first: the usual base loop. Then compare $V_C$ with $V_B$.', p.RE ? 'In saturation write two loops, each through $R_E$ (which carries $I_B + I_C$), with $|V_{BE}| = 0.7\\,\\text{V}$ and $|V_{CE}| = 0.2\\,\\text{V}$.' : 'In saturation $V_{CE} = 0.2\\,\\text{V}$, so $R_C$ has $V_{CC} - 0.2$ across it.'],
+      sol: [loopA, chk, satT, `**Step 4: nodes and consistency.** ${vc}. Forced $\\beta = I_C/I_B = ${f(fb, 4)} < \\beta = ${p.beta}$ ✓, and both currents are positive ✓: saturation is consistent.`,
+        `**Feel.** The base has more current than the collector circuit can use: ${f(p.beta / fb, 3)} times what would just reach the edge of saturation. In saturation the outside resistors, not $\\beta$, set $I_C$.`].join('\n\n'),
+      _chk: { kind: 'dcsat', p, ans: [a.VC, s.IC * 1e3, fb] },
+    };
+  };
+
+  // ---------------------------------------------------------------- the Early effect: I_C = I_0(1 + V_CE/V_A), r_o = V_A/I_C
+  GENS.bk_early = () => {
+    const mode = pick(['ro', 'two', 'two', 'new', 'fixed']);
+    const VA = pick([20, 30, 40, 50, 60, 75, 80, 100, 120, 150]);
+    if (mode === 'ro') {
+      const IC = pick([0.1, 0.2, 0.25, 0.5, 1, 2, 4]) * 1e-3, k = pick([2, 4, 10]);
+      return {
+        q: `A BJT with Early voltage $V_A = ${VA}\\,\\text{V}$ is biased at $I_C = ${T.mA(IC)}$. Find its output resistance $r_o$, and $r_o$ at ${k} times the current.`,
+        parts: [{ lbl: 'r_o', unit: 'kΩ', ans: VA / IC / 1e3 }, { lbl: `r_o\\ (${k}I_C)`, unit: 'kΩ', ans: VA / (k * IC) / 1e3, traps: notNear([{ v: k * VA / IC / 1e3, msg: 'Backwards: more current means a steeper output curve, so a **smaller** $r_o$.' }], [VA / (k * IC) / 1e3]) }],
+        hints: ['$r_o = V_A/I_C$: volts over milliamps gives kilohms.'],
+        sol: `$$r_o = \\frac{V_A}{I_C} = \\frac{${VA}\\,\\text{V}}{${T.mA(IC)}} = ${T.kO(VA / IC)}$$
+At ${k} times the current, $r_o = ${T.kO(VA / (k * IC))}$: ${k} times smaller. All the output curves extrapolate to the same point $-V_A$, so a curve twice as high is twice as steep. (The MOSFET twin: $r_{ds} = 1/(\\lambda I_D)$, with $1/\\lambda$ playing the part of $V_A$.)`,
+        _chk: { kind: 'early', mode, VA, IC, k },
+      };
+    }
+    if (mode === 'two') {
+      const I0 = pick([0.2, 0.4, 0.5, 0.8, 1, 1.5, 2, 3]) * 1e-3, V1 = pick([1, 2, 3]), V2 = V1 + pick([4, 5, 6, 8, 10]);
+      const I1 = +f(I0 * (1 + V1 / VA) * 1e3, 5), I2 = +f(I0 * (1 + V2 / VA) * 1e3, 5);           // as displayed, in mA
+      const vA = (I1 * V2 - I2 * V1) / (I2 - I1), rs = (V2 - V1) / (I2 - I1);
+      return {
+        q: `At a fixed $V_{BE}$ you measure $I_C = ${I1}\\,\\text{mA}$ at $V_{CE} = ${V1}\\,\\text{V}$ and $I_C = ${I2}\\,\\text{mA}$ at $V_{CE} = ${V2}\\,\\text{V}$. Find the Early voltage $V_A$ and the output resistance $\\Delta V_{CE}/\\Delta I_C$.`,
+        parts: [{ lbl: 'V_A', unit: 'V', ans: vA }, { lbl: '\\Delta V_{CE}/\\Delta I_C', unit: 'kΩ', ans: rs }],
+        hints: ['Extend the straight line through the two points back to $I_C = 0$: it crosses at $V_{CE} = -V_A$.', 'Equivalently $I_{C1}/I_{C2} = (V_A + V_{CE1})/(V_A + V_{CE2})$; solve for $V_A$.'],
+        sol: `**Slope.** $\\dfrac{\\Delta I_C}{\\Delta V_{CE}} = \\dfrac{${I2} - ${I1}}{${V2} - ${V1}}\\,\\text{mA/V} = ${f((I2 - I1) / (V2 - V1), 4)}\\,\\text{mA/V}$, so $\\Delta V_{CE}/\\Delta I_C = ${f(rs, 4)}\\kO$.
+
+**Early voltage.** The line $I_C = I_0(1 + V_{CE}/V_A)$ through both points meets $I_C = 0$ at $V_{CE} = -V_A$. Walking down from the first point with that slope: $V_A + ${V1} = I_{C1}\\big/\\tfrac{\\Delta I_C}{\\Delta V_{CE}} = ${I1}/${f((I2 - I1) / (V2 - V1), 4)} = ${f(I1 / ((I2 - I1) / (V2 - V1)), 4)}\\,\\text{V}$, so
+$$V_A = ${f(vA, 4)}\\,\\text{V}.$$
+Check with the ratio: $(V_A + ${V1})/(V_A + ${V2}) = ${f((vA + V1) / (vA + V2), 5)} = I_{C1}/I_{C2}$ ✓. Notice $\\Delta V_{CE}/\\Delta I_C = (V_A + V_{CE1})/I_{C1}$: the course's $r_o = V_A/I_C$ (here $${f(vA / I1, 4)}\\kO$) drops the small $V_{CE}$.`,
+        _chk: { kind: 'early', mode, I1, I2, V1, V2 },
+      };
+    }
+    if (mode === 'new') {
+      const I1 = pick([0.2, 0.5, 1, 1.2, 2, 2.5]) * 1e-3, V1 = pick([1, 2, 3, 5]), V2 = V1 + pick([3, 5, 7, 10]);
+      const I2 = I1 * (VA + V2) / (VA + V1);
+      return {
+        q: `A BJT with $V_A = ${VA}\\,\\text{V}$ carries $${T.mA(I1)}$ at $V_{CE} = ${V1}\\,\\text{V}$. With $V_{BE}$ unchanged, what does it carry at $V_{CE} = ${V2}\\,\\text{V}$?`,
+        parts: [{ lbl: 'I_C', unit: 'mA', ans: I2 * 1e3, tol: { rel: 0.002 } }],
+        hints: ['All the active-region lines aim at $V_{CE} = -V_A$: $I_C\\propto(V_A + V_{CE})$.'],
+        sol: `$I_C = I_0(1 + V_{CE}/V_A) = \\tfrac{I_0}{V_A}(V_A + V_{CE})$, so at a fixed $V_{BE}$
+$$I_{C2} = I_{C1}\\,\\frac{V_A + V_{CE2}}{V_A + V_{CE1}} = ${T.mA(I1)}\\times\\frac{${VA + V2}}{${VA + V1}} = ${T.mA(I2, 5)}$$
+A ${V2 - V1} V step in $V_{CE}$ changes the current by only ${f((I2 / I1 - 1) * 100, 3)}%: the collector is a good, but not perfect, current source. (Give four or five significant figures: the change is small.)`,
+        _chk: { kind: 'early', mode, VA, I1, V1, V2 },
+      };
+    }
+    // fixed bias with the Early effect included
+    const VCC = pick([9, 10, 12, 15]), RC = pick([2.2, 3.3, 4.7, 5]) * 1e3, b0 = pick([80, 100, 150]);
+    let IB, IC, VC;
+    for (let t = 0; t < 100; t++) {
+      IB = pick([5, 8, 10, 12, 15, 20]) * 1e-6;
+      const I0 = b0 * IB;
+      IC = I0 * (1 + VCC / VA) / (1 + I0 * RC / VA); VC = VCC - IC * RC;
+      if (VC > 1.5 && b0 * IB * RC < VCC - 1.5) break;
+    }
+    const I0 = b0 * IB, VC0 = VCC - I0 * RC;
+    return {
+      fig: biasFig({ type: 'npn', base: 'fixed', VCC, RB: '', RC }),
+      q: `In this fixed-bias circuit $R_B$ sets $I_B = ${T.uA(IB)}$. The transistor follows $I_C = \\beta I_B(1 + V_{CE}/V_A)$ with $\\beta = ${b0}$ (the value extrapolated to $V_{CE} = 0$) and $V_A = ${VA}\\,\\text{V}$. Find $I_C$ and $V_C$ including the Early effect.`,
+      parts: [{ lbl: 'I_C', unit: 'mA', ans: IC * 1e3, traps: notNear([{ v: I0 * 1e3, msg: 'That ignores the Early effect: $\\beta I_B$ holds only at $V_{CE} = 0$ here.' }], [IC * 1e3]) }, { lbl: 'V_C', unit: 'V', ans: VC, tol: { rel: 0.015, abs: 0.03 } }],
+      hints: ['Two equations: $I_C = \\beta I_B(1 + V_{CE}/V_A)$ and $V_{CE} = V_{CC} - I_CR_C$.', 'Substitute the second into the first and solve for $I_C$: $I_C = \\beta I_B\\dfrac{1 + V_{CC}/V_A}{1 + \\beta I_BR_C/V_A}$.'],
+      sol: `Let $I_0 = \\beta I_B = ${T.mA(I0)}$. Put $V_{CE} = V_{CC} - I_CR_C$ into $I_C = I_0(1 + V_{CE}/V_A)$:
+$$I_C = I_0\\Big(1 + \\frac{V_{CC} - I_CR_C}{V_A}\\Big)\\quad\\Rightarrow\\quad I_C\\Big(1 + \\frac{I_0R_C}{V_A}\\Big) = I_0\\Big(1 + \\frac{V_{CC}}{V_A}\\Big)$$
+$$I_C = ${T.mA(I0)}\\times\\frac{1 + ${VCC}/${VA}}{1 + ${f(I0 * RC, 4)}/${VA}} = ${T.mA(IC)},\\qquad V_C = ${VCC} - (${T.mA(IC)})(${kOs(RC)}) = ${T.V(VC)}.$$
+Ignoring the Early effect would give $${T.mA(I0)}$ and $${T.V(VC0)}$: ${f((IC / I0 - 1) * 100, 3)}% off in current. Fixed bias has no feedback to fight it; an emitter resistor would shrink this to a fraction of a percent, which is why the course drops $V_A$ in DC work and keeps it for signals, as $r_o$.`,
+      _chk: { kind: 'early', mode: 'fixed', VCC, RC, b0, IB, VA },
     };
   };
 })();

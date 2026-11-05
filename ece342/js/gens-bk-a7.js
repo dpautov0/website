@@ -254,7 +254,7 @@ $$R = R_1\parallel R_2 = ${resT(Rth)},\qquad \tau = RC = ${resT(Rth)}\times${cap
 
 **At $t = ${timeT(t)}$** that is $${m}\tau$:
 $$v_C = v_C(\infty)\left(1 - e^{-${m}}\right) = ${f(vinf, 4)}\times${f(1 - Math.exp(-m), 4)} = ${f(vt, 4)}\,\text{V}$$
-(This is the Thévenin picture: the node behaves like a source of $${f(vinf, 4)}\,\text{V}$ behind ${resT(Rth)}.)`,
+(This is the Thévenin picture: the node behaves like a source of $${f(vinf, 4)}\,\text{V}$ behind $${resT(Rth)}$.)`,
       };
     }
     // a current step into R parallel C (the Norton picture of an amplifier output)
@@ -582,4 +582,344 @@ $$\omega = \frac{b_1\mp\sqrt{b_1^2 - 4b_2}}{2b_2}:\qquad \omega_{p1} = ${wT(w1, 
 **The shortcut.** If the poles are far apart, $\omega_{p1}\approx 1/b_1 = ${wT(est1, 4)}$ and $\omega_{p2}\approx b_1/b_2 = ${wT(est2, 4)}$ (here ${Math.abs(est1 / w1 - 1) < 0.1 ? 'within ' + f(Math.abs(est1 / w1 - 1) * 100, 2) + '\\%' : 'off by ' + f(Math.abs(est1 / w1 - 1) * 100, 2) + '\\%: the poles are not far apart'}). Note that neither pole is $1/(R_1C_1) = ${wT(1 / (R1 * C1), 4)}$ or $1/(R_2C_2) = ${wT(1 / (R2 * C2), 4)}$: the sections load each other.`,
     };
   };
+
+  // ================================================================ Chapter 11 drills (Bode plots)
+  const wTeX = (w) => EB().wTeX(w);
+  const L10 = Math.log10;
+  const corners = (sp) => [...(sp.zeros || []).map((c) => [c, 'z']), ...(sp.rhp || []).map((c) => [c, 'r']), ...(sp.poles || []).map((c) => [c, 'p'])].sort((a, b) => a[0] - b[0]);
+  const KIND = { z: 'zero', r: 'RHP zero', p: 'pole' };
+  const sgnK = (sp) => ((sp.k ?? 1) < 0 ? -1 : 1);
+  // straight-line magnitude, factor by factor: the "products become sums" table
+  function magRows(sp, w) {
+    const k = Math.abs(sp.k ?? 1);
+    const rows = [`| Factor | Corner | Straight line at $\\omega = ${wTeX(w)}$ |`, '|---|---|---|', `| $k = ${f(sp.k ?? 1, 4)}$ | | $20\\log_{10}${f(k, 4)} = ${dbT(20 * L10(k))}$ |`];
+    if (sp.origin) rows.push(`| $s/${wTeX(sp.w0 || 1)}$ | (none) | $20\\log_{10}(\\omega/${wTeX(sp.w0 || 1)}) = ${dbT(20 * L10(w / (sp.w0 || 1)))}$ |`);
+    corners(sp).forEach(([c, t]) => {
+      const d = L10(w / c), on = d > 1e-9, sg = t === 'p' ? -1 : 1;
+      rows.push(`| ${KIND[t]} | $${wTeX(c)}$ | ${on ? `$${sg > 0 ? '+' : '-'}20\\times${f(d, 3)} = ${dbT(sg * 20 * d)}$ (${f(d, 3)} dec above)` : '$0$ (not reached yet)'} |`);
+    });
+    return rows.join('\n');
+  }
+  // straight-line phase, factor by factor
+  const ramp = (w, c) => (w <= c / 10 * (1 + 1e-9) ? 0 : w >= c * 10 * (1 - 1e-9) ? 90 : 45 * (L10(w / c) + 1));
+  function phRows(sp, w) {
+    const rows = ['| Factor | Corner | Where $\\omega$ is | Straight line |', '|---|---|---|---|'];
+    if ((sp.k ?? 1) < 0) rows.push('| $k < 0$ | | every frequency | $+180^\\circ$ |');
+    if (sp.origin) rows.push(`| $s^{${sp.origin}}$ | | every frequency | $+${90 * sp.origin}^\\circ$ |`);
+    corners(sp).forEach(([c, t]) => {
+      const r = ramp(w, c), sg = t === 'z' ? 1 : -1;
+      const where = r === 0 ? `below $${wTeX(c / 10)}$: not started` : r === 90 ? `above $${wTeX(c * 10)}$: finished` : `${f(L10(w / c) + 1, 3)} decades into the ramp`;
+      rows.push(`| ${KIND[t]} | $${wTeX(c)}$ | ${where} | $${sg * r === 0 ? '0' : (sg > 0 ? '+' : '-') + f(r, 3)}^\\circ$ |`);
+    });
+    return rows.join('\n');
+  }
+  const asyMag = (sp, w) => EB().tf(sp).asyDb(w);
+  const asyPh = (sp, w) => EB().tf(sp).asyPhase(w);
+  const pickE = (n, lo = 1, hi = 8) => U.shuffle(Array.from({ length: hi - lo + 1 }, (_, i) => lo + i)).slice(0, n).sort((a, b) => a - b);
+
+  // ---- bk_db: decibels both ways, and chains of stages
+  const DBR = [[2, '2', '6'], [4, '2\\times2', '6 + 6 = 12'], [5, '10/2', '20 - 6 = 14'], [8, '2\\times2\\times2', '18'], [20, '10\\times2', '20 + 6 = 26'], [25, '100/4', '40 - 12 = 28'],
+    [40, '10\\times4', '20 + 12 = 32'], [50, '100/2', '40 - 6 = 34'], [200, '100\\times2', '40 + 6 = 46'], [400, '100\\times4', '40 + 12 = 52'], [500, '1000/2', '60 - 6 = 54'],
+    [2000, '1000\\times2', '60 + 6 = 66'], [0.5, '1/2', '-6'], [0.25, '1/4', '-12'], [0.2, '2/10', '6 - 20 = -14'], [0.05, '1/20', '-26'], [0.02, '2/100', '6 - 40 = -34'],
+    [0.01, '1/100', '-40'], [Math.SQRT2, '\\sqrt2', '3'], [Math.SQRT1_2, '1/\\sqrt2', '-3'], [Math.sqrt(10), '\\sqrt{10}', '10'], [Math.sqrt(1000), '10\\sqrt{10}', '30'], [1 / Math.sqrt(10), '1/\\sqrt{10}', '-10']];
+  const rT = (r) => (r === Math.SQRT2 ? '\\sqrt2' : r === Math.SQRT1_2 ? '1/\\sqrt2' : r === Math.sqrt(10) ? '\\sqrt{10}' : r === Math.sqrt(1000) ? '31.6' : r === 1 / Math.sqrt(10) ? '0.316' : f(r, 4));
+  GENS.bk_db = (o = {}) => {
+    const kind = o.kind || pick(['to', 'from', 'chain']);
+    if (kind === 'to') {
+      const [r, how, d] = pick(DBR);
+      const ans = 20 * L10(r);
+      return {
+        _chk: { kind, r, ans },
+        q: md`A voltage gain has magnitude $${rT(r)}$. What is it in decibels? Do it without a calculator: build it from $\times10\to+20\,\text{dB}$ and $\times2\to+6\,\text{dB}$.`,
+        parts: [plain('|A|_{dB}', ans, 'dB', { tol: { abs: 0.3 }, traps: [{ v: 10 * L10(r), msg: '$10\\log_{10}$ is for **power** ratios. A voltage gain uses $20\\log_{10}$.' }, { v: -ans, msg: 'Check the sign: a gain above 1 is positive dB, below 1 negative.' }] })],
+        hints: [md`Split the number into factors of 10 and 2: each $\times10$ is $+20\,\text{dB}$, each $\times2$ is $+6\,\text{dB}$, each $\div$ subtracts.`],
+        sol: md`Logs turn the product into a sum: $${rT(r)} = ${how}$, so $|A|_{\text{dB}} = ${d}\,\text{dB}$. Exactly: $20\log_{10}${f(r, 4)} = ${dbT(ans, 4)}$.`,
+      };
+    }
+    if (kind === 'from') {
+      const [r, how, d] = pick(DBR.filter((x) => x[0] !== Math.sqrt(1000)));
+      const D = Math.round(20 * L10(r));
+      const ans = 10 ** (D / 20);
+      return {
+        _chk: { kind, D, ans },
+        q: md`A gain is $${D}\,\text{dB}$. What is it as a plain ratio (V/V)?`,
+        parts: [plain('|A|', ans, 'V/V', { traps: [{ v: 10 ** (D / 10), msg: 'That undoes $10\\log_{10}$ (power). For voltage, $|A| = 10^{\\text{dB}/20}$.' }, { v: D / 20, msg: 'Raise 10 to that power: $|A| = 10^{\\text{dB}/20}$.' }] })],
+        hints: [md`$|A| = 10^{\text{dB}/20}$; or split the dB into $20$s ($\times10$) and $6$s ($\times2$).`],
+        sol: md`$$|A| = 10^{${D}/20} = ${f(ans, 4)}$$
+In your head: $${d}\,\text{dB}$ is $${how}$, which is $${rT(r)}$.`,
+      };
+    }
+    const G0 = [10, -10, 5, -5, 20, -20, 0.5, 0.2, 2, 50, 100, -100, 0.1];
+    const n = ri(2, 3), gs = Array.from({ length: n }, () => pick(G0));
+    const tot = gs.reduce((a, b) => a * b, 1), dB = gs.reduce((a, g) => a + 20 * L10(Math.abs(g)), 0);
+    return {
+      _chk: { kind, gs, tot, dB },
+      q: md`${n} amplifier stages are cascaded with (loaded) gains ${gs.map((g) => `$${f(g, 3)}$`).join(', ')}. Find the overall gain magnitude as a ratio and in decibels.`,
+      parts: [plain('|A_{tot}|', Math.abs(tot), 'V/V', { traps: [{ v: Math.abs(gs.reduce((a, b) => a + b, 0)), msg: 'Gains of cascaded stages **multiply**; it is their dB values that add.' }] }),
+        plain('|A_{tot}|_{dB}', dB, 'dB', { tol: { abs: 0.3 } })],
+      hints: [md`Ratios multiply; decibels add. Find each stage's dB, then add.`],
+      sol: md`$$|A_{tot}| = ${gs.map((g) => f(Math.abs(g), 3)).join('\\times')} = ${f(Math.abs(tot), 4)}$$
+In dB, add the stages: ${gs.map((g) => `$${f(20 * L10(Math.abs(g)), 3)}$`).join(' + ')} $= ${dbT(dB, 4)}$, which is $20\log_{10}${f(Math.abs(tot), 4)}$. ✓ (The signs only add phase: ${gs.filter((g) => g < 0).length} inversion${gs.filter((g) => g < 0).length === 1 ? '' : 's'}.)`,
+    };
+  };
+
+  // ---- bk_pole: one pole, exact versus straight line
+  GENS.bk_pole = (o = {}) => {
+    const A0 = pick([10, 20, 50, 100, 1000, -40, -100]), wp = pick([1, 2, 5]) * 10 ** ri(3, 7);
+    const m = pick([0.1, 0.2, 0.5, 1, 2, 5, 10, 100]), w = m * wp;
+    const sp = { k: A0, poles: [wp] }, T = EB().tf(sp);
+    const ad = T.asyDb(w), ed = T.db(w), ap = T.asyPhase(w), ep = T.phase(w);
+    const neg = A0 < 0;
+    return {
+      _chk: { sp, w, ad, ed, ap, ep },
+      q: md`$$${EB().tex(sp)}$$
+At $\omega = ${wTeX(w)}\,\text{rad/s}$ find the straight-line magnitude, the exact magnitude (both in dB), and the straight-line phase.${neg ? ' Take the phase of a negative constant as $+180^\\circ$.' : ''}`,
+      parts: [
+        plain('|H|_{dB}\\ \\text{(straight line)}', ad, 'dB', { tol: { abs: 0.3 }, traps: [{ v: 20 * L10(Math.abs(A0)), msg: m > 1 ? 'Above the corner the line falls $20\\,\\text{dB}$ per decade.' : '' }] }),
+        plain('|H|_{dB}\\ \\text{(exact)}', ed, 'dB', { tol: { abs: 0.1 }, traps: [{ v: ad, msg: 'That is the straight line. The exact curve is $10\\log_{10}(1 + x^2)$ below the flat level.' }] }),
+        plain('\\angle H\\ \\text{(straight line)}', ap, '°', { tol: { abs: 1 }, accept: neg ? [ap - 360] : [], traps: [{ v: ep, msg: 'That is the exact $\\tan^{-1}$. The straight line is $0$ until $0.1\\omega_p$, then $-45^\\circ$ per decade until $10\\omega_p$.' }, { v: neg ? ap - 180 : ap + 180, msg: neg ? 'The negative constant adds $180^\\circ$.' : 'The constant is positive: no $180^\\circ$.' }] }),
+      ],
+      hints: [md`$x = \omega/\omega_p = ${f(m, 3)}$. Straight line: flat below the corner, $-20\,\text{dB/dec}$ above. Exact: $20\log_{10}|A_0| - 10\log_{10}(1 + x^2)$.`, md`Straight-line phase: $0$ for $x\le0.1$, $-45^\circ(1 + \log_{10}x)$ for $0.1 < x < 10$, $-90^\circ$ for $x\ge10$${neg ? ', plus $180^\\circ$' : ''}.`],
+      sol: md`$x = \omega/\omega_p = ${f(m, 3)}$; flat level $20\log_{10}${f(Math.abs(A0), 4)} = ${dbT(20 * L10(Math.abs(A0)))}$.
+
+**Straight line:** ${m <= 1 ? 'at or below the corner, the flat level' : `$${f(L10(m), 3)}$ decades above the corner at $-20\\,\\text{dB/dec}$`}: $${dbT(ad)}$.
+
+**Exact:** $${dbT(20 * L10(Math.abs(A0)))} - 10\log_{10}(1 + ${f(m * m, 4)}) = ${dbT(ed)}$ (the error is $${dbT(ed - ad)}$; it is largest, $-3\,\text{dB}$, at the corner).
+
+**Phase:** ${neg ? '$180^\\circ$ from the constant, then ' : ''}${m <= 0.1 ? 'the ramp has not started' : m >= 10 ? 'the ramp is over' : `$-45^\\circ\\times(1 + \\log_{10}${f(m, 3)}) = ${degT(-45 * (1 + L10(m)))}$ from the ramp`}: straight line $${degT(ap)}$; exact $${degT(ep)}$.
+
+[[fig:p]]`,
+      figs: { p: { svg: EB().svg(sp, { show: 'both', marks: [{ w, n: `\\omega = ${wTeX(w)}` }], pts: [{ w }, { w, panel: 'phase' }] }), cap: 'Solid: straight lines. Dashed: exact.' } },
+    };
+  };
+
+  // ---- bk_zero: a zero, a right-half-plane zero, or s at the origin
+  GENS.bk_zero = (o = {}) => {
+    const kind = o.kind || pick(['lhp', 'rhp', 'origin', 'hp']);
+    const c = pick([1, 1, 2, 5]) * 10 ** ri(2, 6), A0 = pick([1, 2, 10, 100, 0.1]);
+    const m = pick([0.1, 1, 10, 100, 0.01]);
+    const w = m * c;
+    const sp = kind === 'lhp' ? { k: A0, zeros: [c] } : kind === 'rhp' ? { k: A0, rhp: [c] } : kind === 'origin' ? { k: A0, origin: 1, w0: c } : { k: A0, origin: 1, w0: c, poles: [c] };
+    const ad = asyMag(sp, w), ap = asyPh(sp, w);
+    const what = { lhp: 'an ordinary (left-half-plane) zero', rhp: 'a right-half-plane zero', origin: 'a zero at the origin', hp: 'a high-pass: a zero at the origin and a pole' }[kind];
+    return {
+      _chk: { kind, sp, w, ad, ap },
+      q: md`$$${EB().tex(sp)}$$
+This is ${what}. Using the straight-line rules, find $|H|$ in dB and $\angle H$ at $\omega = ${wTeX(w)}\,\text{rad/s}$.`,
+      parts: [plain('|H|_{dB}', ad, 'dB', { tol: { abs: 0.3 }, traps: [{ v: 2 * 20 * L10(Math.abs(A0)) - ad, msg: 'Check the direction: an $s$ or a zero makes the magnitude **rise** with frequency.' }] }),
+        plain('\\angle H', ap, '°', { tol: { abs: 1 }, traps: [{ v: -ap, msg: kind === 'rhp' ? 'A right-half-plane zero has the magnitude of a zero but the phase of a **pole**: it goes down.' : 'A left-half-plane zero (and an $s$) **adds** phase.' }] })],
+      hints: [kind === 'origin' ? md`$|s/\omega_0| = \omega/\omega_0$ exactly: a straight line of $+20\,\text{dB/dec}$ through $0\,\text{dB}$ at $\omega_0$, at every frequency, with $+90^\circ$.` : kind === 'hp' ? md`Below the corner the $s$ rises at $+20\,\text{dB/dec}$; at the corner the pole cancels its slope. Phase: $+90^\circ$ from the $s$, minus the pole's ramp.` : md`Flat below the corner, $+20\,\text{dB/dec}$ above. Phase ramps over $0.1\omega_z\ldots10\omega_z$, ${kind === 'rhp' ? '**down** to $-90^\\circ$' : 'up to $+90^\\circ$'}.`],
+      sol: md`Factor by factor, at $\omega = ${wTeX(w)}$:
+
+${magRows(sp, w)}
+
+Total: $|H|_{\text{dB}}\approx${dbT(ad)}$.
+
+${phRows(sp, w)}
+
+Total: $\angle H\approx${degT(ap)}$.${kind === 'rhp' ? ' The magnitude is that of a zero; the phase is that of a pole.' : ''}
+
+[[fig:p]]`,
+      figs: { p: { svg: EB().svg(sp, { show: 'both', wmin: Math.min(c, w) / 100, wmax: Math.max(c, w) * 100, marks: [{ w, n: `\\omega = ${wTeX(w)}` }], pts: [{ w }, { w, panel: 'phase' }] }) } },
+    };
+  };
+
+  // a random transfer function: 2–4 corners at powers of ten (sometimes 2x or 5x), at most as many zeros as poles
+  function randTF(o = {}) {
+    const n = o.n || ri(2, 4);
+    const ex_ = pickE(n, 1, 8);
+    for (;;) {
+      const sp = { k: pick([1, 10, 10, 100, 100, 1000, 20, 50]) * (o.neg !== false && Math.random() < 0.3 ? -1 : 1), zeros: [], poles: [], rhp: [] };
+      ex_.forEach((e) => {
+        const c = (o.mant && Math.random() < 0.3 ? pick([2, 5]) : 1) * 10 ** e;
+        const r = Math.random();
+        if (r < 0.55) sp.poles.push(c); else if (r < 0.85 || o.noRhp) sp.zeros.push(c); else sp.rhp.push(c);
+      });
+      const nz = sp.zeros.length + sp.rhp.length;
+      if (sp.poles.length >= 1 && nz <= sp.poles.length) return sp;
+    }
+  }
+  const cleanSp = (sp) => { const s = { k: sp.k }; ['zeros', 'poles', 'rhp'].forEach((k) => { if (sp[k] && sp[k].length) s[k] = sp[k].slice().sort((a, b) => a - b); }); if (sp.origin) { s.origin = sp.origin; s.w0 = sp.w0; } return s; };
+
+  // ---- bk_asy: straight-line magnitude at one frequency
+  GENS.bk_asy = (o = {}) => {
+    const sp = cleanSp(randTF({ mant: true }));
+    const cs = corners(sp);
+    const pickW = () => { const r = Math.random(); if (r < 0.4) return pick(cs)[0]; return 10 ** ri(Math.round(L10(cs[0][0])), Math.min(9, Math.round(L10(cs[cs.length - 1][0])) + 1)); };
+    const w = pickW(), ans = asyMag(sp, w);
+    const flat = 20 * L10(Math.abs(sp.k));
+    const last = cs.filter(([c]) => c < w).slice(-1);
+    const lastOnly = flat + (last.length ? (last[0][1] === 'p' ? -1 : 1) * 20 * L10(w / last[0][0]) : 0);
+    return {
+      _chk: { sp, w, ans },
+      q: md`$$${EB().tex(sp)}$$
+Using the straight-line approximation, what is $|H(j\omega)|$ in dB at $\omega = ${wTeX(w)}\,\text{rad/s}$?`,
+      parts: [plain('|H|_{dB}', ans, 'dB', { tol: { abs: 0.3 }, traps: [{ v: flat, msg: 'That is only the low-frequency level: every corner below this $\\omega$ bends the line.' }, { v: lastOnly, msg: 'Every corner already passed keeps contributing, not just the last one.' }, { v: EB().tf(sp).db(w), msg: 'That is the exact value; the question asks for the straight lines.' }] })],
+      hints: [md`Each factor's straight line contributes $0$ below its corner and $\pm20\log_{10}(\omega/\omega_c)$ above it ($+$ for any zero, $-$ for a pole). Add them to $20\log_{10}|k|$.`],
+      sol: md`Logs turn the product into a sum; add each factor's straight line at $\omega = ${wTeX(w)}$:
+
+${magRows(sp, w)}
+
+$$|H|_{\text{dB}}\approx${dbT(ans)}$$
+
+[[fig:p]]`,
+      figs: { p: { svg: EB().svg(sp, { marks: [{ w, n: `\\omega = ${wTeX(w)}` }], pts: [{ w }] }), cap: 'Solid: straight lines; dashed: exact.' } },
+    };
+  };
+
+  // ---- bk_phase: straight-line phase at one frequency
+  GENS.bk_phase = (o = {}) => {
+    const sp = cleanSp(randTF({ n: ri(2, 3) }));
+    const cs = corners(sp);
+    const w = 10 ** ri(Math.max(0, Math.round(L10(cs[0][0])) - 1), Math.round(L10(cs[cs.length - 1][0])) + 1);
+    const ans = asyPh(sp, w), ex_ = EB().tf(sp).phase(w), neg = sp.k < 0;
+    return {
+      _chk: { sp, w, ans },
+      q: md`$$${EB().tex(sp)}$$
+Using the straight-line phase rules, find $\angle H(j\omega)$ at $\omega = ${wTeX(w)}\,\text{rad/s}$.${neg ? ' (Take the phase of a negative constant as $+180^\\circ$.)' : ''}`,
+      parts: [plain('\\angle H', ans, '°', { tol: { abs: 1 }, accept: [ans - 360, ans + 360], traps: [{ v: ex_, msg: 'That is the exact phase. The straight lines ramp at $\\pm45^\\circ$ per decade from $0.1\\omega_c$ to $10\\omega_c$.' }] })],
+      hints: [md`Each pole: $0$ below $0.1\omega_p$, $-45^\circ$ per decade up to $10\omega_p$, then $-90^\circ$. A zero: the same with $+$. A right-half-plane zero: like a pole.${neg ? ' Add $180^\\circ$ for the negative constant.' : ''}`],
+      sol: md`${phRows(sp, w)}
+
+$$\angle H\approx${degT(ans)}\qquad(\text{exact: }${degT(ex_)})$$
+
+[[fig:p]]`,
+      figs: { p: { svg: EB().svg(sp, { show: 'phase', marks: [{ w, n: `\\omega = ${wTeX(w)}` }], pts: [{ w, panel: 'phase' }] }) } },
+    };
+  };
+
+  // ---- bk_sketch: from the (s + a) form to numbers on the sketch
+  GENS.bk_sketch = (o = {}) => {
+    let ex_, sp;
+    for (;;) {
+      ex_ = pickE(3, 1, 7);
+      const zi = ri(0, 2);
+      sp = { k: pick([10, 100, 1000, 20, 50, 200]), zeros: [], poles: [] };
+      if (Math.random() < 0.35) sp.k = -sp.k;
+      ex_.forEach((e, i) => (i === zi && Math.random() < 0.7 ? sp.zeros : sp.poles).push(10 ** e));
+      if (sp.poles.length >= 2) break;
+    }
+    const K = sp.k * sp.poles.reduce((a, c) => a * c, 1) / sp.zeros.reduce((a, c) => a * c, 1);
+    const cs = corners(sp);
+    const i = ri(0, cs.length - 2), wa = cs[i][0], wb = cs[i + 1][0];
+    const slope = EB().tf(sp).slope(Math.sqrt(wa * wb));
+    const w1 = 10 ** ri(ex_[0], Math.min(ex_[2] + 1, 8)), w2 = 10 ** ri(ex_[0], ex_[2] + 1);
+    const m1 = asyMag(sp, w1), p2 = asyPh(sp, w2), k0 = 20 * L10(Math.abs(sp.k));
+    const facs = (arr) => arr.map((c) => `(s + ${wTeX(c)})`).join('');
+    return {
+      _chk: { sp, K, wa, wb, slope, w1, m1, w2, p2, k0 },
+      q: md`$$H(s) = \frac{${f(K, 4)}${sp.zeros.length ? facs(sp.zeros) : ''}}{${facs(sp.poles)}}$$
+Sketch the Bode plot, then give: the low-frequency gain in dB; the slope of the magnitude between $${wTeX(wa)}$ and $${wTeX(wb)}\,\text{rad/s}$; the straight-line $|H|_{\text{dB}}$ at $\omega = ${wTeX(w1)}$; and the straight-line phase at $\omega = ${wTeX(w2)}$${sp.k < 0 ? ' (negative constant: $+180^\\circ$)' : ''}.`,
+      parts: [plain('|H(0)|_{dB}', k0, 'dB', { tol: { abs: 0.3 }, traps: [{ v: 20 * L10(Math.abs(K)), msg: 'Normalize first: each $(s + \\omega)$ factor carries its $\\omega$. $|H(0)| = |k|$, not the leading constant.' }] }),
+        plain('\\text{slope}', slope, 'dB/dec', { tol: { abs: 0.5 }, traps: [{ v: -slope, msg: 'Poles bend the line down ($-20$ each), zeros up ($+20$).' }] }),
+        plain(`|H|_{dB}\\ \\text{at}\\ ${wTeX(w1)}`, m1, 'dB', { tol: { abs: 0.3 } }),
+        plain(`\\angle H\\ \\text{at}\\ ${wTeX(w2)}`, p2, '°', { tol: { abs: 1 }, accept: [p2 - 360, p2 + 360] })],
+      hints: [md`Standard form first: pull every corner out of its factor. $k = H(0)$.`, md`Then walk: slope $= 20\times$(zeros passed $-$ poles passed); phase ramps $\pm45^\circ$/decade over $0.1\omega_c\ldots10\omega_c$.`],
+      sol: md`**1. Standard form.** Pull the corners out:
+$$${EB().tex(sp)}$$
+so $|H(0)| = ${f(Math.abs(sp.k), 4)}$, i.e. $${dbT(k0)}$.
+
+**2. Slope between $${wTeX(wa)}$ and $${wTeX(wb)}$:** the corners passed are ${cs.slice(0, i + 1).map(([c, t]) => `a ${KIND[t]} at $${wTeX(c)}$`).join(', ')}: $${slope}\,\text{dB/dec}$.
+
+**3. Magnitude at $${wTeX(w1)}$:**
+
+${magRows(sp, w1)}
+
+Total $${dbT(m1)}$.
+
+**4. Phase at $${wTeX(w2)}$:**
+
+${phRows(sp, w2)}
+
+Total $${degT(p2)}$.
+
+[[fig:p]]`,
+      figs: { p: { svg: EB().svg(sp, { show: 'both', marks: [{ w: w1, n: wTeX(w1) }, ...(w2 !== w1 ? [{ w: w2, n: wTeX(w2) }] : [])] }), cap: 'The sketch: straight lines solid, exact dashed.' } },
+    };
+  };
+
+  // ---- bk_read: read H(s) back from straight-line plots
+  GENS.bk_read = (o = {}) => {
+    const sp = cleanSp(randTF({ n: ri(2, 3) }));
+    const cs = corners(sp);
+    const flip = (x) => JSON.parse(JSON.stringify(x));
+    const vars = [];
+    { const v = flip(sp); v.k = -v.k; vars.push([v, 'The phase starts at ' + (sp.k < 0 ? '$180^\\circ$, so the constant is **negative**.' : '$0^\\circ$, so the constant is **positive**.')]); }
+    const zs = [...(sp.zeros || []), ...(sp.rhp || [])];
+    if (zs.length) {
+      const v = flip(sp), c = zs[0];
+      if ((sp.zeros || []).includes(c)) { v.zeros = v.zeros.filter((x) => x !== c); v.rhp = [...(v.rhp || []), c]; } else { v.rhp = v.rhp.filter((x) => x !== c); v.zeros = [...(v.zeros || []), c]; }
+      vars.push([cleanSp(v), `At $${wTeX(c)}$ the magnitude turns up and the phase goes ${(sp.rhp || []).includes(c) ? '**down**: a right-half-plane zero' : '**up**: an ordinary (left-half-plane) zero'}.`]);
+    }
+    { const v = flip(sp), c = sp.poles[sp.poles.length - 1]; v.poles = v.poles.filter((x) => x !== c); v.zeros = [...(v.zeros || []), c];
+      if (v.poles.length) vars.push([cleanSp(v), `At $${wTeX(c)}$ the magnitude turns **down**: a pole, not a zero.`]); }
+    { const v = flip(sp), c = cs[0][0], key = cs[0][1] === 'p' ? 'poles' : cs[0][1] === 'z' ? 'zeros' : 'rhp'; v[key] = v[key].map((x) => (x === c ? c * 10 : x));
+      if (!cs.some(([x]) => Math.abs(x - c * 10) < 1e-6 * c)) vars.push([cleanSp(v), 'The first corner is a decade off: read it where the slope first changes.']); }
+    const opts = vars.slice(0, 3);
+    const mc = [`$${EB().tex(sp)}$`, ...opts.map(([v]) => `$${EB().tex(v)}$`)];
+    return {
+      _chk: { sp, opts: opts.map((x) => x[0]) },
+      q: md`The straight-line Bode plots below belong to which transfer function? Read the low-frequency level, the corners and which way each one turns, and the phase. Also give $|k|$, and the lowest and highest corner frequencies.`,
+      figHtml: EB().svg(sp, { show: 'both', exact: false }),
+      parts: [plain('|k|', Math.abs(sp.k), 'V/V'), wPart('\\text{lowest corner}', cs[0][0]), wPart('\\text{highest corner}', cs[cs.length - 1][0]),
+        { lbl: 'Which $H(s)$?', mc, a: 0, why: [null, ...opts.map(([, w]) => w)] }],
+      hints: [md`Level at the left: $20\log_{10}|k|$. A kink down is a pole, a kink up a zero. The phase settles the rest: it starts at $180^\circ$ for a negative constant, and a zero whose phase goes down is in the right half-plane.`],
+      sol: md`**Level:** $${dbT(20 * L10(Math.abs(sp.k)))}$, so $|k| = ${f(Math.abs(sp.k), 4)}$; the phase starts at $${sp.k < 0 ? '180' : '0'}^\circ$, so $k ${sp.k < 0 ? '< 0' : '> 0'}$.
+
+**Corners, left to right:** ${cs.map(([c, t]) => `$${wTeX(c)}$: ${t === 'p' ? 'the slope drops by $20\\,\\text{dB/dec}$ and the phase falls: a **pole**' : t === 'z' ? 'the slope rises by $20$ and the phase rises: a **zero**' : 'the slope rises by $20$ but the phase **falls**: a **right-half-plane zero**'}`).join('; ')}.
+
+$$${EB().tex(sp)}$$`,
+    };
+  };
+
+  // ---- bk_unity: unity-gain and -3 dB frequencies, straight-line and exact
+  function solveU(sp, lvlDb) {        // exact w where |H| (dB) = lvlDb, bisection on log w (|H| falling)
+    const T = EB().tf(sp);
+    let a = 1e-3, b = 1e15;
+    for (let i = 0; i < 200; i++) { const m = Math.sqrt(a * b); if (T.db(m) > lvlDb) a = m; else b = m; }
+    return Math.sqrt(a * b);
+  }
+  GENS.bk_unity = (o = {}) => {
+    const kind = o.kind || pick(['one', 'two', 'two']);
+    if (kind === 'one') {
+      const A0 = pick([10, 20, 50, 100, 1000]), wp = pick([1, 2, 5]) * 10 ** ri(3, 7);
+      const sp = { k: A0, poles: [wp] };
+      const su = A0 * wp, eu = wp * Math.sqrt(A0 * A0 - 1);
+      return {
+        _chk: { kind, sp, su, eu },
+        q: md`$$${EB().tex(sp)}$$
+Find the unity-gain frequency $\omega_u$ (where $|H| = 1$): first from the straight lines, then exactly.`,
+        parts: [wPart('\\omega_u\\ \\text{(straight line)}', su, { traps: [{ v: wp, msg: 'That is the corner. The gain is still large there.' }] }), wPart('\\omega_u\\ \\text{(exact)}', eu, { accept: A0 >= 10 ? [su] : [] })],
+        hints: [md`Straight line: from $20\log_{10}A_0$ at $\omega_p$ it falls $20\,\text{dB}$ per decade, so it reaches $0\,\text{dB}$ after $\log_{10}A_0$ decades: $\omega_u\approx A_0\omega_p$.`, md`Exactly: $A_0^2 = 1 + (\omega_u/\omega_p)^2$.`],
+        sol: md`**Straight line:** $\omega_u\approx A_0\,\omega_p = ${f(A0, 4)}\times${wTeX(wp)} = ${wT(su, 4)}$ (the gain-bandwidth product).
+
+**Exact:** $\dfrac{A_0}{\sqrt{1 + (\omega_u/\omega_p)^2}} = 1\Rightarrow\omega_u = \omega_p\sqrt{A_0^2 - 1} = ${wT(eu, 4)}$, essentially the same when $A_0\gg1$.
+
+[[fig:p]]`,
+        figs: { p: { svg: EB().svg(sp, { marks: [{ w: wp, n: '\\omega_p' }, { w: su, n: '\\omega_u' }] }) } },
+      };
+    }
+    let A0, w1, w2;
+    do { A0 = pick([10, 100, 1000, 20, 50]); w1 = 10 ** ri(3, 6); w2 = w1 * pick([10, 100, 2, 5]); } while (A0 * w1 <= w2 * 1.2);
+    const sp = { k: A0, poles: [w1, w2] };
+    const su = Math.sqrt(A0 * w1 * w2), eu = solveU(sp, 0), e3 = solveU(sp, 20 * L10(A0) - 10 * L10(2));
+    return {
+      _chk: { kind, sp, su, eu, e3 },
+      q: md`$$${EB().tex(sp)}$$
+Find (a) the straight-line unity-gain frequency, (b) the exact $\omega_u$, and (c) the exact $-3\,\text{dB}$ frequency.`,
+      parts: [wPart('(a)\\ \\omega_u\\ \\text{(straight line)}', su, { traps: [{ v: A0 * w1, msg: 'Past the second pole the line falls at $-40\\,\\text{dB/dec}$, not $-20$: the crossing comes sooner than $A_0\\omega_{p1}$.' }] }),
+        wPart('(b)\\ \\omega_u\\ \\text{(exact)}', eu),
+        wPart('(c)\\ \\omega_{3dB}', e3, { traps: [{ v: w2, msg: 'The $-3\\,\\text{dB}$ point is set by the **lower** pole.' }] })],
+      hints: [md`Straight line: at $\omega_{p2}$ the line is at $20\log_{10}(A_0\omega_{p1}/\omega_{p2})$; then it falls $40\,\text{dB}$ per decade, so it reaches $0\,\text{dB}$ at $\sqrt{A_0\omega_{p1}\omega_{p2}}$.`, md`Exact: solve $(1 + \omega^2/\omega_{p1}^2)(1 + \omega^2/\omega_{p2}^2) = A_0^2$ (for $\omega_u$) or $= 2$ (for $\omega_{3\text{dB}}$): quadratics in $\omega^2$.`],
+      sol: md`**(a)** Up to $\omega_{p1}$ the line is flat at $${dbT(20 * L10(A0))}$; it falls $20\,\text{dB/dec}$ to $\omega_{p2}$, reaching $${dbT(20 * L10(A0 * w1 / w2))}$ there, then $40\,\text{dB/dec}$. It hits $0\,\text{dB}$ at $\omega_u = \omega_{p2}\cdot10^{${f(20 * L10(A0 * w1 / w2), 4)}/40} = \sqrt{A_0\omega_{p1}\omega_{p2}} = ${wT(su, 4)}$.
+
+**(b)** Exactly, with $u = \omega^2$: $(1 + u/\omega_{p1}^2)(1 + u/\omega_{p2}^2) = A_0^2$, a quadratic in $u$; its positive root gives $\omega_u = ${wT(eu, 4)}$.
+
+**(c)** The same with $2$ on the right: $\omega_{3\text{dB}} = ${wT(e3, 4)}$, ${Math.abs(e3 / w1 - 1) < 0.02 ? 'essentially the lower pole (the second one is far away)' : `${f((1 - e3 / w1) * 100, 2)}\\%$ below the lower pole, because the second pole is close`}.
+
+[[fig:p]]`,
+      figs: { p: { svg: EB().svg(sp, { marks: [{ w: w1, n: '\\omega_{p1}' }, { w: w2, n: '\\omega_{p2}' }, { w: su, n: '\\omega_u' }] }) } },
+    };
+  };
+  Object.assign(window.BK7, { magRows, phRows, corners });
 })();
