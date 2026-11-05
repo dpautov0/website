@@ -150,7 +150,7 @@
       {
         q: md`**(d)** For this state, $\langle x^2\rangle(t) = \langle x^2\rangle_0\cos^2\omega't + \dfrac{\langle p^2\rangle_0}{m^2\omega'^2}\sin^2\omega't$. Find the largest and smallest $\sigma_x$ in units of $\sigma_0$, sketch $\sigma_x(t)$ and the density at those two moments, and explain the motion with a classical picture.`,
         ans: md`$\sigma_x$ oscillates between $\sigma_0$ (at $t = 0, \tfrac{\pi}{2\omega}, \dots$) and $\tfrac12\sigma_0$ (at $t = \tfrac{\pi}{4\omega}, \dots$); the density stays Gaussian and breathes.`,
-        figs: { br: { svg: figBreathe, cap: 'σ_x(t)/σ₀: two breathing periods in ωt ∈ [0, π].' }, bd: { svg: figBreatheDens, cap: 'The density at its widest (t = 0) and narrowest (t = π/4ω) moments.' } },
+        figs: { br: { svg: figBreathe, cap: md`$\sigma_x(t)/\sigma_0$: two breathing periods for $\omega t \in [0, \pi]$.` }, bd: { svg: figBreatheDens, cap: 'The density at its widest (t = 0) and narrowest (t = π/4ω) moments.' } },
         sol: md`
           **Numbers.** $\langle x^2\rangle_0 = \sigma_0^2$ and $\langle p^2\rangle_0 = \tfrac12m\hbar\omega$, so $\tfrac{\langle p^2\rangle_0}{m^2\omega'^2} = \tfrac{m\hbar\omega/2}{4m^2\omega^2} = \tfrac{\hbar}{8m\omega} = \tfrac14\sigma_0^2$. Hence
           $$\sigma_x^2(t) = \sigma_0^2\left(\cos^2\omega't + \tfrac14\sin^2\omega't\right):\qquad \sigma_{\max} = \sigma_0,\ \ \sigma_{\min} = \tfrac12\sigma_0.$$
@@ -370,7 +370,7 @@
       {
         q: md`**(c)** Find $\langle x\rangle(t)$ and $\sigma_x(t)$ and sketch them. Explain the motion with a classical picture.`,
         ans: md`$\langle x\rangle = x_0(1 - \cos\omega t)$, $\sigma_x = \sqrt{\hbar/2m\omega}$ for all $t$.`,
-        figs: { sh: { svg: figShift, cap: '⟨x⟩(t) for x₀ = 2√(ħ/mω), with ⟨x⟩ ± σ_x: the packet swings between 0 and 2x₀ without spreading.' } },
+        figs: { sh: { svg: figShift, cap: md`$\langle x\rangle(t)$ for $x_0 = 2\sqrt{\hbar/m\omega}$, with $\langle x\rangle \pm \sigma_x$ in gray: the packet swings between $0$ and $2x_0$ without spreading.` } },
         sol: md`
           $\alpha(t) = \alpha e^{-i\omega t}$, so $\langle X\rangle = -x_0\cos\omega t$ and $\langle x\rangle = x_0 + \langle X\rangle = x_0(1 - \cos\omega t)$. A coherent state keeps the ground-state width: $\sigma_x = \sqrt{\hbar/2m\omega}$ constant.
 
@@ -444,7 +444,7 @@
       {
         q: md`**(c)** At $t = 0$, $\psi = \tfrac{1}{\sqrt2}\left(Y_1^1 + Y_1^0\right)$. Find $\langle L_x\rangle$, $\langle L_y\rangle$, $\langle L_z\rangle$ as functions of time and sketch $\langle\vec L\rangle(t)$.`,
         ans: md`$\langle L_x\rangle = \tfrac{\hbar}{\sqrt2}\cos\omega_0t$, $\langle L_y\rangle = \tfrac{\hbar}{\sqrt2}\sin\omega_0t$, $\langle L_z\rangle = \tfrac12\hbar$: a cone about $z$.`,
-        figs: { pr: { svg: figPrecess, cap: 'The tip of ⟨L⟩ seen from +z: a circle of radius ħ/√2, counterclockwise, at height ⟨L_z⟩ = ħ/2.' } },
+        figs: { pr: { svg: figPrecess, cap: md`The tip of $\langle\vec L\rangle$ seen from $+z$: a circle of radius $\hbar/\sqrt2$, counterclockwise, at height $\langle L_z\rangle = \hbar/2$.` } },
         sol: md`
           At $t = 0$: $\langle L_+\rangle = c_1^*c_0\,\sqrt2\hbar = \tfrac12\sqrt2\hbar = \tfrac{\hbar}{\sqrt2}$, real, so $\langle L_x\rangle_0 = \tfrac{\hbar}{\sqrt2}$, $\langle L_y\rangle_0 = 0$. $\langle L_z\rangle = \tfrac12(\hbar) + \tfrac12(0) = \tfrac12\hbar$. Then (b) rotates the transverse part. (Directly: the $m = 1$ term picks up an extra $e^{-i\omega_0t}$ relative to $m = 0$, so $\langle L_+\rangle \propto e^{+i\omega_0t}$ ✓.)
 
@@ -598,7 +598,7 @@
       {
         q: md`**(c)** Find $\sigma_x\sigma_p$ as a function of time and sketch it for $n = 0$ together with the bound $\hbar/2$.`,
         ans: md`$\sigma_x\sigma_p = \tfrac{\hbar}{2}(n + 1)\sqrt{2 + \tfrac14\sin^22\omega t}$: between $\tfrac{(n + 1)\hbar}{\sqrt2}$ and $\tfrac34(n + 1)\hbar$, period $\tfrac{\pi}{2\omega}$.`,
-        figs: { sp: { svg: figSxSp, cap: 'σ_xσ_p for (|0⟩ + |1⟩)/√2: it never reaches the bound ħ/2.' } },
+        figs: { sp: { svg: figSxSp, cap: md`$\sigma_x\sigma_p$ for $\tfrac{1}{\sqrt2}(\ket0 + \ket1)$: it never reaches the bound $\hbar/2$.` } },
         sol: md`
           The relative phase is $e^{-i\omega t}$, so $\langle x\rangle = \sqrt{\tfrac{\hbar}{2m\omega}}\sqrt{n + 1}\cos\omega t$ and $\langle p\rangle = -\sqrt{\tfrac{\hbar m\omega}{2}}\sqrt{n + 1}\sin\omega t$, while $\langle x^2\rangle$, $\langle p^2\rangle$ stay put. Then
           $$\sigma_x^2 = \tfrac{\hbar}{2m\omega}(n + 1)\left(2 - \cos^2\omega t\right),\qquad \sigma_p^2 = \tfrac{\hbar m\omega}{2}(n + 1)\left(2 - \sin^2\omega t\right),$$
@@ -720,7 +720,7 @@
       {
         q: md`**(b)** Compute $|\psi(0)|^2$ for 1s and 2s, and their ratio. Without calculating anything else, rank 1s, 2s and 2p, and explain why contact effects such as electron capture by a nucleus involve essentially only $s$ electrons.`,
         ans: md`$|\psi_{100}(0)|^2 = \tfrac{1}{\pi a^3}$, $|\psi_{200}(0)|^2 = \tfrac{1}{8\pi a^3}$, ratio $8$; ranking 1s > 2s > 2p $= 0$.`,
-        figs: { rn: { svg: figRnl, cap: 'R(r) near the origin: 1s and 2s start at finite values, 2p starts at zero (∝ r).' } },
+        figs: { rn: { svg: figRnl, cap: md`$R(r)$ near the origin: 1s and 2s start at finite values, 2p starts at zero ($\propto r$).` } },
         sol: md`
           $|\psi(0)|^2 = R(0)^2|Y_0^0|^2 = R(0)^2/4\pi$: $\tfrac{4}{4\pi a^3} = \tfrac{1}{\pi a^3}$ for 1s and $\tfrac{1/2}{4\pi a^3} = \tfrac{1}{8\pi a^3}$ for 2s. Ratio $8 = 2^3$ (in general $1/n^3$ for $s$ states: bigger orbit, more dilute). 2p: $R_{21}(0) = 0$.
 
@@ -888,7 +888,7 @@
       {
         q: md`**(c)** Find the probabilities of $L_z = +\hbar, 0, -\hbar$ at time $t$, and sketch them over one period. When is the particle certainly in $Y_1^{-1}$?`,
         ans: md`$\cos^4\tfrac{\omega t}{2}$, $\tfrac12\sin^2\omega t$, $\sin^4\tfrac{\omega t}{2}$. Certainly $Y_1^{-1}$ at $t = \pi/\omega$ (and odd multiples).`,
-        figs: { lp: { svg: figLprob, cap: 'L_z probabilities while H = ωL_x turns the state about the x axis.' } },
+        figs: { lp: { svg: figLprob, cap: md`$L_z$ probabilities while $\hat H = \omega\hat L_x$ turns the state about the $x$ axis.` } },
         sol: md`
           Expand: $Y_1^1 = \tfrac12\ket{+} + \tfrac{1}{\sqrt2}\ket{0} + \tfrac12\ket{-}$ (in $L_x$ eigenvectors). Evolve: $\ket{\pm}$ get $e^{\mp i\omega t}$. Project back onto $Y_1^1$: $\tfrac14e^{-i\omega t} + \tfrac12 + \tfrac14e^{i\omega t} = \cos^2\tfrac{\omega t}{2}$. Onto $Y_1^0$: $\tfrac{\sqrt2}{4}(e^{-i\omega t} - e^{i\omega t}) = -\tfrac{i}{\sqrt2}\sin\omega t$. Onto $Y_1^{-1}$: $\tfrac12\cos\omega t - \tfrac12 = -\sin^2\tfrac{\omega t}{2}$. Square them. Sum: $\cos^4 + \sin^4 + 2\sin^2\cos^2 = 1$ ✓.
 
@@ -991,11 +991,11 @@
     xt: [[-2, '-2'], [-1, '-1'], [1, '1'], [2, '2']],
     curves: [
       { f: (u) => (s0(u) + s1(u) + s2(u)) ** 2 / 3, lab: '\\text{before}', labAt: 1.6, dy: -12 },
-      { f: (u) => (s0(u) + s2(u)) ** 2 / 2, cls: 'acc', lab: '\\text{after } +1', labAt: -2.6, dx: -4, dy: -16, anchor: 'r' },
+      { f: (u) => (s0(u) + s2(u)) ** 2 / 2, cls: 'acc', lab: '\\text{after } +1', labAt: -1.25, dx: -10, dy: -10, anchor: 'r' },
     ],
   });
   const figParB = PF.plot({
-    w: 400, h: 220, x: [-3.5, 3.5], y: [0, 0.75], xl: '\\xi', yl: '|\\Psi|^2',
+    w: 400, h: 220, x: [-3.5, 3.5], y: [0, 0.95], xl: '\\xi', yl: '|\\Psi|^2',
     xt: [[-2, '-2'], [-1, '-1'], [1, '1'], [2, '2']],
     curves: [
       { f: (u) => (s0(u) + s2(u)) ** 2 / 2, cls: 'acc', lab: 't = 0', labAt: 1.9, dy: -10 },
@@ -1050,7 +1050,7 @@
       {
         q: md`**(c)** Parity is measured at $t = 0$. Give the outcomes, their probabilities and the state right after each. Sketch $|\Psi(x)|^2$ just before and just after the outcome $+1$.`,
         ans: md`$+1$ with $\tfrac23$ → $\tfrac{1}{\sqrt2}(\ket0 + \ket2)$; $-1$ with $\tfrac13$ → $\ket1$. Before: lopsided to $+x$; after $+1$: symmetric.`,
-        figs: { pa: { svg: figParA, cap: 'Before (lopsided: the odd ψ₁ adds on the right, subtracts on the left) and after the outcome +1 (even). ξ = x√(mω/ħ).' } },
+        figs: { pa: { svg: figParA, cap: md`Before (lopsided: the odd $\psi_1$ adds on the right and subtracts on the left) and after the outcome $+1$ (even). $\xi = x\sqrt{m\omega/\hbar}$.` } },
         sol: md`
           The $+1$ eigenspace is spanned by even $n$: projection keeps $\tfrac{1}{\sqrt3}(\ket0 + \ket2)$, probability $\tfrac23$, renormalized to $\tfrac{1}{\sqrt2}(\ket0 + \ket2)$. The $-1$ outcome keeps $\ket1$, probability $\tfrac13$. A degenerate eigenvalue keeps the *whole* projection, not a single eigenvector.
 
@@ -1067,7 +1067,7 @@
       {
         q: md`**(d)** After the outcome $+1$, does $\langle x\rangle$ move? Does $|\Psi|^2$ change? Explain, give the period, and sketch $|\Psi|^2$ half a period later.`,
         ans: md`$\langle x\rangle = 0$ forever (even state stays even). $|\Psi|^2$ breathes at $2\omega$ (period $\pi/\omega$): at $t = \pi/2\omega$ it is $\tfrac12(\psi_0 - \psi_2)^2$, a narrow central peak.`,
-        figs: { pb: { svg: figParB, cap: 'After the outcome +1: wide (two shoulders) at t = 0, narrow half a period later.' } },
+        figs: { pb: { svg: figParB, cap: md`After the outcome $+1$: wide (two shoulders) at $t = 0$, narrow half a period later.` } },
         sol: md`
           Parity is conserved, so the state stays even and $\langle x\rangle = 0$. But it contains two energies, $E_0$ and $E_2$, so $|\Psi|^2$ has a cross term oscillating at $(E_2 - E_0)/\hbar = 2\omega$: period $\pi/\omega$. At $t = \pi/2\omega$ the relative phase is $e^{-i\pi} = -1$. Width: $\langle x^2\rangle = \tfrac{\hbar}{2m\omega}\left(3 + \sqrt2\cos2\omega t\right)$, from $4.41$ down to $1.59$ in these units.
 
@@ -1120,7 +1120,7 @@
       {
         q: md`**(c)** The particle is in $p_x$. Give the outcomes and probabilities of $L_z$, $\langle L_z\rangle$, and the energy. Sketch $|p_x|^2$ and $|Y_1^1|^2$ in the $xy$ plane, and explain why the real orbital has $\langle L_z\rangle = 0$.`,
         ans: md`$\pm\hbar$ with $\tfrac12$ each; $\langle L_z\rangle = 0$; $E = \hbar^2/I$ with certainty. $|p_x|^2 \propto \cos^2\varphi$ (two lobes), $|Y_1^1|^2$ independent of $\varphi$ (ring). $p_x$ is a standing wave in $\varphi$: equal parts of both senses of rotation.`,
-        figs: { or: { svg: figOrb, cap: 'In the xy plane (θ = π/2): |p_x|² ∝ cos²φ has two lobes; |Y₁¹|² is the same in every direction.' } },
+        figs: { or: { svg: figOrb, cap: md`In the $xy$ plane ($\theta = \pi/2$): $|p_x|^2 \propto \cos^2\varphi$ has two lobes; $|Y_1^1|^2$ is the same in every direction.` } },
         sol: md`
           $p_x = \tfrac{1}{\sqrt2}\left[(-Y_1^1) + Y_1^{-1}\right]$: amplitudes of magnitude $\tfrac{1}{\sqrt2}$ for $m = \pm1$. $E = \tfrac{\hbar^2\cdot2}{2I} = \tfrac{\hbar^2}{I}$, certain (pure $\ell = 1$).
 
