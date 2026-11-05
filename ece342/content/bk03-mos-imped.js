@@ -938,13 +938,13 @@ $$R_{S1} = \frac{r_{ds1} + r_{ds2}}{1 + g_{m1}r_{ds1}} = \frac{200\kO}{201} = 99
   });
   const dioFig = [['w', [1, 0], [1, -0.4]], F.lookDn([1, -0.4], 'R'), ['nmos', [1, 1], { dc: true }], ['gnd', [1, 2]], ['txt', [1.6, 1.4], '$I = \\tfrac12k(V - V_{TN})^2$', { a: 'l' }],
     ['vlab', [1.5, 0.05], [1.5, 1.95], { n: 'V', side: 'r' }]];
-  const nDioModel = [['w', [0.4, 0.5], [0.4, 0], [2, 0]], ['term', [0.4, 0.5], { n: 'G', side: 'l' }], ['term', [0.4, 1.4]], ['w', [0.4, 1.4], [0.4, 2], [2, 2]],
-    ['vlab', [0.65, 0.65], [0.65, 1.25], { n: 'v_{gs} = v_t' }], ...S.mos(2, 0, 2), ['gnd', [2.65, 2]], ['node', [2, 0], { n: 'D', side: 'a' }], ...S.test(3.3, 0)];
+  const nDioModel = [['w', [-0.4, 0.5], [-0.4, 0], [2, 0]], ['term', [-0.4, 0.5], { n: 'G', side: 'l' }], ['term', [-0.4, 1.4]], ['w', [-0.4, 1.4], [-0.4, 2], [2, 2]],
+    ['vlab', [-0.15, 0.65], [-0.15, 1.25], { n: 'v_{gs} = v_t' }], ...S.mos(2, 0, 2), ['gnd', [2.65, 2]], ['node', [2, 0], { n: 'D', side: 'a' }], ...S.test(3.3, 0)];
   const pDioModel = [['gndu', [2, -0.6]], ['w', [2, -0.6], [2, 0]], ['txt', [2.15, -0.3], '$S$', { a: 'l' }], ...S.mos(2, 2, 0),
-    ['term', [0.4, 1.5], { n: 'G', side: 'l' }], ['w', [0.4, 1.5], [0.4, 2], [2, 2]], ['term', [0.4, 0.6]], ['w', [0.4, 0.6], [0.4, 0], [2, 0]],
-    ['vlab', [0.65, 1.35], [0.65, 0.75], { n: 'v_{gs} = v_t' }], ['node', [2, 2], { n: 'D', side: 'b' }], ...S.test(3.3, 2)];
-  const dioRSModel = [['w', [0.4, 0.5], [0.4, 0], [2, 0]], ['term', [0.4, 0.5], { n: 'G', side: 'l' }], ['term', [0.4, 1.4]], ['w', [0.4, 1.4], [0.4, 2], [2, 2]],
-    ['vlab', [0.65, 0.65], [0.65, 1.25], { n: 'v_{gs}' }], ...S.mos(2, 0, 2), ['R', [2.65, 2], [2.65, 3.4], { n: 'R_S' }], ['gnd', [2.65, 3.4]],
+    ['term', [-0.4, 1.5], { n: 'G', side: 'l' }], ['w', [-0.4, 1.5], [-0.4, 2], [2, 2]], ['term', [-0.4, 0.6]], ['w', [-0.4, 0.6], [-0.4, 0], [2, 0]],
+    ['vlab', [-0.15, 1.35], [-0.15, 0.75], { n: 'v_{gs} = v_t' }], ['node', [2, 2], { n: 'D', side: 'b' }], ...S.test(3.3, 2)];
+  const dioRSModel = [['w', [-0.2, 0.5], [-0.2, 0], [2, 0]], ['term', [-0.2, 0.5], { n: 'G', side: 'l' }], ['term', [-0.2, 1.4]], ['w', [-0.2, 1.4], [-0.2, 2], [2, 2]],
+    ['vlab', [0.05, 0.65], [0.05, 1.25], { n: 'v_{gs}' }], ...S.mos(2, 0, 2), ['R', [2.65, 2], [2.65, 3.4], { n: 'R_S' }], ['gnd', [2.65, 3.4]],
     ['node', [2.65, 2], { n: 'v_s = i_tR_S', side: 'br' }], ['node', [2, 0], { n: 'D', side: 'a' }], ...S.test(3.3, 0)];
   const twoDio = [['w', [1, 0], [1, -0.4]], F.lookDn([1, -0.4], 'R'), ['nmos', [1, 1], { n: 'M_a', dc: true }], ['node', [1, 2], { n: 'X', side: 'l' }],
     ['nmos', [1, 3], { n: 'M_b', dc: true }], ['gnd', [1, 4]]];
@@ -1125,6 +1125,210 @@ $$R_{out} = \frac{1}{1.02\,\text{mS} + 0.01\,\text{mS}} = \frac{1}{1.03\,\text{m
 2. $A_v = -(4\,\text{mS})(970.9\,\Omega) = -3.88$, close to $-g_{m1}/g_{m2} = -4$: a diode-loaded stage has a small gain set by the ratio of transconductances ([Chapter 4](#/l/bk04-loads)).`,
       }),
       G('bk_mi_diode', { need: 3 }),
+    ],
+  });
+
+  // ================================================================== 6. degeneration: the impedance scaler
+  const degModel = [...S.gport(-0.6, 0.4, 2, 2, { gnd: true }), ...S.mos(2, 0, 2), ['R', [2.65, 2], [2.65, 3.4], { n: 'R_S', side: 'l' }], ['gnd', [2.65, 3.4]],
+    ['node', [2.65, 2], { n: 'v_s = i_tR_S', side: 'br' }], ['txt', [2.15, -0.3], '$D$', { a: 'l' }], ...S.test(3.3, 0)];
+  const degCur = [...S.mos(2, 0, 2, { w: 1.6 }), ['w', [2, 0], [2, -0.6], [6.2, -0.6]], ['txt', [2.15, -0.85], '$D$', { a: 'l' }],
+    ['iarr', [3.6, 0.5], 'd', { n: '(1 + g_mR_S)\\,i_t', side: 'r', off: [18, 0] }], ['iarr', [2, 0.5], 'u', { n: 'g_mR_S\\,i_t', side: 'l', off: [-30, 0] }],
+    ['R', [2.8, 2], [2.8, 3.4], { n: 'R_S', side: 'l' }], ['gnd', [2.8, 3.4]], ['node', [2.8, 2], { n: 'i_t\\ \\text{flows on down}', side: 'br' }],
+    ['V', [6.2, -0.6], [6.2, 0.6], { n: 'v_t', side: 'r' }], ['gnd', [6.2, 0.6]], ['iarr', [5.2, -0.6], 'l', { n: 'i_t' }]];
+  const pdegModel = [['gndu', [2, -1.6]], ['R', [2, -1.6], [2, 0], { n: 'R_S', side: 'l' }], ['node', [2, 0], { n: 'S', side: 'al' }], ...S.mos(2, 2, 0),
+    ['node', [2, 2], { n: 'D', side: 'bl' }], ['txt', [0.4, 1], '$v_{gs} = 0 - v_s$', { a: 'r' }], ...S.test(3.3, 2)];
+  const degDiode = [['w', [1, 0], [1, -0.4]], F.lookDn([1, -0.4], 'R'), ['nmos', [1, 1], { n: 'M_1' }], ['acg', [0, 1]], ['node', [1, 2], { n: 'X', side: 'r' }],
+    ['nmos', [1, 3], { n: 'M_2', dc: true }], ['gnd', [1, 4]]];
+
+  L({
+    id: 'bk03-degen', title: 'Degeneration: the impedance scaler', ref: 'Lecture 17',
+    steps: [
+      RF(md`
+        ### The question
+
+        Hold the gate and put a resistor $R_S$ between the source and ground. What do you see looking into the **drain**? This is the most important result of the chapter: the output resistance of a degenerated current source, the heart of every cascode, and the "$R_{DN}$" branch of most Exam 2 nodes.
+
+        ### The physical picture: a transistor that fights back
+
+        Push the drain up by a small $v_t$. Through the weak handle ($r_{ds}$), a little extra current starts to flow down through the transistor. That current has to go through $R_S$, so it lifts the source. With the gate held, a higher source means a **smaller $v_{gs}$**, and through the strong handle the transistor cuts its current back. The current that tried to grow is mostly cancelled.
+
+        This is **negative feedback**: $R_S$ senses the current and turns it into a voltage that the transistor uses to oppose the change. The transistor ends up holding its current nearly constant however you push the drain, and "current that barely changes" is a very large resistance. A transistor with a resistor under its source is a far better current source than one without.
+        [[fig:a]]
+        Magnitudes: with $g_m = 2\,\text{mS}$ and $r_{ds} = 100\kO$, a mere $R_S = 1\kO$ makes the drain look like $301\kO$, three times $r_{ds}$; $R_S = 10\kO$ makes it $2.1\,\text{M}\Omega$.
+      `, { a: { fig: F.drain({ rs: 'R_S', look: 'R_{DN}' }), cap: 'gate held, $R_S$ under the source: look down into the drain' } }),
+      RF(md`
+        ### The derivation, every step
+
+        **Step 1: sources off.** The gate bias becomes ground; the bottom of $R_S$ is ground.
+
+        **Step 2: test source** on the drain: $v_d = v_t$, and $i_t$ flows in.
+
+        **Step 3: the model.**
+        [[fig:a]]
+        **Step 4: KCL at the drain.** Besides the test source, only the transistor touches the drain. So the device current (drain to source) equals the test current:
+        $$i_d = i_t$$
+        **Step 5: KCL at the source.** The device current arrives at the source node and has one way out, down through $R_S$ (the gate takes nothing):
+        $$v_s = i_tR_S$$
+        **Step 6: $v_{gs}$.** The gate is at 0:
+        $$v_{gs} = 0 - v_s = -i_tR_S$$
+        **Step 7: the device equation.** $i_d = g_mv_{gs} + (v_d - v_s)/r_{ds}$, with Steps 4 to 6 put in:
+        $$i_t = -g_mR_S\,i_t + \frac{v_t - i_tR_S}{r_{ds}}$$
+        **Step 8: multiply every term by $r_{ds}$.**
+        $$i_tr_{ds} = -g_mr_{ds}R_S\,i_t + v_t - R_S\,i_t$$
+        **Step 9: all $i_t$ terms on the left.** Add $g_mr_{ds}R_S\,i_t + R_S\,i_t$ to both sides:
+        $$i_t\,(r_{ds} + R_S + g_mr_{ds}R_S) = v_t$$
+        **Step 10: the ratio.**
+        $$R_{DN} = \frac{v_t}{i_t} = r_{ds} + R_S + g_mr_{ds}R_S$$
+      `, { a: { fig: degModel, cap: 'all of $i_t$ flows through $R_S$: $v_s = i_tR_S$, $v_{gs} = -i_tR_S$' } }),
+      RF(md`
+        !!key Degeneration (gate held, $R_S$ under the source)
+          $$R_{DN} = r_{ds} + R_S + g_mr_{ds}R_S = r_{ds} + R_S\,(1 + g_mr_{ds})\approx r_{ds}\,(1 + g_mR_S)$$
+
+        ### A second way: follow the current around
+
+        The same answer, read off the circuit with KVL. The device carries $i_t$ in total, split between its two parallel paths: $i_t = g_mv_{gs} + i_{r}$, where $i_r$ is the current in $r_{ds}$. So
+        $$i_r = i_t - g_mv_{gs} = i_t + g_mR_S\,i_t = (1 + g_mR_S)\,i_t$$
+        **$r_{ds}$ carries more than the test current.** The dependent source carries $g_mR_Si_t$ *backwards* (up, from source to drain), and that current circulates around the little loop through $r_{ds}$.
+        [[fig:a]]
+        Now KVL from the drain down to ground, through $r_{ds}$ and then $R_S$:
+        $$v_t = (1 + g_mR_S)\,i_t\,r_{ds} + i_tR_S\quad\Rightarrow\quad R_{DN} = r_{ds}(1 + g_mR_S) + R_S$$
+        the same three terms. This picture shows *where* the magnification lives: in the extra current that the feedback forces through $r_{ds}$. With $R_S = 1\kO$ and $g_m = 2\,\text{mS}$, $r_{ds}$ carries $3i_t$ and the dependent source $2i_t$ backwards.
+      `, { a: { fig: degCur, cap: 'the circulating current: $r_{ds}$ carries $(1 + g_mR_S)\\,i_t$' } }),
+      R(md`
+        ### Check it
+
+        - **$R_S = 0$:** $R_{DN} = r_{ds}$, the plain drain. ✓
+        - **$g_m = 0$** (a transistor whose gate does nothing): $R_{DN} = r_{ds} + R_S$, two resistors in series. The term $g_mr_{ds}R_S$ is entirely the feedback. ✓
+        - **$r_{ds}\to\infty$:** $R_{DN}\to\infty$. An ideal current source stays ideal. ✓
+        - **Units:** $g_mr_{ds}$ is a pure number, so $g_mr_{ds}R_S$ is in ohms. ✓
+
+        ### Which approximation, when
+
+        $g_m = 2\,\text{mS}$, $r_{ds} = 100\kO$ ($g_mr_{ds} = 200$):
+
+        | $R_S$ | $g_mR_S$ | exact $r_{ds} + R_S + g_mr_{ds}R_S$ | $r_{ds}(1 + g_mR_S)$ | $g_mr_{ds}R_S$ |
+        |---|---|---|---|---|
+        | $100\,\Omega$ | $0.2$ | $120.1\kO$ | $120\kO$ | $20\kO$ (useless) |
+        | $1\kO$ | $2$ | $301\kO$ | $300\kO$ | $200\kO$ (33% low) |
+        | $10\kO$ | $20$ | $2110\kO$ | $2100\kO$ | $2000\kO$ (5% low) |
+
+        **$r_{ds}(1 + g_mR_S)$ is always safe** (it only drops the lone $R_S$, tiny next to $r_{ds}$). **$g_mr_{ds}R_S$ is safe only when $g_mR_S\gg1$.**
+
+        ### What it means: the impedance scaler
+
+        Write the result as $R_{DN} = r_{ds} + (1 + g_mr_{ds})\,R_S$. Seen from the drain, the resistor under the source is **multiplied by $1 + g_mr_{ds}$**, the intrinsic gain plus one. Put this next to [the source with a drain load](#/l/bk03-source), $R_S = (r_{ds} + R_D)/(1 + g_mr_{ds})$: seen from the source, the resistor on the drain is **divided** by the same $1 + g_mr_{ds}$.
+
+        !!key Lecture 17: "common gate acts as an impedance scaler"
+          With the gate held, a transistor scales resistances by $1 + g_mr_{ds}\approx g_mr_{ds}$: **up** when you look from the drain at what is under the source, **down** when you look from the source at what is on the drain.
+
+        In feedback language: the loop gain is $g_mR_S$ (the voltage $R_S$ develops per unit current, times the transistor's response to it), and series feedback at the output multiplies the output resistance by one plus the loop gain: $r_{ds}(1 + g_mR_S)$. Razavi derives the same thing for the degenerated common-source stage.
+      `),
+      RF(md`
+        ### The PMOS version
+
+        A PMOS current source with $R_S$ between its source and $V_{DD}$, gate held, looked into from below. The model is the same model, drawn with the source on top and the dependent source pointing up:
+        [[fig:a]]
+        The test current enters the drain at the bottom, flows **up** through the device (that is drain to source, so $i_d = i_t$) and up through $R_S$ to $V_{DD}$ (ground): $v_s = i_tR_S$ and $v_{gs} = -i_tR_S$. The device equation is word for word the NMOS one, so
+        $$R_{UP} = r_{ds} + R_S + g_mr_{ds}R_S$$
+        (A large-signal square-law simulation of this PMOS circuit gives the same number to within 0.001%: the orientation needs no extra signs.)
+
+        ### $R_S$ can be anything
+
+        The derivation used only "$v_s = i_tR_S$": the resistance looking down from the source. So $R_S$ may be a transistor: another transistor's $r_{ds}$ (that is [the cascode](#/l/bk03-cascode)), or a diode.
+        [[fig:b]]
+        **Example: a diode under the source.** $M_1$ and the diode $M_2$ both have $g_m = 2\,\text{mS}$, $r_{ds} = 100\kO$. Looking down from $X$: $R_X = \tfrac{1}{g_{m2}}\parallel r_{ds2} = 497.5\,\Omega$. Then
+        $$R_{DN} = r_{ds1} + R_X(1 + g_{m1}r_{ds1}) = 100\kO + 0.4975\kO\times201 = 200\kO$$
+        For matched devices $R_X(1 + g_mr_{ds}) = r_{ds}$ exactly, so the diode doubles $r_{ds}$.
+
+        ### How to recognize it
+
+        You are looking into a drain, the gate is held, and there is something (not a rail) under the source. Find the resistance $R_S$ looking down from the source, then write $r_{ds} + R_S + g_mr_{ds}R_S$. If the gate is **not** held, this is the next section's [K rule](#/l/bk03-k).
+      `, { a: { svg: rowSvg([{ fig: F.drain({ p: 1, rs: 'R_S', look: 'R_{UP}' }), cap: 'PMOS with $R_S$ to $V_{DD}$' }, { fig: pdegModel, cap: 'the same equations, arrow up' }]) },
+        b: { fig: degDiode, cap: 'a diode under the source: $R_S\\to\\tfrac{1}{g_{m2}}\\parallel r_{ds2}$' } }),
+      R(md`
+        !!mistake Common mistakes
+          - Adding $r_{ds} + R_S$ and stopping: that leaves out the feedback term $g_mr_{ds}R_S$, usually the largest.
+          - Using $g_mr_{ds}R_S$ alone when $g_mR_S$ is not large (33% low at $g_mR_S = 2$).
+          - Using the wrong transistor's $g_m$: the magnifying $g_m$ and $r_{ds}$ belong to the transistor you look into, not to the one under its source.
+          - Applying the formula when the gate is not held (a diode, a divider): then use [the diode](#/l/bk03-diode) or [the K rule](#/l/bk03-k).
+          - Confusing the resistor $R_S$ with "the resistance looking into the source" (also often called $R_S$): read which one the problem means.
+      `),
+      Q(md`$g_m = 2\,\text{mS}$, $r_{ds} = 50\kO$, $R_S = 1\kO$ under the source, gate held. About how big is the resistance looking into the drain?`,
+        ['$\\approx150\\kO$', '$\\approx51\\kO$', '$\\approx100\\kO$', '$\\approx1\\kO$'], 0,
+        [null, 'That is $r_{ds} + R_S$: it leaves out the feedback term $g_mr_{ds}R_S = 100\\kO$, the biggest one.', 'That is $g_mr_{ds}R_S$ alone; add $r_{ds}$ (here $g_mR_S = 2$ is not large).', 'That is $R_S$ alone; the transistor magnifies it.'],
+        md`$r_{ds} + R_S + g_mr_{ds}R_S = 50 + 1 + 100 = 151\kO$; $r_{ds}(1 + g_mR_S) = 150\kO$.`, { fig: F.drain({ rs: 'R_S' }) }),
+      Q(md`Why does a resistor under the source make the drain resistance **larger**?`,
+        ['The current through $R_S$ raises the source and lowers $v_{gs}$, so the transistor opposes any change in its current', 'Because resistors in series add', 'Because $R_S$ raises the bias current', 'Because the gate current flows through $R_S$'], 0,
+        [null, 'Series addition gives only $r_{ds} + R_S$; the real answer is much bigger because of the feedback.', 'The small-signal resistance does not come from a change in bias; and a larger $I_D$ would lower $r_{ds}$.', 'There is no gate current.'],
+        md`Negative feedback: $R_S$ turns the current into a voltage at the source, the held gate turns that into a smaller $v_{gs}$, and $g_m$ turns it back into a current that opposes the change. The loop gain is $g_mR_S$.`),
+      Q(md`When is $R_{DN}\approx g_mr_{ds}R_S$ (the shortest form) accurate?`,
+        ['When $g_mR_S\\gg1$', 'Always, since $g_mr_{ds}\\gg1$', 'When $R_S\\ll1/g_m$', 'When $r_{ds}\\ll R_S$'], 0,
+        [null, '$g_mr_{ds}\\gg1$ only lets you drop the lone $R_S$; the $r_{ds}$ term remains unless $g_mR_S\\gg1$.', 'Then the feedback is weak and $R_{DN}\\approx r_{ds}$: the shortest form would be far too small.', 'In practice $r_{ds}\\gg R_S$; if it were not, other terms would matter too.'],
+        md`$R_{DN} = r_{ds}(1 + g_mR_S) + R_S$. Dropping the "1" next to $g_mR_S$ needs $g_mR_S\gg1$.`),
+      Q(md`A PMOS current source has $R_S$ between its source and $V_{DD}$ and its gate on a fixed bias. Looking up into its drain you see`,
+        ['$r_{ds} + R_S + g_mr_{ds}R_S$, the same as an NMOS', '$\\dfrac{r_{ds} + R_S}{1 + g_mr_{ds}}$', '$r_{ds} - R_S - g_mr_{ds}R_S$', '$r_{ds}$: $V_{DD}$ shorts $R_S$'], 0,
+        [null, 'That is the formula for looking into a **source** with a resistor on the drain.', 'A passive circuit cannot give that; the PMOS needs no extra minus signs with the shared model.', '$V_{DD}$ is ground for signals, but $R_S$ still sits between the source and that ground.'],
+        md`Same model, same equations, same answer. Only the drawing is upside down.`, { fig: F.drain({ p: 1, rs: 'R_S' }) }),
+      P({
+        id: 'bk03-deg-num', title: 'Exact and shortest forms',
+        q: md`$g_m = 1\,\text{mS}$, $r_{ds} = 50\kO$, $R_S = 2\kO$, gate held. Find the exact $R_{DN}$ and the shortest form $g_mr_{ds}R_S$.`,
+        fig: F.drain({ rs: 'R_S', look: 'R_{DN}' }),
+        parts: [{ lbl: 'R_{DN}', unit: 'kΩ', ans: 152, traps: [{ v: 52, msg: 'That is $r_{ds} + R_S$: add the feedback term $g_mr_{ds}R_S$.' }] }, { lbl: 'g_mr_{ds}R_S', unit: 'kΩ', ans: 100 }],
+        hints: [md`$g_mr_{ds} = 50$ and $g_mR_S = 2$.`],
+        sol: md`
+1. $R_{DN} = 50 + 2 + (1\,\text{mS})(50\kO)(2\kO) = 50 + 2 + 100 = 152\kO$.
+2. Shortest form: $100\kO$, 34% low, because $g_mR_S = 2$ is not $\gg1$. The safe form $r_{ds}(1 + g_mR_S) = 150\kO$ is within 1.3%.`,
+      }),
+      P({
+        id: 'bk03-deg-pmos', title: 'A degenerated PMOS current source',
+        q: md`A PMOS ($g_m = 0.5\,\text{mS}$, $r_{ds} = 200\kO$) has $R_S = 4\kO$ to $V_{DD}$ and a held gate. Find the resistance looking up into its drain.`,
+        fig: F.drain({ p: 1, rs: 'R_S', look: 'R_{UP}' }),
+        parts: [{ lbl: 'R_{UP}', unit: 'kΩ', ans: 604, traps: [{ v: 204, msg: 'Add the feedback term $g_mr_{ds}R_S$.' }, { v: 2.0396, msg: 'That is the formula for a **source** with a drain resistor; here you look into the drain.' }] }],
+        hints: [md`Same formula as the NMOS: $r_{ds} + R_S + g_mr_{ds}R_S$, with $g_mr_{ds} = 100$.`],
+        sol: md`$R_{UP} = 200 + 4 + 100\times4 = 604\kO$. Upside down, same equations.`,
+      }),
+      P({
+        id: 'bk03-deg-sym', title: 'Degeneration, typed',
+        q: md`Gate held, $R_S$ from the source to ground. Type the resistance looking into the drain (exact, or a form within 3% of it). Variables: gm, rds, RS.`,
+        fig: F.drain({ rs: 'R_S', look: 'R_{DN}' }),
+        parts: [BK.ex('rds + RS + gm*rds*RS', ['gm', 'rds', 'RS'], 'R_{DN}', { ranges: { gm: [1e-3, 4e-3], rds: [1e5, 3e5], RS: [200, 2000] } })],
+        hints: [md`$v_s = i_tR_S$, $v_{gs} = -i_tR_S$, and the device current is $i_t$.`],
+        sol: md`$i_t = -g_mR_Si_t + (v_t - i_tR_S)/r_{ds}$; times $r_{ds}$ and collect:
+$$R_{DN} = r_{ds} + R_S + g_mr_{ds}R_S\approx r_{ds}(1 + g_mR_S)$$
+(The shortest form $g_mr_{ds}R_S$ is not accepted here: with $g_mR_S$ between 0.2 and 8 it can be far off.)`,
+      }),
+      P({
+        id: 'bk03-deg-design', title: 'Design a current source',
+        q: md`A transistor has $g_m = 2\,\text{mS}$ and $r_{ds} = 50\kO$. What $R_S$ under its source makes the drain look like $1\,\text{M}\Omega$?`,
+        fig: F.drain({ rs: 'R_S', look: '1\\,\\text{M}\\Omega' }),
+        parts: [{ lbl: 'R_S', unit: 'kΩ', ans: 9.40594, accept: [9.5], traps: [{ v: 10, msg: 'That uses $g_mr_{ds}R_S = 1\\,\\text{M}\\Omega$ and forgets the $r_{ds}$ term; solve the full form.' }] }],
+        hints: [md`$R_{DN} = r_{ds} + R_S(1 + g_mr_{ds})$; solve for $R_S$.`],
+        sol: md`$R_S = \dfrac{R_{DN} - r_{ds}}{1 + g_mr_{ds}} = \dfrac{1000 - 50}{1 + 100}\kO = \dfrac{950}{101}\kO = 9.41\kO$. (With $r_{ds}(1 + g_mR_S) = 1\,\text{M}\Omega$ you would get $9.5\kO$, also accepted.)`,
+      }),
+      P({
+        id: 'bk03-deg-diode', title: 'A diode under the source',
+        q: md`$M_1$ ($g_{m1} = 2\,\text{mS}$, $r_{ds1} = 100\kO$, gate held) sits on a diode-connected $M_2$ ($g_{m2} = 4\,\text{mS}$, $r_{ds2} = 50\kO$). Find the resistance $R_X$ looking down from $M_1$'s source, then $R_{DN}$ looking into $M_1$'s drain.`,
+        fig: degDiode,
+        parts: [{ lbl: 'R_X', unit: 'Ω', ans: 248.756 }, { lbl: 'R_{DN}', unit: 'kΩ', ans: 150, traps: [{ v: 100.249, msg: 'You added $R_X$ in series; it is magnified by $1 + g_{m1}r_{ds1}$.' }] }],
+        hints: [md`$R_X = \tfrac{1}{g_{m2}}\parallel r_{ds2}$.`, md`Then degeneration with $R_S = R_X$: $r_{ds1} + R_X(1 + g_{m1}r_{ds1})$.`],
+        sol: md`
+1. $R_X = \dfrac{1}{4\,\text{mS} + 0.02\,\text{mS}} = 248.8\,\Omega$.
+2. $1 + g_{m1}r_{ds1} = 201$, so $R_{DN} = 100\kO + 0.2488\kO\times201 = 100 + 50.0 = 150\kO$.`,
+      }),
+      P({
+        id: 'bk03-deg-quality', title: 'How much better is a degenerated current source?',
+        q: md`A current source runs at $I_D = 0.5\,\text{mA}$ with $V_{ov} = 0.25\,\text{V}$ and $\lambda = 0.04\,\text{V}^{-1}$. (a) Find $g_m$ and $r_{ds}$. (b) Find its output resistance with $R_S = 1\kO$ under the source. (c) The output voltage rises by $2\,\text{V}$: by how much does the current change, with $R_S$? (Without it, $2\,\text{V}/r_{ds} = 40\,\mu\text{A}$, 8% of the bias.)`,
+        fig: F.drain({ rs: 'R_S', look: 'R_{out}' }),
+        parts: [{ lbl: 'g_m', unit: 'mS', ans: 4 }, { lbl: 'r_{ds}', unit: 'kΩ', ans: 50 }, { lbl: 'R_{out}', unit: 'kΩ', ans: 251 }, { lbl: '\\Delta I', unit: 'µA', ans: 7.96813 }],
+        hints: [md`$g_m = 2I_D/V_{ov}$, $r_{ds} = 1/(\lambda I_D)$.`, md`$\Delta I = \Delta V/R_{out}$ (a small-signal estimate).`],
+        sol: md`
+**(a)** $g_m = \dfrac{2(0.5\,\text{mA})}{0.25\,\text{V}} = 4\,\text{mS}$; $r_{ds} = \dfrac{1}{(0.04)(0.5\,\text{mA})} = 50\kO$.
+
+**(b)** $R_{out} = 50 + 1 + (4\,\text{mS})(50\kO)(1\kO) = 51 + 200 = 251\kO$.
+
+**(c)** $\Delta I = \dfrac{2\,\text{V}}{251\kO} = 7.97\,\mu\text{A}$, 1.6% of the bias instead of 8%. One kilohm made the source five times stiffer.`,
+      }),
+      G('bk_mi_degen', { need: 3 }),
     ],
   });
 })();

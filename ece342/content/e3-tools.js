@@ -82,8 +82,8 @@
     ],
   });
 
-  // the book's drills are named bk_*; the Exam 3 units' e3_*
-  const E3G = Object.keys(GENS).filter((k) => /^(e3|bk)_/.test(k));
+  // the book's drills are named bk_* (some writers used bk8_*, bk9_*); the Exam 3 units' e3_*
+  const E3G = Object.keys(GENS).filter((k) => /^(e3|bk\d*)_/.test(k));
   const E2G = ['e2_updn', 'e2_k', 'e2_stage', 'e2_gm', 'e2_chain', 'e2_sign', 'e2_look'].filter((k) => GENS[k]);
   const E3U = ['e3start', 'e3u10', 'e3u11', 'e3u12', 'e3u13', 'e3u14', 'e3u15'].concat(COURSE.units.filter((u) => /^bk\d/.test(u.id)).map((u) => u.id));
   if (E3G.length) {

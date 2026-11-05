@@ -390,4 +390,37 @@
       _t: { g: 'diode', pm, gm, rds: isFinite(rds) ? rds : null, Rs, top, wl: useSize ? wl : null, I: useSize ? I : null, ans },
     };
   };
+
+  // ---------------------------------------------------------------- bk03-degen: R_S under a held gate (resistor, diode, r_ds)
+  GENS.bk_mi_degen = () => {
+    const kind = pick(['R', 'R', 'diode', 'rds']), pm = Math.random() < 0.4, gm = pick(GM), rds = pick(RDS), gr = gm * rds;
+    let Rs, fig, under, extra = '';
+    const top = pm ? [['rail', [1, -2.4]]] : [];
+    if (kind === 'R') {
+      Rs = pick([200, 500, 1e3, 2e3, 5e3, 10e3]);
+      fig = F.drain({ p: pm, rs: 'R_S', rsv: RT(Rs), look: pm ? 'R_{UP}' : 'R_{DN}' });
+      under = `$R_S = ${RT(Rs)}$ between its source and ${pm ? '$V_{DD}$' : 'ground'}`;
+    } else {
+      const g2 = pick(GM), r2 = pick(RDS);
+      Rs = kind === 'diode' ? dio(g2, r2) : r2;
+      // M_2 sits between M_1's source and the rail: a diode, or a held-gate current source
+      fig = pm ? [...top, ['pmos', [1, -1], { n: 'M_2', dc: kind === 'diode' }], ...(kind === 'rds' ? [['acg', [0, -1]]] : []), ['pmos', [1, 1], { n: 'M_1' }], ['acg', [0, 1]], ['w', [1, 2], [1, 2.4]], lookUp([1, 2.4], 'R_{UP}')]
+        : [['w', [1, 0], [1, -0.4]], lookDn([1, -0.4], 'R_{DN}'), ['nmos', [1, 1], { n: 'M_1' }], ['acg', [0, 1]], ['nmos', [1, 3], { n: 'M_2', dc: kind === 'diode' }], ...(kind === 'rds' ? [['acg', [0, 3]]] : []), ['gnd', [1, 4]]];
+      if (pm) fig = fig.map((e) => (e[0] === 'rail' ? ['rail', [1, -2]] : e));
+      under = `under its source ${kind === 'diode' ? 'a diode-connected' : 'a held-gate'} ${pm ? 'PMOS' : 'NMOS'} $M_2$ with $g_{m2} = ${MS(g2)}$, $r_{ds2} = ${RT(r2)}$`;
+      extra = kind === 'diode' ? `**What is under the source.** $M_2$ is a diode: $R_S = \\tfrac{1}{g_{m2}}\\parallel r_{ds2} = ${RT(Rs)}$.\n\n` : `**What is under the source.** $M_2$ has its gate held and its far end on a rail: it is just $r_{ds2}$, so $R_S = ${RT(Rs)}$ (this is a cascode).\n\n`;
+      Object.assign(T, { lastDeg: { g2, r2 } });
+    }
+    const ans = rds + Rs + gr * Rs;
+    const traps = [{ v: rds + Rs, msg: '$r_{ds} + R_S$ leaves out the feedback: the current through $R_S$ lowers $v_{gs}$, which adds $g_mr_{ds}R_S$.' }, { v: rds, msg: 'That ignores what is under the source.' }];
+    if (Math.abs(gr * Rs - ans) > 0.03 * ans) traps.push({ v: gr * Rs, msg: '$g_mr_{ds}R_S$ alone is too small here ($g_mR_S$ is not $\\gg1$): keep $r_{ds}(1 + g_mR_S) + R_S$.' });
+    return {
+      fig,
+      q: `${pm ? 'PMOS' : 'NMOS'} $M_1$: $g_m = ${MS(gm)}$, $r_{ds} = ${RT(rds)}$, gate held; ${under}. Find the resistance looking into the drain of $M_1$.`,
+      parts: [BK.res(pm ? 'R_{UP}' : 'R_{DN}', ans, undefined, traps)],
+      hints: ['First reduce whatever is under the source to one resistance $R_S$ (a diode is $\\tfrac{1}{g_m}\\parallel r_{ds}$; a held-gate transistor is $r_{ds}$).', 'Then $R = r_{ds} + R_S + g_mr_{ds}R_S$ for the transistor you look into.'],
+      sol: `${extra}**Degeneration.** The gate of $M_1$ is held and all of $i_t$ flows through $R_S$, so $v_s = i_tR_S$ and $v_{gs} = -i_tR_S$; the transistor fights the change. With $g_mr_{ds} = ${f(gr, 4)}$:\n$$R = r_{ds} + R_S + g_mr_{ds}R_S = ${RT(rds)} + ${RT(Rs)} + ${f(gr, 4)}\\times${RT(Rs)} = ${RT(ans)}$$\nCheck: $r_{ds}(1 + g_mR_S) = ${RT(rds * (1 + gm * Rs))}$.${pnote(pm)}`,
+      _t: { g: 'degen', kind, pm, gm, rds, Rs, ...(kind === 'R' ? {} : T.lastDeg), ans },
+    };
+  };
 })();

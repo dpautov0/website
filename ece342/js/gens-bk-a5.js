@@ -829,4 +829,198 @@ With equal Early voltages this is half the intrinsic gain, $-V_A/(2V_T)$: the cl
     };
   };
   window.BK5.ceFig = ceFig;
+
+  // ---------------------------------------------------------------- the common-emitter gain from the hybrid-pi model
+  // a common emitter driven through R_S (a DC source V_BB in series sets the bias), output through C_2 into R_L if given
+  function ceSrcFig(o) {
+    const e = [['npn', [1, 1]], ['gnd', [1, 2]], ['rail', [1, -1.2], { n: 'V_{CC}' }], ['R', [1, -1.2], [1, 0], { n: 'R_C', s: o.RC ? kOs(o.RC) : undefined }]];
+    e.push(o.RS ? ['R', [-1.2, 1], [0, 1], { n: 'R_S', s: kOs(o.RS) }] : ['w', [-1.2, 1], [0, 1]]);
+    e.push(['Vac', [-1.2, 1], [-1.2, 2.2], { n: 'v_s', side: 'l' }], ['V', [-1.2, 2.2], [-1.2, 3.4], { n: 'V_{BB}', side: 'l' }], ['gnd', [-1.2, 3.4]]);
+    if (o.RL) e.push(['w', [1, 0], [1.5, 0]], ['C', [1.5, 0], [2.6, 0], { n: 'C_2' }], ['R', [2.6, 0], [2.6, 1.4], { n: 'R_L', s: kOs(o.RL) }], ['gnd', [2.6, 1.4]], ['w', [2.6, 0], [3.1, 0]], ['term', [3.1, 0], { n: 'v_{out}' }]);
+    else e.push(['w', [1, 0], [1.8, 0]], ['term', [1.8, 0], { n: 'v_{out}' }]);
+    return e;
+  }
+  GENS.bk_cegain = () => {
+    const IC = pick([0.25, 0.5, 1, 1, 2]) * 1e-3, beta = pick([50, 100, 100, 150, 200]), useRo = pick([true, false]), VA = pick([50, 100]);
+    const RC = pick([2.2, 4.7, 5.6, 10]) * 1e3, RS = pick([0, 0.5, 1, 2.5, 5]) * 1e3, RL = pick([0, 0, 10, 22]) * 1e3;
+    const gm = IC / VT, rpi = beta / gm, ro = VA / IC;
+    const Rout = par(RC, ...(useRo ? [ro] : []), ...(RL ? [RL] : []));
+    const div = rpi / (rpi + RS), Av = -gm * Rout * div;
+    const outT = ['R_C', ...(useRo ? ['r_o'] : []), ...(RL ? ['R_L'] : [])].join('\\parallel ');
+    return {
+      fig: ceSrcFig({ RC, RS, RL }),
+      q: `The transistor is biased at $I_C = ${T.mA(IC)}$ with $\\beta = ${beta}$; ${useRo ? `$V_A = ${VA}\\,\\text{V}$` : 'ignore $r_o$'}.${RL ? ' $C_2$ is large.' : ''} Find $g_m$, $r_\\pi$ and the gain $A_v = v_{out}/v_s$.`,
+      parts: [{ lbl: 'g_m', unit: 'mS', ans: gm * 1e3 }, { lbl: 'r_\\pi', unit: 'kΩ', ans: rpi / 1e3 },
+        { lbl: 'A_v', unit: '', ans: Av, traps: notNear([{ v: -gm * RC, msg: 'That is $-g_mR_C$ alone. Account for everything else at the output' + (RS ? ' and for the input divider $R_S$–$r_\\pi$' : '') + '.' }, { v: -Av, msg: 'Sign: a common emitter inverts.' }], [Av]) }],
+      hints: ['Small-signal circuit: $V_{CC}$ and $V_{BB}$ become ground' + (RL ? ', $C_2$ a short' : '') + '. Replace the transistor by $r_\\pi$ (base–emitter) and $g_mv_\\pi$' + (useRo ? ' with $r_o$' : '') + ' (collector–emitter).',
+        RS ? '$v_\\pi = v_s\\,r_\\pi/(r_\\pi + R_S)$, then $v_{out} = -g_mv_\\pi(' + outT + ')$.' : '$v_\\pi = v_s$, then $v_{out} = -g_mv_\\pi(' + outT + ')$.'],
+      sol: `**Parameters.** $g_m = ${T.mS(gm)}$, $r_\\pi = \\beta/g_m = ${T.kO(rpi)}$${useRo ? `, $r_o = ${T.kO(ro)}$` : ''}.
+
+**Small-signal circuit.** $V_{CC}$ and $V_{BB}$ are incremental grounds${RL ? ', $C_2$ is a short' : ''}, the emitter is grounded. Every resistor at the collector ($${outT}$) runs from the collector to ground.
+
+**Input.** ${RS ? `$R_S$ and $r_\\pi$ divide: $v_\\pi = v_s\\dfrac{r_\\pi}{r_\\pi + R_S} = ${f(div, 4)}\\,v_s$.` : 'The source sits right across $r_\\pi$: $v_\\pi = v_s$.'}
+
+**Output.** KCL at the collector: the controlled source pulls $g_mv_\\pi$ out of the node, so $v_{out} = -g_mv_\\pi(${outT})$ with $${outT} = ${T.kO(Rout)}$.
+
+$$A_v = -g_m(${outT})\\,${RS ? '\\frac{r_\\pi}{r_\\pi + R_S}' : ''} = -${T.mS(gm)}\\times${T.kO(Rout)}${RS ? `\\times${f(div, 4)}` : ''} = ${f(Av, 4)}$$`,
+      _chk: { kind: 'cegain', IC, beta, useRo, VA, RC, RS, RL },
+    };
+  };
+
+  // ---------------------------------------------------------------- the T model: r_e and quick gains
+  GENS.bk_tgain = () => {
+    const mode = pick(['deg', 'deg', 'fol', 'cb']);
+    const IC = pick([0.5, 1, 1, 2, 2.5]) * 1e-3, beta = pick([50, 100, 100, 200]);
+    const gm = IC / VT, al = beta / (beta + 1), re = al / gm, rpi = beta / gm, b1 = beta + 1;
+    const reP = { lbl: 'r_e', unit: 'Ω', ans: re, accept: [1 / gm] };
+    if (mode === 'deg') {
+      const RC = pick([4.7, 5, 10, 22]) * 1e3, RE = pick([0.1, 0.22, 0.47, 1, 2.2]) * 1e3;
+      const Av = -al * RC / (re + RE), ap = -RC / (1 / gm + RE), Rin = b1 * (re + RE);
+      return {
+        fig: [['rail', [1, -1.2], { n: 'V_{CC}' }], ['R', [1, -1.2], [1, 0], { n: 'R_C', s: kOs(RC) }], ['w', [1, 0], [1.8, 0]], ['term', [1.8, 0], { n: 'v_{out}' }],
+          ['npn', [1, 1]], ['R', [1, 2], [1, 3.2], { n: 'R_E', s: kOs(RE) }], ['gnd', [1, 3.2]], ['w', [0, 1], [-0.6, 1], [-0.6, 1.4]], ['Vac', [-0.6, 1.4], [-0.6, 2.6], { n: 'v_{in}', side: 'l' }],
+          ['V', [-0.6, 2.6], [-0.6, 3.8], { n: 'V_{BB}', side: 'l' }], ['gnd', [-0.6, 3.8]]],
+        q: `A common emitter with an unbypassed emitter resistor, biased at $I_C = ${T.mA(IC)}$, $\\beta = ${beta}$ (ignore $r_o$). Find $r_e$, the gain $A_v = v_{out}/v_{in}$, and the resistance looking into the base.`,
+        parts: [reP, { lbl: 'A_v', unit: '', ans: Av, accept: [ap], traps: notNear([{ v: -gm * RC, msg: 'That ignores $R_E$: the emitter is not grounded here. Use $-\\alpha R_C/(r_e + R_E)$.' }, { v: -RC / RE, msg: 'That drops $r_e$ next to $R_E$. Close for large $R_E$, but keep $r_e$.' }], [Av, ap]) },
+          { lbl: 'R_{in}', unit: 'kΩ', ans: Rin / 1e3, accept: [(rpi + beta * RE) / 1e3] }],
+        hints: ['$r_e = \\alpha/g_m\\approx1/g_m$.', 'T model: $v_{in} = i_e(r_e + R_E)$, $v_{out} = -\\alpha i_eR_C$. Looking into the base: $(\\beta + 1)(r_e + R_E)$.'],
+        sol: `$g_m = ${T.mS(gm)}$, so $r_e = \\alpha/g_m = ${f(al, 4)}/${T.mS(gm)} = ${T.R(re)}$ (about $1/g_m = ${T.R(1 / gm)}$).
+
+**T model.** The base sits at $v_{in}$. The emitter current $i_e$ flows through $r_e$ and then $R_E$, so $v_{in} = i_e(r_e + R_E)$. The collector delivers $\\alpha i_e$ into $R_C$, so $v_{out} = -\\alpha i_eR_C$:
+$$A_v = -\\frac{\\alpha R_C}{r_e + R_E} = -\\frac{${f(al, 4)}\\times${kOs(RC)}}{${T.R(re)} + ${T.R(RE)}} = ${f(Av, 4)}$$
+(The *Art of Electronics* form $-R_C/(r_e + R_E)$ gives $${f(ap, 4)}$.) "The resistance in the collector over the resistance in the emitter."
+
+**Input.** The base current is $i_e/(\\beta + 1)$, so $R_{in} = v_{in}/i_b = (\\beta + 1)(r_e + R_E) = ${T.kO(Rin)}$ $= r_\\pi + (\\beta + 1)R_E$.`,
+        _chk: { kind: 'tgain', mode, IC, beta, RC, RE },
+      };
+    }
+    if (mode === 'fol') {
+      const RE = pick([0.5, 1, 2.2, 4.7]) * 1e3, RS = pick([0, 0, 1, 5, 10]) * 1e3;
+      const Av = RE / (RE + re + RS / b1), Rout = par(RE, re + RS / b1);
+      return {
+        fig: [['rail', [1, 0], { n: 'V_{CC}' }], ['npn', [1, 1]], ['w', [1, 2], [1.8, 2]], ['term', [1.8, 2], { n: 'v_{out}' }], ['R', [1, 2], [1, 3.2], { n: 'R_E', s: kOs(RE) }], ['gnd', [1, 3.2]],
+          ...(RS ? [['R', [-1.2, 1], [0, 1], { n: 'R_S', s: kOs(RS) }]] : [['w', [-1.2, 1], [0, 1]]]),
+          ['Vac', [-1.2, 1], [-1.2, 2.2], { n: 'v_s', side: 'l' }], ['V', [-1.2, 2.2], [-1.2, 3.4], { n: 'V_{BB}', side: 'l' }], ['gnd', [-1.2, 3.4]]],
+        q: `An emitter follower biased at $I_C = ${T.mA(IC)}$, $\\beta = ${beta}$ (ignore $r_o$). Find $r_e$, the gain $v_{out}/v_s$, and the output resistance looking back into the emitter node (including $R_E$).`,
+        parts: [reP, { lbl: 'A_v', unit: '', ans: Av, tol: { rel: 0.004 } }, { lbl: 'R_{out}', unit: 'Ω', ans: Rout }],
+        hints: ['T model: the emitter current flows through $r_e$ and $R_E$; the base current, $i_e/(\\beta + 1)$, flows through $R_S$.', 'Seen from the emitter, $R_S$ shrinks to $R_S/(\\beta + 1)$: $A_v = R_E/(R_E + r_e + R_S/(\\beta + 1))$.'],
+        sol: `$r_e = \\alpha/g_m = ${T.R(re)}$. KVL from the source to ground: $v_s = i_bR_S + i_e(r_e + R_E)$ with $i_b = i_e/(\\beta + 1)$, and $v_{out} = i_eR_E$:
+$$\\frac{v_{out}}{v_s} = \\frac{R_E}{R_E + r_e + R_S/(\\beta + 1)} = \\frac{${T.R(RE)}}{${T.R(RE)} + ${T.R(re)} + ${T.R(RS / b1)}} = ${f(Av, 4)}$$
+Output resistance: $R_E$ in parallel with what the emitter shows, $r_e + R_S/(\\beta + 1) = ${T.R(re + RS / b1)}$: $R_{out} = ${T.R(Rout)}$. A follower: gain just under 1, low output resistance.`,
+        _chk: { kind: 'tgain', mode, IC, beta, RE, RS },
+      };
+    }
+    const RC = pick([2.2, 4.7, 10]) * 1e3, RS = pick([0, 0, 25, 50, 100]);
+    const Av = al * RC / (re + RS);
+    return {
+      fig: [['rail', [1, -1.2], { n: 'V_{CC}' }], ['R', [1, -1.2], [1, 0], { n: 'R_C', s: kOs(RC) }], ['w', [1, 0], [1.8, 0]], ['term', [1.8, 0], { n: 'v_{out}' }], ['npn', [1, 1]], ['acg', [0, 1]],
+        ...(RS ? [['R', [1, 2], [1, 3.2], { n: 'R_S', s: `${RS}\\,\\Omega` }], ['Vac', [1, 3.2], [1, 4.4], { n: 'v_s', side: 'l' }], ['V', [1, 4.4], [1, 5.6], { n: 'V_{EE}', side: 'l' }], ['gnd', [1, 5.6]]]
+          : [['Vac', [1, 2], [1, 3.2], { n: 'v_s', side: 'l' }], ['V', [1, 3.2], [1, 4.4], { n: 'V_{EE}', side: 'l' }], ['gnd', [1, 4.4]]])],
+      q: `A common-base stage biased at $I_C = ${T.mA(IC)}$, $\\beta = ${beta}$ (ignore $r_o$; the base is held at a fixed bias). The source drives the emitter${RS ? ` through $R_S = ${RS}\\,\\Omega$` : ''}. Find $r_e$ (the input resistance at the emitter) and $A_v = v_{out}/v_s$.`,
+      parts: [reP, { lbl: 'A_v', unit: '', ans: Av, accept: [gm * RC / (1 + gm * RS)], traps: notNear([{ v: -Av, msg: 'Sign: a common base does **not** invert. Raising the emitter reduces $V_{BE}$, less current flows in $R_C$, and the collector rises.' }], [Av]) }],
+      hints: ['With the base held, the emitter looks like $r_e$.', 'The source pushes $i_e = v_s/(R_S + r_e)$ out of the emitter (into the transistor in the opposite sense); the collector carries $\\alpha$ of it through $R_C$.'],
+      sol: `$r_e = \\alpha/g_m = ${T.R(re)}$. The emitter current is set by the source across $R_S + r_e$ (the base is grounded for signals): a rise $v_s$ at the emitter reduces the current by $v_s/(R_S + r_e)$; the collector current drops by $\\alpha$ of that, so the collector rises:
+$$A_v = \\frac{\\alpha R_C}{r_e + R_S} = \\frac{${f(al, 4)}\\times${kOs(RC)}}{${T.R(re)} + ${T.R(RS)}} = ${f(Av, 4)}$$
+${RS ? '' : 'With no source resistance this is $\\alpha R_C/r_e = g_mR_C$: the common-emitter magnitude, without the inversion. '}The price is the input resistance: only $r_e = ${T.R(re)}$.`,
+      _chk: { kind: 'tgain', mode, IC, beta, RC, RS },
+    };
+  };
+
+  // ---------------------------------------------------------------- a PNP stage: DC, then the same model
+  GENS.bk_pnpgain = () => {
+    let p, s;
+    for (let t = 0; t < 1000; t++) {
+      const VCC = pick([5, 9, 10, 12]), RB = pick([10, 22, 47, 100]) * 1e3, beta = pick([50, 80, 100, 150]);
+      const VBB = r2(VCC - pick([1.5, 2, 2.5, 3]));
+      const IB = (VCC - VON - VBB) / RB, IC = beta * IB;
+      if (IC < 0.2e-3 || IC > 5e-3) continue;
+      const RC = pick([0.47, 1, 2.2, 3.3, 4.7]) * 1e3;
+      s = pnpDC({ VCC, VBB, RB, RC, RE: 0, beta });
+      if (s.reg !== 'act' || s.VB - s.VC < 0.5) continue;
+      p = { VCC, RB, beta, VBB, RC };
+      break;
+    }
+    const gm = s.IC / VT, rpi = p.beta / gm, div = rpi / (rpi + p.RB), Av = -gm * p.RC * div;
+    const fig = biasFig({ type: 'pnp', base: 'vbb', VCC: p.VCC, VBB: p.VBB, RB: p.RB, RC: p.RC }).flatMap((el) => {
+      if (el[0] === 'V' && el[3] && el[3].n === 'V_{BB}') return [['Vac', [-0.2, 1], [-0.2, 2], { n: 'v_s', side: 'l' }], ['V', [-0.2, 2], [-0.2, 3.2], { n: 'V_{BB}', s: Vs(p.VBB), side: 'l' }]];
+      if (el[0] === 'gnd' && el[1][0] === -0.2) return [['gnd', [-0.2, 3.2]]];
+      return [el];
+    }).concat([['w', [2, 2], [2.8, 2]], ['term', [2.8, 2], { n: 'v_{out}' }]]);
+    return {
+      fig,
+      q: `A PNP common emitter: emitter at $V_{CC} = ${p.VCC}\\,\\text{V}$, the base driven from $V_{BB} = ${f(p.VBB, 3)}\\,\\text{V}$ through $R_B = ${kOs(p.RB)}$ with the signal $v_s$ in series, $R_C = ${kOs(p.RC)}$ to ground, $\\beta = ${p.beta}$ (ignore $r_o$). Find $I_C$, $g_m$ and $A_v = v_{out}/v_s$.`,
+      parts: [{ lbl: 'I_C', unit: 'mA', ans: s.IC * 1e3 }, { lbl: 'g_m', unit: 'mS', ans: gm * 1e3 },
+        { lbl: 'A_v', unit: '', ans: Av, traps: notNear([{ v: -Av, msg: 'A PNP common emitter inverts too: the model is the same as the NPN\'s.' }, { v: -gm * p.RC, msg: 'That ignores the divider $R_B$–$r_\\pi$ at the input.' }], [Av]) }],
+      hints: ['DC (PNP): $I_B = (V_{CC} - 0.7 - V_{BB})/R_B$, out of the base.', 'Small signal: the same hybrid-$\\pi$ model as an NPN. $R_B$ is in series with the source, so $v_\\pi = v_s\\,r_\\pi/(r_\\pi + R_B)$; $v_{out} = -g_mv_\\pi R_C$.'],
+      sol: `**DC.** $I_B = \\dfrac{${p.VCC} - 0.7 - ${f(p.VBB, 3)}}{${kOs(p.RB)}} = ${T.uA(s.IB)}$, $I_C = ${T.mA(s.IC)}$; $V_B = ${T.V(s.VB)}$, $V_C = I_CR_C = ${T.V(s.VC)}\\le V_B$ ✓.
+
+**Parameters.** $g_m = ${T.mS(gm)}$, $r_\\pi = ${T.kO(rpi)}$.
+
+**Small signal** (the PNP uses the NPN's model unchanged, [Section 7.6](#/l/bk07-pnpmodel)): $V_{CC}$ and $V_{BB}$ are ground; $v_s$ drives $r_\\pi$ through $R_B$: $v_\\pi = ${f(div, 4)}\\,v_s$; the collector source pulls $g_mv_\\pi$ through $R_C$:
+$$A_v = -g_mR_C\\frac{r_\\pi}{r_\\pi + R_B} = -${T.mS(gm)}\\times${kOs(p.RC)}\\times${f(div, 4)} = ${f(Av, 4)}$$`,
+      _chk: { kind: 'pnpgain', p, ans: [s.IC * 1e3, gm * 1e3, Av] },
+    };
+  };
+
+  // ---------------------------------------------------------------- the whole exam chain: bias, parameters, R_in, gain
+  GENS.bk_full = () => {
+    let p, s, th;
+    for (let t = 0; t < 2000; t++) {
+      const VCC = pick([10, 12, 15]), R1 = pick([33, 47, 56, 68, 82, 100]) * 1e3, R2 = pick([6.8, 10, 12, 15, 22]) * 1e3;
+      const RE = pick([0.47, 1, 1.2, 1.5, 2.2]) * 1e3, RC = pick([2.2, 3.3, 4.7, 5.6]) * 1e3, beta = pick([80, 100, 120, 150, 200]);
+      th = thev(VCC, R1, R2);
+      s = npnDC({ VCC, VBB: th.VBB, RB: th.RB, RC, RE, beta });
+      if (s.reg !== 'act' || s.IC < 0.3e-3 || s.IC > 5e-3 || s.VC - s.VB < 1) continue;
+      p = { VCC, R1, R2, RE, RC, beta, RL: pick([4.7, 10, 22]) * 1e3, RS: pick([0.5, 1, 2]) * 1e3, bypass: pick([true, true, false]) };
+      break;
+    }
+    const gm = s.IC / VT, rpi = p.beta / gm, Rb = par(p.R1, p.R2), Rcl = par(p.RC, p.RL), b1 = p.beta + 1;
+    const Rbase = p.bypass ? rpi : rpi + b1 * p.RE, Rin = par(Rb, Rbase);
+    const Avb = -p.beta * Rcl / Rbase, div = Rin / (Rin + p.RS), Av = Avb * div;
+    const traps = [{ v: Avb, msg: 'That is the gain from the base. The source sees $R_{in}$ through $R_S$: multiply by $R_{in}/(R_{in} + R_S)$.' },
+      { v: -gm * p.RC * div, msg: '$R_L$ is in parallel with $R_C$ for signals ($C_2$ is a short).' }];
+    if (!p.bypass) traps.push({ v: -gm * Rcl * par(Rb, rpi) / (par(Rb, rpi) + p.RS), msg: '$R_E$ is **not** bypassed here: the emitter is not at ground for signals.' });
+    return {
+      fig: ampFig({ VCC: p.VCC, R1: p.R1, R2: p.R2, RC: p.RC, RE: p.RE, RL: p.RL, RS: p.RS, bypass: p.bypass }),
+      q: `$\\beta = ${p.beta}$, ignore $r_o$; the capacitors are large${p.bypass ? '' : ' (note: no bypass capacitor across $R_E$)'}. Find $I_C$, $g_m$, the input resistance $R_{in}$ seen by the source (to the right of $R_S$), and $A_v = v_{out}/v_s$.`,
+      parts: [{ lbl: 'I_C', unit: 'mA', ans: s.IC * 1e3 }, { lbl: 'g_m', unit: 'mS', ans: gm * 1e3 }, { lbl: 'R_{in}', unit: 'kΩ', ans: Rin / 1e3 },
+        { lbl: 'A_v', unit: '', ans: Av, traps: notNear(traps, [Av]) }],
+      hints: ['DC: capacitors open; Thévenin the divider; base loop with $(\\beta + 1)R_E$.', `Signal: $R_1\\parallel R_2$ from base to ground; the base itself shows ${p.bypass ? '$r_\\pi$' : '$r_\\pi + (\\beta + 1)R_E$'}; the collector sees $R_C\\parallel R_L$.`],
+      sol: `**1. DC** (capacitors open): $V_{TH} = ${T.V(th.VBB)}$, $R_{TH} = ${T.kO(th.RB)}$, $I_B = \\dfrac{V_{TH} - 0.7}{R_{TH} + (\\beta + 1)R_E} = ${T.uA(s.IB)}$, $I_C = ${T.mA(s.IC)}$ ($V_C = ${T.V(s.VC)}\\ge V_B = ${T.V(s.VB)}$ ✓).
+
+**2. Parameters:** $g_m = ${T.mS(gm)}$, $r_\\pi = ${T.kO(rpi)}$.
+
+**3. Input resistance.** For signals $V_{CC}$ is ground, so $R_1$ and $R_2$ both hang from the base to ground: $R_1\\parallel R_2 = ${T.kO(Rb)}$. Into the base: ${p.bypass ? `$r_\\pi = ${T.kO(rpi)}$ (the emitter is grounded by $C_E$)` : `$r_\\pi + (\\beta + 1)R_E = ${T.kO(Rbase)}$ ($R_E$ is not bypassed)`}. So $R_{in} = ${T.kO(Rb)}\\parallel${T.kO(Rbase)} = ${T.kO(Rin)}$.
+
+**4. Gain from the base.** The collector sees $R_C\\parallel R_L = ${T.kO(Rcl)}$. ${p.bypass ? `$v_{out}/v_b = -g_m(R_C\\parallel R_L) = ${f(Avb, 4)}$.` : `With $R_E$ in the emitter, $v_{out}/v_b = -\\dfrac{\\beta(R_C\\parallel R_L)}{r_\\pi + (\\beta + 1)R_E} = ${f(Avb, 4)}$ (the T-model form $-\\alpha(R_C\\parallel R_L)/(r_e + R_E)$).`}
+
+**5. Source divider:** $v_b/v_s = R_{in}/(R_{in} + R_S) = ${f(div, 4)}$.
+
+$$A_v = ${f(Avb, 4)}\\times${f(div, 4)} = ${f(Av, 4)}$$`,
+      _chk: { kind: 'full', p, ans: [s.IC * 1e3, gm * 1e3, Rin / 1e3, Av] },
+    };
+  };
+
+  // ---------------------------------------------------------------- MOSFET result -> BJT twin
+  const TWINS = [
+    ['common-source gain $-g_m(R_D\\parallel r_{ds})$', '$-g_m(R_C\\parallel r_o)$, with $g_m = I_C/V_T$', ['$-\\beta(R_C\\parallel r_o)$', '$-g_mr_\\pi R_C$', '$-(R_C\\parallel r_o)/r_\\pi$'],
+      ['That is the gain from base **current**, not from base voltage.', 'That is $-\\beta R_C$ in disguise ($g_mr_\\pi = \\beta$).', 'Not a transconductance times a resistance.'], 'Nothing in this result involves the gate current, so it carries over with $g_m\\to I_C/V_T$ and $r_{ds}\\to r_o$.'],
+    ['resistance looking into the gate: $\\infty$', '$r_\\pi$', ['$\\infty$', '$1/g_m$', '$r_o$'], ['A base draws current: it is not an open circuit.', 'That is the emitter side.', 'That is the collector side.'], 'The gate draws nothing; the base draws $i_b = v_{be}/r_\\pi$.'],
+    ['into the gate with $R_S$ under the source: $\\infty$', '$r_\\pi + (\\beta + 1)R_E$', ['$r_\\pi + R_E$', '$\\infty$', '$(\\beta + 1)r_\\pi$'], ['$R_E$ carries $(\\beta + 1)$ times the base current, so it counts $(\\beta + 1)$ times.', 'A base draws current.', 'It is $R_E$ that is multiplied, not $r_\\pi$.'], 'The base current flows through $r_\\pi$; $(\\beta + 1)$ times it flows through $R_E$.'],
+    ['looking into the source (gate held): $1/g_m$', '$r_e = r_\\pi/(\\beta + 1)\\approx1/g_m$', ['$r_\\pi$', '$(\\beta + 1)r_\\pi$', '$\\beta/g_m$'], ['That is the base.', 'Backwards: looking from the emitter, base-side resistances are divided by $(\\beta + 1)$.', 'That is $r_\\pi$ again.'], 'The emitter carries $(\\beta + 1)$ times the base current, so $r_\\pi$ looks $(\\beta + 1)$ times smaller from it.'],
+    ['source-follower gain $R_S/(R_S + 1/g_m)$ (no body effect, $r_{ds}\\to\\infty$)', '$R_E/(R_E + r_e)$, with $r_e = \\alpha/g_m$', ['$R_E/(R_E + r_\\pi)$', '$g_mR_E$', '$-R_E/(R_E + r_e)$'], ['$r_\\pi$ is what the base sees; the emitter side sees $r_e$.', 'That would be a gain above 1; a follower is just under 1.', 'A follower does not invert.'], 'Same form; $1/g_m$ becomes $r_e$ (with $\\beta$ finite).'],
+    ['intrinsic gain $g_mr_{ds} = 2/(\\lambda V_{ov})$', '$g_mr_o = V_A/V_T$', ['$\\beta$', '$g_mr_\\pi$', '$V_A/V_{BE}$'], ['$\\beta$ is $g_mr_\\pi$, a current gain.', 'That is $\\beta$.', 'The 0.7 V plays no part; $V_T = 25\\,\\text{mV}$ does.'], '$g_m = I_C/V_T$ and $r_o = V_A/I_C$; the current cancels.'],
+    ['drain resistance with degeneration $r_{ds} + R_S + g_mr_{ds}R_S$', '$r_o + R_E\\parallel r_\\pi + g_mr_o(R_E\\parallel r_\\pi)$', ['$r_o + R_E + g_mr_oR_E$', '$r_o(1 + \\beta)$', '$r_o + (\\beta + 1)R_E$'], ['The base is not an open circuit: $r_\\pi$ sits from the (held) base to the emitter, in parallel with $R_E$.', 'That is only the ceiling, reached when $R_E\\gg r_\\pi$.', 'That is the base-side (β + 1) rule, misapplied.'], 'With the base held, $r_\\pi$ goes from the emitter node to incremental ground, in parallel with $R_E$; then the MOSFET algebra repeats with $R_S\\to R_E\\parallel r_\\pi$ (Chapter 8).'],
+  ];
+  GENS.bk_twin = () => {
+    const [mos, right, wrongs, whys, why] = pick(TWINS);
+    const mc = [right, ...wrongs];
+    return {
+      q: `A MOSFET circuit has the result: ${mos}. In the BJT twin (gate → base, source → emitter, drain → collector), what does it become?`,
+      parts: [{ lbl: 'BJT twin', mc, a: 0, why: [null, ...whys] }],
+      hints: ['Ask first: did the MOSFET result rely on the gate drawing no current? If not, swap $g_m$ and $r_{ds}\\to r_o$. If it did, the base current changes it: $r_\\pi$ and $(\\beta + 1)$ appear.'],
+      sol: `**${right}.** ${why}`,
+      _chk: { kind: 'twin' },
+    };
+  };
 })();

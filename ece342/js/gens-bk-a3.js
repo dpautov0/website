@@ -95,6 +95,46 @@
     return e;
   };
 
+  // the PMOS common source model, drawn source-on-top like the circuit: mode 'short' | 'test'
+  F.csPM = (mode = 'short') => {
+    const e = [...mm(3, 0, { up: true }), ['w', [3, 0], [3, -0.6]], ['gndu', [3, -0.6]], ['R', [3, 2], [3, 3.4], { n: 'R_D' }], ['gnd', [3, 3.4]]];
+    e.push(...(mode === 'test' ? gGnd(3, 0, { up: true }) : gVin(3, 0, { up: true })));
+    if (mode === 'short') e.push(...shortAt([4.6, 2]));
+    if (mode === 'test') e.push(...testAt([4.6, 2]));
+    return e;
+  };
+
+  // ---- plots: Schem.plot plus TeX annotations at data coordinates, t = [{x, y, s, a: 'l' | 'r' | 'c'}]
+  const flabel = (x, y, s, a = 'c') => {
+    const w = 190, h = 56, fx = a === 'l' ? x : a === 'r' ? x - w : x - w / 2;
+    const jc = a === 'l' ? 'flex-start' : a === 'r' ? 'flex-end' : 'center';
+    return `<foreignObject x="${fx.toFixed(1)}" y="${(y - h / 2).toFixed(1)}" width="${w}" height="${h}" class="lbl small"><div xmlns="http://www.w3.org/1999/xhtml" style="justify-content:${jc};align-items:center"><span style="text-align:${a === 'r' ? 'right' : a === 'l' ? 'left' : 'center'}">$${s}$</span></div></foreignObject>`;
+  };
+  F.plot = (o, t = []) => {
+    const W = o.w || 400, H = o.h || 250, ml = 46, mr = 18, mt = 16, mb = 38;
+    const X = (x) => ml + (x - o.x[0]) / (o.x[1] - o.x[0]) * (W - ml - mr);
+    const Y = (y) => H - mb - (y - o.y[0]) / (o.y[1] - o.y[0]) * (H - mt - mb);
+    return Schem.plot(o).replace(/<\/svg>$/, t.map((a) => flabel(X(a.x), Y(a.y), a.s, a.a)).join('') + '</svg>');
+  };
+  // the common source on its output curves: K = 1 mA/V^2, V_TN = 1 V, lambda = 0, V_DD = 5 V, R_D = 10 kOhm
+  F.loadLine = () => {
+    const I = (vgs) => (v) => { const ov = vgs - 1; return v < ov ? 2 * ov * v - v * v : ov * ov; };
+    return F.plot({ x: [0, 5.5], y: [0, 0.55], xl: 'V_{DS}\\ (\\text{V})', yl: 'I_D\\ (\\text{mA})', w: 440, h: 280,
+      xt: [0, 1, 2, 3, 4, 5], yt: [0, 0.1, 0.2, 0.3, 0.4, 0.5],
+      curves: [{ f: I(1.6), cls: 'dc' }, { f: I(1.5) }, { f: I(1.4), cls: 'dc' }, { f: (v) => (5 - v) / 10, cls: 'dash', to: 5 }],
+      pts: [{ x: 1.4, y: 0.36, n: '' }, { x: 2.5, y: 0.25, n: 'Q' }, { x: 3.4, y: 0.16, n: '' }] },
+    [{ x: 4.0, y: 0.39, s: 'V_{GS} = 1.6\\,\\text{V}', a: 'l' }, { x: 4.0, y: 0.28, s: 'V_{GS} = 1.5\\,\\text{V}', a: 'l' }, { x: 4.0, y: 0.19, s: 'V_{GS} = 1.4\\,\\text{V}', a: 'l' },
+      { x: 0.9, y: 0.525, s: '\\text{load line: } I_D = (V_{DD} - V_{DS})/R_D', a: 'l' }]);
+  };
+  // the common source transfer curve (same numbers): off, saturation (the amplifier), triode; tangent at Q
+  F.csTransfer = () => {
+    const vout = (vin) => { if (vin <= 1) return 5; const ov = vin - 1, vs = 5 - 10 * ov * ov; if (vs >= ov) return vs; const b = 20 * ov + 1; return (b - Math.sqrt(b * b - 200)) / 20; };
+    return F.plot({ x: [0, 3], y: [0, 5.5], xl: 'V_{in}\\ (\\text{V})', yl: 'V_{out}\\ (\\text{V})', w: 440, h: 280, xt: [0, 1, 2, 3], yt: [0, 1, 2, 3, 4, 5],
+      curves: [{ f: vout }, { f: (x) => 2.5 - 10 * (x - 1.5), from: 1.28, to: 1.72, cls: 'dash' }], pts: [{ x: 1.5, y: 2.5, n: 'Q' }] },
+    [{ x: 0.5, y: 4.6, s: '\\text{off}' }, { x: 2.0, y: 3.4, s: '\\text{saturation}' }, { x: 2.5, y: 1.0, s: '\\text{triode}' },
+      { x: 1.36, y: 4.75, s: '\\text{tangent: slope } {-10}', a: 'l' }]);
+  };
+
   // ---- the Norton picture
   // the whole amplifier as a box, driven by v_in, with something attached at its output (o.ext: 'load' | 'vsrc')
   F.ampBox = (o = {}) => [
@@ -144,7 +184,7 @@
     const acc = (o.accept || []).filter((a) => isFinite(a) && Math.abs(a - val) > 0.012 * Math.abs(val));
     if (acc.length) p.accept = acc.map((a) => a * scale);
     const good = [val, ...acc];
-    const tr = (o.traps || []).filter((t) => isFinite(t.v) && good.every((g) => Math.abs(t.v - g) > 0.02 * Math.abs(g)));
+    const tr = (o.traps || []).filter((t) => isFinite(t.v) && good.every((g) => Math.abs(t.v - g) > 0.035 * Math.abs(g)));
     if (tr.length) p.traps = tr.map((t) => ({ v: t.v * scale, msg: t.msg }));
     return p;
   }

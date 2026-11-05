@@ -38,9 +38,11 @@
   // a common emitter in the hybrid-pi model: the source (through R_S if given) on the base, r_pi, g_m v_pi, then the
   // resistors from the collector to incremental ground named in o.loads (default r_o and R_C); the emitter is grounded
   function ceModel(o = {}) {
-    const x0 = -0.6, loads = o.loads || ['r_o', 'R_C'];
+    const x0 = o.RB ? -1.8 : -0.6, loads = o.loads || ['r_o', 'R_C'];
     const e = [['Vac', [x0, 0.4], [x0, 2], { n: o.vin || 'v_{in}', side: 'l' }], ['w', [x0, 0.4], [x0, 0]]];
-    e.push(o.RS ? ['R', [x0, 0], [1, 0], { n: 'R_S' }] : ['w', [x0, 0], [1, 0]]);
+    const xb = o.RB ? -0.2 : 1;                     // where the source branch meets the base node
+    e.push(o.RS ? ['R', [x0, 0], [xb, 0], { n: 'R_S' }] : ['w', [x0, 0], [xb, 0]]);
+    if (o.RB) e.push(['R', [xb, 0], [xb, 2], { n: o.RB, side: 'l' }], ['w', [xb, 0], [1, 0]]);
     e.push(['R', [1, 0], [1, 2], { n: 'r_\\pi', side: 'l' }], ['vlab', [1.35, 0.35], [1.35, 1.65], { n: 'v_\\pi' }], ['G', [3, 0], [3, 2], { n: 'g_mv_\\pi', side: 'l' }]);
     let x = 3;
     loads.forEach((n, i) => { x = 4.2 + 1.2 * i; e.push(['R', [x, 0], [x, 2], { n }]); });

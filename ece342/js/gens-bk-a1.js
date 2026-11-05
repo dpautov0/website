@@ -579,4 +579,64 @@ $$A_v = -g_m(R_D\parallel r_{ds}${RL ? '\\parallel R_L' : ''}) = -(${ms(gm)})(${
       _v: { WL, ov, lam, RD, VDD, RL },
     };
   };
+
+  // ================================================================ Ch 2.7  DC operating point
+  const rsFig = (vg, rs, rd, vdd) => [['rail', [1, -1.4], { n: `V_{DD} = ${vdd}` }], ['R', [1, -1.4], [1, 0], { n: 'R_D', s: rd }], ['w', [1, 0], [1.8, 0]], ['term', [1.8, 0], { n: 'V_D' }],
+    ['nmos', [1, 1]], ['w', [0, 1], [-0.6, 1]], ['term', [-0.6, 1], { n: `V_G = ${vg}`, side: 'l' }], ['node', [1, 2], { n: 'V_S', side: 'r' }], ['R', [1, 2], [1, 3.2], { n: 'R_S', s: rs }], ['gnd', [1, 3.2]]];
+  GENS.bk_dc_rs = () => {
+    let VG, k, RS, VDD, RD, ov, I, VD, tries = 0;
+    do {
+      VG = pick([2, 2.5, 3, 4]); k = pick([0.5, 1, 2, 4]) * 1e-3; RS = pick([0.5, 1, 2, 4]) * 1e3; VDD = pick([5, 10]); RD = pick([1, 2, 4, 5, 10]) * 1e3;
+      const a = k * RS;
+      ov = (-1 + Math.sqrt(1 + 2 * a * (VG - 1))) / a; I = 0.5 * k * ov * ov; VD = VDD - I * RD; tries++;
+    } while ((VD < VG - 1 + 0.2 || VD > VDD - 0.2) && tries < 500);
+    const VS = I * RS, RDmax = (VDD - (VG - 1)) / I, h = 0.5 * k * RS;
+    return {
+      fig: rsFig(volt(VG), ohm(RS), ohm(RD), `${VDD}\\,\\text{V}`),
+      q: md`An NMOS with $k = \mu_nC_{ox}W/L = ${kk(k)}$ ($V_{TN} = 1\,\text{V}$, $\lambda = 0$) has its gate held at $V_G = ${volt(VG)}$, $R_S = ${ohm(RS)}$ under its source, and $R_D = ${ohm(RD)}$ to $V_{DD} = ${VDD}\,\text{V}$. Assume saturation and find $V_{ov}$, $I_D$, $V_S$, $V_D$, and the largest $R_D$ that keeps it saturated.`,
+      parts: [
+        numAns('V_{ov}', 'V', ov, [{ v: VG - 1, msg: 'That ignores $R_S$: the source rises to $I_DR_S$, so $V_{GS} < V_G$.' }]),
+        curAns('I_D', I, [{ v: 0.5 * k * (VG - 1) ** 2, msg: 'That ignores $R_S$.' }]),
+        numAns('V_S', 'V', VS), numAns('V_D', 'V', VD),
+        resAns('R_{D,max}', RDmax, [], [{ v: (VDD - VG) / I, msg: 'The edge is $V_D = V_G - V_{TN}$, not $V_G$.' }]),
+      ],
+      hints: [md`KVL: $V_G - V_{TN} = V_{ov} + \tfrac12kR_SV_{ov}^2$, here $\tfrac12kR_S = ${f(h)}\,\text{V}^{-1}$.`, md`Keep the positive root: $V_{ov} = \dfrac{-1 + \sqrt{1 + 4(${f(h)})(${f(VG - 1)})}}{2(${f(h)})}$.`],
+      sol: md`
+1. KVL from the gate: $V_G = V_{GS} + I_DR_S$, with $V_{GS} = 1 + V_{ov}$ and $I_D = \tfrac12kV_{ov}^2$:
+$$${f(VG - 1)} = V_{ov} + ${f(h)}\,V_{ov}^2\quad\Rightarrow\quad V_{ov} = \frac{-1 + \sqrt{1 + 4(${f(h)})(${f(VG - 1)})}}{2(${f(h)})} = ${volt(ov)}$$
+2. $I_D = \tfrac12(${kk(k)})(${f(ov, 4)})^2 = ${amp(I)}$; $V_S = I_DR_S = ${volt(VS)}$.
+3. $V_D = ${VDD} - I_DR_D = ${volt(VD)}\ge V_G - V_{TN} = ${volt(VG - 1)}$: saturated ✓.
+4. Edge: $V_D = V_G - V_{TN}$, so $R_{D,max} = \dfrac{${VDD} - ${f(VG - 1)}}{${amp(I)}} = ${ohm(RDmax)}$.`,
+      _v: { VG, k, RS, VDD, RD },
+    };
+  };
+
+  const mirFig = (p, iref, s1, s2) => (p
+    ? [['rail', [1, 0], { n: 'V_{DD}' }], ['pmos', [1, 1], { n: 'M_1', flip: true, dc: true, sz: s1 }], ['I', [1, 2], [1, 3.2], { n: 'I_{REF}', s: iref, side: 'l' }], ['gnd', [1, 3.2]],
+      ['rail', [3, 0], { n: 'V_{DD}' }], ['pmos', [3, 1], { n: 'M_2', sz: s2 }], ['R', [3, 2], [3, 3.2], { n: 'R_D' }], ['gnd', [3, 3.2]], ['w', [3, 2], [3.8, 2]], ['term', [3.8, 2], { n: 'V_{D2}' }]]
+    : [['rail', [1, -1.2], { n: 'V_{DD}' }], ['I', [1, -1.2], [1, 0], { n: 'I_{REF}', s: iref, side: 'l' }], ['nmos', [1, 1], { n: 'M_1', flip: true, dc: true, sz: s1 }], ['gnd', [1, 2]],
+      ['nmos', [3, 1], { n: 'M_2', sz: s2 }], ['gnd', [3, 2]], ['rail', [3, -1.2], { n: 'V_{DD}' }], ['R', [3, -1.2], [3, 0], { n: 'R_D' }], ['w', [3, 0], [3.8, 0]], ['term', [3.8, 0], { n: 'V_{D2}' }]]);
+  GENS.bk_dc_mirror = () => {
+    const p = Math.random() < 0.4, mu = p ? MUP : MUN, WL1 = pick([10, 20, 25, 50, 100]), n = pick([0.5, 1, 2, 3, 4]), WL2 = WL1 * n;
+    const IREF = pick([0.05, 0.1, 0.2, 0.25, 0.5]) * 1e-3, VDD = pick([3, 5]);
+    const ov = Math.sqrt(2 * IREF / (mu * WL1)), I2 = IREF * n;
+    const VG = p ? VDD - 1 - ov : 1 + ov;
+    const RDmax = p ? (VG + 1) / I2 : (VDD - ov) / I2;
+    const vgsl = p ? 'V_{SG}' : 'V_{GS}';
+    return {
+      fig: mirFig(p, amp(IREF), String(WL1), String(WL2)),
+      q: md`A${p ? ' PMOS' : 'n NMOS'} current mirror: $M_1$ ($W/L = ${WL1}$) is diode-connected and carries $I_{REF} = ${amp(IREF)}$; $M_2$ ($W/L = ${f(WL2)}$) shares its gate and source; $R_D$ runs from $M_2$'s drain ${p ? 'to ground' : 'to $V_{DD}$'}, with $V_{DD} = ${VDD}\,\text{V}$. ($${p ? '\\mu_pC_{ox} = 50' : '\\mu_nC_{ox} = 100'}\,\mu\text{A/V}^2$, $|V_T| = 1\,\text{V}$, $\lambda = 0$.) Find $${vgsl}$, $I_2$, and the largest $R_D$ that keeps $M_2$ saturated.`,
+      parts: [
+        numAns(vgsl, 'V', 1 + ov, [{ v: ov, msg: 'Add the threshold to the overdrive.' }]),
+        curAns('I_2', I2, [{ v: IREF * Math.sqrt(n), msg: 'Current scales with $W/L$ itself, not its square root.' }]),
+        resAns('R_{D,max}', RDmax, [], p ? [{ v: (VG - 1) / I2, msg: 'For a PMOS the drain may rise to $V_G + |V_{TP}|$.' }] : [{ v: (VDD - 1 - ov) / I2, msg: 'The edge is $V_{D2} = V_{GS} - V_{TN} = V_{ov}$, not $V_{GS}$.' }]),
+      ],
+      hints: [md`$M_1$ (always saturated): $I_{REF} = \tfrac12\mu C_{ox}(W/L)_1V_{ov}^2$.`, md`$I_2 = I_{REF}(W/L)_2/(W/L)_1$; ${p ? 'PMOS edge: $V_{D2} = V_G + 1$.' : 'NMOS edge: $V_{D2} = V_{ov}$.'}`],
+      sol: md`
+1. $M_1$: $V_{ov} = \sqrt{\dfrac{2(${amp(IREF)})}{(${p ? 50 : 100}\,\mu\text{A/V}^2)(${WL1})}} = ${volt(ov)}$, so $${vgsl} = ${volt(1 + ov)}$${p ? md` and the gate sits at $V_G = ${VDD} - ${f(1 + ov, 4)} = ${volt(VG)}$` : ''}.
+2. $M_2$ has the same $${vgsl}$: $I_2 = ${amp(IREF)}\times\dfrac{${f(WL2)}}{${WL1}} = ${amp(I2)}$.
+3. ${p ? md`PMOS saturation: $V_{D2} = I_2R_D\le V_G + 1 = ${volt(VG + 1)}$, so $R_D\le${ohm(RDmax)}$.` : md`NMOS saturation: $V_{D2} = ${VDD} - I_2R_D\ge V_{ov} = ${volt(ov)}$, so $R_D\le\dfrac{${VDD} - ${f(ov, 4)}}{${amp(I2)}} = ${ohm(RDmax)}$.`}`,
+      _v: { p, WL1, n, IREF, VDD },
+    };
+  };
 })();

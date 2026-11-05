@@ -680,8 +680,8 @@ A $100\kO$ resistor ends up worth $100\kO/101^2\approx10\,\Omega$ at the bottom.
       RF(md`
         ### What a base resistor does
 
-        If the base is held through $R_B$ instead of directly, the leak path is $r_\pi + R_B$, and only the fraction $r_\pi/(r_\pi + R_B)$ of the emitter's rise reaches $v_\pi$. The same five steps give
-        $$R = r_o\Big[1 + g_m\frac{r_\pi}{r_\pi + R_B}\big(R_E\parallel(r_\pi + R_B)\big)\Big] + R_E\parallel(r_\pi + R_B)$$
+        If the base is held through $R_B$ instead of directly, the leak path is $r_\pi + R_B$, and only the fraction $r_\pi/(r_\pi + R_B)$ of the emitter's rise reaches $v_\pi$. Write $R_x = R_E\parallel(r_\pi + R_B)$ for the emitter's resistance to ground; the same five steps give
+        $$R = r_o\Big[1 + g_m\frac{r_\pi}{r_\pi + R_B}R_x\Big] + R_x$$
         With $R_B = 0$ it is the key result. The lesson: **a soft base wastes degeneration.** Keep the base of a current-source transistor stiff (a bypass capacitor or a low-resistance bias) if you want its collector to be high.
 
         [[fig:c]]

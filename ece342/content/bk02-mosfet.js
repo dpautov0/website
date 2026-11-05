@@ -1122,4 +1122,183 @@ A large $\lambda$ like $0.1\,\text{V}^{-1}$ shifts the bias by $25\%$, which is 
       G('bk_pmos_model', { need: 3 }),
     ],
   });
+
+  // ================================================================== 7. the DC operating point
+  const divFigM = (o = {}) => [
+    ['rail', [1, -1.4], { n: o.vdd ? `V_{DD} = ${o.vdd}` : 'V_{DD}' }], ['rail', [-1, -1.4], { n: o.vdd ? `V_{DD} = ${o.vdd}` : 'V_{DD}' }],
+    ['R', [1, -1.4], [1, 0], { n: 'R_D', s: o.rd }], ['w', [1, 0], [1.8, 0]], ['term', [1.8, 0], { n: 'V_D' }],
+    ['R', [-1, -1.4], [-1, 1], { n: 'R_1', s: o.r1, side: 'l' }], ['R', [-1, 1], [-1, 3.2], { n: 'R_2', s: o.r2, side: 'l' }], ['gnd', [-1, 3.2]], ['w', [-1, 1], [0, 1]], ['node', [-0.5, 1], { n: 'V_G', side: 'a' }],
+    ['nmos', [1, 1]], ['node', [1, 2], { n: 'V_S', side: 'r' }], ['R', [1, 2], [1, 3.2], { n: 'R_S', s: o.rs }], ['gnd', [1, 3.2]],
+  ];
+  const diodeFig = (o = {}) => [['rail', [1, -1.2], { n: 'V_{DD}' }], ['I', [1, -1.2], [1, 0], { n: 'I_{REF}', s: o.i, side: 'r' }], ['nmos', [1, 1], { dc: true }], ['gnd', [1, 2]],
+    ['node', [1, 0], { n: 'V_{GS}', side: 'r' }]];
+  const mirrorFig = (o = {}) => [
+    ['rail', [1, -1.2], { n: 'V_{DD}' }], ['I', [1, -1.2], [1, 0], { n: 'I_{REF}', s: o.i, side: 'l' }], ['nmos', [1, 1], { n: 'M_1', flip: true, dc: true, sz: o.s1 }], ['gnd', [1, 2]],
+    ['nmos', [3, 1], { n: 'M_2', sz: o.s2 }], ['gnd', [3, 2]], ['rail', [3, -1.2], { n: 'V_{DD}' }], ['R', [3, -1.2], [3, 0], { n: 'R_D', s: o.rd }], ['w', [3, 0], [3.8, 0]], ['term', [3.8, 0], { n: 'V_{D2}' }],
+  ];
+  const pmirrorFig = (o = {}) => [
+    ['rail', [1, 0], { n: 'V_{DD}' }], ['pmos', [1, 1], { n: 'M_1', flip: true, dc: true, sz: o.s1 }], ['I', [1, 2], [1, 3.2], { n: 'I_{REF}', s: o.i, side: 'l' }], ['gnd', [1, 3.2]],
+    ['rail', [3, 0], { n: 'V_{DD}' }], ['pmos', [3, 1], { n: 'M_2', sz: o.s2 }], ['R', [3, 2], [3, 3.2], { n: 'R_D', s: o.rd }], ['gnd', [3, 3.2]], ['w', [3, 2], [3.8, 2]], ['term', [3.8, 2], { n: 'V_{D2}' }],
+  ];
+
+  L({
+    id: 'bk02-bias', title: 'What you need from Exam 1: finding the DC operating point', ref: 'Exam 1 (HW 3), rebuilt',
+    steps: [
+      R(md`
+        ### The question
+
+        Every small-signal number starts from the bias: $g_m = 2I_D/V_{ov}$ and $r_{ds} = 1/(\lambda I_D)$ need $I_D$ and $V_{ov}$. This section collects the four bias circuits that Exam 2 and Exam 3 problems are built from: a fixed gate voltage, a resistor divider with a source resistor, the diode-connected transistor, and the current mirror. Each is solved with one method: **assume saturation, solve, check.**
+      `),
+      R(md`
+        ### The physical picture
+
+        **The gate draws no current.** So a gate voltage set by a resistor divider is just the divider's open-circuit voltage: the transistor does not load it. That makes the gate the easy part of every bias problem.
+
+        **A source resistor fights the current.** With $R_S$ under the source, more current raises the source voltage, which shrinks $V_{GS}$, which reduces the current. The bias settles where the square law and Ohm's law agree, and it is much less sensitive to the transistor's exact $V_{TN}$ or $k$: negative feedback, the theme of Chapter 4's degeneration.
+
+        **A diode-connected transistor sets its own gate voltage.** With the gate tied to the drain, the transistor adjusts $V_{GS}$ until it carries whatever current is pushed into it. Another transistor sharing that $V_{GS}$ copies the current: a **mirror**.
+      `),
+      R(md`
+        !!method Assume, solve, check
+          1. **Assume saturation** and write $I_D = \tfrac12k(V_{GS} - V_{TN})^2$ (for a PMOS, $\tfrac12k_p(V_{SG} - |V_{TP}|)^2$).
+          2. **Write the circuit's own equations** (Ohm's law for the resistors, KVL from the gate to ground) in terms of $I_D$ or $V_{ov}$.
+          3. **Solve**, keeping only the root with $V_{ov} > 0$.
+          4. **Check** $V_D\ge V_G - V_{TN}$ (NMOS) or $V_D\le V_G + |V_{TP}|$ (PMOS). If it fails, redo it with the triode law (Section 2.1).
+      `),
+      RF(md`
+        ### Case 1: a divider and a source resistor
+
+        $V_{DD} = 5\,\text{V}$, $R_1 = 300\kO$, $R_2 = 200\kO$, an NMOS with $W/L = 20$ ($k = 2\,\text{mA/V}^2$), $R_S = 1\kO$, $R_D = 5\kO$.
+
+        [[fig:div]]
+
+        **Step 1: the gate.** No gate current, so the divider is unloaded:
+        $$V_G = V_{DD}\frac{R_2}{R_1 + R_2} = 5\times\frac{200}{500} = 2\,\text{V}$$
+
+        **Step 2: KVL from the gate to ground.** $V_G = V_{GS} + I_DR_S$. Write $V_{GS} = V_{TN} + V_{ov}$ and $I_D = \tfrac12kV_{ov}^2$:
+        $$V_G - V_{TN} = V_{ov} + \tfrac12kR_S\,V_{ov}^2$$
+
+        **Step 3: numbers.** $V_G - V_{TN} = 1\,\text{V}$ and $\tfrac12kR_S = \tfrac12(2\,\text{mA/V}^2)(1\kO) = 1\,\text{V}^{-1}$:
+        $$V_{ov}^2 + V_{ov} - 1 = 0\quad\Rightarrow\quad V_{ov} = \frac{-1 + \sqrt{1 + 4}}{2} = 0.618\,\text{V}$$
+        The other root, $-1.618\,\text{V}$, would put $V_{GS}$ below threshold, where the square law does not apply: discard it.
+
+        **Step 4: everything else.** $I_D = \tfrac12(2)(0.618)^2 = 0.382\,\text{mA}$; $V_S = I_DR_S = 0.382\,\text{V}$; $V_{GS} = 1.618\,\text{V}$; $V_D = 5 - (0.382)(5) = 3.09\,\text{V}$.
+
+        **Step 5: check.** $V_D = 3.09\ge V_G - V_{TN} = 1\,\text{V}$. ✓ Saturated. Now the small signal can begin: $g_m = 2I_D/V_{ov} = 1.236\,\text{mS}$.
+      `, { div: { fig: divFigM({ vdd: '5\\,\\text{V}', r1: '300\\,\\text{k}\\Omega', r2: '200\\,\\text{k}\\Omega', rs: '1\\,\\text{k}\\Omega', rd: '5\\,\\text{k}\\Omega' }), cap: 'Divider bias with a source resistor.' } }),
+      RF(md`
+        ### Case 2: the diode-connected transistor
+
+        Tie the gate to the drain and push a current $I_{REF}$ into it.
+
+        [[fig:d]]
+
+        **Always saturated (if on).** $V_{DS} = V_{GS}$, and $V_{GS}\ge V_{GS} - V_{TN}$ always holds. So the square law applies and gives the voltage directly:
+        $$V_{GS} = V_{TN} + \sqrt{\frac{2I_{REF}}{k}}$$
+        With $k = 1\,\text{mA/V}^2$ and $I_{REF} = 0.5\,\text{mA}$: $V_{ov} = 1\,\text{V}$, $V_{GS} = 2\,\text{V}$.
+
+        For small signals the gate follows the drain, so the transistor's own current responds to its own voltage: Section 1.5's VCCS controlled by its own voltage. Chapter 3 shows it looks like $1/g_m$.
+      `, { d: { fig: diodeFig({ i: '0.5\\,\\text{mA}' }), cap: 'A diode-connected NMOS: always in saturation when on.' } }),
+      RF(md`
+        ### Case 3: the current mirror
+
+        $M_1$ is diode-connected and carries $I_{REF}$; $M_2$ shares its gate and source, so it has the same $V_{GS}$.
+
+        [[fig:m]]
+
+        **Step 1: $M_1$ sets $V_{GS}$.** $\tfrac12k_1V_{ov}^2 = I_{REF}$.
+
+        **Step 2: $M_2$ has the same $V_{ov}$**, so if it is saturated its current is the same square law with its own $k$:
+        $$I_2 = \tfrac12k_2V_{ov}^2 = I_{REF}\,\frac{(W/L)_2}{(W/L)_1}$$
+        A mirror copies current **by size**. No $V_{TN}$, no $\mu_nC_{ox}$: they cancel in the ratio.
+
+        **Step 3: check $M_2$.** Its gate is at $V_{GS}$ and its drain must stay at or above $V_{GS} - V_{TN} = V_{ov}$.
+
+        **Numbers.** $I_{REF} = 0.2\,\text{mA}$, $(W/L)_1 = 10$, $(W/L)_2 = 30$, $R_D$ from $V_{DD} = 5\,\text{V}$ to $M_2$'s drain. $V_{ov} = \sqrt{0.4/1} = 0.632\,\text{V}$ ($V_{GS} = 1.632\,\text{V}$); $I_2 = 3\times0.2 = 0.6\,\text{mA}$; saturation needs $V_{D2} = 5 - 0.6R_D\ge0.632$, so $R_D\le7.28\kO$.
+      `, { m: { fig: mirrorFig({ i: '0.2\\,\\text{mA}', s1: '10', s2: '30' }), cap: 'An NMOS current mirror: $I_2 = I_{REF}(W/L)_2/(W/L)_1$ while $M_2$ is saturated.' } }),
+      R(md`
+        ### Check it, and what it means
+
+        - **Case 1 limits.** $R_S\to0$: $V_{ov} = V_G - V_{TN} = 1\,\text{V}$ and $I_D = 1\,\text{mA}$. With $R_S = 1\kO$ the current dropped to $0.382\,\text{mA}$: the source resistor's feedback at work.
+        - **Mirror check.** Equal sizes copy exactly; a $3\times$ wider $M_2$ carries $3\times$ the current at the same $V_{GS}$, like three copies of $M_1$ side by side.
+        - **With $\lambda\ne0$** the mirror copies only approximately, because $M_1$ and $M_2$ sit at different $V_{DS}$ (Section 2.3's mismatch).
+
+        ### How to recognize it
+
+        A divider on a gate: write $V_G$ first. A resistor under a source: expect a quadratic in $V_{ov}$. A gate wired to its own drain: saturated, $V_{GS}$ from the current. Two gates on one line with a diode on one side: a mirror, scale by size. Every Exam 2 Problem 1 is a combination of these.
+      `),
+      R(md`
+        !!mistake Common mistakes
+          **Loading the divider with a gate current.** There is none.
+
+          **Keeping the wrong root.** The root with $V_{ov} < 0$ (or $V_{GS} < V_{TN}$) is not physical.
+
+          **Forgetting $V_S$ in $V_{GS}$.** With $R_S$, $V_{GS} = V_G - I_DR_S$, not $V_G$.
+
+          **Mirroring without checking the copy is saturated.** The ratio rule only holds while $M_2$'s drain stays above $V_{GS} - V_{TN}$.
+      `),
+      R(md`
+        ### Exercises
+      `),
+      Q(md`A diode-connected NMOS (gate tied to drain) is conducting. Which region is it in?`,
+        ['Saturation, always', 'Triode, always', 'It depends on the current', 'Cutoff'], 0,
+        [null, md`Triode needs $V_{DS} < V_{GS} - V_{TN}$, impossible when $V_{DS} = V_{GS}$.`, md`For any current, $V_{DS} = V_{GS} > V_{GS} - V_{TN}$.`, md`It is conducting, so it is on.`],
+        md`$V_{DS} = V_{GS}\ge V_{GS} - V_{TN}$: the saturation condition holds automatically.`),
+      Q(md`Why can we compute a gate voltage from a resistor divider as if nothing were attached?`,
+        ['The gate draws no DC current, so the divider is unloaded', md`Because $R_1$ and $R_2$ are large`, 'Because the source resistor isolates it', md`Because $V_{DD}$ is constant`], 0,
+        [null, md`Large resistors make loading *worse*, not better; it is the zero gate current that matters.`, md`$R_S$ is on the other side of the transistor; the gate current is zero regardless.`, md`A constant supply does not stop a load from drawing current.`],
+        md`The oxide insulates the gate: $I_G = 0$, so the divider's output is its open-circuit value $V_{DD}R_2/(R_1 + R_2)$.`),
+      Q(md`In a mirror, $M_2$ is four times wider than $M_1$ (same $L$) and both are saturated. $I_{REF} = 50\,\mu\text{A}$. What does $M_2$ carry?`,
+        [md`$200\,\mu\text{A}$`, md`$100\,\mu\text{A}$`, md`$800\,\mu\text{A}$`, md`$50\,\mu\text{A}$`], 0,
+        [null, md`The current scales with $W/L$ itself, not its square root.`, md`That would be squaring the size ratio.`, md`Same $V_{GS}$ but four times the width: four times the current.`],
+        md`Same $V_{GS}$, so $I_2 = I_{REF}\times4 = 200\,\mu\text{A}$.`),
+      P({
+        id: 'bk02-bias-rs', title: 'A source resistor',
+        q: md`An NMOS ($k = 1\,\text{mA/V}^2$) has its gate at $3\,\text{V}$, $R_S = 2\kO$ to ground, and $R_D = 4\kO$ to $V_{DD} = 5\,\text{V}$. Find $V_{ov}$, $I_D$, $V_S$, $V_D$, and check saturation.`,
+        parts: [{ lbl: 'V_{ov}', unit: 'V', ans: 1, traps: [{ v: 2, msg: 'That ignores $R_S$: the source sits at $I_DR_S$, not at ground.' }] }, { lbl: 'I_D', unit: 'mA', ans: 0.5 }, { lbl: 'V_S', unit: 'V', ans: 1 }, { lbl: 'V_D', unit: 'V', ans: 3 },
+          { lbl: 'Saturated?', mc: ['Yes: $V_D = 3\\ge V_G - V_{TN} = 2$', 'No'], a: 0, why: [null, md`$3\,\text{V}\ge2\,\text{V}$.`] }],
+        hints: [md`$V_G - V_{TN} = V_{ov} + \tfrac12kR_SV_{ov}^2$ with $\tfrac12kR_S = 1\,\text{V}^{-1}$.`],
+        sol: md`$2 = V_{ov} + V_{ov}^2\Rightarrow V_{ov}^2 + V_{ov} - 2 = 0\Rightarrow(V_{ov} + 2)(V_{ov} - 1) = 0$, so $V_{ov} = 1\,\text{V}$. $I_D = \tfrac12(1)(1) = 0.5\,\text{mA}$, $V_S = 1\,\text{V}$, $V_D = 5 - 2 = 3\,\text{V}\ge2\,\text{V}$ ✓.`,
+      }),
+      P({
+        id: 'bk02-bias-diode', title: 'A diode-connected transistor',
+        q: md`$0.2\,\text{mA}$ is pushed into a diode-connected NMOS with $W/L = 25$. Find $V_{ov}$, $V_{GS}$, and $g_m$.`,
+        fig: diodeFig({ i: '0.2\\,\\text{mA}' }),
+        parts: [{ lbl: 'V_{ov}', unit: 'V', ans: 0.4 }, { lbl: 'V_{GS}', unit: 'V', ans: 1.4 }, { lbl: 'g_m', unit: 'mS', ans: 1 }],
+        hints: [md`$\tfrac12k = 1.25\,\text{mA/V}^2$.`],
+        sol: md`$V_{ov} = \sqrt{0.2/1.25} = 0.4\,\text{V}$, $V_{GS} = 1.4\,\text{V}$, $g_m = 2(0.2)/0.4 = 1\,\text{mS}$ (so it looks like $1\kO$ for small signals, Chapter 3).`,
+      }),
+      P({
+        id: 'bk02-bias-mirror', title: 'Mirror a current',
+        q: md`$1X = 50/1$. $I_{REF} = 0.1\,\text{mA}$ flows into a diode-connected $1X$ NMOS ($M_1$); $M_2$ is $4X$ and shares its gate; $R_D$ runs from $V_{DD} = 3\,\text{V}$ to $M_2$'s drain. Find $V_{GS}$, $I_2$ and the largest $R_D$ for which $M_2$ stays saturated.`,
+        fig: mirrorFig({ i: '0.1\\,\\text{mA}', s1: '1X', s2: '4X' }),
+        parts: [{ lbl: 'V_{GS}', unit: 'V', ans: 1.2 }, { lbl: 'I_2', unit: 'mA', ans: 0.4 }, { lbl: 'R_{D,max}', unit: 'kΩ', ans: 7, traps: [{ v: 4.5, msg: 'The edge for $M_2$ is $V_D = V_{GS} - V_{TN} = V_{ov}$, not $V_{GS}$.' }] }],
+        hints: [md`$1X$: $\tfrac12k = 2.5\,\text{mA/V}^2$.`],
+        sol: md`$V_{ov} = \sqrt{0.1/2.5} = 0.2\,\text{V}$, $V_{GS} = 1.2\,\text{V}$. $I_2 = 4\times0.1 = 0.4\,\text{mA}$. Edge: $V_{D2} = V_{ov} = 0.2\,\text{V}$, so $R_D\le(3 - 0.2)/0.4\,\text{mA} = 7\kO$.`,
+      }),
+      P({
+        id: 'bk02-bias-pmirror', title: 'A PMOS mirror',
+        q: md`$V_{DD} = 5\,\text{V}$. A diode-connected PMOS $M_1$ ($W/L = 40$) carries $I_{REF} = 0.1\,\text{mA}$ (pulled out of its drain to ground). $M_2$ ($W/L = 120$) shares its gate and source; $R_D$ runs from $M_2$'s drain to ground. Find $V_{SG}$, the gate voltage, $I_2$, and the largest $R_D$ for saturation.`,
+        fig: pmirrorFig({ i: '0.1\\,\\text{mA}', s1: '40', s2: '120' }),
+        parts: [{ lbl: 'V_{SG}', unit: 'V', ans: 1.3162 }, { lbl: 'V_G', unit: 'V', ans: 3.6838 }, { lbl: 'I_2', unit: 'mA', ans: 0.3 }, { lbl: 'R_{D,max}', unit: 'kΩ', ans: 15.61, traps: [{ v: 8.946, msg: 'That is the NMOS rule. For a PMOS the drain may rise to $V_G + |V_{TP}|$.' }] }],
+        hints: [md`$k_p = 2\,\text{mA/V}^2$: $V_{ov} = \sqrt{2(0.1)/2}$.`, md`PMOS saturation: $V_{D2}\le V_G + 1$.`],
+        sol: md`$V_{ov} = \sqrt{0.1} = 0.316\,\text{V}$, $V_{SG} = 1.316\,\text{V}$, $V_G = 5 - 1.316 = 3.684\,\text{V}$. $I_2 = 0.1\times120/40 = 0.3\,\text{mA}$. Edge: $V_{D2} = V_G + 1 = 4.684\,\text{V}$, so $R_D\le4.684/0.3 = 15.6\kO$.`,
+      }),
+      P({
+        id: 'bk02-bias-exam', title: 'Exam style: bias, check, then the slopes',
+        q: md`$V_{DD} = 10\,\text{V}$, $R_1 = 700\kO$, $R_2 = 300\kO$ (divider on the gate), NMOS with $W/L = 10$, $R_S = 2\kO$, $R_D = 10\kO$, $\lambda = 0.02\,\text{V}^{-1}$ (zero for DC). Find (a) $V_G$, (b) $V_{ov}$, (c) $I_D$, (d) $V_D$, (e) $g_m$, (f) $r_{ds}$, (g) the largest $R_D$ that keeps saturation.`,
+        fig: divFigM({ vdd: '10\\,\\text{V}', r1: '700\\,\\text{k}\\Omega', r2: '300\\,\\text{k}\\Omega', rs: '2\\,\\text{k}\\Omega', rd: '10\\,\\text{k}\\Omega' }),
+        parts: [{ lbl: '(a)\\ V_G', unit: 'V', ans: 3 }, { lbl: '(b)\\ V_{ov}', unit: 'V', ans: 1 }, { lbl: '(c)\\ I_D', unit: 'mA', ans: 0.5 }, { lbl: '(d)\\ V_D', unit: 'V', ans: 5 }, { lbl: '(e)\\ g_m', unit: 'mS', ans: 1 }, { lbl: '(f)\\ r_{ds}', unit: 'kΩ', ans: 100 }, { lbl: '(g)\\ R_{D,max}', unit: 'kΩ', ans: 16 }],
+        hints: [md`$V_G = 10\times0.3$; then $2 = V_{ov} + \tfrac12kR_SV_{ov}^2$ with $\tfrac12kR_S = 1\,\text{V}^{-1}$.`],
+        sol: md`
+**(a)** $V_G = 10\times300/1000 = 3\,\text{V}$. **(b)** $V_{ov}^2 + V_{ov} - 2 = 0\Rightarrow V_{ov} = 1\,\text{V}$. **(c)** $I_D = \tfrac12(1)(1) = 0.5\,\text{mA}$.
+
+**(d)** $V_D = 10 - 5 = 5\,\text{V}\ge V_G - V_{TN} = 2\,\text{V}$ ✓. **(e)** $g_m = 2(0.5)/1 = 1\,\text{mS}$. **(f)** $r_{ds} = 1/(0.02\times0.5\,\text{mA}) = 100\kO$.
+
+**(g)** The edge is $V_D = 2\,\text{V}$: $R_D\le(10 - 2)/0.5\,\text{mA} = 16\kO$.`,
+      }),
+      G('bk_dc_rs', { need: 3 }),
+      G('bk_dc_mirror', { need: 3 }),
+    ],
+  });
 })();
