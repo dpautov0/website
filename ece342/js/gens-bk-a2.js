@@ -387,7 +387,7 @@
       parts: [BK.res('R_{in}', ans, undefined, traps)],
       hints: ['Gate and drain are one node, so $v_{gs} = v_{ds}$: the transistor is a two-terminal resistor $\\tfrac{1}{g_m}\\parallel r_{ds}$.', 'A resistor in series with it simply adds (no magnification: the gate is not held).'],
       sol: `${gmLine}**The diode.** Gate tied to drain: $v_{gs} = v_{ds}$, so the transistor is a resistor ${isFinite(rds) ? `$\\tfrac{1}{g_m}\\parallel r_{ds} = \\dfrac{1}{${MS(gm)} + ${MS(1 / rds)}} = ${RT(rd)}$` : `$1/g_m = ${RT(rd)}$`}.\n\n${withR ? `**The resistor** carries the same current (the gate takes none), so it adds in series:\n$$R_{in} = R + ${isFinite(rds) ? '\\tfrac{1}{g_m}\\parallel r_{ds}' : '\\tfrac{1}{g_m}'} = ${RT(Rs)} + ${RT(rd)} = ${RT(ans)}$$` : `$$R_{in} = ${RT(ans)}$$`}${pnote(pm)}`,
-      _t: { g: 'diode', pm, gm, rds: isFinite(rds) ? rds : null, Rs, top, ans },
+      _t: { g: 'diode', pm, gm, rds: isFinite(rds) ? rds : null, Rs, top, wl: useSize ? wl : null, I: useSize ? I : null, ans },
     };
   };
 })();
