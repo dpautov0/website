@@ -93,15 +93,15 @@
     { svg: polarFig([{ g: () => 0.5, cls: 'dash', lab: '|Y_1^1|^2', lx: 0.42, ly: 0.62 }, { g: (t) => Math.sin(t) ** 2, lab: '|x/r|^2', lx: 0.7, ly: -0.55 }], 'x', 'y'), cap: 'Slice through the $xy$ plane (seen from above). The doughnut is a ring; the $L_x = 0$ state is a dumbbell along $x$.' },
   ]), { cap: '' });
   const figYll = polarFig([
-    { g: (t) => Math.sin(t) ** 2, cls: 'dash', lab: '\\ell = 1', lx: 0.55, ly: 0.75 },
-    { g: (t) => Math.abs(Math.sin(t)) ** 12, lab: '\\ell = 6', lx: 0.95, ly: 0.32 },
+    { g: (t) => Math.sin(t) ** 2, cls: 'dash', lab: '\\ell = 1', lx: 0.45, ly: 0.62 },
+    { g: (t) => Math.abs(Math.sin(t)) ** 12, lab: '\\ell = 6', lx: 1.03, ly: -0.2 },
   ], 'x', 'z');
   const figHr = PF.plot({
     w: 360, h: 220, x: [0, 6], y: [0, 0.62], xl: 'r/a', yl: 'a\\,P(r)',
     xt: [[1, '1'], [1.5, '\\tfrac32'], [2, '2'], [4, '4']],
     curves: [{ f: (r) => 4 * r * r * EXP(-2 * r) }],
     vlines: [[2, '']],
-    pts: [{ x: 1, y: 4 * EXP(-2), lab: 'r_{\\rm mp} = a' }],
+    pts: [{ x: 1, y: 4 * EXP(-2), lab: 'r_{\\rm mp} = a', anchor: 'br' }],
   });
   const figPhase = (() => {
     const f = PF.fig(), S = 34, L = 3.1 * S;
