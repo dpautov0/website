@@ -833,7 +833,254 @@
     }),
   ];
 
+  // ================================================================== Practice exam G
+  const G1Fig = [
+    ['w', [-3, -0.4], [6, -0.4]], ['rail', [2, -0.4], { n: 'V_{DD} = 5\\,\\text{V}' }],
+    ['I', [-3, -0.4], [-3, 0.8], { n: 'I_{REF}', s: '100\\,\\mu\\text{A}', side: 'l' }], ['w', [-3, 0.8], [-3, 3.6]],
+    ['nmos', [-3, 4.6], { n: 'M_8', sz: '50/1', flip: true, dc: true }], ['gnd', [-3, 5.6]],
+    ['w', [-2, 4.6], [0.4, 4.6], [1, 4.6]], ['w', [0.4, 4.6], [0.4, 6.2], [5, 6.2], [5, 3.6]],
+    ['pmos', [1, 0.6], { n: 'M_3', sz: '100/1', flip: true, dc: true }], ['pmos', [3, 0.6], { n: 'M_4', sz: '100/1' }],
+    ['node', [1, 1.6], { n: 'A', side: 'l' }],
+    ['nmos', [1, 2.6], { n: 'M_1', sz: '200/1' }], ['nmos', [3, 2.6], { n: 'M_2', sz: '200/1', flip: true }],
+    ['w', [0, 2.6], [-0.4, 2.6]], ['term', [-0.4, 2.6], { n: 'V_{CM} + v_{in}', side: 'l' }],
+    ['w', [4, 2.6], [4.3, 2.6]], ['term', [4.3, 2.6], { n: 'V_{CM}', side: 'r' }],
+    ['w', [1, 3.6], [2, 3.6], [3, 3.6]], ['node', [2, 3.6], { n: 'P', side: 'a' }],
+    ['nmos', [2, 4.6], { n: 'M_5', sz: '100/1' }], ['gnd', [2, 5.6]],
+    ['w', [3, 1.6], [5, 1.6]], ['node', [4, 1.6], { n: 'O_1', side: 'a' }],
+    ['pmos', [6, 1.6], { n: 'M_6', sz: '?' }], ['w', [6, 0.6], [6, -0.4]],
+    ['nmos', [6, 3.6], { n: 'M_7', sz: '200/1' }], ['gnd', [6, 4.6]],
+    ['w', [6, 2.6], [6.8, 2.6]], ['term', [6.8, 2.6], { n: 'V_{OUT}', side: 'r' }],
+  ];
+  const G2Fig = (b) => [
+    ...(b ? [['rail', [1, -2], { n: 'V_{DD}' }], ['pmos', [1, -1], { n: 'M_3', flip: true }], ['acg', [2, -1]]]
+      : [['rail', [1, -1.2], { n: 'V_{DD}' }], ['I', [1, -1.2], [1, 0], { n: 'I_B', side: 'r' }]]),
+    ['node', [1, 0], { n: 'A', side: 'r' }], ['w', [1, 0], [-0.2, 0], [-0.2, 3], [0, 3]],
+    ['nmos', [1, 1], { n: 'M_1', flip: true }], ['acg', [2, 1]],
+    ['w', [1, 2], [2.4, 2]], look([2.4, 2], b ? 'R_{X2}' : 'R_{X1}'), ['node', [1.6, 2], { n: 'X', side: 'a' }],
+    ['nmos', [1, 3], { n: 'M_2' }], ['gnd', [1, 4]],
+  ];
+
+  const G3GM = 'gm1*(1 + gm3/(gm3 + 1/rds3))/(2 + (1/rds1)/(gm3 + 1/rds3))';
+  const G3RO = '(rds3 || ((2*rds1 + 1/(gm3 + 1/rds3))/(1 + gm3/(gm3 + 1/rds3))))';
+  const G3A1 = `${G3GM}*${G3RO}`;
+
+  const G = [
+    intro('New practice exam G (hardest)', [
+      '| 1 | 35 | DC of a two-stage op amp: currents, the input common-mode range, sizing the second stage for zero systematic offset, the output swing |',
+      '| 2 | 30 | The flipped voltage follower: why its output resistance is tiny, with an ideal and with a real current source |',
+      '| 3 | 35 | The same op amp\'s gain: the mirror-loaded pair, the second stage, which input inverts, and the numbers |',
+    ].join('\n    '), md`In Problems 1 and 3, $\lambda = 0.1\,\text{V}^{-1}$ for every transistor: use it only for $r_{ds} = 1/(\lambda I_D)$, and ignore it in DC calculations.`),
+    P({
+      id: 'e2mg-1a', src: 'New practice exam G · Problem 1(a)–(b) (20 pts)', title: 'A two-stage op amp: bias and input range', big: true,
+      q: md`Both inputs sit at the same DC voltage $V_{CM}$. $I_{REF} = 100\,\mu\text{A}$ flows into the diode $M_8$; $M_5$ (the tail) and $M_7$ copy it. Find (a) the tail current $I_5$, $V_{GS1}$, and the voltage $V_A$ at the diode node of the mirror load (10 pts); (b) the lowest and highest $V_{CM}$ that keep every transistor of the first stage saturated (10 pts).`,
+      fig: G1Fig,
+      parts: [
+        { lbl: 'I_5', unit: 'µA', ans: 200 },
+        { lbl: 'V_{GS1}', unit: 'V', ans: 1.1, traps: [{ v: 1 + Math.sqrt(0.02), msg: 'Each input transistor carries half of the tail current, $100\\,\\mu\\text{A}$.' }] },
+        { lbl: 'V_A', unit: 'V', ans: 3.8 },
+        { lbl: 'V_{CM,min}', unit: 'V', ans: 1.3, traps: [{ v: 1.1, msg: 'That puts $P$ at $0$: the tail $M_5$ needs $V_P \\ge V_{G5} - V_{TN} = 0.2\\,\\text{V}$.' }] },
+        { lbl: 'V_{CM,max}', unit: 'V', ans: 4.8, traps: [{ v: 2.8, msg: 'NMOS saturation is $V_D \\ge V_G - V_{TN}$: here $3.8 \\ge V_{CM} - 1$.' }] },
+      ],
+      hints: [
+        md`$M_8$ ($50/1$) at $100\,\mu\text{A}$ sets $V_{GS8}$; $M_5$ shares it with twice the $W/L$. With equal inputs, symmetry splits the tail current in half.`,
+        md`$V_A = V_{DD} - V_{SG3}$, from the PMOS square law at $100\,\mu\text{A}$.`,
+        md`Low end: the tail needs $V_P \ge V_{G5} - V_{TN}$, and $V_P = V_{CM} - V_{GS1}$. High end: $M_1$ needs $V_A \ge V_{CM} - V_{TN}$.`,
+      ],
+      sol: md`
+        **Recognize it first.** A **two-stage op amp**. Bias: $I_{REF}$ into the diode $M_8$ makes one gate voltage that $M_5$ (the tail) and $M_7$ (the second stage's sink) copy by size. Stage 1: the NMOS pair $M_1$, $M_2$ with the PMOS mirror load $M_3$, $M_4$. Stage 2: the PMOS common source $M_6$ with $M_7$ as its load. With both inputs at $V_{CM}$, symmetry splits the tail current equally.
+
+        **Step 1: the bias line.** $M_8$: $K_8 = \tfrac12(100\,\mu)(50) = 2.5\,\text{mA/V}^2$ at $100\,\mu\text{A}$: $V_{ov8} = 0.2\,\text{V}$, $V_{GS8} = 1.2\,\text{V}$. $M_5$ has the same $V_{GS}$ and twice the $W/L$:
+        $$I_5 = 100\,\mu\text{A}\times\frac{100}{50} = 200\,\mu\text{A}$$
+
+        **Step 2: the input pair.** $100\,\mu\text{A}$ each. $K_1 = \tfrac12(100\,\mu)(200) = 10\,\text{mA/V}^2$:
+        $$V_{ov1} = \sqrt{\frac{0.1\,\text{m}}{10\,\text{m}}} = 0.1\,\text{V},\qquad V_{GS1} = 1.1\,\text{V}$$
+
+        **Step 3: the mirror load.** $M_3$: $K_3 = \tfrac12(50\,\mu)(100) = 2.5\,\text{mA/V}^2$ at $100\,\mu\text{A}$: $V_{ov3} = 0.2\,\text{V}$, $V_{SG3} = 1.2\,\text{V}$:
+        $$V_A = 5 - 1.2 = 3.8\,\text{V}$$
+        (At balance $O_1$ sits at the same $3.8\,\text{V}$; part (c) uses that.)
+
+        **Step 4: the lowest $V_{CM}$.** The tail $M_5$ (gate at $1.2\,\text{V}$) is saturated while $V_P \ge 1.2 - 1 = 0.2\,\text{V}$. The sources sit one $V_{GS1}$ below the inputs, $V_P = V_{CM} - 1.1$:
+        $$V_{CM} - 1.1 \ge 0.2\quad\Rightarrow\quad V_{CM,min} = 1.3\,\text{V}$$
+
+        **Step 5: the highest $V_{CM}$.** $M_1$'s drain is $V_A = 3.8\,\text{V}$ and its gate is $V_{CM}$; it stays saturated while $3.8 \ge V_{CM} - 1$:
+        $$V_{CM,max} = 4.8\,\text{V}$$
+        ($M_2$ gives the same limit, its drain $O_1$ also being at $3.8\,\text{V}$.)
+
+        !!key Pattern
+          Input common-mode range of an NMOS pair: from $V_{GS1} + V_{ov,tail}$ (the tail runs out of room) up to $V_{D1} + V_{TN}$ (the input devices hit triode).
+      `,
+    }),
+    P({
+      id: 'e2mg-1c', src: 'New practice exam G · Problem 1(c)–(d) (15 pts)', title: 'Sizing M6, and how far the output can swing', big: true,
+      q: md`Same circuit. (c) Find $I_7$, and the $W/L$ of $M_6$ that makes the op amp balanced: with equal inputs, $O_1$ sits at $V_A$ and $M_6$ carries exactly $I_7$ (no systematic offset) (10 pts). (d) Find the lowest and highest $V_{OUT}$ with $M_6$ and $M_7$ both saturated (5 pts).`,
+      fig: G1Fig,
+      parts: [
+        { lbl: 'I_7', unit: 'µA', ans: 400 },
+        { lbl: '(W/L)_6', unit: '/1', ans: 400, traps: [{ v: 100, msg: 'Same size as $M_4$ would carry $100\\,\\mu\\text{A}$, but $M_7$ forces $400\\,\\mu\\text{A}$ through $M_6$.' }] },
+        { lbl: 'V_{OUT,min}', unit: 'V', ans: 0.2 },
+        { lbl: 'V_{OUT,max}', unit: 'V', ans: 4.8 },
+      ],
+      hints: [
+        md`$M_7$ copies $M_8$ by size. At balance $V_{O1} = V_A$, so $V_{SG6} = V_{SG3} = 1.2\,\text{V}$.`,
+        md`Same $V_{SG}$ as $M_4$: currents scale with $W/L$. $M_6$ must carry $I_7$.`,
+        md`$M_6$ saturated: $V_{OUT} \le V_{G6} + |V_{TP}|$. $M_7$ saturated: $V_{OUT} \ge V_{G7} - V_{TN}$.`,
+      ],
+      sol: md`
+        **Recognize it first.** The second stage's current is set **twice**: $M_7$ forces $I_7$ (a mirror copy), and $M_6$'s $V_{SG}$ is set by $O_1$. If the two disagree, the high-gain output runs into a rail: a *systematic offset*. At balance $O_1 = V_A$ (then $M_4$ has the same $V_{SD}$ as $M_3$ and copies its current exactly), so $M_6$ must carry $I_7$ at $V_{SG6} = V_{SG3}$.
+
+        **Step 1: $I_7$.** $M_7$ ($200/1$) has $M_8$'s $V_{GS}$ and four times its $W/L$: $I_7 = 400\,\mu\text{A}$.
+
+        **Step 2: size $M_6$.** $V_{SG6} = 5 - 3.8 = 1.2\,\text{V}$, $V_{ov6} = 0.2\,\text{V}$, and it must carry $400\,\mu\text{A}$:
+        $$K_6 = \frac{0.4\,\text{m}}{0.2^2} = 10\,\text{mA/V}^2,\qquad \frac WL = \frac{2K_6}{\mu_pC_{ox}} = \frac{20\,\text{m}}{50\,\mu} = 400\quad(400/1)$$
+        Quicker: $M_6$ and $M_4$ share $V_{SG}$, so $\dfrac{(W/L)_6}{(W/L)_4} = \dfrac{I_6}{I_4} = \dfrac{400}{100} = 4$. (The textbook form is $\dfrac{(W/L)_6}{(W/L)_4} = 2\dfrac{(W/L)_7}{(W/L)_5}$, here $2\times2$.)
+
+        A nonlinear solve of this circuit confirms the point: with $400/1$ the output sits well inside the supply (about $2.9\,\text{V}$ in that solve); with $300/1$ it drops to about $0.1\,\text{V}$, with $500/1$ it rises to about $4.9\,\text{V}$. The open-loop gain is thousands, so a few percent of current mismatch saturates the output.
+
+        **Step 3: output swing.** $M_6$'s gate is $O_1 = 3.8\,\text{V}$; PMOS saturation: $V_{OUT} \le 3.8 + 1 = 4.8\,\text{V}$. $M_7$'s gate is $1.2\,\text{V}$; NMOS saturation: $V_{OUT} \ge 1.2 - 1 = 0.2\,\text{V}$. The output can swing from $0.2$ to $4.8\,\text{V}$, within one $V_{ov}$ of each rail.
+
+        !!key Pattern
+          Two devices in series that both "set" the current: size one so they agree at the intended bias point. A common source with a current-source load swings to within $V_{ov}$ of each rail.
+      `,
+    }),
+    P({
+      id: 'e2mg-2a', src: 'New practice exam G · Problem 2(a) (15 pts)', title: 'The flipped voltage follower', big: true,
+      q: md`$M_1$'s gate is held at a bias voltage; its drain $A$ is fed by an ideal current source $I_B$ and drives $M_2$'s gate; $M_2$'s drain is $M_1$'s source, node $X$. Find $R_{X1}$, the resistance looking into $X$, and its value for $g_{m1} = g_{m2} = 1\,\text{mA/V}$ and $r_{ds1} = r_{ds2} = 100\kO$. All transistors saturated, $g_mr_{ds} \gg 1$, $r_{ds} \ne \infty$.`,
+      fig: G2Fig(false),
+      parts: [
+        ex('rds2 || 1/(gm2*(1 + gm1*rds1))', ['gm1', 'rds1', 'gm2', 'rds2'], 'R_{X1}'),
+        { lbl: 'R_{X1}\\ (\\text{numbers})', unit: 'Ω', ans: 9.9, accept: [10], traps: [{ v: 1000, msg: 'That is $1/g_{m1}$, a plain follower. Here $M_2$ supplies the current, driven by a gain of $1 + g_{m1}r_{ds1}$.' }, { v: 500, msg: 'That is $1/(g_{m1} + g_{m2})$: two followers in parallel. This circuit has feedback.' }] },
+      ],
+      hints: [
+        md`Node $A$ connects only to $I_B$ (open for signals), $M_2$'s gate (no current) and $M_1$'s drain. So what is $M_1$'s small-signal current?`,
+        md`$M_1$'s current is zero: $0 = g_{m1}(0 - v_x) + (v_A - v_x)/r_{ds1}$, so $v_A = (1 + g_{m1}r_{ds1})v_x$.`,
+        md`All the test current goes into $M_2$: $i_t = g_{m2}v_A + v_x/r_{ds2}$.`,
+      ],
+      sol: md`
+        **Recognize it first.** It looks like a source follower ($M_1$, gate held, output at its source $X$), but $M_1$'s drain does not go to $V_{DD}$: it goes to node $A$, which touches only an ideal current source and a gate. So $M_1$ can carry **no** signal current. The job of absorbing the test current falls to $M_2$, whose gate is $A$: a feedback loop, the *flipped voltage follower*.
+
+        **Step 1: $M_1$ carries no signal current.** KCL at $A$: $I_B$ is an open circuit for signals and $M_2$'s gate draws nothing, so $M_1$'s drain current is zero. With the gate at incremental ground and the source at $v_x$:
+        $$0 = g_{m1}(0 - v_x) + \frac{v_A - v_x}{r_{ds1}}\quad\Rightarrow\quad v_A = (1 + g_{m1}r_{ds1})\,v_x$$
+        $M_1$ is a common gate (input at its source) with an **infinite** load: its voltage gain is the full $1 + g_{m1}r_{ds1}$, about 100.
+
+        **Step 2: $M_2$ takes all the test current.** Its gate is at $v_A$, its source grounded, its drain at $X$:
+        $$i_t = g_{m2}v_A + \frac{v_x}{r_{ds2}} = \left[g_{m2}(1 + g_{m1}r_{ds1}) + \frac{1}{r_{ds2}}\right]v_x$$
+
+        **Step 3: the resistance.**
+        $$R_{X1} = r_{ds2}\ \Big\|\ \frac{1}{g_{m2}(1 + g_{m1}r_{ds1})} \approx \frac{1}{g_{m1}g_{m2}r_{ds1}}$$
+
+        **Step 4: numbers.** $g_{m2}(1 + g_{m1}r_{ds1}) = 1\,\text{m}\times101 = 101\,\text{mS}$, so $1/(101\,\text{mS}) = 9.90\,\Omega$; $r_{ds2} = 100\kO$ in parallel changes nothing: $R_{X1} \approx 10\,\Omega$. A plain follower would give $1/g_{m1} = 1\kO$: a hundred times more.
+
+        **Physical picture.** Push $X$ up a little. $M_1$, unable to change its current, passes the move to $A$ amplified a hundred times; $M_2$ sees that big gate swing and pulls hard on $X$, holding it almost still. The loop makes $X$ about $g_{m2}r_{ds1}$ times stiffer than a plain follower's $1/g_{m1}$.
+
+        !!key Pattern
+          A transistor whose drain sees only a current source carries no signal current: it becomes a voltage amplifier of gain $1 + g_mr_{ds}$ from its source to its drain. Closing a loop through it divides a node's resistance by that gain.
+      `,
+    }),
+    P({
+      id: 'e2mg-2b', src: 'New practice exam G · Problem 2(b) (15 pts)', title: 'The same follower with a real current source', big: true,
+      q: md`Replace $I_B$ by the PMOS current source $M_3$ (gate held). Find $R_{X2}$, and its value with every $g_m = 1\,\text{mA/V}$ and every $r_{ds} = 100\kO$. Same assumptions.`,
+      fig: G2Fig(true),
+      parts: [
+        ex('1/(1/rds2 + (gm2 + 1/rds3)*(1 + gm1*rds1)*rds3/(rds1 + rds3))', ['gm1', 'rds1', 'gm2', 'rds2', 'rds3'], 'R_{X2}'),
+        { lbl: 'R_{X2}\\ (\\text{numbers})', unit: 'Ω', ans: 19.6, accept: [20], traps: [{ v: 9.9, msg: 'That is part (a). Now $A$ has $r_{ds3}$ to ground, so $M_1$\'s gain drops to $g_{m1}(r_{ds1}\\parallel r_{ds3})$.' }] },
+      ],
+      hints: [
+        md`Now $A$ has $r_{ds3}$ to incremental ground, so $M_1$ does carry current. $M_1$ is a common gate from $X$ to $A$ with load $r_{ds3}$.`,
+        md`KCL at $A$: $v_A/r_{ds3} + i_{d1} = 0$ gives $v_A = \dfrac{(1 + g_{m1}r_{ds1})\,r_{ds3}}{r_{ds1} + r_{ds3}}\,v_x \approx g_{m1}(r_{ds1}\parallel r_{ds3})\,v_x$.`,
+        md`The test current now feeds $M_2$ **and** flows up through $M_1$ into $r_{ds3}$: $i_t = v_x/r_{ds2} + (g_{m2} + 1/r_{ds3})\,v_A$.`,
+      ],
+      sol: md`
+        **Recognize it first.** The same loop, but the amplifier inside it ($M_1$ as a common gate from $X$ to $A$) now has a finite load $r_{ds3}$ instead of an open circuit. Its gain drops from $g_{m1}r_{ds1}$ to about $g_{m1}(r_{ds1}\parallel r_{ds3})$, and $R_X$ rises by the same factor.
+
+        **Step 1: the gain from $X$ to $A$.** $M_1$'s drain current (from $A$ down to $X$) is $i_{d1} = g_{m1}(0 - v_x) + (v_A - v_x)/r_{ds1}$. At $A$ that current comes down from $V_{DD}$ through $r_{ds3}$: $i_{d1} = -v_A/r_{ds3}$. Equate and collect $v_A$:
+        $$v_A\left(\frac{1}{r_{ds1}} + \frac{1}{r_{ds3}}\right) = v_x\left(g_{m1} + \frac{1}{r_{ds1}}\right)\;\Rightarrow\;v_A = \frac{(1 + g_{m1}r_{ds1})\,r_{ds3}}{r_{ds1} + r_{ds3}}\,v_x \approx g_{m1}(r_{ds1}\parallel r_{ds3})\,v_x$$
+
+        **Step 2: where the test current goes.** Into $M_2$: $g_{m2}v_A + v_x/r_{ds2}$. And up through $M_1$ (from $X$ into $A$, then through $r_{ds3}$): $-i_{d1} = v_A/r_{ds3}$. Total:
+        $$i_t = \frac{v_x}{r_{ds2}} + \left(g_{m2} + \frac{1}{r_{ds3}}\right)v_A$$
+
+        **Step 3: the resistance.**
+        $$R_{X2} = \frac{1}{\dfrac{1}{r_{ds2}} + \left(g_{m2} + \dfrac{1}{r_{ds3}}\right)\dfrac{(1 + g_{m1}r_{ds1})\,r_{ds3}}{r_{ds1} + r_{ds3}}} \approx \frac{1}{g_{m1}g_{m2}\,(r_{ds1}\parallel r_{ds3})}$$
+
+        **Step 4: numbers.** $(1 + 100)\times\dfrac{100\,\text{k}}{200\,\text{k}} = 50.5$, and $g_{m2} + 1/r_{ds3} = 1.01\,\text{mS}$, so the bracket is $51.0\,\text{mS}$; adding $1/r_{ds2} = 0.01\,\text{mS}$ gives $51.02\,\text{mS}$, and $R_{X2} = 19.6\,\Omega \approx 20\,\Omega$. Twice part (a): the inner gain halved.
+
+        !!key Pattern
+          Feedback resistance $\approx$ open-loop resistance divided by the loop gain. Here the loop gain is $g_{m2}\times$(the common-gate gain at $A$), so every resistance loading $A$ ($r_{ds1}\parallel r_{ds3}$) shows up directly in $R_X$.
+      `,
+    }),
+    P({
+      id: 'e2mg-3', src: 'New practice exam G · Problem 3(a)–(c) (25 pts)', title: 'The op amp\'s gain, stage by stage', big: true,
+      q: md`The op amp of Problem 1, with $v_{in}$ on $M_1$'s gate and $M_2$'s gate held at $V_{CM}$; matched pair ($M_2 = M_1$, $M_4 = M_3$). Find (a) the first-stage gain $A_1 = v_{o1}/v_{in}$ in $g_{m1}$, $r_{ds1}$, $g_{m3}$, $r_{ds3}$ (10 pts); (b) the second-stage gain $A_2 = v_{out}/v_{o1}$ (8 pts); (c) $A_v = v_{out}/v_{in}$ (7 pts). Then say which gate is the non-inverting input.`,
+      fig: G1Fig,
+      parts: [
+        ex(G3A1, ['gm1', 'rds1', 'gm3', 'rds3'], 'A_1'),
+        ex('-gm6*(rds6 || rds7)', ['gm6', 'rds6', 'rds7'], 'A_2'),
+        ex(`-(${G3A1})*gm6*(rds6 || rds7)`, ['gm1', 'rds1', 'gm3', 'rds3', 'gm6', 'rds6', 'rds7'], 'A_v'),
+        { lbl: 'The non-inverting input of this op amp is', mc: ['the gate of $M_2$', 'the gate of $M_1$', 'neither: both inputs invert', 'it depends on $V_{CM}$'], a: 0,
+          why: [null, 'From $M_1$\'s gate, stage 1 is non-inverting (two paths add at $O_1$), but stage 2 inverts: overall $A_v < 0$.', 'A differential pair responds to $v_{g1} - v_{g2}$: the two gates always have opposite signs.', 'Signs come from the topology, not from the bias point (as long as everything is saturated).'] },
+      ],
+      hints: [
+        md`Stage 1 is the mirror-loaded pair driven at $M_1$: $G_{M1} \approx -g_{m1}$ (two paths add), $R_{o1} \approx r_{ds2}\parallel r_{ds4}$, so $A_1 \approx +g_{m1}(r_{ds1}\parallel r_{ds3})$.`,
+        md`Stage 2: $M_6$ is a PMOS common source (source at $V_{DD}$, gate at $O_1$) with the current source $M_7$ as its load. $M_6$'s gate draws no current, so the stages do not load each other.`,
+      ],
+      sol: md`
+        **Recognize it first.** Two stages in a chain. Stage 1 is the mirror-loaded pair driven on one side (New practice exam E, Problem 3, derives it slowly): $G_{M1} \approx -g_{m1}$ because half the signal current reaches $O_1$ directly through $M_2$ and half through the mirror, and $R_{o1} \approx r_{ds2}\parallel r_{ds4}$. Stage 2 is a PMOS common source with a current-source load. $M_6$'s gate draws no current, so $A_v = A_1A_2$.
+
+        **(a) Stage 1, exactly.** Output $O_1$ shorted: the tail is open, so $M_1$ and $M_2$ change by equal and opposite amounts and $P$ moves by about $v_{in}/2$. With $g_{ds} = 1/r_{ds}$, the two paths together give
+        $$G_{M1} = -g_{m1}\,\frac{1 + \frac{g_{m3}}{g_{m3} + g_{ds3}}}{2 + \frac{g_{ds1}}{g_{m3} + g_{ds3}}} \approx -g_{m1}$$
+        With $v_{in} = 0$: the chain $M_2 \to P \to M_1 \to$ diode is $2r_{ds1} + R_A$ ($R_A = 1/(g_{m3} + g_{ds3})$), and the mirror makes the output carry its current twice:
+        $$R_{o1} = r_{ds3}\ \Big\|\ \frac{2r_{ds1} + R_A}{1 + g_{m3}R_A} \approx r_{ds1}\parallel r_{ds3}$$
+        $$A_1 = -G_{M1}R_{o1} \approx +g_{m1}(r_{ds1}\parallel r_{ds3})$$
+
+        **(b) Stage 2.** Short the output: $M_6$ has its source at $V_{DD}$ (incremental ground) and its gate at $v_{o1}$, so its model current $g_{m6}v_{o1}$ flows from its drain (the short) to its source: current from the short into the stage, $G_{M2} = +g_{m6}$, like any common source. Zero the input: the output sees $r_{ds6}$ and $r_{ds7}$ (both gates fixed):
+        $$A_2 = -g_{m6}(r_{ds6}\parallel r_{ds7})$$
+
+        **(c) The whole op amp.**
+        $$A_v = A_1A_2 \approx -g_{m1}(r_{ds1}\parallel r_{ds3})\cdot g_{m6}(r_{ds6}\parallel r_{ds7})$$
+
+        **Which input is which.** $v_{in}$ up on $M_1$ → $O_1$ up (stage 1 is non-inverting from $M_1$) → $M_6$'s $v_{sg}$ shrinks → less current into the output → $v_{out}$ down. So $M_1$'s gate is the **inverting** input and $M_2$'s gate is the **non-inverting** one.
+
+        !!key Pattern
+          Two-stage op amp: $|A_v| = g_{m1}(r_{ds2}\parallel r_{ds4})\cdot g_{m6}(r_{ds6}\parallel r_{ds7})$, about $(g_mr_{ds}/2)^2$. Track the sign through each stage to label the inputs.
+      `,
+    }),
+    P({
+      id: 'e2mg-3d', src: 'New practice exam G · Problem 3(d) (10 pts)', title: 'The op amp\'s gain in numbers', big: true,
+      q: md`Use the bias of Problem 1 and $\lambda = 0.1\,\text{V}^{-1}$. Find $g_{m1}$, $g_{m6}$, $A_1$, $A_2$ and $A_v$.`,
+      fig: G1Fig,
+      parts: [
+        { lbl: 'g_{m1}', unit: 'mA/V', ans: 2, traps: [{ v: 1, msg: '$V_{ov1} = 0.1\\,\\text{V}$, not $0.2\\,\\text{V}$: the input pair is $200/1$.' }] },
+        { lbl: 'g_{m6}', unit: 'mA/V', ans: 4 },
+        { lbl: 'A_1', unit: '', ans: 99.5, accept: [100] },
+        { lbl: 'A_2', unit: '', ans: -50 },
+        { lbl: 'A_v', unit: '', ans: -4975, accept: [-5000] },
+      ],
+      hints: [
+        md`Currents from Problem 1: $100\,\mu\text{A}$ in $M_1$–$M_4$, $400\,\mu\text{A}$ in $M_6$, $M_7$. Then $g_m = 2I_D/V_{ov}$ and $r_{ds} = 1/(\lambda I_D)$.`,
+        md`$r_{ds1}\parallel r_{ds3} = 50\kO$, $r_{ds6}\parallel r_{ds7} = 12.5\kO$.`,
+      ],
+      sol: md`
+        **Recognize it first.** Turn Problem 1's bias into small-signal parameters, then multiply the two stage gains.
+
+        **Step 1: transconductances.** $g_{m1} = \dfrac{2(0.1\,\text{m})}{0.1} = 2\,\text{mA/V}$ (overdrive $0.1\,\text{V}$); $g_{m3} = \dfrac{2(0.1\,\text{m})}{0.2} = 1\,\text{mA/V}$; $g_{m6} = \dfrac{2(0.4\,\text{m})}{0.2} = 4\,\text{mA/V}$.
+
+        **Step 2: output resistances.** $r_{ds1} = r_{ds3} = \dfrac{1}{0.1\times0.1\,\text{m}} = 100\kO$; $r_{ds6} = r_{ds7} = \dfrac{1}{0.1\times0.4\,\text{m}} = 25\kO$.
+
+        **Step 3: stage 1.** $A_1 \approx g_{m1}(r_{ds1}\parallel r_{ds3}) = 2\,\text{m}\times50\,\text{k} = 100$. (The exact forms give $|G_{M1}| = 1.980\,\text{mA/V}$ and $R_{o1} = 50.25\kO$, so $A_1 = 99.5$.)
+
+        **Step 4: stage 2.** $A_2 = -g_{m6}(r_{ds6}\parallel r_{ds7}) = -4\,\text{m}\times12.5\,\text{k} = -50$.
+
+        **Step 5: total.** $A_v = A_1A_2 \approx 100\times(-50) = -5000$ (exactly $-4975$).
+
+        **Sense check.** Each stage gives about $g_mr_{ds}/2$: stage 1 has $g_{m1}r_{ds}/2 = 2\,\text{m}\times100\,\text{k}/2 = 100$, stage 2 has $4\,\text{m}\times25\,\text{k}/2 = 50$. The second stage's $g_mr_{ds}$ is the same 100 as an input device's: four times the current gives four times $g_m$ at the same overdrive, and a quarter of $r_{ds}$.
+
+        !!key Pattern
+          Intrinsic gain $g_mr_{ds} = \dfrac{2I_D/V_{ov}}{\lambda I_D} = \dfrac{2}{\lambda V_{ov}}$: it depends on the overdrive, not the current. $V_{ov} = 0.1\,\text{V}$ gives 200, $V_{ov} = 0.2\,\text{V}$ gives 100.
+      `,
+    }),
+  ];
+
   E2.lesson('e2-mocku', { id: 'e2-mockD', title: 'New practice exam D', kind: 'mock', sub: 'A degenerated mirror, gates on diode stacks, a CS stage and its follower', steps: D });
   E2.lesson('e2-mocku', { id: 'e2-mockE', title: 'New practice exam E', kind: 'mock', sub: 'A starved diode load, two cascode resistances, the mirror-loaded differential pair', steps: E });
   E2.lesson('e2-mocku', { id: 'e2-mockF', title: 'New practice exam F (harder)', kind: 'mock', sub: 'A cascode mirror in numbers, a regulated cascode from both ends, the telescopic cascode', steps: Fx });
+  E2.lesson('e2-mocku', { id: 'e2-mockG', title: 'New practice exam G (hardest)', kind: 'mock', sub: 'A two-stage op amp from bias to gain, and the flipped voltage follower', steps: G });
 })();

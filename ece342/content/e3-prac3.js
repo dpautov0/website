@@ -682,7 +682,229 @@
     }),
   ];
 
+  // ================================================================== Practice exam L (hardest)
+  const L1Fig = [
+    ['rail', [1, -2.2], { n: 'V_{CC} = 5\\,\\text{V}' }], ['R', [1, -2.2], [1, -1], { n: 'R_{E1}', s: kO(1), side: 'l' }],
+    ['w', [1, -2.2], [1.8, -2.2]], ['C', [1.8, -2.2], [1.8, -1], { n: 'C_E' }], ['w', [1.8, -1], [1, -1]],
+    ['pnp', [1, 0], { n: 'Q_1' }],
+    ['w', [0, 0], [-0.6, 0], [-0.6, 0.3]], ['Vac', [-0.6, 0.3], [-0.6, 1.3], { n: 'v_{in}', side: 'l' }], ['V', [-0.6, 1.3], [-0.6, 2.3], { n: Vv(3.3), side: 'l' }], ['gnd', [-0.6, 2.3]],
+    ['node', [1, 1], { n: 'X', side: 'l' }], ['R', [1, 1], [1, 2.2], { n: 'R_{C1}', s: kO(2), side: 'l' }], ['gnd', [1, 2.2]],
+    ['w', [1, 1], [1.5, 1], [1.5, 1.6], [2, 1.6]],
+    ['nmos', [3, 1.6], { n: 'M_2', sz: '20/1' }],
+    ['rail', [3, -0.8], { n: 'V_{DD}' }], ['R', [3, -0.8], [3, 0.6], { n: 'R_{D2}', s: kO(12) }],
+    ['w', [3, 0.6], [4, 0.6]], ['term', [4, 0.6], { n: 'v_{out}' }],
+    ['R', [3, 2.6], [3, 3.8], { n: 'R_{S2}', s: kO(2) }], ['gnd', [3, 3.8]],
+  ];
+  const L2Fig = [
+    ['nmos', [2, 0], { n: 'M_2' }], ['w', [2, -1], [2, -1.4]], ['term', [2, -1.4], { n: '\\downarrow R_{out}', side: 'r' }],
+    ['node', [2, 1], { n: 'X', side: 'r' }], ['nmos', [2, 2], { n: 'M_1' }], ['acg', [1, 2]], ['gnd', [2, 3]],
+    ['npn', [0.4, 1], { n: 'Q_3', flip: true }], ['w', [1.4, 1], [2, 1]], ['gnd', [0.4, 2]],
+    ['w', [0.4, 0], [1, 0]], ['node', [0.7, 0], { n: 'Y', side: 'a' }],
+    ['pmos', [0.4, -1], { n: 'M_4' }], ['acg', [-0.6, -1]], ['rail', [0.4, -2], { n: 'V_{DD}' }],
+  ];
+  const L3Fig = [
+    ['rail', [2, -1], { n: 'V_{CC}' }], ['pnp', [2, 0], { n: 'Q_1' }],
+    ['w', [1, 0], [0.4, 0]], ['C', [0.4, 0], [0.4, -1], { n: 'C_\\pi' }], ['w', [0.4, -1], [2, -1]],
+    ['C', [0.4, 0], [0.4, 1], { n: 'C_\\mu' }], ['w', [0.4, 1], [2, 1]],
+    ['R', [-0.9, 0], [0.4, 0], { n: 'R_S', s: kO(1.25) }],
+    ['w', [-0.9, 0], [-1.4, 0], [-1.4, 0.3]], ['Vac', [-1.4, 0.3], [-1.4, 1.3], { n: 'v_{in}', side: 'l' }],
+    ['V', [-1.4, 1.3], [-1.4, 2.3], { n: 'V_B', side: 'l' }], ['gnd', [-1.4, 2.3]],
+    ['w', [2, 1], [3.8, 1]], ['term', [3.8, 1], { n: 'v_{out}' }], ['C', [3.2, 1], [3.2, 2.2], { n: 'C_L' }], ['gnd', [3.2, 2.2]],
+    ['nmos', [2, 2], { n: 'M_2' }], ['acg', [1, 2]], ['gnd', [2, 3]],
+  ];
+  // Lecture 28's model of the CS/CE stage, with this problem's values in it
+  const L3Model = [
+    ['Vac', [-1.6, 0.3], [-1.6, 1.6], { n: 'v_{TH}', side: 'l' }], ['gnd', [-1.6, 1.6]], ['w', [-1.6, 0.3], [-1.6, 0]],
+    ['R', [-1.6, 0], [0, 0], { n: 'R_{TH}' }], ['node', [0, 0], { n: 'X', side: 'al' }],
+    ['C', [0, 0], [0, 1.6], { n: 'C_{in} = C_\\pi', side: 'l' }],
+    ['w', [0, 0], [0, -0.9]], ['C', [0, -0.9], [2.4, -0.9], { n: 'C_{xy} = C_\\mu' }], ['w', [2.4, -0.9], [2.4, 0]],
+    ['node', [2.4, 0], { n: 'Y', side: 'ar' }], ['G', [2.4, 0], [2.4, 1.6], { n: 'g_mv_X', side: 'l' }],
+    ['w', [2.4, 0], [5, 0]], ['R', [3.6, 0], [3.6, 1.6], { n: 'R_L' }], ['C', [4.6, 0], [4.6, 1.6], { n: 'C_{out} = C_L' }],
+    ['term', [5.4, 0], { n: 'v_{out}' }], ['w', [5, 0], [5.4, 0]],
+    ['w', [0, 1.6], [4.6, 1.6]], ['gnd', [1.2, 1.6]],
+  ];
+  const L2RX = '(rds1 || rpi3)';
+  const L2A = 'gm3*(ro3 || rds4)';
+
+  const Lex = [
+    intro('L', '**The hardest of the set**: a DC-coupled PNP-to-NMOS amplifier, a regulated cascode with a BJT booster, and Lecture 28\'s exact two-pole analysis of an actively loaded stage.'),
+    P({
+      id: 'e3pL-1', src: 'Exam 3 practice L · Problem 1 (35 pts)', title: 'A DC-coupled PNP into a degenerated NMOS', big: true,
+      q: md`$V_{CC} = V_{DD} = 5\,\text{V}$. $Q_1$ (PNP, $\beta = 100$, $r_o = \infty$): base at $3.3\,\text{V}$ DC plus $v_{in}$; $R_{E1} = 1\kO$ to $V_{CC}$, bypassed by $C_E$ (infinite); $R_{C1} = 2\kO$ from its collector (node $X$) to ground. Node $X$ drives $M_2$'s gate **directly** (no coupling capacitor). $M_2$ (NMOS, $W/L = 20/1$) has $R_{S2} = 2\kO$ (not bypassed) and $R_{D2} = 12\kO$; the output is its drain. Take $I_C\approx I_E$ ($\alpha\approx1$), and $\lambda = 0$ except in part (g).
+
+(a) $V_X$. (b) $I_{D2}$. (c) $V_{OUT}$; check that $Q_1$ is forward-active and $M_2$ saturated. (d) $g_{m2}$. (e) The first stage's gain $A_{v1} = v_x/v_{in}$. (f) $A_v = v_{out}/v_{in}$. (g) With $\lambda = 0.01\,\text{V}^{-1}$, the resistance looking down into $M_2$'s drain. (h) Why does (e) need no loading correction?`,
+      fig: L1Fig,
+      parts: [
+        { lbl: 'V_X', unit: 'V', ans: 2.0, accept: [1.98] },
+        { lbl: 'I_{D2}', unit: 'mA', ans: 0.25, accept: [0.2434], traps: [{ v: 1, msg: 'That puts all $2\\,\\text{V}$ across $V_{GS2}$. $R_{S2}$ carries $I_{D2}$ too: $V_X = V_{GS2} + I_{D2}R_{S2}$, a quadratic in $V_{ov}$.' }] },
+        { lbl: 'V_{OUT}', unit: 'V', ans: 2.0, accept: [2.08] },
+        { lbl: 'g_{m2}', unit: 'mS', ans: 1, accept: [0.987], traps: [{ v: 0.5, msg: '$g_m = 2I_D/V_{ov} = 2(0.25\\,\\text{mA})/0.5\\,\\text{V}$: do not forget the 2.' }] },
+        { lbl: 'A_{v1}', unit: '', ans: -80, accept: [-79.2] },
+        { lbl: 'A_v', unit: '', ans: 320, accept: [315.4], traps: [
+          { v: -320, msg: 'Two inverting stages in a row: the overall gain is positive.' },
+          { v: 960, msg: 'That forgets $M_2$\'s degeneration: its stage gain is $-g_{m2}R_{D2}/(1 + g_{m2}R_{S2}) = -4$, not $-12$.' },
+          { v: 480, msg: 'That uses $-R_{D2}/R_{S2} = -6$, the $g_mR_S\\gg1$ limit. Here $g_{m2}R_{S2} = 2$: keep the $1/g_m$, $-12/3 = -4$.' }] },
+        { lbl: 'R_{DN2}', unit: 'MΩ', ans: 1.202, accept: [1.2], traps: [{ v: 0.4, msg: 'That is $r_{ds2}$ alone. $R_{S2}$ degenerates the drain: $r_{ds} + R_S + g_mr_{ds}R_S$.' }] },
+        { lbl: '(h) $A_{v1} = -g_{m1}R_{C1}$ needs no loading correction because', mc: ['$M_2$\'s gate draws no current, so nothing but $R_{C1}$ loads node $X$', '$R_{S2}$ is not bypassed', '$Q_1$ has $r_o = \\infty$', 'the coupling is DC'], a: 0,
+          why: [null, '$R_{S2}$ matters for the second stage\'s gain, but it is behind the gate, which draws nothing. (Through a BJT base it **would** load $X$: $r_\\pi + (\\beta + 1)R_{S2}$.)', '$r_o = \\infty$ removes a resistance **inside** $Q_1$; the question is what the next stage hangs on $X$.', 'DC coupling is about the bias; for signals a coupling capacitor would be a short anyway.'] },
+      ],
+      hints: [
+        md`DC: $V_{E1} = 3.3 + 0.7 = 4.0\,\text{V}$, so $I_{E1} = 1\,\text{mA}$ and $V_X = I_{C1}R_{C1}$ (the gate takes nothing).`,
+        md`$M_2$: KVL from the gate: $V_X = (1 + V_{ov}) + I_{D2}R_{S2}$ with $I_{D2} = \tfrac12(100\,\mu)(20)V_{ov}^2 = (1\,\text{mA/V}^2)V_{ov}^2$.`,
+        md`Each stage on its own: $-g_{m1}R_{C1}$, then a degenerated CS $-\dfrac{g_{m2}R_{D2}}{1 + g_{m2}R_{S2}}$. Multiply.`,
+      ],
+      sol: md`
+        **Recognize it first.**
+        - $Q_1$: PNP (emitter on top), in at the **base**, out at the **collector**, emitter bypassed: a **common emitter**.
+        - $M_2$: in at the **gate**, out at the **drain**, $R_{S2}$ unbypassed: a **degenerated common source**.
+        - The two are **DC-coupled**: $Q_1$'s collector voltage *is* $M_2$'s gate bias. So the DC must be solved in order (Exam 2 style for $M_2$), and for signals two inverting stages give a **positive** gain.
+
+        **(a)** $V_{E1} = 3.3 + 0.7 = 4.0\,\text{V}$, $I_{E1} = (5 - 4)/1\,\text{k} = 1\,\text{mA}\approx I_{C1}$. The gate draws nothing, so all of $I_{C1}$ flows in $R_{C1}$: $V_X = (1\,\text{mA})(2\,\text{k}) = 2.0\,\text{V}$.
+
+        **(b) $M_2$, Exam 2 style.** KVL from the gate to ground: $V_X = V_{GS2} + I_{D2}R_{S2}$, with $V_{GS2} = 1 + V_{ov}$ and $I_{D2} = \tfrac12(100\,\mu)(20)V_{ov}^2 = (1\,\text{mA/V}^2)V_{ov}^2$:
+        $$2 = 1 + V_{ov} + (2\,\text{k})(1\,\text{m})V_{ov}^2\ \Rightarrow\ 2V_{ov}^2 + V_{ov} - 1 = 0\ \Rightarrow\ V_{ov} = \frac{-1 + \sqrt{1 + 8}}{4} = 0.5\,\text{V}$$
+        $I_{D2} = 0.25\,\text{mA}$, $V_{S2} = (0.25\,\text{m})(2\,\text{k}) = 0.5\,\text{V}$, $V_{GS2} = 1.5\,\text{V}$ ✓ ($0.5 + 1.5 = 2$).
+
+        **(c)** $V_{OUT} = 5 - (0.25\,\text{mA})(12\,\text{k}) = 2.0\,\text{V}$.
+        - $M_2$: $V_{DS2} = 2.0 - 0.5 = 1.5\,\text{V}\ge V_{ov} = 0.5\,\text{V}$: saturated ✓.
+        - $Q_1$: $V_{C1} = 2.0\,\text{V} < V_{B1} = 3.3\,\text{V}$: collector junction reverse-biased, forward-active ✓.
+
+        (Keeping $\alpha = 0.99$: $V_X = 1.98\,\text{V}$, $I_{D2} = 0.243\,\text{mA}$, $V_{OUT} = 2.08\,\text{V}$, and the final gain $315$: a DC-coupled chain passes every small change on, which is why the problem fixes $\alpha\approx1$.)
+
+        **(d)** $g_{m1} = 1\,\text{mA}/25\,\text{mV} = 40\,\text{mS}$; $g_{m2} = 2I_{D2}/V_{ov} = 2(0.25\,\text{m})/0.5 = 1\,\text{mS}$.
+
+        **(e)** Node $X$: $R_{C1}$ to ground, $Q_1$'s collector (open, $r_o = \infty$), $M_2$'s gate (open). So $A_{v1} = -g_{m1}R_{C1} = -(40\,\text{m})(2\,\text{k}) = -80$.
+
+        **(f)** $M_2$, degenerated: $A_{v2} = -\dfrac{g_{m2}R_{D2}}{1 + g_{m2}R_{S2}} = -\dfrac{12}{1 + 2} = -4$. Chain them (legal, because $A_{v1}$ already includes everything $M_2$ hangs on $X$, which is nothing):
+        $$A_v = (-80)(-4) = +320$$
+
+        **(g) Degenerated drain.** $r_{ds2} = 1/(\lambda I_D) = 1/(0.01\times0.25\,\text{m}) = 400\kO$, and
+        $$R_{DN2} = r_{ds2} + R_{S2} + g_{m2}r_{ds2}R_{S2} = 400\,\text{k} + 2\,\text{k} + (1\,\text{m})(400\,\text{k})(2\,\text{k}) = 1.20\,\text{M}\Omega$$
+        In parallel with $R_{D2} = 12\kO$ it changes $R_{out}$ by $1\%$: ignoring $\lambda$ was safe, thanks to the degeneration.
+
+        **(h)** A gate is a capacitor plate: no DC or signal current. A BJT second stage would hang $r_\pi + (\beta + 1)R_E$ on node $X$ and pull $A_{v1}$ down.
+
+        !!key BiCMOS chains
+        Put the BJT where you need $g_m$ (gain per milliamp) and the MOSFET where you need an infinite input resistance. A MOS gate never loads the stage before it; a BJT base always does, by $r_\pi + (\beta + 1)Z_E$.
+      `,
+    }),
+    P({
+      id: 'e3pL-2', src: 'Exam 3 practice L · Problem 2 (35 pts)', title: 'A regulated cascode whose booster is a BJT', big: true,
+      q: md`A gain-boosted (regulated) cascode current source. $M_1$ (NMOS, gate held) is the bottom device; $M_2$ (NMOS) is the cascode, with its source at node $X$. $M_2$'s gate (node $Y$) is not held: it is driven by $Q_3$ (NPN), whose base is at $X$, emitter grounded, and collector at $Y$, loaded by $M_4$ (PMOS current source, gate held). Keep $r_{ds1}$, $r_{ds2}$, $r_{o3}$, $r_{ds4}$. In symbols:
+
+(a) The booster's gain magnitude $A = |v_y/v_x|$. (b) $R_X$, the resistance from $X$ to ground **not** counting $M_2$. (c) $R_{out}$, looking down into $M_2$'s drain. Numbers: $g_{m2} = 1\,\text{mS}$, $r_{ds1} = r_{ds2} = 100\kO$; $Q_3$ at $0.1\,\text{mA}$ with $\beta = 100$; $r_{o3} = r_{ds4} = 1\,\text{M}\Omega$. (d) $R_{out}$. (e) The plain cascode ($M_2$'s gate held, no $Q_3$). (f) Compare with an NMOS booster of the same gain. (g) DC: $Q_3$ fixes $V_X$. What is the largest overdrive $M_1$ can have and stay saturated?`,
+      fig: L2Fig,
+      parts: [
+        ex(L2A, ['gm3', 'ro3', 'rds4'], 'A'),
+        ex(L2RX, ['rds1', 'rpi3'], 'R_X'),
+        ex(`rds2 + ${L2RX} + gm2*rds2*${L2RX}*(1 + ${L2A})`, ['gm2', 'rds2', 'rds1', 'rpi3', 'gm3', 'ro3', 'rds4'], 'R_{out}'),
+        { lbl: 'R_{out}\\ \\text{(numbers)}', unit: 'MΩ', ans: 4002, accept: [4000], traps: [
+          { v: 20010, msg: 'That uses $R_X = r_{ds1}$. $Q_3$\'s base hangs $r_{\\pi3} = 25\\,\\text{k}\\Omega$ on node $X$ too: $R_X = r_{ds1}\\parallel r_{\\pi3} = 20\\,\\text{k}\\Omega$.' },
+          { v: 20000, msg: 'That uses $R_X = r_{ds1}$. $Q_3$\'s base hangs $r_{\\pi3} = 25\\,\\text{k}\\Omega$ on node $X$ too: $R_X = r_{ds1}\\parallel r_{\\pi3} = 20\\,\\text{k}\\Omega$.' },
+          { v: 10.2, msg: 'That is the plain cascode: the booster multiplies the $g_{m2}r_{ds2}R_X$ term by $1 + A$.' }] },
+        { lbl: 'R_{out}\\ \\text{(plain cascode)}', unit: 'MΩ', ans: 10.2, accept: [10] },
+        { lbl: '(f) An NMOS booster with the same $A = 2000$ would give', mc: ['about $20\\,\\text{G}\\Omega$, five times more: no $r_{\\pi3}$ on node $X$', 'the same $4\\,\\text{G}\\Omega$: only $A$ matters', 'less, because a MOSFET has a smaller $g_m$', 'about $10\\,\\text{M}\\Omega$: a MOS booster cannot boost'], a: 0,
+          why: [null, '$A$ is the same, but the degeneration under $M_2$ is not: the BJT\'s base puts $r_{\\pi3}$ in parallel with $r_{ds1}$ ($R_X = 20\\,\\text{k}\\Omega$ instead of $100\\,\\text{k}\\Omega$).', 'The problem fixes $A$; $g_m$ only enters through $A$. What changes is $R_X$.', 'Exam 2\'s regulated cascode used an NMOS booster: it multiplies $R_{out}$ by $1 + A$.'] },
+        { lbl: 'V_{ov1,\\max}', unit: 'V', ans: 0.7, traps: [{ v: 1.7, msg: '$M_1$\'s drain sits at $V_X = V_{BE3} = 0.7\\,\\text{V}$. Saturation needs $V_{DS1}\\ge V_{ov1}$, so $V_{ov1}\\le0.7\\,\\text{V}$.' }] },
+      ],
+      hints: [
+        md`$Q_3$ is a common emitter: in at its base ($X$), out at its collector ($Y$), loaded by $r_{ds4}$ and its own $r_{o3}$ ($M_2$'s gate takes nothing).`,
+        md`Node $X$ without $M_2$: $M_1$'s drain (gate held) is $r_{ds1}$; $Q_3$'s base (emitter grounded) is $r_{\pi3}$. In parallel.`,
+        md`Test current into $M_2$'s drain: it all flows into $R_X$, so $v_x = i_tR_X$ and $v_g = -Av_x$. Then $i_t = g_{m2}(v_g - v_x) + (v_t - v_x)/r_{ds2}$: the gate moves **against** the source.`,
+      ],
+      sol: md`
+        **Recognize it first.**
+        - $M_1$: gate held, source grounded: a current source, $r_{ds1}$ looking into its drain.
+        - $M_2$: a cascode on top of $M_1$, but its gate is **not** held: $Q_3$ watches $X$ and drives $M_2$'s gate the opposite way. This is Exam 2's **regulated (gain-boosted) cascode**: if $X$ rises, $Q_3$ pulls $Y$ down hard, $M_2$'s $v_{gs}$ shrinks by $(1 + A)$ times as much, and $M_2$ fights back $(1 + A)$ times harder.
+        - The BJT twist: $Q_3$'s base draws current, so $r_{\pi3}$ hangs on node $X$, right where the degeneration of $M_2$ is.
+
+        **(a) The booster.** $Q_3$ is a common emitter: base $X$, emitter grounded, collector $Y$ loaded by $r_{ds4}$ ($M_4$'s drain, gate held) and $r_{o3}$; $M_2$'s gate takes nothing. So $v_y = -g_{m3}(r_{o3}\parallel r_{ds4})v_x$:
+        $$A = g_{m3}(r_{o3}\parallel r_{ds4})$$
+
+        **(b) Node $X$ without $M_2$:** $r_{ds1}$ (into $M_1$'s drain) in parallel with $r_{\pi3}$ (into $Q_3$'s base, emitter grounded; with the collector not feeding back, the base looks like $r_\pi$):
+        $$R_X = r_{ds1}\parallel r_{\pi3}$$
+
+        **(c) $R_{out}$.** Push $i_t$ into $M_2$'s drain. The gate takes nothing, so $i_t$ leaves $M_2$'s source and flows into $R_X$: $v_x = i_tR_X$, and the booster sets $v_g = -Av_x$. $M_2$'s model:
+        $$i_t = g_{m2}(v_g - v_x) + \frac{v_t - v_x}{r_{ds2}} = -g_{m2}(1 + A)v_x + \frac{v_t - v_x}{r_{ds2}}$$
+        Solve for $v_t$ and divide by $i_t$:
+        $$R_{out} = r_{ds2} + R_X + g_{m2}r_{ds2}R_X(1 + A)\approx g_{m2}r_{ds2}\,(r_{ds1}\parallel r_{\pi3})\,g_{m3}(r_{o3}\parallel r_{ds4})$$
+        Check: $A = 0$ and no $r_{\pi3}$ gives the plain cascode $r_{ds2} + r_{ds1} + g_{m2}r_{ds2}r_{ds1}$ ✓.
+
+        **(d) Numbers.** $Q_3$: $g_{m3} = 0.1\,\text{m}/25\,\text{m} = 4\,\text{mS}$, $r_{\pi3} = 100/4\,\text{mS} = 25\kO$. $A = (4\,\text{m})(1\,\text{M}\parallel1\,\text{M}) = 2000$. $R_X = 100\,\text{k}\parallel25\,\text{k} = 20\kO$.
+        $$R_{out} = 100\,\text{k} + 20\,\text{k} + (1\,\text{m})(100\,\text{k})(20\,\text{k})(2001) = 4.0\times10^9\,\Omega = 4.0\,\text{G}\Omega$$
+
+        **(e) Plain cascode:** $100\,\text{k} + 100\,\text{k} + (1\,\text{m})(100\,\text{k})(100\,\text{k}) = 10.2\,\text{M}\Omega$. The booster multiplied $R_{out}$ by about $390$, not by $A = 2000$.
+
+        **(f)** An NMOS booster with the same $A$ leaves $R_X = r_{ds1} = 100\kO$: $R_{out}\approx(1\,\text{m})(100\,\text{k})(100\,\text{k})(2001) = 20\,\text{G}\Omega$, five times more. The factor lost is $r_{ds1}/(r_{ds1}\parallel r_{\pi3}) = 5$: the BJT booster's base current. Written another way, $R_{out}\approx g_{m2}r_{ds2}\,r_{\pi3}g_{m3}(\dots) = \beta_3\,g_{m2}r_{ds2}(r_{o3}\parallel r_{ds4})$: the $\beta$ ceiling, again.
+
+        **(g)** $Q_3$'s base-emitter junction holds $V_X = V_{BE3} = 0.7\,\text{V}$, which is $M_1$'s $V_{DS}$. Saturation needs $V_{DS1}\ge V_{ov1}$: $V_{ov1}\le0.7\,\text{V}$. (An NMOS booster would hold $V_X$ at its own $V_{GS}\ge1\,\text{V}$: the BJT booster saves headroom, which is why it is used.)
+
+        !!key The moving-gate rules, in one place
+        Gate moving **with** the drain by $K$ (K rule): divide by $1 + g_mr_{ds}K$. Gate moving **against** the source by $A$ (regulated cascode): the $g_mr_{ds}R_S$ term grows by $1 + A$. With a BJT anywhere in the loop, look for the $r_\pi$ it hangs on a node.
+      `,
+    }),
+    P({
+      id: 'e3pL-3', src: 'Exam 3 practice L · Problem 3 (30 pts)', title: 'Lecture 28 exactly: an actively loaded PNP stage, pole splitting', big: true,
+      q: md`$Q_1$ (PNP) has its emitter on $V_{CC}$ and its collector at the output; $M_2$ (NMOS, gate held) is its load. $v_{in}$ (with the bias $V_B$) drives the base through $R_S = 1.25\kO$. $I_C = 0.5\,\text{mA}$, $\beta = 100$, $V_A = 100\,\text{V}$ for $Q_1$, $\lambda = 0.01\,\text{V}^{-1}$ for $M_2$. $C_\pi = 4.8\,\text{pF}$, $C_\mu = 0.2\,\text{pF}$, $C_L = 0.75\,\text{pF}$ (output to ground). Use Lecture 28: with $R_{TH} = R_S\parallel r_\pi$ and $R_L = r_o\parallel r_{ds2}$,
+$$\frac{v_{out}}{v_{TH}} = \frac{(sC_\mu - g_m)R_L}{as^2 + bs + 1},\quad a = R_{TH}R_L(C_\pi C_\mu + C_LC_\mu + C_\pi C_L),\quad b = (1 + g_mR_L)C_\mu R_{TH} + R_{TH}C_\pi + R_L(C_\mu + C_L)$$
+
+(a) The DC gain $v_{out}/v_{in}$. (b) $b$. (c) $a$. (d) The dominant pole $\omega_{p1}\approx1/b$. (e) The second pole $\omega_{p2}\approx b/a$. (f) The zero. (g) The input pole from Miller's theorem alone. (h) The "simple Miller" output pole, $1/\big(R_L[C_L + (1 + \tfrac{1}{g_mR_L})C_\mu]\big)$. (i) Why (h) is so far from (e).`,
+      fig: L3Fig,
+      parts: [
+        { lbl: 'A_{v0}', unit: '', ans: -1600, traps: [{ v: -2000, msg: 'That is $-g_mR_L$ from the base. $R_S$ and $r_\\pi$ divide $v_{in}$ first: $v_{TH} = 0.8\\,v_{in}$.' }, { v: -4000, msg: 'That uses $R_L = r_o$ alone. The NMOS load\'s $r_{ds2} = 200\\,\\text{k}\\Omega$ is in parallel: $R_L = 100\\,\\text{k}\\Omega$.' }] },
+        { lbl: 'b', unit: 'ns', ans: 500, traps: [{ v: 100, msg: 'That drops the Miller factor $(1 + g_mR_L) = 2001$ on $C_\\mu R_{TH}$.' }, { v: 601, msg: 'That uses $R_S$ for $R_{TH}$. The base node also has $r_\\pi$ to ground: $R_{TH} = R_S\\parallel r_\\pi = 1\\,\\text{k}\\Omega$.' }] },
+        { lbl: 'a', unit: 's^2', ans: 4.71e-16 },
+        { lbl: '\\omega_{p1}', unit: 'rad/s', ans: 2e6, accept: [2.004e6], traps: [{ v: 2.47e6, msg: 'That is the Miller input pole alone: it leaves out the output node\'s $R_L(C_\\mu + C_L) = 95\\,\\text{ns}$ in $b$.' }] },
+        { lbl: '\\omega_{p2}', unit: 'rad/s', ans: 1.062e9, accept: [1.06e9, 1.0596e9], traps: [{ v: 1.05e7, msg: 'That is the "simple Miller" output pole, which is wrong here: see part (i).' }] },
+        { lbl: '\\omega_z', unit: 'rad/s', ans: 1e11 },
+        { lbl: '\\omega_{p,in}\\ \\text{(Miller)}', unit: 'rad/s', ans: 2.469e6, accept: [2.47e6] },
+        { lbl: '\\omega_{p,out}\\ \\text{(simple Miller)}', unit: 'rad/s', ans: 1.0525e7, accept: [1.05e7] },
+        { lbl: '(i) The simple Miller output pole is a hundred times too low because', mc: ['near $\\omega_{p2}$ the capacitors hold the base, $C_\\mu$ and $C_\\pi$ divide the collector voltage onto it, and the transistor becomes diode-like (a K rule): the output sees about $1.25\\,\\text{k}\\Omega$, not $R_L = 100\\,\\text{k}\\Omega$', 'Miller\'s theorem is only valid for resistors', 'the right-half-plane zero cancels the output pole', '$C_L$ is too small to matter at the output'], a: 0,
+          why: [null, 'Miller\'s theorem holds for any impedance at a given frequency. The error is using the **DC** gain $-g_mR_L$ at a frequency where the gain has already collapsed.', 'The zero is at $10^{11}$, two decades above $\\omega_{p2}$: it does not cancel anything.', '$C_L$ is most of the output capacitance in both pictures. What differs is the **resistance** the output sees: $100\\,\\text{k}\\Omega$ versus about $1.25\\,\\text{k}\\Omega$.'] },
+      ],
+      hints: [
+        md`$g_m = 20\,\text{mS}$, $r_\pi = 5\kO$, $r_o = V_A/I_C = 200\kO$, $r_{ds2} = 1/(\lambda I) = 200\kO$. So $R_{TH} = 1.25\,\text{k}\parallel5\,\text{k} = 1\kO$, $v_{TH} = 0.8\,v_{in}$, $R_L = 100\kO$, $g_mR_L = 2000$.`,
+        md`$b$ is exactly the sum of the open-circuit time constants: $R_{TH}C_\pi + (R_{TH} + R_L + g_mR_{TH}R_L)C_\mu + R_LC_L$.`,
+        md`For two well-separated poles, $as^2 + bs + 1\approx(1 + s/\omega_{p1})(1 + s/\omega_{p2})$ gives $b\approx1/\omega_{p1}$ and $a = 1/(\omega_{p1}\omega_{p2})$, so $\omega_{p2}\approx b/a$.`,
+      ],
+      figs: { model: { fig: L3Model, cap: 'Lecture 28\'s model, filled in for this stage: $R_{TH} = R_S\\parallel r_\\pi = 1\\,\\text{k}\\Omega$, $v_{TH} = 0.8\\,v_{in}$; $C_{in} = C_\\pi$, the bridging $C_{xy} = C_\\mu$, $C_{out} = C_L$; $R_L = r_o\\parallel r_{ds2} = 100\\,\\text{k}\\Omega$. The PNP uses the same model as an NPN.' } },
+      sol: md`
+        **Recognize it first.** In at the **base** (through $R_S$), out at the **collector**, emitter on a rail: a **common emitter** (a PNP, emitter on top). Its load is $M_2$ with the gate held: a current source, $r_{ds2}$. So the collector node is high-impedance, $R_L = r_o\parallel r_{ds2}$, the gain is large, and $C_\mu$ bridges an inverting gain of 2000: the Miller effect will dominate. This is exactly Lecture 28's CE model (figure), so we use its exact $a$, $b$.
+
+        **The numbers to plug in.** $g_m = 0.5\,\text{m}/25\,\text{m} = 20\,\text{mS}$, $r_\pi = 100/20\,\text{m} = 5\kO$, $r_o = 100/0.5\,\text{m} = 200\kO$, $r_{ds2} = 1/(0.01\times0.5\,\text{m}) = 200\kO$. Thévenin at the base: $R_{TH} = 1.25\,\text{k}\parallel5\,\text{k} = 1\kO$, $v_{TH} = \tfrac{5}{6.25}v_{in} = 0.8\,v_{in}$. $R_L = 100\kO$, $g_mR_L = 2000$.
+
+        [[fig:model]]
+
+        **(a)** $A_{v0} = 0.8\times(-g_mR_L) = 0.8\times(-2000) = -1600$ ($64\,\text{dB}$).
+
+        **(b)** Term by term:
+        $$b = \underbrace{(2001)(0.2\,\text{p})(1\,\text{k})}_{400.2\,\text{ns}} + \underbrace{(1\,\text{k})(4.8\,\text{p})}_{4.8\,\text{ns}} + \underbrace{(100\,\text{k})(0.95\,\text{p})}_{95\,\text{ns}} = 500\,\text{ns}$$
+        Same thing as open-circuit time constants: $\tau_\pi = R_{TH}C_\pi = 4.8\,\text{ns}$; $\tau_\mu = (R_{TH} + R_L + g_mR_{TH}R_L)C_\mu = (1\,\text{k} + 100\,\text{k} + 2\,\text{M})(0.2\,\text{p}) = 420.2\,\text{ns}$; $\tau_L = R_LC_L = 75\,\text{ns}$; sum $500\,\text{ns}$ ✓. That is why OCTC works: $\sum\tau$ **is** $b$.
+
+        **(c)** $a = (1\,\text{k})(100\,\text{k})\big[(4.8)(0.2) + (0.75)(0.2) + (4.8)(0.75)\big]\,\text{pF}^2 = 10^8\times4.71\times10^{-24} = 4.71\times10^{-16}\,\text{s}^2$.
+
+        **(d)** $\omega_{p1}\approx1/b = 2.0\times10^6\,\text{rad/s}$. (The exact roots of $as^2 + bs + 1$ are $2.004\times10^6$ and $1.060\times10^9$; the exact $-3\,\text{dB}$ frequency is $2.004\times10^6$.)
+
+        **(e)** $\omega_{p2}\approx b/a = \dfrac{500\times10^{-9}}{4.71\times10^{-16}} = 1.06\times10^9\,\text{rad/s}$: more than two decades above $\omega_{p1}$, so the dominant-pole picture is excellent.
+
+        **(f)** $\omega_z = g_m/C_\mu = 20\,\text{m}/0.2\,\text{p} = 10^{11}\,\text{rad/s}$, in the right half-plane (the numerator is $sC_\mu - g_m$).
+
+        **(g) Miller alone.** $C_{in} = C_\pi + (1 + g_mR_L)C_\mu = 4.8 + 400.2 = 405\,\text{pF}$, $\omega_{p,in} = 1/(R_{TH}C_{in}) = 1/(405\,\text{ns}) = 2.47\times10^6$: $23\%$ optimistic, because it leaves out the output node's $95\,\text{ns}$.
+
+        **(h)** $C_{out} = C_L + (1 + \tfrac1{2000})C_\mu = 0.95\,\text{pF}$, $\omega_{p,out} = 1/(100\,\text{k}\times0.95\,\text{p}) = 1.05\times10^7$: a hundred times below the true $\omega_{p2}$.
+
+        **(i) Pole splitting, seen with the K rule.** Near $\omega_{p2}\sim10^9$ the base node is held by its capacitors: $C_\pi$'s impedance there, $1/(10^9\cdot4.8\,\text{p})\approx200\,\Omega$, is far below $R_{TH} = 1\kO$. So $C_\mu$ and $C_\pi$ form a capacitive divider from the collector to the base, and the base moves by $K = \dfrac{C_\mu}{C_\mu + C_\pi} = \dfrac{0.2}{5}$ of the collector voltage. A transistor whose control terminal follows its output by $K$ is Exam 2's K rule: the collector looks like
+        $$\frac{1}{g_mK} = \frac{C_\pi + C_\mu}{g_mC_\mu} = \frac{5\,\text{p}}{(20\,\text{m})(0.2\,\text{p})} = 1.25\kO\quad\text{instead of }R_L = 100\kO$$
+        The output node's capacitance is $C_L$ plus $C_\mu$ in series with $C_\pi$: $0.75 + 0.19 = 0.94\,\text{pF}$. So $\omega_{p2}\approx1/(1.25\,\text{k}\times0.94\,\text{p}) = 8.5\times10^8$, the textbook pole-splitting estimate $g_mC_\mu/(C_\pi C_\mu + C_\pi C_L + C_\mu C_L)$, close to $b/a$. The simple Miller formula keeps $R_L = 100\kO$ and misses that the transistor has become diode-like through $C_\mu$: that is the factor of 100. Use Miller for the **input** pole; for the second pole use $b/a$.
+
+        !!key Lecture 28 in three lines
+        $b = \sum\tau$ (the OCTC sum) $\Rightarrow\omega_{p1}\approx1/b$. $a$ = products of pairs $\Rightarrow\omega_{p2}\approx b/a$. Zero at $+g_m/C_\mu$. Miller gets the first pole roughly right and the second one badly wrong.
+      `,
+    }),
+  ];
+
   E3.lesson('e3-pracu', { id: 'e3-pI', title: 'Exam 3 practice exam I', kind: 'mock', sub: 'A mirror-biased CE on $\\pm5\\,\\text{V}$, an NPN and a degenerated PMOS on one output, a PNP follower driving a capacitor', steps: Iex });
   E3.lesson('e3-pracu', { id: 'e3-pJ', title: 'Exam 3 practice exam J', kind: 'mock', sub: 'A PNP CE into an NMOS mirror, the K rule under a degenerated PNP, a finite bypass capacitor and its Bode plot', steps: Jex });
   E3.lesson('e3-pracu', { id: 'e3-pK', title: 'Exam 3 practice exam K', kind: 'mock', sub: 'A CE on a PMOS diode load, a BiCMOS folded cascode with a PNP, emitter degeneration and the bandwidth', steps: Kex });
+  E3.lesson('e3-pracu', { id: 'e3-pL', title: 'Exam 3 practice exam L (hardest)', kind: 'mock', sub: 'A DC-coupled PNP into a degenerated NMOS, a regulated cascode with a BJT booster, Lecture 28 exactly: pole splitting', steps: Lex });
 })();
