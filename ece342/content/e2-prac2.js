@@ -585,6 +585,255 @@
     }),
   ];
 
+  // ================================================================== Practice exam F
+  const F1Fig = [
+    ['w', [0, -1.6], [2, -1.6]], ['rail', [1, -1.6], { n: 'V_{DD} = 5\\,\\text{V}' }],
+    ['I', [0, -1.6], [0, -0.4], { n: 'I_{REF}', s: '100\\,\\mu\\text{A}', side: 'l' }], ['w', [0, -0.4], [0, 0]], ['node', [0, 0], { n: 'B', side: 'l' }],
+    ['nmos', [0, 1], { n: 'M_3', sz: '50/1', flip: true, dc: true }], ['node', [0, 2], { n: 'A', side: 'l' }],
+    ['nmos', [0, 3], { n: 'M_1', sz: '50/1', flip: true, dc: true }], ['gnd', [0, 4]],
+    ['nmos', [2, 1], { n: 'M_4', sz: '200/1' }], ['node', [2, 2], { n: 'X', side: 'r' }],
+    ['nmos', [2, 3], { n: 'M_2', sz: '200/1' }], ['gnd', [2, 4]],
+    ['R', [2, -1.6], [2, 0], { n: 'R_L' }], ['w', [2, 0], [2.9, 0]], ['term', [2.9, 0], { n: 'V_{OUT}', side: 'r' }],
+  ];
+  const F1cFig = [
+    ['w', [-2, -1.6], [2, -1.6]], ['rail', [1, -1.6], { n: 'V_{DD} = 5\\,\\text{V}' }],
+    ['I', [-2, -1.6], [-2, -0.4], { s: '100\\,\\mu\\text{A}', side: 'l' }], ['w', [-2, -0.4], [-2, 0]],
+    ['nmos', [-2, 1], { n: 'M_B', sz: '?', flip: true, dc: true }], ['gnd', [-2, 2]],
+    ['w', [-1, 1], [1, 1], { hops: [0] }], ['node', [0.5, 1], { n: 'V_B', side: 'a' }],
+    ['I', [0, -1.6], [0, -0.4], { s: '100\\,\\mu\\text{A}', side: 'l' }], ['w', [0, -0.4], [0, 2]],
+    ['nmos', [0, 3], { n: 'M_1', sz: '50/1', flip: true, dc: true }], ['gnd', [0, 4]],
+    ['nmos', [2, 1], { n: 'M_4', sz: '200/1' }], ['node', [2, 2], { n: 'X', side: 'r' }],
+    ['nmos', [2, 3], { n: 'M_2', sz: '200/1' }], ['gnd', [2, 4]],
+    ['R', [2, -1.6], [2, 0], { n: 'R_L' }], ['w', [2, 0], [2.9, 0]], ['term', [2.9, 0], { n: 'V_{OUT}', side: 'r' }],
+  ];
+  const F2Fig = (b) => [
+    ['w', [0.4, -2], [b ? 2 : 0.4, -2]], ['rail', [b ? 1.2 : 0.4, -2], { n: 'V_{DD}' }],
+    ['pmos', [0.4, -1], { n: 'M_5', dc: true }], ['w', [0.4, 0], [0.4, 1]], ['w', [0.4, 1], [0.4, 1.6]], ['w', [0.4, 1], [1, 1]], ['node', [0.7, 1], { n: 'N', side: 'a' }],
+    ['nmos', [0.4, 2.6], { n: 'M_3', flip: true }], ['gnd', [0.4, 3.6]], ['w', [1.4, 2.6], [1.4, 2], [2, 2]],
+    ['nmos', [2, 1], { n: 'M_1' }], ['nmos', [2, 3], { n: 'M_2' }], acgL(1, 3), ['gnd', [2, 4]],
+    ...(b ? [['pmos', [2, -1], { n: 'M_4', flip: true }], ['acg', [3, -1]], ['node', [2, 0], { n: 'D', side: 'r' }],
+      ['w', [2, 2], [3.2, 2]], look([3.2, 2], 'R_{EQ2}'), ['node', [2.6, 2], { n: 'Y', side: 'a' }]]
+      : [['w', [2, 0], [2, -0.5]], lookDn([2, -0.5], 'R_{EQ1}'), ['node', [2, 0], { n: 'D', side: 'r' }], ['node', [2, 2], { n: 'Y', side: 'r' }]]),
+  ];
+  const F3Fig = [
+    ['rail', [1, -3], { n: 'V_{DD}' }], ['pmos', [1, -2], { n: 'M_4' }], acgL(0, -2),
+    ['pmos', [1, 0], { n: 'M_3' }], acgL(0, 0), ['w', [1, 1], [2, 1]], out([2, 1], 'v_{out}'),
+    ['nmos', [1, 2], { n: 'M_2' }], acgL(0, 2), ['node', [1, 3], { n: 'X', side: 'r' }],
+    ['nmos', [1, 4], { n: 'M_1' }], ['w', [0, 4], [-0.5, 4], [-0.5, 4.4]], ...vin(-0.5, 4.4),
+    ['R', [1, 5], [1, 6.2], { n: 'R_S' }], ['gnd', [1, 6.2]],
+  ];
+
+  const F2BOOST = '(gm3*(rds3 || 1/(gm5 + 1/rds5)))';
+  const F3GM = 'gm1/(1 + (gm1 + 1/rds1)*RS + (1/rds1)/(gm2 + 1/rds2))';
+  const F3RO = '(rds2 + (rds1 + RS + gm1*rds1*RS)*(1 + gm2*rds2)) || (rds3 + rds4 + gm3*rds3*rds4)';
+  const F3R = { ranges: { RS: [300, 2e3] } };
+
+  const Fx = [
+    intro('New practice exam F (harder)', [
+      '| 1 | 35 | DC and numbers: an NMOS cascode current mirror, its headroom, its output resistance, and the wide-swing fix |',
+      '| 2 | 30 | A regulated cascode seen from both ends: looking into the drain, then into the middle node |',
+      '| 3 | 35 | The telescopic cascode with a degenerated input: $G_M$, $R_{out}$, $A_v$, and what degeneration costs |',
+    ].join('\n    '), md`In Problem 1, $\lambda = 0.1\,\text{V}^{-1}$ for every transistor: use it only for $r_{ds} = 1/(\lambda I_D)$, and ignore it in DC calculations.`),
+    P({
+      id: 'e2mf-1a', src: 'New practice exam F · Problem 1(a) (15 pts)', title: 'A cascode current mirror: DC and headroom', big: true,
+      q: md`$V_{DD} = 5\,\text{V}$, $I_{REF} = 100\,\mu\text{A}$. The diode-connected $M_1$ and $M_3$ ($50/1$ each) are stacked; $M_2$ and $M_4$ ($200/1$ each) copy them into $R_L$. Find the gate voltages $V_A$ and $V_B$, the output current $I_{OUT}$, the voltage $V_X$ at $M_2$'s drain, and the largest $R_L$ that keeps $M_4$ saturated.`,
+      fig: F1Fig,
+      parts: [
+        { lbl: 'V_A', unit: 'V', ans: 1.2 },
+        { lbl: 'V_B', unit: 'V', ans: 2.4 },
+        { lbl: 'I_{OUT}', unit: 'µA', ans: 400 },
+        { lbl: 'V_X', unit: 'V', ans: 1.2 },
+        { lbl: 'R_{L,max}', unit: 'kΩ', ans: 9, traps: [{ v: 12, msg: 'That lets $V_{OUT}$ fall to $0.2\\,\\text{V}$, as in a simple mirror. Here $M_4$ needs $V_{OUT} \\ge V_B - V_{TN}$.' }] },
+      ],
+      hints: [
+        md`The whole left stack carries $I_{REF}$. Each $50/1$ diode at $100\,\mu\text{A}$ needs $V_{GS} = 1 + \sqrt{I/K}$.`,
+        md`$M_2$ has $M_1$'s $V_{GS}$ and four times its $W/L$. $M_4$ is in series with $M_2$: same current, and its source sits $V_{GS4}$ below $V_B$.`,
+        md`$M_4$'s edge of saturation: $V_{OUT} = V_B - V_{TN}$.`,
+      ],
+      sol: md`
+        **Recognize it first.** A **cascode current mirror**. The left stack of two diodes makes two gate voltages: $V_A$ one $V_{GS}$ above ground and $V_B$ two above. On the right, $M_2$ copies the current (its $V_{GS}$ is $M_1$'s) and $M_4$ is a cascode that shields $M_2$ from the output. The price is headroom: the output must stay high enough for $M_4$.
+
+        **Step 1: $V_A$.** $K_1 = \tfrac12(100\,\mu)(50) = 2.5\,\text{mA/V}^2$ at $100\,\mu\text{A}$: $V_{ov} = \sqrt{0.1/2.5} = 0.2\,\text{V}$, so $V_A = V_{GS1} = 1.2\,\text{V}$.
+
+        **Step 2: $V_B$.** $M_3$ carries the same $100\,\mu\text{A}$ (series stack) and is the same size, so $V_{GS3} = 1.2\,\text{V}$ too: $V_B = V_A + V_{GS3} = 2.4\,\text{V}$.
+
+        **Step 3: $I_{OUT}$.** $M_2$ has $V_{GS2} = V_A = 1.2\,\text{V}$, like $M_1$, and four times the $W/L$:
+        $$I_{OUT} = 100\,\mu\text{A}\times\frac{200}{50} = 400\,\mu\text{A}$$
+        $M_4$ is in series, so it carries $400\,\mu\text{A}$ as well.
+
+        **Step 4: $V_X$.** $M_4$: $K_4 = 10\,\text{mA/V}^2$ at $400\,\mu\text{A}$, $V_{ov4} = 0.2\,\text{V}$, $V_{GS4} = 1.2\,\text{V}$. Its source sits one $V_{GS}$ below its gate:
+        $$V_X = V_B - V_{GS4} = 2.4 - 1.2 = 1.2\,\text{V}$$
+        Notice $V_X = V_A$: $M_2$ sees exactly the same $V_{DS}$ as $M_1$, so the copy stays accurate even when $\lambda \ne 0$. That is the point of this mirror. Check $M_2$: $V_X = 1.2 \ge V_A - V_{TN} = 0.2\,\text{V}$ ✓ (with a full volt to spare: remember that).
+
+        **Step 5: the largest $R_L$.** $M_4$ stays saturated while $V_{OUT} \ge V_B - V_{TN} = 1.4\,\text{V}$:
+        $$R_{L,max} = \frac{5 - 1.4}{0.4\,\text{mA}} = 9\kO$$
+        A simple mirror ($M_2$ alone) would allow $V_{OUT}$ down to $0.2\,\text{V}$, i.e. $R_L$ up to $12\kO$.
+
+        !!key Pattern
+          Stacked diodes set stacked gate voltages ($V_{GS}$, $2V_{GS}$). A cascode mirror copies accurately (equal $V_{DS}$) but needs $V_{OUT} \ge 2V_{GS} - V_{TN} = V_{TN} + 2V_{ov}$ at the output.
+      `,
+    }),
+    P({
+      id: 'e2mf-1b', src: 'New practice exam F · Problem 1(b) (10 pts)', title: 'What the cascode buys: output resistance in numbers', big: true,
+      q: md`Same circuit, $\lambda = 0.1\,\text{V}^{-1}$. Find the small-signal resistance $R_{out}$ looking down into $M_4$'s drain (not counting $R_L$), and, for comparison, the output resistance of a simple mirror ($M_2$'s drain directly at the output).`,
+      fig: F1Fig,
+      parts: [
+        { lbl: 'R_{out}\\ (\\text{cascode mirror})', unit: 'MΩ', ans: 2.55, accept: [2.5], traps: [{ v: 0.025, msg: 'That is $r_{ds}$ alone, the simple mirror.' }, { v: 0.05, msg: 'That just adds $r_{ds2} + r_{ds4}$. $M_4$ multiplies what sits under its source by $1 + g_{m4}r_{ds4}$.' }] },
+        { lbl: 'R_{out}\\ (\\text{simple mirror})', unit: 'kΩ', ans: 25 },
+      ],
+      hints: [
+        md`Both output devices carry $400\,\mu\text{A}$: $r_{ds} = 1/(\lambda I_D)$, $g_{m4} = 2I_D/V_{ov}$.`,
+        md`For signals both gates are fixed (incremental grounds): $M_2$ is just $r_{ds2}$, and $M_4$ is a drain with $r_{ds2}$ under its source.`,
+      ],
+      sol: md`
+        **Recognize it first.** For small signals, $V_A$ and $V_B$ are fixed DC voltages (the reference stack is driven by an ideal source, and gates draw no current), so both gates are incremental grounds. $M_2$ is then a resistor $r_{ds2}$, and $M_4$ is a [drain with that resistor under its source](#/l/e2-u7-scaler).
+
+        **Step 1: the small-signal numbers.** Both devices carry $400\,\mu\text{A}$ at $V_{ov} = 0.2\,\text{V}$:
+        $$r_{ds2} = r_{ds4} = \frac{1}{\lambda I_D} = \frac{1}{0.1\times0.4\,\text{mA}} = 25\kO,\qquad g_{m4} = \frac{2(0.4\,\text{m})}{0.2} = 4\,\text{mA/V},\qquad g_{m4}r_{ds4} = 100$$
+
+        **Step 2: the impedance scaler.**
+        $$R_{out} = r_{ds4} + r_{ds2}(1 + g_{m4}r_{ds4}) = 25\,\text{k} + 25\,\text{k}\times101 = 2.55\,\text{M}\Omega\ \approx g_{m4}r_{ds4}r_{ds2} = 2.5\,\text{M}\Omega$$
+
+        **Step 3: the simple mirror.** $M_2$ alone, gate held: $R_{out} = r_{ds2} = 25\kO$.
+
+        **What it means.** The cascode multiplies the output resistance by $g_{m4}r_{ds4} \approx 100$ and costs about one $V_{GS}$ of headroom (part (a)). If $V_{OUT}$ is pushed below $1.4\,\text{V}$, $M_4$ enters triode and $R_{out}$ collapses back toward the simple mirror's value.
+
+        !!key Pattern
+          Output resistance of a cascode mirror: $r_{ds4} + r_{ds2}(1 + g_{m4}r_{ds4}) \approx g_mr_{ds}^2$, about $g_mr_{ds}$ times that of a simple mirror.
+      `,
+    }),
+    P({
+      id: 'e2mf-1c', src: 'New practice exam F · Problem 1(c) (10 pts)', title: 'The wide-swing fix: size the bias diode', big: true,
+      q: md`The stack in (a) wastes headroom: $M_2$ has $V_{DS} = 1.2\,\text{V}$ but needs only $0.2\,\text{V}$. So $M_3$ is removed ($M_1$'s drain now takes $I_{REF}$ directly) and $M_4$'s gate is driven by a separate diode-connected $M_B$ carrying its own $100\,\mu\text{A}$. Choose $W/L$ of $M_B$ so that $V_B$ is the **smallest** value that keeps $M_2$ saturated, and find the new lowest $V_{OUT}$ that keeps $M_4$ saturated.`,
+      fig: F1cFig,
+      parts: [
+        { lbl: '(W/L)_B', unit: '/1', ans: 12.5, traps: [{ v: 50, msg: 'A $50/1$ diode gives $V_B = 1.2\\,\\text{V}$: then $V_X = 0$ and $M_2$ is in triode.' }] },
+        { lbl: 'V_{OUT,min}', unit: 'V', ans: 0.4, traps: [{ v: 0.2, msg: 'That is only $M_2$\'s headroom. $M_4$ needs its own $V_{ov}$ on top: $V_{OUT} \\ge V_B - V_{TN}$.' }, { v: 1.4, msg: 'That is the old stacked-diode value.' }] },
+      ],
+      hints: [
+        md`$M_2$ saturated: $V_X \ge V_A - V_{TN} = 0.2\,\text{V}$. And $V_X = V_B - V_{GS4}$ with $V_{GS4} = 1.2\,\text{V}$.`,
+        md`So $V_B = 1.4\,\text{V}$: $M_B$ needs $V_{ov} = 0.4\,\text{V}$ at $100\,\mu\text{A}$. Solve $K_B = I/V_{ov}^2$ for $W/L$.`,
+      ],
+      sol: md`
+        **Recognize it first.** The "wide-swing" cascode mirror: choose the cascode's gate voltage so the bottom device sits just at the edge of saturation instead of wasting a volt. Two edge conditions, one for each transistor of the output stack.
+
+        **Step 1: the smallest $V_B$.** $M_2$'s gate is $V_A = 1.2\,\text{V}$, so it is saturated while $V_X \ge V_A - V_{TN} = 0.2\,\text{V}$. $M_4$ still carries $400\,\mu\text{A}$ with $V_{GS4} = 1.2\,\text{V}$, so $V_X = V_B - 1.2$:
+        $$V_B - 1.2 \ge 0.2\quad\Rightarrow\quad V_{B,min} = 1.4\,\text{V}$$
+
+        **Step 2: size $M_B$.** It must have $V_{GS} = 1.4\,\text{V}$, i.e. $V_{ov} = 0.4\,\text{V}$, at $100\,\mu\text{A}$:
+        $$K_B = \frac{I}{V_{ov}^2} = \frac{100\,\mu}{0.16} = 625\,\mu\text{A/V}^2,\qquad \frac WL = \frac{2K_B}{\mu_nC_{ox}} = \frac{1250\,\mu}{100\,\mu} = 12.5\quad(12.5/1)$$
+        A quarter of a $50/1$ device: four times smaller $K$ at the same current doubles the overdrive.
+
+        **Step 3: the new lowest output voltage.** $M_4$'s edge: $V_{OUT} = V_B - V_{TN} = 1.4 - 1 = 0.4\,\text{V}$, which is $2V_{ov}$. The output can now swing a full volt lower than in (a).
+
+        **The cost.** $M_2$ now has $V_{DS} = 0.2\,\text{V}$ while $M_1$ has $1.2\,\text{V}$, so with $\lambda \ne 0$ the copy is slightly off; and $M_2$ sits right at the edge, so real designs leave a little margin.
+
+        !!key Pattern
+          Wide-swing cascode mirror: bias the cascode gate at $V_{TN} + 2V_{ov}$ (a quarter-size diode at the same current). The output then needs only $2V_{ov}$ instead of $V_{TN} + 2V_{ov}$.
+      `,
+    }),
+    P({
+      id: 'e2mf-2a', src: 'New practice exam F · Problem 2(a) (15 pts)', title: 'A regulated cascode with a diode-loaded booster', big: true,
+      q: md`Find $R_{EQ1}$, looking down into $M_1$'s drain $D$. $M_2$ (gate held) is a current source under $M_1$. The booster $M_3$ senses $Y$ and drives $M_1$'s gate $N$; its load is the diode-connected PMOS $M_5$. All transistors saturated, $g_mr_{ds} \gg 1$, $r_{ds} \ne \infty$.`,
+      fig: F2Fig(false),
+      parts: [ex(`rds1 + rds2 + gm1*rds1*(1 + ${F2BOOST})*rds2`, ['gm1', 'rds1', 'rds2', 'gm3', 'rds3', 'gm5', 'rds5'], 'R_{EQ1}')],
+      hints: [
+        md`Find the booster's gain first: $N$ sees $r_{ds3}$ and the diode $1/(g_{m5} + g_{ds5})$, so $v_N = -Av_Y$ with $A = g_{m3}\left(r_{ds3}\parallel\dfrac{1}{g_{m5} + g_{ds5}}\right) \approx \dfrac{g_{m3}}{g_{m5}}$.`,
+        md`Then $M_1$'s $v_{gs} = -Av_Y - v_Y$. Redo the degenerated-drain KCL with $v_Y = ir_{ds2}$.`,
+      ],
+      sol: md`
+        **Recognize it first.** A **regulated (gain-boosted) cascode**: $M_1$ is a cascode on the current source $M_2$, but its gate is not held. The booster $M_3$, a common source with the PMOS diode $M_5$ as its load, watches $Y$ and drives $M_1$'s gate the opposite way. A diode load gives a small, well-defined booster gain, $A \approx g_{m3}/g_{m5}$ (Practice Exam 2 used a current-source load, $A \approx g_mr_{ds}$).
+
+        **Step 1: the booster's gain.** Node $N$ sees $r_{ds3}$ (down through $M_3$) and the diode $M_5$, $\dfrac{1}{g_{m5} + g_{ds5}}$ (up to $V_{DD}$); $M_1$'s gate draws nothing. $M_3$ pulls $g_{m3}v_Y$ out of $N$:
+        $$v_N = -Av_Y,\qquad A = g_{m3}\left(r_{ds3}\parallel\frac{1}{g_{m5} + g_{ds5}}\right) \approx \frac{g_{m3}}{g_{m5}}$$
+
+        **Step 2: KCL looking into $D$.** Apply $v_x$; the current $i$ flows down through $M_1$ and then $r_{ds2}$ (the gate of $M_3$ takes none), so $v_Y = ir_{ds2}$. $M_1$'s gate is at $-Av_Y$, its source at $v_Y$:
+        $$i = g_{m1}(-Av_Y - v_Y) + \frac{v_x - v_Y}{r_{ds1}} = -g_{m1}(1 + A)v_Y + \frac{v_x - v_Y}{r_{ds1}}$$
+
+        **Step 3: solve.** Put $v_Y = ir_{ds2}$ in and multiply by $r_{ds1}$:
+        $$i\,r_{ds1} + g_{m1}(1 + A)r_{ds1}r_{ds2}\,i + i\,r_{ds2} = v_x\;\Rightarrow\;R_{EQ1} = r_{ds1} + r_{ds2} + g_{m1}r_{ds1}(1 + A)r_{ds2}$$
+        $$R_{EQ1} \approx g_{m1}r_{ds1}r_{ds2}\left(1 + \frac{g_{m3}}{g_{m5}}\right)$$
+
+        **Intuition.** In a plain cascode $v_{gs1} = -v_Y$. Here $v_{gs1} = -(1 + A)v_Y$: any rise of $Y$ is fought $(1 + A)$ times harder, so $Y$ moves $(1 + A)$ times less, the current changes $(1 + A)$ times less, and the resistance is $(1 + A)$ times bigger. $A = 0$ gives the plain cascode back.
+
+        !!key Pattern
+          Regulated cascode: $R = r_{ds1} + R_Y + g_{m1}r_{ds1}(1 + A)R_Y$, where $A$ is the inverting gain from $M_1$'s source to its gate.
+      `,
+    }),
+    P({
+      id: 'e2mf-2b', src: 'New practice exam F · Problem 2(b) (15 pts)', title: 'The same loop, looked at from the middle', big: true,
+      q: md`Now a PMOS current source $M_4$ (gate held) sits on top of $D$. Find $R_{EQ2}$, looking into the middle node $Y$ (where $M_1$'s source, $M_2$'s drain and $M_3$'s gate meet). Same assumptions.`,
+      fig: F2Fig(true),
+      parts: [ex(`rds2 || ((rds1 + rds4)/(1 + gm1*rds1*(1 + ${F2BOOST})))`, ['gm1', 'rds1', 'rds2', 'gm3', 'rds3', 'gm5', 'rds5', 'rds4'], 'R_{EQ2}')],
+      hints: [
+        md`Two branches at $Y$: $r_{ds2}$ down, and $M_1$ up (its drain sees only $r_{ds4}$).`,
+        md`Looking into a source with $R_D$ at the drain gives $\dfrac{r_{ds} + R_D}{1 + g_mr_{ds}}$ when the gate is held. Here the gate moves by $-Av_Y$: redo the KCL.`,
+        md`You should find the $M_1$ branch $= \dfrac{r_{ds1} + r_{ds4}}{1 + g_{m1}r_{ds1}(1 + A)}$.`,
+      ],
+      sol: md`
+        **Recognize it first.** The same feedback loop, seen from the middle node. At $Y$ there are two branches: $r_{ds2}$ (down) and $M_1$ seen from its **source**, with $r_{ds4}$ on its drain. Normally [looking into a source](#/l/e2-u7-three) gives $\dfrac{r_{ds} + R_D}{1 + g_mr_{ds}}$; here the gate moves **against** the source by $A$, which makes it $(1 + A)$ times stiffer.
+
+        **Step 1: the booster** (as in part (a)): $v_N = -Av_y$, $A = g_{m3}\left(r_{ds3}\parallel\dfrac{1}{g_{m5} + g_{ds5}}\right)$.
+
+        **Step 2: $M_1$'s drain.** $D$ touches only $M_1$ and $M_4$; $M_4$ (gate held, source at $V_{DD}$) is $r_{ds4}$ to incremental ground. So the current $i_{d1}$ flowing down from $D$ into $M_1$ must come up through $r_{ds4}$: $v_D = -i_{d1}r_{ds4}$.
+
+        **Step 3: $M_1$'s model.** Drain to source, with the gate at $-Av_y$:
+        $$i_{d1} = g_{m1}(-Av_y - v_y) + \frac{v_D - v_y}{r_{ds1}} = -g_{m1}(1 + A)v_y + \frac{-i_{d1}r_{ds4} - v_y}{r_{ds1}}$$
+        Multiply by $r_{ds1}$ and collect $i_{d1}$:
+        $$i_{d1}(r_{ds1} + r_{ds4}) = -v_y\left[1 + g_{m1}r_{ds1}(1 + A)\right]$$
+        The test source pushes $-i_{d1}$ up into $M_1$'s source, so this branch is
+        $$\frac{r_{ds1} + r_{ds4}}{1 + g_{m1}r_{ds1}(1 + A)}$$
+
+        **Step 4: combine.**
+        $$R_{EQ2} = r_{ds2}\ \Big\|\ \frac{r_{ds1} + r_{ds4}}{1 + g_{m1}r_{ds1}(1 + A)} \approx \frac{1 + r_{ds4}/r_{ds1}}{g_{m1}\,(1 + g_{m3}/g_{m5})}$$
+
+        **Check.** $A = 0$ gives $\dfrac{r_{ds1} + r_{ds4}}{1 + g_{m1}r_{ds1}}$, about $2/g_{m1}$ for equal $r_{ds}$: looking into a source with a current source on the drain is **not** $1/g_m$. The booster divides it further by $1 + A$.
+
+        !!key Pattern
+          A gate driven against its own source by $A$ multiplies that transistor's $g_m$ by $(1 + A)$: the drain side looks $(1 + A)$ times bigger (part a), the source side $(1 + A)$ times smaller (part b).
+      `,
+    }),
+    P({
+      id: 'e2mf-3', src: 'New practice exam F · Problem 3 (35 pts)', title: 'Telescopic cascode with a degenerated input', big: true,
+      q: md`$M_1$ (input, degenerated by $R_S$) and the cascode $M_2$ form the amplifying stack; $M_3$ on $M_4$ is a PMOS cascode current-source load. All marked gates are held. Find $G_M$ (10 pts), $R_{out}$ (10 pts) and $A_v = v_{out}/v_{in}$ (8 pts). Then answer the multiple-choice question about $R_S$ (7 pts).`,
+      fig: F3Fig,
+      parts: [
+        ex(F3GM, ['gm1', 'rds1', 'RS', 'gm2', 'rds2'], 'G_M', F3R),
+        ex(F3RO, ['gm1', 'rds1', 'RS', 'gm2', 'rds2', 'gm3', 'rds3', 'rds4'], 'R_{out}', F3R),
+        ex(`-(${F3GM})*(${F3RO})`, ['gm1', 'rds1', 'RS', 'gm2', 'rds2', 'gm3', 'rds3', 'rds4'], 'A_v', F3R),
+        { lbl: 'Suppose $g_{m1}R_S \\gg 1$, so $R_{DN} \\gg R_{UP}$. Doubling $R_S$ changes $|A_v|$ by about', mc: ['a factor $\\tfrac12$', 'nothing: $G_MR_{out}$ stays $\\approx g_mr_{ds}\\cdot g_mr_{ds}$', 'a factor 2', 'a factor $\\tfrac14$'], a: 0,
+          why: [null, 'That invariance holds only when $R_{out} = R_{DN}$. Here $R_{out}$ is pinned near $R_{UP}$, which $R_S$ does not touch.', 'Degeneration never raises the gain: $G_M$ falls and $R_{out}$ cannot exceed $R_{UP}$.', '$R_S$ enters $G_M \\approx 1/R_S$ once; $R_{out} \\approx R_{UP}$ does not depend on it.'] },
+      ],
+      hints: [
+        md`$G_M$: the cascode passes the bottom device's current. With the output shorted, $X$ sees $M_2$'s source, $\approx 1/g_{m2}$, which barely degenerates $M_1$'s drain. So $G_M \approx g_{m1}/(1 + g_{m1}R_S)$.`,
+        md`$R_{DN}$: degenerate twice: $R_X = r_{ds1} + R_S + g_{m1}r_{ds1}R_S$, then $r_{ds2} + R_X(1 + g_{m2}r_{ds2})$. $R_{UP} = r_{ds3} + r_{ds4} + g_{m3}r_{ds3}r_{ds4}$.`,
+      ],
+      sol: md`
+        **Recognize it first.** A **telescopic cascode**: degenerated common source ($M_1$ with $R_S$), NMOS cascode ($M_2$), PMOS cascode load ($M_3$ on $M_4$). $G_M$ comes from the bottom of the stack (a cascode only passes current), and $R_{out} = R_{DN}\parallel R_{UP}$, each a stacked [impedance scaler](#/l/e2-u7-scaler).
+
+        **Step 1: $G_M$ (output shorted).** One current $i$ flows down through $M_2$, $M_1$ and $R_S$ (nothing else touches $X$ or $S$). $M_2$, gate held, drain on the short: $i = -(g_{m2} + g_{ds2})v_X$, so $v_X = -\dfrac{i}{g_{m2} + g_{ds2}}$. $M_1$, with $v_S = iR_S$:
+        $$i = g_{m1}(v_{in} - iR_S) + \frac{v_X - iR_S}{r_{ds1}}$$
+        Substitute $v_X$ and collect $i$:
+        $$G_M = \frac{i}{v_{in}} = \frac{g_{m1}}{1 + (g_{m1} + g_{ds1})R_S + \dfrac{g_{ds1}}{g_{m2} + g_{ds2}}} \approx \frac{g_{m1}}{1 + g_{m1}R_S}$$
+
+        **Step 2: $R_{DN}$ ($v_{in} = 0$).** $M_1$ with $R_S$: $R_X = r_{ds1} + R_S + g_{m1}r_{ds1}R_S$. Then $M_2$ on top of $R_X$:
+        $$R_{DN} = r_{ds2} + R_X(1 + g_{m2}r_{ds2}) \approx g_{m2}r_{ds2}\,r_{ds1}(1 + g_{m1}R_S)$$
+
+        **Step 3: $R_{UP}$.** $M_4$ is $r_{ds4}$; $M_3$ (PMOS, same model) sits on it:
+        $$R_{UP} = r_{ds3} + r_{ds4} + g_{m3}r_{ds3}r_{ds4} \approx g_{m3}r_{ds3}r_{ds4}$$
+
+        **Step 4: the gain.**
+        $$A_v = -G_M\,(R_{DN}\parallel R_{UP}) \approx -\frac{g_{m1}}{1 + g_{m1}R_S}\Big[g_{m2}r_{ds2}r_{ds1}(1 + g_{m1}R_S)\parallel g_{m3}r_{ds3}r_{ds4}\Big]$$
+
+        **What degeneration costs.** If the load were ideal ($R_{UP} \to \infty$), $R_{out} = R_{DN}$ and $G_MR_{DN} \approx g_{m1}r_{ds1}g_{m2}r_{ds2}$, independent of $R_S$: degeneration would be free. With a real load, $R_{out}$ can never exceed $R_{UP}$; once $R_{DN} \gg R_{UP}$, $|A_v| \approx G_MR_{UP} \approx \dfrac{g_{m3}r_{ds3}r_{ds4}}{R_S}$, so doubling $R_S$ roughly **halves** the gain. Numbers (all $g_m = 1\,\text{mA/V}$, $r_{ds} = 100\kO$): $|A_v| = 5050$ with $R_S = 0$, $3370$ at $1\kO$, $840$ at $10\kO$, $460$ at $20\kO$.
+
+        !!key Pattern
+          In a cascode amplifier, compare $R_{UP}$ and $R_{DN}$ before simplifying. "$G_MR_{out}$ is unchanged by degeneration" is true only when the degenerated side sets $R_{out}$.
+      `,
+    }),
+  ];
+
   E2.lesson('e2-mocku', { id: 'e2-mockD', title: 'New practice exam D', kind: 'mock', sub: 'A degenerated mirror, gates on diode stacks, a CS stage and its follower', steps: D });
   E2.lesson('e2-mocku', { id: 'e2-mockE', title: 'New practice exam E', kind: 'mock', sub: 'A starved diode load, two cascode resistances, the mirror-loaded differential pair', steps: E });
+  E2.lesson('e2-mocku', { id: 'e2-mockF', title: 'New practice exam F (harder)', kind: 'mock', sub: 'A cascode mirror in numbers, a regulated cascode from both ends, the telescopic cascode', steps: Fx });
 })();
