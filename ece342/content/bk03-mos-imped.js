@@ -1746,7 +1746,7 @@ $$R_{DN} = \frac{r_{ds} + R_S + g_mr_{ds}R_S}{1 + g_mr_{ds}K}$$`,
     ['w', [1, 0], [-0.6, 0]], ['V', [-0.6, 0], [-0.6, 1.2], { n: 'v_t', side: 'l' }], ['gnd', [-0.6, 1.2]], ['iarr', [0.2, 0], 'r', { n: 'i_t' }]];
   const LT = 'style="fill:var(--fg);font:13px var(--sans)"', LD = 'style="fill:var(--dim);font:12px var(--sans)"';
   const lad = [[497.5, 326, 'source, or a diode: 1/gm ≈ 500 Ω'], [995, 298, 'source with another rds on its drain: ≈ 2/gm'], [1e4, 268, 'a typical resistor'],
-    [1e5, 236, 'drain, gate held: rds = 100 kΩ'], [3.01e5, 206, 'drain with RS = 1 kΩ: rds(1 + gmRS)'], [2.02e7, 144, 'cascode: (gm rds) rds ≈ 20 MΩ'], [4.06e9, 58, 'triple cascode ≈ 4 GΩ']];
+    [1e5, 236, 'drain, gate held: rds = 100 kΩ'], [3.01e5, 206, 'drain with RS = 1 kΩ: rds(1 + gm RS)'], [2.02e7, 144, 'cascode: (gm rds) rds ≈ 20 MΩ'], [4.06e9, 58, 'triple cascode ≈ 4 GΩ']];
   const yOf = (R) => 340 - (Math.log10(R) - 2) * 37.5;
   const ladder = `<svg class="schem" viewBox="0 0 600 360" width="600" role="img" aria-label="the size ladder of resistances">
     <path d="M120,345V30"/>${[2, 3, 4, 5, 6, 7, 8, 9, 10].map((d) => `<path class="dim" d="M114,${yOf(10 ** d)}H120"/><text x="108" y="${yOf(10 ** d) + 4}" text-anchor="end" ${LD}>${['100 Ω', '1 kΩ', '10 kΩ', '100 kΩ', '1 MΩ', '10 MΩ', '100 MΩ', '1 GΩ', '10 GΩ'][d - 2]}</text>`).join('')}

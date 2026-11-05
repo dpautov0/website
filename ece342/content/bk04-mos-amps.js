@@ -1097,4 +1097,193 @@ Degeneration cost nothing here: the drain current cannot change, so $R_S$ carrie
       G('bk_degen', { need: 4 }),
     ],
   });
+
+  // ================================================================== 5. the common gate
+  L({
+    id: 'bk04-cg', title: 'The common gate', ref: 'Lecture 17',
+    steps: [
+      RF(md`
+        ### The question
+
+        Hold the gate still and drive the **source** instead; take the output at the drain. The signal source has some resistance $R_S$ of its own. Why is this stage non-inverting, why is its input resistance so low, what is its gain with $R_S$, and what is it good for? Exam 2 used it alone (Practice 5 #1) and, more often, as the top half of a cascode.
+
+        [[fig:c]]
+
+        ### The physical picture
+
+        The gate is held at a fixed bias $V_B$. Raise the source by $10\,\text{mV}$: $V_{GS} = V_B - V_S$ drops by $10\,\text{mV}$, the valve closes a little, $g_m\times10\,\text{mV}$ **less** current flows down through $R_D$, and the drain **rises**. Non-inverting, and with the same size of gain as a common source: same current change, same $R_D$, opposite sign.
+
+        The source is a **low-resistance** node. To move it by $1\,\text{mV}$ you must supply the whole current change, $g_m\times1\,\text{mV}$: the source looks like $1/g_m$ ([Chapter 3](#/l/bk03-source)), $100\,\Omega$ at $g_m = 10\,\text{mS}$. So a signal arriving through $R_S$ meets a divider: $R_S$ on top, $1/g_m$ below.
+
+        Follow the current instead and the stage becomes simple. Whatever current $v_{in}$ pushes into the source passes straight through the transistor and comes out of the drain, where it meets the large resistance $R_D$. In at a low resistance, out at a high one: a **current buffer**. The Art of Electronics: the transistor "passes the current along and lets the load turn it into voltage".
+      `, { c: { fig: F.cg(), cap: 'The common gate: gate held at $V_B$, signal into the source through $R_S$, output at the drain.' } }),
+      RF(md`
+        ### The model
+
+        Saturation, small signals, $r_{ds}$ kept. The gate is at incremental ground. $R_S$ runs from the source to $v_{in}$.
+
+        ### Derivation: $G_M$ (output shorted)
+
+        **Step 1: $v_{gs}$.** The gate is at 0, the source at $v_s$: $v_{gs} = -v_s$.
+
+        **Step 2: current down through the transistor.** The drain is shorted (0 V), so $R_D$ carries nothing and all of $i_{out}$ goes down through the transistor:
+        $$i_{out} = g_m(-v_s) + \frac{0 - v_s}{r_{ds}} = -\Big(g_m + \frac{1}{r_{ds}}\Big)v_s = -\frac{v_s}{r_s}$$
+        where $r_s = \dfrac{1}{g_m + 1/r_{ds}} = \dfrac{1}{g_m}\parallel r_{ds}$, the resistance looking into a source whose drain is grounded.
+
+        **Step 3: KCL at the source.** The current that comes down the transistor into the source node leaves through $R_S$ toward $v_{in}$: $i_{out} = \dfrac{v_s - v_{in}}{R_S}$.
+
+        **Step 4: equate and solve for $v_s$.** $-\dfrac{v_s}{r_s} = \dfrac{v_s - v_{in}}{R_S}$; multiply by $R_Sr_s$: $-R_Sv_s = r_sv_s - r_sv_{in}$, so
+        $$v_s = \frac{r_s}{R_S + r_s}\,v_{in}$$
+        a voltage divider, $R_S$ on top and the source's own $r_s$ below.
+
+        **Step 5: $G_M$.** $i_{out} = -v_s/r_s = -\dfrac{v_{in}}{R_S + r_s}$:
+        $$G_M = -\frac{1}{R_S + \frac1{g_m}\parallel r_{ds}} = -\frac{1 + g_mr_{ds}}{r_{ds} + R_S + g_mr_{ds}R_S}\approx-\frac{g_m}{1 + g_mR_S}$$
+        (For the middle form, write $\tfrac1{g_m}\parallel r_{ds} = \tfrac{r_{ds}}{1 + g_mr_{ds}}$ and put everything over $1 + g_mr_{ds}$.) **Negative:** when $v_{in}$ rises, current flows **up** out of the stage into the short.
+
+        [[fig:s]]
+      `, { s: { fig: F.cgM('short'), cap: '$G_M$: gate grounded, drain shorted, $v_{in}$ through $R_S$ into the source.' } }),
+      RF(md`
+        ### $R_{out}$ (input off)
+
+        $v_{in} = 0$ grounds the bottom of $R_S$. Now the picture is: gate grounded, $R_S$ from the source to ground, $R_D$ above, test source on the drain. That is **exactly** the $R_{out}$ circuit of the degenerated common source ([Section 4](#/l/bk04-degen)), so the same four steps give
+        $$R_{out} = R_D\parallel(r_{ds} + R_S + g_mr_{ds}R_S)$$
+
+        [[fig:t]]
+
+        ### The gain
+
+        Call $N = r_{ds} + R_S + g_mr_{ds}R_S$ again. Then $G_M = -\dfrac{1 + g_mr_{ds}}{N}$ and $R_{out} = \dfrac{R_DN}{R_D + N}$; $N$ cancels in the product:
+        $$A_v = -G_MR_{out} = \frac{(1 + g_mr_{ds})R_D}{R_D + r_{ds} + R_S + g_mr_{ds}R_S}\approx\frac{R_D}{R_S + 1/g_m}$$
+        The denominator is the degenerated common source's; the numerator is $1 + g_mr_{ds}$ instead of $g_mr_{ds}$. Same size, opposite sign, and slightly bigger.
+
+        ### $R_{in}$: looking into the source
+
+        Test source $v_t$ on the source, gate grounded, $R_D$ on the drain ([Chapter 3](#/l/bk03-source) did this with $R_D$ on the drain).
+
+        **Step 1:** $v_{gs} = -v_t$. **Step 2:** $i_t$ enters the source, flows up through the transistor and out of the drain, then down through $R_D$: the drain sits at $v_d = i_tR_D$. **Step 3:** the current through the transistor from drain to source is $-i_t$:
+        $$-i_t = g_m(-v_t) + \frac{i_tR_D - v_t}{r_{ds}}$$
+        **Step 4:** multiply by $r_{ds}$ and collect: $v_t(1 + g_mr_{ds}) = i_t(r_{ds} + R_D)$, so
+        $$R_{in} = \frac{r_{ds} + R_D}{1 + g_mr_{ds}}\approx\frac1{g_m} + \frac{R_D}{g_mr_{ds}}$$
+        Usually just $1/g_m$. But if the drain load is huge (a current source), $R_D/(g_mr_{ds})$ is not small: with an **ideal** current source on the drain, $R_{in}\to\infty$, because the current entering the source has nowhere to go.
+
+        [[fig:r]]
+
+        !!key The common gate (Lecture 17)
+          $$G_M = -\frac{1}{R_S + \frac1{g_m}\parallel r_{ds}},\quad R_{out} = R_D\parallel(r_{ds} + R_S + g_mr_{ds}R_S),\quad R_{in} = \frac{r_{ds} + R_D}{1 + g_mr_{ds}}$$
+          $$A_v = \frac{(1 + g_mr_{ds})R_D}{R_D + r_{ds} + R_S + g_mr_{ds}R_S}\approx+\frac{R_D}{R_S + 1/g_m}$$
+      `, {
+        t: { fig: F.cgM('test'), cap: '$R_{out}$: with $v_{in} = 0$ this is the degenerated drain again.' },
+        r: { fig: F.cgM('rin'), cap: '$R_{in}$: a test source on the source; the current it pushes in comes out of the drain into $R_D$.' },
+      }),
+      R(md`
+        ### Check it
+
+        - **$R_S = 0$** (an ideal source drives the source): $A_v = (1 + g_mr_{ds})\dfrac{R_D}{R_D + r_{ds}} = \Big(g_m + \dfrac1{r_{ds}}\Big)(R_D\parallel r_{ds})\approx g_m(R_D\parallel r_{ds})$: the common source's size, positive. The "$+1$" is real: even with $g_m = 0$, $v_{in}$ would reach the output through the divider $r_{ds}$, $R_D$.
+        - **$R_S\gg1/g_m$:** $A_v\approx R_D/R_S$. The input is effectively a current $v_{in}/R_S$, handed to $R_D$.
+        - **Three ways to the same gain.** (1) $G_MR_{out}$, above. (2) Divider, then source-to-drain gain: $\dfrac{R_{in}}{R_S + R_{in}}\cdot\dfrac{(1 + g_mr_{ds})R_D}{R_D + r_{ds}}$ (multiply it out: the same expression). (3) Resistance ratio: $R_D$ over the resistance in the input path, $R_S + 1/g_m$.
+        - **One number:** $g_m = 2\,\text{mS}$, $r_{ds} = 100\kO$, $R_S = 1\kO$, $R_D = 10\kO$. $r_s = 1/(2.01\,\text{mS}) = 497.5\,\Omega$; $G_M = -1/(1497.5\,\Omega) = -0.668\,\text{mS}$; $N = 100 + 1 + 200 = 301\kO$, $R_{out} = 10\text{k}\parallel301\text{k} = 9.68\kO$; $A_v = \dfrac{(201)(10)}{311} = +6.46$. Method 2: $R_{in} = 110\kO/201 = 547\,\Omega$, divider $547/1547 = 0.354$, source-to-drain gain $201\times10/110 = 18.27$, product $6.46$. Method 3: $10/1.5 = 6.67$.
+
+        ### What it means
+
+        A common gate is a degenerated common source turned inside out: the same current, the same $R_S + 1/g_m$ in its path, the same $R_D$ to land on, but the input pushes the current **in** at the source instead of pulling it out at the drain, so the sign flips. Its two special properties are its terminal resistances: **low in** ($\approx1/g_m$) and **high out** ($\approx r_{ds}(1 + g_mR_S)$).
+
+        **Uses.** (1) The top transistor of a cascode ([Section 7](#/l/bk04-cascode)): it accepts $M_1$'s current at a low-resistance node and hands it to a high-resistance output. (2) Terminating a low-impedance line: $1/g_m = 50\,\Omega$ matches a $50\,\Omega$ cable. (3) Wide bandwidth: no capacitance from input to output gets multiplied by the gain (no Miller effect, [Chapter 12](#/l/bk12-others)).
+
+        ### How to recognize it
+
+        Gate on a fixed bias (a triangle, a supply, a bypassed node), signal into the **source**, output at the **drain**. Say: "common gate: plus $R_D$ over ($R_S + 1/g_m$); the input sees $1/g_m$."
+
+        !!mistake Common mistakes
+          - **A negative gain.** $G_M < 0$, so $A_v = -G_MR_{out} > 0$.
+          - **$v_{gs} = v_{in}$.** The gate is held; $v_{gs} = -v_s$, and $v_s$ is only a fraction of $v_{in}$.
+          - **Forgetting the divider** between $R_S$ and the source's $1/g_m$.
+          - **$R_{in} = 1/g_m$ with a current-source load.** $R_{in} = (r_{ds} + R_D)/(1 + g_mr_{ds})$; with $R_D\to\infty$ it is infinite.
+          - **$R_{out} = R_D\parallel r_{ds}$.** $R_S$ is still under the source when $v_{in} = 0$: the drain is degenerated.
+      `),
+      Q(md`In a common gate stage, $v_{in}$ (at the source, through $R_S$) rises. What happens, step by step?`,
+        ['The source rises, $v_{gs}$ falls, less current is pulled down through $R_D$, and the drain rises: non-inverting.', 'The source rises, $v_{gs}$ rises, more current flows, and the drain falls: inverting.', 'The gate rises with the source, so nothing changes.', 'The drain follows the source with a gain just under 1.'], 0,
+        [null, '$v_{gs} = v_g - v_s$ with the gate held: a rising source **lowers** $v_{gs}$.', 'The gate is held at a fixed bias; it does not move.', 'That describes the source follower. The common gate amplifies: $R_D/(R_S + 1/g_m)$ can be large.'],
+        md`With the gate fixed, $v_{gs} = -v_s$. The source rising closes the valve, less current flows through $R_D$, the drop across it shrinks and the drain rises. In $G_M$ terms: current flows out of the stage into the short, $G_M < 0$, $A_v > 0$.`),
+      Q(md`A common gate stage has an **ideal** current source as its drain load. What is the resistance looking into its source?`,
+        ['Infinite', '$1/g_m$', '$\\tfrac1{g_m}\\parallel r_{ds}$', '$r_{ds}$'], 0,
+        [null, 'That assumes the drain sees a small resistance. Here it sees an open circuit.', 'That is the source with the drain grounded.', 'Look again at $(r_{ds} + R_D)/(1 + g_mr_{ds})$ with $R_D\\to\\infty$.'],
+        md`$R_{in} = \dfrac{r_{ds} + R_D}{1 + g_mr_{ds}}\to\infty$ as $R_D\to\infty$. Physically: any current pushed into the source must leave through the drain, and the ideal current source will not accept any change of current. With a real current source ($R_D = r_{ds2}$) it is about $2/g_m$ for equal $r_{ds}$.`),
+      Q(md`A common gate is driven through $R_S = 10\kO$, with $1/g_m = 100\,\Omega$ and $R_D = 20\kO$. Roughly what is its gain, and what is the stage doing?`,
+        ['About $+2$: the input is effectively the current $v_{in}/R_S$, handed to $R_D$.', 'About $+200$, $g_mR_D$.', 'About $-2$.', 'About $+0.01$, because $R_S$ is so much bigger than $1/g_m$.'], 0,
+        [null, 'That ignores $R_S$: almost all of $v_{in}$ drops across $R_S$, not across the source.', 'A common gate is non-inverting.', 'The divider makes $v_s$ small, but the **current** $v_{in}/R_S$ still reaches $R_D$, which is large.'],
+        md`$A_v\approx\dfrac{R_D}{R_S + 1/g_m} = \dfrac{20\kO}{10.1\kO}\approx2$. With $R_S\gg1/g_m$ the source barely moves; the stage simply passes the current $v_{in}/R_S$ to $R_D$. That is the current-buffer view.`),
+      P({
+        id: 'bk04-cg-num', title: 'Common gate with numbers',
+        q: md`Common gate: $g_m = 4\,\text{mS}$, $r_{ds} = 50\kO$, $R_S = 250\,\Omega$, $R_D = 8\kO$. Find $G_M$ (with its sign), $R_{out}$, $A_v$ and $R_{in}$.`,
+        fig: F.cg({ RD: '8\\,\\text{k}\\Omega', RS: '250\\,\\Omega' }),
+        parts: [{ lbl: 'G_M', unit: 'mS', ans: -201 / 100.25 }, { lbl: 'R_{out}', unit: 'kΩ', ans: 8 * 100.25 / 108.25 },
+          { lbl: 'A_v', unit: '', ans: 201 * 8 / 108.25, traps: [{ v: -201 * 8 / 108.25, msg: 'Non-inverting: $G_M < 0$, so the gain is positive.' }] },
+          { lbl: 'R_{in}', unit: 'Ω', ans: 58000 / 201, traps: [{ v: 250, msg: 'That is $1/g_m$ alone: with $R_D$ on the drain, $R_{in} = (r_{ds} + R_D)/(1 + g_mr_{ds})$.' }] }],
+        hints: [md`$g_mr_{ds} = 200$, $N = r_{ds} + R_S + g_mr_{ds}R_S = 100.25\kO$.`, md`$G_M = -(1 + g_mr_{ds})/N$, $R_{out} = R_D\parallel N$, $A_v = (1 + g_mr_{ds})R_D/(R_D + N)$.`],
+        sol: md`
+1. $g_mr_{ds} = 200$; $N = 50 + 0.25 + (200)(0.25) = 100.25\kO$.
+2. $G_M = -\dfrac{201}{100.25\kO} = -2.005\,\text{mS}$.
+3. $R_{out} = 8\text{k}\parallel100.25\text{k} = 7.41\kO$.
+4. $A_v = \dfrac{(201)(8)}{8 + 100.25} = +14.85$. (Without $r_{ds}$: $8\kO/(0.25 + 0.25)\kO = 16$.)
+5. $R_{in} = \dfrac{50 + 8}{201}\kO = 288.6\,\Omega$, a little above $1/g_m = 250\,\Omega$.`,
+      }),
+      P({
+        id: 'bk04-cg-match', title: 'A $50\\,\\Omega$ input',
+        q: md`A common gate must present $50\,\Omega$ to a $50\,\Omega$ source ($R_S = 50\,\Omega$). It runs at $V_{ov} = 0.2\,\text{V}$; take $R_{in}\approx1/g_m$ and ignore $r_{ds}$. What bias current is needed? With $R_D = 1\kO$, what is the gain from the source voltage $v_{in}$ to the output?`,
+        fig: F.cg({ RD: '1\\,\\text{k}\\Omega', RS: '50\\,\\Omega' }),
+        parts: [{ lbl: 'I_D', unit: 'mA', ans: 2 }, { lbl: 'A_v', unit: '', ans: 10, traps: [{ v: 20, msg: 'That is $g_mR_D$: the $50\\,\\Omega$ source and the $50\\,\\Omega$ input form a divider that halves the signal.' }] }],
+        hints: [md`$1/g_m = 50\,\Omega$ means $g_m = 20\,\text{mS} = 2I_D/V_{ov}$.`, md`$A_v = R_D/(R_S + 1/g_m)$.`],
+        sol: md`
+1. $g_m = 1/50\,\Omega = 20\,\text{mS}$, and $g_m = 2I_D/V_{ov}$, so $I_D = \dfrac{g_mV_{ov}}{2} = \dfrac{(20\,\text{mS})(0.2\,\text{V})}{2} = 2\,\text{mA}$.
+2. $A_v = \dfrac{R_D}{R_S + 1/g_m} = \dfrac{1000}{50 + 50} = 10$: half of $g_mR_D = 20$, lost in the matched divider.`,
+      }),
+      P({
+        id: 'bk04-cg-isrc', title: 'Common gate with a current-source load',
+        q: md`A common gate is driven by an ideal source ($R_S = 0$). Its load is a PMOS current source with $r_{ds2} = 100\kO$; the input transistor has $g_m = 2\,\text{mS}$, $r_{ds1} = 100\kO$. Find $A_v$ and $R_{in}$.`,
+        fig: F.cgI(),
+        parts: [{ lbl: 'A_v', unit: '', ans: 100.5, traps: [{ v: 200, msg: 'That is $g_mr_{ds2}$; the load\'s $r_{ds2}$ and the transistor\'s $r_{ds1}$ share the output: $(1 + g_mr_{ds1})\\frac{R_D}{R_D + r_{ds1}}$ with $R_D = r_{ds2}$.' }] },
+          { lbl: 'R_{in}', unit: 'Ω', ans: 200000 / 201, traps: [{ v: 500, msg: 'That is $1/g_m$. With a current-source load the $R_D/(g_mr_{ds})$ term is as big as $1/g_m$.' }] }],
+        hints: [md`Use the formulas with $R_D = r_{ds2} = 100\kO$ and $R_S = 0$.`],
+        sol: md`
+1. With $R_S = 0$: $A_v = (1 + g_mr_{ds1})\dfrac{R_D}{R_D + r_{ds1}} = 201\times\dfrac{100}{200} = 100.5$.
+2. $R_{in} = \dfrac{r_{ds1} + R_D}{1 + g_mr_{ds1}} = \dfrac{200\kO}{201} = 995\,\Omega$, about $2/g_m$, twice what a resistor load would give.
+
+$M_2$'s gate is held and its source is on $V_{DD}$, so for signals it is just $r_{ds2}$: that is the $R_D$ in the formulas.`,
+      }),
+      P({
+        id: 'bk04-cg-pmos', title: 'A PMOS common gate',
+        q: md`A PMOS common gate: gate held at $V_B$, $v_{in}$ through $R_S = 1\kO$ into the source, $R_D = 10\kO$ from the drain to ground. $g_m = 1\,\text{mS}$; ignore $r_{ds}$. Find $A_v$ and $R_{in}$.`,
+        fig: F.cgP({ RS: '1\\,\\text{k}\\Omega', RD: '10\\,\\text{k}\\Omega' }),
+        parts: [{ lbl: 'A_v', unit: '', ans: 5, traps: [{ v: -5, msg: 'Same model, same sign: a common gate does not invert.' }, { v: 10, msg: 'Keep the divider: $R_S$ and $1/g_m$ share $v_{in}$.' }] }, { lbl: 'R_{in}', unit: 'kΩ', ans: 1 }],
+        hints: [md`The model is the same as for NMOS: $A_v = R_D/(R_S + 1/g_m)$.`],
+        sol: md`
+1. $R_{in}\approx1/g_m = 1\kO$.
+2. $A_v = \dfrac{R_D}{R_S + 1/g_m} = \dfrac{10}{1 + 1} = +5$.
+
+Physically: $v_{in}$ up raises the PMOS source, so $V_{SG}$ grows and **more** current flows down into $R_D$: the drain rises. Non-inverting, like the NMOS version.`,
+      }),
+      P({
+        id: 'bk04-cg-vs-cs', title: 'Common gate and common source, same parts',
+        q: md`One transistor ($g_m = 2\,\text{mS}$, $r_{ds} = 100\kO$) with $R_D = 10\kO$. Find the exact gain as a common gate driven by an ideal source ($R_S = 0$), and as a common source.`,
+        fig: F.cg({ noRS: true }),
+        parts: [{ lbl: 'A_{CG}', unit: '', ans: 201 * 10 / 110 }, { lbl: 'A_{CS}', unit: '', ans: -2 * 1000 / 110 }],
+        hints: [md`CG: $(1 + g_mr_{ds})\dfrac{R_D}{R_D + r_{ds}}$. CS: $-g_m(R_D\parallel r_{ds})$.`],
+        sol: md`
+1. Common gate: $201\times\dfrac{10}{110} = +18.27$.
+2. Common source: $-(2\,\text{mS})(9.09\kO) = -18.18$.
+
+Same size, opposite sign; the common gate is larger by the factor $(1 + g_mr_{ds})/(g_mr_{ds}) = 201/200$, the current that $v_{in}$ pushes through $r_{ds}$ directly.`,
+      }),
+      P({
+        id: 'bk04-cg-sym', title: 'The common gate, in symbols',
+        q: md`Keeping $r_{ds}$, type $A_v$ and $R_{in}$ of the common gate with source resistance $R_S$ and load $R_D$. Use \`gm\`, \`rds\`, \`RS\`, \`RD\`.`,
+        fig: F.cg(),
+        parts: [ex('(1 + gm*rds)*RD/(RD + rds + RS + gm*rds*RS)', ['gm', 'rds', 'RS', 'RD'], 'A_v', { exact: true }),
+          ex('(rds + RD)/(1 + gm*rds)', ['gm', 'rds', 'RD'], 'R_{in}', { exact: true })],
+        hints: [md`$A_v = -G_MR_{out}$ with $G_M = -(1 + g_mr_{ds})/N$ and $R_{out} = R_D\parallel N$.`],
+        sol: md`$A_v = \dfrac{(1 + g_mr_{ds})R_D}{R_D + r_{ds} + R_S + g_mr_{ds}R_S}$ and $R_{in} = \dfrac{r_{ds} + R_D}{1 + g_mr_{ds}}$. Typed: \`(1 + gm*rds)*RD/(RD + rds + RS + gm*rds*RS)\` and \`(rds + RD)/(1 + gm*rds)\`.`,
+      }),
+      G('bk_cg', { need: 4 }),
+    ],
+  });
 })();

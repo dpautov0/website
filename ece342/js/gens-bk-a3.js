@@ -113,6 +113,17 @@
     ['R', [1, 2], [1, 3.2], { n: 'R_S' }], ['gnd', [1, 3.2]], ...gin(0, 1, o)];
   F.csDegDiode = (o = {}) => [rail([1, -1.2]), ['R', [1, -1.2], [1, 0], { n: 'R_D' }], ['w', [1, 0], [1.8, 0]], out([1.8, 0]), ['nmos', [1, 1], { n: 'M_1' }],
     ['nmos', [1, 3], { n: 'M_3', dc: true }], ['gnd', [1, 4]], ...gin(0, 1, o)];
+  // a PMOS follower: R_L from V_DD down to the source (the output), drain to ground, gate driven
+  F.cdP = (o = {}) => [rail([1, -1.2]), ['R', [1, -1.2], [1, 0], { n: 'R_L', s: o.RL }], ['w', [1, 0], [1.8, 0]], out([1.8, 0]),
+    ['pmos', [1, 1], { n: 'M_1' }], ['gnd', [1, 2]], ...gin(0, 1, o)];
+  // a common source M1 (R_D) driving a follower M2 that drives R_L
+  F.buffer = (o = {}) => [rail([1, -1.2]), ['R', [1, -1.2], [1, 0], { n: 'R_D', s: o.RD }], ['w', [1, 0], [2.4, 0], [2.4, 1]], ['node', [1.7, 0], { n: 'v_1', side: 'a' }],
+    ['nmos', [1, 1], { n: 'M_1' }], ['gnd', [1, 2]], ...gin(0, 1),
+    ['nmos', [3.4, 1], { n: 'M_2' }], ['w', [3.4, 0], [3.4, -1.2]], rail([3.4, -1.2]), ['w', [3.4, 2], [4.2, 2]], out([4.2, 2]),
+    ['R', [3.4, 2], [3.4, 3.2], { n: 'R_L', s: o.RL }], ['gnd', [3.4, 3.2]]];
+  // a common gate driven straight into its source, with a PMOS current-source load
+  F.cgI = () => [rail([1, -2]), ['pmos', [1, -1], { n: 'M_2' }], ['acg', [0, -1]], ['txt', [-0.25, -1.3], '$V_{B2}$', { a: 'r' }], ['w', [1, 0], [1.8, 0]], out([1.8, 0]),
+    ['nmos', [1, 1], { n: 'M_1' }], ['acg', [0, 1]], ['txt', [-0.25, 0.7], '$V_{B1}$', { a: 'r' }], ...vsrc(1, 2)];
   // a PMOS common gate: v_in through R_S into the source (on top), gate held, R_D from the drain to ground
   F.cgP = (o = {}) => [['gndu', [1, -2.4]], ['Vac', [1, -2.4], [1, -1.3], { n: 'v_{in}', side: 'l' }], ['R', [1, -1.3], [1, 0], { n: 'R_S', s: o.RS }],
     ['pmos', [1, 1], { n: 'M_1' }], ['acg', [0, 1]], ['txt', [-0.25, 0.7], '$V_B$', { a: 'r' }], ['w', [1, 2], [1.8, 2]], out([1.8, 2]),
@@ -213,6 +224,10 @@
   F.degLin = () => F.plot({ x: [1, 4], y: [0, 2.5], xl: 'V_{in}\\ (\\text{V})', yl: 'I_D\\ (\\text{mA})', w: 440, h: 270, xt: [1, 2, 3, 4], yt: [0, 0.5, 1, 1.5, 2, 2.5],
     curves: [{ f: (v) => 2 * (v - 1) * (v - 1), to: 2.118, cls: 'dc' }, { f: (v) => { const u = (-1 + Math.sqrt(1 + 8 * (v - 1))) / 4; return 2 * u * u; } }] },
   [{ x: 2.0, y: 2.2, s: 'R_S = 0\\text{: a parabola}', a: 'r' }, { x: 3.95, y: 0.42, s: 'R_S = 1\\,\\text{k}\\Omega\\text{: nearly straight}', a: 'r' }]);
+  // the follower's transfer curve: K = 5 mA/V^2, V_TN = 1 V, R_L = 2 kOhm; V_out = V_in - V_GS, V_GS growing slowly
+  F.cdTransfer = () => F.plot({ x: [0, 5], y: [0, 5], xl: 'V_{in}\\ (\\text{V})', yl: 'V_{out}\\ (\\text{V})', w: 400, h: 300, xt: [0, 1, 2, 3, 4, 5], yt: [0, 1, 2, 3, 4, 5],
+    curves: [{ f: (v) => (v <= 1 ? 0 : v - 1 - (-1 + Math.sqrt(1 + 40 * (v - 1))) / 20) }, { f: (v) => v, cls: 'dash' }], pts: [{ x: 3, y: 1.6, n: 'Q' }] },
+  [{ x: 3.35, y: 4.3, s: 'V_{out} = V_{in}', a: 'r' }, { x: 3.2, y: 1.2, s: '\\text{slope } \\tfrac{g_mR_L}{1 + g_mR_L} = 0.89', a: 'l' }]);
   // the common source transfer curve (same numbers): off, saturation (the amplifier), triode; tangent at Q
   F.csTransfer = () => {
     const vout = (vin) => { if (vin <= 1) return 5; const ov = vin - 1, vs = 5 - 10 * ov * ov; if (vs >= ov) return vs; const b = 20 * ov + 1; return (b - Math.sqrt(b * b - 200)) / 20; };
@@ -557,6 +572,57 @@ Sign check: $v_{in}$ up, source up, $v_{gs}$ down, less current down through $R_
 4. $A_v = -G_MR_{out} = \\dfrac{(1 + g_mr_{ds})R_D}{R_D + N} = ${G4(Av)}$. (Without $r_{ds}$: $R_D/(R_S + 1/g_m) = ${G4(RD / (RS + 1 / gm))}$.)
 5. $R_{in} = \\dfrac{r_{ds} + R_D}{1 + g_mr_{ds}} = ${OH(Rin)}$, close to $1/g_m = ${OH(1 / gm)}$.`,
       _v: { k: 'cg', p: { gm, rds, RD, RS }, a: { GM: GMv, Ro, Av, Rin } },
+    };
+  };
+
+  // ---------------------------------------------------------------- 6. the source follower
+  GENS.bk_cd = () => {
+    const form = pick(['basic', 'basic', 'buffer', 'design', 'isrc']);
+    if (form === 'buffer') {
+      const g1 = pick([1, 2, 4]) * 1e-3, RD = pick([5, 10, 20]) * 1e3, g2 = pick([4, 5, 10, 20]) * 1e-3, RL = pick([0.2, 0.25, 0.5, 1]) * 1e3;
+      const direct = -g1 * par(RD, RL), A2 = g2 * RL / (1 + g2 * RL), buf = -g1 * RD * A2;
+      return {
+        fig: F.buffer({ RD: KO(RD), RL: OH(RL) }),
+        q: `A common source $M_1$ ($g_{m1} = ${MS(g1)}$, $R_D = ${KO(RD)}$) must drive $R_L = ${OH(RL)}$. Ignore $r_{ds}$. Find the gain if $R_L$ is tied straight to $M_1$'s drain, and the gain through the follower $M_2$ ($g_{m2} = ${MS(g2)}$) shown.`,
+        parts: [nBox('A_v\\text{ direct}', direct, { key: 'direct', traps: [{ v: -g1 * RD, msg: 'Tied straight to the drain, $R_L$ is in parallel with $R_D$.' }] }),
+          nBox('A_v\\text{ with the follower}', buf, { key: 'buf', traps: [{ v: -g1 * RD, msg: 'The follower\'s own gain, $g_{m2}R_L/(1 + g_{m2}R_L)$, is below 1: multiply by it.' }] })],
+        hints: ['Direct: $-g_{m1}(R_D\\parallel R_L)$.', 'Through the follower: $M_2$\'s gate draws no current, so $M_1$ keeps $-g_{m1}R_D$; then multiply by $\\dfrac{g_{m2}R_L}{1 + g_{m2}R_L}$.'],
+        sol: `1. **Direct:** $R_D\\parallel R_L = ${OH(par(RD, RL))}$, $A_v = -(${MS(g1)})(${OH(par(RD, RL))}) = ${G4(direct)}$.
+2. **Buffered:** $M_1$ drives a gate, so it keeps $-g_{m1}R_D = ${G4(-g1 * RD)}$. The follower: $g_{m2}R_L = ${f(g2 * RL, 3)}$, gain $\\dfrac{${f(g2 * RL, 3)}}{${f(1 + g2 * RL, 3)}} = ${f(A2, 4)}$. Total $${G4(buf)}$.
+
+A stage with gain below 1 multiplied the overall gain by ${f(buf / direct, 3)}: it isolates the large $R_D$ from the small load.`,
+        _v: { k: 'buffer', p: { g1, RD, g2, RL }, a: { direct, buf } },
+      };
+    }
+    if (form === 'design') {
+      const A = pick([0.5, 0.75, 0.8, 0.9, 0.95]), RL = pick([0.5, 1, 2]) * 1e3, vov = pick([0.2, 0.25]);
+      const gm = A / (1 - A) / RL, ID = gm * vov / 2;
+      return {
+        fig: F.cd({ RL: OH(RL) }),
+        q: `A source follower drives $R_L = ${OH(RL)}$ (ignore $r_{ds}$). What $g_m$ gives $A_v = ${A}$, and what bias current does that take at $V_{ov} = ${vov}\\,\\text{V}$?`,
+        parts: [gBox('g_m', gm, { key: 'gm' }), iBox('I_D', ID, { key: 'ID' })],
+        hints: ['$A_v = \\dfrac{g_mR_L}{1 + g_mR_L}$: solve for $g_mR_L$.', '$I_D = g_mV_{ov}/2$.'],
+        sol: `1. $\\dfrac{g_mR_L}{1 + g_mR_L} = ${A}$ gives $g_mR_L = \\dfrac{${A}}{1 - ${A}} = ${f(A / (1 - A), 3)}$, so $g_m = ${MS(gm)}$ ($1/g_m = ${OH(1 / gm)}$).
+2. $I_D = \\dfrac{g_mV_{ov}}{2} = ${MA(ID)}$.
+
+Getting close to 1 is expensive: the closer $A_v$ is to 1, the larger $g_mR_L$, and the current, must be.`,
+        _v: { k: 'cddesign', p: { RL, vov, A }, a: { gm, ID } },
+      };
+    }
+    const gm = pick([1, 2, 4, 5, 10]) * 1e-3, rds = pick([20, 50, 100, 200]) * 1e3;
+    const isrc = form === 'isrc', rds2 = pick([50, 100, 200]) * 1e3, RL = isrc ? rds2 : pick([0.25, 0.5, 1, 2, 5]) * 1e3;
+    const Rp = par(RL, rds), Ro = par(RL, rds, 1 / gm), Av = gm * Ro;
+    return {
+      fig: isrc ? F.cdI() : F.cd({ RL: OH(RL) }),
+      q: isrc ? `Source follower with an NMOS current-source load $M_2$ (gate held): $g_{m1} = ${MS(gm)}$, $r_{ds1} = ${KO(rds)}$, $r_{ds2} = ${KO(rds2)}$. Find $G_M$, $R_{out}$ and $A_v$.`
+        : `Source follower: $g_m = ${MS(gm)}$, $r_{ds} = ${KO(rds)}$, $R_L = ${OH(RL)}$. Find $G_M$ (with its sign), $R_{out}$ and $A_v$.`,
+      parts: [gBox('G_M', -gm, { key: 'GM' }), resBox('R_{out}', Ro, { key: 'Ro', traps: [{ v: Rp, msg: 'With the gate grounded, the test voltage drives $v_{gs} = -v_t$: the dependent source adds $g_m$, so $1/g_m$ joins the parallel.' }] }),
+        nBox('A_v', Av, { key: 'Av', traps: [{ v: 1, msg: 'Close, but a follower\'s gain is below 1: $R\'/(R\' + 1/g_m)$.' }, { v: -Av, msg: 'A follower does not invert.' }] })],
+      hints: ['Short the output (the source): $v_{gs} = v_{in}$ and the current flows **into** the short: $G_M = -g_m$.', `$R_{out} = R_L\\parallel r_{ds}\\parallel\\dfrac1{g_m}$${isrc ? ' with $R_L = r_{ds2}$' : ''}; $A_v = -G_MR_{out}$.`],
+      sol: `1. **$G_M$:** output (source) shorted, $v_{gs} = v_{in}$; $r_{ds}$ has 0 V across it (drain on $V_{DD}$); the dependent source pushes $g_mv_{in}$ down into the short, out of the stage. $G_M = -g_m = ${MS(-gm)}$.
+2. **$R_{out}$:** gate grounded, $v_{gs} = -v_t$, the dependent source carries $g_mv_t$ up out of the output: conductances add, $${isrc ? '1/r_{ds2}' : '1/R_L'} + 1/r_{ds} + g_m$. $R_{out} = ${OH(Ro)}$.
+3. **$A_v$** $= -G_MR_{out} = g_mR_{out} = ${f(Av, 4)}$. Same as $\\dfrac{R'}{R' + 1/g_m}$ with $R' = ${isrc ? 'r_{ds2}' : 'R_L'}\\parallel r_{ds} = ${OH(Rp)}$.`,
+      _v: { k: 'cd', p: { gm, rds, RL }, a: { GM: -gm, Ro, Av } },
     };
   };
 })();

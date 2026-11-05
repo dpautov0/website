@@ -109,7 +109,7 @@
     if (C.r) {
       const ex = C.r(p), ap = C.ap(p);
       parts.push(resPart('R_X', ex, ap));
-      num = `\n\n**Step 4: numbers.** $g_m = ${MS(p.g)}$, $r_{ds} = ${KO(p.r)}$${hasR ? `, $R = ${KO(p.R)}$` : ''}: $R_X = ${resTeX(ex)}$${Math.abs(ap - ex) > 0.012 * ex ? ` (the $g_mr_{ds}\\gg1$ form gives ${resTeX(ap)}, also accepted)` : ''}.`;
+      num = `\n\n**Step 4: numbers.** $g_m = ${MS(p.g)}$, $r_{ds} = ${KO(p.r)}$${hasR ? `, $R = ${KO(p.R)}$` : ''}: $R_X = ${resTeX(ex)}$${Math.abs(ap - ex) > 0.012 * ex ? ` (the $g_mr_{ds}\\gg1$ form gives $${resTeX(ap)}$, also accepted)` : ''}.`;
     }
     const where = n ? 'NMOS: the arrow is on the **bottom** lead, pointing **out**. Source at the bottom (toward ground), drain on top.'
       : 'PMOS: the arrow is on the **top** lead, pointing **in**. Source on top (toward $V_{DD}$), drain at the bottom.';

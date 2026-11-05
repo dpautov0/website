@@ -59,7 +59,7 @@
         { v: rd, msg: 'That is $R_{DN}$ alone (looking down). $R_{EQ}$ is the whole node: put $R_{UP}$ in parallel.' },
         { v: ru, msg: 'That is $R_{UP}$ alone (looking up). $R_{EQ}$ is the whole node: put $R_{DN}$ in parallel.' }])],
       hints: ['Split the node: $R_{EQ} = R_{UP}\\parallel R_{DN}$. Each branch is one canonical stage.', `Down: ${D.say}. Up: ${Up.say}.`],
-      sol: `**Down:** ${D.say} $= ${resTeX(rd)}$.\n\n**Up:** ${Up.say} $= ${resTeX(ru)}$.\n\n$$R_{EQ} = R_{UP}\\parallel R_{DN} = ${resTeX(ru)}\\parallel ${resTeX(rd)} = ${resTeX(req)}$$\n\nThe smaller branch dominates: ${ru < rd ? 'looking up' : 'looking down'} is the low-resistance side.${Math.abs(ap - req) > 0.012 * req ? ` (With the $g_mr_{ds}\\gg1$ approximations: ${resTeX(ap)}, also accepted.)` : ''}`,
+      sol: `**Down:** ${D.say} $= ${resTeX(rd)}$.\n\n**Up:** ${Up.say} $= ${resTeX(ru)}$.\n\n$$R_{EQ} = R_{UP}\\parallel R_{DN} = ${resTeX(ru)}\\parallel ${resTeX(rd)} = ${resTeX(req)}$$\n\nThe smaller branch dominates: ${ru < rd ? 'looking up' : 'looking down'} is the low-resistance side.${Math.abs(ap - req) > 0.012 * req ? ` (With the $g_mr_{ds}\\gg1$ approximations: $${resTeX(ap)}$, also accepted.)` : ''}`,
     };
   };
 

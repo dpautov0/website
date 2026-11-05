@@ -875,7 +875,7 @@ $$R_{DN} = \frac{r_{ds} + R_S + g_mr_{ds}R_S}{1 + g_mr_{ds}K}\approx\frac{R_S + 
     ['txt', [4.4, -0.3], '$M_2$'],
     // shared source node P, nothing else attached (tail open)
     ['w', [2.2, 2.4], [3.8, 2.4]], ['node', [3, 2.4], { n: 'P', side: 'b' }],
-    ['node', [1, 0], { n: 'A', side: 'al' }], ['node', [5, 0], { n: 'out', side: 'a' }],
+    ['node', [1, 0], { n: 'A', side: 'al' }], ['node', [5, 0], { n: 'out', side: 'br' }],
     // test source on the output
     ['w', [5, 0], [7.4, 0]], ['V', [7.4, 0], [7.4, 1.2], { n: 'v_t', side: 'r' }], ['gnd', [7.4, 1.2]], ['iarr', [6.8, 0], 'l', { n: 'i_t' }],
   ];
