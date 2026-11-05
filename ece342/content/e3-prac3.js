@@ -263,5 +263,226 @@
     }),
   ];
 
+  // ================================================================== Practice exam J
+  const J1Fig = [
+    ['rail', [1, -2.2], { n: 'V_{CC} = 5\\,\\text{V}' }], ['R', [1, -2.2], [1, -1], { n: 'R_E', s: kO(2), side: 'l' }],
+    ['pnp', [1, 0], { n: 'Q_1' }],
+    ['w', [1, -1], [1.9, -1]], ['C', [1.9, -1], [1.9, 0.1], { n: 'C_E', side: 'l' }], ['gnd', [1.9, 0.1]],
+    ['w', [0, 0], [-0.6, 0], [-0.6, 0.3]], ['Vac', [-0.6, 0.3], [-0.6, 1.3], { n: 'v_{in}', side: 'l' }], ['V', [-0.6, 1.3], [-0.6, 2.3], { n: Vv(2.3), side: 'l' }], ['gnd', [-0.6, 2.3]],
+    ['node', [1, 1], { n: 'A', side: 'l' }],
+    ['nmos', [1, 2], { n: 'M_1', sz: '20/1', flip: true, dc: true }], ['gnd', [1, 3]],
+    ['nmos', [3, 2], { n: 'M_2', sz: '40/1' }], ['gnd', [3, 3]],
+    ['rail', [3, -0.2], { n: 'V_{DD} = 5\\,\\text{V}' }], ['R', [3, -0.2], [3, 1], { n: 'R_D', s: kO(1.5) }],
+    ['w', [3, 1], [4, 1]], ['term', [4, 1], { n: 'v_{out}' }],
+  ];
+  // J-1's small-signal model: Q1 (emitter at signal ground) is g_m v_in from A to ground; M1's diode is 1/g_m1; M2 copies
+  const J1Model = [
+    ['G', [0, 0], [0, 1.6], { n: 'g_mv_{in}', side: 'l' }], ['w', [0, 0], [1.4, 0]], ['node', [0.7, 0], { n: 'A', side: 'a' }],
+    ['R', [1.4, 0], [1.4, 1.6], { n: '1/g_{m1}' }],
+    ['G', [4, 0], [4, 1.6], { n: 'g_{m2}v_a', side: 'l' }], ['w', [4, 0], [5.2, 0]], ['R', [5.2, 0], [5.2, 1.6], { n: 'R_D' }],
+    ['term', [5.8, 0], { n: 'v_{out}' }], ['w', [5.2, 0], [5.8, 0]],
+    ['w', [0, 1.6], [5.2, 1.6]], ['gnd', [2.7, 1.6]],
+  ];
+  const J2Fig = [
+    ['rail', [2, -3.2], { n: 'V_{CC}' }], ['R', [2, -3.2], [2, -2], { n: 'R_E' }],
+    ['pnp', [2, -1], { n: 'Q_1' }],
+    ['w', [1, -1], [-0.4, -1], [-0.4, -0.7]], ['Vac', [-0.4, -0.7], [-0.4, 0.3], { n: 'v_{in}', side: 'l' }], ['gnd', [-0.4, 0.3]],
+    ['w', [2, 0], [3.4, 0]], ['term', [3.4, 0], { n: 'v_{out}' }],
+    ['nmos', [2, 1], { n: 'M_2' }], ['R', [2, 2], [2, 3.2], { n: 'R_S' }], ['gnd', [2, 3.2]],
+    ['w', [2, 0], [0.4, 0]], ['R', [0.4, 0], [0.4, 1], { n: 'R_1' }], ['w', [0.4, 1], [1, 1]], ['R', [0.4, 1], [0.4, 2.2], { n: 'R_2' }], ['gnd', [0.4, 2.2]],
+  ];
+  const J3Fig = [
+    ['rail', [1, -2.2], { n: 'V_{CC}' }], ['R', [1, -2.2], [1, -1], { n: 'R_E', s: '100\\,\\Omega', side: 'l' }],
+    ['w', [1, -2.2], [1.9, -2.2]], ['C', [1.9, -2.2], [1.9, -1], { n: 'C_E', s: '1\\,\\mu\\text{F}' }], ['w', [1.9, -1], [1, -1]],
+    ['pnp', [1, 0], { n: 'Q_1' }],
+    ['R', [1, 1], [1, 2.2], { n: 'R_C', s: kO(5), side: 'l' }], ['gnd', [1, 2.2]],
+    ['w', [1, 1], [2.8, 1]], ['C', [2.1, 1], [2.1, 2.2], { n: 'C_L', s: '2\\,\\text{pF}' }], ['gnd', [2.1, 2.2]], ['term', [2.8, 1], { n: 'v_{out}' }],
+    ['w', [0, 0], [-0.6, 0], [-0.6, 0.3]], ['Vac', [-0.6, 0.3], [-0.6, 1.3], { n: 'v_{in}', side: 'l' }], ['V', [-0.6, 1.3], [-0.6, 2.3], { n: 'V_B', side: 'l' }], ['gnd', [-0.6, 2.3]],
+  ];
+  const J3Plot = E3Bode.svg({ k: -40, zeros: [1e4], poles: [5e4, 1e8] }, { show: 'both', wmin: 1e2, wmax: 1e10, yl: '|A_v|_{\\text{dB}}',
+    marks: [{ w: 1e4, n: '\\omega_z' }, { w: 5e4, n: '\\omega_{p1}' }, { w: 1e8, n: '\\omega_{p2}' }],
+    pts: [{ w: 1e3, n: '32\\,\\text{dB}', side: 'dr' }, { w: 1e6, n: '46\\,\\text{dB}', side: 'ur' }] });
+  const J2RDN = '(rds2 + RS + gm2*rds2*RS)/(1 + gm2*rds2*R2/(R1 + R2))';
+  const J2RUP = '(ro1 + (RE || rpi1)*(1 + gm1*ro1))';
+  const J2GM = 'gm1/(1 + gm1*RE*(beta1 + 1)/beta1)';
+  const J2r = { gm1: [20e-3, 80e-3], RE: [200, 2000], gm2: [5e-3, 20e-3], RS: [1e3, 1e4], R1: [2e3, 8e3], R2: [2e3, 8e3] };
+
+  const Jex = [
+    intro('J', 'A PNP stage feeding an NMOS current mirror, the K rule under a PNP, and what a finite bypass capacitor does to the frequency response.'),
+    P({
+      id: 'e3pJ-1', src: 'Exam 3 practice J · Problem 1 (35 pts)', title: 'A PNP common emitter feeding an NMOS current mirror', big: true,
+      q: md`$V_{CC} = V_{DD} = 5\,\text{V}$. $Q_1$ (PNP, $\beta = 100$, $r_o = \infty$) has $R_E = 2\kO$ to $V_{CC}$, bypassed by $C_E$ (infinite); its base sits at $2.3\,\text{V}$ DC plus $v_{in}$. Its collector current flows into $M_1$ (diode-connected NMOS, $W/L = 20/1$), which is mirrored by $M_2$ ($W/L = 40/1$) into $R_D = 1.5\kO$. Take $\lambda = 0$.
+
+(a) $I_C$. (b) $V_{GS1}$, the DC voltage of node $A$. (c) The DC output voltage $V_{OUT}$; check that $Q_1$ is forward-active and $M_2$ saturated. (d) $R_{in}$, looking into the base. (e) $R_A$, the small-signal resistance from node $A$ to ground. (f) The gain to node $A$, $v_a/v_{in}$. (g) $A_v = v_{out}/v_{in}$. (h) Why is the sign what it is?`,
+      fig: J1Fig,
+      parts: [
+        { lbl: 'I_C', unit: 'mA', ans: 0.990, accept: [1] },
+        { lbl: 'V_{GS1}', unit: 'V', ans: 1.995, accept: [2], traps: [{ v: 1, msg: 'That is $V_{TN}$ alone. $M_1$ carries about $1\\,\\text{mA}$, so it needs an overdrive: $V_{GS} = V_{TN} + \\sqrt{I/(\\tfrac12\\mu_nC_{ox}W/L)}$.' }] },
+        { lbl: 'V_{OUT}', unit: 'V', ans: 2.03, accept: [2], traps: [{ v: 3.5, msg: 'That copies $M_1$\'s current one to one. $M_2$ is twice as wide at the same $V_{GS}$: it carries twice the current, about $2\\,\\text{mA}$.' }] },
+        { lbl: 'R_{in}', unit: 'kΩ', ans: 2.525, accept: [2.5], traps: [{ v: 204.5, msg: 'The emitter is bypassed: $R_E$ is shorted for signals, so it does not get multiplied by $\\beta + 1$.' }] },
+        { lbl: 'R_A', unit: 'Ω', ans: 502.5, accept: [500], traps: [{ v: 2525, msg: 'Node $A$ is $Q_1$\'s **collector** (an open circuit with $r_o = \\infty$) and $M_1$\'s diode. Only the diode counts: $1/g_{m1}$.' }] },
+        { lbl: 'v_a/v_{in}', unit: '', ans: -19.9, accept: [-20], traps: [{ v: 19.9, msg: 'Base up means $V_{EB}$ down: the PNP delivers **less** current into the diode, so node $A$ falls.' }] },
+        { lbl: 'A_v', unit: '', ans: 118.8, accept: [120], traps: [
+          { v: -118.8, msg: 'Count the inversions: the PNP-into-diode step inverts ($v_a$ falls), and $M_2$ into $R_D$ inverts again. Two inversions: non-inverting.' },
+          { v: -120, msg: 'Count the inversions: the PNP-into-diode step inverts ($v_a$ falls), and $M_2$ into $R_D$ inverts again. Two inversions: non-inverting.' },
+          { v: 59.4, msg: 'That drops the mirror\'s gain of 2: $M_2$ has twice $M_1$\'s $W/L$, so $g_{m2} = 2g_{m1}$ and the signal current is doubled.' },
+          { v: 60, msg: 'That drops the mirror\'s gain of 2: $M_2$ has twice $M_1$\'s $W/L$, so $g_{m2} = 2g_{m1}$ and the signal current is doubled.' }] },
+        { lbl: '(h) $A_v$ is positive because', mc: ['the PNP-into-diode step and the $M_2$-into-$R_D$ step each invert, and two inversions cancel', 'PNP transistors do not invert', 'current mirrors invert the signal current', 'the emitter is bypassed'], a: 0,
+          why: [null, 'A PNP common emitter inverts just like an NPN one: here $v_a/v_{in} = -20$.', 'A mirror copies the current **with the same sign** (here $\\times2$); the inversion happens when $M_2$\'s drain current flows through $R_D$ from the supply.', 'Bypassing removes degeneration (more gain); it does not change the sign.'] },
+      ],
+      hints: [
+        md`DC: $V_E = 2.3 + 0.7 = 3.0\,\text{V}$, so $I_E = (5 - 3)/2\,\text{k}$. $M_1$ carries $I_C$: $I_C = \tfrac12(100\,\mu)(20)V_{ov}^2$. $M_2$ has the same $V_{GS}$ and twice the $W/L$.`,
+        md`Small signal: $Q_1$ (emitter grounded by $C_E$) is a current $g_mv_{in}$ pulled out of node $A$; $M_1$'s diode is $1/g_{m1}$ to ground; $M_2$ turns $v_a$ back into a current $g_{m2}v_a$, through $R_D$.`,
+        md`$g_{m2}/g_{m1} = 2$ (same $V_{ov}$, twice the current). So the mirror is a current gain of $2$.`,
+      ],
+      figs: { model: { fig: J1Model, cap: 'J-1 small-signal model. Both rails and the bypassed emitter are ground. $Q_1$ is the current source $g_mv_{in}$ out of node $A$ (into its collector), $M_1$ is the resistor $1/g_{m1}$, and $M_2$ is the current $g_{m2}v_a$ drawn from the output ($v_a$ is the voltage of node $A$).' } },
+      sol: md`
+        **Recognize it first.**
+        - $Q_1$: a PNP (emitter on top, arrow in), in at the **base**, out at the **collector**, emitter bypassed: a **common emitter**. Its output current goes into node $A$.
+        - $M_1$: gate tied to drain, a **diode-connected** NMOS: from node $A$ it looks like $1/g_{m1}$. It is the reference side of a **mirror**.
+        - $M_2$: same gate, same source as $M_1$, twice as wide: a mirror with a current gain of 2 (Exam 2: "mirrors carry signal"). Its drain current flows through $R_D$.
+
+        The signal goes current → voltage → current → voltage: $Q_1$ turns $v_{in}$ into a current, $M_1$ turns it into $v_a$, $M_2$ turns $v_a$ back into twice the current, and $R_D$ turns that into $v_{out}$.
+
+        **(a) DC.** $V_E = 2.3 + 0.7 = 3.0\,\text{V}$, $I_E = (5 - 3)/2\,\text{k} = 1\,\text{mA}$, $I_C = \alpha I_E = 0.990\,\text{mA}$.
+
+        **(b)** All of $I_C$ flows into $M_1$, so $I_C = \tfrac12(100\,\mu)(20)V_{ov}^2 = (1\,\text{mA/V}^2)V_{ov}^2$: $V_{ov} = \sqrt{0.990} = 0.995\,\text{V}$ and $V_{GS1} = 1.995\,\text{V}\approx2\,\text{V}$.
+
+        **(c)** $M_2$ has the same $V_{GS}$ and twice the $W/L$: $I_{D2} = 2I_C = 1.98\,\text{mA}$. $V_{OUT} = 5 - (1.98\,\text{mA})(1.5\,\text{k}) = 2.03\,\text{V}$.
+        - $Q_1$: $V_C = V_A = 2.0\,\text{V} < V_B = 2.3\,\text{V}$: the collector junction is reverse-biased, forward-active ✓ ($V_{EC} = 1.0\,\text{V} > 0.2\,\text{V}$).
+        - $M_2$: $V_{DS2} = 2.03\,\text{V}\ge V_{ov} = 0.995\,\text{V}$: saturated ✓. ($M_1$ is a diode: always saturated.)
+
+        **Small-signal values.** $g_m = I_C/V_T = 39.6\,\text{mS}$, $r_\pi = \beta/g_m = 2.525\kO$; $g_{m1} = 2I_C/V_{ov} = 1.99\,\text{mS}$; $g_{m2} = 2(1.98)/0.995 = 3.98\,\text{mS} = 2g_{m1}$.
+
+        **(d)** The emitter is grounded by $C_E$, so the base sees only $r_\pi$: $R_{in} = 2.525\kO\approx2.5\kO$.
+
+        **(e)** Node $A$: looking into $Q_1$'s collector you see an open circuit ($r_o = \infty$); looking into $M_1$ you see a diode. $R_A = 1/g_{m1} = 502\,\Omega\approx500\,\Omega$.
+
+        **(f)** Draw the model (figure). KCL at $A$: the current pulled out of $A$ by $Q_1$, $g_mv_{in}$, must be supplied by the diode: $g_{m1}v_a = -g_mv_{in}$, so
+        $$\frac{v_a}{v_{in}} = -\frac{g_m}{g_{m1}} = -\frac{39.6}{1.99} = -19.9$$
+        A BJT working into a MOS diode: the gain is the ratio of transconductances. With $g_m = I/V_T$ and $g_{m1} = 2I/V_{ov}$ it is $V_{ov}/(2V_T) = 0.995/0.05 = 19.9$, whatever the current.
+
+        [[fig:model]]
+
+        **(g)** $M_2$ draws $g_{m2}v_a$ from the output node; $R_D$ supplies it: $v_{out} = -g_{m2}v_aR_D$. So
+        $$A_v = \frac{v_{out}}{v_{in}} = \frac{g_{m2}}{g_{m1}}\,g_mR_D = 2\times(39.6\,\text{mS})(1.5\kO) = +118.8\approx+120$$
+        In the $G_MR_{out}$ language: short the output, and the current pulled into the stage is $i_{d2} = g_{m2}v_a = -2g_mv_{in}$, so $G_M = -2g_m$ (negative, like a follower), $R_{out} = R_D$ (with $r_{ds2} = \infty$), and $A_v = -G_MR_{out} = +2g_mR_D$.
+
+        **(h)** Base up, $V_{EB}$ down, less PNP current into the diode, $v_a$ down (first inversion); $M_2$ carries less current, less drop across $R_D$, $v_{out}$ up (second inversion).
+
+        !!key A mirror is a current amplifier
+        The diode converts current to voltage ($\times1/g_{m1}$), the copy converts it back ($\times g_{m2}$): current gain $g_{m2}/g_{m1} = (W/L)_2/(W/L)_1$, with **no** sign change. Feeding it from a BJT gives a large, non-inverting gain set by $g_m$ of the BJT, the size ratio, and $R_D$.
+      `,
+    }),
+    P({
+      id: 'e3pJ-2', src: 'Exam 3 practice J · Problem 2 (35 pts)', title: 'The K rule under a degenerated PNP', big: true,
+      q: md`$Q_1$ (PNP) has $R_E$ from its emitter to $V_{CC}$ and $v_{in}$ on its base; its collector is the output, node $X$. Below it, $M_2$ (NMOS) has $R_S$ in its source, and its gate is driven from its own drain by the divider $R_1$ (from $X$ to the gate) and $R_2$ (from the gate to ground). Keep $r_{o1}$ and $r_{ds2}$. In symbols:
+
+(a) $R_{DN}$, looking down into $M_2$'s drain (the transistor only, not the divider). (b) $R_{UP}$, looking up into $Q_1$'s collector with $v_{in} = 0$. (c) $R_{out}$, the total resistance at node $X$. (d) $G_M$ of the stage (you may ignore $r_{o1}$ here). (e) $A_v = v_{out}/v_{in}$. (f) A limit check.`,
+      fig: J2Fig,
+      parts: [
+        ex(J2RDN, ['gm2', 'rds2', 'RS', 'R1', 'R2'], 'R_{DN}', { ranges: J2r }),
+        ex(J2RUP, ['gm1', 'rpi1', 'ro1', 'RE'], 'R_{UP}', { ranges: J2r }),
+        ex(`${J2RUP} || (${J2RDN}) || (R1 + R2)`, ['gm1', 'rpi1', 'ro1', 'RE', 'gm2', 'rds2', 'RS', 'R1', 'R2'], 'R_{out}', { ranges: J2r }),
+        ex(J2GM, ['gm1', 'beta1', 'RE'], 'G_M', { ranges: J2r }),
+        ex(`-(${J2GM})*(${J2RUP} || (${J2RDN}) || (R1 + R2))`, ['gm1', 'beta1', 'rpi1', 'ro1', 'RE', 'gm2', 'rds2', 'RS', 'R1', 'R2'], 'A_v', { ranges: J2r }),
+        { lbl: '(f) Set $R_S = 0$ and $R_1 = 0$ (so the gate is tied to the drain). Then $R_{DN}$ becomes', mc: ['$r_{ds2}\\parallel\\dfrac{1}{g_{m2}}$: a diode-connected transistor', '$r_{ds2}$: a current source', '$r_{ds2}(1 + g_{m2}R_2)$: a degenerated drain', '$\\dfrac{R_1 + R_2}{R_2}\\cdot\\dfrac{1}{g_{m2}}$, which blows up'], a: 0,
+          why: [null, '$r_{ds2}$ is what you see when the gate is **held** ($K = 0$). With $R_1 = 0$ the gate follows the drain fully: $K = 1$.', 'Degeneration needs a resistor in the **source**; here $R_S = 0$. $R_2$ only sets $K$.', 'With $R_1 = 0$, $(R_1 + R_2)/R_2 = 1$: nothing blows up. That is the diode, $1/g_{m2}$.'] },
+      ],
+      hints: [
+        md`$M_2$'s gate is not held: the divider puts $v_g = Kv_x$ with $K = R_2/(R_1 + R_2)$ (the gate draws no current, so the divider is unloaded). That is Exam 2's **K rule**: $R = \dfrac{r_{ds} + R_S + g_mr_{ds}R_S}{1 + g_mr_{ds}K}$.`,
+        md`$Q_1$ with $v_{in} = 0$: its base is grounded for signals, so $r_{\pi1}$ goes from the emitter to ground, **in parallel with $R_E$**. A degenerated collector: $r_o + (R_E\parallel r_\pi)(1 + g_mr_o)$.`,
+        md`Node $X$ has three things on it: $Q_1$'s collector, $M_2$'s drain, and the divider $R_1 + R_2$ to ground.`,
+      ],
+      sol: md`
+        **Recognize it first.**
+        - $Q_1$: PNP (emitter on top, through $R_E$ to $V_{CC}$), in at the **base**, out at the **collector**: a **degenerated common emitter**. Looking into its collector with the base held: a **degenerated collector**, big.
+        - $M_2$: its gate is tied to a tap on a divider from its own drain. The gate **moves** with the drain, by $K = R_2/(R_1 + R_2)$: Exam 2's **K rule**, here with $R_S$ in the source. Expect something like a diode scaled up by $1/K$ and by the degeneration: small.
+        - So the output node is "big $\parallel$ small $\parallel(R_1 + R_2)$": the small ones set the gain.
+
+        **(a) The K rule, derived.** Apply $v_x$ to the drain; then $v_g = Kv_x$. The current $i_x$ into the drain leaves through $R_S$ (the gate takes nothing), so $v_s = i_xR_S$. The model:
+        $$i_x = g_{m2}(v_g - v_s) + \frac{v_x - v_s}{r_{ds2}} = g_{m2}Kv_x - g_{m2}R_Si_x + \frac{v_x}{r_{ds2}} - \frac{R_Si_x}{r_{ds2}}$$
+        Collect terms and multiply by $r_{ds2}$:
+        $$i_x\big(r_{ds2} + R_S + g_{m2}r_{ds2}R_S\big) = v_x\big(1 + g_{m2}r_{ds2}K\big)\ \Rightarrow\ R_{DN} = \frac{r_{ds2} + R_S + g_{m2}r_{ds2}R_S}{1 + g_{m2}r_{ds2}K},\quad K = \frac{R_2}{R_1 + R_2}$$
+        With $g_{m2}r_{ds2}K\gg1$: $R_{DN}\approx\dfrac{R_S + 1/g_{m2}}{K}$. A degenerated diode, scaled up by $1/K$.
+
+        **(b) Degenerated collector.** With $v_{in} = 0$, $r_{\pi1}$ runs from the emitter to ground, in parallel with $R_E$. A test current into the collector leaves through $R_E\parallel r_{\pi1}$, so $v_e = i_t(R_E\parallel r_{\pi1})$ and $v_\pi = -v_e$; the current in $r_{o1}$ is $i_t(1 + g_{m1}(R_E\parallel r_{\pi1}))$:
+        $$R_{UP} = r_{o1} + (R_E\parallel r_{\pi1})(1 + g_{m1}r_{o1})\approx r_{o1}\big[1 + g_{m1}(R_E\parallel r_{\pi1})\big]$$
+        (For a PNP the model is the same; only the drawing is upside down.)
+
+        **(c)** Everything on node $X$, in parallel:
+        $$R_{out} = R_{UP}\parallel R_{DN}\parallel(R_1 + R_2)$$
+        In practice $R_{UP}$ is megohms and the other two are kilohms, so $R_{out}\approx R_{DN}\parallel(R_1 + R_2)$.
+
+        **(d)** Short the output; KVL from the base: $v_{in} = v_\pi + (i_c + i_b)R_E$ with $i_c = g_{m1}v_\pi$, $i_b = i_c/\beta_1$ (Lecture 24):
+        $$G_M = \frac{g_{m1}}{1 + g_{m1}R_E(\beta_1 + 1)/\beta_1}\approx\frac{g_{m1}}{1 + g_{m1}R_E}$$
+
+        **(e)**
+        $$A_v = -G_M\,\big[R_{UP}\parallel R_{DN}\parallel(R_1 + R_2)\big]\approx-\frac{\dfrac{R_S + 1/g_{m2}}{K}\parallel(R_1 + R_2)}{R_E + 1/g_{m1}}$$
+        A ratio of resistances, as for any degenerated stage loaded by a diode: about (what the load looks like)/(what the emitter looks like).
+
+        **(f) Limit check.** $R_1 = 0$ makes $K = 1$, and $R_S = 0$ removes the degeneration: $R_{DN} = \dfrac{r_{ds2}}{1 + g_{m2}r_{ds2}} = r_{ds2}\parallel\dfrac{1}{g_{m2}}$, the diode ✓. The other end, $K = 0$ (gate held): $R_{DN} = r_{ds2} + R_S + g_{m2}r_{ds2}R_S$, the degenerated drain ✓.
+
+        !!key The K rule, one line
+        A drain whose gate moves by $Kv_x$: numerator = the degenerated drain ($K = 0$), denominator $= 1 + g_mr_{ds}K$. $K$ comes from whatever drives the gate: a divider here, a diode connection ($K = 1$), or a follower.
+      `,
+    }),
+    P({
+      id: 'e3pJ-3', src: 'Exam 3 practice J · Problem 3 (30 pts)', title: 'A finite bypass capacitor: the transfer function of a common emitter', big: true,
+      q: md`A PNP common emitter: $R_E = 100\,\Omega$ from the emitter to $V_{CC}$, bypassed by $C_E = 1\,\mu\text{F}$ (**not** infinite); $R_C = 5\kO$ from the collector to ground, with a load capacitance $C_L = 2\,\text{pF}$. The base is driven by an ideal source ($V_B$ plus $v_{in}$). $I_C = 1\,\text{mA}$; take $\beta\gg1$ (ignore the base current) and $r_o = \infty$; ignore $C_\pi$ and $C_\mu$.
+
+(a) The DC gain $A_v(0)$ (where $C_E$ is open). (b) The mid-band gain (where $C_E$ is a short but $C_L$ is still open). (c) Show that $A_v(s) = -\dfrac{g_mR_C}{1 + g_mZ_E}\cdot\dfrac{1}{1 + sR_CC_L}$ with $Z_E = R_E\parallel\dfrac{1}{sC_E}$, and find the zero $\omega_z$. (d) The pole $\omega_{p1}$ set by $C_E$. (e) The pole $\omega_{p2}$ set by $C_L$. (f) The straight-line $|A_v|$ in dB at $\omega = 2\times10^4\,\text{rad/s}$. (g) The straight-line phase at $\omega = 10^6\,\text{rad/s}$ (take the phase of a negative gain as $+180^\circ$). (h) What $C_E$ would put $\omega_{p1}$ at $100\,\text{rad/s}$?`,
+      fig: J3Fig,
+      parts: [
+        { lbl: 'A_v(0)', unit: '', ans: -40, traps: [{ v: -50, msg: 'That is $-R_C/R_E$, the $g_mR_E\\gg1$ limit. Here $g_mR_E = 4$: keep the $1/g_m$, $A = -R_C/(R_E + 1/g_m)$.' }, { v: -200, msg: 'At DC the capacitor is open, so $R_E$ degenerates the stage. $-g_mR_C$ is the gain once $C_E$ shorts $R_E$.' }] },
+        { lbl: 'A_{v,\\text{mid}}', unit: '', ans: -200 },
+        { lbl: '\\omega_z', unit: 'rad/s', ans: 1e4, traps: [{ v: 5e4, msg: 'That is the pole. The zero is where $C_E$\'s impedance equals $R_E$ alone: $1/(R_EC_E)$.' }] },
+        { lbl: '\\omega_{p1}', unit: 'rad/s', ans: 5e4, traps: [{ v: 1e4, msg: 'That is the zero, $1/(R_EC_E)$. The pole is $(1 + g_mR_E)$ times higher: the capacitor sees $R_E$ in parallel with $1/g_m$.' }] },
+        { lbl: '\\omega_{p2}', unit: 'rad/s', ans: 1e8 },
+        { lbl: '|A_v(j2\\times10^4)|', unit: 'dB', ans: 38.06, accept: [38.4], traps: [{ v: 32.04, msg: 'Past the zero at $10^4$ the straight line rises at $+20\\,\\text{dB/dec}$: $2\\times$ the frequency adds $6\\,\\text{dB}$.' }] },
+        { lbl: '\\angle A_v(j10^6)', unit: 'deg', ans: 180, accept: [-180, 181.7, -178.3] },
+        { lbl: 'C_E\\ (\\omega_{p1} = 100)', unit: 'µF', ans: 500, traps: [{ v: 100, msg: 'That puts the **zero** at $100\\,\\text{rad/s}$. The pole is at $(1 + g_mR_E)/(R_EC_E)$: you need $5\\times$ more.' }] },
+      ],
+      hints: [
+        md`$g_m = 40\,\text{mS}$, so $g_mR_E = 4$. With an impedance $Z_E$ in the emitter, the degenerated $G_M = g_m/(1 + g_mZ_E)$ still holds (the derivation never used that $Z_E$ was real).`,
+        md`$1 + g_mZ_E = 1 + \dfrac{g_mR_E}{1 + sR_EC_E} = \dfrac{(1 + g_mR_E) + sR_EC_E}{1 + sR_EC_E}$. Divide top and bottom by $1 + g_mR_E$ to reach the $(1 + s/\omega)$ form.`,
+        md`Straight lines: $32\,\text{dB}$ flat, $+20\,\text{dB/dec}$ from $\omega_z$ to $\omega_{p1}$, flat at $46\,\text{dB}$, then $-20\,\text{dB/dec}$ after $\omega_{p2}$.`,
+      ],
+      figs: { bode: { svg: J3Plot, cap: 'The transfer function of J-3. Solid: straight lines; dashed: exact. The shelf from $32$ to $46\\,\\text{dB}$ is the bypass capacitor taking over from $R_E$; the roll-off at $10^8$ is $C_L$.' } },
+      sol: md`
+        **Recognize it first.** In at the **base**, out at the **collector**, with something in the emitter: a **degenerated common emitter** (a PNP, drawn emitter-up). The only twist is that the degeneration is now an **impedance**, $Z_E = R_E\parallel\dfrac1{sC_E}$, which changes with frequency: at DC it is $R_E$ (full degeneration), at high frequency it is a short (no degeneration). So the gain climbs from $-R_C/(R_E + 1/g_m)$ to $-g_mR_C$: one zero and one pole. $C_L$ adds the usual output pole.
+
+        **(a)** $g_m = I_C/V_T = 40\,\text{mS}$, $g_mR_E = 4$. At DC, $C_E$ is open:
+        $$A_v(0) = -\frac{g_mR_C}{1 + g_mR_E} = -\frac{200}{5} = -40\quad(32.0\,\text{dB})$$
+
+        **(b)** Mid-band, $C_E$ shorts $R_E$: $A_{v,\text{mid}} = -g_mR_C = -200$ ($46.0\,\text{dB}$).
+
+        **(c) The transfer function.** The degenerated-CE derivation (short the output, KVL from the base: $v_{in} = v_\pi + g_mv_\pi Z_E$) never used that the emitter element was a resistor, so $G_M = g_m/(1 + g_mZ_E)$. The output node is $R_C\parallel\dfrac1{sC_L} = \dfrac{R_C}{1 + sR_CC_L}$. Now
+        $$1 + g_mZ_E = 1 + \frac{g_mR_E}{1 + sR_EC_E} = \frac{(1 + g_mR_E) + sR_EC_E}{1 + sR_EC_E}$$
+        so
+        $$A_v(s) = -\frac{g_mR_C}{1 + g_mR_E}\cdot\frac{1 + sR_EC_E}{1 + s\,\dfrac{R_EC_E}{1 + g_mR_E}}\cdot\frac{1}{1 + sR_CC_L}$$
+        The zero: $\omega_z = \dfrac1{R_EC_E} = \dfrac1{(100)(1\,\mu)} = 10^4\,\text{rad/s}$.
+
+        **(d)** The pole: $\omega_{p1} = \dfrac{1 + g_mR_E}{R_EC_E} = 5\times10^4\,\text{rad/s}$. Read it as one pole per node: $C_E$ sees $R_E$ in parallel with the resistance looking into the emitter, $1/g_m = 25\,\Omega$; $100\parallel25 = 20\,\Omega$, and $1/(20\cdot1\,\mu) = 5\times10^4$ ✓.
+
+        **(e)** $\omega_{p2} = \dfrac1{R_CC_L} = \dfrac1{(5\,\text{k})(2\,\text{p})} = 10^8\,\text{rad/s}$. In standard form:
+        $$A_v(s) = -40\,\frac{1 + s/10^4}{(1 + s/(5\times10^4))(1 + s/10^8)}$$
+        Check: the shelf rises by $\omega_{p1}/\omega_z = 5$, from $40$ to $200$ ✓.
+
+        [[fig:bode]]
+
+        **(f)** $2\times10^4$ is past the zero and before the pole, on the $+20\,\text{dB/dec}$ segment: $32.0 + 20\log_{10}2 = 32.0 + 6.0 = 38.1\,\text{dB}$. (Exact: $38.4\,\text{dB}$.)
+
+        **(g)** At $10^6$: the zero has finished ($+90^\circ$ by $10^5$), the first pole has finished ($-90^\circ$ by $5\times10^5$), and the second pole has not started (it starts at $10^7$). Straight line: $180^\circ + 90^\circ - 90^\circ = 180^\circ$. (Exact: $181.7^\circ$.) Mid-band is a plain inverting amplifier.
+
+        **(h)** $\omega_{p1} = \dfrac{1 + g_mR_E}{R_EC_E} = 100$ gives $C_E = \dfrac{5}{(100)(100)} = 500\,\mu\text{F}$.
+
+        !!key Why bypass capacitors are huge
+        The capacitor does not fight $R_E$ alone; it fights $R_E\parallel(1/g_m)$, about $20\,\Omega$ here. To be a short down to low frequencies it needs $\omega\gg1/(20\,\Omega\cdot C_E)$: hundreds of microfarads for audio. The gain only reaches $-g_mR_C$ above $\omega_{p1}$, not above $\omega_z$.
+      `,
+    }),
+  ];
+
   E3.lesson('e3-pracu', { id: 'e3-pI', title: 'Exam 3 practice exam I', kind: 'mock', sub: 'A mirror-biased CE on $\\pm5\\,\\text{V}$, an NPN and a degenerated PMOS on one output, a PNP follower driving a capacitor', steps: Iex });
+  E3.lesson('e3-pracu', { id: 'e3-pJ', title: 'Exam 3 practice exam J', kind: 'mock', sub: 'A PNP CE into an NMOS mirror, the K rule under a degenerated PNP, a finite bypass capacitor and its Bode plot', steps: Jex });
 })();

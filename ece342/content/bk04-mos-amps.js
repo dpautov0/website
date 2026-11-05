@@ -1421,7 +1421,7 @@ Same size, opposite sign; the common gate is larger by the factor $(1 + g_mr_{ds
         id: 'bk04-cd-isrc', title: 'Follower with a current-source load',
         q: md`A source follower $M_1$ ($g_{m1} = 2\,\text{mS}$, $r_{ds1} = 100\kO$) has an NMOS current source $M_2$ (gate held, $r_{ds2} = 100\kO$) as its load. Find $A_v$ and $R_{out}$.`,
         fig: F.cdI(),
-        parts: [{ lbl: 'A_v', unit: '', ans: 100 / 101, traps: [{ v: 1, msg: 'Very close, but the two $r_{ds}$ make $R\' = 50\\,\\text{k}\\Omega$ finite: $R\'/(R\' + 1/g_m)$.' }] }, { lbl: 'R_{out}', unit: 'Ω', ans: 1000 / 2.02 }],
+        parts: [{ lbl: 'A_v', unit: '', ans: 100 / 101 }, { lbl: 'R_{out}', unit: 'Ω', ans: 1000 / 2.02 }],
         hints: [md`$M_2$ with its gate held is just $r_{ds2}$: $R_L = r_{ds2}$.`],
         sol: md`
 1. $R' = r_{ds1}\parallel r_{ds2} = 50\kO$, $g_{m1}R' = 100$, $A_v = 100/101 = 0.990$.
@@ -1468,6 +1468,505 @@ Same size, opposite sign; the common gate is larger by the factor $(1 + g_mr_{ds
         sol: md`$R_{out} = R_L\parallel r_{ds}\parallel\tfrac1{g_m}$ and $A_v = g_mR_{out} = \dfrac{R_L\parallel r_{ds}}{(R_L\parallel r_{ds}) + 1/g_m}$.`,
       }),
       G('bk_cd', { need: 4 }),
+    ],
+  });
+
+  // ================================================================== 7. the cascode
+  L({
+    id: 'bk04-cascode', title: 'The cascode amplifier', ref: 'Lecture 16, gain handout',
+    steps: [
+      RF(md`
+        ### The question
+
+        With a current-source load a common source gives about $-\tfrac12g_mr_{ds}$: the output sees two $r_{ds}$ in parallel and cannot get bigger. To go further we need a much larger $R_{out}$ **without** losing $G_M$. The **cascode** does it: $M_1$ is a common source, and $M_2$, stacked on top with its gate held, is a common gate. Exam 2 asked for its $G_M$, its $R_{out}$ and its gain, often all three, sometimes with the middle-node voltage.
+
+        [[fig:c]]
+
+        ### The physical picture
+
+        **Two jobs, two transistors.** $M_1$ turns $v_{in}$ into a current, $g_{m1}v_{in}$, exactly as in a common source. $M_2$ is a common gate: it accepts that current at its source, a low-resistance node ($\approx1/g_{m2}$), and delivers it out of its drain into the load ([Section 5](#/l/bk04-cg)).
+
+        **A shield.** Because $M_2$'s source is a $1/g_{m2}$ node, the middle node $x$ barely moves: about $-(g_{m1}/g_{m2})v_{in}$, a gain near $-1$. So $M_1$'s drain is held almost still while the output swings a lot. $M_2$ stands between $M_1$ and the output and takes all the voltage swing itself.
+
+        **Why the output looks huge.** Push the output up. $M_2$'s drain rises and tries to push more current down; that current would raise $x$; but a rising $x$ lowers $v_{gs2}$ and throttles $M_2$. It is source degeneration with $R_S = r_{ds1}$, a very large resistor, so the drain resistance is multiplied by a very large factor: $r_{ds2}(1 + g_{m2}r_{ds1})\approx g_{m2}r_{ds2}\,r_{ds1}$, the intrinsic gain times $r_{ds}$.
+      `, { c: { fig: F.casc(), cap: 'The cascode: a common source $M_1$ with a common gate $M_2$ on top; $x$ is the node between them.' } }),
+      RF(md`
+        ### The model and $G_M$
+
+        Both transistors saturated; $r_{ds}$ kept for both (it is the whole point). $M_2$'s gate is at incremental ground.
+
+        **What are the $v_{gs}$?** $M_1$: gate at $v_{in}$, source on ground: $v_{gs1} = v_{in}$. $M_2$: gate held (0), source at $x$: $v_{gs2} = -v_x$.
+
+        **Step 1:** short the output. $R_D$ has 0 V across it, so all of $i_{out}$ goes down through $M_2$.
+
+        **Step 2: current down through $M_2$** (drain at 0, source at $v_x$): $i_{out} = g_{m2}(-v_x) + \dfrac{0 - v_x}{r_{ds2}} = -\Big(g_{m2} + \dfrac{1}{r_{ds2}}\Big)v_x$.
+
+        **Step 3: current down through $M_1$** (from $x$ to ground): $i_1 = g_{m1}v_{in} + \dfrac{v_x}{r_{ds1}}$.
+
+        **Step 4: KCL at $x$.** Only the two transistors touch $x$, so what comes down $M_2$ goes down $M_1$: $i_{out} = i_1$:
+        $$-\Big(g_{m2} + \frac1{r_{ds2}}\Big)v_x = g_{m1}v_{in} + \frac{v_x}{r_{ds1}}\quad\Rightarrow\quad v_x = -\frac{g_{m1}v_{in}}{g_{m2} + 1/r_{ds2} + 1/r_{ds1}}$$
+
+        **Step 5: put $v_x$ back into Step 2:**
+        $$G_M = g_{m1}\cdot\frac{g_{m2} + 1/r_{ds2}}{g_{m2} + 1/r_{ds2} + 1/r_{ds1}} = \frac{g_{m1}r_{ds1}(1 + g_{m2}r_{ds2})}{r_{ds1} + r_{ds2} + g_{m2}r_{ds1}r_{ds2}}\approx g_{m1}$$
+        (multiply top and bottom by $r_{ds1}r_{ds2}$ for the second form).
+
+        **A current divider.** $M_1$ pulls $g_{m1}v_{in}$ out of $x$. It can come from $r_{ds1}$ (conductance $1/r_{ds1}$) or down through $M_2$ (conductance $g_{m2} + 1/r_{ds2}$). The fraction in Step 5 is exactly the share through $M_2$: with $g_{m2} = 2\,\text{mS}$ and $r_{ds} = 100\kO$ it is $2.01/2.02 = 0.995$.
+
+        [[fig:s]]
+      `, { s: { fig: F.cascM('short'), cap: '$G_M$: output shorted. $M_1$\'s current is drawn almost entirely through $M_2$.' } }),
+      RF(md`
+        ### $R_{out}$
+
+        **Step 1:** $v_{in} = 0$, so $v_{gs1} = 0$ and $M_1$ is just $r_{ds1}$ from $x$ to ground.
+
+        **Step 2:** $M_2$ is then a transistor with its gate held and a resistor $r_{ds1}$ under its source: the degenerated drain of [Section 4](#/l/bk04-degen) with $R_S = r_{ds1}$ ([Chapter 3](#/l/bk03-cascode) derived it too):
+        $$R_{DN} = r_{ds1} + r_{ds2} + g_{m2}r_{ds1}r_{ds2}\approx(g_{m2}r_{ds2})\,r_{ds1},\qquad R_{out} = R_D\parallel R_{DN}$$
+
+        [[fig:t]]
+
+        ### The gain, three ways
+
+        **Way 1: $G_MR_{out}$.** Call $N = r_{ds1} + r_{ds2} + g_{m2}r_{ds1}r_{ds2}$: it is the bottom of $G_M$ and it is $R_{DN}$. With $R_{out} = \dfrac{R_DN}{R_D + N}$, $N$ cancels:
+        $$A_v = -\frac{g_{m1}R_D\,r_{ds1}(1 + g_{m2}r_{ds2})}{R_D + r_{ds1} + r_{ds2} + g_{m2}r_{ds1}r_{ds2}}$$
+
+        **Way 2: direct KCL** at $x$ and at the output, eliminating $v_x$: a page of algebra that ends at the same expression (the gain handout's method 1).
+
+        **Way 3: node by node.** $M_1$ is a common source whose drain sees $r_{ds1}$ in parallel with $M_2$'s source, $R_x = \dfrac{r_{ds2} + R_D}{1 + g_{m2}r_{ds2}}$ ([Section 5](#/l/bk04-cg)). So $v_x = -g_{m1}(r_{ds1}\parallel R_x)v_{in}$. The current $v_x/R_x$ flowing into $M_2$'s source comes out of its drain into $R_D$: $v_{out} = \dfrac{R_D}{R_x}v_x$. Multiply.
+
+        !!key The cascode
+          $$G_M\approx g_{m1},\qquad R_{out} = R_D\parallel(r_{ds1} + r_{ds2} + g_{m2}r_{ds1}r_{ds2}),\qquad A_v = -G_MR_{out}$$
+          With a resistor: $A_v\approx-g_{m1}R_D$. With an ideal current source: $A_v\approx-(g_{m1}r_{ds1})(g_{m2}r_{ds2})$.
+
+        **Worked example** (all $g_m = 2\,\text{mS}$, all $r_{ds} = 100\kO$, $R_D = 10\kO$):
+        1. $G_M = 2\times\dfrac{2.01}{2.02} = 1.990\,\text{mS}$.
+        2. $R_{DN} = 100 + 100 + (200)(100) = 20{,}200\kO = 20.2\,\text{M}\Omega$; $R_{out} = 10\text{k}\parallel20.2\text{M} = 9.995\kO$.
+        3. $A_v = -(1.990)(9.995) = -19.89$.
+        4. Way 3: $R_x = 110\kO/201 = 547\,\Omega$; $v_x/v_{in} = -2\,\text{mS}\times(100\text{k}\parallel547) = -1.089$; $v_{out}/v_x = 10\text{k}/547 = 18.27$; product $-19.89$. Notice $M_1$ alone has a gain of only about $-1$: all the voltage gain happens in $M_2$.
+      `, { t: { fig: F.cascM('test'), cap: '$R_{out}$: $v_{in} = 0$ leaves $M_1$ as $r_{ds1}$, which degenerates $M_2$.' } }),
+      RF(md`
+        ### Check it, and what it buys
+
+        - **$r_{ds}\to\infty$:** $G_M\to g_{m1}$ and $R_{DN}\to\infty$, so $A_v\to-g_{m1}R_D$: the plain common source, with $M_2$ invisible.
+        - **$g_{m2}\to0$:** $R_{DN}\to r_{ds1} + r_{ds2}$ and $G_M\to g_{m1}r_{ds1}/(r_{ds1} + r_{ds2})$: a dead $M_2$ is just a resistor in series.
+
+        **A resistor load wastes it.** $-19.89$ against $-18.2$ for a plain common source with the same $R_D$: the $20\,\text{M}\Omega$ looking down sits in parallel with $10\kO$.
+
+        **A current-source load.** A PMOS current source $M_3$ ($r_{ds3} = 100\kO$) on top: $R_{out} = 100\text{k}\parallel20.2\text{M} = 99.5\kO$ and $A_v = -(1.990)(99.5) = -198$, twice the plain common source with the same load ($-100$). Now the **load** limits $R_{out}$.
+
+        [[fig:i]]
+
+        **An ideal load, or a cascoded one.** With an ideal current source, $A_v = -(1.990\,\text{mS})(20.2\,\text{M}\Omega) = -40{,}200\approx-(g_{m1}r_{ds1})(g_{m2}r_{ds2}) = -(200)(200)$. A cascoded PMOS load looks up like another $20.2\,\text{M}\Omega$, giving $R_{out} = 10.1\,\text{M}\Omega$ and $A_v\approx-20{,}100$: the intrinsic gain squared, halved.
+
+        **The price: headroom.** Two transistors in series must both stay saturated, so the output cannot swing below about $V_{ov1} + V_{ov2}$.
+
+        ### How to recognize it
+
+        Input on the gate of the bottom transistor, a second transistor stacked on its drain with its **gate held**, output at the top drain. Say: "cascode: $G_M\approx g_{m1}$; looking down, $g_{m2}r_{ds2}r_{ds1}$; the gain is set by whatever is above."
+
+        !!mistake Common mistakes
+          - **$R_{out} = R_D\parallel r_{ds2}$.** Looking down you see $M_2$ degenerated by $r_{ds1}$, a resistance $g_{m2}r_{ds2}$ times larger.
+          - **Expecting big gain from a resistor-loaded cascode.** $R_D$ still sets $R_{out}$.
+          - **Adding the two stages' gains** or treating $M_1$'s gain as $-g_{m1}R_D$. $M_1$ sees only $R_x\approx1/g_{m2}$: its own gain is about $-1$.
+          - **A sign error at $x$.** $v_{gs2} = 0 - v_x$: $M_2$'s gate is held.
+      `, { i: { fig: F.cascI(), cap: 'A cascode with a PMOS current-source load $M_3$.' } }),
+      Q(md`In a cascode with a resistor load $R_D$, where does most of the voltage gain happen?`,
+        ['In $M_2$: $M_1$ sees only $R_x\\approx1/g_{m2}$ at its drain, so $v_x\\approx-v_{in}$; $M_2$ passes the current into $R_D$.', 'In $M_1$: it is the common source.', 'Equally in both: $\\sqrt{|A_v|}$ each.', 'In neither: the cascode has a gain of 1.'], 0,
+        [null, '$M_1$ converts $v_{in}$ to current, but the voltage at its drain hardly moves because $M_2$\'s source is a low-resistance node.', 'Gains of chained stages multiply, but here $|v_x/v_{in}|\\approx1$ and $|v_{out}/v_x|\\approx g_{m2}R_D$.', 'The overall gain is about $-g_{m1}R_D$, the common-source value.'],
+        md`$v_x/v_{in} = -g_{m1}(r_{ds1}\parallel R_x)$ with $R_x\approx1/g_{m2}$: about $-g_{m1}/g_{m2}\approx-1$. Then $v_{out}/v_x = R_D/R_x\approx g_{m2}R_D$. The voltage gain is made in the common-gate transistor; $M_1$ only makes the current.`),
+      Q(md`Why is the cascode's $G_M$ almost exactly $g_{m1}$, even though $M_2$ sits between $M_1$ and the output?`,
+        ['$M_1$\'s current divides between $r_{ds1}$ and $M_2$\'s source; $M_2$\'s source ($\\approx1/g_{m2}$) is far easier, so nearly all of it goes up to the output.', 'Because $M_2$ has a gain of 1.', 'Because $M_2$\'s gate is grounded, so it carries no signal current.', 'Because $r_{ds2}$ is infinite.'], 0,
+        [null, '$M_2$\'s voltage gain is large; what matters for $G_M$ is that it passes current, as a common gate does.', 'A held gate means $v_{gs2} = -v_x$, not zero: $M_2$ carries the whole signal current.', 'Even with finite $r_{ds2}$, $G_M$ is within about 1% of $g_{m1}$.'],
+        md`The share through $M_2$ is $\dfrac{g_{m2} + 1/r_{ds2}}{g_{m2} + 1/r_{ds2} + 1/r_{ds1}}$, close to 1 because $g_{m2}\gg1/r_{ds1}$. That is the current-buffer property of the common gate.`),
+      Q(md`All transistors have $g_mr_{ds} = 100$ and $r_{ds} = 50\kO$. Roughly what is the resistance looking down into the cascode's output?`,
+        ['$5\\,\\text{M}\\Omega$', '$100\\,\\text{k}\\Omega$', '$50\\,\\text{k}\\Omega$', '$250\\,\\text{M}\\Omega$'], 0,
+        [null, 'That is $r_{ds1} + r_{ds2}$: it forgets the $g_{m2}r_{ds2}r_{ds1}$ term, which dominates.', 'That is one $r_{ds}$: the plain common source.', 'That would be $(g_mr_{ds})^2r_{ds}$, a triple stack.'],
+        md`$R_{DN} = r_{ds1} + r_{ds2} + g_{m2}r_{ds2}r_{ds1}\approx(100)(50\kO) = 5\,\text{M}\Omega$ (exactly $5.1\,\text{M}\Omega$).`),
+      P({
+        id: 'bk04-casc-num', title: 'Cascode with numbers',
+        q: md`Cascode: $g_{m1} = 4\,\text{mS}$, $r_{ds1} = 50\kO$; $g_{m2} = 2\,\text{mS}$, $r_{ds2} = 100\kO$; $R_D = 20\kO$. Find $G_M$, $R_{out}$ and $A_v$.`,
+        fig: F.casc({ RD: '20\\,\\text{k}\\Omega' }),
+        parts: [{ lbl: 'G_M', unit: 'mS', ans: 4 * 2.01 / 2.03 }, { lbl: 'R_{out}', unit: 'kΩ', ans: 20 * 10150 / 10170 },
+          { lbl: 'A_v', unit: '', ans: -(4 * 2.01 / 2.03) * (20 * 10150 / 10170), traps: [{ v: -4 * 20 * 50 / 70, msg: 'That is a plain common source with $r_{ds1}$: the cascode makes the resistance looking down far larger.' }] }],
+        hints: [md`$G_M = g_{m1}\dfrac{g_{m2} + 1/r_{ds2}}{g_{m2} + 1/r_{ds2} + 1/r_{ds1}}$.`, md`$R_{DN} = r_{ds1} + r_{ds2} + g_{m2}r_{ds1}r_{ds2}$.`],
+        sol: md`
+1. In mS: $g_{m2} + 1/r_{ds2} = 2.01$, $1/r_{ds1} = 0.02$. $G_M = 4\times\dfrac{2.01}{2.03} = 3.961\,\text{mS}$.
+2. $R_{DN} = 50 + 100 + (2)(50)(100) = 10{,}150\kO$; $R_{out} = 20\text{k}\parallel10.15\text{M} = 19.96\kO$.
+3. $A_v = -(3.961)(19.96) = -79.06$, close to $-g_{m1}R_D = -80$.`,
+      }),
+      P({
+        id: 'bk04-casc-isrc', title: 'Cascode with a current-source load',
+        q: md`All transistors: $g_m = 2\,\text{mS}$, $r_{ds} = 100\kO$. The cascode $M_1$–$M_2$ has a PMOS current-source load $M_3$. Find $R_{out}$ and $A_v$; compare with a plain common source with the same load.`,
+        fig: F.cascI(),
+        parts: [{ lbl: 'R_{out}', unit: 'kΩ', ans: 100 * 20200 / 20300 }, { lbl: 'A_v', unit: '', ans: -(4.02 / 2.02) * (100 * 20200 / 20300) },
+          { lbl: 'A_v\\text{ plain CS}', unit: '', ans: -100 }],
+        hints: [md`$R_{out} = r_{ds3}\parallel R_{DN}$ with $R_{DN} = 20.2\,\text{M}\Omega$.`, md`Plain CS: $-g_m(r_{ds}\parallel r_{ds})$.`],
+        sol: md`
+1. $R_{DN} = 20.2\,\text{M}\Omega$, $R_{out} = 100\text{k}\parallel20.2\text{M} = 99.5\kO$.
+2. $G_M = 1.990\,\text{mS}$, $A_v = -(1.990)(99.5) = -198$.
+3. Plain CS with the same load: $-(2\,\text{mS})(50\kO) = -100$. The cascode doubles it; the load's $r_{ds3}$ now limits $R_{out}$.`,
+      }),
+      P({
+        id: 'bk04-casc-vx', title: 'The middle node',
+        q: md`For the worked-example cascode (all $g_m = 2\,\text{mS}$, all $r_{ds} = 100\kO$, $R_D = 10\kO$), find the resistance $R_x$ looking up into $M_2$'s source, the gain $v_x/v_{in}$, and $v_{out}/v_x$.`,
+        fig: F.casc({ RD: '10\\,\\text{k}\\Omega' }),
+        parts: [{ lbl: 'R_x', unit: 'Ω', ans: 110000 / 201, traps: [{ v: 500, msg: 'That is $1/g_{m2}$; with $R_D$ on the drain, $R_x = (r_{ds2} + R_D)/(1 + g_{m2}r_{ds2})$.' }] },
+          { lbl: 'v_x/v_{in}', unit: '', ans: -2e-3 * (100e3 * 110000 / 201) / (100e3 + 110000 / 201) }, { lbl: 'v_{out}/v_x', unit: '', ans: 10e3 / (110000 / 201) }],
+        hints: [md`$R_x = \dfrac{r_{ds2} + R_D}{1 + g_{m2}r_{ds2}}$.`, md`$v_x = -g_{m1}(r_{ds1}\parallel R_x)v_{in}$; $v_{out} = (R_D/R_x)v_x$.`],
+        sol: md`
+1. $R_x = \dfrac{100 + 10}{201}\kO = 547\,\Omega$.
+2. $v_x/v_{in} = -(2\,\text{mS})(100\text{k}\parallel547) = -(2)(0.544) = -1.089$.
+3. $v_{out}/v_x = 10\text{k}/547 = 18.27$. Product: $-19.89$, the gain found before.`,
+      }),
+      P({
+        id: 'bk04-casc-cascload', title: 'A cascoded load',
+        q: md`The cascode of the worked example (all $g_m = 2\,\text{mS}$, $r_{ds} = 100\kO$) gets a cascoded PMOS load that looks, from the output, like $r_{ds} + r_{ds} + g_mr_{ds}^2$. Find $R_{out}$ (in MΩ) and $A_v$.`,
+        fig: F.cascI(),
+        parts: [{ lbl: 'R_{out}', unit: 'MΩ', ans: 10.1 }, { lbl: 'A_v', unit: '', ans: -(4.02 / 2.02) * 10.1e3 }],
+        hints: [md`Up and down are both $20.2\,\text{M}\Omega$.`],
+        sol: md`
+1. $R_{UP} = R_{DN} = 20.2\,\text{M}\Omega$, so $R_{out} = 10.1\,\text{M}\Omega$.
+2. $A_v = -(1.990\,\text{mS})(10.1\,\text{M}\Omega) = -20{,}100$, about $-\tfrac12(g_mr_{ds})^2$.
+
+(The figure shows a single PMOS $M_3$; in this problem it is replaced by a two-transistor cascode.)`,
+      }),
+      P({
+        id: 'bk04-casc-sym', title: 'The cascode, in symbols',
+        q: md`Keeping every $r_{ds}$, type $R_{out}$ and $A_v$ of the cascode with load $R_D$. Use \`gm1\`, \`gm2\`, \`rds1\`, \`rds2\`, \`RD\`.`,
+        fig: F.casc(),
+        parts: [ex('RD || (rds1 + rds2 + gm2*rds1*rds2)', ['gm2', 'rds1', 'rds2', 'RD'], 'R_{out}', { exact: true, ranges: { RD: [1e6, 1e7] } }),
+          ex('-gm1*RD*rds1*(1 + gm2*rds2)/(RD + rds1 + rds2 + gm2*rds1*rds2)', ['gm1', 'gm2', 'rds1', 'rds2', 'RD'], 'A_v', { exact: true, ranges: { RD: [1e6, 1e7] } })],
+        hints: [md`$R_{out} = R_D\parallel R_{DN}$; $A_v = -G_MR_{out}$.`],
+        sol: md`$R_{out} = R_D\parallel(r_{ds1} + r_{ds2} + g_{m2}r_{ds1}r_{ds2})$ and $A_v = -\dfrac{g_{m1}R_Dr_{ds1}(1 + g_{m2}r_{ds2})}{R_D + r_{ds1} + r_{ds2} + g_{m2}r_{ds1}r_{ds2}}$.`,
+      }),
+      G('bk_cascode', { need: 4 }),
+    ],
+  });
+
+  // ================================================================== 8. from bias to a number
+  L({
+    id: 'bk04-numbers', title: 'From bias to a number without a calculator', ref: 'Practice exams 3–5, Problem 1',
+    steps: [
+      RF(md`
+        ### The question
+
+        Exam problems rarely hand you $g_m$. They give sizes, a supply, resistors and a bias, and ask for a number. The numbers are chosen so the arithmetic is clean once you see the path. This section is that path, done four times.
+
+        ### The recipe
+
+        1. **DC, just far enough to get each $I_D$.** A current source or mirror gives it directly; a fixed $V_{GS}$ gives $I_D = KV_{ov}^2$ with $K = \tfrac12\mu C_{ox}\tfrac WL$; a resistor in the source gives a quadratic from KVL around the gate loop. Capacitors are open at DC.
+        2. **Check saturation:** $V_{DS}\ge V_{ov}$ (PMOS: $V_{SD}\ge|V_{ov}|$).
+        3. **Small-signal parameters:** $g_m = 2I_D/V_{ov}$ (keep $1/g_m$ handy) and, if asked, $r_{ds} = 1/(\lambda I_D)$.
+        4. **Small-signal circuit:** supplies and bias sources to ground, current sources open, big capacitors shorted.
+        5. **Name the stage** and use its result: $G_M$, $R_{out}$, $A_v = -G_MR_{out}$, and the one-line sign check.
+
+        **Typical numbers:** $I_D = 1\,\text{mA}$ at $V_{ov} = 0.2\,\text{V}$ gives $g_m = 10\,\text{mS}$, so $1/g_m = 100\,\Omega$. Most answers are then a resistor over a sum of resistors.
+
+        ### Example 1: common source with a gate divider
+
+        $V_{DD} = 5\,\text{V}$; the gate is biased by $R_1 = 350\kO$ (to $V_{DD}$) and $R_2 = 150\kO$ (to ground), and $v_{in}$ is coupled in through a large capacitor. $W/L = 20/1$, $R_D = 10\kO$, $r_{ds}$ ignored.
+
+        [[fig:e1]]
+
+        1. **DC.** The gate draws nothing, so $V_G = 5\times\dfrac{150}{500} = 1.5\,\text{V}$; $K = \tfrac12(100\,\mu)(20) = 1\,\text{mA/V}^2$; $V_{ov} = 0.5\,\text{V}$; $I_D = 0.25\,\text{mA}$.
+        2. **Saturated?** $V_D = 5 - 2.5 = 2.5\,\text{V}\ge0.5\,\text{V}$. Yes.
+        3. $g_m = 2(0.25)/0.5 = 1\,\text{mS}$.
+        4. **Small signal:** the capacitor is a wire; $R_1$ and $R_2$ both go from the gate to incremental ground. They do not touch the drain, so the gain is the common source's: $A_v = -g_mR_D = -10$.
+        5. **Input resistance:** the gate itself is infinite, so $R_{in} = R_1\parallel R_2 = 105\kO$: the bias divider is all the source sees.
+
+        ### Example 2: degenerated, with the quadratic
+
+        Same transistor ($K = 1\,\text{mA/V}^2$), gate at $1.75\,\text{V}$, $R_S = 1\kO$, $R_D = 10\kO$.
+
+        1. **KVL around the gate loop:** $V_G = V_{TN} + V_{ov} + I_DR_S$ with $I_D = KV_{ov}^2$: $0.75 = V_{ov} + (1\,\text{mA/V}^2)(1\kO)V_{ov}^2 = V_{ov} + V_{ov}^2$. Try $V_{ov} = 0.5$: $0.5 + 0.25 = 0.75$. Yes.
+        2. $I_D = 0.25\,\text{mA}$, $V_S = 0.25\,\text{V}$, $V_D = 2.5\,\text{V}$, $V_{DS} = 2.25\,\text{V}$: saturated.
+        3. $g_m = 1\,\text{mS}$, $1/g_m = 1\kO$.
+        4. $A_v = -\dfrac{R_D}{1/g_m + R_S} = -\dfrac{10}{1 + 1} = -5$.
+
+        ### Example 3: common gate on a current source
+
+        $W/L = 500/1$, biased at $1\,\text{mA}$ by a current source at the source; the input arrives through a large capacitor from a source with $R_S = 100\,\Omega$; $R_D = 1\kO$ (Practice 5 #1 style).
+
+        1. $K = 25\,\text{mA/V}^2$, $V_{ov} = \sqrt{1/25} = 0.2\,\text{V}$, $g_m = 2/0.2 = 10\,\text{mS}$, $1/g_m = 100\,\Omega$.
+        2. Small signal: the bias current source is open; the capacitor is a wire. A common gate driven through $R_S$.
+        3. $A_v = \dfrac{R_D}{R_S + 1/g_m} = \dfrac{1000}{100 + 100} = +5$, with $R_{in} = 100\,\Omega$.
+
+        ### Example 4: cascode with a current-source load, from $\lambda$
+
+        Every transistor at $I_D = 0.2\,\text{mA}$ with $|V_{ov}| = 0.2\,\text{V}$ and $\lambda = 0.1\,\text{V}^{-1}$.
+
+        1. $g_m = 2(0.2)/0.2 = 2\,\text{mS}$; $r_{ds} = 1/(0.1\times0.2\,\text{mA}) = 50\kO$; $g_mr_{ds} = 100$.
+        2. Looking down: $50 + 50 + (2)(50)(50) = 5100\kO$. Looking up: the PMOS current source, $50\kO$. $R_{out} = 50\text{k}\parallel5.1\text{M} = 49.5\kO$.
+        3. $G_M = 2\times\dfrac{2.02}{2.04} = 1.98\,\text{mS}$, $A_v = -(1.98)(49.5) = -98$, about $-g_mr_{ds}$, twice the plain common source ($-50$).
+      `, { e1: { fig: F.csDiv(), cap: 'Example 1: a divider sets the gate; $v_{in}$ is coupled in through a large capacitor.' } }),
+      R(md`
+        !!mistake Common mistakes
+          - **Forgetting $I_DR_S$ in the gate loop.** With a source resistor, $V_{GS}\ne V_G$.
+          - **Taking the wrong root** of the quadratic. $V_{ov}$ must be positive (and give $V_{GS} > V_{TN}$).
+          - **Using $V_{GS}$ for $V_{ov}$** in $g_m = 2I_D/V_{ov}$.
+          - **Keeping bias resistors in the gain.** A gate-bias divider only sets $R_{in}$; it does not touch $G_M$ or $R_{out}$.
+          - **Skipping the saturation check.** If $V_{DS} < V_{ov}$, every small-signal number is wrong.
+      `),
+      Q(md`A common source has its gate biased by a divider $R_1\parallel R_2 = 100\kO$, with the input coupled in through a big capacitor. How does the divider change $A_v$ (from the gate to the drain)?`,
+        ['Not at all; it only sets $R_{in} = R_1\\parallel R_2$.', 'It adds $R_1\\parallel R_2$ in series with $1/g_m$.', 'It divides the gain by 2.', 'It puts $R_1\\parallel R_2$ in parallel with $R_D$.'], 0,
+        [null, 'Nothing flows into the gate, so the divider is not in the source path.', 'No divider forms at the gate: the gate draws no current.', 'The divider connects to the gate, not the drain.'],
+        md`The divider runs from the gate to incremental ground. The gate voltage is $v_{in}$ regardless (an ideal source drives it), and no current flows into the gate, so $G_M$ and $R_{out}$ are untouched. Only the input resistance changes: $R_1\parallel R_2$. (With a source resistance in front, that divider would matter.)`),
+      Q(md`In a degenerated stage, $V_G - V_{TN} = 0.75\,\text{V}$ and $KR_S = 1\,\text{V}^{-1}$. Which overdrive solves $0.75 = V_{ov} + V_{ov}^2$?`,
+        ['$0.5\\,\\text{V}$', '$0.75\\,\\text{V}$', '$-1.5\\,\\text{V}$', '$0.25\\,\\text{V}$'], 0,
+        [null, 'That ignores the $I_DR_S$ drop: it is $V_{ov}$ with $R_S = 0$.', 'That is the other root; a negative overdrive means the transistor is off.', '$0.25 + 0.0625 = 0.31$, not $0.75$.'],
+        md`$V_{ov}^2 + V_{ov} - 0.75 = 0$ gives $V_{ov} = \dfrac{-1 + \sqrt{1 + 3}}{2} = 0.5\,\text{V}$ (the other root, $-1.5$, is not physical). Then $I_D = KV_{ov}^2$.`),
+      P({
+        id: 'bk04-num-div', title: 'A divider-biased common source',
+        q: md`$V_{DD} = 5\,\text{V}$, $R_1 = 360\kO$ (to $V_{DD}$), $R_2 = 140\kO$ (to ground) at the gate, input coupled through a large capacitor. $W/L = 50/1$ (course parameters), $R_D = 5\kO$, $r_{ds}$ ignored. Find $I_D$, $g_m$, $A_v$ and $R_{in}$.`,
+        fig: F.csDiv({ R1: '360\\,\\text{k}\\Omega', R2: '140\\,\\text{k}\\Omega', RD: '5\\,\\text{k}\\Omega' }),
+        parts: [{ lbl: 'I_D', unit: 'mA', ans: 0.4 }, { lbl: 'g_m', unit: 'mS', ans: 2 }, { lbl: 'A_v', unit: '', ans: -10 }, { lbl: 'R_{in}', unit: 'kΩ', ans: 360 * 140 / 500, traps: [{ v: 500, msg: 'For signals both resistors go from the gate to incremental ground: parallel.' }] }],
+        hints: [md`$V_G = 5\times140/500 = 1.4\,\text{V}$, $K = 2.5\,\text{mA/V}^2$.`],
+        sol: md`
+1. $V_G = 1.4\,\text{V}$, $V_{ov} = 0.4\,\text{V}$, $I_D = 2.5\times0.16 = 0.4\,\text{mA}$.
+2. $V_D = 5 - 2 = 3\,\text{V}\ge0.4\,\text{V}$: saturated. $g_m = 0.8/0.4 = 2\,\text{mS}$.
+3. $A_v = -g_mR_D = -10$.
+4. $R_{in} = 360\text{k}\parallel140\text{k} = 100.8\kO$.`,
+      }),
+      P({
+        id: 'bk04-num-deg', title: 'The quadratic, then the gain',
+        q: md`Degenerated common source: $W/L = 40/1$ (course parameters), gate at $2\,\text{V}$ (DC), $R_S = 1\kO$, $R_D = 6\kO$, $V_{DD} = 5\,\text{V}$; ignore $r_{ds}$. Find $V_{ov}$, $I_D$, $g_m$ and $A_v$.`,
+        fig: F.csDeg({ bias: '2\\,\\text{V}', RS: '1\\,\\text{k}\\Omega', RD: '6\\,\\text{k}\\Omega', sz: '40/1' }),
+        parts: [{ lbl: 'V_{ov}', unit: 'V', ans: 0.5, traps: [{ v: 1, msg: 'That ignores the drop $I_DR_S$ in the gate loop.' }] }, { lbl: 'I_D', unit: 'mA', ans: 0.5 }, { lbl: 'g_m', unit: 'mS', ans: 2 }, { lbl: 'A_v', unit: '', ans: -4 }],
+        hints: [md`$K = 2\,\text{mA/V}^2$: $1 = V_{ov} + (2)(1)V_{ov}^2$.`],
+        sol: md`
+1. $2 - 1 = V_{ov} + KR_SV_{ov}^2 = V_{ov} + 2V_{ov}^2$, so $2V_{ov}^2 + V_{ov} - 1 = 0$ and $V_{ov} = \dfrac{-1 + \sqrt{1 + 8}}{4} = 0.5\,\text{V}$.
+2. $I_D = 2\times0.25 = 0.5\,\text{mA}$; $V_S = 0.5\,\text{V}$, $V_D = 5 - 3 = 2\,\text{V}$, $V_{DS} = 1.5\,\text{V}$: saturated.
+3. $g_m = 1/0.5 = 2\,\text{mS}$, $1/g_m = 0.5\kO$.
+4. $A_v = -\dfrac{6}{0.5 + 1} = -4$.`,
+      }),
+      P({
+        id: 'bk04-num-cg', title: 'Common gate from its bias current',
+        q: md`Common gate: $W/L = 200/1$ (course parameters), biased at $0.4\,\text{mA}$ by a current source, driven through a large capacitor by a source with $R_S = 250\,\Omega$; $R_D = 5\kO$; ignore $r_{ds}$. Find $g_m$ and $A_v$. (The figure shows the signal path: the capacitor drawn as a wire, the bias current source, open for signals, left out.)`,
+        fig: F.cg({ RS: '250\\,\\Omega', RD: '5\\,\\text{k}\\Omega' }),
+        parts: [{ lbl: 'g_m', unit: 'mS', ans: 4 }, { lbl: 'A_v', unit: '', ans: 10, traps: [{ v: 20, msg: 'Keep the divider between $R_S$ and $1/g_m$.' }] }],
+        hints: [md`$K = 10\,\text{mA/V}^2$, $V_{ov} = \sqrt{0.4/10} = 0.2\,\text{V}$.`],
+        sol: md`
+1. $V_{ov} = 0.2\,\text{V}$, $g_m = 0.8/0.2 = 4\,\text{mS}$, $1/g_m = 250\,\Omega$.
+2. $A_v = \dfrac{5000}{250 + 250} = +10$.`,
+      }),
+      P({
+        id: 'bk04-num-casc', title: 'A cascode from $\\lambda$',
+        q: md`A cascode with a PMOS current-source load: every transistor at $I_D = 0.2\,\text{mA}$, $|V_{ov}| = 0.2\,\text{V}$, $\lambda = 0.1\,\text{V}^{-1}$. Find $g_m$, $r_{ds}$ and $A_v$.`,
+        fig: F.cascI(),
+        parts: [{ lbl: 'g_m', unit: 'mS', ans: 2 }, { lbl: 'r_{ds}', unit: 'kΩ', ans: 50 }, { lbl: 'A_v', unit: '', ans: -(2 * 2.02 / 2.04) * (50 * 5100 / 5150), traps: [{ v: -50, msg: 'That is a plain common source with the same load: the cascode removes $r_{ds1}$ from the output.' }] }],
+        hints: [md`$R_{DN} = 2r_{ds} + g_mr_{ds}^2$; $R_{out} = r_{ds3}\parallel R_{DN}$.`],
+        sol: md`
+1. $g_m = 2\,\text{mS}$, $r_{ds} = 50\kO$.
+2. $R_{DN} = 5100\kO$, $R_{out} = 50\text{k}\parallel5100\text{k} = 49.5\kO$, $G_M = 1.98\,\text{mS}$.
+3. $A_v = -98.0$.`,
+      }),
+      G('bk_bias', { need: 4 }),
+    ],
+  });
+
+  // ================================================================== 9. chapter problems
+  L({
+    id: 'bk04-problems', title: 'Chapter 4 problems', kind: 'review', ref: 'Chapter 4',
+    steps: [
+      RF(md`
+        ### Chapter summary
+
+        **The method** ([Section 1](#/l/bk04-norton)). Any linear amplifier, seen from its output, is a current source $G_Mv_{in}$ and a resistor $R_{out}$. $G_M$: short the output, current from the short into the stage per volt. $R_{out}$: input off, $R_{UP}\parallel R_{DN}$. $A_v = -G_MR_{out}$; a load joins $R_{out}$ in parallel.
+
+        | Stage | $G_M$ | $R_{out}$ | $A_v$ (usual form) | Why, in one line |
+        |---|---|---|---|---|
+        | common source | $g_m$ | $R_D\parallel r_{ds}$ | $-g_m(R_D\parallel r_{ds})$ | more gate, more current pulled out of the drain |
+        | diode load | $g_{m1}$ | $\tfrac1{g_{m2}}\parallel r_{ds1}\parallel r_{ds2}$ | $-\dfrac{g_{m1}}{g_{m2}}$ | the load's gate moves with the output |
+        | current-source load | $g_{m1}$ | $r_{ds1}\parallel r_{ds2}$ | $-\dfrac{2}{(\lambda_n + \lambda_p)V_{ov}}$ | the load's gate holds still |
+        | inverter | $g_{m1} + g_{m2}$ | $r_{ds1}\parallel r_{ds2}$ | $-(g_{m1} + g_{m2})(r_{ds1}\parallel r_{ds2})$ | both transistors pull the same way |
+        | degenerated | $\dfrac{g_m}{1 + g_mR_S}$ | $R_D\parallel r_{ds}(1 + g_mR_S)$ | $-\dfrac{R_D}{1/g_m + R_S}$ | the source rises with the current |
+        | common gate | $-\dfrac{1}{R_S + 1/g_m}$ | $R_D\parallel r_{ds}(1 + g_mR_S)$ | $+\dfrac{R_D}{R_S + 1/g_m}$ | the same current, pushed in at the source |
+        | follower | $-g_m$ | $R_L\parallel r_{ds}\parallel\tfrac1{g_m}$ | $\dfrac{R'}{R' + 1/g_m}$ | the source follows the gate |
+        | cascode | $\approx g_{m1}$ | $R_D\parallel g_{m2}r_{ds2}r_{ds1}$ | $\approx-g_{m1}R_{out}$ | a common gate shields the common source |
+
+        Input resistances: every gate is $\infty$; a common gate's source is $\dfrac{r_{ds} + R_D}{1 + g_mr_{ds}}\approx\dfrac1{g_m}$.
+
+        [[fig:a]]
+        [[fig:b]]
+        [[fig:c]]
+      `, {
+        a: { fig: F.cs(), cap: 'Common source: $-g_m(R_D\\parallel r_{ds})$.' },
+        b: { fig: F.csDeg(), cap: 'Degenerated: $-R_D/(1/g_m + R_S)$. The common gate drives the same path from the bottom: $+R_D/(R_S + 1/g_m)$.' },
+        c: { fig: F.casc(), cap: 'Cascode: $G_M\\approx g_{m1}$, looking down $g_{m2}r_{ds2}r_{ds1}$.' },
+      }),
+      P({
+        id: 'bk04-pr-sign', title: 'Signs at a glance',
+        q: md`For each stage, is the small-signal gain positive or negative?`,
+        parts: [{ lbl: '(a) PMOS common source with an NMOS current-source load', mc: ['negative', 'positive'], a: 0, fixed: true, why: [null, 'Same model as NMOS: $G_M = g_m > 0$, so $A_v < 0$.'] },
+          { lbl: '(b) common gate', mc: ['negative', 'positive'], a: 1, fixed: true, why: ['$v_{in}$ up raises the source, closes the valve, and the drain rises.', null] },
+          { lbl: '(c) source follower', mc: ['negative', 'positive'], a: 1, fixed: true, why: ['The source follows the gate.', null] },
+          { lbl: '(d) cascode', mc: ['negative', 'positive'], a: 0, fixed: true, why: [null, '$M_1$ is a common source; $M_2$ only passes its current up: inverting overall.'] },
+          { lbl: '(e) CMOS inverter used as an amplifier', mc: ['negative', 'positive'], a: 0, fixed: true, why: [null, 'Both transistors pull the output down when $v_{in}$ rises.'] }],
+        sol: md`(a) negative, (b) positive, (c) positive, (d) negative, (e) negative. Rule: input at a gate and output at that drain inverts; input at a source (common gate) or output at a source (follower) does not.`,
+      }),
+      P({
+        id: 'bk04-pr-cs1', title: 'Common source with a small $r_{ds}$',
+        q: md`$g_m = 5\,\text{mS}$, $R_D = 4\kO$, $r_{ds} = 20\kO$. Find $R_{out}$ and $A_v$.`,
+        fig: F.cs(),
+        parts: [{ lbl: 'R_{out}', unit: 'kΩ', ans: 80 / 24 }, { lbl: 'A_v', unit: '', ans: -5 * 80 / 24, traps: [{ v: -20, msg: 'Include $r_{ds}$ in parallel with $R_D$.' }] }],
+        hints: [md`$R_{out} = R_D\parallel r_{ds}$.`],
+        sol: md`$R_{out} = \dfrac{4\times20}{24} = 3.33\kO$; $A_v = -(5)(3.33) = -16.7$.`,
+      }),
+      P({
+        id: 'bk04-pr-gainrule', title: 'Gain from a DC schematic',
+        q: md`A resistively loaded common source drops $2\,\text{V}$ across $R_D$ and runs at $V_{ov} = 0.25\,\text{V}$. Ignoring $r_{ds}$, what is its gain?`,
+        fig: F.cs(),
+        parts: [{ lbl: 'A_v', unit: '', ans: -16, traps: [{ v: -8, msg: 'The factor 2: $g_m = 2I_D/V_{ov}$.' }] }],
+        hints: [md`$A_v = -2V_{R_D}/V_{ov}$.`],
+        sol: md`$A_v = -g_mR_D = -\dfrac{2I_DR_D}{V_{ov}} = -\dfrac{2(2)}{0.25} = -16$.`,
+      }),
+      P({
+        id: 'bk04-pr-diode', title: 'Diode load from sizes',
+        q: md`NMOS input $25/1$, diode-connected PMOS load $8/1$, course parameters, $r_{ds}$ ignored. Find $A_v$.`,
+        fig: F.csDiodeP({ sz1: '25/1', sz2: '8/1' }),
+        parts: [{ lbl: 'A_v', unit: '', ans: -2.5, traps: [{ v: -6.25, msg: 'Square root of the $\\mu C_{ox}W/L$ ratio.' }, { v: -Math.sqrt(25 / 8), msg: 'Include $\\mu_n/\\mu_p = 2$.' }] }],
+        hints: [md`$|A_v| = \sqrt{\mu_n(W/L)_1/(\mu_p(W/L)_2)}$.`],
+        sol: md`$\sqrt{\dfrac{100\times25}{50\times8}} = \sqrt{6.25} = 2.5$, so $A_v = -2.5$.`,
+      }),
+      P({
+        id: 'bk04-pr-isrc', title: 'Current-source load, no currents given',
+        q: md`A common source with a PMOS current-source load: $V_{ov1} = 0.25\,\text{V}$, $\lambda_n = \lambda_p = 0.05\,\text{V}^{-1}$. Find $A_v$.`,
+        fig: F.csIsrc(),
+        parts: [{ lbl: 'A_v', unit: '', ans: -80 }],
+        hints: [md`$A_v = -2/((\lambda_n + \lambda_p)V_{ov1})$.`],
+        sol: md`$A_v = -\dfrac{2}{(0.1)(0.25)} = -80$: the bias current cancels.`,
+      }),
+      P({
+        id: 'bk04-pr-inv', title: 'Inverter amplifier',
+        q: md`CMOS inverter amplifier: $g_{m1} = 3\,\text{mS}$, $g_{m2} = 1\,\text{mS}$, $r_{ds1} = r_{ds2} = 50\kO$. Find $A_v$.`,
+        fig: F.inv(),
+        parts: [{ lbl: 'A_v', unit: '', ans: -100, traps: [{ v: -75, msg: 'Both gates are driven: $G_M = g_{m1} + g_{m2}$.' }, { v: -50, msg: 'The transconductances add; they do not subtract.' }] }],
+        hints: [md`$G_M = g_{m1} + g_{m2}$, $R_{out} = r_{ds1}\parallel r_{ds2}$.`],
+        sol: md`$A_v = -(4\,\text{mS})(25\kO) = -100$.`,
+      }),
+      P({
+        id: 'bk04-pr-deg', title: 'Degeneration, approximately',
+        q: md`$g_m = 5\,\text{mS}$, $R_S = 800\,\Omega$, $R_D = 10\kO$, $r_{ds}$ ignored. Find $A_v$.`,
+        fig: F.csDeg(),
+        parts: [{ lbl: 'A_v', unit: '', ans: -10, traps: [{ v: -12.5, msg: 'That is $-R_D/R_S$: keep $1/g_m = 200\\,\\Omega$ in the source path.' }] }],
+        hints: [md`$A_v = -R_D/(1/g_m + R_S)$.`],
+        sol: md`$-\dfrac{10\kO}{0.2\kO + 0.8\kO} = -10$.`,
+      }),
+      P({
+        id: 'bk04-pr-degrds', title: 'Degeneration when $r_{ds}$ is small',
+        q: md`$g_m = 1\,\text{mS}$, $r_{ds} = 20\kO$, $R_S = 2\kO$, $R_D = 10\kO$. Find $A_v$ exactly, and compare with the $r_{ds}\to\infty$ estimate.`,
+        fig: F.csDeg(),
+        parts: [{ lbl: 'A_v', unit: '', ans: -200 / 72, traps: [{ v: -10 / 3, msg: 'That is the $r_{ds}\\to\\infty$ estimate; here $r_{ds}$ is only $2R_D$.' }] }],
+        hints: [md`$A_v = -\dfrac{g_mr_{ds}R_D}{R_D + r_{ds} + R_S + g_mr_{ds}R_S}$.`],
+        sol: md`$N = 20 + 2 + (1)(20)(2) = 62\kO$; $A_v = -\dfrac{(1)(20)(10)}{10 + 62} = -2.78$. The estimate $-10/3 = -3.33$ is $20\%$ high.`,
+      }),
+      P({
+        id: 'bk04-pr-cg', title: 'Common gate, both numbers',
+        q: md`Common gate: $g_m = 5\,\text{mS}$, $R_S = 300\,\Omega$, $R_D = 6\kO$, $r_{ds}$ ignored. Find $R_{in}$ and $A_v$.`,
+        fig: F.cg(),
+        parts: [{ lbl: 'R_{in}', unit: 'Ω', ans: 200 }, { lbl: 'A_v', unit: '', ans: 12 }],
+        hints: [md`$R_{in} = 1/g_m$; $A_v = R_D/(R_S + 1/g_m)$.`],
+        sol: md`$R_{in} = 200\,\Omega$; $A_v = 6000/500 = +12$.`,
+      }),
+      P({
+        id: 'bk04-pr-cd', title: 'Follower, exactly',
+        q: md`Follower: $g_m = 3\,\text{mS}$, $r_{ds} = 100\kO$, $R_L = 1\kO$. Find $R_{out}$ and $A_v$.`,
+        fig: F.cd(),
+        parts: [{ lbl: 'R_{out}', unit: 'Ω', ans: 1000 / 4.01 }, { lbl: 'A_v', unit: '', ans: 3 / 4.01 }],
+        hints: [md`Conductances: $1/R_L + 1/r_{ds} + g_m$.`],
+        sol: md`$1 + 0.01 + 3 = 4.01\,\text{mS}$, so $R_{out} = 249\,\Omega$ and $A_v = (3)(0.249) = 0.748$.`,
+      }),
+      P({
+        id: 'bk04-pr-cdrd', title: 'A follower with a drain resistor',
+        q: md`An NMOS follower has $R_D = 5\kO$ between $V_{DD}$ and its drain (output still at the source, $R_L = 2\kO$). $g_m = 2\,\text{mS}$, $r_{ds} = 20\kO$. Find $G_M$, $R_{out}$ and $A_v$.`,
+        fig: F.cdRD(),
+        parts: [{ lbl: 'G_M', unit: 'mS', ans: -1.6, traps: [{ v: -2, msg: 'With $r_{ds}$ kept, part of the current circulates: the drain is not at incremental ground any more.' }] },
+          { lbl: 'R_{out}', unit: 'kΩ', ans: 1 / (41 / 25 + 0.5) }, { lbl: 'A_v', unit: '', ans: 1.6 / (41 / 25 + 0.5) }],
+        hints: [md`$G_M$: output shorted; the drain node has $R_D$ and $r_{ds}$; solve for $v_d$ first.`, md`$R_{out}$: $R_L$ in parallel with the source of a transistor that has $R_D$ on its drain: $\dfrac{r_{ds} + R_D}{1 + g_mr_{ds}}$.`],
+        sol: md`
+1. **$G_M$** (source shorted, $v_{gs} = v_{in}$). KCL at the drain: $g_mv_{in} + \dfrac{v_d}{r_{ds}} + \dfrac{v_d}{R_D} = 0$, so $v_d = -g_mv_{in}(R_D\parallel r_{ds})$. The current into the short is $g_mv_{in} + v_d/r_{ds} = g_mv_{in}\dfrac{r_{ds}}{r_{ds} + R_D}$, so $G_M = -g_m\dfrac{r_{ds}}{r_{ds} + R_D} = -2\times\dfrac{20}{25} = -1.6\,\text{mS}$.
+2. **$R_{out}$:** looking into the source with $R_D$ on the drain: $\dfrac{r_{ds} + R_D}{1 + g_mr_{ds}} = \dfrac{25\kO}{41} = 0.610\kO$; in parallel with $R_L$: $0.610\parallel2 = 0.467\kO$.
+3. $A_v = (1.6\,\text{mS})(0.467\kO) = 0.748$.`,
+      }),
+      P({
+        id: 'bk04-pr-casc', title: 'Cascode on an ideal current source',
+        q: md`Cascode with an ideal current-source load: $g_{m1} = g_{m2} = 1\,\text{mS}$, $r_{ds1} = r_{ds2} = 50\kO$. Find $R_{out}$ (MΩ) and $A_v$.`,
+        fig: F.casc(),
+        parts: [{ lbl: 'R_{out}', unit: 'MΩ', ans: 2.6 }, { lbl: 'A_v', unit: '', ans: -2550 }],
+        hints: [md`$R_{out} = R_{DN}$; $A_v\to-g_{m1}r_{ds1}(1 + g_{m2}r_{ds2})$ as $R_D\to\infty$.`],
+        sol: md`$R_{DN} = 50 + 50 + 2500 = 2600\kO$; $G_M = 1\times\dfrac{1.02}{1.04} = 0.981\,\text{mS}$; $A_v = -(0.981)(2600) = -2550 = -(50)(51)$.`,
+      }),
+      P({
+        id: 'bk04-pr-exam1', title: 'Exam style: a PMOS stage from its bias', big: true,
+        q: md`$V_{DD} = 3.3\,\text{V}$. $M_1$ is a PMOS ($W/L = 50/1$, $\mu_pC_{ox} = 50\,\mu\text{A/V}^2$, $|V_{TP}| = 1\,\text{V}$, $\lambda_p = 0.1\,\text{V}^{-1}$) with its source on $V_{DD}$ and its gate at $1.9\,\text{V}$ (DC, so $V_{SG} = 1.4\,\text{V}$) plus $v_{in}$. $M_2$ is an NMOS current source carrying the same current, $\lambda_n = 0.05\,\text{V}^{-1}$. (a) $I_D$. (b) $g_{m1}$. (c) $R_{out}$. (d) $A_v$. (e) $A_v$ with a $50\kO$ load at the output.`,
+        fig: F.csPisrc({ bias: '1.9\\,\\text{V}' }),
+        parts: [{ lbl: '(a)\\ I_D', unit: 'mA', ans: 0.2 }, { lbl: '(b)\\ g_{m1}', unit: 'mS', ans: 1 }, { lbl: '(c)\\ R_{out}', unit: 'kΩ', ans: 100 / 3 },
+          { lbl: '(d)\\ A_v', unit: '', ans: -100 / 3 }, { lbl: '(e)\\ A_v\\text{ loaded}', unit: '', ans: -20 }],
+        hints: [md`$K = 1.25\,\text{mA/V}^2$, $V_{ov} = 0.4\,\text{V}$.`, md`$r_{ds1} = 1/(\lambda_pI_D)$, $r_{ds2} = 1/(\lambda_nI_D)$; the load joins them in parallel.`],
+        sol: md`
+**Recognize it first:** a PMOS common source with a current-source load; $G_M = g_{m1}$, $R_{out} = r_{ds1}\parallel r_{ds2}$.
+1. $I_D = (1.25)(0.4)^2 = 0.2\,\text{mA}$.
+2. $g_{m1} = 0.4/0.4 = 1\,\text{mS}$.
+3. $r_{ds1} = 1/(0.1\times0.2\,\text{mA}) = 50\kO$, $r_{ds2} = 1/(0.05\times0.2\,\text{mA}) = 100\kO$; $R_{out} = 33.3\kO$.
+4. $A_v = -33.3$. (Shortcut: $-2/((0.15)(0.4)) = -33.3$.)
+5. With $50\kO$: $33.3\parallel50 = 20\kO$, $A_v = -20$.`,
+      }),
+      P({
+        id: 'bk04-pr-exam2', title: 'Exam style: degenerated, exact', big: true,
+        q: md`$V_{DD} = 5\,\text{V}$; NMOS $W/L = 40/1$ (course parameters), $\lambda = 0.05\,\text{V}^{-1}$; gate at $2\,\text{V}$ (DC) plus $v_{in}$; $R_S = 1\kO$; $R_D = 4\kO$. (a) $I_D$. (b) $g_m$. (c) $G_M$ with $r_{ds}$. (d) $R_{out}$. (e) $A_v$.`,
+        fig: F.csDeg({ bias: '2\\,\\text{V}', RS: '1\\,\\text{k}\\Omega', RD: '4\\,\\text{k}\\Omega', sz: '40/1' }),
+        parts: [{ lbl: '(a)\\ I_D', unit: 'mA', ans: 0.5 }, { lbl: '(b)\\ g_m', unit: 'mS', ans: 2 }, { lbl: '(c)\\ G_M', unit: 'mS', ans: 2 / 3.025 },
+          { lbl: '(d)\\ R_{out}', unit: 'kΩ', ans: 4 * 121 / 125 }, { lbl: '(e)\\ A_v', unit: '', ans: -320 / 125, traps: [{ v: -8 / 3, msg: 'That is the $r_{ds}\\to\\infty$ estimate; the problem keeps $r_{ds} = 40\\,\\text{k}\\Omega$.' }] }],
+        hints: [md`Gate loop: $1 = V_{ov} + 2V_{ov}^2$.`, md`$r_{ds} = 40\kO$; $N = r_{ds} + R_S + g_mr_{ds}R_S$.`],
+        sol: md`
+**Recognize it first:** a degenerated common source; DC needs the quadratic.
+1. $1 = V_{ov} + 2V_{ov}^2$, so $V_{ov} = 0.5\,\text{V}$ and $I_D = 0.5\,\text{mA}$ ($V_D = 3\,\text{V}$, $V_S = 0.5\,\text{V}$: saturated).
+2. $g_m = 2\,\text{mS}$; $r_{ds} = 1/(0.05\times0.5\,\text{mA}) = 40\kO$.
+3. $G_M = \dfrac{2}{1 + 2 + 1/40} = \dfrac{2}{3.025} = 0.661\,\text{mS}$.
+4. $N = 40 + 1 + 80 = 121\kO$; $R_{out} = 4\parallel121 = 3.87\kO$.
+5. $A_v = -\dfrac{(2)(40)(4)}{4 + 121} = -2.56$.`,
+      }),
+      P({
+        id: 'bk04-pr-exam3', title: 'Exam style: what a cascode buys', big: true,
+        q: md`All transistors: $g_m = 2\,\text{mS}$, $r_{ds} = 50\kO$. (a) Gain of a common source with a PMOS current-source load. (b) Gain of a cascode with that same single PMOS load. (c) Gain of the cascode with a cascoded PMOS load (looking up: $2r_{ds} + g_mr_{ds}^2$).`,
+        fig: F.cascI(),
+        parts: [{ lbl: '(a)', unit: '', ans: -50 }, { lbl: '(b)', unit: '', ans: -(2 * 2.02 / 2.04) * (50 * 5100 / 5150) }, { lbl: '(c)', unit: '', ans: -(2 * 2.02 / 2.04) * 2550 }],
+        hints: [md`Looking down into the cascode: $2r_{ds} + g_mr_{ds}^2 = 5.1\,\text{M}\Omega$. $G_M = 1.98\,\text{mS}$.`],
+        sol: md`
+**Recognize it first:** the same $G_M$ each time; only $R_{out}$ changes.
+1. $-(2)(50\parallel50) = -50$.
+2. $R_{out} = 50\text{k}\parallel5.1\text{M} = 49.5\kO$; $A_v = -(1.98)(49.5) = -98.0$.
+3. $R_{out} = 5.1\text{M}\parallel5.1\text{M} = 2.55\,\text{M}\Omega$; $A_v = -(1.98)(2550) = -5050$.`,
+      }),
+      P({
+        id: 'bk04-pr-exam4', title: 'Exam style: a matched common gate', big: true,
+        q: md`A common gate ($W/L = 100/1$, course parameters) is biased at $0.8\,\text{mA}$ by a current source on its source, and driven through a large capacitor from a source with $R_S = 250\,\Omega$. Its drain has $R_D = 5\kO$ to $V_{DD}$, and a $5\kO$ load hangs on the output. Ignore $r_{ds}$. (a) $g_m$. (b) $R_{in}$. (c) $A_v$. (The figure shows the signal path: the capacitor drawn as a wire, the bias current source, open for signals, left out.)`,
+        fig: F.cg({ RS: '250\\,\\Omega', RD: '5\\,\\text{k}\\Omega' }),
+        parts: [{ lbl: '(a)\\ g_m', unit: 'mS', ans: 4 }, { lbl: '(b)\\ R_{in}', unit: 'Ω', ans: 250 }, { lbl: '(c)\\ A_v', unit: '', ans: 5, traps: [{ v: 10, msg: 'The $5\\,\\text{k}\\Omega$ load sits in parallel with $R_D$.' }] }],
+        hints: [md`$K = 5\,\text{mA/V}^2$, $V_{ov} = 0.4\,\text{V}$.`, md`$A_v = (R_D\parallel R_L)/(R_S + 1/g_m)$.`],
+        sol: md`
+**Recognize it first:** a common gate; the bias current source is open for signals, the capacitor a wire.
+1. $V_{ov} = \sqrt{0.8/5} = 0.4\,\text{V}$, $g_m = 1.6/0.4 = 4\,\text{mS}$.
+2. $R_{in} = 1/g_m = 250\,\Omega$, matched to the source.
+3. $A_v = \dfrac{5\parallel5}{0.25 + 0.25} = \dfrac{2.5}{0.5} = +5$.`,
+      }),
+      P({
+        id: 'bk04-pr-sym', title: 'Degenerated stage with a diode load',
+        q: md`A common source $M_1$ with $R_S$ in its source has a diode-connected PMOS load $M_2$. Ignoring every $r_{ds}$, type $A_v$. Use \`gm1\`, \`gm2\`, \`RS\`.`,
+        fig: F.csDegPD(),
+        parts: [ex('-gm1/(gm2*(1 + gm1*RS))', ['gm1', 'gm2', 'RS'], 'A_v', { exact: true })],
+        hints: [md`$G_M = g_{m1}/(1 + g_{m1}R_S)$, $R_{out} = 1/g_{m2}$.`],
+        sol: md`$A_v = -\dfrac{g_{m1}}{1 + g_{m1}R_S}\cdot\dfrac{1}{g_{m2}}$: a degenerated $G_M$ times the diode's $1/g_{m2}$. Both are ratios, so the gain is $-\dfrac{g_{m1}/g_{m2}}{1 + g_{m1}R_S}$.`,
+      }),
+      P({
+        id: 'bk04-pr-which', title: 'Which stage for the job?',
+        q: md`Pick the single-transistor stage that fits each job.`,
+        parts: [{ lbl: '(a) Drive a $100\\,\\Omega$ load from a high-resistance stage without losing its gain', mc: ['source follower', 'common gate', 'cascode', 'degenerated common source'], a: 0, fixed: true, why: [null, 'Its input is low ($\\approx1/g_m$), so it would load the previous stage.', 'Its output resistance is huge: a $100\\,\\Omega$ load would kill the gain.', 'Its output resistance is $R_D$: no better at driving a small load.'] },
+          { lbl: '(b) Accept a signal from a $50\\,\\Omega$ line with a matched input', mc: ['common gate', 'source follower', 'common source', 'cascode'], a: 0, fixed: true, why: [null, 'Its input is a gate: infinite.', 'Its input is a gate: infinite.', 'Its input is $M_1$\'s gate: infinite.'] },
+          { lbl: '(c) A gain set by two resistors, nearly independent of $g_m$', mc: ['degenerated common source', 'common source', 'source follower', 'cascode'], a: 0, fixed: true, why: [null, '$-g_mR_D$ is proportional to $g_m$.', 'Its gain is below 1 by design.', 'Its gain is $\\approx-g_{m1}R_{out}$, proportional to $g_{m1}$.'] },
+          { lbl: '(d) The largest gain from one input transistor', mc: ['cascode with a cascoded load', 'common source with a current-source load', 'CMOS inverter', 'common gate'], a: 0, fixed: true, why: [null, 'About $-\\tfrac12g_mr_{ds}$: the output sees two $r_{ds}$.', 'About $-g_mr_{ds}$: better, but no $r_{ds}$ multiplication.', 'Its gain is limited by $R_D$ and $r_{ds}$ like a common source.'] }],
+        sol: md`(a) follower: $R_{out}\approx1/g_m$, infinite input. (b) common gate: $R_{in}\approx1/g_m$. (c) degenerated: $-R_D/(1/g_m + R_S)\to-R_D/R_S$. (d) cascode with a cascoded load: $\approx-\tfrac12(g_mr_{ds})^2$.`,
+      }),
+      G('bk_norton', { need: 8, pool: ['bk_norton', 'bk_cs', 'bk_loads', 'bk_degen', 'bk_cg', 'bk_cd', 'bk_cascode', 'bk_bias'] }),
     ],
   });
 })();

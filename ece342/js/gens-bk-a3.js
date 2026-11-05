@@ -113,6 +113,16 @@
     ['R', [1, 2], [1, 3.2], { n: 'R_S' }], ['gnd', [1, 3.2]], ...gin(0, 1, o)];
   F.csDegDiode = (o = {}) => [rail([1, -1.2]), ['R', [1, -1.2], [1, 0], { n: 'R_D' }], ['w', [1, 0], [1.8, 0]], out([1.8, 0]), ['nmos', [1, 1], { n: 'M_1' }],
     ['nmos', [1, 3], { n: 'M_3', dc: true }], ['gnd', [1, 4]], ...gin(0, 1, o)];
+  // a common source biased by a gate divider, v_in coupled in through a capacitor
+  F.csDiv = (o = {}) => [rail([1, -1.2]), ['R', [1, -1.2], [1, 0], { n: 'R_D', s: o.RD }], ['w', [1, 0], [1.8, 0]], out([1.8, 0]), ['nmos', [1, 1], { n: 'M_1' }], ['gnd', [1, 2]],
+    ['w', [0, 1], [-0.8, 1]], rail([-0.8, -0.4]), ['R', [-0.8, -0.4], [-0.8, 1], { n: 'R_1', s: o.R1, side: 'l' }], ['R', [-0.8, 1], [-0.8, 2.4], { n: 'R_2', s: o.R2, side: 'l' }], ['gnd', [-0.8, 2.4]],
+    ['C', [-2, 1], [-0.8, 1], { n: '' }], ['w', [-2, 1], [-2.5, 1], [-2.5, 1.4]], ...vsrc(-2.5, 1.4)];
+  // an NMOS follower with a resistor in its drain
+  F.cdRD = () => [rail([1, -1.2]), ['R', [1, -1.2], [1, 0], { n: 'R_D' }], ['nmos', [1, 1], { n: 'M_1' }], ['w', [1, 2], [1.8, 2]], out([1.8, 2]),
+    ['R', [1, 2], [1, 3.2], { n: 'R_L' }], ['gnd', [1, 3.2]], ...gin(0, 1)];
+  // a degenerated common source with a diode-connected PMOS load
+  F.csDegPD = () => [rail([1, -2]), ['pmos', [1, -1], { n: 'M_2', dc: true }], ['w', [1, 0], [1.8, 0]], out([1.8, 0]), ['nmos', [1, 1], { n: 'M_1' }],
+    ['R', [1, 2], [1, 3.2], { n: 'R_S' }], ['gnd', [1, 3.2]], ...gin(0, 1)];
   // a cascode with a PMOS current-source load M3
   F.cascI = () => [rail([1, -2]), ['pmos', [1, -1], { n: 'M_3' }], ['acg', [0, -1]], ['w', [1, 0], [1.8, 0]], out([1.8, 0]),
     ['nmos', [1, 1], { n: 'M_2' }], ['acg', [0, 1]], ['node', [1, 2], { n: 'x', side: 'r' }], ['nmos', [1, 3], { n: 'M_1' }], ['gnd', [1, 4]], ...gin(0, 3)];
@@ -648,6 +658,57 @@ Getting close to 1 is expensive: the closer $A_v$ is to 1, the larger $g_mR_L$, 
 
 ${load === 'R' ? 'With a resistor load the cascode gains little over a plain common source: the huge resistance looking down is wasted in parallel with $R_D$.' : 'The output resistance is now set by the load: to use the cascode\'s huge $R_{DN}$, the load must be cascoded too.'}`,
       _v: { k: 'casc', p: { gm1, rds1, gm2, rds2, RD }, a: { GM: GMv, Ro, Av } },
+    };
+  };
+
+  // ---------------------------------------------------------------- 8. from the bias to a number (r_ds ignored)
+  GENS.bk_bias = () => {
+    const kind = pick(['cs', 'deg', 'deg', 'cg']);
+    const WL = pick([10, 20, 40, 50, 100]), K = 0.5 * 100e-6 * WL;           // A/V^2
+    if (kind === 'deg') {
+      // choose V_ov so that V_G - 1 = V_ov + K R_S V_ov^2 comes out exact
+      const vov = pick([0.2, 0.25, 0.4, 0.5]), RS = pick([0.5, 1, 2]) * 1e3, ID = K * vov * vov, VG = 1 + vov + ID * RS, gm = 2 * ID / vov;
+      const RD = pick([5, 10, 20]) * 1e3, Av = -gm * RD / (1 + gm * RS), VD = 5 - ID * RD;
+      if (VD - ID * RS < vov) return GENS.bk_bias();
+      return {
+        fig: F.csDeg({ bias: `${f(VG)}\\,\\text{V}`, RD: KO(RD), RS: OH(RS), sz: `${WL}/1` }),
+        q: `Degenerated common source: $W/L = ${WL}/1$ (course parameters), DC gate voltage $${f(VG)}\\,\\text{V}$, $R_S = ${OH(RS)}$, $R_D = ${KO(RD)}$, $V_{DD} = 5\\,\\text{V}$. Ignore $r_{ds}$. Find $I_D$, $g_m$ and $A_v$.`,
+        parts: [iBox('I_D', ID, { key: 'ID' }), gBox('g_m', gm, { key: 'gm' }), nBox('A_v', Av, { key: 'Av', traps: [{ v: -gm * RD, msg: 'That ignores $R_S$: it divides the gain by $1 + g_mR_S$.' }] })],
+        hints: [`KVL around the gate loop: $V_G = V_{TN} + V_{ov} + I_DR_S$ with $I_D = KV_{ov}^2$, $K = ${f(K * 1e3)}\\,\\text{mA/V}^2$.`, '$g_m = 2I_D/V_{ov}$, then $A_v = -R_D/(1/g_m + R_S)$.'],
+        sol: `1. $K = \\tfrac12(100\\,\\mu)(${WL}) = ${f(K * 1e3)}\\,\\text{mA/V}^2$. KVL from the gate to ground: $${f(VG)} = 1 + V_{ov} + (${f(K * 1e3)}\\,\\text{mA/V}^2)(${OH(RS)})V_{ov}^2$, that is $${f(VG - 1)} = V_{ov} + ${f(K * RS)}V_{ov}^2$. The positive root is $V_{ov} = ${f(vov)}\\,\\text{V}$ (check: $${f(vov)} + ${f(K * RS)}(${f(vov)})^2 = ${f(vov + K * RS * vov * vov)}$).
+2. $I_D = KV_{ov}^2 = ${MA(ID)}$; saturation: $V_D = 5 - I_DR_D = ${f(VD, 3)}\\,\\text{V}$, $V_S = ${f(ID * RS, 3)}\\,\\text{V}$, $V_{DS} = ${f(VD - ID * RS, 3)}\\,\\text{V}\\ge V_{ov}$.
+3. $g_m = 2I_D/V_{ov} = ${MS(gm)}$ ($1/g_m = ${OH(1 / gm)}$).
+4. $A_v = -\\dfrac{R_D}{1/g_m + R_S} = -\\dfrac{${KO(RD)}}{${OH(1 / gm + RS)}} = ${G4(Av)}$.`,
+        _v: { k: 'bias', p: { kind, K, VG, RS, RD }, a: { ID, gm, Av } },
+      };
+    }
+    if (kind === 'cg') {
+      const vov = pick([0.2, 0.25, 0.4]), ID = K * vov * vov, gm = 2 * ID / vov, Rsig = pick([0.5, 1, 2]) / gm, RD = pick([2, 5, 10]) * 1e3;
+      const Av = RD / (Rsig + 1 / gm);
+      return {
+        fig: F.cg({ RD: KO(RD), RS: OH(Rsig) }),
+        q: `Common gate: $W/L = ${WL}/1$ (course parameters), biased at $I_D = ${MA(ID)}$ by a current source (not shown; open for signals). The signal source has $R_S = ${OH(Rsig)}$; $R_D = ${KO(RD)}$. Ignore $r_{ds}$. Find $g_m$, $R_{in}$ and $A_v$.`,
+        parts: [gBox('g_m', gm, { key: 'gm' }), resBox('R_{in}', 1 / gm, { key: 'Rin' }), nBox('A_v', Av, { key: 'Av', traps: [{ v: gm * RD, msg: 'Keep the divider between $R_S$ and $1/g_m$.' }, { v: -Av, msg: 'A common gate does not invert.' }] })],
+        hints: [`$V_{ov} = \\sqrt{I_D/K}$ with $K = ${f(K * 1e3)}\\,\\text{mA/V}^2$.`, '$A_v = R_D/(R_S + 1/g_m)$.'],
+        sol: `1. $K = ${f(K * 1e3)}\\,\\text{mA/V}^2$, $V_{ov} = \\sqrt{I_D/K} = ${f(vov)}\\,\\text{V}$, $g_m = 2I_D/V_{ov} = ${MS(gm)}$.
+2. $R_{in}\\approx1/g_m = ${OH(1 / gm)}$.
+3. $A_v = \\dfrac{R_D}{R_S + 1/g_m} = \\dfrac{${KO(RD)}}{${OH(Rsig + 1 / gm)}} = ${G4(Av)}$.`,
+        _v: { k: 'bias', p: { kind, K, ID, RS: Rsig, RD }, a: { gm, Rin: 1 / gm, Av } },
+      };
+    }
+    const vov = pick([0.2, 0.25, 0.4, 0.5]), ID = K * vov * vov, gm = 2 * ID / vov;
+    const ok = RNICE.filter((r) => ID * r >= 1 && ID * r <= 4.4 - vov);
+    const RD = ok.length ? pick(ok) : 1e3, Av = -gm * RD;
+    if (!ok.length) return GENS.bk_bias();
+    return {
+      fig: F.cs({ bias: `${f(1 + vov)}\\,\\text{V}`, RD: KO(RD), sz: `${WL}/1` }),
+      q: `Common source: $W/L = ${WL}/1$ (course parameters), $V_{GS} = ${f(1 + vov)}\\,\\text{V}$, $R_D = ${KO(RD)}$, $V_{DD} = 5\\,\\text{V}$. Ignore $r_{ds}$. Find $I_D$, $g_m$ and $A_v$; check saturation.`,
+      parts: [iBox('I_D', ID, { key: 'ID' }), gBox('g_m', gm, { key: 'gm', traps: [{ v: 2 * ID / (1 + vov), msg: 'Use the overdrive $V_{ov} = V_{GS} - V_{TN}$, not $V_{GS}$.' }] }), nBox('A_v', Av, { key: 'Av' })],
+      hints: [`$I_D = KV_{ov}^2$, $K = ${f(K * 1e3)}\\,\\text{mA/V}^2$.`, '$A_v = -g_mR_D = -2V_{R_D}/V_{ov}$.'],
+      sol: `1. $V_{ov} = ${f(vov)}\\,\\text{V}$, $I_D = (${f(K * 1e3)})(${f(vov)})^2 = ${MA(ID)}$.
+2. $V_D = 5 - I_DR_D = ${f(5 - ID * RD, 3)}\\,\\text{V}\\ge V_{ov}$: saturated.
+3. $g_m = 2I_D/V_{ov} = ${MS(gm)}$; $A_v = -g_mR_D = ${G4(Av)}$, the same as $-2V_{R_D}/V_{ov} = -2(${f(ID * RD, 3)})/${f(vov)}$.`,
+      _v: { k: 'bias', p: { kind, K, VG: 1 + vov, RS: 0, RD }, a: { ID, gm, Av } },
     };
   };
 })();

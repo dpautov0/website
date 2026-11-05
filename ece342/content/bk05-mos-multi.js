@@ -1524,4 +1524,455 @@ $$G_M = g_{m1}\frac{r_{ds1}\parallel r_{ds3}}{(r_{ds1}\parallel r_{ds3}) + \frac
       G('bk_folded', { need: 4 }),
     ],
   });
+
+  // ================================================================ 6. differential pair: figures
+  const DF = FG.diff;
+  const ID1 = (v) => { const k = 5000, I = 200, vm = Math.sqrt(2 * I / k); if (v >= vm) return I; if (v <= -vm) return 0; return I / 2 + (k / 4) * v * Math.sqrt(4 * I / k - v * v); };
+  const steerPlot = Schem.plot({
+    x: [-0.4, 0.4], y: [0, 220], w: 440, h: 260, xl: 'v_{id} = v_1 - v_2\\ (\\text{V})', yl: '\\mu\\text{A}',
+    xt: [-0.4, -0.2, 0, 0.2, 0.4], yt: [0, 50, 100, 150, 200],
+    curves: [{ f: ID1 }, { f: (v) => 200 - ID1(v), cls: 'dc' }, { pts: [[-0.2, 0], [0.2, 200]], cls: 'dash' }],
+    pts: [{ x: 0.2828, y: 200, n: 'I_{D1}' }, { x: 0.2828, y: 0, n: 'I_{D2}' }],
+  });
+  const diffModel = [
+    ['gndu', [1, -1.6]], ['R', [1, -1.6], [1, 0], { n: 'R_D', side: 'l' }], ['gndu', [4.2, -1.6]], ['R', [4.2, -1.6], [4.2, 0], { n: 'R_D' }],
+    ['node', [1, 0], { n: 'v_{o1}', side: 'l' }], ['node', [4.2, 0], { n: 'v_{o2}', side: 'r' }],
+    ['G', [1, 0], [1, 2], { n: 'g_m(v_1 - v_P)', side: 'l' }], ['G', [4.2, 0], [4.2, 2], { n: 'g_m(v_2 - v_P)', side: 'r' }],
+    ['w', [1, 2], [4.2, 2]], ['node', [2.6, 2], { n: 'P', side: 'a' }], ['txt', [2.6, 2.7], '$\\text{tail: open}$'],
+  ];
+  const dmRoutModel = [
+    ['gndu', [1, -1.8]], ['R', [1, -1.8], [1, 0], { n: 'R_A', side: 'l' }], ['node', [1, 0], { n: 'A', side: 'l' }],
+    ...ssm(1, 0, 2, 'g_{m1}v_{gs1}', 'r_{ds1}'), ['w', [2.2, 2], [4.4, 2]], ['node', [3.3, 2], { n: 'P', side: 'b' }],
+    ...ssm(4.4, 0, 2, 'g_{m2}v_{gs2}', 'r_{ds2}'),
+    ...ssm(4.4, 0, -1.8, 'g_{m4}v_A', 'r_{ds4}'), ['gndu', [5, -1.8]],
+    ...testV(5.6, 0),
+    ['txt', [3.3, 2.8], '$M_1, M_2:\\ v_{gs} = 0 - v_P\\qquad R_A = \\tfrac{1}{g_{m3}}\\parallel r_{ds3}$'],
+  ];
+
+  // ================================================================ 6. the differential pair
+  L({
+    id: 'bk05-diffpair', title: 'The differential pair', ref: 'Practice 3 #3; Problem Set 6(f)',
+    steps: [
+      R(md`
+        ### The question
+
+        Every op-amp starts with a **differential pair**: two matched transistors $M_1$ and $M_2$ whose sources are tied together at a node $P$, fed by one **tail** current source $I_{SS}$. It amplifies the *difference* of its two inputs and ignores what they have in common. Practice Exam 3 #3 asks for the output resistance of a pair, with and without a mirror load, and Problem Set 6(f) puts a signal on its supply.
+
+        We derive, from the small-signal model: the differential gain, the common-mode gain (briefly), and the three numbers of the mirror-loaded pair, $G_M = g_m$, $R_{out}\approx r_{ds2}\parallel r_{ds4}$ and $A_v = g_m(r_{ds2}\parallel r_{ds4})$.
+      `),
+      RF(md`
+        ### The physical picture: a seesaw with a fixed amount of current
+
+        The tail fixes the **total** current: $I_{D1} + I_{D2} = I_{SS}$, always. With equal gate voltages, symmetry splits it in half. Raise $v_1$ and lower $v_2$ by the same small amount (a **differential** input): $M_1$ takes more, $M_2$ takes exactly that much less, like the two ends of a seesaw. Raise both gates together (a **common-mode** input): both transistors would like more current, but the tail does not allow it, and by symmetry neither can take more than the other, so **nothing changes**. Node $P$ simply rises with the gates, like the source of a follower.
+
+        [[fig:p]]
+
+        **How large is "small"?** All of $I_{SS}$ moves to $M_1$ when $M_2$ reaches threshold. Then $I_{SS} = \tfrac12k(V_{GS1} - V_{TN})^2$ with $k = \mu_nC_{ox}W/L$, and $v_{id} = V_{GS1} - V_{GS2} = V_{GS1} - V_{TN} = \sqrt{2I_{SS}/k}$. At balance each side has $V_{ov} = \sqrt{I_{SS}/k}$, so the pair is fully steered at $v_{id} = \sqrt2\,V_{ov}$: about $0.28\,\text{V}$ for $V_{ov} = 0.2\,\text{V}$. Below about a third of that, the curves are straight lines with slope $g_m/2$ (dashed).
+      `, { p: { fig: steerPlot, cap: 'The two drain currents of a pair with $I_{SS} = 200\\,\\mu$A, $W/L = 50$ (each side $V_{ov} = 0.2$ V at balance). The sum is always $200\\,\\mu$A. Dashed: the small-signal tangent, slope $g_m/2 = 0.5$ mS.' } }),
+      RF(md`
+        ### The model and the derivation (resistor loads)
+
+        Each side has a load $R_D$ to $V_{DD}$; the tail is an ideal current source, so in small signal it is **open**. Write the inputs as a common part and a difference: $v_1 = v_{ic} + \tfrac{v_{id}}2$, $v_2 = v_{ic} - \tfrac{v_{id}}2$. First we ignore $r_{ds}$.
+
+        [[fig:f]]
+
+        **Step 1: KCL at $P$.** Only the two sources touch $P$ (the tail is open). $M_1$'s current $g_m(v_1 - v_P)$ flows down into $P$, and so does $M_2$'s; nothing leaves:
+        $$g_m(v_1 - v_P) + g_m(v_2 - v_P) = 0\quad\Rightarrow\quad v_P = \frac{v_1 + v_2}{2} = v_{ic}$$
+
+        [[fig:m]]
+
+        **Step 2: the drain currents.**
+        $$i_{d1} = g_m(v_1 - v_P) = g_m\frac{v_{id}}2,\qquad i_{d2} = g_m(v_2 - v_P) = -g_m\frac{v_{id}}2$$
+
+        !!key The pair, from the model
+          $v_P = v_{ic}$: the shared source follows the common mode and ignores the difference (a **virtual ground** for differential signals). The difference steers current: $i_{d1} = -i_{d2} = g_m\,v_{id}/2$. With an ideal tail, the common mode produces no current at all.
+
+        **Step 3: the outputs.** Each drain current flows up through its $R_D$: $v_{o1} = -g_mR_D\dfrac{v_{id}}2$ and $v_{o2} = +g_mR_D\dfrac{v_{id}}2$. The differential output $v_{od} = v_{o1} - v_{o2}$:
+        $$A_{dm} = \frac{v_{od}}{v_{id}} = -g_mR_D\qquad(\text{single-ended: } v_{o2}/v_{id} = +g_mR_D/2)$$
+
+        **With $r_{ds}$.** For a purely differential input the circuit is symmetric and the excitation antisymmetric: mirror the circuit left to right and every signal changes sign, so $v_P = -v_P$, which forces $v_P = 0$ exactly. Each half is then a common source with $R_D\parallel r_{ds}$: $A_{dm} = -g_m(R_D\parallel r_{ds})$.
+      `, {
+        f: { fig: DF.res(), cap: 'A differential pair with resistor loads and an ideal tail current $I_{SS}$.' },
+        m: { fig: diffModel, cap: 'The model ($r_{ds}$ left out): two dependent sources meeting at $P$, the tail open.' },
+      }),
+      R(md`
+        ### Check it, and the common mode
+
+        **Numbers:** $I_{SS} = 200\,\mu\text{A}$, $W/L = 50$: each side $100\,\mu\text{A}$, $V_{ov} = 0.2\,\text{V}$, $g_m = 1\,\text{mS}$; with $R_D = 20\kO$ and $r_{ds} = 200\kO$, $A_{dm} = -(1\,\text{mS})(18.2\kO) = -18.2$, and a nodal solve agrees.
+
+        **A real tail** has a finite resistance $R_{SS}$. Apply a common-mode input $v_{ic}$ to both gates. By symmetry both halves carry the same signal current $i$, so $2i$ flows down through $R_{SS}$ and $v_P = 2iR_{SS}$. Each half: $i = g_m(v_{ic} - v_P) = g_m(v_{ic} - 2iR_{SS})$, so
+        $$i = \frac{g_mv_{ic}}{1 + 2g_mR_{SS}},\qquad A_{cm} = \frac{v_{o1}}{v_{ic}} = -\frac{g_mR_D}{1 + 2g_mR_{SS}}\approx-\frac{R_D}{2R_{SS}}$$
+        Each half is a common source degenerated by $2R_{SS}$ (it sees the tail shared with its twin). With $R_{SS} = 100\kO$, $R_D = 20\kO$, $g_m = 1\,\text{mS}$: $A_{cm} = -0.0995$, while the single-ended differential gain is $10$: a ratio (the CMRR) of about $g_mR_{SS} = 100$.
+      `),
+      RF(md`
+        ### The mirror-loaded pair: $G_M = g_m$
+
+        Replace the two resistors by a PMOS mirror: $M_3$ diode-connected on $M_1$'s side (node $A$), $M_4$ copying it on $M_2$'s side; the output is the $M_2$–$M_4$ drain node. Ideal tail.
+
+        [[fig:f]]
+
+        **Short the output** and apply $v_{id}$. Step 1 of the derivation still holds ($r_{ds}$ ignored, the drains do not enter KCL at $P$), so $i_{d1} = g_mv_{id}/2$ and $i_{d2} = -g_mv_{id}/2$.
+        - $M_1$'s extra current $g_mv_{id}/2$ is drawn through the diode $M_3$. The mirror copies it: $M_4$ **pushes** an extra $g_mv_{id}/2$ into the output ([signal mirrors](#/l/bk05-sigmirror)).
+        - $M_2$ **pulls** $g_mv_{id}/2$ *less* out of the output.
+
+        Both effects put current into the output: in total $g_mv_{id}$. The mirror recovers the half that the resistor-loaded single-ended output throws away:
+
+        !!key Mirror-loaded pair
+          $$|G_M| = g_m,\qquad R_{out}\approx r_{ds2}\parallel r_{ds4},\qquad \frac{v_{out}}{v_1 - v_2} = +g_m\,(r_{ds2}\parallel r_{ds4})$$
+          With the course's convention ($i_{out}$ pulled out of the shorted output): $G_M = +g_m$ for an input on $M_2$'s gate (inverting) and $G_M = -g_m$ for an input on $M_1$'s gate (non-inverting).
+
+        With every $r_{ds}$ kept, a nodal solve gives $G_M = \dfrac{g_{mn}r_{dsn}(1 + 2g_{mp}r_{dsp})}{2g_{mp}r_{dsn}r_{dsp} + 2r_{dsn} + r_{dsp}}$ (matched devices), which differs from $g_m$ only by terms of order $1/(g_mr_{ds})$: $0.995\,\text{mS}$ instead of $1\,\text{mS}$ in our example.
+      `, { f: { fig: DF.mir(), cap: 'The differential pair with a PMOS current-mirror load: the classic single-ended op-amp input stage.' } }),
+      RF(md`
+        ### $R_{out} = r_{ds2}\parallel r_{ds4}$, derived (Practice 3 #3)
+
+        Kill both inputs (gates at incremental ground) and push a test voltage $v_t$ into the output. The tail is open, so node $P$ touches **only** the two sources. Call $R_A = \tfrac1{g_{m3}}\parallel r_{ds3}$ the diode at node $A$.
+
+        [[fig:m]]
+
+        **Step 1: two ways in.** The test current enters $M_4$ (current $i_4$) or goes down the **chain** $M_2\to P\to M_1\to A$ (current $i_c$). The chain current comes up through $M_1$ into $A$ and leaves through the diode, so $v_A = i_cR_A$.
+
+        **Step 2: the chain's resistance.** Looking down into $M_2$'s drain, its source sits on $P$, and $P$ looks up into $M_1$'s source with $R_A$ on $M_1$'s drain: $R_P = \dfrac{r_{ds1} + R_A}{1 + g_{m1}r_{ds1}}$ ([the source](#/l/bk03-source)). Then $M_2$ is degenerated by $R_P$: $R_{chain} = r_{ds2} + R_P(1 + g_{m2}r_{ds2})$. For a matched pair the two scalings cancel: $R_{chain} = 2r_{ds1} + R_A\approx2r_{ds}$. So $i_c = v_t/R_{chain}$.
+
+        **Step 3: the mirror answers.** $M_4$'s gate is $A$, which rose by $i_cR_A$: $M_4$ draws $g_{m4}v_A = g_{m4}R_Ai_c\approx i_c$ **more** from the output (a PMOS whose gate rises pushes less). So
+        $$i_t = \frac{v_t}{r_{ds4}} + i_c\,(1 + g_{m4}R_A)\quad\Rightarrow\quad R_{out} = r_{ds4}\parallel\frac{R_{chain}}{1 + g_{m4}R_A}\approx r_{ds4}\parallel\frac{2r_{ds}}{2} = r_{ds4}\parallel r_{ds2}$$
+
+        **The picture:** the path down through the pair is about $2r_{ds}$, but the mirror makes the output carry that path's current twice, which halves it to $r_{ds}$. **Numbers:** $g_m = 1\,\text{mS}$, $r_{ds} = 200\kO$ everywhere: exact $R_{out} = 100.2\kO$, against $r_{ds2}\parallel r_{ds4} = 100\kO$; the gain is $g_mR_{out}\approx100$.
+
+        !!mistake Common mistakes with differential pairs
+          - **Using $I_{SS}$ for each transistor.** Each side carries $I_{SS}/2$: $g_m = I_{SS}/V_{ov}$ with $V_{ov}$ at $I_{SS}/2$.
+          - **$G_M = g_m/2$ with a mirror load.** That is the single-ended resistor-loaded pair; the mirror delivers the other half.
+          - **$R_{out} = r_{ds4}$.** The path through the pair is not open: it adds $r_{ds2}$ in parallel (through the mirror's doubling).
+          - **Keeping the tail current source in the small-signal circuit.** An ideal tail is open: $P$ touches only the two sources.
+          - **Expecting common-mode gain with an ideal tail.** With $R_{SS} = \infty$, $A_{cm} = 0$.
+      `, { m: { fig: dmRoutModel, cap: 'Output resistance of the mirror-loaded pair (inputs at incremental ground, tail open): $M_4$, and the chain $M_2\\to P\\to M_1\\to A$ whose current moves $M_4$\'s gate.' } }),
+      Q(md`Both gates of a differential pair with an **ideal** tail move up together by $10\,\text{mV}$. What happens to the drain currents?`,
+        ['Nothing: the tail fixes the sum and symmetry fixes the split', 'Both rise by $g_m\\times10\\,\\text{mV}$', 'Both rise by $g_m\\times5\\,\\text{mV}$', '$M_1$ rises and $M_2$ falls'], 0,
+        [null, 'They would like to, but the tail current cannot change: $P$ rises with the gates and $v_{gs}$ stays the same.', 'The sum is fixed at $I_{SS}$; a common rise is impossible.', 'Equal inputs cannot favour one side in a symmetric circuit.'],
+        md`KCL at $P$ gives $v_P = (v_1 + v_2)/2 = v_{ic}$: the source node follows, $v_{gs1} = v_{gs2} = 0$, and no signal current flows.`),
+      Q(md`Why is $G_M = g_m$ for the mirror-loaded pair, while the resistor-loaded pair gives only $g_m/2$ at one output?`,
+        ['The mirror copies $M_1$\'s half of the signal current into the output, where it adds to $M_2$\'s half', 'The mirror doubles $g_m$ of $M_2$', 'The tail current doubles', 'The PMOS devices add their own $g_m$'], 0,
+        [null, '$M_2$ is unchanged; its half is still $g_mv_{id}/2$.', 'The tail is fixed.', 'The PMOS gates are not driven by the input; they only carry $M_1$\'s copy.'],
+        md`$M_1$'s signal current $g_mv_{id}/2$ would be wasted in a resistor on the other side. The mirror brings it to the output, where it adds to $M_2$'s $g_mv_{id}/2$: $g_mv_{id}$ in total.`),
+      Q(md`In a differential pair with a purely differential input, why does node $P$ stay still even with $r_{ds}$ and loads included?`,
+        ['Symmetry: mirroring the circuit flips every signal, so $v_P = -v_P = 0$', 'Because the tail current source is large', 'Because the gates are at incremental ground', 'It does not: $P$ moves by $v_{id}/2$'], 0,
+        [null, 'An ideal tail is open in small signal; its size does not hold $P$.', 'The gates carry $\\pm v_{id}/2$, not 0.', 'That is the common-mode case scaled wrongly: for a differential input $v_P = v_{ic} = 0$.'],
+        md`The circuit is left-right symmetric and the input antisymmetric, so every node voltage is antisymmetric. $P$ is its own mirror image, so $v_P = -v_P$, which means $v_P = 0$: a virtual ground.`),
+      Q(md`A pair has $V_{ov} = 0.25\,\text{V}$ on each side at balance. At what differential input is all of $I_{SS}$ in one transistor?`,
+        ['$0.354\\,\\text{V}$', '$0.25\\,\\text{V}$', '$0.5\\,\\text{V}$', '$0.125\\,\\text{V}$'], 0,
+        [null, 'At $v_{id} = V_{ov}$ the pair is not yet fully steered.', 'That is $2V_{ov}$; the factor is $\\sqrt2$.', 'That is $V_{ov}/2$, still near the linear region.'],
+        md`Full steering at $v_{id} = \sqrt2\,V_{ov} = 1.414\times0.25 = 0.354\,\text{V}$.`),
+      P({
+        id: 'bk05-dp-dc', title: 'From the tail current to the gain',
+        q: md`A differential pair with $I_{SS} = 400\,\mu\text{A}$, $W/L = 100$ ($\mu_nC_{ox} = 100\,\mu\text{A/V}^2$, $V_{TN} = 1\,\text{V}$), resistor loads $R_D = 10\kO$, $r_{ds}$ ignored. Find $V_{GS}$ at balance, $g_m$, $A_{dm} = v_{od}/v_{id}$ and the single-ended gain $v_{o2}/v_{id}$.`,
+        fig: DF.res(),
+        parts: [
+          { lbl: 'V_{GS}', unit: 'V', ans: 1.2, traps: [{ v: 1.2828, msg: 'Each side carries $I_{SS}/2 = 200\\,\\mu$A, not $400\\,\\mu$A.' }] },
+          { lbl: 'g_m', unit: 'mS', ans: 2, traps: [{ v: 2.8284, msg: 'Use $I_D = I_{SS}/2$.' }, { v: 4, msg: 'Use $I_D = I_{SS}/2$ in $g_m = 2I_D/V_{ov}$.' }] },
+          { lbl: 'A_{dm}', unit: '', ans: -20 },
+          { lbl: 'v_{o2}/v_{id}', unit: '', ans: 10 },
+        ],
+        hints: [md`$I_D = 200\,\mu\text{A}$: $V_{ov} = \sqrt{2I_D/(\mu_nC_{ox}W/L)}$.`, md`$A_{dm} = -g_mR_D$; one output alone moves half as much.`],
+        sol: md`
+1. Each side: $200\,\mu\text{A}$. $V_{ov} = \sqrt{\dfrac{2(200\,\mu\text{A})}{(100\,\mu\text{A/V}^2)(100)}} = 0.2\,\text{V}$, $V_{GS} = 1.2\,\text{V}$.
+2. $g_m = \dfrac{2(200\,\mu\text{A})}{0.2\,\text{V}} = 2\,\text{mS}$.
+3. $A_{dm} = -g_mR_D = -20$; $v_{o2}/v_{id} = +g_mR_D/2 = +10$.`,
+      }),
+      P({
+        id: 'bk05-dp-rds', title: 'The same pair with $r_{ds}$',
+        q: md`Same pair ($g_m = 2\,\text{mS}$, $R_D = 10\kO$) with $\lambda = 0.05\,\text{V}^{-1}$. Find $r_{ds}$ and $A_{dm}$.`,
+        fig: DF.res(),
+        parts: [
+          { lbl: 'r_{ds}', unit: 'kΩ', ans: 100, traps: [{ v: 50, msg: 'Use $I_D = I_{SS}/2 = 200\\,\\mu$A.' }] },
+          { lbl: 'A_{dm}', unit: '', ans: -18.182 },
+        ],
+        hints: [md`$r_{ds} = 1/(\lambda I_D)$ with $I_D = 200\,\mu\text{A}$.`, md`$P$ is a virtual ground: each half is a common source with $R_D\parallel r_{ds}$.`],
+        sol: md`
+1. $r_{ds} = \dfrac{1}{(0.05)(200\,\mu\text{A})} = 100\kO$.
+2. $A_{dm} = -g_m(R_D\parallel r_{ds}) = -(2\,\text{mS})(9.091\kO) = -18.18$.`,
+      }),
+      P({
+        id: 'bk05-dp-cm', title: 'Common mode with a real tail',
+        q: md`The pair has $g_m = 2\,\text{mS}$, $R_D = 10\kO$, and its tail has a small-signal resistance $R_{SS} = 50\kO$ ($r_{ds}$ ignored). Find the common-mode gain $A_{cm} = v_{o1}/v_{ic}$ and the ratio of the single-ended differential gain to $|A_{cm}|$.`,
+        fig: DF.res({ rss: true }),
+        parts: [
+          { lbl: 'A_{cm}', unit: '', ans: -0.099502, accept: [-0.1], traps: [{ v: -0.2, msg: 'Each half sees $2R_{SS}$: the tail carries both halves\' currents.' }] },
+          { lbl: '\\text{CMRR}', unit: '', ans: 100.5, accept: [100] },
+        ],
+        hints: [md`Half circuit: a common source degenerated by $2R_{SS}$.`, md`Single-ended differential gain: $g_mR_D/2$.`],
+        sol: md`
+1. $A_{cm} = -\dfrac{g_mR_D}{1 + 2g_mR_{SS}} = -\dfrac{20}{1 + 200} = -0.0995$.
+2. Single-ended differential gain $g_mR_D/2 = 10$; ratio $\dfrac{10}{0.0995} = 100.5$, about $g_mR_{SS} = 100$.`,
+      }),
+      P({
+        id: 'bk05-dp-mir', title: 'Mirror-loaded pair, with numbers',
+        q: md`A mirror-loaded pair: each NMOS has $g_m = 1\,\text{mS}$, $r_{dsn} = 200\kO$; each PMOS has $g_{mp} = 1\,\text{mS}$, $r_{dsp} = 100\kO$; ideal tail. Find $R_{out}$ (exact) and $A_d = v_{out}/(v_1 - v_2)$, and compare with $g_m(r_{ds2}\parallel r_{ds4})$.`,
+        fig: DF.mir(),
+        parts: [
+          { lbl: 'R_{out}', unit: 'kΩ', ans: 66.832, accept: [66.667], traps: [{ v: 100, msg: 'That is $r_{ds4}$ alone.' }, { v: 200, msg: 'That is $r_{ds2}$ alone.' }] },
+          { lbl: 'A_d', unit: '', ans: 66.337, accept: [66.667], traps: [{ v: 33.333, msg: 'The mirror makes $G_M = g_m$, not $g_m/2$.' }, { v: -66.337, msg: '$v_1$ up makes $M_4$ push more and $M_2$ pull less: positive.' }] },
+        ],
+        hints: [md`$R_{out} = r_{ds4}\parallel\dfrac{2r_{ds1} + R_A}{1 + g_{m4}R_A}$, $R_A = \tfrac1{g_{m3}}\parallel r_{ds3}$.`, md`$G_M\approx g_m$ (exactly $0.9926\,\text{mS}$ here).`],
+        sol: md`
+1. $R_A = 1/(1.01\,\text{mS}) = 990.1\,\Omega$; $R_{chain} = 400\kO + 0.99\kO = 401.0\kO$; $1 + g_{m4}R_A = 1.990$; so the chain contributes $201.5\kO$ and $R_{out} = 100\kO\parallel201.5\kO = 66.83\kO$.
+2. $G_M = \dfrac{g_mr_{dsn}(1 + 2g_{mp}r_{dsp})}{2g_{mp}r_{dsn}r_{dsp} + 2r_{dsn} + r_{dsp}} = 0.9926\,\text{mS}$, so $A_d = (0.9926\,\text{mS})(66.83\kO) = 66.34$.
+3. The estimate $g_m(r_{ds2}\parallel r_{ds4}) = (1\,\text{mS})(66.7\kO) = 66.7$ is within 0.5%.`,
+      }),
+      P({
+        id: 'bk05-dp-rout', title: '$R_{out}$ of the mirror-loaded pair, symbolically',
+        q: md`Inputs at incremental ground, ideal tail, matched pair ($M_2 = M_1$) and matched mirror ($M_4 = M_3$). Type the exact $R_{out}$ in \`rds1\`, \`gm3\`, \`rds3\` (the pair's $g_m$ cancels).`,
+        fig: DF.mir({ look: true }),
+        parts: [ex('rds3 || ((2*rds1 + 1/(gm3 + 1/rds3))/(1 + gm3/(gm3 + 1/rds3)))', ['rds1', 'gm3', 'rds3'], 'R_{out}')],
+        hints: [md`$R_{chain} = r_{ds2} + \dfrac{(1 + g_{m2}r_{ds2})(r_{ds1} + R_A)}{1 + g_{m1}r_{ds1}} = 2r_{ds1} + R_A$ for a matched pair.`, md`$R_{out} = r_{ds4}\parallel\dfrac{R_{chain}}{1 + g_{m4}R_A}$.`],
+        sol: md`
+With $R_A = \dfrac{1}{g_{m3} + 1/r_{ds3}}$:
+$$R_{out} = r_{ds3}\parallel\frac{2r_{ds1} + R_A}{1 + g_{m3}R_A}\approx r_{ds3}\parallel r_{ds1}$$
+(the box also takes $r_{ds1}\parallel r_{ds3}$, which is $r_{ds2}\parallel r_{ds4}$).`,
+      }),
+      P({
+        id: 'bk05-dp-steer', title: 'How far is linear?',
+        q: md`$I_{SS} = 200\,\mu\text{A}$, $W/L = 50$. Find the differential input that steers all the current into $M_1$, and $I_{D1}$ at $v_{id} = 0.1\,\text{V}$ from the square law (use $I_{D1} = \tfrac{I_{SS}}2 + \tfrac k4v_{id}\sqrt{\tfrac{4I_{SS}}{k} - v_{id}^2}$, $k = \mu_nC_{ox}W/L$). Compare with the small-signal estimate $\tfrac{I_{SS}}2 + \tfrac{g_m}2v_{id}$.`,
+        fig: steerPlot,
+        parts: [
+          { lbl: 'v_{id,max}', unit: 'V', ans: 0.28284, traps: [{ v: 0.2, msg: 'That is $V_{ov}$; full steering needs $\\sqrt2\\,V_{ov}$.' }] },
+          { lbl: 'I_{D1}', unit: 'µA', ans: 148.41 },
+        ],
+        hints: [md`$k = 5\,\text{mA/V}^2$; full steering at $\sqrt{2I_{SS}/k}$.`],
+        sol: md`
+1. $\sqrt{2I_{SS}/k} = \sqrt{400\,\mu\text{A}/(5\,\text{mA/V}^2)} = \sqrt{0.08} = 0.283\,\text{V}$ ($= \sqrt2\times0.2\,\text{V}$).
+2. $I_{D1} = 100 + 1250\times0.1\times\sqrt{0.16 - 0.01} = 100 + 125\times0.3873 = 148.4\,\mu\text{A}$.
+3. Small signal: $g_m = 1\,\text{mS}$, $100 + 0.5\,\text{mS}\times0.1\,\text{V} = 150\,\mu\text{A}$: 1% high at a third of the steering range.`,
+      }),
+      P({
+        id: 'bk05-dp-two', title: 'A two-stage amplifier', big: true,
+        q: md`The mirror-loaded pair of the numbers problem (each NMOS $g_m = 1\,\text{mS}$, $r_{dsn} = 200\kO$; PMOS $g_{mp} = 1\,\text{mS}$, $r_{dsp} = 100\kO$) drives the gate of a PMOS common source $M_5$ ($g_{m5} = 2\,\text{mS}$, $r_{ds5} = 50\kO$, source on $V_{DD}$) whose load is an NMOS current source $M_6$ ($r_{ds6} = 100\kO$). Find $A_1 = v_{o1}/v_{id}$ (exact), $A_2 = v_{out}/v_{o1}$ and $A_v$.`,
+        fig: [...DF.mir().filter((e) => !(e[0] === 'term' && e[2] && e[2].n === 'v_{out}')),
+          ['w', [3.8, 1.6], [3.8, 0.6], [4.4, 0.6]], ['node', [3.4, 1.6], { n: 'v_{o1}', side: 'a' }],
+          ['rail', [5.4, -0.4]], ['pmos', [5.4, 0.6], { n: 'M_5' }], ['w', [5.4, 1.6], [6.2, 1.6]], out([6.2, 1.6]),
+          ['nmos', [5.4, 2.6], { n: 'M_6', flip: true }], ['acg', [6.4, 2.6], { dir: 'u' }], ['gnd', [5.4, 3.6]]],
+        parts: [
+          { lbl: 'A_1', unit: '', ans: 66.337, accept: [66.667] },
+          { lbl: 'A_2', unit: '', ans: -66.667 },
+          { lbl: 'A_v', unit: '', ans: -4422.4, accept: [-4444.4] },
+        ],
+        hints: [md`$M_5$'s gate draws nothing: no loading, $A_v = A_1A_2$.`, md`$A_2 = -g_{m5}(r_{ds5}\parallel r_{ds6})$.`],
+        sol: md`
+**Recognize it first:** the classic two-stage op-amp. Stage 1: mirror-loaded pair, $A_1 = G_MR_{out}\approx g_m(r_{ds2}\parallel r_{ds4})$. Stage 2: a PMOS common source with a current-source load. They meet at a gate, so they simply multiply.
+
+1. $A_1 = (0.9926\,\text{mS})(66.83\kO) = 66.34$ (about $66.7$).
+2. $A_2 = -(2\,\text{mS})(50\kO\parallel100\kO) = -(2\,\text{mS})(33.3\kO) = -66.7$.
+3. $A_v = (66.34)(-66.7) = -4422$ (the round estimates give $-4444$): the gain of a real op-amp from two stages.`,
+      }),
+      G('bk_diffpair', { need: 4 }),
+    ],
+  });
+
+  // ================================================================ 7. DC of stacks and mirrors: figures
+  const DCF = FG.dc;
+  // a Practice-2-#1-style bias circuit with new numbers (same topology as the official problem)
+  const dcExam = [
+    ['w', [0, 0], [3.4, 0]], ['rail', [1.7, 0], { n: 'V_{DD} = 5\\,\\text{V}' }],
+    ['pmos', [0, 1], { n: 'M_5', sz: '50/1', flip: true, dc: true }], ['pmos', [2, 1], { n: 'M_4', sz: '100/1' }],
+    ['R', [0, 2], [0, 3], { n: 'R_1', side: 'l' }], ['w', [0, 3], [1, 3]],
+    ['pmos', [2, 3], { n: 'M_3', sz: '400/1' }], ['node', [2, 4], { n: 'V_1', side: 'al' }],
+    ['w', [3.4, 0], [3.4, 0.7]], ['R', [3.4, 0.7], [3.4, 2.5], { s: '25\\kO' }], ['w', [3.4, 2.5], [3.4, 4], [2, 4]], ['iarr', [3.4, 0.35], 'd', { n: 'I_2', side: 'r' }],
+    ['w', [0, 3], [0, 3.5]], ['I', [0, 3.5], [0, 4.9], { s: '50\\,\\mu\\text{A}', side: 'l' }], ['w', [0, 4.9], [0, 6]],
+    ['nmos', [2, 5], { n: 'M_2', sz: '75/1', flip: true }], ['w', [3, 5], [3, 5.3]], ['V', [3, 5.3], [3, 6.2], { n: 'V_A', side: 'r' }], ['gnd', [3, 6.2]],
+    ['iarr', [2, 6], 'd', { n: 'I_1', side: 'r', off: [16, 0] }],
+    ['nmos', [0, 7], { n: 'M_0', sz: '25/1', flip: true, dc: true }], ['gnd', [0, 8]],
+    ['nmos', [2, 7], { n: 'M_1', sz: '75/1' }], ['gnd', [2, 8]],
+  ];
+  const kclFig = [
+    ['rail', [1, -0.6], { n: 'V_{DD}' }], ['I', [1, -0.6], [1, 0.6], { n: 'I_{REF}', side: 'l' }], ['w', [1, 0.6], [1, 1]],
+    ['nmos', [1, 2], { n: 'M_1', flip: true, dc: true }], ['gnd', [1, 3]],
+    ['nmos', [3, 2], { n: 'M_5' }], ['gnd', [3, 3]], ['w', [2, 2], [2, 3.4], [4.4, 3.4], [4.4, 2], [5, 2]],
+    ['nmos', [6, 2], { n: 'M_2' }], ['gnd', [6, 3]], ['node', [6, 0.6], { n: 'X', side: 'r' }],
+    ['w', [3, -1.8], [6, -1.8]], ['rail', [4.5, -1.8], { n: 'V_{DD}' }],
+    ['pmos', [3, -0.8], { n: 'M_3', flip: true, dc: true }], ['w', [3, 0.2], [3, 1]], ['pmos', [5, -0.8], { n: 'M_4' }],
+    ['w', [5, 0.2], [5, 0.6], [6, 0.6]], ['w', [6, 0.6], [6, 1]],
+    ['w', [6, -1.8], [6.8, -1.8], [6.8, -1.2]], ['R', [6.8, -1.2], [6.8, 0.6], { n: 'R_X' }], ['w', [6.8, 0.6], [6, 0.6]],
+  ];
+  const stackBiasFig = [
+    ['rail', [1, -1.6], { n: 'V_{DD}' }], ['I', [1, -1.6], [1, -0.4], { n: '100\\,\\mu\\text{A}', side: 'l' }], ['w', [1, -0.4], [1, 0]],
+    ['nmos', [1, 1], { n: 'M_B', sz: '12.5/1', flip: true, dc: true }], ['nmos', [1, 3], { n: 'M_A', sz: '50/1', flip: true, dc: true }], ['gnd', [1, 4]],
+    ['nmos', [3, 1], { n: 'M_4', sz: '50/1' }], ['nmos', [3, 3], { n: 'M_2', sz: '50/1' }], ['gnd', [3, 4]], ['node', [3, 2], { n: 'X', side: 'r' }],
+    ['w', [3, 0], [3, -0.6]], ['term', [3, -0.6], { n: 'V_{out}', side: 'r' }],
+  ];
+
+  // ================================================================ 7. DC analysis of stacks and mirrors
+  L({
+    id: 'bk05-dc', title: 'DC analysis of stacks and mirrors', ref: 'Practice 2 #1; Problem Set 4 #3–4',
+    steps: [
+      R(md`
+        ### The question
+
+        Exam 2's Problem 1 is often a **DC** problem: no small signal, only the real currents and voltages of a circuit made of mirrors and stacks. Typical questions: find the currents; find a node voltage; find the resistor, the size or the bias voltage that puts a transistor at the **edge of saturation**. Every small-signal number ($g_m$, $r_{ds}$) starts from this bias, so it is also step one of every gain problem.
+
+        Course parameters: $\mu_nC_{ox} = 100\,\mu\text{A/V}^2$, $\mu_pC_{ox} = 50\,\mu\text{A/V}^2$, $V_{TN} = |V_{TP}| = 1\,\text{V}$, $\lambda = 0$ for DC.
+      `),
+      R(md`
+        ### The physical picture: currents are decided first, voltages follow
+
+        In a bias circuit the **currents** are set by a few hard constraints: a current source, mirrors (sizes), series connections (one path, one current) and KCL where branches meet. The **voltages** then adjust themselves so that every transistor carries the current it was given: each one picks the $V_{GS}$ its square law needs, and the drains go wherever the rest of the circuit puts them. So the order of work is always the same: **currents, then overdrives, then node voltages, then the saturation checks.**
+
+        A diode-connected transistor fixes a **gate** voltage; a transistor stacked on another fixes the **source** voltage of the upper one ($V_S = V_G - V_{GS}$ for NMOS, $V_S = V_G + V_{SG}$ for PMOS). That is how voltages climb a stack.
+      `),
+      R(md`
+        ### The tools, each derived
+
+        **1. Current to overdrive.** From $I_D = \tfrac12\mu C_{ox}\tfrac WLV_{ov}^2$:
+        $$V_{ov} = \sqrt{\frac{2I_D}{\mu C_{ox}(W/L)}},\qquad V_{GS} = V_{TN} + V_{ov},\qquad V_{SG} = |V_{TP}| + V_{ov}$$
+        Example: NMOS $W/L = 50$ at $100\,\mu\text{A}$: $V_{ov} = 0.2\,\text{V}$; PMOS $W/L = 400$ at $100\,\mu\text{A}$: $V_{ov} = \sqrt{200/(50\times400)} = 0.1\,\text{V}$. Four times the $W/L$ at the same current halves the overdrive.
+
+        **2. Mirror ratio** ([first section](#/l/bk05-mirror)): same $V_{GS}$, so $I_2/I_1 = (W/L)_2/(W/L)_1$.
+
+        **3. Series devices share one current**, whatever their sizes: their overdrives differ, $V_{ov}\propto1/\sqrt{W/L}$.
+
+        **4. The edge of saturation, drain against gate** (derived in the first section by cancelling $V_S$):
+        $$\text{NMOS: } V_D\ge V_G - V_{TN}\qquad\qquad\text{PMOS: } V_D\le V_G + |V_{TP}|$$
+
+        **5. KCL** at every node where a resistor or a second branch meets a mirror output.
+
+        !!method The recipe
+          1. Currents: sources, mirror ratios, series, KCL.
+          2. Overdrives and $V_{GS}$ from tool 1.
+          3. Gate voltages from the diodes; then climb each stack with $V_S = V_G\mp V_{GS}$.
+          4. Edge of saturation: put the drain exactly at $V_G - V_{TN}$ (NMOS) or $V_G + |V_{TP}|$ (PMOS), and solve for the unknown.
+      `),
+      RF(md`
+        ### Worked example 1: a resistor sets the reference
+
+        A resistor $R = 38\kO$ from $V_{DD} = 5\,\text{V}$ feeds a diode-connected NMOS with $W/L = 50$. Find the current.
+
+        [[fig:f]]
+
+        **Step 1: two descriptions of one current.** Ohm's law: $I = \dfrac{V_{DD} - V_{GS}}{R} = \dfrac{5 - 1 - V_{ov}}{R}$. Square law: $I = \tfrac12(100\,\mu\text{A/V}^2)(50)V_{ov}^2 = (2.5\,\text{mA/V}^2)V_{ov}^2$.
+
+        **Step 2: equate and rearrange.** $(38\kO)(2.5\,\text{mA/V}^2)V_{ov}^2 = 4 - V_{ov}$, that is
+        $$95\,V_{ov}^2 + V_{ov} - 4 = 0\quad\Rightarrow\quad V_{ov} = \frac{-1 + \sqrt{1 + 4(95)(4)}}{2(95)} = \frac{-1 + 39}{190} = 0.2\,\text{V}$$
+        (the negative root would give $V_{GS} < V_{TN}$: no channel, so it is not physical).
+
+        **Step 3:** $I = (2.5\,\text{mA/V}^2)(0.04\,\text{V}^2) = 100\,\mu\text{A}$. **Check:** $(5 - 1.2)/38\kO = 100\,\mu\text{A}$.
+
+        **Feel:** the reference is mostly set by $R$: if $V_{GS}$ were a fixed $1.2\,\text{V}$, $I = 3.8\,\text{V}/R$. The square law only moves $V_{GS}$ by a few tenths.
+      `, { f: { fig: DCF.ref(), cap: 'A resistor-defined reference: $R$ from $V_{DD}$ into the diode $M_1$; $M_2$ copies the current.' } }),
+      RF(md`
+        ### Worked example 2: biasing a cascode
+
+        $100\,\mu\text{A}$ flows into the diode $M_A$ ($W/L = 50$); $M_1$ ($W/L = 50$) copies it, and the cascode device $M_2$ ($W/L = 50$, gate at $V_B$) sits on top. What is the smallest $V_B$ that keeps $M_1$ saturated, and then the lowest output voltage?
+
+        [[fig:f]]
+
+        **Step 1: currents and overdrives.** $M_1$ carries $100\,\mu\text{A}$ ($V_{ov1} = 0.2\,\text{V}$, gate at $1.2\,\text{V}$); $M_2$ is in series, so it carries $100\,\mu\text{A}$ too: $V_{ov2} = 0.2\,\text{V}$, $V_{GS2} = 1.2\,\text{V}$.
+
+        **Step 2: $M_1$'s edge.** Its drain $X$ must stay at $V_{G1} - V_{TN} = 0.2\,\text{V}$ or above. $M_2$ sets $X$: $V_X = V_B - V_{GS2}$. So $V_B - 1.2\ge0.2$, $V_{B,min} = 1.4\,\text{V}$.
+
+        **Step 3: $M_2$'s edge.** $V_{out}\ge V_B - V_{TN} = 0.4\,\text{V} = V_{ov1} + V_{ov2}$.
+
+        **What it means:** each transistor in a stack needs its own $V_{ov}$ of headroom. A plain current source needs $0.2\,\text{V}$; its cascode version needs $0.4\,\text{V}$ (with the best $V_B$), in exchange for $g_mr_{ds}$ times more output resistance.
+      `, { f: { fig: DCF.stack(), cap: 'A cascode current sink: the mirror $M_A$–$M_1$ sets the current; $M_2$ (gate at $V_B$) is stacked on $M_1$.' } }),
+      RF(md`
+        ### Worked example 3: an exam Problem 1, start to finish
+
+        The circuit below has the shape of Practice Exam 2 #1, with new numbers. (a) Find $I_1$, $I_2$ and $V_1$ (all devices saturated). (b) Find $R_1$ that puts $M_4$ at the edge of saturation. (c) Find $V_A$ that puts $M_1$ at the edge.
+
+        [[fig:f]]
+
+        **(a) Currents first.** The $50\,\mu\text{A}$ source sits in the branch $V_{DD}\to M_5\to R_1\to$ source $\to M_0\to$ ground, so $M_5$, $R_1$ and $M_0$ all carry $50\,\mu\text{A}$.
+        - NMOS mirror: $I_1 = 50\times\dfrac{75}{25} = 150\,\mu\text{A}$ through $M_1$, and through $M_2$ in series.
+        - PMOS mirror: $M_4$ carries $50\times\dfrac{100}{50} = 100\,\mu\text{A}$, and so does $M_3$ in series, into $V_1$.
+        - KCL at $V_1$: in, $100\,\mu\text{A} + I_2$; out, $150\,\mu\text{A}$. So $I_2 = 50\,\mu\text{A}$ and $V_1 = 5 - (25\kO)(50\,\mu\text{A}) = 3.75\,\text{V}$.
+
+        **(b) $R_1$.** $M_5$: $V_{ov} = \sqrt{2(50)/(50\times50)} = 0.2\,\text{V}$, $V_{SG5} = 1.2\,\text{V}$, so the PMOS gates are at $3.8\,\text{V}$. $M_4$ at the edge: $V_{D4} = V_G + 1 = 4.8\,\text{V}$. That drain is $M_3$'s source; $M_3$ ($400/1$ at $100\,\mu\text{A}$) has $V_{ov} = 0.1\,\text{V}$, $V_{SG3} = 1.1\,\text{V}$, so its gate is at $4.8 - 1.1 = 3.7\,\text{V}$. $M_3$'s gate is the bottom of $R_1$, whose top is at $3.8\,\text{V}$: $R_1 = \dfrac{3.8 - 3.7}{50\,\mu\text{A}} = 2\kO$.
+
+        **(c) $V_A$.** $M_0$: $V_{ov} = \sqrt{2(50)/(100\times25)} = 0.2\,\text{V}$, gate at $1.2\,\text{V}$, shared by $M_1$. $M_1$ at the edge: $V_{D1} = 1.2 - 1 = 0.2\,\text{V}$. That is $M_2$'s source; $M_2$ ($75/1$ at $150\,\mu\text{A}$): $V_{ov} = \sqrt{300/7500} = 0.2\,\text{V}$, $V_{GS2} = 1.2\,\text{V}$. So $V_A = 0.2 + 1.2 = 1.4\,\text{V}$.
+
+        A Newton solve of the whole circuit with these values confirms every number: $V_1 = 3.75\,\text{V}$, $M_4$'s drain at $4.8\,\text{V}$, $M_1$'s drain at $0.2\,\text{V}$.
+
+        !!mistake Common mistakes in DC problems
+          - **Voltages before currents.** Fix every current first; voltages follow.
+          - **Comparing the drain with the source.** The edge is drain against **gate**: $V_G - V_{TN}$ (NMOS), $V_G + |V_{TP}|$ (PMOS).
+          - **Forgetting that series devices share a current** while their overdrives differ ($M_3$ above: $0.1\,\text{V}$, not $0.2\,\text{V}$).
+          - **Using $\mu_nC_{ox}$ for a PMOS.** PMOS: $50\,\mu\text{A/V}^2$.
+          - **The wrong root** of the resistor-reference quadratic: $V_{ov}$ must be positive.
+      `, { f: { fig: dcExam, cap: 'A bias circuit in the shape of Practice Exam 2 #1 (new sizes and currents).' } }),
+      Q(md`In a stack, an NMOS cascode device $M_2$ sits on $M_1$; $M_1$'s gate is at $1.2\,\text{V}$. What is the lowest voltage $M_1$'s drain may have?`,
+        ['$0.2\\,\\text{V}$', '$1.2\\,\\text{V}$', '$0\\,\\text{V}$', '$2.2\\,\\text{V}$'], 0,
+        [null, 'That is the gate voltage. The drain may sit one threshold **below** the gate.', 'At $0\\,\\text{V}$ the device is deep in triode.', 'That is the gate plus a threshold: the PMOS rule upside down.'],
+        md`NMOS saturation as node voltages: $V_D\ge V_G - V_{TN} = 1.2 - 1 = 0.2\,\text{V}$.`),
+      Q(md`Two NMOS in series carry $100\,\mu\text{A}$: one with $W/L = 50$, one with $W/L = 200$. Their overdrives are`,
+        ['$0.2\\,\\text{V}$ and $0.1\\,\\text{V}$', 'both $0.2\\,\\text{V}$', '$0.2\\,\\text{V}$ and $0.05\\,\\text{V}$', '$0.2\\,\\text{V}$ and $0.4\\,\\text{V}$'], 0,
+        [null, 'They share the current, not the overdrive.', 'Four times the $W/L$ halves the overdrive ($\\sqrt4 = 2$), not quarters it.', 'Upside down: the wider device needs less overdrive.'],
+        md`$V_{ov} = \sqrt{2I/(\mu_nC_{ox}W/L)}$: $\sqrt{200/5000} = 0.2\,\text{V}$ and $\sqrt{200/20000} = 0.1\,\text{V}$.`),
+      P({
+        id: 'bk05-dc-ref', title: 'A resistor reference',
+        q: md`$R = 18\kO$ from $V_{DD} = 3\,\text{V}$ feeds a diode-connected NMOS with $W/L = 50$. Find $V_{ov}$ and $I_{REF}$. A copy with $W/L = 150$ shares the gate: what does it carry?`,
+        fig: DCF.ref(),
+        parts: [
+          { lbl: 'V_{ov}', unit: 'V', ans: 0.2 },
+          { lbl: 'I_{REF}', unit: 'µA', ans: 100, traps: [{ v: 111.11, msg: 'The resistor sees $V_{DD} - V_{GS}$ with $V_{GS} = 1.2$ V, not $V_{DD} - V_{TN}$.' }, { v: 166.67, msg: 'The resistor sees $V_{DD} - V_{GS}$, not $V_{DD}$.' }] },
+          { lbl: 'I_{out}', unit: 'µA', ans: 300 },
+        ],
+        hints: [md`$(3 - 1 - V_{ov})/R = (2.5\,\text{mA/V}^2)V_{ov}^2$.`, md`$45V_{ov}^2 + V_{ov} - 2 = 0$.`],
+        sol: md`
+1. $(18\kO)(2.5\,\text{mA/V}^2)V_{ov}^2 + V_{ov} - 2 = 0$, i.e. $45V_{ov}^2 + V_{ov} - 2 = 0$: $V_{ov} = \dfrac{-1 + \sqrt{1 + 360}}{90} = \dfrac{18}{90} = 0.2\,\text{V}$.
+2. $I_{REF} = (2.5\,\text{mA/V}^2)(0.04) = 100\,\mu\text{A}$; check $(3 - 1.2)/18\kO = 100\,\mu\text{A}$.
+3. The copy: $300\,\mu\text{A}$.`,
+      }),
+      P({
+        id: 'bk05-dc-casc', title: 'Bias a cascode sink',
+        q: md`$50\,\mu\text{A}$ flows into the diode $M_A$ ($W/L = 25$). $M_1$ ($W/L = 100$) mirrors it; the cascode $M_2$ ($W/L = 400$) sits on $M_1$ with its gate at $V_B$. Find $I_{D1}$, $V_{GS2}$, the smallest $V_B$, and the lowest $V_{out}$ at that $V_B$.`,
+        fig: DCF.stack(),
+        parts: [
+          { lbl: 'I_{D1}', unit: 'µA', ans: 200 },
+          { lbl: 'V_{GS2}', unit: 'V', ans: 1.1 },
+          { lbl: 'V_{B,min}', unit: 'V', ans: 1.3, traps: [{ v: 1.1, msg: 'That puts $M_1$\'s drain at 0 V; it must stay at $V_{ov1} = 0.2$ V.' }] },
+          { lbl: 'V_{out,min}', unit: 'V', ans: 0.3 },
+        ],
+        hints: [md`$M_A$: $V_{ov} = 0.2\,\text{V}$; $M_2$ carries $200\,\mu\text{A}$ with $W/L = 400$.`, md`$V_X\ge0.2\,\text{V}$ and $V_X = V_B - V_{GS2}$; $V_{out}\ge V_B - 1$.`],
+        sol: md`
+1. $M_A$: $V_{ov} = \sqrt{100/2500} = 0.2\,\text{V}$; $I_{D1} = 50\times4 = 200\,\mu\text{A}$.
+2. $M_2$: $V_{ov2} = \sqrt{400/40000} = 0.1\,\text{V}$, $V_{GS2} = 1.1\,\text{V}$.
+3. $V_{B,min} = 0.2 + 1.1 = 1.3\,\text{V}$.
+4. $V_{out,min} = 1.3 - 1 = 0.3\,\text{V}$ ($= V_{ov1} + V_{ov2}$).`,
+      }),
+      P({
+        id: 'bk05-dc-kcl', title: 'Two mirrors meet at a resistor', big: true,
+        q: md`$I_{REF} = 100\,\mu\text{A}$ flows into $M_1$ ($W/L = 50$). $M_2$ ($W/L = 100$) pulls current out of node $X$; $M_5$ ($W/L = 50$) pulls current out of the PMOS diode $M_3$ ($W/L = 100$), and $M_4$ ($W/L = 100$) mirrors $M_3$ into $X$. A resistor $R_X$ runs from $V_{DD} = 5\,\text{V}$ to $X$. Find the current in $R_X$, $V_X$ for $R_X = 20\kO$, and the range of $R_X$ that keeps both $M_2$ and $M_4$ saturated.`,
+        fig: kclFig,
+        parts: [
+          { lbl: 'I_{R_X}', unit: 'µA', ans: 100 },
+          { lbl: 'V_X', unit: 'V', ans: 3 },
+          { lbl: 'R_{X,min}', unit: 'kΩ', ans: 2 },
+          { lbl: 'R_{X,max}', unit: 'kΩ', ans: 48 },
+        ],
+        hints: [md`$M_2$ pulls $200\,\mu\text{A}$; $M_5$ and hence $M_3$, $M_4$ carry $100\,\mu\text{A}$. KCL at $X$.`, md`$M_2$: $V_X\ge V_{G} - 1 = 0.2\,\text{V}$. $M_4$: $V_X\le V_{G3} + 1$ with $V_{G3} = 5 - V_{SG3}$.`],
+        sol: md`
+**Recognize it first:** a pull ($M_2$) and a push ($M_4$) meet at $X$; the resistor supplies the difference. Currents first.
+
+1. **Currents.** $M_2$: $100\times2 = 200\,\mu\text{A}$ out of $X$. $M_5$: $100\,\mu\text{A}$, drawn through $M_3$; $M_4$ (same size as $M_3$): $100\,\mu\text{A}$ into $X$. KCL: $I_{R_X} = 200 - 100 = 100\,\mu\text{A}$.
+2. **$V_X$** $= 5 - (20\kO)(100\,\mu\text{A}) = 3\,\text{V}$.
+3. **Gates.** NMOS: $V_{ov} = 0.2\,\text{V}$, gate at $1.2\,\text{V}$. PMOS $M_3$ ($100/1$ at $100\,\mu\text{A}$): $V_{ov} = \sqrt{200/5000} = 0.2\,\text{V}$, $V_{SG} = 1.2\,\text{V}$, gate at $3.8\,\text{V}$.
+4. **Edges.** $M_2$: $V_X\ge0.2\,\text{V}$, so $R_X\le\dfrac{4.8\,\text{V}}{100\,\mu\text{A}} = 48\kO$. $M_4$: $V_X\le3.8 + 1 = 4.8\,\text{V}$, so $R_X\ge\dfrac{0.2\,\text{V}}{100\,\mu\text{A}} = 2\kO$.`,
+      }),
+      P({
+        id: 'bk05-dc-stack', title: 'A diode stack biases a cascode mirror',
+        q: md`$100\,\mu\text{A}$ flows down through two diode-connected NMOS in series: $M_B$ ($W/L = 12.5$) on top of $M_A$ ($W/L = 50$). $M_2$ ($W/L = 50$, gate on $M_A$'s gate) copies the current, and $M_4$ ($W/L = 50$, gate on $M_B$'s gate) is stacked on $M_2$. Find $M_A$'s gate voltage, $M_B$'s gate voltage, the voltage at $X$ ($M_2$'s drain), and the lowest $V_{out}$.`,
+        fig: stackBiasFig,
+        parts: [
+          { lbl: 'V_{GA}', unit: 'V', ans: 1.2 },
+          { lbl: 'V_{GB}', unit: 'V', ans: 2.6, traps: [{ v: 2.4, msg: '$M_B$ is narrower ($12.5/1$): at $100\\,\\mu$A its overdrive is $0.4$ V, so $V_{GS} = 1.4$ V.' }] },
+          { lbl: 'V_X', unit: 'V', ans: 1.4 },
+          { lbl: 'V_{out,min}', unit: 'V', ans: 1.6 },
+        ],
+        hints: [md`$M_A$: $V_{ov} = 0.2\,\text{V}$; $M_B$: $V_{ov} = \sqrt{200/1250} = 0.4\,\text{V}$; the stack adds the two $V_{GS}$.`, md`$M_4$ carries $100\,\mu\text{A}$ ($V_{GS4} = 1.2\,\text{V}$): $V_X = V_{GB} - V_{GS4}$; edge $V_{out} = V_{GB} - 1$.`],
+        sol: md`
+1. $V_{GA} = 1 + 0.2 = 1.2\,\text{V}$. $M_B$: $V_{ov} = \sqrt{2(100)/(100\times12.5)} = 0.4\,\text{V}$, $V_{GS} = 1.4\,\text{V}$; its source is at $1.2\,\text{V}$, so $V_{GB} = 2.6\,\text{V}$.
+2. $M_2$ copies $100\,\mu\text{A}$; $M_4$ in series has $V_{GS4} = 1.2\,\text{V}$, so $V_X = 2.6 - 1.2 = 1.4\,\text{V}$ (well above $M_2$'s edge of $0.2\,\text{V}$).
+3. $M_4$'s edge: $V_{out}\ge2.6 - 1 = 1.6\,\text{V}$. A smaller $M_B$ lifts the cascode gate: it buys margin for $M_2$ at the cost of output swing.`,
+      }),
+      G('bk_dcref', { need: 3 }),
+      G('bk_dcstack', { need: 3 }),
+    ],
+  });
 })();
