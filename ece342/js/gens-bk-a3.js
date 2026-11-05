@@ -522,4 +522,41 @@ Without $r_{ds}$: $-\\dfrac{g_mR_D}{1 + g_mR_S} = ${G4(-gm * RD / (1 + gm * RS))
       _v: { k: 'deg', p: { gm, rds, RD, RS }, a: { GM: GMv, Ro, Av } },
     };
   };
+
+  // ---------------------------------------------------------------- 5. the common gate
+  GENS.bk_cg = () => {
+    const gm = pick([1, 2, 4, 5, 10]) * 1e-3, RS = pick([0.1, 0.2, 0.25, 0.5, 1]) * 1e3, RD = pick([2, 5, 8, 10]) * 1e3;
+    if (Math.random() < 0.45) {
+      const Av = RD / (RS + 1 / gm), GMv = -1 / (RS + 1 / gm);
+      return {
+        fig: F.cg({ RD: KO(RD), RS: OH(RS) }),
+        q: `Common gate: the input comes through $R_S = ${OH(RS)}$ into the source; $g_m = ${MS(gm)}$, $R_D = ${KO(RD)}$. Ignoring $r_{ds}$, find $G_M$ (with its sign), the resistance $R_{in}$ looking into the source, and $A_v$.`,
+        parts: [gBox('G_M', GMv, { key: 'GM' }), resBox('R_{in}', 1 / gm, { key: 'Rin' }),
+          nBox('A_v', Av, { key: 'Av', traps: [{ v: -Av, msg: 'A common gate does not invert: $v_{in}$ up raises the source, $v_{gs}$ falls, less current is pulled through $R_D$, the drain rises.' }, { v: gm * RD, msg: 'That ignores $R_S$: it forms a divider with the source\'s $1/g_m$.' }] })],
+        hints: ['Looking into the source with the gate held: $1/g_m$ (no $r_{ds}$).', '$A_v = \\dfrac{R_D}{R_S + 1/g_m}$: the same current flows through $R_S$, the transistor and $R_D$.'],
+        sol: `1. **$R_{in}$:** the source looks like $1/g_m = ${OH(1 / gm)}$.
+2. **$G_M$:** output shorted, $v_{in}$ drives the current $v_{in}/(R_S + 1/g_m)$ up through $R_S$ into the source, through the transistor and out of the drain into the short, that is, **out of** the stage: $G_M = -\\dfrac{1}{R_S + 1/g_m} = -\\dfrac{1}{${OH(RS + 1 / gm)}} = ${MS(GMv)}$.
+3. **$A_v$** $= -G_MR_D = \\dfrac{R_D}{R_S + 1/g_m} = \\dfrac{${KO(RD)}}{${OH(RS + 1 / gm)}} = ${G4(Av)}$.
+
+Sign check: $v_{in}$ up, source up, $v_{gs}$ down, less current down through $R_D$, drain up: non-inverting.`,
+        _v: { k: 'cg', p: { gm, rds: 1e12, RD, RS }, a: { GM: GMv, Rin: 1 / gm, Av } },
+      };
+    }
+    const rds = pick([20, 50, 100, 200]) * 1e3, N = rds + RS + gm * rds * RS;
+    const GMv = -(1 + gm * rds) / N, Ro = par(RD, N), Av = (1 + gm * rds) * RD / (RD + N), Rin = (rds + RD) / (1 + gm * rds);
+    return {
+      fig: F.cg({ RD: KO(RD), RS: OH(RS) }),
+      q: `Common gate with $g_m = ${MS(gm)}$, $r_{ds} = ${KO(rds)}$, $R_S = ${OH(RS)}$, $R_D = ${KO(RD)}$. Keeping $r_{ds}$, find $G_M$, $R_{out}$, $A_v$ and the input resistance $R_{in}$ looking into the source.`,
+      parts: [gBox('G_M', GMv, { key: 'GM' }), resBox('R_{out}', Ro, { key: 'Ro', traps: [{ v: par(RD, rds), msg: 'With $v_{in}$ off, $R_S$ is still under the source: the drain is degenerated, $r_{ds} + R_S + g_mr_{ds}R_S$.' }] }),
+        nBox('A_v', Av, { key: 'Av', traps: [{ v: -Av, msg: 'Non-inverting: $G_M < 0$, so $A_v = -G_MR_{out} > 0$.' }] }),
+        resBox('R_{in}', Rin, { key: 'Rin', traps: [{ v: 1 / (gm + 1 / rds), msg: 'That is $\\tfrac1{g_m}\\parallel r_{ds}$, the source with the drain grounded. Here $R_D$ is on the drain: $(r_{ds} + R_D)/(1 + g_mr_{ds})$.' }] })],
+      hints: ['$G_M = -\\dfrac{1}{R_S + \\tfrac1{g_m}\\parallel r_{ds}} = -\\dfrac{1 + g_mr_{ds}}{r_{ds} + R_S + g_mr_{ds}R_S}$.', '$R_{out} = R_D\\parallel(r_{ds} + R_S + g_mr_{ds}R_S)$; $R_{in} = \\dfrac{r_{ds} + R_D}{1 + g_mr_{ds}}$.'],
+      sol: `1. $g_mr_{ds} = ${f(gm * rds, 4)}$; $N = r_{ds} + R_S + g_mr_{ds}R_S = ${OH(N)}$.
+2. $G_M = -\\dfrac{1 + g_mr_{ds}}{N} = -\\dfrac{${f(1 + gm * rds, 4)}}{${OH(N)}} = ${MS(GMv)}$ (current flows out of the stage into the short when $v_{in}$ rises).
+3. $R_{out} = R_D\\parallel N = ${OH(Ro)}$.
+4. $A_v = -G_MR_{out} = \\dfrac{(1 + g_mr_{ds})R_D}{R_D + N} = ${G4(Av)}$. (Without $r_{ds}$: $R_D/(R_S + 1/g_m) = ${G4(RD / (RS + 1 / gm))}$.)
+5. $R_{in} = \\dfrac{r_{ds} + R_D}{1 + g_mr_{ds}} = ${OH(Rin)}$, close to $1/g_m = ${OH(1 / gm)}$.`,
+      _v: { k: 'cg', p: { gm, rds, RD, RS }, a: { GM: GMv, Ro, Av, Rin } },
+    };
+  };
 })();

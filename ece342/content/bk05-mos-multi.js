@@ -1283,4 +1283,247 @@ Numbers (Example 3): $-195$. The two size ratios multiply ($2\times2 = 4$), and 
       G('bk_sigmirror', { need: 4 }),
     ],
   });
+
+  // ================================================================ 5. folded cascode: figures
+  const FF = FG.folded;
+  const divFig = [
+    ['w', [0, 0], [4.4, 0]], ['node', [2.2, 0], { n: 'X', side: 'a' }],
+    ['I', [0, 0], [0, 1.8], { n: 'i', side: 'l' }],
+    ['R', [2.2, 0], [2.2, 1.8], { n: 'R_1' }], ['R', [4.4, 0], [4.4, 1.8], { n: 'R_2' }],
+    ['w', [0, 1.8], [4.4, 1.8]], ['gnd', [1.1, 1.8]],
+    ['iarr', [2.2, 0.55], 'u', { n: 'i_1' }], ['iarr', [4.4, 0.55], 'u', { n: 'i_2' }],
+  ];
+  const telescopicFig = [
+    ['rail', [1, -1.2]], ['R', [1, -1.2], [1, 0], { n: 'R_D', side: 'l' }], ['w', [1, 0], [1.8, 0]], out([1.8, 0]),
+    ['nmos', [1, 1], { n: 'M_2' }], ['acg', [0, 1]], ['node', [1, 2], { n: 'X', side: 'r' }],
+    ['nmos', [1, 3], { n: 'M_1' }], ['gnd', [1, 4]], ['w', [0, 3], [-0.6, 3], [-0.6, 3.4]], ...vin(-0.6, 3.4),
+  ];
+  const foldedModel = [
+    ['w', [0, 0], [6, 0]], ['node', [4.6, 0], { n: 'X', side: 'a' }],
+    ...ssm(0, 0, 1.8, 'g_{m1}v_{in}', 'r_{ds1}'), ['gnd', [0.6, 1.8]], ['txt', [0.6, 2.6], '$M_1$'],
+    ['gndu', [2.6, -1.8]], ['R', [2.6, -1.8], [2.6, 0], { n: 'r_{ds3}' }], ['txt', [2.6, 0.55], '$M_3$'],
+    ...ssm(4.8, 1.8, 0, 'g_{m4}v_{gs4}', 'r_{ds4}'), ['txt', [5.4, -0.5], '$M_4:\\ v_{gs4} = 0 - v_X$'],
+    ['w', [6, 1.8], [7, 1.8], [7, 2.2]], ['gnd', [7, 2.2]], ['iarr', [6.5, 1.8], 'l', { n: 'i_{out}' }],
+    ['txt', [6.2, 2.9], '$\\text{output shorted}$'],
+  ];
+  const foldedRoutModel = [
+    ['w', [1, 2], [3.4, 2]], ['node', [3.4, 2], { n: 'X', side: 'r' }], ['R', [2.2, 2], [2.2, 3.6], { n: 'R_X' }], ['gnd', [2.2, 3.6]],
+    ...ssm(1, 2, 0, 'g_{m4}v_{gs4}', 'r_{ds4}'),
+    ['w', [2.2, 0], [3.6, 0]], ['V', [3.6, 0], [3.6, 1.2], { n: 'v_t', side: 'r' }], ['gnd', [3.6, 1.2]], ['iarr', [2.9, 0], 'l', { n: 'i_t' }],
+    ['txt', [1.6, -0.6], '$M_4:\\ v_{gs4} = 0 - v_X$'],
+  ];
+
+  // ================================================================ 5. the folded cascode and current division
+  L({
+    id: 'bk05-folded', title: 'The folded cascode and current division', ref: 'Practice 1 #3; Problem Set 4 #4; Lecture 16 (iii)',
+    steps: [
+      R(md`
+        ### The question
+
+        A [cascode](#/l/bk04-cascode) stacks a common gate on top of a common source: the input device converts $v_{in}$ into a current, and the common gate passes that current on to a high-resistance output. In a **folded** cascode the common gate is the opposite type (a PMOS on an NMOS input), so the signal current turns around at a node $X$ and continues **down** to the output. Practice 1 #3, Problem Set 4 #4 and Problem Set 6(b) are folded cascodes.
+
+        Two questions: how much of the input current makes it around the fold ($G_M$), and what is the output resistance? The first is answered by **current division**, the one new tool of this section.
+      `),
+      RF(md`
+        ### The physical picture: current takes the easy path
+
+        Pull a current $i$ out of a node $X$ that has two resistors to ground, $R_1$ and $R_2$. The node voltage falls until the two resistors together supply $i$. Both see the same voltage $v_X$, so each supplies a current inversely proportional to its resistance: **the easy path supplies more**. Water drawn from two pipes of different widths comes mostly through the wide one.
+
+        [[fig:d]]
+
+        **The derivation.** KCL at $X$: $i = i_1 + i_2$ with $i_1 = -v_X/R_1$ and $i_2 = -v_X/R_2$ (both flow up into the node). So $v_X = -i\,(R_1\parallel R_2)$ and
+        $$\frac{i_2}{i} = \frac{R_1\parallel R_2}{R_2} = \frac{R_1}{R_1 + R_2} = \frac{G_2}{G_1 + G_2}$$
+        **Branch 2's share is the *other* resistance over the sum**, or its own conductance over the total. Example: $R_1 = 1\kO$, $R_2 = 3\kO$: branch 1 supplies $\tfrac34$, branch 2 supplies $\tfrac14$.
+
+        **Transistor sizes.** At a node, a source with its gate held is a wide pipe (about $1/g_m$, a kilohm); a drain is a narrow one ($r_{ds}$, hundreds of kilohms). So if the only source at a node belongs to the common gate, almost all of the signal current goes through it.
+      `, { d: { fig: divFig, cap: 'Current division: the current $i$ pulled out of $X$ is supplied by both branches, in proportion to their conductances.' } }),
+      RF(md`
+        ### Why fold?
+
+        In a telescopic cascode both devices sit in one branch, so the output must stay above $V_{ov1} + V_{ov2}$ plus whatever biases the cascode gate, and the input and output fight for the same headroom. Folding puts the input device and the cascode device in **different branches**: the input current turns around at $X$, and the output branch can sit lower, with its own bias. The price is an extra bias current ($M_3$ must supply both branches) and one more node where signal current can leak away.
+
+        [[fig:t]]
+
+        The small-signal job is the same as in the telescopic cascode: $M_1$ turns $v_{in}$ into a current, and the common gate hands that current to a high-resistance output. Only the bookkeeping at $X$ is new.
+      `, { t: { fig: telescopicFig, cap: 'For comparison, the telescopic cascode: $M_2$ (common gate) stacked directly on $M_1$.' } }),
+      RF(md`
+        ### The circuit and the model
+
+        $M_1$: NMOS, gate at $v_{in}$, drain at $X$. $M_3$: PMOS current source from $V_{DD}$ into $X$ (gate held). $M_4$: PMOS **common gate**, source at $X$, gate held, drain at the output. $R_D$ from the output to ground. Every transistor saturated, $r_{ds}$ kept.
+
+        [[fig:f]]
+
+        **Step 1: each $v_{gs}$** ($V_{DD}$, ground and held gates are all incremental grounds). $M_1$: $v_{gs1} = v_{in}$. $M_3$: $v_{gs3} = 0$, so it is just $r_{ds3}$ from $X$ to ground. $M_4$: gate at 0, source at $X$: $v_{gs4} = -v_X$.
+
+        **Step 2: the model with the output shorted** (for $G_M$). $R_D$ has no voltage across it and drops out. $M_4$'s dependent source runs from its drain (the shorted output) to its source ($X$).
+
+        [[fig:m]]
+      `, {
+        f: { fig: FF(), cap: 'The folded cascode: input $M_1$, current source $M_3$, PMOS common gate $M_4$, load $R_D$.' },
+        m: { fig: foldedModel, cap: 'The model with the output shorted. $M_1$ pulls $g_{m1}v_{in}$ out of $X$; $r_{ds3}$ and $M_4$ supply it; only $M_4$\'s share reaches the output.' },
+      }),
+      R(md`
+        ### The derivation of $G_M$: current division at $X$
+
+        **Step 3: $M_4$ seen from $X$.** With its drain at 0 and its gate at 0, $M_4$'s drain-to-source current is $g_{m4}(0 - v_X) + (0 - v_X)/r_{ds4} = -(g_{m4} + 1/r_{ds4})v_X$. It flows from the output into $X$. So, seen from $X$, $M_4$ is a resistor $\dfrac{1}{g_{m4} + 1/r_{ds4}}$ to ground, and the current it draws from the shorted output is
+        $$i_{out} = -\Big(g_{m4} + \frac1{r_{ds4}}\Big)v_X$$
+
+        **Step 4: everything else at $X$.** Call it $R_X$: here $r_{ds1}\parallel r_{ds3}$ ($M_1$'s $g_{m1}v_{in}$ is kept as the source that drives the node).
+
+        **Step 5: KCL at $X$** (currents leaving):
+        $$g_{m1}v_{in} + \frac{v_X}{R_X} + \Big(g_{m4} + \frac1{r_{ds4}}\Big)v_X = 0\quad\Rightarrow\quad v_X = -\frac{g_{m1}v_{in}}{1/R_X + g_{m4} + 1/r_{ds4}}$$
+
+        **Step 6: put $v_X$ into Step 3.** Multiply top and bottom by $R_X/(g_{m4} + 1/r_{ds4})$:
+
+        !!key The folded cascode's $G_M$ is a current divider
+          $$G_M = g_{m1}\,\frac{R_X}{R_X + \dfrac{1}{g_{m4} + 1/r_{ds4}}}\approx g_{m1}\,\frac{R_X}{R_X + 1/g_{m4}}$$
+          $M_1$ pulls $g_{m1}v_{in}$ out of $X$; $R_X$ and $M_4$'s source supply it in proportion to their conductances; only $M_4$'s share reaches the output.
+
+        **Numbers** (every $g_m = 1\,\text{mS}$, every $r_{ds} = 200\kO$): $R_X = 100\kO$, $M_4$'s side is $995\,\Omega$, so the share is $\dfrac{100}{100.995} = 0.990$ and $G_M = 0.990\,\text{mS}$. **The fold is almost free.**
+      `),
+      RF(md`
+        ### The output resistance: a degenerated drain
+
+        Kill $v_{in}$. Looking **down** from the output: $R_D$. Looking **up**: $M_4$'s drain, with its gate held and $R_X$ under its source. That is the degenerated drain of [Chapter 3](#/l/bk03-degen).
+
+        [[fig:r]]
+
+        Push $i_t$ into the drain; it flows through $M_4$ into $R_X$, so $v_X = i_tR_X$ and $v_{gs4} = -i_tR_X$. The model for $M_4$: $i_t = g_{m4}(-i_tR_X) + (v_t - i_tR_X)/r_{ds4}$. Multiply by $r_{ds4}$ and collect $i_t$:
+        $$R_{UP} = \frac{v_t}{i_t} = r_{ds4} + R_X(1 + g_{m4}r_{ds4})$$
+
+        !!key Output resistance
+          $$R_{out} = R_D\parallel\big[r_{ds4} + R_X(1 + g_{m4}r_{ds4})\big],\qquad A_v = -G_MR_{out}$$
+
+        **Numbers:** $R_{UP} = 200\kO + (100\kO)(201) = 20.3\,\text{M}\Omega$, so with $R_D = 20\kO$: $R_{out} = 19.98\kO$ and $A_v = -(0.990\,\text{mS})(19.98\kO) = -19.8$, essentially $-g_{m1}R_D$.
+
+        **Sign in words:** $v_{in}$ up, $M_1$ pulls more from $X$, $X$ falls, $M_4$'s $v_{sg}$ shrinks, less current flows down into $R_D$, $v_{out}$ falls. Inverting, like the telescopic cascode.
+      `, { r: { fig: foldedRoutModel, cap: 'Looking up into $M_4$\'s drain with $v_{in} = 0$: a held gate and $R_X$ under the source.' } }),
+      RF(md`
+        ### A real folded cascode: a cascode load
+
+        $R_D$ throws away the huge $R_{UP}$. Replace it with an NMOS **cascode current sink**: $M_5$ (gate held) on $M_6$ (gate held). Looking down is now another degenerated drain: $R_{DN} = r_{ds5} + r_{ds6} + g_{m5}r_{ds5}r_{ds6} = 40.4\,\text{M}\Omega$.
+
+        [[fig:c]]
+
+        $G_M$ is unchanged ($0.990\,\text{mS}$: the load is shorted when we find it). $R_{out} = 20.3\,\text{M}\Omega\parallel40.4\,\text{M}\Omega = 13.5\,\text{M}\Omega$, so
+        $$A_v = -(0.990\,\text{mS})(13.5\,\text{M}\Omega) = -13{,}400$$
+        That is about $(g_mr_{ds})^2/3$: the gain of a whole op-amp from one stage. This is why the folded cascode is the classic op-amp input stage.
+      `, { c: { fig: FF({ casc: true }), cap: 'The folded cascode with an NMOS cascode current sink ($M_5$ on $M_6$) as its load.' } }),
+      RF(md`
+        ### Example: a second source at $X$ steals half (Practice 1 #3)
+
+        Practice 1 #3 adds $M_2$: an NMOS with its drain on $V_{DD}$, its gate held and its **source at $X$**. A source with a held gate is a wide pipe, $\tfrac1{g_{m2}}\parallel r_{ds2}$, and now it competes with $M_4$ for $M_1$'s current.
+
+        [[fig:f]]
+
+        1. **$R_X$** now includes $M_2$: $r_{ds1}\parallel r_{ds3}\parallel\big(\tfrac1{g_{m2}}\parallel r_{ds2}\big)$. Conductances: $0.005 + 0.005 + 1.005 = 1.015\,\text{mS}$, so $R_X = 985\,\Omega$.
+        2. **$G_M$** $= (1\,\text{mS})\dfrac{985}{985 + 995} = 0.498\,\text{mS}$. With equal $g_m$'s, **half** the current leaks into $M_2$: $G_M\approx\dfrac{g_{m1}g_{m4}}{g_{m2} + g_{m4}}$.
+        3. **$R_{UP}$** $= 200\kO + (985\,\Omega)(201) = 398\kO$, about $r_{ds4}(1 + g_{m4}/g_{m2}) = 2r_{ds4}$: the small $R_X$ barely degenerates $M_4$.
+        4. With $R_D = 20\kO$: $R_{out} = 19.04\kO$, $A_v = -9.47$, half of the version without $M_2$.
+
+        !!mistake Common mistakes with folded cascodes
+          - **Leaving a source out of $R_X$.** Every source with a held gate at $X$ (other than $M_4$) belongs in $R_X$, and it dominates.
+          - **Using $r_{ds4}$ for $R_{UP}$.** $M_4$ is degenerated by $R_X$: $r_{ds4} + R_X(1 + g_{m4}r_{ds4})$.
+          - **Putting $R_D$ into $G_M$.** $G_M$ is found with the output shorted: the load does not enter it.
+          - **The sign.** The fold does not add an inversion: the folded cascode inverts, like a common source.
+      `, { f: { fig: FF({ m2: true }), cap: 'Practice 1 #3: $M_2$ (source at $X$, gate held) competes with $M_4$ for the signal current.' } }),
+      Q(md`At node $X$, $M_1$ pulls a signal current out. Three things supply it: $r_{ds3} = 200\kO$, the source of a common gate ($\approx1\kO$) and $r_{ds1} = 200\kO$. What fraction comes through the common gate?`,
+        ['About 99%', 'About one third', 'About 50%', 'About 1%'], 0,
+        [null, 'Current does not split equally: it divides by conductance.', 'That would need two equal low-resistance paths.', 'Upside down: the low resistance takes the large share.'],
+        md`Conductances: $0.005$, $1$ and $0.005\,\text{mS}$. The common gate's share is $\dfrac{1}{1.01} = 99\%$. That is why the fold costs almost nothing.`),
+      Q(md`In a folded cascode with load $R_D$, you make $R_D$ ten times larger. What happens to $G_M$?`,
+        ['Nothing', 'It drops ten times', 'It rises ten times', 'It halves'], 0,
+        [null, '$G_M$ is found with the output shorted; the load carries no current then.', 'The load does not enter $G_M$ at all.', 'Only $R_{out}$ (and the gain) grow with $R_D$.'],
+        md`$G_M = g_{m1}\dfrac{R_X}{R_X + 1/(g_{m4} + 1/r_{ds4})}$ has no $R_D$ in it. $R_{out}$ and the gain grow (until $R_D$ approaches $R_{UP}$).`),
+      Q(md`Why does adding $M_2$ (a source with its gate held) at $X$ roughly halve the gain when $g_{m2} = g_{m4}$?`,
+        ['Two equal low-resistance paths share $M_1$\'s current, and only one leads to the output', '$M_2$ adds an inversion', '$M_2$ doubles $R_{out}$', '$M_2$ halves $g_{m1}$'], 0,
+        [null, 'A source with a held gate passes current without changing its sign.', '$R_{UP}$ actually falls (from $\\approx g_mr_{ds}^2$ to $\\approx2r_{ds}$), but with $R_D$ much smaller it hardly matters.', '$M_1$ is untouched; its current is simply shared.'],
+        md`Current division: $\dfrac{1/g_{m2}}{1/g_{m2} + 1/g_{m4}} = \tfrac12$. Half of $g_{m1}v_{in}$ goes into $M_2$ and never reaches the output.`),
+      P({
+        id: 'bk05-fc-div', title: 'Current division at a node',
+        q: md`A signal current of $10\,\mu\text{A}$ is pulled out of node $X$, which has three branches to incremental ground: $R_1 = 2\kO$, $R_2 = 500\,\Omega$ (a common-gate source) and $R_3 = 100\kO$. How much current does each branch supply, and how far does $v_X$ move?`,
+        fig: divFig,
+        parts: [
+          { lbl: 'i_{R_2}', unit: 'µA', ans: 7.9681, accept: [8] },
+          { lbl: 'i_{R_1}', unit: 'µA', ans: 1.9920 },
+          { lbl: '|v_X|', unit: 'mV', ans: 3.9841 },
+        ],
+        hints: [md`$v_X = -i\,(R_1\parallel R_2\parallel R_3)$.`, md`Each branch supplies $|v_X|/R_k$.`],
+        sol: md`
+1. $R_1\parallel R_2\parallel R_3$: conductances $0.5 + 2 + 0.01 = 2.51\,\text{mS}$, so $398.4\,\Omega$; $|v_X| = (10\,\mu\text{A})(398.4\,\Omega) = 3.98\,\text{mV}$.
+2. $i_{R_2} = 3.984\,\text{mV}/500\,\Omega = 7.97\,\mu\text{A}$ (its share $2/2.51 = 79.7\%$), $i_{R_1} = 1.99\,\mu\text{A}$, $i_{R_3} = 0.04\,\mu\text{A}$. They add to $10\,\mu\text{A}$.`,
+      }),
+      P({
+        id: 'bk05-fc-num', title: 'Folded cascode, with numbers',
+        q: md`Folded cascode without $M_2$: $g_{m1} = 2\,\text{mS}$, $r_{ds1} = 100\kO$, $r_{ds3} = 100\kO$, $g_{m4} = 1\,\text{mS}$, $r_{ds4} = 200\kO$, $R_D = 10\kO$. Find $R_X$, $G_M$, $R_{out}$ and $A_v$.`,
+        fig: FF(),
+        parts: [
+          { lbl: 'R_X', unit: 'kΩ', ans: 50 },
+          { lbl: 'G_M', unit: 'mS', ans: 1.9606, accept: [2] },
+          { lbl: 'R_{out}', unit: 'kΩ', ans: 9.9990, accept: [10], traps: [{ v: 9.5238, msg: 'Looking up is not $r_{ds4}$: $M_4$ is degenerated by $R_X$.' }] },
+          { lbl: 'A_v', unit: '', ans: -19.604, accept: [-20] },
+        ],
+        hints: [md`$R_X = r_{ds1}\parallel r_{ds3}$; $M_4$'s side is $\tfrac1{g_{m4}}\parallel r_{ds4}$.`, md`$R_{UP} = r_{ds4} + R_X(1 + g_{m4}r_{ds4})$.`],
+        sol: md`
+1. $R_X = 100\kO\parallel100\kO = 50\kO$.
+2. $M_4$'s side: $1/(1.005\,\text{mS}) = 995\,\Omega$; share $\dfrac{50}{50.995} = 0.9805$; $G_M = 1.961\,\text{mS}$.
+3. $R_{UP} = 200\kO + (50\kO)(201) = 10.25\,\text{M}\Omega$; $R_{out} = 10\kO\parallel10.25\,\text{M}\Omega = 9.999\kO$.
+4. $A_v = -(1.961\,\text{mS})(9.999\kO) = -19.6$.`,
+      }),
+      P({
+        id: 'bk05-fc-sym', title: 'The folded cascode, symbolically',
+        q: md`Without $M_2$, type $G_M$ and $R_{out}$ (load $R_D$), keeping $r_{ds}$. Use \`gm1\`, \`rds1\`, \`rds3\`, \`gm4\`, \`rds4\`, \`RD\`.`,
+        fig: FF(),
+        parts: [
+          ex('gm1*(rds1 || rds3)/((rds1 || rds3) + 1/(gm4 + 1/rds4))', ['gm1', 'rds1', 'rds3', 'gm4', 'rds4'], 'G_M', { ranges: { gm4: [1e-3, 3e-3] } }),
+          ex('RD || (rds4 + (rds1 || rds3)*(1 + gm4*rds4))', ['rds1', 'rds3', 'gm4', 'rds4', 'RD'], 'R_{out}', { ranges: { RD: [1e5, 1e6] } }),
+        ],
+        hints: [md`Output shorted: current division of $g_{m1}v_{in}$ between $r_{ds1}\parallel r_{ds3}$ and $\tfrac1{g_{m4}}\parallel r_{ds4}$.`, md`Looking up: $M_4$ with a held gate and $R_X = r_{ds1}\parallel r_{ds3}$ under its source.`],
+        sol: md`
+$$G_M = g_{m1}\frac{r_{ds1}\parallel r_{ds3}}{(r_{ds1}\parallel r_{ds3}) + \frac{1}{g_{m4} + 1/r_{ds4}}}\approx g_{m1},\qquad R_{out} = R_D\parallel\big[r_{ds4} + (r_{ds1}\parallel r_{ds3})(1 + g_{m4}r_{ds4})\big]$$
+($G_M\approx g_{m1}$ is accepted: the share lost is about $\tfrac{2}{g_{m4}r_{ds}}$.)`,
+      }),
+      P({
+        id: 'bk05-fc-m2', title: 'Practice 1 #3 with numbers', big: true,
+        q: md`The folded cascode with $M_2$ (source at $X$, gate held, drain on $V_{DD}$): $g_{m1} = 2\,\text{mS}$, $g_{m2} = g_{m4} = 1\,\text{mS}$, every $r_{ds} = 100\kO$, $R_D = 5\kO$. Find $R_X$, $G_M$, $R_{out}$ and $A_v$. Then compare with the approximation $G_M\approx g_{m1}g_{m4}/(g_{m2} + g_{m4})$.`,
+        fig: FF({ m2: true }),
+        parts: [
+          { lbl: 'R_X', unit: 'Ω', ans: 970.87 },
+          { lbl: 'G_M', unit: 'mS', ans: 0.98999, accept: [1], traps: [{ v: 2, msg: 'With $M_2$ at $X$ the current divides between two sources: about half is lost.' }] },
+          { lbl: 'R_{out}', unit: 'kΩ', ans: 4.8790 },
+          { lbl: 'A_v', unit: '', ans: -4.8301 },
+        ],
+        hints: [md`$R_X = r_{ds1}\parallel r_{ds3}\parallel\tfrac1{g_{m2}}\parallel r_{ds2}$.`, md`$G_M = g_{m1}\dfrac{R_X}{R_X + 1/(g_{m4} + 1/r_{ds4})}$; $R_{UP} = r_{ds4} + R_X(1 + g_{m4}r_{ds4})$.`],
+        sol: md`
+**Recognize it first:** a folded cascode with a second source at the fold node: current division between two sources with held gates.
+
+1. **$R_X$.** Conductances $0.01 + 0.01 + 1 + 0.01 = 1.03\,\text{mS}$: $R_X = 970.9\,\Omega$.
+2. **$G_M$.** $M_4$'s side: $1/(1.01\,\text{mS}) = 990.1\,\Omega$; share $\dfrac{970.9}{970.9 + 990.1} = 0.4951$; $G_M = 0.990\,\text{mS}$. The approximation gives $\dfrac{(2)(1)}{1 + 1} = 1\,\text{mS}$.
+3. **$R_{out}$.** $R_{UP} = 100\kO + (970.9\,\Omega)(101) = 198.1\kO$; $R_{out} = 5\kO\parallel198.1\kO = 4.879\kO$.
+4. **$A_v$** $= -(0.990\,\text{mS})(4.879\kO) = -4.83$.`,
+      }),
+      P({
+        id: 'bk05-fc-casc', title: 'Folded cascode with a cascode load', big: true,
+        q: md`The folded cascode without $M_2$, loaded by the NMOS cascode sink $M_5$ on $M_6$ (gates held). Every $g_m = 2\,\text{mS}$, every $r_{ds} = 50\kO$. (a) Type $R_{out}$ symbolically (use \`gm4\`, \`rds4\`, \`rds1\`, \`rds3\`, \`gm5\`, \`rds5\`, \`rds6\`). (b) Find $G_M$, $R_{out}$ and $A_v$ with the numbers.`,
+        fig: FF({ casc: true }),
+        parts: [
+          ex('(rds4 + (rds1 || rds3)*(1 + gm4*rds4)) || (rds5 + rds6 + gm5*rds5*rds6)', ['gm4', 'rds4', 'rds1', 'rds3', 'gm5', 'rds5', 'rds6'], 'R_{out}'),
+          { lbl: 'G_M', unit: 'mS', ans: 1.9612, accept: [2] },
+          { lbl: 'R_{out}\\ (\\text{M}\\Omega)', unit: 'MΩ', ans: 1.7202 },
+          { lbl: 'A_v', unit: '', ans: -3373.6, accept: [-3333] },
+        ],
+        hints: [md`$R_{UP} = r_{ds4} + (r_{ds1}\parallel r_{ds3})(1 + g_{m4}r_{ds4})$, $R_{DN} = r_{ds5} + r_{ds6} + g_{m5}r_{ds5}r_{ds6}$.`, md`$G_M$ is unchanged by the load: current division at $X$.`],
+        sol: md`
+**Recognize it first:** both directions from the output look into degenerated drains, each about $g_mr_{ds}\cdot r_{ds}$.
+
+1. **$G_M$.** $R_X = 25\kO$; $M_4$'s side $1/(2.02\,\text{mS}) = 495\,\Omega$; share $\dfrac{25}{25.495} = 0.9806$; $G_M = 1.961\,\text{mS}$.
+2. **$R_{UP}$** $= 50\kO + (25\kO)(101) = 2.575\,\text{M}\Omega$. **$R_{DN}$** $= 50\kO + 50\kO + (2\,\text{mS})(50\kO)(50\kO) = 5.1\,\text{M}\Omega$.
+3. **$R_{out}$** $= 2.575\parallel5.1 = 1.711\,\text{M}\Omega$.
+
+   Check: $\dfrac{2.575\times5.1}{7.675} = 1.711\,\text{M}\Omega$.
+4. **$A_v$** $= -(1.961\,\text{mS})(1.711\,\text{M}\Omega) = -3355$, about $(g_mr_{ds})^2/3 = 3333$.`,
+      }),
+      G('bk_folded', { need: 4 }),
+    ],
+  });
 })();

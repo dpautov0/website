@@ -433,7 +433,7 @@ ${s1}
       hints: [md`Output shorted, $M_4$ looks like $\tfrac1{g_{m4}}\parallel r_{ds4}$ from $X$. $M_1$'s current $g_{m1}v_{in}$ divides between $R_X$ and $M_4$: $G_M = g_{m1}\dfrac{R_X}{R_X + 1/(g_{m4} + 1/r_{ds4})}$.`, md`$R_{out} = [r_{ds4} + R_X(1 + g_{m4}r_{ds4})]\parallel R_{DN}$.`],
       sol: md`
 1. **$R_X$.** ${m2 ? `$r_{ds1}\\parallel r_{ds3}\\parallel(\\tfrac1{g_{m2}}\\parallel r_{ds2}) = ${RT(r.RX)}$: $M_2$'s source dominates.` : `$r_{ds1}\\parallel r_{ds3} = ${RT(r.RX)}$.`}
-2. **Current division.** $M_4$ from $X$ (output shorted): $\tfrac1{g_{m4}}\parallel r_{ds4} = ${RT(r.R4)}$. The share of $g_{m1}v_{in}$ that enters $M_4$: $\dfrac{R_X}{R_X + ${RT(r.R4).replace(/\\,/g, '\\,')}} = ${g(r.GM / v.gm1)}$, so $G_M = ${MS(r.GM)}$.
+2. **Current division.** $M_4$ from $X$ (output shorted): $\tfrac1{g_{m4}}\parallel r_{ds4} = ${RT(r.R4)}$. The share of $g_{m1}v_{in}$ that enters $M_4$: $\dfrac{R_X}{R_X + ${RT(r.R4)}} = ${g(r.GM / v.gm1)}$, so $G_M = ${MS(r.GM)}$.
 3. **Looking up** into $M_4$'s drain: $r_{ds4} + R_X(1 + g_{m4}r_{ds4}) = ${RT(r.RUP)}$. **Looking down:** ${casc ? `$r_{ds5} + r_{ds6} + g_{m5}r_{ds5}r_{ds6} = ${RT(r.RDN)}$` : `$R_D = ${KO(v.RD)}$`}. $R_{out} = ${RT(r.Rout)}$.
 4. $A_v = -G_MR_{out} = ${g(r.Av)}$.`,
     };
