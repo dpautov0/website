@@ -428,7 +428,7 @@
       const up = Math.random() < 0.5;
       const m = ri(-l, l);
       const k = LL - m * (m + (up ? 1 : -1));
-      q = md`Find the coefficient $c$ in $\hat L_${up ? '+' : '-'}\ket{${l}, ${m}} = c\,\hbar\ket{${l}, ${m + (up ? 1 : -1)}}$ (enter 0 if the result is zero).`;
+      q = md`Apply $\hat L_${up ? '+' : '-'}$ to $\ket{\ell, m} = \ket{${l}, ${m}}$. Writing the result as $c\,\hbar\ket{\ell, m${up ? '+' : '-'}1}$, find $c$ (enter 0 if $\hat L_${up ? '+' : '-'}$ gives zero).`;
       parts = [{ lbl: 'c', ans: Math.sqrt(k) }];
       sol = md`$c = \sqrt{\ell(\ell+1) - m(m${up ? '+' : '-'}1)} = \sqrt{${LL} - (${m})(${m + (up ? 1 : -1)})} = ${rt(k)}${k ? md` \approx ${f(Math.sqrt(k))}` : ''}$.${k === 0 ? md` The ladder ends: ${up ? md`$m = \ell$ is the top rung, so $\hat L_+$ gives zero` : md`$m = -\ell$ is the bottom rung, so $\hat L_-$ gives zero`}.` : md` Largest in the middle of the ladder, zero past the ends.`}`;
     } else if (v === 'LpLm') {
@@ -447,7 +447,7 @@
       q = md`Find $\bra{${l}, ${m + (up ? 1 : -1)}}\hat L_x\ket{${l}, ${m}}$ in units of $\hbar$.`;
       parts = [{ lbl: md`\langle\hat L_x\rangle_{\text{off}}`, ans: val }];
       hints = [md`$\hat L_x = \tfrac12(\hat L_+ + \hat L_-)$.`];
-      sol = md`$\hat L_x = \tfrac12(\hat L_+ + \hat L_-)$; only $\hat L_${up ? '+' : '-'}$ reaches $m = ${m + (up ? 1 : -1)}$: $\tfrac12\sqrt{${LL} - (${m})(${m + (up ? 1 : -1)})} = \tfrac12${rt(k)} \approx ${f(val)}$. ${l === 1 ? md`For $\ell = 1$ every such element is $\tfrac{1}{\sqrt2}$, giving $L_x = \tfrac{\hbar}{\sqrt2}\begin{pmatrix}0&1&0\\1&0&1\\0&1&0\end{pmatrix}$.` : md`These fill the two off-diagonals of the $L_x$ matrix.`}`;
+      sol = md`$\hat L_x = \tfrac12(\hat L_+ + \hat L_-)$; only $\hat L_${up ? '+' : '-'}$ reaches $m = ${m + (up ? 1 : -1)}$: $\tfrac12\sqrt{${LL} - (${m})(${m + (up ? 1 : -1)})} = \tfrac12\cdot${rt(k)} \approx ${f(val)}$. ${l === 1 ? md`For $\ell = 1$ every such element is $\tfrac{1}{\sqrt2}$, giving $L_x = \tfrac{\hbar}{\sqrt2}\begin{pmatrix}0&1&0\\1&0&1\\0&1&0\end{pmatrix}$.` : md`These fill the two off-diagonals of the $L_x$ matrix.`}`;
     } else {
       const m = ri(-l, l - 2);
       const k1 = LL - m * (m + 1), k2 = LL - (m + 1) * (m + 2);
@@ -484,10 +484,11 @@
       q = md`A particle has angular wavefunction $Y(\theta,\phi) = A\left[${st}\right]$. Find $P(L_z = ${m === 1 ? '' : m === -1 ? '-' : '0'}${m ? '\\hbar' : ''})$ and $\langle L_z\rangle$ in units of $\hbar$.`;
       parts = [{ lbl: md`P(L_z = ${lt(m)})`, ans: P }, { lbl: '\\langle L_z\\rangle/\\hbar', ans: Lz }];
       hints = [md`The $Y_\ell^m$ are orthonormal: $|A|^2(${a}^2 + ${b}^2 + ${c}^2) = 1$.`];
-      sol = md`$|A|^2 = 1/${N}$. Each $Y_1^m$ is an $L_z$ eigenstate, so $P(m) = |\text{coefficient}|^2/${N}$: $P(L_z = ${lt(m)}) = ${fr([a, b, c][1 - m] ** 2, N)}$. $\langle L_z\rangle = \hbar\,\dfrac{(+1)${a * a} + 0\cdot${b * b} + (-1)${c * c}}{${N}} = ${fr(a * a - c * c, N)}\hbar$. $L^2 = 2\hbar^2$ with certainty.`;
+      sol = md`$|A|^2 = 1/${N}$. Each $Y_1^m$ is an $L_z$ eigenstate, so $P(m) = |\text{coefficient}|^2/${N}$: $P(L_z = ${lt(m)}) = ${fr([a, b, c][1 - m] ** 2, N)}$. $\langle L_z\rangle = \hbar\,\dfrac{(+1)\cdot${a * a} + 0\cdot${b * b} + (-1)\cdot${c * c}}{${N}} = ${fr(a * a - c * c, N)}\hbar$. $L^2 = 2\hbar^2$ with certainty.`;
     } else if (v === 'mixL') {
       let a, b, c; do { a = ri(0, 3); b = ri(0, 3); c = ri(0, 3); } while ([a, b, c].filter((x) => x).length < 2);
       const m1 = ri(-1, 1), m2 = ri(-2, 2);
+      hints = [md`Each $Y_\ell^m$ is an eigenstate of both $\hat L^2$ (eigenvalue $\hbar^2\ell(\ell+1)$) and $\hat L_z$ ($m\hbar$); they are orthonormal.`];
       const N = a * a + b * b + c * c;
       const askL2 = Math.random() < 0.5;
       const st = lin([[a, 'Y_0^0'], [b, `Y_1^{${m1}}`], [c, `Y_2^{${m2}}`]]);
@@ -508,16 +509,16 @@
       q = md`An $\ell = 1$ particle is in $\ket\psi = A\left[${st}\right]$ (real coefficients, standard phases). $L_x$ is measured. Find $P(L_x = ${lam === 1 ? '+\\hbar' : lam === -1 ? '-\\hbar' : '0'})$ and $\langle L_x\rangle$ in units of $\hbar$.`;
       parts = [{ lbl: md`P(L_x = ${lt(lam)})`, ans: P }, { lbl: '\\langle L_x\\rangle/\\hbar', ans: clean(Lx) }];
       hints = [md`$L_x = \dfrac{\hbar}{\sqrt2}\begin{pmatrix}0&1&0\\1&0&1\\0&1&0\end{pmatrix}$ in the basis $m = 1, 0, -1$. Eigenvectors: $+\hbar$: $(\tfrac12, \tfrac{1}{\sqrt2}, \tfrac12)$; $0$: $(\tfrac{1}{\sqrt2}, 0, -\tfrac{1}{\sqrt2})$; $-\hbar$: $(\tfrac12, -\tfrac{1}{\sqrt2}, \tfrac12)$.`];
-      sol = md`$|A|^2 = 1/${N}$. The $L_x = ${lam}\hbar$ eigenvector is $(${f(u[0])}, ${f(u[1])}, ${f(u[2])})$; its overlap with $(${a}, ${b}, ${c})$ is $${f(amp)}$, so $P = ${f(amp)}^2/${N} = ${f(P)}$. $\langle L_x\rangle = \bra\psi\hat L_x\ket\psi = \dfrac{\hbar}{\sqrt2}\cdot\dfrac{2\cdot${b}\,(${a} + ${c})}{${N}} = ${f(Lx)}\hbar$ (only neighbors in $m$ connect). Sharp $L_z$ components still give a spread of $L_x$ outcomes: the two do not commute.`;
+      sol = md`$|A|^2 = 1/${N}$. The $L_x = ${lt(lam)}$ eigenvector is $(${f(u[0])}, ${f(u[1])}, ${f(u[2])})$; its overlap with $(${a}, ${b}, ${c})$ is $${f(amp)}$, so $P = (${f(amp)})^2/${N} = ${f(P)}$. $\langle L_x\rangle = \bra\psi\hat L_x\ket\psi = \dfrac{\hbar}{\sqrt2}\cdot\dfrac{2\cdot(${b})\cdot(${a + c})}{${N}} = ${f(clean(Lx))}\hbar$ (only neighbors in $m$ connect). Sharp $L_z$ components still give a spread of $L_x$ outcomes: the two do not commute.`;
     } else if (v === 'cart') {
       const complexV = Math.random() < 0.4;
       if (complexV) {
         const s = pick([1, -1]), r = ri(1, 3);
         const P = 2 / (2 + r * r);
-        q = md`A particle has $\psi(\mathbf r) = (x ${s > 0 ? '+' : '-'} iy ${r === 1 ? '+' : `+ ${r}`}z)\,f(r)$. Find $P(L_z = ${s > 0 ? '+' : '-'}\hbar)$ and $\langle L_z\rangle$ in units of $\hbar$.`;
+        q = md`A particle has $\psi(\mathbf r) = (x ${s > 0 ? '+' : '-'} iy + ${r === 1 ? '' : r}z)\,f(r)$. Find $P(L_z = ${s > 0 ? '+' : '-'}\hbar)$ and $\langle L_z\rangle$ in units of $\hbar$.`;
         parts = [{ lbl: md`P(L_z = ${s > 0 ? '+' : '-'}\hbar)`, ans: P }, { lbl: '\\langle L_z\\rangle/\\hbar', ans: s * P }];
         hints = [md`$x \pm iy = r\sin\theta\,e^{\pm i\phi} \propto Y_1^{\pm1}$ and $z = r\cos\theta \propto Y_1^0$. Normalization: $x, y, z$ each have the same norm over angles.`];
-        sol = md`$x ${s > 0 ? '+' : '-'} iy = r\sin\theta\,e^{${s > 0 ? '' : '-'}i\phi}$ is pure $m = ${s}$; $z$ is pure $m = 0$. Over angles, $|x \pm iy|^2$ integrates to twice $|z|^2$ (it is $|x|^2 + |y|^2$), so the weights are $2 : ${r * r}$: $P(L_z = ${s}\hbar) = \dfrac{2}{2 + ${r * r}} = ${fr(2, 2 + r * r)}$, $\langle L_z\rangle = ${s > 0 ? '' : '-'}${fr(2, 2 + r * r)}\hbar$. Everything is $\ell = 1$.`;
+        sol = md`$x ${s > 0 ? '+' : '-'} iy = r\sin\theta\,e^{${s > 0 ? '' : '-'}i\phi}$ is pure $m = ${s}$; $z$ is pure $m = 0$. Over angles, $|x \pm iy|^2$ integrates to twice $|z|^2$ (it is $|x|^2 + |y|^2$), so the weights are $2 : ${r * r}$: $P(L_z = ${lt(s)}) = \dfrac{2}{2 + ${r * r}} = ${fr(2, 2 + r * r)}$, $\langle L_z\rangle = ${s > 0 ? '' : '-'}${fr(2, 2 + r * r)}\hbar$. Everything is $\ell = 1$.`;
       } else {
         let a, b, c; do { a = ri(0, 2); b = ri(0, 2); c = ri(0, 2); } while (a + b + c === 0 || (a === 0 && b === 0));
         const N = a * a + b * b + c * c;
@@ -527,7 +528,7 @@
         q = md`A particle has $\psi(\mathbf r) = (${st})\,f(r)$. Find $P(L_z = ${askZero ? '0' : '+\\hbar'})$ and $\langle L_z\rangle$ in units of $\hbar$.`;
         parts = [{ lbl: md`P(L_z = ${askZero ? '0' : '\\hbar'})`, ans: P }, { lbl: '\\langle L_z\\rangle/\\hbar', ans: 0 }];
         hints = [md`$x = \tfrac12[(x + iy) + (x - iy)]$, $y = \tfrac{1}{2i}[(x + iy) - (x - iy)]$; $x \pm iy \propto Y_1^{\pm1}$, $z \propto Y_1^0$.`];
-        const cpl = (x, y, sg) => (y ? `(${x}${sg}${y === 1 ? '' : y}i)` : `${x}`);
+        const cpl = (x, y, sg) => (!y ? (x === 1 ? '' : `${x}`) : !x ? `(${sg === '-' ? '-' : ''}${y === 1 ? '' : y}i)` : `(${x}${sg}${y === 1 ? '' : y}i)`);
         sol = md`Use $x = \tfrac12[(x + iy) + (x - iy)]$ and $y = \tfrac{1}{2i}[(x + iy) - (x - iy)]$: $${st} = \tfrac12${cpl(a, b, '-')}(x + iy) + \tfrac12${cpl(a, b, '+')}(x - iy)${c ? md` + ${c === 1 ? '' : c}z` : ''}$, with $x \pm iy \propto Y_1^{\pm1}$ and $z \propto Y_1^0$. Over angles $\int|x \pm iy|^2d\Omega = \int(x^2 + y^2)d\Omega = 2\int z^2d\Omega$, so in units of the weight of $z$: $m = +1$ and $m = -1$ each get $2\cdot\tfrac14\cdot${a * a + b * b} = ${fr(a * a + b * b, 2)}$, and $m = 0$ gets $${c * c}$ (total $${N}$ ✓). So $P(\pm\hbar) = ${fr(a * a + b * b, 2 * N)}$ each and $P(0) = ${fr(c * c, N)}$. Asked: $${f(P)}$. A real wavefunction always has $\langle L_z\rangle = 0$ (equal weights for $\pm m$): a standing wave in $\phi$, no circulation.`;
       }
     } else {
@@ -690,7 +691,7 @@
       q = md`A particle in a cubic box of side $L$: $E = \dfrac{\pi^2\hbar^2}{2mL^2}(n_x^2 + n_y^2 + n_z^2)$. How many states have $n_x^2 + n_y^2 + n_z^2 = ${S}$?`;
       parts = [{ lbl: '\\text{degeneracy}', ans: deg }];
       hints = [md`Find all sets of positive integers with squares summing to ${S}, then count their distinct orderings.`];
-      sol = md`Sets: ${[...sets].map((s) => `$(${s.split('').join(',')})$`).join(', ')}. Counting orderings: $${deg}$ states.${sets.size > 1 ? ' Two different sets give the same energy: an accidental degeneracy on top of the cube\'s symmetry.' : ' The permutations come from the cube\'s symmetry (x, y, z equivalent).'}`;
+      sol = md`Sets: ${[...sets].map((s) => `$(${s.split('').join(',')})$`).join(', ')}. Counting orderings: $${deg}$ state${deg > 1 ? 's' : ''}.${sets.size > 1 ? ' Two different sets give the same energy: an accidental degeneracy on top of the cube\'s symmetry.' : ' The permutations come from the cube\'s symmetry (x, y, z equivalent).'}`;
     }
     return { title: 'Particle in a 3D box', q, parts, hints, sol };
   };
@@ -788,10 +789,10 @@
       parts = [{ lbl: '|\\psi(r)|^2/|\\psi(0)|^2', ans: Math.exp(-2 * x) }];
       sol = md`$|\psi|^2 \propto e^{-2r/a}$: $e^{-${2 * x}} = ${f(Math.exp(-2 * x), 3)}$. The density is largest at the nucleus, but the radial probability $4\pi r^2|\psi|^2$ vanishes there: the shell volume $4\pi r^2dr$ is tiny.`;
     } else {
-      const R = pick([[1, '1 fm'], [0.84, '0.84 fm (the proton radius)'], [1.2, '1.2 fm']]);
+      const R = pick([[1, ''], [0.84, ' (the proton radius)'], [1.2, '']]);
       const beta = R[0] * 1e-6 / A0;
       const P = (4 / 3) * beta ** 3 * (1 - 1.5 * beta);
-      q = md`Estimate the probability that the ground-state electron of hydrogen is inside the nucleus, radius $b = ${R[1]}$ ($a = 0.0529$ nm $= 52\,900$ fm). Enter it in units of $10^{-15}$.`;
+      q = md`Estimate the probability that the ground-state electron of hydrogen is inside the nucleus, radius $b = ${R[0]}$ fm${R[1]} ($a = 0.0529$ nm $= 52\,900$ fm). Enter it in units of $10^{-15}$.`;
       parts = [{ lbl: md`P\ (\times10^{-15})`, ans: P * 1e15 }];
       hints.push(md`For $b \ll a$, $|\psi|^2 \approx |\psi(0)|^2 = 1/\pi a^3$ inside: $P \approx \tfrac43\pi b^3\cdot\tfrac{1}{\pi a^3}$.`);
       sol = md`$P \approx \dfrac43\left(\dfrac ba\right)^3 = \dfrac43(${f(beta, 3)})^3 = ${f(P, 3)}$, i.e. $${f(P * 1e15, 3)}\times10^{-15}$. Tiny, but nonzero only for $s$ states ($R(0) \ne 0$): this is why electron capture and the hyperfine contact term involve $s$ electrons.`;
@@ -815,7 +816,7 @@
       parts = [{ lbl: 'E/\\hbar\\omega', ans: a + b + c + 1.5 }];
       sol = md`Three independent 1D oscillators: $E = \hbar\omega(n_x + n_y + n_z + \tfrac32) = ${fr(2 * (a + b + c) + 3, 2)}\hbar\omega$. The zero-point energy is $\tfrac32\hbar\omega$: $\tfrac12$ per dimension.`;
     } else if (v === 'nl') {
-      q = md`The 3D isotropic oscillator level $N = ${N}$ contains several $\ell$ multiplets. How many different values of $\ell$?`;
+      q = md`How many different values of $\ell$ occur in the 3D isotropic oscillator level $N = ${N}$?`;
       parts = [{ lbl: '\\text{number of }\\ell\\text{ values}', ans: ells.length }];
       sol = md`$\ell = N, N - 2, \dots$ down to ${N % 2 ? 1 : 0}: $\ell = ${ells.join(', ')}$, so $${ells.length}$ values. Parity $(-1)^N = (-1)^\ell$ forces $\ell$ to have the parity of $N$.`;
     } else if (v === 'ells') {

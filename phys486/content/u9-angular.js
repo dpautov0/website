@@ -46,7 +46,7 @@
     for (let m = -2; m <= 2; m++) {
       const y = cy - m * s, x = cx + Math.sqrt(6 - m * m) * s;
       f.line(cx - 8, y, cx + 2, y, { cls: 'dim' });
-      f.label(cx - 12, y, `${m}\\hbar`, 'r', 'small');
+      f.label(cx - 12, y, m === 0 ? '0' : `${m === 1 ? '' : m === -1 ? '-' : m}\\hbar`, 'r', 'small');
       f.arrow(cx, cy, x, y, { hs: 6 });
     }
     f.ellipse(cx, cy - 2 * s, Math.sqrt(2) * s, 0.3 * Math.sqrt(2) * s, { cls: 'dash' });
@@ -722,7 +722,7 @@
 
             **(b)** $\langle H\rangle = \tfrac49\cdot\tfrac{6\hbar^2}{2I} = \tfrac{4\hbar^2}{3I}$.
 
-            **(c)** $Y(t) = c_0Y_0^0 + c_2Y_2^0e^{-iE_2t/\hbar}$. The cross term in $|Y|^2$ oscillates at $\omega = E_2/\hbar = 3\hbar/I$, period $\tau = 2\pi I/3\hbar$. The distribution alternates between pole-heavy ($\cos^2\theta$ at $t = 0$) and equator-heavy at $\tau/2$ (when the cross term flips sign: $\tfrac13 - \tfrac13(3\cos^2\theta - 1) = \tfrac23 - \cos^2\theta$... shifted toward $\sin^2\theta$). Same mechanism as the sloshing in Midterm 1 Problem 1: two energies, one beat.
+            **(c)** $Y(t) = c_0Y_0^0 + c_2Y_2^0e^{-iE_2t/\hbar}$ (dropping the $E_0 = 0$ phase). The cross term in $|Y|^2$ oscillates at $\omega = E_2/\hbar = 3\hbar/I$, period $\tau = 2\pi I/3\hbar$. At $t = 0$ the distribution is pole-heavy ($\propto\cos^4\theta$). At $\tau/2$ the $Y_2^0$ part has flipped sign: $Y \propto \tfrac13 - \tfrac13(3\cos^2\theta - 1) = \tfrac23 - \cos^2\theta$, so $|Y|^2$ is now largest at the equator ($\tfrac49$ there against $\tfrac19$ at the poles). The molecule's orientation sloshes between "along $z$" and "in the $xy$ plane": the same mechanism as Midterm 1 Problem 1, two energies and one beat.
 
             !!mistake Common mistakes
               - Missing the hidden $\ell = 0$ part of $z^2$, $x^2$, $\cos^2\theta$, etc. Only harmonic polynomials are pure $\ell$.
