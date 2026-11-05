@@ -422,7 +422,9 @@
       else if (el.type === 'nmos' || el.type === 'pmos' || el.type === 'npn' || el.type === 'pnp') {
         const P = mosPins(el);
         [P.D, P.G, P.S].forEach((p) => bump(p));
-        if (el.opts.dc) { bump(P.G); bump(P.D); }
+        // diode connection: the gate/base and drain/collector each get a wire; its corner is a junction only if
+        // something else meets it there (2 for the bend, so one more wire makes it a dot)
+        if (el.opts.dc) { bump(P.G); bump(P.D); bump([P.G[0], P.D[1]], 2); }
       } else if (el.type === 'opamp') {
         Object.values(ampPins(el)).forEach((p) => bump(p));
       } else if (el.type === 'rail' || el.type === 'gnd' || el.type === 'gndu' || el.type === 'acg') bump(el.pts[0]);

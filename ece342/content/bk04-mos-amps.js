@@ -1286,4 +1286,188 @@ Same size, opposite sign; the common gate is larger by the factor $(1 + g_mr_{ds
       G('bk_cg', { need: 4 }),
     ],
   });
+
+  // ================================================================== 6. the source follower
+  L({
+    id: 'bk04-cd', title: 'The source follower', ref: 'Lecture 17',
+    steps: [
+      RF(md`
+        ### The question
+
+        Drive the gate, put the drain on $V_{DD}$, and take the output at the **source**, with a load $R_L$ from the source to ground. This is the **source follower** (or common drain). Its gain is a little **below 1**. Why build a stage that does not amplify? Because of its terminal resistances: infinite in, about $1/g_m$ out. Exam 2 used it as a buffer at the end of a chain and inside multi-transistor problems.
+
+        [[fig:c]]
+
+        ### The physical picture
+
+        The source sits one $V_{GS}$ below the gate: $V_{out} = V_{in} - V_{GS}$. If the current never changed, $V_{GS}$ would never change, and the source would copy every wiggle of the gate exactly: gain 1. That is the whole idea of a follower.
+
+        With a resistor load, though, a higher output pushes more current through $R_L$, and more current needs a slightly larger $V_{GS}$. So the source rises a little **less** than the gate. How much less? The extra current is $v_{out}/R_L$ and it needs an extra $v_{gs} = v_{out}/(g_mR_L)$. The input must supply both:
+        $$v_{in} = v_{out} + v_{gs} = v_{out}\Big(1 + \frac{1}{g_mR_L}\Big)\quad\Rightarrow\quad A_v = \frac{g_mR_L}{1 + g_mR_L} = \frac{R_L}{R_L + 1/g_m}$$
+        A voltage divider: $1/g_m$ on top, $R_L$ below. With $g_m = 2\,\text{mS}$ and $R_L = 2\kO$: $g_mR_L = 4$ and $A_v = 0.8$.
+
+        [[fig:tc]]
+
+        !!intuition A valve that adjusts itself
+          The follower is a valve that keeps opening until the output sits just $V_{GS}$ below the input. Pull current out of the output and the valve opens a little more, almost without the output moving: that is why its output resistance is so low, about $1/g_m$ ([Chapter 3](#/l/bk03-source): "the source follows the gate").
+      `, {
+        c: { fig: F.cd(), cap: 'The source follower: gate in, source out, drain on $V_{DD}$.' },
+        tc: { fig: F.cdTransfer(), cap: 'Follower transfer curve ($K = 5\\,\\text{mA/V}^2$, $R_L = 2\\,\\text{k}\\Omega$): the output follows the input about $V_{GS}\\approx1.4\\,\\text{V}$ lower, with a slope just under 1.' },
+      }),
+      RF(md`
+        ### The model and the derivation
+
+        Saturation, small signals, $r_{ds}$ kept. The drain is on $V_{DD}$: incremental ground.
+
+        **$G_M$: short the output (the source).**
+
+        *Step 1:* gate at $v_{in}$, source shorted to 0: $v_{gs} = v_{in}$.
+
+        *Step 2:* $r_{ds}$ has the drain (0) on one end and the shorted source (0) on the other: no current. $R_L$ has 0 V across it: no current.
+
+        *Step 3:* the dependent source carries $g_mv_{in}$ from the drain **down into the source node**, and the only way out of that node is the short. So current flows **out of the stage into the short**; the current flowing from the short into the stage is the opposite:
+        $$i_{out} = -g_mv_{in},\qquad G_M = -g_m$$
+
+        [[fig:s]]
+
+        **$R_{out}$: turn the input off.**
+
+        *Step 1:* $v_{in} = 0$ grounds the gate; the test source $v_t$ sits on the source: $v_{gs} = 0 - v_t = -v_t$. The dependent source is **alive**, driven by the test voltage itself.
+
+        *Step 2:* three currents leave the output node: $v_t/R_L$ down through $R_L$, $v_t/r_{ds}$ up through $r_{ds}$ to the drain (at 0), and the dependent source: from drain to source it carries $g_m(-v_t)$, which is $g_mv_t$ flowing **up**, out of the output node.
+
+        *Step 3:* add them: $i_t = \dfrac{v_t}{R_L} + \dfrac{v_t}{r_{ds}} + g_mv_t$, so
+        $$R_{out} = \frac{1}{1/R_L + 1/r_{ds} + g_m} = R_L\parallel r_{ds}\parallel\frac{1}{g_m}$$
+
+        [[fig:t]]
+
+        **The gain.** $A_v = -G_MR_{out} = g_m\big(R_L\parallel r_{ds}\parallel\tfrac1{g_m}\big)$. Write $R' = R_L\parallel r_{ds}$; then $R'\parallel\dfrac1{g_m} = \dfrac{R'}{1 + g_mR'}$ (multiply top and bottom by $g_m$), and
+        $$A_v = \frac{g_mR'}{1 + g_mR'} = \frac{R'}{R' + 1/g_m}$$
+        exactly the divider of the physical picture, with $r_{ds}$ in parallel with $R_L$.
+
+        !!key The source follower (Lecture 17)
+          $$G_M = -g_m,\qquad R_{out} = R_L\parallel r_{ds}\parallel\frac1{g_m}\approx\frac1{g_m},\qquad A_v = \frac{R'}{R' + 1/g_m},\ \ R' = R_L\parallel r_{ds}$$
+          $R_{in} = \infty$ (a gate). Non-inverting, $0 < A_v < 1$.
+      `, {
+        s: { fig: F.cdM('short'), cap: '$G_M$: the output (source) shorted. The dependent source pushes $g_mv_{in}$ into the short: $G_M = -g_m$.' },
+        t: { fig: F.cdM('test'), cap: '$R_{out}$: gate grounded, $v_{gs} = -v_t$: the dependent source acts as a conductance $g_m$.' },
+      }),
+      RF(md`
+        ### Check it
+
+        - **$R_L\to\infty$ and $r_{ds}\to\infty$:** $A_v\to1$, the perfect follower (an ideal current-source load).
+        - **$R_L\ll1/g_m$:** $A_v\approx g_mR_L$, small: the load is too heavy for the transistor.
+        - **Sign:** $v_{in}$ up, $v_{gs}$ up, more current pushed into the output node, $v_{out}$ up: non-inverting, and it can never catch $v_{in}$, because some $v_{gs}$ is needed to carry the extra current.
+        - **One number:** $g_m = 2\,\text{mS}$, $r_{ds} = 100\kO$, $R_L = 2\kO$: $R_{out} = 1/(0.5 + 0.01 + 2)\,\text{mS} = 398\,\Omega$ and $A_v = (2\,\text{mS})(398\,\Omega) = 0.797$.
+
+        ### What it means: the buffer
+
+        A common source with $g_m = 2\,\text{mS}$ and $R_D = 10\kO$ has gain $-20$ but an output resistance of $10\kO$. Hang a $500\,\Omega$ load on it and the load sits in parallel with $R_D$: $A_v = -(2\,\text{mS})(10\text{k}\parallel0.5\text{k}) = -0.95$. Almost everything is lost.
+
+        Put a follower in between ($g_{m2} = 10\,\text{mS}$). Its gate draws nothing, so the common source keeps its $-20$. The follower drives $500\,\Omega$ with $g_{m2}R_L = 5$: gain $5/6 = 0.83$. Total: $-20\times0.83 = -16.7$. A stage with gain **below 1** made the chain 17 times better, because it converts a high-resistance output into a low-resistance one without loading the stage in front.
+
+        [[fig:b]]
+
+        **A current-source load.** Put an NMOS current source under the source (gate held): $R_L = r_{ds2}$, and $A_v = \dfrac{r_{ds1}\parallel r_{ds2}}{(r_{ds1}\parallel r_{ds2}) + 1/g_m}$, very close to 1 (with $g_m = 2\,\text{mS}$ and both $r_{ds} = 100\kO$: $100/101 = 0.990$).
+
+        **DC: a level shifter.** With a constant current, $V_{GS}$ is constant, so the follower copies the input $V_{GS}$ lower: $V_{OUT} = V_{IN} - (V_{TN} + V_{ov})$.
+
+        **PMOS and drain resistors.** A PMOS follower (source on a resistor or current source up to $V_{DD}$, drain to ground) uses the same formulas. A resistor in the drain of an NMOS follower changes nothing while $r_{ds}$ is ignored: with the output shorted, the drain current is $g_mv_{in}$ wherever the drain sits.
+
+        ### How to recognize it
+
+        Input at the **gate**, output at the **source**, the drain on a supply (or anything that does not carry the output). Say: "follower: $R'$ over ($R' + 1/g_m$); it looks like $1/g_m$ from the output."
+
+        !!mistake Common mistakes
+          - **$A_v = 1$ exactly.** Only with an ideal current-source load and no $r_{ds}$. With $R_L$ it is $R'/(R' + 1/g_m)$.
+          - **$G_M = +g_m$.** The current flows out of the stage into the short: $G_M = -g_m$, and $A_v = -G_MR_{out}$ comes out positive.
+          - **Killing the dependent source for $R_{out}$.** $v_{in} = 0$, but $v_{gs} = -v_t$: the source stays and gives the $1/g_m$.
+          - **Forgetting that a follower loads nothing.** Its input is a gate: the stage before it keeps its unloaded gain.
+      `, { b: { fig: F.buffer(), cap: 'A common source $M_1$ driving the load through a follower $M_2$.' } }),
+      Q(md`Why is a source follower's gain slightly **less** than 1 (with a resistor load)?`,
+        ['To carry more current into $R_L$, the transistor needs a slightly larger $v_{gs}$, so the source rises a bit less than the gate.', 'Because $r_{ds}$ leaks part of the signal to ground.', 'Because the gate draws a small current.', 'Because the follower inverts a little of the signal.'], 0,
+        [null, '$r_{ds}$ lowers the gain a little more, but even with $r_{ds}\\to\\infty$ the gain is $g_mR_L/(1 + g_mR_L) < 1$.', 'A MOSFET gate draws no current.', 'A follower does not invert; all of its gain is positive.'],
+        md`$v_{in} = v_{out} + v_{gs}$ and the extra current $v_{out}/R_L$ needs $v_{gs} = v_{out}/(g_mR_L)$. So $v_{out} = \dfrac{g_mR_L}{1 + g_mR_L}v_{in}$: always below 1, approaching 1 as $g_mR_L$ grows.`),
+      Q(md`Seen from its output, a source follower ($g_m = 5\,\text{mS}$, large $R_L$ and $r_{ds}$) looks like about:`,
+        ['$200\\,\\Omega$', '$R_L$', '$r_{ds}$', 'An open circuit'], 0,
+        [null, '$R_L$ is in parallel with something much smaller: the transistor\'s own $1/g_m$.', '$r_{ds}$ is in parallel too, and it is huge; the smallest element wins.', 'The transistor fights any change of its source voltage: that is a small resistance, not an open.'],
+        md`$R_{out} = R_L\parallel r_{ds}\parallel\dfrac1{g_m}\approx\dfrac{1}{g_m} = 200\,\Omega$. Push the output down by $1\,\text{mV}$ and $v_{gs}$ grows by $1\,\text{mV}$, so the transistor pushes $5\,\mu\text{A}$ more into the output: $1\,\text{mV}/5\,\mu\text{A} = 200\,\Omega$.`),
+      Q(md`The gate of a source follower is driven through a $100\kO$ resistor from the previous stage. Ignoring $r_{ds}$, how does that resistor change the follower's gain?`,
+        ['Not at all: the gate draws no current, so there is no drop across the resistor.', 'It halves the gain.', 'It adds $100\\,\\text{k}\\Omega$ to the output resistance.', 'It makes the gain $R_L/(R_L + 100\\,\\text{k}\\Omega)$.'], 0,
+        [null, 'With no gate current there is no divider at the input.', 'The output resistance is $1/g_m\\parallel R_L$: nothing from the gate side appears, because the gate current is zero.', 'That would need the resistor to carry the load current, which it does not.'],
+        md`No current flows into a MOSFET gate, so $v_g = v_{in}$ exactly and the resistor is invisible. (A BJT emitter follower is different: its base current flows through that resistor, which divides by $(\beta + 1)$ and shows up at the output, [Chapter 9](#/l/bk09-cc).)`),
+      P({
+        id: 'bk04-cd-num', title: 'Follower with numbers',
+        q: md`Source follower: $g_m = 4\,\text{mS}$, $r_{ds} = 50\kO$, $R_L = 1\kO$. Find $G_M$ (with its sign), $R_{out}$ and $A_v$.`,
+        fig: F.cd({ RL: '1\\,\\text{k}\\Omega' }),
+        parts: [{ lbl: 'G_M', unit: 'mS', ans: -4 }, { lbl: 'R_{out}', unit: 'Ω', ans: 1000 / 5.02, traps: [{ v: 1000 / 1.02, msg: 'That is $R_L\\parallel r_{ds}$: the transistor adds a conductance $g_m$ in parallel.' }] }, { lbl: 'A_v', unit: '', ans: 4 / 5.02 }],
+        hints: [md`Output shorted: $G_M = -g_m$.`, md`Conductances at the output: $1/R_L + 1/r_{ds} + g_m$.`],
+        sol: md`
+1. $G_M = -g_m = -4\,\text{mS}$.
+2. $1/R_L + 1/r_{ds} + g_m = 1 + 0.02 + 4 = 5.02\,\text{mS}$, so $R_{out} = 199\,\Omega$.
+3. $A_v = -G_MR_{out} = (4\,\text{mS})(199\,\Omega) = 0.797$. Check: $R' = 1\text{k}\parallel50\text{k} = 0.980\kO$, $R'/(R' + 0.25\kO) = 0.797$.`,
+      }),
+      P({
+        id: 'bk04-cd-buffer', title: 'Why a gain below 1 helps',
+        q: md`A common source ($g_{m1} = 2\,\text{mS}$, $R_D = 10\kO$) must drive $R_L = 500\,\Omega$. Ignore $r_{ds}$. Find the gain with $R_L$ tied straight to the drain, and through a follower with $g_{m2} = 10\,\text{mS}$.`,
+        fig: F.buffer({ RD: '10\\,\\text{k}\\Omega', RL: '500\\,\\Omega' }),
+        parts: [{ lbl: 'A_v\\text{ direct}', unit: '', ans: -2 * 0.5 * 10 / 10.5, traps: [{ v: -20, msg: 'Tied to the drain, $R_L$ is in parallel with $R_D$.' }] }, { lbl: 'A_v\\text{ buffered}', unit: '', ans: -20 * 5 / 6 }],
+        hints: [md`Direct: $-g_{m1}(R_D\parallel R_L)$. Buffered: $-g_{m1}R_D\times\dfrac{g_{m2}R_L}{1 + g_{m2}R_L}$.`],
+        sol: md`
+1. Direct: $10\text{k}\parallel0.5\text{k} = 0.476\kO$; $A_v = -(2)(0.476) = -0.952$.
+2. Buffered: $M_1$ drives a gate and keeps $-20$; the follower has $g_{m2}R_L = 5$, gain $5/6 = 0.833$. Total $-16.7$.`,
+      }),
+      P({
+        id: 'bk04-cd-isrc', title: 'Follower with a current-source load',
+        q: md`A source follower $M_1$ ($g_{m1} = 2\,\text{mS}$, $r_{ds1} = 100\kO$) has an NMOS current source $M_2$ (gate held, $r_{ds2} = 100\kO$) as its load. Find $A_v$ and $R_{out}$.`,
+        fig: F.cdI(),
+        parts: [{ lbl: 'A_v', unit: '', ans: 100 / 101, traps: [{ v: 1, msg: 'Very close, but the two $r_{ds}$ make $R\' = 50\\,\\text{k}\\Omega$ finite: $R\'/(R\' + 1/g_m)$.' }] }, { lbl: 'R_{out}', unit: 'Ω', ans: 1000 / 2.02 }],
+        hints: [md`$M_2$ with its gate held is just $r_{ds2}$: $R_L = r_{ds2}$.`],
+        sol: md`
+1. $R' = r_{ds1}\parallel r_{ds2} = 50\kO$, $g_{m1}R' = 100$, $A_v = 100/101 = 0.990$.
+2. $R_{out} = 1/(0.01 + 0.01 + 2)\,\text{mS} = 495\,\Omega$.`,
+      }),
+      P({
+        id: 'bk04-cd-design', title: 'How much current for a gain of 0.9?',
+        q: md`A follower must reach $A_v = 0.9$ into $R_L = 1\kO$ (ignore $r_{ds}$). What $g_m$ does that take, and what bias current at $V_{ov} = 0.2\,\text{V}$?`,
+        fig: F.cd({ RL: '1\\,\\text{k}\\Omega' }),
+        parts: [{ lbl: 'g_m', unit: 'mS', ans: 9 }, { lbl: 'I_D', unit: 'mA', ans: 0.9 }],
+        hints: [md`$\dfrac{g_mR_L}{1 + g_mR_L} = 0.9$ gives $g_mR_L = 9$.`],
+        sol: md`
+1. $g_mR_L = 0.9/0.1 = 9$, so $g_m = 9\,\text{mS}$.
+2. $I_D = g_mV_{ov}/2 = (9\,\text{mS})(0.2\,\text{V})/2 = 0.9\,\text{mA}$.`,
+      }),
+      P({
+        id: 'bk04-cd-dc', title: 'The level shifter',
+        q: md`An NMOS follower ($W/L = 100/1$, course parameters, $\lambda = 0.05\,\text{V}^{-1}$) is biased by an ideal current source of $0.2\,\text{mA}$ from its source to ground. The gate sits at $2.5\,\text{V}$. Find the output DC voltage and the small-signal gain.`,
+        fig: F.cdI(),
+        parts: [{ lbl: 'V_{OUT}', unit: 'V', ans: 1.3 }, { lbl: 'A_v', unit: '', ans: 200 / 201 }],
+        hints: [md`$I_D = \tfrac12(100\,\mu)(100)V_{ov}^2$ gives $V_{ov}$; $V_{OUT} = V_{IN} - V_{TN} - V_{ov}$.`, md`An ideal current source is open: $R' = r_{ds}$.`],
+        sol: md`
+1. $K = 5\,\text{mA/V}^2$, $V_{ov} = \sqrt{0.2/5} = 0.2\,\text{V}$, $V_{GS} = 1.2\,\text{V}$, so $V_{OUT} = 2.5 - 1.2 = 1.3\,\text{V}$.
+2. $g_m = 2(0.2)/0.2 = 2\,\text{mS}$, $r_{ds} = 1/(0.05\times0.2\,\text{mA}) = 100\kO$, $g_mr_{ds} = 200$, $A_v = 200/201 = 0.995$.
+
+(The figure's $M_2$ plays the ideal current source.)`,
+      }),
+      P({
+        id: 'bk04-cd-pmos', title: 'A PMOS follower',
+        q: md`A PMOS follower: $R_L = 4\kO$ from $V_{DD}$ down to its source (the output), drain to ground, input on the gate; $g_m = 1\,\text{mS}$, $r_{ds}$ ignored. Find $A_v$ and $R_{out}$.`,
+        fig: F.cdP({ RL: '4\\,\\text{k}\\Omega' }),
+        parts: [{ lbl: 'A_v', unit: '', ans: 0.8 }, { lbl: 'R_{out}', unit: 'Ω', ans: 800 }],
+        hints: [md`$V_{DD}$ is incremental ground, so $R_L$ is from the output to ground: same formulas.`],
+        sol: md`
+1. $g_mR_L = 4$, $A_v = 4/5 = 0.8$.
+2. $R_{out} = R_L\parallel\dfrac1{g_m} = 4\text{k}\parallel1\text{k} = 0.8\kO$.`,
+      }),
+      P({
+        id: 'bk04-cd-sym', title: 'The follower, in symbols',
+        q: md`Keeping $r_{ds}$, type $R_{out}$ and $A_v$ of the source follower with load $R_L$. Use \`gm\`, \`rds\`, \`RL\`.`,
+        fig: F.cd(),
+        parts: [ex('RL || rds || 1/gm', ['gm', 'rds', 'RL'], 'R_{out}', { exact: true }), ex('(RL || rds)/((RL || rds) + 1/gm)', ['gm', 'rds', 'RL'], 'A_v', { exact: true })],
+        hints: [md`$A_v = g_mR_{out}$.`],
+        sol: md`$R_{out} = R_L\parallel r_{ds}\parallel\tfrac1{g_m}$ and $A_v = g_mR_{out} = \dfrac{R_L\parallel r_{ds}}{(R_L\parallel r_{ds}) + 1/g_m}$.`,
+      }),
+      G('bk_cd', { need: 4 }),
+    ],
+  });
 })();

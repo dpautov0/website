@@ -33,7 +33,8 @@
   // NMOS mirror: I_REF into diode-connected M1 (gate on right), M2 output into R_D.
   FIGS.nmirror = (o = {}) => {
     const fig = [
-      ['w', [1, 0], [3, 0]], ['rail', [2, 0], { n: o.vdds || 'V_{DD}' }],
+      // without R_D the supply only feeds I_REF: the top wire stops at the rail instead of running on to nothing
+      ['w', [1, 0], [o.RD === false ? 2 : 3, 0]], ['rail', [2, 0], { n: o.vdds || 'V_{DD}' }],
       ['I', [1, 0], [1, 1.5], { n: 'I_{REF}', s: o.irefs, side: 'l' }],
       ['nmos', [1, 2.5], { n: 'M_1', sz: o.s1, flip: true, dc: true }], ['gnd', [1, 3.5]],
       ['nmos', [3, 2.5], { n: 'M_2', sz: o.s2 }], ['gnd', [3, 3.5]],
@@ -526,7 +527,7 @@ $$|v_s|_{max} = 7.5\,\text{mV}\times\frac{R + ${two ? '2r_d' : 'r_d'}}{r_d} = 7.
       q: `$1X = ${unit}/1$. A current source pushes $${curTeX(I)}$ down through a stack of diode-connected NMOS. Find the node voltages, bottom-up (${labels.slice(0, n).map((x) => `$${x}$`).join(', ')}).`,
       fig, parts: labels.slice(0, n).map((l, i) => ({ lbl: l, unit: 'V', ans: nodes[i] })),
       hints: [`The ${xs(1)} device carries $${curTeX(I)}$: find its $V_{ov}$ first.`, 'Same current through every device ⇒ $V_{ov} \\propto \\dfrac{1}{\\sqrt{W/L}}$: $4X$ halves it, $\\tfrac14X$ doubles it.', 'Each node is the one below it plus that device\'s $V_{GS} = 1 + V_{ov}$.'],
-      sol: `For $1X$: $V_{ov} = \\sqrt{\\dfrac{2(${f(I * 1e3)}\\text{m})}{(100\\mu)(${unit})}} = ${f(vov1)}\\,\\text{V}$.\n\n${sizes.map((m, i) => `- ${xs(m)}: $V_{ov} = ${f(vovs[i])}$, $V_{GS} = ${f(vgs[i])}\\,\\text{V}$`).join('\n')}\n\nStacking from ground: ${labels.slice(0, n).map((l, i) => `$${l} = ${f(nodes[i])}\\,\\text{V}$`).join(', ')}.`,
+      sol: `For $1X$: $V_{ov} = \\sqrt{\\dfrac{2(${f(I * 1e3)}\\text{m})}{(100\\mu)(${unit})}} = ${f(vov1)}\\,\\text{V}$.\n\n${sizes.map((m, i) => `- $${xs(m)}$: $V_{ov} =${f(vovs[i])}$, $V_{GS} = ${f(vgs[i])}\\,\\text{V}$`).join('\n')}\n\nStacking from ground: ${labels.slice(0, n).map((l, i) => `$${l} = ${f(nodes[i])}\\,\\text{V}$`).join(', ')}.`,
     };
   };
 

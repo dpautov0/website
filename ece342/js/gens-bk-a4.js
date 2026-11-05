@@ -438,4 +438,91 @@ ${s1}
 4. $A_v = -G_MR_{out} = ${g(r.Av)}$.`,
     };
   };
+
+  // ================================================================ 6. the differential pair
+  const diffFigs = {
+    res: (o = {}) => [
+      ['rail', [1, -0.4]], ['R', [1, -0.4], [1, 1], { n: 'R_D', side: 'l' }], ['rail', [3, -0.4]], ['R', [3, -0.4], [3, 1], { n: 'R_D' }],
+      ['w', [1, 1], [0.3, 1]], ['term', [0.3, 1], { n: 'v_{o1}', side: 'l' }], ['w', [3, 1], [3.7, 1]], ['term', [3.7, 1], { n: 'v_{o2}', side: 'r' }],
+      ['nmos', [1, 2], { n: 'M_1' }], ['nmos', [3, 2], { n: 'M_2', flip: true }],
+      ['w', [0, 2], [-0.4, 2]], ['term', [-0.4, 2], { n: 'v_1', side: 'l' }], ['w', [4, 2], [4.4, 2]], ['term', [4.4, 2], { n: 'v_2', side: 'r' }],
+      ['w', [1, 3], [3, 3]], ['node', [2, 3], { n: 'P', side: 'a' }],
+      ...(o.rss ? [['R', [2, 3], [2, 4.2], { n: 'R_{SS}', side: 'r' }]] : [['I', [2, 3], [2, 4.2], { n: 'I_{SS}', side: 'r' }]]), ['gnd', [2, 4.2]],
+    ],
+    mir: (o = {}) => [
+      ['w', [1, -0.4], [3, -0.4]], ['rail', [2, -0.4], { n: 'V_{DD}' }],
+      ['pmos', [1, 0.6], { n: 'M_3', flip: true, dc: true }], ['pmos', [3, 0.6], { n: 'M_4' }], ['node', [1, 1.6], { n: 'A', side: 'l' }],
+      ['nmos', [1, 2.6], { n: 'M_1' }], ['nmos', [3, 2.6], { n: 'M_2', flip: true }],
+      ...(o.look ? [['acg', [0, 2.6]], ['acg', [4, 2.6]]] : [['w', [0, 2.6], [-0.4, 2.6]], ['term', [-0.4, 2.6], { n: 'v_1', side: 'l' }], ['w', [4, 2.6], [4.4, 2.6]], ['term', [4.4, 2.6], { n: 'v_2', side: 'r' }]]),
+      ['w', [3, 1.6], [3.8, 1.6]], ['term', [3.8, 1.6], { n: o.look ? '\\leftarrow R_{out}' : 'v_{out}', side: 'r' }],
+      ['w', [1, 3.6], [3, 3.6]], ['node', [2, 3.6], { n: 'P', side: 'a' }], ['I', [2, 3.6], [2, 4.8], { n: 'I_{SS}', side: 'r' }], ['gnd', [2, 4.8]],
+    ],
+  };
+  Object.assign(window.BK4.fig, { diff: diffFigs });
+  // matched pair (g_n, r_n) with a matched PMOS mirror (g_p, r_p), ideal tail; input v_id = v_1 - v_2, output at M2/M4
+  T.diffMir = (gn, rn, gp, rp) => {
+    const GM = gn * rn * (1 + 2 * gp * rp) / (2 * gp * rn * rp + 2 * rn + rp);     // |G_M|, exact
+    const RA = 1 / (gp + 1 / rp);
+    const Rout = par(rp, (2 * rn + RA) / (1 + gp * RA));
+    return { GM, Rout, Ad: GM * Rout };
+  };
+  T.diff = (v) => {
+    const vov = Math.sqrt(2 * (v.iss / 2) / (UN * v.wl));
+    const gm = 2 * (v.iss / 2) / vov;
+    const rn = v.lamn ? 1 / (v.lamn * v.iss / 2) : Infinity;
+    const r = { vov, gm, rn };
+    if (v.kind === 'res') { r.Adm = -gm * par(v.RD, rn); r.Ase = gm * par(v.RD, rn) / 2; }
+    if (v.kind === 'cm') { r.Acm = -gm * v.RD / (1 + 2 * gm * v.RSS); r.Ase = gm * v.RD / 2; r.cmrr = r.Ase / Math.abs(r.Acm); }
+    if (v.kind === 'mir') { r.rp = 1 / (v.lamp * v.iss / 2); Object.assign(r, T.diffMir(gm, rn, v.gmp, r.rp)); }
+    return r;
+  };
+  GENS.bk_diffpair = () => {
+    const kind = pick(['res', 'mir', 'mir', 'cm']);
+    let wl, iss, vov;
+    for (let k = 0; k < 50; k++) {
+      wl = pick([25, 50, 100, 200]); vov = pick([0.2, 0.2, 0.25, 0.4]);
+      iss = 2 * 0.5 * UN * wl * vov * vov;
+      if (iss >= 99e-6 && iss <= 801e-6) break;
+    }
+    const v = { kind, wl, iss, lamn: pick([0.02, 0.05, 0.1]) };
+    if (kind === 'res') v.RD = pick([5, 10, 20]) * 1e3;
+    if (kind === 'cm') { v.RD = pick([5, 10, 20]) * 1e3; v.RSS = pick([20, 50, 100, 200]) * 1e3; v.lamn = 0; }
+    if (kind === 'mir') { v.lamp = pick([0.05, 0.1]); v.gmp = pick([0.5, 1, 2]) * 1e-3; }
+    const r = T.diff(v);
+    const g = (x) => f(x, 4);
+    const dc = `$I_{SS} = ${UA(iss)}$, $(W/L)_{1,2} = ${f(wl)}$, $\\mu_nC_{ox} = 100\\,\\mu\\text{A/V}^2$`;
+    let q, parts, sol;
+    const s1 = `1. **DC.** Each side carries $I_{SS}/2 = ${UA(iss / 2)}$: $V_{ov} = \\sqrt{\\dfrac{2(${f(iss / 2 * 1e6, 4)}\\,\\mu\\text{A})}{(100\\,\\mu\\text{A/V}^2)(${f(wl)})}} = ${f(r.vov, 4)}\\,\\text{V}$ and $g_m = \\dfrac{2I_D}{V_{ov}} = ${MS(r.gm)}$${v.lamn ? `; $r_{ds} = \\dfrac{1}{\\lambda I_D} = ${RT(r.rn)}$` : ''}.`;
+    if (kind === 'res') {
+      q = md`A differential pair with resistor loads $R_D = ${KO(v.RD)}$ and an ideal tail: ${dc}, $\lambda = ${f(v.lamn)}\,\text{V}^{-1}$. Find $g_m$, the differential gain $A_{dm} = (v_{o1} - v_{o2})/(v_1 - v_2)$, and the single-ended gain $v_{o2}/(v_1 - v_2)$.`;
+      parts = [num('g_m', 'mS', r.gm * 1e3, { traps: [{ v: 2 * iss / r.vov * 1e3, msg: 'Each transistor carries $I_{SS}/2$, not $I_{SS}$.' }] }),
+        num('A_{dm}', '', r.Adm, { traps: [{ v: r.Adm / 2, msg: 'That is half: the differential output is $v_{o1} - v_{o2}$, and each side moves by $g_m(R_D\\parallel r_{ds})v_{id}/2$.' }, { v: -r.Adm, msg: '$v_1$ up pulls $v_{o1}$ down: negative.' }] }),
+        num('v_{o2}/v_{id}', '', r.Ase, { traps: [{ v: -r.Ase, msg: 'When $v_1$ rises, $M_2$\'s current falls, so $v_{o2}$ rises.' }] })];
+      sol = md`
+${s1}
+2. **Differential input.** By symmetry $P$ stays still, so each half is a common source with $R_D\parallel r_{ds} = ${RT(par(v.RD, r.rn))}$ driven by $\pm v_{id}/2$: $v_{o1} = -g_m(R_D\parallel r_{ds})\tfrac{v_{id}}2$, $v_{o2} = +g_m(R_D\parallel r_{ds})\tfrac{v_{id}}2$.
+3. $A_{dm} = -g_m(R_D\parallel r_{ds}) = ${g(r.Adm)}$; single-ended $v_{o2}/v_{id} = ${g(r.Ase)}$.`;
+    } else if (kind === 'cm') {
+      q = md`A differential pair with resistor loads $R_D = ${KO(v.RD)}$ whose tail is a resistance $R_{SS} = ${KO(v.RSS)}$ (for the signal; the DC current is $I_{SS}$). ${dc}; ignore $r_{ds}$. Find $g_m$, the common-mode gain $A_{cm} = v_{o1}/v_{ic}$ (both gates moving together by $v_{ic}$), and the ratio of the single-ended differential gain $|v_{o2}/v_{id}|$ to $|A_{cm}|$.`;
+      parts = [num('g_m', 'mS', r.gm * 1e3), num('A_{cm}', '', r.Acm, { accept: [-v.RD / (2 * v.RSS)], traps: [{ v: -v.RD / v.RSS, msg: 'Each half carries half of the tail current: its degeneration is $2R_{SS}$.' }] }),
+        num('\\text{CMRR}', '', r.cmrr, { accept: [r.gm * v.RSS] })];
+      sol = md`
+${s1}
+2. **Common mode.** Both halves carry the same signal current $i$, so $2i$ flows through $R_{SS}$: $v_P = 2iR_{SS}$, and $i = g_m(v_{ic} - v_P)$. Each half is a common source degenerated by $2R_{SS}$: $i = \dfrac{g_mv_{ic}}{1 + 2g_mR_{SS}}$.
+3. $A_{cm} = -\dfrac{g_mR_D}{1 + 2g_mR_{SS}} = ${g(r.Acm)}$ (about $-R_D/(2R_{SS}) = ${g(-v.RD / (2 * v.RSS))}$).
+4. Single-ended differential gain $g_mR_D/2 = ${g(r.Ase)}$, so the ratio is $${g(r.cmrr)}$ (about $g_mR_{SS}$).`;
+    } else {
+      q = md`A differential pair with a PMOS mirror load ($M_3$ diode on $M_1$'s side, $M_4$ copy; output at the $M_2$–$M_4$ drains), ideal tail. ${dc}, $\lambda_n = ${f(v.lamn)}\,\text{V}^{-1}$; the PMOS have $g_{mp} = ${MS(v.gmp)}$ and $\lambda_p = ${f(v.lamp)}\,\text{V}^{-1}$. Find $g_m$ of $M_1$, $R_{out}$, and $A_d = v_{out}/(v_1 - v_2)$.`;
+      const approxR = par(r.rn, r.rp);
+      parts = [num('g_m', 'mS', r.gm * 1e3), res('R_{out}', r.Rout, { accept: [approxR], traps: [{ v: r.rp, msg: 'Not $r_{ds4}$ alone: the chain through the pair is about $2r_{dsn}$, and the mirror doubles its current, so it adds $r_{ds2}$ in parallel.' }, { v: par(r.rp, 2 * r.rn), msg: 'The chain through the pair is about $2r_{ds}$, but the mirror makes the output carry its current twice: $r_{ds2}$, not $2r_{ds2}$.' }] }),
+        num('A_d', '', r.Ad, { accept: [r.gm * approxR], traps: [{ v: r.gm * approxR / 2, msg: 'The mirror delivers the other half of the signal current: $G_M = g_m$, not $g_m/2$.' }, { v: -r.Ad, msg: '$v_1$ up: more current in $M_1$ and $M_3$, $M_4$ pushes more, $M_2$ pulls less: $v_{out}$ rises.' }] })];
+      sol = md`
+${s1} PMOS: $r_{dsp} = \dfrac{1}{\lambda_pI_D} = ${RT(r.rp)}$.
+2. **$G_M$.** Output shorted: $i_{d1} = -i_{d2} = g_mv_{id}/2$; the mirror copies $M_1$'s half into the output, $M_2$ pulls the other half less: $|G_M|\approx g_m$ (exactly $${MS(r.GM)}$ with the $r_{ds}$'s).
+3. **$R_{out}$.** $\approx r_{ds2}\parallel r_{ds4} = ${RT(approxR)}$ (exactly $r_{ds4}\parallel\dfrac{2r_{ds1} + R_A}{1 + g_{m4}R_A}$ with $R_A = \tfrac1{g_{m3}}\parallel r_{ds3}$: $${RT(r.Rout)}$).
+4. $A_d = G_MR_{out}\approx g_m(r_{ds2}\parallel r_{ds4}) = ${g(r.gm * approxR)}$ (exactly $${g(r.Ad)}$).`;
+    }
+    return { _v: v, fig: kind === 'mir' ? diffFigs.mir() : diffFigs.res({ rss: kind === 'cm' }), q, parts, sol,
+      hints: [md`Each side carries $I_{SS}/2$: $g_m = 2(I_{SS}/2)/V_{ov}$.`, md`Differential input: $P$ is still (a virtual ground), each half is a common source. Common mode: each half is degenerated by $2R_{SS}$. Mirror load: $G_M = g_m$, $R_{out}\approx r_{ds2}\parallel r_{ds4}$.`] };
+  };
 })();
