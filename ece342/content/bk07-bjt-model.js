@@ -919,4 +919,151 @@
       G('bk_pnpgain', { need: 4 }),
     ],
   });
+
+  // ================================================================== 7.7 the dictionary
+  const mosMdl = [['term', [1, 0], { n: 'G', side: 'l' }], ['vlab', [1, 0.35], [1, 1.65], { n: 'v_{gs}' }], ['w', [1, 2], [4.2, 2]],
+    ['G', [3, 0], [3, 2], { n: 'g_mv_{gs}', side: 'l' }], ['w', [3, 0], [4.2, 0]], ['R', [4.2, 0], [4.2, 2], { n: 'r_{ds}' }],
+    ['w', [3, 0], [3, -0.5]], ['term', [3, -0.5], { n: 'D', side: 'r' }], ['w', [2.2, 2], [2.2, 2.5]], ['term', [2.2, 2.5], { n: 'S', side: 'r' }]];
+  const collTest = [['npn', [1, 1]], ['acg', [0, 1]], ['R', [1, 2], [1, 3.2], { n: 'R_E' }], ['gnd', [1, 3.2]], ['w', [1, 0], [1, -0.4]], ['term', [1, -0.4], { n: '\\downarrow R_X', side: 'r' }]];
+
+  L({
+    id: 'bk07-dict', title: 'MOSFET ↔ BJT: the dictionary', ref: 'Lectures 23–24',
+    steps: [
+      R(md`
+        ### The question
+
+        Exam 2 trained you on MOSFETs; Exam 3 adds BJTs and circuits that mix the two. Most of what you learned carries over word for word. Some of it changes, always for the same reason. This section is the translation table, with the rule that tells you which results change and how.
+      `),
+      RF(md`
+        ### The physical picture: same job, different mechanism, one structural difference
+
+        Both devices are voltage-controlled current sources with a large output resistance. They differ in *how* the control works (a capacitor's charge versus a barrier's height), which changes the numbers ($g_m$, $V_{GS}$ against $V_{BE}$). They differ structurally in **one** place: **the base draws current and the gate does not.** In the models that is the single extra resistor $r_\pi$.
+
+        [[fig:m]]
+      `, { m: { fig: row([[mosMdl, 'MOSFET: the gate is open'], [hpV, 'BJT: $r_\\pi$ from base to emitter']]), cap: 'The two small-signal models. Remove $r_\\pi$ (let $\\beta\\to\\infty$) and the BJT model becomes the MOSFET model.' } }),
+      R(md`
+        ### The dictionary
+
+        | | MOSFET (Exam 2) | BJT (Exam 3) | why |
+        |---|---|---|---|
+        | terminals | gate, drain, source | base, collector, emitter | control, output, common |
+        | amplifier region | saturation | forward active | the names cross ([Section 6.3](#/l/bk06-regions)) |
+        | law | $\tfrac12\mu C_{ox}\tfrac WLV_{ov}^2$ | $I_Se^{V_{BE}/V_T}$ | capacitor charge vs barrier height |
+        | control voltage | $V_{GS} = V_{TN} + V_{ov}$, depends on size and current | $V_{BE}\approx0.7\,\text{V}$, almost fixed | the logarithm squashes current ratios |
+        | DC input current | 0 | $I_B = I_C/\beta$ | back-injection and recombination |
+        | $g_m$ | $2I_D/V_{ov}$ | $I_C/V_T$ | $V_T = 25\,\text{mV}$ vs $V_{ov}/2\approx100\,\text{mV}$ |
+        | $g_m$ at $1\,\text{mA}$ | $10\,\text{mS}$ ($V_{ov} = 0.2\,\text{V}$) | $40\,\text{mS}$ | |
+        | input resistance | gate: $\infty$ | base: $r_\pi = \beta/g_m$ | the base current |
+        | output resistance | $r_{ds} = 1/(\lambda I_D)$ | $r_o = V_A/I_C$ | $1/\lambda\leftrightarrow V_A$ |
+        | intrinsic gain | $g_mr_{ds} = 2/(\lambda V_{ov})$, about 100 | $g_mr_o = V_A/V_T$, about 4000 | |
+        | into the low terminal | source: $1/g_m$ | emitter: $r_e = r_\pi/(\beta + 1)\approx1/g_m$ | |
+        | the size knob | $W/L$ sets $g_m$ at a given current | area sets $I_S$ only; $g_m$ is fixed by $I_C$ | |
+        | linear input range | about $V_{ov}$ | about $V_T$ | ([Section 7.1](#/l/bk07-gm)) |
+        | stage names | common source, common gate, source follower | common emitter, common base, emitter follower | |
+      `),
+      RF(md`
+        ### The derivation: the translation rule
+
+        **Rule 1.** If a MOSFET result never used the fact that the gate draws no current, it carries over unchanged with $g_m\to I_C/V_T$ and $r_{ds}\to r_o$. Examples: the common-source gain $-g_m(R_D\parallel r_{ds})$ becomes $-g_m(R_C\parallel r_o)$; a drain looks like $r_{ds}$, a collector (base and emitter held) like $r_o$.
+
+        **Rule 2.** If it did use it, the base current changes the answer, through $r_\pi$ and factors of $(\beta + 1)$. The cleanest example is the resistance looking into a collector with a resistor $R_E$ under the emitter and the base held.
+
+        [[fig:c]]
+
+        For the MOSFET twin you derived $r_{ds} + R_S + g_mr_{ds}R_S$ ([Chapter 3](#/l/bk03-degen)). Redo it for the BJT with a test source $v_t$ at the collector, drawing $i_t$:
+        1. $i_t$ comes out of the emitter and must leave the emitter node. The base is held at ground, so from the emitter node **two** paths lead to ground: $R_E$, *and $r_\pi$ (to the grounded base)*. That is the new part: for the MOSFET the second path was the gate's open circuit. So $v_e = i_t(R_E\parallel r_\pi)$.
+        2. $v_\pi = v_b - v_e = -i_t(R_E\parallel r_\pi)$.
+        3. KCL at the collector: $i_t = g_mv_\pi + (v_t - v_e)/r_o$. Solve for $v_t$:
+        $$v_t = i_t\big[r_o + (R_E\parallel r_\pi) + g_mr_o(R_E\parallel r_\pi)\big].$$
+        **The MOSFET formula with $R_S\to R_E\parallel r_\pi$.** The base current gave the emitter a second path to ground.
+      `, { c: { fig: collTest, cap: 'The resistance looking into a collector with $R_E$ under the emitter and the base held: the twin of a degenerated drain.' } }),
+      R(md`
+        ### Check it: the $\beta\to\infty$ test
+
+        Every BJT formula must turn into its MOSFET twin when $\beta\to\infty$ ($r_\pi\to\infty$). Here: $R_E\parallel r_\pi\to R_E$, and the collector resistance becomes $r_o + R_E + g_mr_oR_E$ ✓. Use this test on any formula you are unsure of.
+
+        **Numbers** ($g_m = 40\,\text{mS}$, $r_\pi = 2.5\kO$, $r_o = 100\kO$, $R_E = 1\kO$): the correct BJT result is $r_o + 0.714\kO + 40\,\text{mS}\times100\kO\times0.714\kO = 2.96\,\text{M}\Omega$. Translating blindly with $R_E$ instead of $R_E\parallel r_\pi$ gives $4.10\,\text{M}\Omega$, 39% too high. (No matter how large $R_E$ gets, $R_E\parallel r_\pi < r_\pi$, so the BJT result never exceeds about $(1 + g_mr_\pi)r_o = (\beta + 1)r_o$: the "$\beta r_o$ ceiling" of [Chapter 8](#/l/bk08-collector).)
+
+        ### What it means
+
+        The two devices are cousins: one model with one optional resistor. When the base current does not matter (outputs, collectors, transconductances), think MOSFET with a bigger $g_m$. When it does (inputs, anything that looks *through* the base), add $r_\pi$, and expect $(\beta + 1)$ to multiply what hangs under an emitter seen from the base, and to divide what hangs on a base seen from the emitter.
+
+        ### How to recognize it
+
+        Ask of every formula: *does a current flow into the control terminal here?* If the control terminal is driven or held through a resistance, or a resistance hangs between the control terminal and the common terminal, the BJT version picks up $r_\pi$.
+      `),
+      R(md`
+        ### Worked example: one stage, both devices
+
+        A degenerated stage at $1\,\text{mA}$ with $R_C = 5\kO$ and $R_E = 500\,\Omega$ ($r_o$ ignored).
+        - **MOSFET formula** with the BJT's $g_m = 40\,\text{mS}$: $A_v = -g_mR_C/(1 + g_mR_E) = -200/21 = -9.52$.
+        - **BJT, exact** (Lecture 24, or the T model): $A_v = -\dfrac{g_mR_C}{1 + g_mR_E(\beta + 1)/\beta} = -\dfrac{200}{1 + 20\times1.01} = -9.43$ with $\beta = 100$.
+
+        The $(\beta + 1)/\beta$ is the base current's 1% correction. A real MOSFET at $1\,\text{mA}$ and $V_{ov} = 0.2\,\text{V}$ would have $g_m = 10\,\text{mS}$ and $A_v = -50/6 = -8.33$: degeneration makes the two devices nearly equal, because the gain approaches $-R_C/R_E$ for both.
+
+        !!mistake Common mistakes
+          - Writing $\infty$ for an input resistance at a base.
+          - Copying a MOSFET formula with $R_S\to R_E$ where the base current matters (collector resistance, emitter-side resistances): use $R_E\parallel r_\pi$, or the $(\beta + 1)$ rules.
+          - Using $2I/V_{ov}$ for $g_m$, or $1/(\lambda I)$ with $V_A$.
+          - Calling forward active "saturation".
+      `),
+      Q(md`Which MOSFET result carries over to the BJT **unchanged** (with $g_m\to I_C/V_T$, $r_{ds}\to r_o$)?`,
+        ['The common-source gain $-g_m(R_D\\parallel r_{ds})$', 'The input resistance at the gate, $\\infty$', 'The source-degenerated drain resistance $r_{ds} + R_S + g_mr_{ds}R_S$', 'The input resistance of a degenerated gate, $\\infty$'], 0,
+        [null, 'A base draws current: $r_\\pi$.', 'Here the base current matters: $R_S$ becomes $R_E\\parallel r_\\pi$.', 'The base gives $r_\\pi + (\\beta + 1)R_E$.'],
+        md`The common-emitter gain does not involve the base current (the source drives the base directly), so it is the CS formula: $-g_m(R_C\parallel r_o)$.`),
+      Q(md`Letting $\beta\to\infty$ in any BJT small-signal result should give`,
+        ['the MOSFET twin of that result, with $g_m = I_C/V_T$', 'zero', 'infinity', 'nothing useful: $\\beta$ is always finite'], 0,
+        [null, 'Most results have finite limits.', 'Only for results that depend on $r_\\pi$ directly, like a base input resistance.', 'It is the best quick check of a formula.'],
+        md`$r_\pi\to\infty$ removes the base current: the BJT model becomes the MOSFET model.`),
+      Q(md`At the same current, which has the larger intrinsic gain, and why?`,
+        ['The BJT: $V_A/V_T$ is in the thousands, because $g_m/I = 1/V_T$ is large', 'The MOSFET: $r_{ds}$ is larger than $r_o$', 'They are equal', 'The BJT, because $\\beta$ is large'], 0,
+        [null, 'Output resistances are comparable; the difference is in $g_m$ per amp.', 'BJT about 4000, MOSFET about 100 (typical numbers).', '$\\beta$ is not in $g_mr_o = V_A/V_T$.'],
+        md`$g_mr_o = V_A/V_T$ against $g_mr_{ds} = 2/(\lambda V_{ov})$. The large $g_m$ per amp of the BJT is the difference.`),
+      P({
+        id: 'bk07-dict-num', title: 'Side by side at 0.5 mA',
+        q: md`At $0.5\,\text{mA}$, compare a MOSFET ($V_{ov} = 0.2\,\text{V}$, $\lambda = 0.05\,\text{V}^{-1}$) with a BJT ($\beta = 100$, $V_A = 50\,\text{V}$): find both $g_m$, the BJT's $r_\pi$, both output resistances and both intrinsic gains.`,
+        parts: [{ lbl: 'g_{m,MOS}', unit: 'mS', ans: 5 }, { lbl: 'g_{m,BJT}', unit: 'mS', ans: 20 }, { lbl: 'r_\\pi', unit: 'kΩ', ans: 5 }, { lbl: 'r_{ds}', unit: 'kΩ', ans: 40 }, { lbl: 'r_o', unit: 'kΩ', ans: 100 },
+          { lbl: 'g_mr_{ds}', unit: '', ans: 200 }, { lbl: 'g_mr_o', unit: '', ans: 2000 }],
+        sol: md`MOSFET: $g_m = 2(0.5)/0.2 = 5\,\text{mS}$, $r_{ds} = 1/(0.05\times0.5\,\text{mA}) = 40\kO$, $g_mr_{ds} = 200$. BJT: $g_m = 20\,\text{mS}$, $r_\pi = 5\kO$, $r_o = 100\kO$, $g_mr_o = 2000$. (The gate's input resistance is $\infty$; the base's is $r_\pi$.)`,
+      }),
+      P({
+        id: 'bk07-dict-coll', title: 'Translate the degenerated drain',
+        q: md`Type the resistance looking into a collector with $R_E$ from the emitter to ground and the base held at incremental ground. Use \`ro\`, \`gm\`, \`rpi\`, \`RE\` (and \`beta\` if you like; $r_\pi = \beta/g_m$ is built in).`,
+        fig: collTest,
+        parts: [ex('ro + RE*rpi/(RE + rpi) + gm*ro*RE*rpi/(RE + rpi)', ['ro', 'gm', 'rpi', 'beta', 'RE'], 'R_X', { exact: true })],
+        hints: [md`The MOSFET answer with $R_S\to R_E\parallel r_\pi$: the emitter node has $r_\pi$ to the held base as a second path to ground.`],
+        sol: md`$R_X = r_o + (R_E\parallel r_\pi) + g_mr_o(R_E\parallel r_\pi)$ (typing \`ro + (RE||rpi) + gm*ro*(RE||rpi)\` works). Derived above with a test source.`,
+      }),
+      P({
+        id: 'bk07-dict-collnum', title: 'How wrong is the blind translation?',
+        q: md`With $g_m = 40\,\text{mS}$, $r_\pi = 2.5\kO$, $r_o = 100\kO$ and $R_E = 1\kO$, find the collector resistance correctly, and with the blind MOSFET translation ($R_E$ in place of $R_E\parallel r_\pi$).`,
+        parts: [{ lbl: 'R_X\\ \\text{(correct)}', unit: 'MΩ', ans: 2.95786 }, { lbl: 'R_X\\ \\text{(blind)}', unit: 'MΩ', ans: 4.101 }],
+        sol: md`$R_E\parallel r_\pi = 0.714\kO$, so $R_X = 100\kO + 0.714\kO + (40\,\text{mS})(100\kO)(0.714\kO) = 2.958\,\text{M}\Omega$. Blind: $100 + 1 + 4000 = 4101\kO = 4.10\,\text{M}\Omega$, 39% too high.`,
+      }),
+      P({
+        id: 'bk07-dict-in', title: 'Translate the degenerated input',
+        q: md`The input resistance at a gate with $R_S$ under the source is $\infty$. Type the BJT twin: the resistance looking into a base with $R_E$ under the emitter ($r_o$ ignored). Use \`rpi\`, \`beta\`, \`RE\` (or \`gm\`).`,
+        parts: [ex('rpi + (beta + 1)*RE', ['rpi', 'beta', 'gm', 'RE'], 'R_{in}', { exact: true })],
+        sol: md`$R_{in} = r_\pi + (\beta + 1)R_E = (\beta + 1)(r_e + R_E)$: the base current flows through $r_\pi$, and $(\beta + 1)$ times it through $R_E$ ([Chapter 8](#/l/bk08-base) derives it with a test source).`,
+      }),
+      P({
+        id: 'bk07-dict-deg', title: 'One formula, two devices',
+        q: md`A degenerated stage at $1\,\text{mA}$: $R_C = 5\kO$, $R_E = 500\,\Omega$, $r_o$ ignored. Find the BJT gain exactly ($\beta = 100$), and the value the MOSFET formula $-g_mR_C/(1 + g_mR_E)$ gives with the BJT's $g_m$.`,
+        parts: [{ lbl: 'A_v\\ \\text{(BJT)}', unit: '', ans: -9.43396, tol: { rel: 0.004 } }, { lbl: 'A_v\\ \\text{(MOS formula)}', unit: '', ans: -9.52381, tol: { rel: 0.004 } }],
+        sol: md`BJT: $-\dfrac{200}{1 + 20\times1.01} = -9.434$. MOSFET formula: $-200/21 = -9.524$. They differ by the base current's $(\beta + 1)/\beta$, 1%.`,
+      }),
+      P({
+        id: 'bk07-dict-fol', title: 'Follower twins',
+        q: md`A follower with $R_E = 100\,\Omega$ at $1\,\text{mA}$. Find the BJT gain ($\beta = 100$) and the MOSFET-style value $R/(R + 1/g_m)$ with the same $g_m = 40\,\text{mS}$.`,
+        parts: [{ lbl: 'A_v\\ \\text{(BJT)}', unit: '', ans: 0.801587, tol: { rel: 0.002 } }, { lbl: 'A_v\\ \\text{(MOS form)}', unit: '', ans: 0.8, tol: { rel: 0.002 } }],
+        sol: md`BJT: $R_E/(R_E + r_e)$ with $r_e = 24.75\,\Omega$: $100/124.75 = 0.8016$. MOSFET form: $100/125 = 0.8$. With $r_e = \alpha/g_m$ instead of $1/g_m$ the two differ only through $\alpha$.`,
+      }),
+      R(md`
+        ### Drill: translate
+
+        A MOSFET result; pick its BJT twin. Then a few BJT-against-MOSFET transconductance comparisons.
+      `),
+      G('bk_twin', { need: 5, pool: ['bk_twin', 'bk_twin', 'bk_gmmos'] }),
+    ],
+  });
 })();
