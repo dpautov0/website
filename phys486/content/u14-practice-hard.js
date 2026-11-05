@@ -1449,7 +1449,112 @@
     ],
   };
 
-  /*@@MORE@@*/
+  // ================================================================== Explain in words
+  let wdN = 0;
+  const wd = (q, model, need, half) => {
+    wdN++;
+    return {
+      q: `**${wdN}.** ${q}`,
+      ans: model,
+      sol: ['**What earns the 5**', ...need.map((s) => `- ${s}`)].join('\n') + `\n\n**The usual 3/5 answer.** ${half}`,
+    };
+  };
+
+  const wordsItems = [
+    wd(md`A particle is in the ground state of an oscillator when the spring constant suddenly changes. Describe the steps you would take to find the probability of each new energy and how the width $\langle x^2\rangle$ evolves afterwards. For each step, say what you would calculate and why.`,
+      md`
+        1. **The state right after** is the old $\psi_0$: the Schrödinger equation is first order in time, so $\Psi$ cannot jump.
+        2. **New stationary states** $\psi_n'$, $E_n'$: the oscillator with the new $\omega'$. They are the basis in which time evolution is simple.
+        3. **Decompose:** $c_n = \braket{\psi_n'|\psi_0}$. Parity kills odd $n$ (even state, even $\hat H'$), so only even $n$ need computing.
+        4. **Probabilities** $P(E_n') = |c_n|^2$; check they sum to 1.
+        5. **Evolve:** $\Psi(t) = \sum c_n\psi_n'e^{-iE_n't/\hbar}$.
+        6. **Width:** write $\hat x^2$ with the new ladder operators; it connects $\Delta n = 0, \pm2$, so $\langle x^2\rangle$ oscillates at $2\omega'$ (breathing) while $\langle x\rangle$ stays $0$.
+      `,
+      [md`The "no jump" argument for the state right after.`, md`Expansion in the *new* stationary states, with the overlap as the thing to compute.`, md`Each energy gets its own phase.`, md`A symmetry shortcut (parity) and the selection rule that sets the breathing frequency.`],
+      md`"Energy is conserved, so it stays in the ground state." Energy is not conserved by the sudden change (work is done), and the old ground state is not the new one. Answers that skip the decomposition step lose the most.`),
+    wd(md`Describe the fastest way to find $\langle x\rangle(t)$ for an oscillator starting from an arbitrary $\Psi(x, 0)$. What would you compute, and why does the shortcut work?`,
+      md`Compute only $\langle x\rangle_0$ and $\langle p\rangle_0$ at $t = 0$. Ehrenfest is exact for the oscillator ($V'$ is linear), so $\langle x\rangle$ obeys $\ddot{\langle x\rangle} = -\omega^2\langle x\rangle$: $\langle x\rangle(t) = \langle x\rangle_0\cos\omega t + \tfrac{\langle p\rangle_0}{m\omega}\sin\omega t$. (The long way, expanding in $\ket n$, gives the same, with only neighboring pairs contributing.)`,
+      [md`The two initial expectation values as the only inputs.`, md`The reason: $\langle V'(x)\rangle = m\omega^2\langle x\rangle$ because the force is linear.`, md`The resulting sinusoid at $\omega$ (not $2\omega$, not a different frequency per level).`],
+      md`Expanding in all $\ket n$ and summing a series without noticing that only $n, n \pm 1$ pairs contribute, or claiming Ehrenfest "only holds approximately".`),
+    wd(md`Explain physically why the oscillator's ground-state energy is $\tfrac12\hbar\omega$ and not zero.`,
+      md`Zero energy would mean sitting at rest at the bottom: $\sigma_x = 0$ and $\sigma_p = 0$, which the uncertainty principle forbids. Squeezing the particle closer to the bottom (smaller potential energy) costs kinetic energy $\sim\hbar^2/8m\sigma_x^2$; the best compromise is $\sigma_x^2 = \hbar/2m\omega$, giving $\tfrac14\hbar\omega + \tfrac14\hbar\omega$. The Gaussian saturates the bound, so this is the exact ground energy.`,
+      [md`Uncertainty principle forbids sharp position and momentum at once.`, md`The trade-off between kinetic and potential energy.`, md`The minimum is $\tfrac12\hbar\omega$, half kinetic and half potential.`],
+      md`"Because $E_n = \hbar\omega(n + \tfrac12)$ and $n = 0$": that restates the result instead of explaining it.`),
+    wd(md`Explain where the $\tfrac12$ in $E_n = \hbar\omega(n + \tfrac12)$ comes from in the ladder-operator algebra.`,
+      md`Classically $\tfrac{p^2}{2m} + \tfrac12m\omega^2x^2 = \hbar\omega\,a^*a$ would factor exactly. Quantum mechanically $\hat a_-\hat a_+ = \tfrac{1}{\hbar\omega}\hat H + \tfrac12$ because the cross terms leave $-\tfrac{i}{2\hbar}[\hat x, \hat p] = \tfrac12$. So $\hat H = \hbar\omega(\hat a_+\hat a_- + \tfrac12)$: the $\tfrac12$ is $[\hat x, \hat p] = i\hbar$ in disguise, i.e. the zero-point energy.`,
+      [md`Factorization of $\hat H$ with the ordering issue identified.`, md`The leftover term traced to $[\hat x, \hat p] = i\hbar$ (or $[\hat a_-, \hat a_+] = 1$).`, md`Connection to zero-point motion.`],
+      md`"From the Hermite polynomials" or "from normalization": the algebraic origin is the commutator.`),
+    wd(md`For $\tfrac{1}{\sqrt2}(\ket0 + \ket1)$, $(\langle x\rangle, \langle p\rangle)$ traces an ellipse in phase space with period $2\pi/\omega$. Give a physical interpretation, and explain why this is still not a "classical" oscillator.`,
+      md`The center of the probability cloud moves like a classical mass on a spring (Ehrenfest is exact: clockwise orbit, period $2\pi/\omega$). But the orbit's size, $\sqrt{\hbar/2m\omega} = w_x/\sqrt2$, is no larger than the cloud's own spread $\sim w_x$: the "particle" is as wide as its orbit. A classical state needs orbit $\gg$ spread, i.e. many levels with locked phases ($n \gg 1$, e.g. a coherent state with $|\alpha| \gg 1$).`,
+      [md`The ellipse as the motion of the mean, with Ehrenfest as the reason.`, md`Comparison of the orbit size with $\sigma_x$ (or $w_x$).`, md`What a classical state needs instead.`],
+      md`Calling it classical because the orbit looks classical, or calling it quantum only "because $n$ is small" without comparing the two lengths.`),
+    wd(md`Describe two ways to find the probabilities of the $L_x$ outcomes for a particle in a given $\ell = 1$ state. Say what you would compute in each.`,
+      md`
+        1. **Matrix:** build $\hat L_x = \tfrac12(\hat L_+ + \hat L_-)$ in the $(Y_1^1, Y_1^0, Y_1^{-1})$ basis using $\hbar\sqrt{\ell(\ell + 1) - m(m \pm 1)}$; diagonalize ($\pm\hbar, 0$); probabilities are $|\braket{v_k|\psi}|^2$ with the eigenvectors $v_k$.
+        2. **Cartesian:** write the state with $x, y, z$ ($x \pm iy \propto Y_1^{\pm1}$, $z \propto Y_1^0$); the $L_x$ eigenfunctions are $y \pm iz$ ($\pm\hbar$) and $x$ ($0$); re-expand and use $|\text{coefficient}|^2$ (with the basis functions' norms).
+      `,
+      [md`Both methods named with the key ingredient (ladder coefficients; Cartesian eigenfunctions).`, md`Diagonalize / re-expand, then Born rule.`, md`Normalization of the basis functions handled.`],
+      md`Only one method, or "the probabilities are the same as for $L_z$ by symmetry".`),
+    wd(md`Without evaluating any integral, decide which of these vanish, and say why: $\bra0\hat x\ket2$, $\bra1\hat x\ket2$, $\bra0\hat x^2\ket2$, $\bra1\hat x^2\ket2$, $\bra0\hat p\ket1$.`,
+      md`$\bra0\hat x\ket2 = 0$ and $\bra1\hat x^2\ket2 = 0$; the others are nonzero: $\bra1\hat x\ket2 = \sqrt2\sqrt{\tfrac{\hbar}{2m\omega}}$, $\bra0\hat x^2\ket2 = \sqrt2\,\tfrac{\hbar}{2m\omega}$, $\bra0\hat p\ket1 = -i\sqrt{\tfrac{\hbar m\omega}{2}}$.`,
+      [md`Selection rule: $\hat x, \hat p$ change $n$ by $\pm1$; $\hat x^2$ by $0, \pm2$.`, md`Or parity: the integrand $\psi_m\,\hat O\,\psi_n$ is odd when $(-1)^{m+n}$ times the operator's parity is odd.`, md`All five verdicts right.`],
+      md`Right verdicts with "by inspection" as the only reason. The grader wants the rule.`),
+    wd(md`Explain why at most one component of $\vec L$ can be sharp, the one exception, and why $L^2$ can always be sharp in addition.`,
+      md`If $\psi$ were an eigenstate of $\hat L_z$ and $\hat L_x$, then $[\hat L_z, \hat L_x]\psi = i\hbar\hat L_y\psi = 0$, and repeating with the other commutators forces both eigenvalues to $0$ and then $L^2 = 0$: only $\ell = 0$ allows it. $\hat L^2$ commutes with every component, so it shares eigenstates with whichever one we pick: hence the labels $(\ell, m)$.`,
+      [md`The commutator argument (not just "they don't commute").`, md`The $\ell = 0$ exception.`, md`$[\hat L^2, \hat L_i] = 0$ for $L^2$.`],
+      md`"Because of the uncertainty principle" with no mention of the exception or of $\hat L^2$.`),
+    wd(md`Explain why $m$ must be an integer for orbital angular momentum, although the commutation relations alone allow half-integers.`,
+      md`$\hat L_z = -i\hbar\,\partial_\varphi$ has eigenfunctions $e^{im\varphi}$, and $\varphi$ and $\varphi + 2\pi$ are the same point, so the wavefunction must repeat: $e^{2\pi im} = 1$, $m \in \mathbb Z$. Half-integers would change sign after one turn. The algebra knows nothing about $\psi$ being a function of position; half-integer values belong to spin.`,
+      [md`Single-valuedness as the input.`, md`Applied to $e^{im\varphi}$.`, md`Why the algebra alone doesn't decide (it is not about functions of angles).`],
+      md`"Because $L_z = m\hbar$ with integer $m$" (circular).`),
+    wd(md`Describe the steps to find the bound-state energies of a particle in a central potential $V(r)$. Say which boundary conditions you impose and why.`,
+      md`
+        1. **Separate** $\psi = R(r)Y_\ell^m(\theta, \varphi)$: the angular part is always the spherical harmonics (only $V(r)$ is special).
+        2. **Radial equation** for $u = rR$: a 1D problem on $r > 0$ with $V_{\text{eff}} = V + \tfrac{\hbar^2\ell(\ell + 1)}{2mr^2}$.
+        3. **Boundary conditions:** $u(0) = 0$ (else $\psi$ is not a solution at the origin, or not normalizable for $\ell \ge 1$); $u \to 0$ fast enough at $\infty$ (normalizable); $u, u'$ continuous where $V$ is finite.
+        4. **Quantization:** two conditions on a second-order equation hold only for discrete $E$. Solve for each $\ell$: $E_{N\ell}$, each $(2\ell + 1)$-fold degenerate in $m$.
+      `,
+      [md`Separation and the reduction to a 1D problem with $V_{\text{eff}}$.`, md`Both boundary conditions with reasons.`, md`Why the spectrum is discrete; the $m$ degeneracy.`],
+      md`Listing the equations without the boundary conditions, or justifying $u(0) = 0$ only by "$1/r$ is not normalizable" (wrong for $\ell = 0$).`),
+    wd(md`Interpret physically why only $s$ electrons have a nonzero density at the nucleus, and why that matters.`,
+      md`The centrifugal term acts like a repulsive barrier $\propto\ell(\ell + 1)/r^2$ that keeps any particle with angular momentum away from the center; near $0$, $u \propto r^{\ell + 1}$ so $R \propto r^\ell$, vanishing unless $\ell = 0$. Processes that need the electron *at* the nucleus (hyperfine contact interaction, electron capture, finite-nuclear-size shifts, alkali core penetration) are dominated by $s$ states.`,
+      [md`Centrifugal barrier as the cause.`, md`$R \propto r^\ell$ as the quantitative statement.`, md`At least one physical consequence.`],
+      md`"Because $p$ orbitals have a node at the nucleus": true for the picture, but no reason given.`),
+    wd(md`Explain the difference between the degeneracy of the hydrogen $n = 2$ level and that of a level of the infinite spherical well.`,
+      md`A spherical-well level is a single $\ell$ multiplet: $2\ell + 1$ states, exactly what rotational symmetry requires ($\hat L_\pm$ move between $m$ at fixed energy). Hydrogen's $n = 2$ has 4 states: 2s and 2p coincide in addition. Rotations never change $\ell$, so that extra coincidence is accidental, due to the hidden symmetry of the $1/r$ potential; any deviation from $1/r$ lifts it.`,
+      [md`Rotational symmetry ⇒ $2\ell + 1$ only.`, md`The $\ell$ coincidence identified as accidental (special to $1/r$).`, md`What lifts it.`],
+      md`"Hydrogen has more states per level": a count without the explanation of which part symmetry explains.`),
+    wd(md`Explain why the expectation values of a stationary state never move, and what a state needs for $\langle x\rangle$ to oscillate.`,
+      md`A stationary state is $\psi_n(x)e^{-iE_nt/\hbar}$: the time dependence is one overall phase, which cancels in every $|\Psi|^2$ and every $\bra\Psi\hat Q\ket\Psi$. Motion needs at least two energies with a relative phase that evolves; the frequencies are the energy differences over $\hbar$. For $\langle x\rangle$ the two levels must also be connected by $\hat x$ (in the oscillator: adjacent levels, $\Delta n = \pm1$).`,
+      [md`Global phase cancels.`, md`Superposition of different energies; frequencies $(E_m - E_n)/\hbar$.`, md`The operator must connect the levels (selection rule).`],
+      md`"Because the energy is fixed" without the phase argument, or missing that the levels must be connected by $\hat x$.`),
+    wd(md`A student writes: "$\sigma_x\sigma_p \ge \hbar/2$ means that measuring $x$ disturbs $p$." Explain what is wrong and give the correct interpretation.`,
+      md`$\sigma_x$ and $\sigma_p$ are spreads of outcomes over many identically prepared systems: measure $x$ on half of them, $p$ on the other half. The relation says no *state* has both distributions narrow; it is a property of the wavefunction (a wave cannot be both localized and of one wavelength), not of a clumsy measurement. Disturbance by measurement is a separate issue.`,
+      [md`Ensemble meaning of $\sigma$.`, md`Property of the state, with the wave picture.`, md`Explicit rejection of the disturbance reading.`],
+      md`"You can't know both at once": closer, but still phrased as a measurement limitation instead of a property of the state.`),
+    wd(md`Explain the energy–time relation $\sigma_H\,\Delta t \ge \hbar/2$: what is $\Delta t$, why isn't time an operator, and what does it say about a state that changes quickly?`,
+      md`$\Delta t = \sigma_Q/|d\langle Q\rangle/dt|$ is the time it takes the expectation value of some observable $Q$ to change by one standard deviation. Time is a parameter, so the relation is derived from the generalized uncertainty principle for $\hat H$ and $\hat Q$ plus Ehrenfest's theorem. A state that changes quickly (small $\Delta t$ for some $Q$) must have a large energy spread; a stationary state ($\sigma_H = 0$) never changes. Example: a short-lived excited state has a broad spectral line.`,
+      [md`Correct meaning of $\Delta t$.`, md`Derivation route (generalized uncertainty + Ehrenfest), not a $[\hat H, \hat t]$ commutator.`, md`Physical consequence with an example.`],
+      md`Treating $\Delta t$ as a measurement duration, or writing $[\hat H, \hat t] = i\hbar$.`),
+    wd(md`Without solving anything, sketch $u(r)$ for the lowest $\ell = 0$ and $\ell = 1$ bound states of hydrogen and justify each feature of your sketch.`,
+      md`Both start at $u(0) = 0$: $\ell = 0$ rises linearly ($u \propto r$), $\ell = 1$ starts flat ($u \propto r^2$, inside the centrifugal barrier). Both have no nodes (lowest state of each $\ell$), curve toward the axis in the allowed region, peak, then decay exponentially in the forbidden region beyond the outer turning point. The $\ell = 1$ function sits farther out (its $V_{\text{eff}}$ minimum is at $2a$ versus the $\ell = 0$ well that goes all the way in) and decays more slowly (smaller binding, $E_1/4$ versus $E_1$).`,
+      [md`Correct behavior at $0$ ($r$ vs $r^2$) with reason.`, md`No nodes; oscillating vs decaying curvature tied to allowed/forbidden regions.`, md`Relative position and decay rate of the two.`],
+      md`Drawing $R(r)$ instead of $u(r)$ (nonzero at 0 for $\ell = 0$) or giving the $\ell = 1$ state a node.`),
+  ];
+
+  const words = {
+    id: 'm2-words', title: 'Explain in words (the parts the class lost most points on)', sub: 'describe the steps, interpret, justify', kind: 'review',
+    steps: [
+      R(md`
+        **Why this page.** On Midterm 1 the lowest medians were on the parts that asked for words: 3(a) "describe in words the steps you would take… for each step say what you would calculate and why" (median 40%), 1(d) "give a physical interpretation" (50%), and the "explain where the ½ comes from" and "without evaluating any integrals, decide" pieces of 1(a). The math in those parts was easy; the points were in the reasons.
+
+        **How to use it.** Write your answer on paper first, in full sentences, as if for the grader: 4–8 lines. Then open the model answer and the rubric. The rubric lists what earns each point; the last line describes the usual half-credit answer and what it is missing. If your answer looks like that one, rewrite it.
+
+        **A template for "describe the steps".** Number the steps. For each: *what* you compute (one formula or object), *why* it is needed (one clause). End with how you would check the result (normalization, a limit, a symmetry).
+      `),
+      { t: 'paper', html: '<div class="pp-title"><span>Explain in words</span><span>16 prompts</span></div>', items: wordsItems },
+    ],
+  };
 
   C.unit({
     id: 'u14', exam: 'm2', num: 'Unit 8', title: 'Harder practice midterms and short-answer drills',
