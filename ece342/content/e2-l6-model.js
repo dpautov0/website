@@ -346,7 +346,7 @@
       P({
         id: 'e2u6-gm-meas', src: 'Practice Exam 1 · Problem 1(b)', title: 'Measure $g_m$ from two node voltages',
         q: md`In the source follower below, $v_i = 50\,\text{mV}$ at the gate, the source moves by $v_s = 40\,\text{mV}$, and $R_S = 1\kO$. Assume $r_{ds}\to\infty$. Find $i_d$ and $g_m$.`,
-        fig: [['nmos', [1, 1]], ['acg', [1, 0], { dir: 'u' }], ['w', [0, 1], [-0.6, 1], [-0.6, 1.4]], ['Vac', [-0.6, 1.4], [-0.6, 2.4], { n: 'v_i', side: 'l' }], ['gnd', [-0.6, 2.4]], ['w', [1, 2], [1.8, 2]], ['term', [1.8, 2], { n: 'v_s' }], ['R', [1, 2], [1, 3.2], { n: 'R_S' }], ['gnd', [1, 3.2]], ['iarr', [1, -0.3], 'd', { n: 'i_d', side: 'l', off: [-14, 0] }]],
+        fig: [['nmos', [1, 1]], ['acg', [1, 0], { dir: 'u' }], ['w', [0, 1], [-0.6, 1], [-0.6, 1.4]], ['Vac', [-0.6, 1.4], [-0.6, 2.4], { n: 'v_i', side: 'l' }], ['gnd', [-0.6, 2.4]], ['w', [1, 2], [1.8, 2]], ['term', [1.8, 2], { n: 'v_s' }], ['R', [1, 2], [1, 3.2], { n: 'R_S', side: 'l' }], ['gnd', [1, 3.2]], ['iarr', [1, -0.3], 'd', { n: 'i_d', side: 'l', off: [-14, 0] }]],
         parts: [{ lbl: 'i_d', unit: 'µA', ans: 40 }, { lbl: 'g_m', unit: 'mS', ans: 4 }],
         hints: [md`Draw the model: drain at incremental ground, gate on $v_i$, source on $R_S$. The gate draws no current, so all of $i_d$ flows through $R_S$.`, md`$v_{gs} = v_g - v_s = v_i - v_s$, and $i_d = g_mv_{gs}$.`],
         sol: md`**Step 1: the model.** Drain at incremental ground (the triangle), gate on $v_i$, source on $R_S$ to ground. With $r_{ds}\to\infty$ the transistor is just $g_mv_{gs}$ from drain to source.

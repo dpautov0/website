@@ -173,7 +173,7 @@
         **Step 1: turn off the input.** Output resistance is a property of the circuit with the input switched off, so set $v_{in} = 0$. Now $M_1$'s gate is at incremental ground.
 
         **Step 2: list what touches the output node.** Two things: $R_D$ going **up**, and $M_1$'s drain going **down**.
-      `, [['rail', [1, -1.2]], ['R', [1, -1.2], [1, 0], { n: 'R_D' }], ['w', [1, 0], [2.2, 0]], ['term', [2.2, 0], { n: 'v_{out}' }], ['nmos', [1, 1]], ['gnd', [1, 2]], ['w', [0, 1], [-0.6, 1], [-0.6, 1.4]], ['Vac', [-0.6, 1.4], [-0.6, 2.4], { n: 'v_{in}', side: 'l' }], ['gnd', [-0.6, 2.4]], ['txt', [1.25, -0.55], '$\\uparrow R_{UP} = R_D$', { a: 'l' }], ['txt', [1.25, 0.45], '$\\downarrow R_{DN} = r_{ds}$', { a: 'l' }]]),
+      `, [['rail', [1, -1.2]], ['R', [1, -1.2], [1, 0], { n: 'R_D', side: 'l' }], ['w', [1, 0], [2.2, 0]], ['term', [2.2, 0], { n: 'v_{out}' }], ['nmos', [1, 1]], ['gnd', [1, 2]], ['w', [0, 1], [-0.6, 1], [-0.6, 1.4]], ['Vac', [-0.6, 1.4], [-0.6, 2.4], { n: 'v_{in}', side: 'l' }], ['gnd', [-0.6, 2.4]], ['txt', [1.25, -0.55], '$\\uparrow R_{UP} = R_D$', { a: 'l' }], ['txt', [1.25, 0.45], '$\\downarrow R_{DN} = r_{ds}$', { a: 'l' }]]),
       R(md`
         **Step 3: draw the small-signal model.** $V_{DD}$ is a fixed voltage, so the top of $R_D$ goes to ground. $M_1$ has gate at 0 (input off) and source at 0, so $v_{gs} = 0$: its dependent source carries nothing and only $r_{ds}$ remains. Put the test source on the output.
 

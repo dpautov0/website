@@ -492,7 +492,7 @@ Sanity: $g_mr_\\pi = \\beta = ${B}$ ✓, and $g_mr_o = V_A/V_T = ${f(Va / VT)}$ 
 **Looking down:** ${D.say}. $R_{DN} = ${resTeX(rd)}$.
 
 $$R_{EQ} = R_{UP}\\parallel R_{DN} = ${resTeX(req)}$$
-The smaller side (${rd < ru ? 'down' : 'up'}, ${resTeX(Math.min(rd, ru))}) sets the answer${Math.max(rd, ru) / Math.min(rd, ru) > 10 ? ': the other side is more than 10 times bigger and barely matters' : ''}.`,
+The smaller side (${rd < ru ? 'down' : 'up'}, $${resTeX(Math.min(rd, ru))}$) sets the answer${Math.max(rd, ru) / Math.min(rd, ru) > 10 ? ': the other side is more than 10 times bigger and barely matters' : ''}.`,
     };
   };
 

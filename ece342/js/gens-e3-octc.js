@@ -318,8 +318,9 @@
     const c = pick(T.caps);
     const K = T.cap[c];
     const p = params(k, { noRds: true });
-    const opt = [K.sym, ...U.shuffle(K.slips).slice(0, 3).map((s) => s[0])];
-    const whyAligned = opt.map((o, j) => (j === 0 ? null : (K.slips.find((s) => s[0] === o) || [0, 'Not that one.'])[1]));
+    const raw = [K.sym, ...U.shuffle(K.slips).slice(0, 3).map((s) => s[0])];
+    const whyAligned = raw.map((o, j) => (j === 0 ? null : (K.slips.find((s) => s[0] === o) || [0, 'Not that one.'])[1]));
+    const opt = raw.map((o) => `$${o}$`);   // the options are TeX: delimit them so they render as math
     const R = K.R(p);
     return {
       fig: FIG[k]({ hi: c, v: shown(k, p) }),
