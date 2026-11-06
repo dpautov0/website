@@ -294,3 +294,6 @@ button:active:not(:disabled) { transform: scale(.95); }
   .dcard:hover .dc-desc { display: block; }
   .ch-fan { height: 124px; }
 }
+.metro { margin-top: 8px; padding: 6px 8px; border-radius: 6px; background: linear-gradient(#fff3c4, #f3dc8a); border: 1px solid #c9971a; font-size: .88rem; }
+.metro-hint { margin-top: 8px; border-top: 1px dashed #c8ab78; padding-top: 6px; }
+.ch-head .cost { display: inline; margin-left: 4px; }

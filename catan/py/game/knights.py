@@ -326,9 +326,9 @@ class KnightsMixin:
             old = self.capitals.get(track)
             self.capitals[track] = (pid, city)
             if old:
-                self.say(f"{p.name} seizes the {track} capital from {self.name(old[0])}!")
+                self.say(f"{p.name} seizes the {track.capitalize()} Metropolis from {self.name(old[0])}!")
             else:
-                self.say(f"{p.name} founds the {track} capital! +2 victory points.")
+                self.say(f"{p.name} founds the {track.capitalize()} Metropolis! +2 victory points.")
 
     # ---- progress cards ----------------------------------------------------
     def _progress_ok(self, pid, card):

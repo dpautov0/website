@@ -351,7 +351,7 @@ function boardSvg(st) {
     if (kind === "city") piece += `<rect x="${x - 3}" y="${y + 4}" width="6" height="8" fill="#1a1208"/>`;
     else piece += `<rect x="${x - 2.5}" y="${y + 3}" width="5" height="7" fill="#1a1208"/>`;
     out += pop(fresh(`b${v}`), piece);
-    if (capitalAt[v]) out += `<circle cx="${x}" cy="${y - 20}" r="8" fill="${TRACKS[capitalAt[v]].color}" stroke="#1a1208"/><text x="${x}" y="${y - 16}" text-anchor="middle" font-size="10">👑</text>`;
+    if (capitalAt[v]) out += `<circle cx="${x}" cy="${y - 20}" r="8" fill="${TRACKS[capitalAt[v]].color}" stroke="#1a1208"/><text x="${x}" y="${y - 16}" text-anchor="middle" font-size="10">🏛️</text><title>${TRACKS[capitalAt[v]].name} Metropolis</title>`;
   }
   for (const [v, owner, level, active, justNow] of st.knights || []) out += pop(fresh(`k${v}`), knightSvg(V[v][0], V[v][1], st.players[owner], level, active, justNow, ui.sel === v && ui.mode === "move_knight"));
 
@@ -574,7 +574,7 @@ function renderGame() {
   h += `<div class="box"><h3>Lords of the realm <span class="cost">first to ${st.vp_target}★</span></h3><div class="players">`;
   for (const p of st.players) {
     const off = ui.online && !ui.online[p.id] ? ` <span class="off">(away)</span>` : "";
-    const caps = Object.entries(st.capitals || {}).filter(([, [o]]) => o === p.id).map(([t]) => `<span class="badge" style="background:${TRACKS[t].color};color:#fff">${TRACKS[t].name} capital</span>`).join("");
+    const caps = Object.entries(st.capitals || {}).filter(([, [o]]) => o === p.id).map(([t]) => `<span class="badge" style="background:${TRACKS[t].color};color:#fff">${TRACKS[t].name} Metropolis</span>`).join("");
     const stats = [`🂠${p.cards}`];
     if (K) stats.push(`📜${p.progress}`, `🛡️${p.knight_strength}`); else stats.push(`📜${p.decrees}`, `⚔️${p.soldiers}`);
     stats.push(`🛤️${p.road_length}`);
@@ -633,8 +633,13 @@ function renderGame() {
       for (let i = 1; i <= 5; i++) pips += `<span class="pip ${i <= lvl ? "on" : ""}" style="${i <= lvl ? `background:${info.color}` : ""}">${i}</span>`;
       h += `<div class="track-row"><span class="tname" style="color:${info.color}">${info.icon} ${info.name}</span>${pips}
         <button data-improve="${t}" ${main && next ? "" : "disabled"}>${lvl >= 5 ? "Max" : `+1 · ${lvl + 1}${ICON[info.com]}`}</button></div>
-        <div class="cost">${lvl >= 3 ? "✅" : "Level 3:"} ${info.l3}${cap ? ` · capital: ${esc(st.players[cap[0]].name)}` : " · level 4 founds the capital (+2★)"}</div>`;
+        <div class="cost">${lvl >= 3 ? "✅" : "Level 3:"} ${info.l3}${cap ? ` · Metropolis: ${esc(st.players[cap[0]].name)}` : " · first to level 4 gets the Metropolis (+2★)"}</div>`;
     }
+    const metros = Object.entries(st.capitals || {}).filter(([, [o]]) => o === st.you).map(([t]) => t);
+    h += metros.length
+      ? `<div class="metro">${metros.map((t) => `🏛️ You have the <b style="color:${TRACKS[t].color}">${TRACKS[t].name} Metropolis</b>`).join("<br>")}
+         <div class="cost">+2★ each, and the raiders can never sack it. Someone else takes it if they reach level 5 in that track before you do.</div></div>`
+      : `<div class="cost metro-hint">🏛️ Be the first to reach level 4 in a track to get its <b>Metropolis</b>: +2★ and the raiders can't sack that city.</div>`;
     h += `</div>`;
   }
 
