@@ -600,6 +600,7 @@ function renderGame() {
         ${st.longest_road === p.id ? '<span class="badge">Longest Road</span>' : ""}
         ${st.largest_army === p.id ? '<span class="badge">Largest Army</span>' : ""}
         ${p.defender ? `<span class="badge">Defender ×${p.defender}</span>` : ""}${caps}
+        ${st.merchant && st.merchant[1] === p.id ? `<span class="badge" title="holds the merchant: +1★ and 2:1 trades for that tile's resource">Merchant +1★</span>` : ""}
         ${p.advancements.length ? `<span class="badge" title="${esc(p.advancements.join(", "))}">⭐×${p.advancements.length}</span>` : ""}
         ${p.islands ? `<span class="badge">🏝️×${p.islands}</span>` : ""}</span>
       <span class="st" title="cards · ${K ? "progress cards · active knights" : "decrees · soldiers"} · road">${stats.join(" ")}</span>
