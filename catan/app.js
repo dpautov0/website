@@ -597,6 +597,9 @@ function renderGame() {
   h += `<div class="box"><h3>Your hand <span class="cost">${held} card${held === 1 ? "" : "s"} · limit ${me.hand_limit}</span></h3>${handFan(st, ui.fx?.gains || {})}`;
   h += `<div class="hand-counts">${st.cards.map((r) => `<span class="${st.hand[r] ? "" : "zero"}">${ICON[r]}${st.hand[r]}</span>`).join("")}</div></div>`;
 
+  // trade, right under the cards you'd be trading
+  h += tradeHtml(st, main);
+
   // actions
   const btn = (mode, label, cost, ok) => `<button data-mode="${mode}" class="${ui.mode === mode ? "on" : ""}" ${main && ok ? "" : "disabled"}>${label}${cost ? `<span class="cost">${costTxt(cost)}</span>` : ""}</button>`;
   h += `<div class="box"><h3>Actions</h3><div class="actions">`;
@@ -643,8 +646,6 @@ function renderGame() {
     h += `</div>`;
   }
 
-  // trade
-  h += tradeHtml(st, main);
 
   $("panel-main").innerHTML = h;
   renderCardHand(st);
