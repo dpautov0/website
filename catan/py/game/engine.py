@@ -13,9 +13,11 @@ from .common import IllegalMove, fmt, pips, COSTS
 from .mapgen import generate, SIZES, SHAPES, MAX_PLAYERS
 from .seafaring import SeafaringMixin
 from .knights import KnightsMixin, CITY_COMMODITY, TRACKS
-from .progress import ADVANCEMENTS
+from .progress import PROGRESS, build_decks
 
 PIECES = {"road": 15, "ship": 15, "village": 5, "city": 4}
+# the base game's victory point decrees, named for advances that ended the feudal age
+BASE_ADVANCEMENTS = ["Printing Press", "Magna Carta", "Gunpowder", "Navigator's Compass", "The University"]
 DECREE_NAMES = {
     "soldier": "Soldier",
     "road_charter": "Road Charter",
@@ -83,6 +85,27 @@ class Player:
 
 
 class Game(SeafaringMixin, KnightsMixin):
+    def __setstate__(self, state):
+        """Restore a saved game, upgrading saves made before the current progress decks."""
+        self.__dict__.update(state)
+        for k, v in {"fleet": None, "merchant": None, "crane": False, "bishop": False,
+                     "discard_only": False, "taking": None, "pending_pdiscard": {}}.items():
+            self.__dict__.setdefault(k, v)
+        self.__dict__.pop("trade_charter", None)
+        if self.knights_mode and any(c not in PROGRESS for p in self.players for c in p.progress):
+            self.decks = build_decks(self.rng)
+            for p in self.players:
+                old, p.progress = p.progress, []
+                for c in old:
+                    if c in PROGRESS:
+                        p.progress.append(c)
+                        self.decks[PROGRESS[c]["track"]].remove(c)
+                    else:
+                        track = ("commerce" if c in {"market_day", "trade_charter", "guild_monopoly", "toll_road", "weavers"}
+                                 else "arms" if c in {"muster", "sapper", "rally", "armorer"} else "faith")
+                        deck = self.decks[track]
+                        p.progress.append(deck.pop(next(i for i in range(len(deck) - 1, -1, -1) if deck[i] in PROGRESS)))
+
     def __init__(self, names, options=None, rng=None):
         self.options = normalize_options(options)
         size = self.options["size"]
@@ -102,7 +125,7 @@ class Game(SeafaringMixin, KnightsMixin):
             self.deck = []
         else:
             self.deck = (["soldier"] * (20 if big else 14) + ["road_charter"] * 3 + ["harvest"] * 3
-                         + ["monopoly"] * 3 + ["adv:" + a for a in ADVANCEMENTS])
+                         + ["monopoly"] * 3 + ["adv:" + a for a in BASE_ADVANCEMENTS])
             self.rng.shuffle(self.deck)
         self.buildings = {}   # vertex -> (pid, "village"|"city")
         self.roads = {}       # edge -> pid
@@ -173,12 +196,16 @@ class Game(SeafaringMixin, KnightsMixin):
         pts += len(p.bonus_islands)
         pts += 2 * sum(1 for owner, _ in self.capitals.values() if owner == pid)
         pts += len(p.progress_vp) + p.defender_vp
+        if self.merchant and self.merchant[1] == pid:
+            pts += 1
         if hidden:
             pts += sum(1 for c in p.decrees + p.new_decrees if is_advancement(c))
         return pts
 
     def rate(self, pid, card):
-        if self.trade_charter:
+        if self.fleet == card and pid == self.current:
+            return 2
+        if self.merchant and self.merchant[1] == pid and TERRAIN_RESOURCE.get(self.board.hexes[self.merchant[0]]["terrain"]) == card:
             return 2
         best = 4
         if card in COMMODITIES and self.players[pid].levels["commerce"] >= 3:
@@ -329,7 +356,7 @@ class Game(SeafaringMixin, KnightsMixin):
             self.say(f"{p.name} takes Largest Army ({p.soldiers} soldiers).")
 
     # ---- action dispatch ------------------------------------------------
-    ANYONE = ("discard", "respond_trade", "pick")
+    ANYONE = ("discard", "respond_trade", "pick", "discard_progress")
 
     def apply(self, pid, action):
         if self.phase == "over":
@@ -340,6 +367,8 @@ class Game(SeafaringMixin, KnightsMixin):
             raise IllegalMove(f"Unknown action {kind!r}.")
         if kind not in self.ANYONE and pid != self.current:
             raise IllegalMove("It's not your turn.")
+        if pid in self.pending_pdiscard and kind not in self.ANYONE:
+            raise IllegalMove("First put back a progress card (you may hold only 4).")
         handler(pid, action)
         if self.phase not in ("setup_village", "setup_road") and self.vp(self.current) >= self.vp_target:
             self.winner = self.current
@@ -478,7 +507,10 @@ class Game(SeafaringMixin, KnightsMixin):
         return not self.knights_mode or self.raided
 
     def _after_discard(self):
-        if self.robber_active():
+        if self.discard_only:   # Saboteur: just the discard, no bandits
+            self.discard_only = False
+            self.phase = self.resume_phase
+        elif self.robber_active():
             self.phase = "bandit"
         else:
             self.say("The bandits stay hidden until the raiders first arrive.")
@@ -575,6 +607,13 @@ class Game(SeafaringMixin, KnightsMixin):
             self.robber_moved = "pirate"
             self.say(f"{self.name(pid)} moved the pirate.")
         cands = self.steal_candidates()
+        if self.bishop:   # Bishop: rob everyone next to the new tile
+            self.bishop = False
+            for c in sorted(cands):
+                if c != pid:
+                    self._steal(c)
+            self.phase = self.resume_phase
+            return
         if len(cands) == 1:
             self._steal(cands[0])
         elif cands:
@@ -610,7 +649,15 @@ class Game(SeafaringMixin, KnightsMixin):
         if kind == "road":
             out = {"road": self.legal_roads(pid), "ship": self.legal_ships(pid)}
         elif kind == "knight":
-            out = {"knight": self.legal_knight_spots(pid)}
+            out = {"knight": self.legal_knight_spots(pid, any_level="level" in self.placing)}
+        elif kind == "merchant":
+            out = {"merchant": self.merchant_hexes(pid)}
+        elif kind == "swap":
+            out = {"swap": [h for h in self.swap_hexes() if h != self.placing.get("first")]}
+        elif kind == "city":
+            out = {"city": self.my_villages(pid)}
+        elif kind == "displace":
+            out = {"displace": self.intrigue_targets(pid)}
         elif kind == "promote":
             out = {"promote": self.legal_promotions(pid)}
         elif kind == "wall":
@@ -629,8 +676,33 @@ class Game(SeafaringMixin, KnightsMixin):
         elif what == "remove_road":
             owner = self.roads.pop(at)
             self.players[owner].pieces["road"] += 1
-            self.say(f"{self.name(pid)} tore up a road of {self.name(owner)}.")
             self.update_longest_road()
+            if owner == pid:   # Diplomat on your own road: you may rebuild it elsewhere
+                self.say(f"{self.name(pid)} picked up one of their roads to rebuild it.")
+                self.placing = {"kind": "road", "left": 1, "resume": self.placing["resume"]}
+                if not any(self.legal_place(pid).values()):
+                    self._end_placing()
+                return
+            self.say(f"{self.name(pid)} tore up a road of {self.name(owner)}.")
+        elif what == "merchant":
+            self.merchant = [at, pid]
+            self.say(f"{self.name(pid)} sends the merchant to a {self.board.hexes[at]['terrain']} tile.")
+        elif what == "swap":
+            if "first" not in self.placing:
+                self.placing["first"] = at
+                return
+            h1, h2 = self.board.hexes[self.placing["first"]], self.board.hexes[at]
+            h1["number"], h2["number"] = h2["number"], h1["number"]
+            self.say(f"{self.name(pid)} swapped a {h2['number']} and a {h1['number']}.")
+            self.placing["left"] = 1
+        elif what == "displace":
+            self.displace_knight(at)
+        elif what == "knight" and "level" in self.placing:
+            lvl = max(l for l in range(1, self.placing["level"] + 1) if self.players[pid].knight_pieces[l] > 0)
+            self.knights[at] = {"owner": pid, "level": lvl, "active": self.placing["active"], "activated_turn": -1}
+            self.players[pid].knight_pieces[lvl] -= 1
+            self.update_longest_road()
+            self.say(f"{self.name(pid)} placed a level {lvl} knight.")
         else:
             self._place_piece(pid, what, at)
             self.say(f"{self.name(pid)} placed a free {what}.")
@@ -643,6 +715,9 @@ class Game(SeafaringMixin, KnightsMixin):
         self._end_placing()
 
     def _end_placing(self):
+        if self.placing.get("refund") and self.placing["left"] > 0:
+            for r, n in self.placing["refund"].items():
+                self.give(self.players[self.current], r, n)
         self.phase = self.placing["resume"]
         self.placing = None
 
@@ -857,7 +932,11 @@ class Game(SeafaringMixin, KnightsMixin):
             "legal": legal,
             "costs": COSTS,
             "ship_moved": self.ship_moved,
-            "trade_charter": self.trade_charter,
+            "fleet": self.fleet,
+            "merchant": self.merchant,
+            "crane": self.crane,
+            "take": self.take_view(pid),
+            "pdiscard": self.pending_pdiscard.get(pid, 0),
             **self.knights_view(),
             "log": self.log[-40:],
         }

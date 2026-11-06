@@ -63,6 +63,9 @@ def next_bot_action(g, rng, bots=None, styles=None):
     styles = styles or {}
     if g.phase == "over":
         return None
+    for pid in getattr(g, "pending_pdiscard", {}):
+        if pid in bots:
+            return pid, {"type": "discard_progress", "card": rng.choice(g.players[pid].progress)}
     if g.phase == "discard":
         for pid, need in g.pending_discard.items():
             if pid in bots:
@@ -123,6 +126,13 @@ def _turn_action(g, pid, rng, style=None):
     if ph == "steal":
         cands = g.steal_candidates()
         return {"type": "steal", "target": max(cands, key=lambda q: g.vp(q, hidden=False) + rng.random())}
+    if ph == "take":
+        t = g.taking
+        q = g.players[t["from"]]
+        if t["kind"] == "progress":
+            return {"type": "take", "card": rng.choice(q.progress)}
+        pool = [c for c in g.cards for _ in range(q.hand[c])]
+        return {"type": "take", "cards": rng.sample(pool, t["n"])}
     if ph == "place":
         for what, spots in g.legal_place(pid).items():
             if spots:
@@ -181,20 +191,14 @@ def _main_action(g, pid, rng, style=None):
             if c != "alchemist" and g._progress_ok(pid, c):
                 a = {"type": "play_progress", "card": c}
                 param = PROGRESS[c]["param"]
-                if param == "resources2":
-                    a["resources"] = [r for r in _wanted(g, pid)[:2]] if len(_wanted(g, pid)) >= 2 else ["grain", "iron"]
-                elif param == "commodities2":
-                    a["resources"] = rng.sample(COMMODITIES, 2)
+                if param == "card":
+                    a["resource"] = max(g.cards, key=lambda r: p.hand[r] + rng.random())
+                elif param and param.startswith("player_"):
+                    a["target"] = max(g.progress_targets(pid, c), key=lambda q: g.vp(q, hidden=False) + rng.random())
                 elif param == "resource":
                     a["resource"] = max(RESOURCES, key=lambda r: sum(q.hand[r] for q in g.players if q.id != pid))
                 elif param == "commodity":
                     a["resource"] = rng.choice(COMMODITIES)
-                elif param == "resource_commodity":
-                    a["resource"], a["commodity"] = _wanted(g, pid)[0], rng.choice(COMMODITIES)
-                elif param == "number":
-                    a["number"] = rng.choice([5, 6, 8, 9])
-                if param in ("resources2", "commodities2") and any(g.bank[r] < a["resources"].count(r) for r in a["resources"]):
-                    continue
                 opts.append((5, a))
     if not g.knights_mode:
         for c in set(p.decrees):

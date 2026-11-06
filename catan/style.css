@@ -86,7 +86,7 @@ input { font: inherit; padding: 7px 9px; border: 1px solid var(--ink2); border-r
 .decree { display: flex; align-items: center; gap: 6px; padding: 3px 0; }
 .decree .dn { flex: 1; }
 .decree .new { font-size: .7rem; color: var(--ink2); font-style: italic; }
-.steppers { display: grid; grid-template-columns: auto repeat(5, 1fr); gap: 3px; align-items: center; font-size: .85rem; }
+.steppers { display: grid; grid-template-columns: auto repeat(5, minmax(0, 1fr)); gap: 3px; align-items: center; font-size: .85rem; }
 .steppers .h { text-align: center; font-size: 1.1rem; }
 .stp { display: flex; flex-direction: column; align-items: center; }
 .stp button { padding: 0 6px; line-height: 1.1; font-size: .8rem; }
@@ -281,8 +281,8 @@ button:active:not(:disabled) { transform: scale(.95); }
 .dc-note { font-size: .58rem; font-style: italic; }
 .dcard button { font-size: .7rem; padding: 2px 10px; margin-top: 3px; }
 .t-commerce { background: linear-gradient(165deg, #fdf0bf, #e0b53e); }
-.t-faith { background: linear-gradient(165deg, #dbe7fa, #7fa4dc); }
-.t-arms { background: linear-gradient(165deg, #dcf1d8, #79b672); }
+.t-faith { background: linear-gradient(165deg, #dcf1d8, #79b672); }
+.t-arms { background: linear-gradient(165deg, #dbe7fa, #7fa4dc); }
 .t-adv { background: linear-gradient(165deg, #fff6cf, #e9c95a); border-color: #b8860b; }
 .t-soldier { background: linear-gradient(165deg, #f7d6d0, #c96b5c); }
 .t-road_charter { background: linear-gradient(165deg, #eadcc8, #b48b5c); }
@@ -297,3 +297,6 @@ button:active:not(:disabled) { transform: scale(.95); }
 .metro { margin-top: 8px; padding: 6px 8px; border-radius: 6px; background: linear-gradient(#fff3c4, #f3dc8a); border: 1px solid #c9971a; font-size: .88rem; }
 .metro-hint { margin-top: 8px; border-top: 1px dashed #c8ab78; padding-top: 6px; }
 .ch-head .cost { display: inline; margin-left: 4px; }
+.steppers .h small { display: block; font-size: .62rem; hyphens: manual; overflow-wrap: normal; letter-spacing: 0; color: var(--ink2); line-height: 1.1; }
+.swap-first { fill: rgba(255,216,74,.35); stroke: #ffd84a; stroke-width: 4; pointer-events: none; }
+.pick .sw { display: inline-block; width: 10px; height: 10px; border-radius: 2px; vertical-align: middle; }

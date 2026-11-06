@@ -18,8 +18,8 @@ const TERRAIN = {
 };
 const TRACKS = {
   commerce: { name: "Commerce", icon: "⚖️", com: "cloth", color: "#c9971a", l3: "2:1 trades for commodities" },
-  faith:    { name: "Faith",    icon: "⛪", com: "parchment", color: "#3f6fb5", l3: "1 free resource on rolls that pay you nothing" },
-  arms:     { name: "Arms",     icon: "⚔️", com: "steel", color: "#3f8f4a", l3: "knights can be promoted to level 3" },
+  faith:    { name: "Faith",    icon: "⛪", com: "parchment", color: "#3f8f4a", l3: "1 free resource on rolls that pay you nothing" },
+  arms:     { name: "Arms",     icon: "⚔️", com: "steel", color: "#3f6fb5", l3: "knights can be promoted to level 3" },
 };
 const EVENT_ICON = { raiders: "⛵", commerce: "⚖️", faith: "⛪", arms: "⚔️" };
 const SIZE_LABEL = { small: "Small", medium: "Medium", large: "Large", huge: "Huge" };
@@ -41,7 +41,7 @@ const ui = {
   give: {}, get: {}, // trade builder
   bankGive: "timber", bankGet: "grain",
   modal: null,       // {kind, card, ...} for card parameter dialogs
-  discardSel: {}, pickSel: {},
+  discardSel: {}, pickSel: {}, takeSel: {},
   view: null, boardKey: null, dragged: false,
 };
 
@@ -321,6 +321,11 @@ function boardSvg(st) {
       for (let p = 0; p < pips; p++) out += `<circle cx="${cx + (p - (pips - 1) / 2) * 4}" cy="${cy + 16}" r="1.3" fill="${ink}"/>`;
     }
     if (fx?.roll && hx.number === st.dice[0] + st.dice[1] && i !== st.bandit) out += `<polygon class="hit" points="${hexPts(hx)}"/>`;
+    if (st.merchant && st.merchant[0] === i) {
+      const owner = st.players[st.merchant[1]];
+      out += `<g transform="translate(${cx - 24},${cy - 2})"><title>${esc(owner.name)}'s merchant: they trade this tile's resource 2:1 (+1★)</title>`
+        + `<path d="M0,-14 L9,12 L-9,12 Z" fill="${owner.color}" stroke="#1a1208" stroke-width="2"/><circle cy="-14" r="3.5" fill="#f3d36b" stroke="#1a1208"/></g>`;
+    }
     if (i === st.bandit) {
       out += pop(fx?.bandit, `<g transform="translate(${cx + 22},${cy - 4})"><ellipse cx="0" cy="14" rx="10" ry="3" fill="rgba(0,0,0,.35)"/>`
         + `<path d="M-8,13 L-5,-2 L5,-2 L8,13 Z" fill="#1d1d1d" stroke="#000"/><circle cx="0" cy="-7" r="6" fill="#1d1d1d" stroke="#000"/>`
@@ -402,11 +407,12 @@ function spotsSvg(st, V, edgeLine) {
   else if (st.phase === "place") {
     for (const [what, spots] of Object.entries(L.place || {})) {
       if (["road", "ship", "remove_road"].includes(what)) e(spots, "place", what);
+      else if (what === "merchant" || what === "swap") spots.forEach((x) => hexes.push({ at: x, act: "place", what }));
       else v(spots, "place", what, what !== "knight");
     }
   } else if (st.phase === "bandit") {
     st.board.hexes.forEach((hx, i) => {
-      if (hx.terrain === "sea" ? (st.options.seafaring && st.robber_kind === "any" && i !== st.pirate) : i !== st.bandit) hexes.push(i);
+      if (hx.terrain === "sea" ? (st.options.seafaring && st.robber_kind === "any" && i !== st.pirate) : i !== st.bandit) hexes.push({ at: i, act: "bandit" });
     });
   } else if (st.phase === "main") {
     const m = ui.mode;
@@ -435,9 +441,14 @@ function spotsSvg(st, V, edgeLine) {
   for (const s of verts) {
     out += `<circle class="spot spot-v" data-act="${s.act}" data-what="${s.what || ""}" data-at="${s.at}" cx="${V[s.at][0]}" cy="${V[s.at][1]}" r="${s.big ? 17 : 9}" ${s.big ? 'fill-opacity=".3"' : ""}/>`;
   }
-  for (const i of hexes) {
-    const pts = st.board.hexes[i].vertices.map((x) => V[x].join(",")).join(" ");
-    out += `<polygon class="spot spot-h" data-act="bandit" data-at="${i}" points="${pts}"/>`;
+  for (const { at, act, what } of hexes) {
+    const pts = st.board.hexes[at].vertices.map((x) => V[x].join(",")).join(" ");
+    const picked = what === "swap" && st.placing?.first === at;
+    out += `<polygon class="spot spot-h ${picked ? "picked" : ""}" data-act="${act}" data-what="${what || ""}" data-at="${at}" points="${pts}"/>`;
+  }
+  if (st.phase === "place" && st.placing?.first != null) {
+    const hx = st.board.hexes[st.placing.first];
+    out += `<polygon class="swap-first" points="${hx.vertices.map((x) => V[x].join(",")).join(" ")}"/>`;
   }
   return out;
 }
@@ -511,7 +522,10 @@ function promptText(st) {
     move_knight: ui.sel === null ? "Choose a <b>knight</b> to move." : "Choose where it goes. A stronger knight can push a weaker one off.",
     move_ship: ui.sel === null ? "Choose an <b>open-ended ship</b> to move." : "Choose its new spot.",
   };
-  const placeTxt = { road: "free road/ship", knight: "free knight", promote: "free promotion", wall: "free city wall", remove_road: "road to tear up" };
+  const placeTxt = { road: "free road/ship", knight: "free knight", promote: "free promotion", wall: "free city wall", remove_road: "road to remove (an open end)",
+    merchant: "merchant on a tile next to your village or city", city: "city (choose a village)", displace: "target: an enemy knight on your roads",
+    swap: st.placing?.first != null ? "second number token to swap with" : "first number token to swap" };
+  const take = st.take;
   const msgs = {
     setup_village: mine ? (st.setup_kind === "city" ? "Place your <b>city</b> on a glowing corner." : "Place a <b>village</b> on a glowing corner.") : `${cur} is placing.`,
     setup_road: mine ? `Place a <b>road</b>${st.options.seafaring ? " or <b>ship</b>" : ""} beside it.` : `${cur} is placing a road.`,
@@ -521,6 +535,7 @@ function promptText(st) {
     pick: st.pick ? `Choose <b>${st.pick}</b> resource(s).` : `Waiting for ${st.waiting_pick.map((i) => esc(st.players[i].name)).join(", ")} to choose.`,
     bandit: mine ? (st.options.seafaring && st.robber_kind === "any" ? "Click a land tile for the <b>bandits</b> or a sea tile for the <b>pirate</b>." : "Move the <b>bandits</b> to a new tile.") : `${cur} is moving the ${st.options.seafaring ? "bandits or pirate" : "bandits"}.`,
     steal: mine ? "Choose someone to <b>rob</b>:" : `${cur} is choosing whom to rob.`,
+    take: mine && take ? `Choose ${take.n === 1 ? "a card" : `<b>${take.n}</b> cards`} to take from ${esc(st.players[take.from].name)}.` : `${cur} is looking through someone's cards…`,
     place: mine ? `Place your <b>${placeTxt[st.placing?.kind] || "piece"}</b> (${st.placing?.left} left).` : `${cur} is placing.`,
   };
   return msgs[st.phase] || st.phase;
@@ -777,17 +792,17 @@ function tradeHtml(st, main) {
   const t = st.trade;
   if (main) {
     const cards = st.cards;
-    h += `<div class="steppers" style="grid-template-columns:auto repeat(${cards.length},1fr)"><span></span>${cards.map((r) => `<span class="h">${ICON[r]}</span>`).join("")}`;
+    h += `<div class="steppers" style="grid-template-columns:auto repeat(${cards.length},minmax(0,1fr))"><span></span>${cards.map((r) => `<span class="h">${ICON[r]}<small>${r === "parchment" ? "parch&shy;ment" : r}</small></span>`).join("")}`;
     for (const side of ["give", "get"]) {
       h += `<span>${side === "give" ? "Give" : "Get"}</span>`;
       for (const r of cards) h += `<div class="stp"><button data-step="${side}:${r}:1">+</button><span>${ui[side][r] || 0}</span><button data-step="${side}:${r}:-1">−</button></div>`;
     }
     h += `</div><button data-act="offer" style="margin-top:6px;width:100%">Offer to other lords</button>`;
     if (!cards.includes(ui.bankGive)) ui.bankGive = "timber";
-    h += `<div class="bank-row">Bank: give <select id="bank-give">${cards.map((r) => `<option value="${r}" ${r === ui.bankGive ? "selected" : ""}>${st.rates[r]} ${r}</option>`).join("")}</select>
-      for 1 <select id="bank-get">${cards.map((r) => `<option value="${r}" ${r === ui.bankGet ? "selected" : ""}>${r}</option>`).join("")}</select>
+    h += `<div class="bank-row">Bank: give <select id="bank-give">${cards.map((r) => `<option value="${r}" ${r === ui.bankGive ? "selected" : ""}>${st.rates[r]} ${ICON[r]} ${r}</option>`).join("")}</select>
+      for 1 <select id="bank-get">${cards.map((r) => `<option value="${r}" ${r === ui.bankGet ? "selected" : ""}>${ICON[r]} ${r}</option>`).join("")}</select>
       <button data-act="bank">Trade</button></div>`;
-    if (st.trade_charter) h += `<div class="cost">📜 Trade Charter: everything trades 2:1 this turn.</div>`;
+    if (st.fleet) h += `<div class="cost">⛵ Trade Fleet: ${ICON[st.fleet]} ${st.fleet} trades 2:1 this turn.</div>`;
   } else if (!t) {
     h += `<div class="cost">You can trade during your turn after rolling.</div>`;
   }
@@ -854,6 +869,19 @@ function renderModal() {
   if (st && st.phase === "discard" && st.discard) {
     ui.counter = ui.discardSel;
     h = counterModal("The bandits raid your stores!", `Discard ${st.discard} cards`, st.discard, ui.discardSel, st.cards, st.hand, "data-dconfirm");
+  } else if (st && st.pdiscard) {
+    h = `<h3>Too many progress cards</h3><p>You may hold only 4. Put one back under its deck:</p><div class="pick">`
+      + st.my_progress.map((c) => `<button data-pback="${c.card}"><span style="color:${TRACKS[c.track].color}">${TRACKS[c.track].icon}</span> ${esc(c.name)}</button>`).join("") + `</div>`;
+  } else if (st && st.phase === "take" && st.take && st.current === st.you) {
+    const t = st.take;
+    const from = esc(st.players[t.from].name);
+    if (t.kind === "progress") {
+      h = `<h3>${from}'s progress cards</h3><p>Take one:</p><div class="pick">`
+        + t.cards.map((c) => `<button data-tprog="${c.card}" title="${esc(c.desc)}"><span style="color:${TRACKS[c.track].color}">${TRACKS[c.track].icon}</span> ${esc(c.name)}</button>`).join("") + `</div>`;
+    } else {
+      ui.counter = ui.takeSel;
+      h = counterModal(`${from}'s hand`, `Take ${t.n} card${t.n === 1 ? "" : "s"}`, t.n, ui.takeSel, st.cards.filter((r) => t.hand[r]), t.hand, "data-tconfirm");
+    }
   } else if (st && st.phase === "pick" && st.pick) {
     ui.counter = ui.pickSel;
     h = counterModal("Choose your resources", `Take ${st.pick} from the bank`, st.pick, ui.pickSel, RES, null, "data-pconfirm");
@@ -866,8 +894,11 @@ function renderModal() {
       const pool = m.param === "resources2" ? RES : COM;
       h += `<p>Chosen: ${m.picks.map((r) => ICON[r]).join(" ") || "…"}</p>` + pickBtns(pool, "mpick", m.picks.length >= 2);
       ready = m.picks.length === 2;
-    } else if (m.param === "resource" || m.param === "commodity") {
-      h += pickBtns(m.param === "resource" ? RES : COM, "mone", false);
+    } else if (m.param === "resource" || m.param === "commodity" || m.param === "card") {
+      h += pickBtns(m.param === "resource" ? RES : m.param === "commodity" ? COM : st.cards, "mone", false);
+    } else if (m.param?.startsWith("player_")) {
+      const ids = st.legal?.progress_targets?.[m.card] || [];
+      h += `<div class="pick">${ids.map((i) => `<button data-mtarget="${i}"><span class="sw" style="background:${st.players[i].color}"></span> ${esc(st.players[i].name)} · ${st.players[i].vp}★</button>`).join("")}</div>`;
     } else if (m.param === "resource_commodity") {
       h += `<p>Resource: ${m.res ? ICON[m.res] : "…"} · Commodity: ${m.com ? ICON[m.com] : "…"}</p>` + pickBtns(RES, "mres", false) + pickBtns(COM, "mcom", false);
       ready = m.res && m.com;
@@ -879,11 +910,12 @@ function renderModal() {
       }
       ready = m.dice[0] && m.dice[1];
     }
-    if (!["resource", "commodity", "number"].includes(m.param)) h += `<button class="big" data-mconfirm ${ready ? "" : "disabled"}>Play</button>`;
+    if (!["resource", "commodity", "card", "number"].includes(m.param) && !m.param?.startsWith("player_")) h += `<button class="big" data-mconfirm ${ready ? "" : "disabled"}>Play</button>`;
     h += `<button data-close>Cancel</button>`;
   } else {
     ui.discardSel = {};
     ui.pickSel = {};
+    ui.takeSel = {};
   }
   $("modal").classList.toggle("hidden", !h);
   $("modal-body").innerHTML = h;
@@ -906,6 +938,10 @@ $("modal-body").addEventListener("click", (e) => {
     ui.counter[r] = (ui.counter[r] || 0) + Number(n);
   } else if ("dconfirm" in d) { act({ type: "discard", resources: ui.discardSel }); ui.discardSel = {}; }
   else if ("pconfirm" in d) { act({ type: "pick", resources: ui.pickSel }); ui.pickSel = {}; }
+  else if ("tconfirm" in d) { act({ type: "take", cards: Object.entries(ui.takeSel).flatMap(([r, n]) => Array(n).fill(r)) }); ui.takeSel = {}; }
+  else if (d.tprog) act({ type: "take", card: d.tprog });
+  else if (d.pback) act({ type: "discard_progress", card: d.pback });
+  else if (d.mtarget) playModal({ target: Number(d.mtarget) });
   else if (d.mpick) m.picks.push(d.mpick);
   else if (d.mone) playModal({ resource: d.mone });
   else if (d.mres) m.res = d.mres;
