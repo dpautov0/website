@@ -353,7 +353,7 @@ function boardSvg(st) {
     out += pop(fresh(`b${v}`), piece);
     if (capitalAt[v]) out += `<circle cx="${x}" cy="${y - 20}" r="8" fill="${TRACKS[capitalAt[v]].color}" stroke="#1a1208"/><text x="${x}" y="${y - 16}" text-anchor="middle" font-size="10">👑</text>`;
   }
-  for (const [v, owner, level, active] of st.knights || []) out += pop(fresh(`k${v}`), knightSvg(V[v][0], V[v][1], st.players[owner].color, level, active, ui.sel === v && ui.mode === "move_knight"));
+  for (const [v, owner, level, active, justNow] of st.knights || []) out += pop(fresh(`k${v}`), knightSvg(V[v][0], V[v][1], st.players[owner], level, active, justNow, ui.sel === v && ui.mode === "move_knight"));
 
   out += spotsSvg(st, V, edgeLine);
   $("board").innerHTML = out;
@@ -378,10 +378,14 @@ function pirateSvg(x, y) {
     + `<text x="5" y="-4" text-anchor="middle" font-size="6">☠️</text></g>`;
 }
 
-function knightSvg(x, y, color, level, active, selected) {
+function knightSvg(x, y, owner, level, active, justNow, selected) {
+  const color = owner.color;
   const fill = active ? color : "#f5efe0";
   const ink = active ? "#fff" : color;
-  return `<g transform="translate(${x},${y})">`
+  const state = !active ? "inactive: doesn't defend, can't act (activate for 🌾)"
+    : justNow ? "active: defends against raiders; can act from next turn" : "active: defends against raiders and can act";
+  return `<g transform="translate(${x},${y})" class="${active ? "kn-on" : "kn-off"}"><title>${esc(owner.name)}'s level ${level} knight, ${state}</title>`
+    + (active ? `<circle r="15" fill="none" stroke="#ffe27a" stroke-width="2.5" ${justNow ? 'stroke-dasharray="4 3"' : ""} class="kn-glow"/>` : "")
     + (selected ? `<circle r="17" fill="none" stroke="#ffd84a" stroke-width="3"/>` : "")
     + `<path d="M-10,-11 L10,-11 L10,1 Q10,10 0,14 Q-10,10 -10,1 Z" fill="${fill}" stroke="${active ? "#1a1208" : color}" stroke-width="${active ? 2 : 3}"/>`
     + `<text x="0" y="4" text-anchor="middle" font-size="10" font-weight="bold" fill="${ink}">${"I".repeat(level)}</text></g>`;
@@ -614,7 +618,9 @@ function renderGame() {
   h += `<button class="wide" data-act="end_turn" ${main ? "" : "disabled"}>End turn</button>`;
   const pieces = [`${me.pieces.road} roads`, S ? `${me.pieces.ship} ships` : "", `${me.pieces.village} villages`, `${me.pieces.city} cities`,
     K ? `knights ${me.knight_pieces[1]}/${me.knight_pieces[2]}/${me.knight_pieces[3]}` : ""].filter(Boolean).join(" · ");
-  h += `</div><div class="cost" style="margin-top:4px">Pieces left: ${pieces}</div></div>`;
+  h += `</div><div class="cost" style="margin-top:4px">Pieces left: ${pieces}</div>`;
+  if (K) h += knightHint(st);
+  h += `</div>`;
 
   // city improvements
   if (K) {
@@ -632,33 +638,11 @@ function renderGame() {
     h += `</div>`;
   }
 
-  // cards
-  if (!K && st.my_decrees.length) {
-    h += `<div class="box"><h3>Royal decrees</h3>`;
-    for (const d of st.my_decrees) {
-      const adv = d.card.startsWith("adv:");
-      const playable = mine && (st.phase === "roll" || st.phase === "main") && !d.new && !adv && !st.played_decree;
-      h += `<div class="decree"><span class="dn">${adv ? "⭐ " : ""}${esc(d.name)}${adv ? ' <span class="new">Important Advancement (+1★)</span>' : ""}${d.new ? ' <span class="new">(new; playable next turn)</span>' : ""}</span>`;
-      if (!adv) h += `<button data-play="${d.card}" ${playable ? "" : "disabled"}>Play</button>`;
-      h += `</div>`;
-    }
-    h += `</div>`;
-  }
-  if (K) {
-    h += `<div class="box"><h3>Progress cards <span class="cost">${st.my_progress.length}/4</span></h3>`;
-    if (!st.my_progress.length) h += `<div class="cost">Raise a city improvement to draw cards when the event die shows its color.</div>`;
-    for (const c of st.my_progress) {
-      const ok = mine && (L.progress_playable || []).includes(c.card);
-      h += `<div class="decree"><span class="dn"><span style="color:${TRACKS[c.track].color}">${TRACKS[c.track].icon}</span> <b>${esc(c.name)}</b><br><span class="new">${esc(c.desc)}</span></span>
-        <button data-progress="${c.card}" ${ok ? "" : "disabled"}>Play</button></div>`;
-    }
-    h += `</div>`;
-  }
-
   // trade
   h += tradeHtml(st, main);
 
   $("panel-main").innerHTML = h;
+  renderCardHand(st);
   const bg = $("bank-give"), bt = $("bank-get");
   if (bg) { bg.onchange = () => (ui.bankGive = bg.value); bt.onchange = () => (ui.bankGet = bt.value); }
   $("log").innerHTML = st.log.map((l) => `<div>${esc(l)}</div>`).join("");
@@ -691,6 +675,77 @@ function offerHtml(st) {
     }
   }
   return h;
+}
+
+// why your knights can or can't do things right now
+function knightHint(st) {
+  const mineK = (st.knights || []).filter(([, o]) => o === st.you);
+  if (!mineK.length) return `<div class="khint">Knights defend your cities against the raiders, but only while they're <b>active</b> (🌾 to activate).</div>`;
+  const off = mineK.filter((k) => !k[3]).length, fresh = mineK.filter((k) => k[3] && k[4]).length;
+  const ready = mineK.length - off - fresh;
+  const parts = [`${ready ? `<b>${ready}</b> ready` : ""}`, fresh ? `<b>${fresh}</b> activated this turn (can act next turn)` : "", off ? `<b>${off}</b> inactive` : ""].filter(Boolean);
+  let h = `<div class="khint">🛡️ Your knights: ${parts.join(" · ")}.`;
+  if (ready && !Object.keys(st.legal?.knight_moves || {}).length && !(st.legal?.chase || []).length)
+    h += ` Ready knights can only move along your own roads to an empty spot, and chase the bandits ${st.raided ? "from a corner of their tile" : "only after the first raid"}.`;
+  h += ` Moving or chasing uses up the activation; you can pay 🌾 again.</div>`;
+  return h;
+}
+
+// development / progress cards: a second hand held at the side of the board
+const DECREE_DESC = {
+  soldier: "Move the bandits and steal a card. Counts toward Largest Army.",
+  road_charter: "Build 2 roads for free.",
+  harvest: "Take any 2 resources from the bank.",
+  monopoly: "Name a resource. Every other lord gives you all of theirs.",
+};
+function renderCardHand(st) {
+  const el = $("cardhand");
+  const K = st.options.knights;
+  const mine = st.current === st.you && st.phase !== "over";
+  const L = st.legal || {};
+  const cards = [];
+  if (K) {
+    for (const c of st.my_progress) {
+      const ok = mine && (L.progress_playable || []).includes(c.card);
+      cards.push({ key: c.card, cls: `t-${c.track}`, icon: TRACKS[c.track].icon, name: c.name, desc: c.desc,
+        btn: `<button data-progress="${c.card}" ${ok ? "" : "disabled"}>Play</button>` });
+    }
+    for (const a of st.players[st.you].advancements) cards.push({ key: "adv:" + a, cls: "t-adv", icon: "⭐", name: a, desc: "Important Advancement: +1 victory point." });
+  } else {
+    for (const d of st.my_decrees) {
+      const adv = d.card.startsWith("adv:");
+      if (adv) { cards.push({ key: d.card, cls: "t-adv", icon: "⭐", name: d.name, desc: "Important Advancement: +1 victory point (secret until the end)." }); continue; }
+      const ok = mine && (st.phase === "roll" || st.phase === "main") && !d.new && !st.played_decree;
+      cards.push({ key: d.card, cls: `t-${d.card}`, icon: { soldier: "⚔️", road_charter: "🛤️", harvest: "🌾", monopoly: "💰" }[d.card], name: d.name,
+        desc: DECREE_DESC[d.card], note: d.new ? "New: playable next turn" : "",
+        btn: `<button data-play="${d.card}" ${ok ? "" : "disabled"}>Play</button>` });
+    }
+  }
+  // deal in cards that weren't in the hand last time
+  const before = { ...(ui.handKeys || {}) }, now = {};
+  for (const c of cards) {
+    now[c.key] = (now[c.key] || 0) + 1;
+    c.dealt = ui.handKeys && (before[c.key] = (before[c.key] || 0) - 1) < 0;
+  }
+  ui.handKeys = now;
+  const n = cards.length;
+  const title = K ? "Progress cards" : "Development cards";
+  const count = K ? `${st.my_progress.length}/4` : `${n}`;
+  let h = `<button class="ch-head" data-toggle-hand="">🂠 ${title} <span class="cost">${count}</span> <span class="tog">${ui.handOpen === false ? "▴" : "▾"}</span></button>`;
+  if (ui.handOpen !== false) {
+    if (!n) h += `<div class="ch-empty">${K ? "Raise a city improvement, then draw a card when the event die shows its color and the red die is low enough (level 1: red 1–2, level 2: 1–3, …)." : "Buy a decree (🐑🌾⛏️) to draw a development card."}</div>`;
+    else {
+      const spread = Math.min(70, 300 / n), tilt = Math.min(8, 40 / n);
+      h += `<div class="ch-fan" style="width:${Math.max(130, 104 + spread * (n - 1))}px">${cards.map((c, i) => {
+        const o = i - (n - 1) / 2;
+        return `<div class="dcard ${c.cls} ${c.dealt ? "dealt" : ""}" style="left:${i * spread}px;--rot:${o * tilt}deg;--lift:${(o * o * 1.2).toFixed(1)}px;z-index:${i}">
+          <div class="dc-icon">${c.icon}</div><div class="dc-name">${esc(c.name)}</div><div class="dc-desc">${esc(c.desc)}</div>
+          ${c.note ? `<div class="dc-note">${c.note}</div>` : ""}${c.btn || ""}</div>`;
+      }).join("")}</div>`;
+    }
+  }
+  el.innerHTML = h;
+  el.classList.toggle("hidden", false);
 }
 
 // your cards, fanned out like a real hand; newly gained cards are dealt in
@@ -733,7 +788,7 @@ function tradeHtml(st, main) {
   return h + `</div>`;
 }
 
-$("panel-main").addEventListener("click", (e) => {
+function onPanelClick(e) {
   const b = e.target.closest("button");
   if (!b || b.disabled) return;
   const d = b.dataset;
@@ -763,8 +818,13 @@ $("panel-main").addEventListener("click", (e) => {
     const c = ui.st.my_progress.find((x) => x.card === d.progress);
     if (c.param) openModal({ kind: "progress", card: c.card, param: c.param, name: c.name, desc: c.desc });
     else act({ type: "play_progress", card: c.card });
+  } else if (d.toggleHand !== undefined) {
+    ui.handOpen = !ui.handOpen;
+    renderCardHand(ui.st);
   }
-});
+}
+$("panel-main").addEventListener("click", onPanelClick);
+$("cardhand").addEventListener("click", onPanelClick);
 
 // ---------------------------------------------------------------- modals
 function openModal(m) { ui.modal = { ...m, picks: [], dice: [null, null] }; renderModal(); }

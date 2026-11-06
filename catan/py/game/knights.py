@@ -450,7 +450,8 @@ class KnightsMixin:
 
     def knights_view(self):
         return {
-            "knights": [[v, k["owner"], k["level"], k["active"]] for v, k in self.knights.items()],
+            "knights": [[v, k["owner"], k["level"], k["active"], k["active"] and k["activated_turn"] == self.turn_no]
+                        for v, k in self.knights.items()],
             "walls": sorted(self.walls),
             "capitals": {t: list(c) for t, c in self.capitals.items()},
             "raiders": self.raiders,
