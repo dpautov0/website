@@ -3,7 +3,7 @@
   'use strict';
   COURSE.meta = {
     name: 'PHYS 435', key: 'phys435', home: 'units', current: 'e2', unitsTitle: 'Study path', extraTitle: 'Extra (Exam I material)',
-    actions: [{ href: '#/l/e2-format', label: 'Read this first' }, { href: '#/l/e2-speed', label: 'Speed tricks' }, { href: '#/l/e2-setups', label: 'Common setups' }, { href: '#/l/e2-mockC', label: 'Mock exams' }, { href: '#/quiz', label: 'Concept quiz' }, { href: '#/sheet', label: 'Formula sheet' }],
+    actions: [{ href: 'cheatsheet-e2.pdf', label: 'Cheat sheet (PDF)' }, { href: '#/l/e2-past', label: 'The past exam' }, { href: '#/l/e2-format', label: 'Read this first' }, { href: '#/l/e2-speed', label: 'Speed tricks' }, { href: '#/l/e2-setups', label: 'Common setups' }, { href: '#/l/e2-mockC', label: 'Mock exams' }, { href: '#/quiz', label: 'Concept quiz' }, { href: '#/sheet', label: 'Formula sheet' }],
     aliases: { '#/mock': 'e2-mockC' },
     howto: 'Answers: the boxes work like Desmos. Type <code>/</code> for a fraction, <code>^</code> for a power, <code>sqrt</code> for a root, <code>pi</code>, <code>theta</code>, <code>lambda</code>, <code>sigma</code>, <code>omega</code>, <code>epsilon</code> for Greek, <code>_</code> for a subscript (<code>V_0</code>), and use the arrow keys to leave a fraction or power. Symbols are case-sensitive, so <code>r</code> and <code>R</code> differ. Constants: <code>eps0</code>, <code>mu0</code>; the dielectric constant is <code>epsr</code> and a susceptibility (χ_e or χ_m) is <code>chi</code>. Each box lists the variables it accepts. Multiple choice explains every wrong option. A drill doesn\'t count once you open its solution. Progress is saved in this browser.',
   };
@@ -18,11 +18,10 @@
     sheet: 'e2-sheet', quiz: 'e2-quiz', drill: 'e2-rapid',
     planTitle: 'How to use it',
     plan: [
-      '<b>Start with <a href="#/l/e2-format">Read this first</a>.</b> Exam I was four problems in 50 minutes (fields plus an ugly energy integral, overlapping slab and sphere, images, sphere in a uniform field). It maps each one to its Exam II version.',
-      '<b>Units 1–8 in order.</b> Each opens with the physical picture, then builds the idea, gives the speed trick for it, and drills it with concept cards and homework-style problems, and ends with an <b>endless speed drill</b> (fresh numbers every time, with a target time per card). Every HW 6–9 and Discussion 5–7 problem is worked somewhere on the path.',
-      '<b>Unit 9: the exam-format problems.</b> Given a field (div, curl, potential, energy) and overlapping shapes: the two Exam I problems that are pure technique.',
-      '<b>Unit 10 under time.</b> Eight 50-minute mocks on paper with only the formula sheet: start with C (Exam I, problem by problem), then D, E, F, G (the deliberately-too-long one), A, B, and save H for the night before. Practice the triage: standard results first on every problem, then recipes, then the hard parts. The <a href="#/l/e2-speed">speed tricks</a> and <a href="#/l/e2-setups">setups table</a> are where the time comes from.',
-      '<b>Last day:</b> the rapid-fire round and the concept quiz until nothing surprises you; the memorize page.',
+      '<b>Tonight: Unit 1 and the <a href="cheatsheet-e2.pdf">cheat sheet</a>.</b> A student from two semesters ago says their exam was mostly D/E/P, a cylinder with an off-axis hole, and a vector potential from the curl. Unit 1 drills exactly those, then Mock I (50 minutes) puts them together. Copy the double-sided cheat sheet by hand.',
+      '<b><a href="#/l/e2-format">Read this first</a></b> maps your Exam I (fields + energy integral, overlapping slab and sphere, images, sphere in a uniform field) to its Exam II version.',
+      '<b>Units 2–9, topic by topic.</b> Each opens with the physical picture, gives the speed trick, drills it with concept cards and homework-style problems, and ends with an <b>endless speed drill</b>. Every HW 6–9 and Discussion 5–7 problem is worked somewhere.',
+      '<b>Unit 10: exam-format problems</b> (given a field; overlapping shapes). <b>Unit 11 under time:</b> eight more 50-minute mocks (C mirrors Exam I; G is deliberately too long; H is the dress rehearsal), the <a href="#/l/e2-speed">speed tricks</a> and the <a href="#/l/e2-setups">setups table</a>.',
     ],
   });
 })();

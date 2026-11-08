@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>PHYS 435 Exam II Cheat Sheet</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/contrib/auto-render.min.js"></script>
+<style>
+  :root { --ink: #111; --head: #1d4f91; --rule: #b9c3cf; --soft: #5a6470; --paper: #fff; --ex: #f3f6fa; --red: #a4453b; }
+  @page { size: letter; margin: 0.24in; }
+  * { box-sizing: border-box; }
+  html, body { background: var(--paper); color: var(--ink); margin: 0; }
+  body { font: 8.9pt/1.22 "Segoe UI", Arial, sans-serif; }
+  .page { width: 8.02in; margin: 0 auto; }
+  .page + .page { break-before: page; }
+  .top { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1.2px solid var(--ink); margin-bottom: 3px; padding-bottom: 1px; }
+  .top b { font-size: 9.3pt; }
+  .top span { color: var(--soft); }
+  .cols { column-count: 3; column-gap: 8px; column-rule: 0.6px solid var(--rule); }
+  section { break-inside: avoid; margin: 0 0 3.5px; }
+  section.ex { background: var(--ex); padding: 1px 3px 2px; border-radius: 2px; }
+  section.hot { border: 1.1px solid var(--red); padding: 1px 3px 2px; border-radius: 2px; }
+  h2 { font-size: 8.9pt; margin: 0 0 1px; color: var(--head); border-bottom: 0.6px solid var(--rule); }
+  p { margin: 0 0 1.3px; }
+  ul { margin: 0 0 1.3px; padding: 0; list-style: none; }
+  li { margin: 0 0 0.7px; padding-left: 7px; position: relative; }
+  li::before { content: "\2022"; position: absolute; left: 0; color: var(--soft); }
+  table { border-collapse: collapse; width: 100%; margin: 0 0 1.5px; }
+  td { border-bottom: 0.5px solid var(--rule); padding: 0.4px 2px; vertical-align: top; }
+  .t { color: var(--red); font-weight: 600; }
+  .katex { font-size: 1.0em; }
+  .fig { float: right; width: 104px; margin: 1px 0 2px 4px; }
+  .fig svg { display: block; width: 100%; height: auto; }
+  .fig svg text { font: italic 10px "Times New Roman", serif; fill: #111; }
+  @media screen { body { padding: 16px; } .page { max-width: 100%; margin-bottom: 28px; } .page + .page { border-top: 2px dashed var(--rule); padding-top: 12px; } }
+  @media screen and (max-width: 760px) { .cols { column-count: 1; } }
+</style>
+</head>
+<body>
+
+<!-- ============================== FRONT: electric (D, E, P) ============================== -->
+<div class="page">
+<div class="top"><b>PHYS 435 · Exam II · FRONT: P, D, E (dielectrics)</b><span>$k=\frac{1}{4\pi\epsilon_0}$ · $\epsilon=\epsilon_0\epsilon_r=\epsilon_0(1+\chi_e)$</span></div>
+<div class="cols">
+
+<section class="hot"><h2>1 · The D → E → P chain (do it in this order)</h2>
+<ul>
+<li><b>D</b> from Gauss on <b>free</b> charge only: $\oint \mathbf D\cdot d\mathbf a=Q_{f,enc}$. Needs symmetry (sphere/cyl/plane).</li>
+<li><b>E</b> $=\mathbf D/\epsilon$ (linear) or $(\mathbf D-\mathbf P)/\epsilon_0$ (frozen P).</li>
+<li><b>P</b> $=\epsilon_0\chi_e\mathbf E=\mathbf D-\epsilon_0\mathbf E=\frac{\chi_e}{\epsilon_r}\mathbf D=(1-\frac1{\epsilon_r})\mathbf D$.</li>
+<li><b>Bound:</b> $\sigma_b=\mathbf P\cdot\hat n$ ($\hat n$ OUT of the dielectric; inner surface $\hat n=-\hat r$). $\rho_b=-\nabla\cdot\mathbf P$.</li>
+<li>Linear, homogeneous: $\rho_b=-\frac{\chi_e}{1+\chi_e}\rho_f$ → <b>no free inside ⇒ no $\rho_b$</b>.</li>
+<li><b>V</b> $=-\int\mathbf E\cdot d\mathbf l$ region by region from ∞ inward; keep V continuous.</li>
+<li><span class="t">Check:</span> total bound charge $=0$. Next to a conductor: $\sigma_f+\sigma_b=\sigma_f/\epsilon_r$.</li>
+</ul></section>
+
+<section class="hot"><h2>2 · Shortcuts that skip the chain</h2>
+<ul>
+<li><b>No free charge + symmetry ⇒ D = 0 ⇒ E = −P/ε₀</b> inside, 0 outside.</li>
+<li><span class="t">Trap:</span> $\nabla\times\mathbf D=\nabla\times\mathbf P\neq0$; no symmetry ⇒ D NOT fixed by $\rho_f$ (bar electret: $\rho_f=0$, $\mathbf D\ne0$).</li>
+<li>Free charge only on the <b>surface</b> of a dielectric sphere ⇒ inside D=E=P=0; dielectric does nothing.</li>
+<li>Fill all space with $\epsilon$: every field from free charge ÷ $\epsilon_r$.</li>
+</ul></section>
+
+<section><h2>3 · Divergence one-liners</h2>
+<p>$F(r)\hat r$: $\frac1{r^2}(r^2F)'$ · $F(s)\hat s$: $\frac1s(sF)'$ · $F(z)\hat z$: $F'$. Curl of these = 0.</p>
+<p>$P=kr^n\hat r$: $\rho_b=-(n+2)kr^{n-1}$. $P=ks^n\hat s$: $\rho_b=-(n+1)ks^{n-1}$. $\sigma_b=P(R)$.</p>
+<p>$\hat r/r^2$ hides $4\pi\delta^3$; $\hat s/s$ hides $2\pi\delta^2$ (line charge).</p></section>
+
+<section><h2>4 · Uniform P (frozen)</h2>
+<ul>
+<li>$\rho_b=0$; $\sigma_b=\pm P$ only on faces P pierces (sphere: $P\cos\theta$).</li>
+<li>$\mathbf E_{in}=-N\mathbf P/\epsilon_0$: slab⊥ $N{=}1$, sphere $\frac13$, cyl⊥ $\frac12$, needle ∥ 0.</li>
+<li>Sphere outside = pure dipole $\mathbf p=\frac43\pi R^3\mathbf P$: $V=\frac{PR^3\cos\theta}{3\epsilon_0r^2}$.</li>
+<li>Shell $a{<}r{<}b$ uniform P: <b>E = 0 in cavity</b> (ball − ball).</li>
+<li>Offset balls $\pm\rho$: overlap $\mathbf E=-\rho\mathbf d/3\epsilon_0$ ($\mathbf d$: − to + center). $\rho\mathbf d\to\mathbf P$.</li>
+<li>Cavity in polarized slab (P⊥): $-\frac{2P}{3\epsilon_0}$; outside: dipole $-\frac43\pi R^3P$.</li>
+</ul></section>
+
+<section class="ex"><h2>5 · Must-know P problems</h2>
+<ul>
+<li>Sphere $\mathbf P=k\mathbf r$: $\sigma_b=kR$, $\rho_b=-3k$, $\mathbf E_{in}=-k\mathbf r/\epsilon_0$, out 0.</li>
+<li>Shell $\mathbf P=\frac kr\hat r$: $\rho_b=-\frac k{r^2}$, $\sigma_b(a)=-\frac ka$, $\sigma_b(b)=\frac kb$, $E=-\frac{k}{\epsilon_0r}$ in shell.</li>
+<li>Cyl $\mathbf P=ks\hat s$: $\rho_b=-2k$, $\sigma_b=ka$, $E=-ks/\epsilon_0$.</li>
+<li>Bar electret (4.11): caps $\pm P$; long → two point charges; short → capacitor $E\approx -P/\epsilon_0$.</li>
+</ul></section>
+
+<section><h2>6 · Linear: standard free-charge setups</h2>
+<ul>
+<li>Point q in $\epsilon$: $E=\frac{q}{4\pi\epsilon r^2}$; bound at q: $-q\frac{\chi_e}{1+\chi_e}$.</li>
+<li>Conductor Q, radius a, shell to b: $D=\frac{Q}{4\pi r^2}$; $V(a)=kQ[\frac1b+\frac1{\epsilon_r}(\frac1a-\frac1b)]$; $\sigma_b(a)=-\frac{\chi_e}{\epsilon_r}\frac{Q}{4\pi a^2}$, $\sigma_b(b)=+\frac{\chi_e}{\epsilon_r}\frac{Q}{4\pi b^2}$.</li>
+<li>Ball of $\epsilon_r$, uniform $\rho_f$: $D=\rho_fr/3$, $\sigma_b=\frac{\chi_e}{\epsilon_r}\frac{\rho_fR}3$.</li>
+<li>Nonuniform $\epsilon(x)$: D still $=\sigma$; $\rho_b=-dP/dx\ne0$.</li>
+</ul></section>
+
+<section><h2>7 · Capacitors = springs</h2>
+<ul>
+<li><b>Stacked</b> (series): same $D=\sigma_f$; $E_i=\sigma/\epsilon_i$; $\frac1C=\sum\frac{d_i}{\epsilon_iA}$.</li>
+<li><b>Side by side</b> (parallel): same $E=V/d$; $D_i=\epsilon_iE$; $C=\sum\frac{\epsilon_iA_i}d$.</li>
+<li>Half fill: stacked $\frac{2\epsilon_r}{1+\epsilon_r}C_0$, side $\frac{1+\epsilon_r}2C_0$.</li>
+<li>Coax: $\frac CL=\frac{2\pi\epsilon_0}{\sum\ln(b_i/a_i)/\epsilon_{ri}}$. Sphere: $\frac1C=\sum\frac{1}{4\pi\epsilon_i}(\frac1{a_i}-\frac1{b_i})$.</li>
+<li>HW 4.18 ($\epsilon_r$ 2, 1.5): $P=\sigma/2,\sigma/3$; $V=\frac{7\sigma a}{6\epsilon_0}$.</li>
+</ul></section>
+
+<section><h2>8 · Boundary conditions</h2>
+<ul>
+<li>$D^\perp_1-D^\perp_2=\sigma_f$; $E^\parallel$ continuous; V continuous.</li>
+<li>No free: $\epsilon_1\partial_nV_1=\epsilon_2\partial_nV_2$. $\frac{\tan\theta_1}{\tan\theta_2}=\frac{\epsilon_1}{\epsilon_2}$ (bends away from normal into high ε).</li>
+</ul></section>
+
+<section class="hot"><h2>9 · Sphere / cylinder in uniform $E_0$</h2>
+<p>$V_{in}=Ar\cos\theta$, $V_{out}=-E_0r\cos\theta+\frac{B\cos\theta}{r^2}$. BCs at R: V cont.; $\epsilon_rA=-E_0-\frac{2B}{R^3}$.</p>
+<p>$A=-\frac{3E_0}{\epsilon_r+2}$, $B=\frac{\epsilon_r-1}{\epsilon_r+2}E_0R^3$; $P=3\epsilon_0\frac{\epsilon_r-1}{\epsilon_r+2}E_0$; $\sigma_b=P\cos\theta$; $E_r^{out}(0)=\frac{3\epsilon_r}{\epsilon_r+2}E_0$.</p>
+<p>General: sphere $E_{in}=\frac{3\epsilon_{out}}{\epsilon_{in}+2\epsilon_{out}}E_0$; cyl⊥ $\frac{2\epsilon_{out}}{\epsilon_{in}+\epsilon_{out}}E_0$. Cavity: $\frac{3\epsilon_r}{1+2\epsilon_r}$. Conductor: $\epsilon_{in}\to\infty$.</p>
+<p>Coated conductor a, shell to b (4.24): $V=A(r-\frac{a^3}{r^2})\cos\theta$, $A=\frac{-3E_0}{(\epsilon_r+2)+2(\epsilon_r-1)a^3/b^3}$.</p>
+<p><span class="t">Check:</span> $\epsilon_r\to1$ vacuum; $\epsilon_r\to\infty$ conductor.</p></section>
+
+<section><h2>10 · Images with a dielectric</h2>
+<p>q at height d above $\epsilon_r$: above use $q'=-\frac{\epsilon_r-1}{\epsilon_r+1}q$ at $-d$; below use $q''=\frac{2q}{\epsilon_r+1}$ at $+d$ (with $k$).</p>
+<p>$F=\frac{kqq'}{(2d)^2}$; $\sigma_b=-\frac1{2\pi}\frac{\chi_e}{\chi_e+2}\frac{qd}{(s^2+d^2)^{3/2}}$; $W=\frac12\cdot\frac{kqq'}{2d}$. Line charge: same fraction.</p>
+<p>Plane at $V_0$: add $V_0$. Charge Q on sphere in $E_0$: add $\frac{Q}{4\pi\epsilon r}$.</p></section>
+
+<section><h2>11 · Energy</h2>
+<ul>
+<li>$W=\frac12\int\mathbf D\cdot\mathbf E\,d\tau=\frac12\int\frac{D^2}{\epsilon}d\tau$ (free work). $\frac{\epsilon_0}2\int E^2$ = all charge incl. bound. Frozen P, no free: $\frac12\int D\cdot E=0$!</li>
+<li>Fastest: $\frac12QV$, $\frac{Q^2}{2C}$. Outside a sphere: always $\frac{Q^2}{8\pi\epsilon_0R}$.</li>
+<li>Ball: $\frac{3Q^2}{20\pi\epsilon_0R}$; ball of $\epsilon_r$: $\frac{Q^2}{8\pi\epsilon_0R}(1+\frac1{5\epsilon_r})$; 4.26: $\frac{Q^2}{8\pi\epsilon_0\epsilon_r}(\frac1a+\frac{\chi_e}b)$.</li>
+<li>Fixed Q: W ÷ $\epsilon_r$. Fixed V: W × $\epsilon_r$. Force $F=\frac12V^2\frac{dC}{dx}$ (toward higher C). Slab: $\frac{\epsilon_0\chi_ewV^2}{2d}$.</li>
+<li>Infinite line/cyl: energy/length diverges outside ($\ln$).</li>
+</ul></section>
+
+<section><h2>12 · Dipoles & multipoles</h2>
+<ul>
+<li>$Q=\sum q$, $\mathbf p=\sum q_i\mathbf r_i=\int\mathbf r\rho$; $Q{=}0$ ⇒ p origin-independent; shift: $\mathbf p'=\mathbf p-Q\mathbf a$.</li>
+<li>$V=k[\frac Qr+\frac{\mathbf p\cdot\hat r}{r^2}+\frac1{r^3}\sum q_ir_i^2P_2(\cos\alpha_i)]$; $P_2=\frac{3x^2-1}2$.</li>
+<li>$\mathbf E_{dip}=\frac{kp}{r^3}(2\cos\theta\hat r+\sin\theta\hat\theta)$.</li>
+<li>$\mathbf N=\mathbf p\times\mathbf E$, $U=-\mathbf p\cdot\mathbf E$, $\mathbf F=\nabla(\mathbf p\cdot\mathbf E)$; uniform E: F = 0.</li>
+<li>Image of p in plane: ∥ part flips, ⊥ part kept. Rests ⊥ plane. Coaxial dipoles: $F=\frac{3p_1p_2}{2\pi\epsilon_0r^4}$, attract.</li>
+</ul></section>
+
+<section><h2>12b · Across an interface (no free charge)</h2>
+<table>
+<tr><td>$D^\perp$</td><td>continuous ($\epsilon_1E_1^\perp=\epsilon_2E_2^\perp$)</td></tr>
+<tr><td>$E^\parallel$</td><td>continuous</td></tr>
+<tr><td>$E^\perp$</td><td>jumps by $\sigma_b/\epsilon_0$</td></tr>
+<tr><td>$\sigma_b$</td><td>$\mathbf P_1\cdot\hat n_1+\mathbf P_2\cdot\hat n_2$ (each n̂ out of its own slab)</td></tr>
+</table></section>
+
+<section class="ex"><h2>13 · 50-minute plan</h2>
+<p>Read all (2 min) → write every standard result → easy parts first → setup + BCs = most points → 3-min stall rule → last 8 min: limits ($\epsilon_r\to1,\infty$), units ($P,D,\sigma$: C/m²).</p></section>
+
+</div></div>
+
+<!-- ============================== BACK: magnetic ============================== -->
+<div class="page">
+<div class="top"><b>PHYS 435 · Exam II · BACK: B, A, M, H</b><span>$\frac{\mu_0}{4\pi}=10^{-7}$ · RHR: thumb I, fingers B</span></div>
+<div class="cols">
+
+<section class="hot"><h2>14 · Off-axis hole (Ampère + superposition)</h2>
+<span class="fig"><svg viewBox="0 0 110 90" xmlns="http://www.w3.org/2000/svg"><circle cx="45" cy="45" r="40" fill="#e9eef5" stroke="#111"/><circle cx="62" cy="40" r="14" fill="#fff" stroke="#111"/><line x1="45" y1="45" x2="62" y2="40" stroke="#a4453b" stroke-width="1.4"/><circle cx="45" cy="45" r="1.6"/><text x="49" y="56">d</text><text x="6" y="14">a</text><text x="78" y="30">b</text><text x="88" y="78">J ⊙</text></svg></span>
+<ul>
+<li>Wire radius a, hole radius b, offset $\mathbf d$, total current I ⇒ $J=\frac{I}{\pi(a^2-b^2)}$.</li>
+<li>Full wire: $I_+=J\pi a^2=I\frac{a^2}{a^2-b^2}$. Hole wire: $I_-=-J\pi b^2=-I\frac{b^2}{a^2-b^2}$. ($I_++I_-=I$ ✓)</li>
+<li>Inside a uniform wire: $\mathbf B=\frac{\mu_0}2\mathbf J\times\mathbf s$ (s from ITS axis). Outside: $\frac{\mu_0I}{2\pi s}\hat\phi$.</li>
+<li><b>In hole:</b> $\mathbf B=\frac{\mu_0}2\mathbf J\times\mathbf d$, uniform, $|B|=\frac{\mu_0Id}{2\pi(a^2-b^2)}$, ⊥ to d.</li>
+<li>In metal: $\frac{\mu_0}2\mathbf J\times\mathbf s-\frac{\mu_0|I_-|}{2\pi s'}\hat\phi'$ ($s'$ from hole axis).</li>
+<li>Outside: $\frac{\mu_0I_+}{2\pi s}\hat\phi+\frac{\mu_0I_-}{2\pi s'}\hat\phi'$. On the line through both axes: add with signs.</li>
+<li>Opposite-J overlapping wires: $\mathbf B=\frac{\mu_0}2\mathbf J\times(\mathbf c_--\mathbf c_+)$ in overlap.</li>
+<li>A in hole: $A_z=-\frac{\mu_0J}4(s^2-|\mathbf s-\mathbf d|^2)$ (linear in s ⇒ uniform B).</li>
+</ul></section>
+
+<section class="hot"><h2>15 · Vector potential WITHOUT integrating</h2>
+<ul>
+<li>$\mathbf B=\nabla\times\mathbf A$, $\nabla\cdot\mathbf A=0$, $\nabla^2\mathbf A=-\mu_0\mathbf J$. <b>A ∥ J</b> (A follows the current).</li>
+<li>$\mathbf B=B(s)\hat\phi$ ⇒ $\mathbf A=A_z(s)\hat z$, $B_\phi=-\frac{dA_z}{ds}$.</li>
+<li>$\mathbf B=B(s)\hat z$ ⇒ $\mathbf A=A_\phi(s)\hat\phi$, $B_z=\frac1s\frac{d}{ds}(sA_\phi)$; or Stokes: $A_\phi2\pi s=\Phi(s)$.</li>
+<li>$\mathbf B=B(z)\hat y$ ⇒ $A_x(z)$, $B_y=\partial_zA_x$.</li>
+<li>Spherical $\mathbf A=A_\phi(r,\theta)\hat\phi$: $B_r=\frac1{r\sin\theta}\partial_\theta(\sin\theta A_\phi)$, $B_\theta=-\frac1r\partial_r(rA_\phi)$.</li>
+<li>Then $\mu_0\mathbf J=\nabla\times\mathbf B$: $\hat\phi$ field: $\frac1s(sB_\phi)'\hat z$; $\hat z$ field: $-B_z'\hat\phi$.</li>
+<li>A continuous across K; $\partial_n\mathbf A$ jumps by $-\mu_0\mathbf K$. Integral to ∞ diverges ⇒ use curl/Stokes.</li>
+</ul>
+<table>
+<tr><td>uniform B</td><td>$\frac12\mathbf B\times\mathbf r$ $=\frac{B_0s}{2}\hat\phi$</td></tr>
+<tr><td>wire (out)</td><td>$-\frac{\mu_0I}{2\pi}\ln\frac s{s_0}\hat z$</td></tr>
+<tr><td>uniform-J wire (in)</td><td>$-\frac{\mu_0Js^2}{4}\hat z$</td></tr>
+<tr><td>solenoid</td><td>$\frac{\mu_0nIs}2\hat\phi$ in; $\frac{\mu_0nIR^2}{2s}\hat\phi$ out</td></tr>
+<tr><td>sheet $K\hat x$</td><td>$-\frac{\mu_0K}2|z|\hat x$</td></tr>
+<tr><td>spin shell</td><td>in $\frac{\mu_0R\omega\sigma}3r\sin\theta\hat\phi$; out $\frac{\mu_0R^4\omega\sigma}{3}\frac{\sin\theta}{r^2}\hat\phi$</td></tr>
+<tr><td>dipole</td><td>$\frac{\mu_0}{4\pi}\frac{\mathbf m\times\hat r}{r^2}=\frac{\mu_0m\sin\theta}{4\pi r^2}\hat\phi$</td></tr>
+<tr><td>finite wire</td><td>$\frac{\mu_0I}{4\pi}\ln\frac{z_2+\sqrt{z_2^2+s^2}}{z_1+\sqrt{z_1^2+s^2}}\hat z$</td></tr>
+<tr><td>$A=k\hat\phi$</td><td>$B=\frac ks\hat z$, $J=\frac{k}{\mu_0s^2}\hat\phi$</td></tr>
+</table></section>
+
+<section><h2>16 · Ampère: the 4 symmetric shapes</h2>
+<ul>
+<li>Wire (uniform): $\frac{\mu_0Is}{2\pi a^2}$ in, $\frac{\mu_0I}{2\pi s}$ out. $J\propto s^k$: $B_{in}=\frac{\mu_0I}{2\pi s}(\frac sa)^{k+2}$.</li>
+<li>Sheet: $\frac{\mu_0K}2$, dir $\mathbf K\times\hat n$. Two opposite sheets: $\mu_0K$ between, 0 out.</li>
+<li>Slab $|z|&lt;a$, $J\hat x$: $-\mu_0Jz\hat y$ in, $\mp\mu_0Ja\hat y$ out.</li>
+<li>Solenoid $\mu_0nI$ (0 out); toroid $\frac{\mu_0NI}{2\pi s}$; coax $\frac{\mu_0I}{2\pi s}$ between, 0 out.</li>
+<li>Coaxial solenoids opposite: $\mu_0(n_1-n_2)I$, $\mu_0n_2I$, 0. Moving capacitor: $\mu_0\sigma v$; balance at $v=c$.</li>
+<li>Force on a sheet: use OTHER sheet's field (avg).</li>
+</ul></section>
+
+<section><h2>17 · Biot–Savart pieces</h2>
+<ul>
+<li>Segment: $\frac{\mu_0I}{4\pi s}(\sin\theta_2-\sin\theta_1)$ (θ from ⊥ foot). On its line: 0.</li>
+<li>Semi-∞ beside end: $\frac{\mu_0I}{4\pi s}$. Arc φ at center: $\frac{\mu_0I\phi}{4\pi R}$.</li>
+<li>Loop axis: $\frac{\mu_0IR^2}{2(R^2+z^2)^{3/2}}$. n-gon: $\frac{n\mu_0I}{2\pi R}\sin\frac\pi n$; square $\frac{\sqrt2\mu_0I}{\pi R}$.</li>
+<li>Finite solenoid axis $\frac{\mu_0nI}2(\cos\theta_2-\cos\theta_1)$; mouth $\frac{\mu_0nI}2$. Helmholtz d=R: $\frac{8\mu_0I}{5\sqrt5R}$.</li>
+<li>$\mathbf F=I\!\int d\mathbf l\times\mathbf B$; uniform B: closed loop F=0, curved wire = chord. Wires: $\frac{\mu_0I_1I_2}{2\pi d}$, same dir attract.</li>
+<li>Loop near wire: $\frac{\mu_0I^2a^2}{2\pi s(s+a)}$. $\mathbf B=kz\hat x$ loop: $Ika^2\hat z$.</li>
+</ul></section>
+
+<section><h2>18 · Spinning charge & dipole m</h2>
+<ul>
+<li>$K=\sigma\omega s$ (disk), $\sigma\omega R\sin\theta$ (shell); $J=\rho\omega r\sin\theta$ (ball). <span class="t">sinθ!</span></li>
+<li>$m=\frac{Q}{2M}L$: ring $\frac12Q\omega R^2$, disk $\frac14$, shell $\frac13$, ball $\frac15$.</li>
+<li>Center B ($\frac{\mu_0Q\omega}{\pi R}$): ring ¼, disk ½, shell ⅙, ball ¼. Shell inside uniform $\frac23\mu_0\sigma\omega R$.</li>
+<li>$\mathbf m=I\mathbf a$; $\mathbf B_{dip}=\frac{\mu_0m}{4\pi r^3}(2\cos\theta\hat r+\sin\theta\hat\theta)$; no monopole term.</li>
+<li>$\mathbf N=\mathbf m\times\mathbf B$, $U=-\mathbf m\cdot\mathbf B$, $\mathbf F=\nabla(\mathbf m\cdot\mathbf B)$; coaxial $\frac{3\mu_0m_1m_2}{2\pi r^4}$.</li>
+<li>$B_{avg}$ in sphere $=\frac{\mu_0}{4\pi}\frac{2\mathbf m}{R^3}$; solid spin ball: $\frac{\mu_0Q\omega}{10\pi R}$.</li>
+</ul></section>
+
+<section><h2>19 · Magnetic BCs</h2>
+<p>$B^\perp$ continuous; $\mathbf B_{a}-\mathbf B_{b}=\mu_0\mathbf K\times\hat n$; $\mathbf H^\parallel_a-\mathbf H^\parallel_b=\mathbf K_f\times\hat n$; $\mu_1H_1^\perp=\mu_2H_2^\perp$. Inside from outside: one BC at the equator.</p></section>
+
+<section class="hot"><h2>20 · M, bound currents, H</h2>
+<ul>
+<li>$\mathbf J_b=\nabla\times\mathbf M$, $\mathbf K_b=\mathbf M\times\hat n$ (faces ∥ M). $\mathbf H=\frac{\mathbf B}{\mu_0}-\mathbf M$, $\oint\mathbf H\cdot d\mathbf l=I_f$.</li>
+<li><b>No free I + symmetry ⇒ H = 0 ⇒ B = μ₀M.</b> Free I: H from Ampère, $\mathbf B=\mu_0(\mathbf H+\mathbf M)$.</li>
+<li>Linear: $\mathbf M=\chi_m\mathbf H$, $\mathbf B=\mu\mathbf H$, $\mathbf J_b=\chi_m\mathbf J_f$. Coax $\chi_m$: $I_b=\chi_mI$ on inner surface.</li>
+<li>Uniform M: sphere $\frac23\mu_0\mathbf M$ in, $\mathbf m=\frac43\pi R^3\mathbf M$; long rod $\mu_0\mathbf M$; thin disk ≈0. $\mathbf B_{in}=\mu_0(1-N)\mathbf M$, $\mathbf H_{in}=-N\mathbf M$.</li>
+<li>$\mathbf M=ks^2\hat\phi$: $J_b=3ks\hat z$, $K_b=-kR^2\hat z$, B=μ₀M. $\mathbf M=ks\hat z$: $J_b=-k\hat\phi$, $K_b=kR\hat\phi$, B=μ₀M.</li>
+<li>Para: M ∥ B, $\chi_m{>}0$, pulled in. Dia: M anti-∥, $\chi_m{<}0$, pushed out. Ferro: keeps M.</li>
+<li>Half-cyl coax $\mu_1|\mu_2$: B shared: $B=\frac{\mu_1\mu_2}{\mu_1+\mu_2}\frac{I}{\pi s}$.</li>
+</ul></section>
+
+<section class="ex"><h2>21 · Electric ↔ magnetic swap</h2>
+<table>
+<tr><td></td><td>P</td><td>M</td></tr>
+<tr><td>uniform: where</td><td>caps (pierced)</td><td>sides (∥)</td></tr>
+<tr><td>sphere inside</td><td>$-\mathbf P/3\epsilon_0$</td><td>$+\frac23\mu_0\mathbf M$</td></tr>
+<tr><td>long rod ∥</td><td>≈0</td><td>$\mu_0\mathbf M$</td></tr>
+<tr><td>thin disk ⊥</td><td>$-\mathbf P/\epsilon_0$</td><td>≈0</td></tr>
+<tr><td>auxiliary</td><td>D: $\rho_f$</td><td>H: $I_f$</td></tr>
+<tr><td>fixed free src + material</td><td>E ÷ εr</td><td>B × μr</td></tr>
+</table></section>
+
+<section class="hot"><h2>23 · Exam from 2 semesters ago (student report)</h2>
+<ul>
+<li>Lots of <b>D, E, P</b>: chain §1, shortcuts §2, interfaces §12b.</li>
+<li><b>Cylinder with off-axis hole:</b> currents from area ratio §14, then superpose.</li>
+<li><b>A you can't integrate:</b> guess direction (∥ J), write the one curl component, solve the ODE §15; check $\nabla\cdot\mathbf A=0$, continuity at boundaries.</li>
+</ul></section>
+
+<section><h2>22 · Curl/div one-liners (cyl)</h2>
+<p>$F(s)\hat\phi$: div 0, curl $\frac1s(sF)'\hat z$. $F(s)\hat z$: div 0, curl $-F'\hat\phi$. $F(z)\hat x$: curl $F'\hat y$. Valid B needs div = 0. $\hat\phi/s$: curl hides line current on axis.</p></section>
+
+</div></div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    renderMathInElement(document.body, { delimiters: [{ left: '$', right: '$', display: false }], throwOnError: false });
+    document.body.setAttribute('data-ready', '1');
+  });
+</script>
+</body>
+</html>
