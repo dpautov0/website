@@ -36,8 +36,8 @@
   .fig svg { display: block; width: 100%; height: auto; }
   .fig svg text { font: italic 10px "Times New Roman", serif; fill: #111; }
   /*fit*/
-  body > .page:nth-of-type(1) { font-size: 7.81pt; }
-  body > .page:nth-of-type(2) { font-size: 7.30pt; }
+  body > .page:nth-of-type(1) { font-size: 6.72pt; }
+  body > .page:nth-of-type(2) { font-size: 6.66pt; }
   /*end*/
   @media screen { body { padding: 14px; font-size: 9pt; } .page { max-width: 100%; margin-bottom: 26px; } .page + .page { border-top: 2px dashed var(--rule); padding-top: 12px; } }
   @media screen and (max-width: 900px) { .cols { column-count: 2; } }
@@ -191,6 +191,48 @@
 <p><b>Given E → ρ:</b> $\rho=\epsilon_0\nabla\cdot\mathbf E$; $Q_{enc}(r)=4\pi\epsilon_0r^2E_r$; $Q_{enc}\to q\ne0$ as $r\to0$ ⇒ $q\delta^3$ at origin; E jump at R ⇒ $\sigma=\epsilon_0(E_{out}-E_{in})$. $\int f\delta(x-a)=f(a)$, $\delta(kx)=\frac{\delta(x)}{|k|}$, $\delta^3(\mathbf r)=\frac{\delta(r)}{4\pi r^2}$. Ex: $E=\frac A{r^2}$ in, $\frac{AR^2}{r^4}$ out ⇒ $4\pi\epsilon_0A\,\delta^3$, $\rho_{out}=-\frac{2\epsilon_0AR^2}{r^5}$, $V_{in}=\frac Ar-\frac{2A}{3R}$, $V_{out}=\frac{AR^2}{3r^3}$.</p>
 <p><b>Laplace:</b> no max/min inside; $V(\mathbf r)$ = average over any sphere around it. <b>Uniqueness:</b> V given on all boundaries (or Q on each conductor + V at ∞) ⇒ unique; anything that fits is THE answer.</p>
 <p><b>Energy:</b> $W=\frac12\sum q_iV_i=\frac12\int\rho V=\frac{\epsilon_0}2\int E^2$; pair $\frac{kq_1q_2}r$; shell $\frac{kQ^2}{2R}$, ball $\frac{3kQ^2}{5R}$; not additive (cross term $\epsilon_0\int\mathbf E_1\cdot\mathbf E_2$).</p></section>
+
+<section id="m-f1"><h2>More Coulomb/Gauss results</h2>
+<table>
+<tr><td>segment λ</td><td>$E_\perp=\frac{k\lambda}s(\sin\theta_2-\sin\theta_1)$, $E_\parallel=\frac{k\lambda}s(\cos\theta_2-\cos\theta_1)$ (θ from ⊥ foot)</td></tr>
+<tr><td>sym. segment ±L</td><td>$E=\frac{2k\lambda L}{s\sqrt{s^2+L^2}}$; $V=2k\lambda\ln\frac{L+\sqrt{L^2+s^2}}s$</td></tr>
+<tr><td>disk axis V</td><td>$\frac{\sigma}{2\epsilon_0}(\sqrt{z^2+R^2}-|z|)$</td></tr>
+<tr><td>hemishell σ, center</td><td>$E=\frac\sigma{4\epsilon_0}$; solid hemisphere ρ: $\frac{\rho R}{4\epsilon_0}$</td></tr>
+<tr><td>cyl shell σ</td><td>$\frac{\sigma R}{\epsilon_0s}$ out, 0 in</td></tr>
+<tr><td>slab ρ(z), symmetric</td><td>$E(z)=\frac1{\epsilon_0}\int_0^z\rho\,dz'$</td></tr>
+<tr><td>conductor surface</td><td>$E=\frac\sigma{\epsilon_0}$; sphere $\sigma=\frac Q{4\pi R^2}$</td></tr>
+<tr><td>grounded sphere + q at a</td><td>$\sigma=-\frac{q}{4\pi R}\frac{a^2-R^2}{(R^2+a^2-2Ra\cos\theta)^{3/2}}$</td></tr>
+<tr><td>plane + q</td><td>bring in: $W=-\frac{kq^2}{4d}$</td></tr>
+</table></section>
+
+<section id="m-f2"><h2>More dipole moments</h2>
+<p>Hemishell σ (z>0): $p=\pi\sigma R^3$; ±σ hemishells: $2\pi\sigma R^3$. Solid hemisphere ρ: $\frac{\pi\rho R^4}4$; ±ρ halves: $\frac{\pi\rho R^4}2$. Shell $k\cos\theta$: $\frac43\pi kR^3$. Ball $k\cos\theta$: $\frac{\pi kR^4}3$. Ring $\lambda_0\cos\phi$: $\pi R^2\lambda_0$. Rod $\lambda\propto z$: $\frac23\lambda_0L^2$. Square ±q alternating: p=0 (quadrupole). $q$ at $\pm d/2$: $qd$.</p></section>
+
+<section id="m-f3"><h2>Legendre & series extras</h2>
+<p>$P_4=\frac{35x^4-30x^2+3}8$; $x^2=\frac13P_0+\frac23P_2$; $x^3=\frac35P_1+\frac25P_3$; $x^4=\frac15P_0+\frac47P_2+\frac8{35}P_4$.</p>
+<p>$P_l(0)$: $P_2=-\frac12$, $P_4=\frac38$, odd 0. $\int_0^1P_l$: $1,\frac12,0,-\frac18$ (l=0..3).</p>
+<p>Hemispheres $\pm V_0$: $c_1=\frac32V_0$, $c_3=-\frac78V_0$ (odd only).</p>
+<p>$\frac1{|\mathbf r-\mathbf r'|}=\sum\frac{r_{\lt}^l}{r_{\gt}^{l+1}}P_l(\cos\alpha)$ · $\sum_{odd}\frac1{n^2}=\frac{\pi^2}8$ · $\sum\frac1{n^2}=\frac{\pi^2}6$ · $\sum_{odd}\frac{(-1)^{(n-1)/2}}n=\frac\pi4$</p></section>
+
+<section id="m-f4"><h2>2D polar shells</h2>
+<p>Circle at $V_0(\phi)$: in $a_0+\sum(\frac sR)^n(a_n\cos n\phi+b_n\sin n\phi)$, out same with $(\frac Rs)^n$ (+ $\ln s$ term if net λ).</p>
+<p>Cyl shell $\sigma_0\cos\phi$: $V_{in}=\frac{\sigma_0}{2\epsilon_0}s\cos\phi$, $V_{out}=\frac{\sigma_0R^2\cos\phi}{2\epsilon_0s}$; $\mathbf E_{in}=-\frac{\sigma_0}{2\epsilon_0}\hat x$ uniform. Shell $\sigma_n\cos n\phi$: $V_{in}=\frac{\sigma_ns^n\cos n\phi}{2n\epsilon_0R^{n-1}}$, $V_{out}=V_{in}\cdot(\frac Rs)^{2n}$.</p></section>
+
+<section id="m-f5"><h2>More capacitors</h2>
+<p>Half-fill by angle: sphere $C=\frac{2\pi\epsilon_0(1+\epsilon_r)ab}{b-a}$; coax $\frac CL=\frac{\pi\epsilon_0(1+\epsilon_r)}{\ln(b/a)}$. Conducting slab t: $\frac{\epsilon_0A}{d-t}$. Dielectric slab t: $\frac{\epsilon_0A}{d-t+t/\epsilon_r}$. $\epsilon$ linear $\epsilon_1\to\epsilon_2$ across gap: $C=\frac{A(\epsilon_2-\epsilon_1)}{d\ln(\epsilon_2/\epsilon_1)}$. $\epsilon=\epsilon_0\frac br$ sphere: $\frac{4\pi\epsilon_0b}{\ln(b/a)}$.</p></section>
+
+<section id="m-f6"><h2>Image BC equations (write these)</h2>
+<p>q above εr: V cont. $q+q'=q''$; $\epsilon\partial_zV$ cont. $q-q'=\epsilon_rq''$. Sphere in $E_0$: $AR=-E_0R+\frac B{R^2}$; $\epsilon_rA=-E_0-\frac{2B}{R^3}$. Shell σ: $V$ cont., $\partial_rV_{out}-\partial_rV_{in}=-\frac\sigma{\epsilon_0}$ at R.</p></section>
+
+<section id="m-f7"><h2>Constants</h2>
+<p>$e=1.60\times10^{-19}$ C · $m_e=9.11\times10^{-31}$ kg · $\epsilon_0=8.85\times10^{-12}$ · $\mu_0=1.257\times10^{-6}$ · $c=3.00\times10^8$ · $\epsilon_r$: air 1.0005, glass 4–7, Si 11.8, water 80.</p></section>
+
+<section id="m2-f1"><h2>Induced dipoles & cavities</h2>
+<p>Sphere (R) far from q (distance r≫R): $\mathbf p=4\pi\epsilon_0R^3\beta\mathbf E$, $\beta=\frac{\epsilon_r-1}{\epsilon_r+2}$ (conductor β=1); force $F=\frac{2kq^2R^3\beta}{r^5}$ attractive; $\alpha_{cond}=4\pi\epsilon_0R^3$.</p>
+<p>Ball ρ with spherical cavity offset $\mathbf d$: $\mathbf E_{cav}=\frac{\rho\mathbf d}{3\epsilon_0}$ uniform. Cylinder ρ with cyl. cavity: $\frac{\rho\mathbf d}{2\epsilon_0}$. Slab ρ with cavity: superpose $\frac{\rho z}{\epsilon_0}\hat z-\frac{\rho(\mathbf r-\mathbf c)}{3\epsilon_0}$.</p>
+<p>$\mathbf P=k\hat r$ (n=0): $\rho_b=-\frac{2k}r$, $\sigma_b=k$, $\mathbf E_{in}=-\frac k{\epsilon_0}\hat r$. $\mathbf P=\frac k{r^2}\hat r$ in shell a..b: $\rho_b=0$, $\sigma_b(a)=-\frac k{a^2}$, $\sigma_b(b)=\frac k{b^2}$, $E=-\frac{k}{\epsilon_0r^2}$ in shell.</p>
+<p>Electron cloud $\rho=-\frac{q}{\pi a^3}e^{-2r/a}$: $Q_{cloud}(r)=-q[1-e^{-2r/a}(1+\frac{2r}a+\frac{2r^2}{a^2})]$.</p>
+<p>$\int_0^\infty x^ne^{-x/a}dx=n!\,a^{n+1}$ · $\int_0^sxe^{-x/a}dx=a^2[1-(1+\frac sa)e^{-s/a}]$.</p></section>
 
 <section><h2>Integrals</h2>
 <p>$\int\frac{dz}{(z^2+s^2)^{3/2}}=\frac{z}{s^2\sqrt{z^2+s^2}}$ · $\int\frac{z\,dz}{(z^2+s^2)^{3/2}}=\frac{-1}{\sqrt{z^2+s^2}}$ · $\int\frac{dz}{\sqrt{z^2+s^2}}=\ln(z+\sqrt{z^2+s^2})$ · $\int\frac{dx}{x^2+a^2}=\frac1a\tan^{-1}\frac xa$</p>
@@ -352,6 +394,51 @@
 <section class="e1" id="e1-img"><h2>EXAM I · images & superposition</h2>
 <p>Plane: $\sigma$ total $-q$, half within $s=\sqrt3d$. q inside grounded shell at d: image $-\frac{qR}d$ at $\frac{R^2}d$; $F=\frac{kq^2Rd}{(R^2-d^2)^2}$ toward wall. Sphere at $V_0$ + q at a: images $-\frac{qR}a$ at $\frac{R^2}a$ & $4\pi\epsilon_0RV_0$ at center; $F=\frac{qRV_0}{a^2}-\frac{kq^2Ra}{(a^2-R^2)^2}$. Neutral: sphere's $V=\frac{kq}a$, always attracts. Corner 90° at $(x_0,y_0)$: $-q(-x_0,y_0)$, $-q(x_0,-y_0)$, $+q(-x_0,-y_0)$; 60°: 5 images. Images valid only outside metal.</p>
 <p>Cylinder (+ρ, radius a, along z) through ball (−ρ, R): inside both: $\frac{\rho s}{6\epsilon_0}$ out, $\frac{\rho z}{3\epsilon_0}$ in; plane z=0: $\frac{\rho a^2}{2\epsilon_0s}-\frac{\rho s}{3\epsilon_0}$. Hole = whole + negative copy, each from its own center.</p></section>
+
+<section id="m-b1"><h2>Spinning solid ball (ρ, ω)</h2>
+<p>$\mathbf B_{in}=\mu_0\rho\omega[(\frac{R^2}3-\frac{r^2}5)\cos\theta\hat r-(\frac{R^2}3-\frac{2r^2}5)\sin\theta\hat\theta]$ = $\frac{\mu_0\rho\omega}3(R^2-r^2)\hat z+\frac{\mu_0\rho\omega r^2}{15}(2\cos\theta\hat r+\sin\theta\hat\theta)$. Center $\frac{\mu_0\rho\omega R^2}3$. Out: dipole $m=\frac{4\pi\rho\omega R^5}{15}=\frac{Q\omega R^2}5$.</p>
+<p>Method: shells outside r give uniform $\frac23\mu_0(\rho dr')\omega r'$; shells inside give dipole of $m(r)$.</p></section>
+
+<section id="m-b2"><h2>More B setups</h2>
+<table>
+<tr><td>tube, axial K</td><td>0 in; $\frac{\mu_0KR}s\hat\phi$ out; $A_z=-\mu_0KR\ln\frac sR$ out</td></tr>
+<tr><td>toroid circ. section</td><td>$\Phi=\mu_0NI(b-\sqrt{b^2-a^2})$</td></tr>
+<tr><td>M-cyl center (L, a)</td><td>$\frac{\mu_0ML}{\sqrt{L^2+4a^2}}$</td></tr>
+<tr><td>spinning ring axis</td><td>loop formula with $I=\frac{Q\omega}{2\pi}$</td></tr>
+<tr><td>two ⊥ sheets</td><td>add vectors, each $\frac{\mu_0K}2$</td></tr>
+<tr><td>helix</td><td>$r=\frac{mv_\perp}{qB}$, pitch $\frac{2\pi mv_\parallel}{qB}$</td></tr>
+<tr><td>velocity selector</td><td>$v=E/B$</td></tr>
+<tr><td>solenoid + core $\chi_m$</td><td>$B=\mu nI$; $H=nI$; $M=\chi_mnI$</td></tr>
+<tr><td>core in part of cross-section</td><td>H same $=nI$; B: $\mu nI$ | $\mu_0nI$</td></tr>
+</table></section>
+
+<section id="m-b3"><h2>Linear magnetic shapes in $\mathbf B_0$</h2>
+<p>$\mathbf H_{in}=\frac{\mathbf H_0}{1+N\chi_m}$, $\mathbf B_{in}=\mu\mathbf H_{in}$. Slab ⊥ (N=1): $B_{in}=B_0$, $H_{in}=H_0/\mu_r$. Slab ∥ (N=0): $H_{in}=H_0$, $B_{in}=\mu_rB_0$. Sphere: $\mathbf B_{in}=\frac{3\mu_r}{\mu_r+2}\mathbf B_0$. Cyl ⊥: $\mathbf B_{in}=\frac{2\mu_r}{\mu_r+1}\mathbf B_0$. Cavity in μ: $\frac{3}{2\mu_r+1}\mathbf B_0$ (B), sphere formula with $\mu_{in}\leftrightarrow\mu_{out}$.</p></section>
+
+<section id="m-b4"><h2>Electrostatics ↔ magnetostatics</h2>
+<table>
+<tr><td>$\rho$, $\epsilon_0$</td><td>$\mathbf J$, $1/\mu_0$</td></tr>
+<tr><td>$\nabla\cdot\mathbf E=\rho/\epsilon_0$</td><td>$\nabla\times\mathbf B=\mu_0\mathbf J$</td></tr>
+<tr><td>$\nabla\times\mathbf E=0$</td><td>$\nabla\cdot\mathbf B=0$</td></tr>
+<tr><td>$V=k\int\frac{\rho}{\mathscr r}$</td><td>$\mathbf A=\frac{\mu_0}{4\pi}\int\frac{\mathbf J}{\mathscr r}$</td></tr>
+<tr><td>$\nabla^2V=-\rho/\epsilon_0$</td><td>$\nabla^2\mathbf A=-\mu_0\mathbf J$</td></tr>
+<tr><td>Gauss (symmetry)</td><td>Ampère (symmetry)</td></tr>
+<tr><td>$\frac{p}{4\pi\epsilon_0}$</td><td>$\frac{\mu_0m}{4\pi}$ (same field outside)</td></tr>
+<tr><td>$E^\perp$ jumps $\sigma/\epsilon_0$</td><td>$B^\parallel$ jumps $\mu_0K$</td></tr>
+<tr><td>V cont.</td><td>A cont.</td></tr>
+</table></section>
+
+<section id="m-b5"><h2>H, M quick values</h2>
+<p>Uniform-M sphere: $\mathbf H_{in}=-\frac{\mathbf M}3$, $\mathbf H_{out}=\mathbf B_{out}/\mu_0$ (dipole). Long rod: $H_{in}\approx0$, $B=\mu_0M$. Thin disk: $H_{in}\approx-M$, $B\approx0$. Bar-magnet pole density $\rho_M=-\nabla\cdot\mathbf M$, $\sigma_M=\mathbf M\cdot\hat n$ source H like charges.</p>
+<p>B lines close (S→N inside); H lines start on N-face "poles", end on S.</p></section>
+
+<section id="m-b6"><h2>Useful vector facts</h2>
+<p>$\oint d\mathbf l=0$ · $\oint\mathbf r\times d\mathbf l=2\mathbf a$ · $\int_0^{2\pi}\hat s\,d\phi=0$ · $\mathbf m=\frac I2\oint\mathbf r\times d\mathbf l$ · $\mathbf a\times(\mathbf b\times\mathbf c)=\mathbf b(\mathbf a\cdot\mathbf c)-\mathbf c(\mathbf a\cdot\mathbf b)$ · $\nabla(\mathbf m\cdot\mathbf B)=\mathbf m\times(\nabla\times\mathbf B)+(\mathbf m\cdot\nabla)\mathbf B$ (= $(\mathbf m\cdot\nabla)\mathbf B$ in current-free region).</p></section>
+
+<section id="m2-b1"><h2>More moments & forces</h2>
+<p>Spinning cyl shell (σ, R, L): $m=\pi\sigma\omega R^3L$. Spinning solid cyl: $\frac{m}{L}=\frac{\pi\rho\omega R^4}4$. Spinning shell B on axis outside: $\frac{\mu_0m}{2\pi z^3}$.</p>
+<p>Dipole m (along $\hat\phi$) near wire I at s: $U=-\frac{\mu_0Im}{2\pi s}$, $F_s=-\frac{\mu_0Im}{2\pi s^2}$ (pulled in). m ∥ B in nonuniform B: pulled to strong B.</p>
+<p>$J=J_0e^{-s/a}$: $I_{enc}=2\pi J_0a^2[1-(1+\frac sa)e^{-s/a}]$, $B=\frac{\mu_0I_{enc}}{2\pi s}$. $J=\frac ks$: $I_{enc}=2\pi ks$, B uniform $\mu_0k$ inside.</p></section>
 
 <section><h2>Cyl one-liners</h2>
 <p>$F(s)\hat\phi$: div 0, curl $\frac1s(sF)'\hat z$ · $F(s)\hat z$: div 0, curl $-F'\hat\phi$ · $F(s)\hat s$: div $\frac1s(sF)'$, curl 0 · $F(z)\hat x$: curl $F'\hat y$. Valid B: div=0. $\frac{\hat\phi}s$: curl = line current on axis.</p>
