@@ -60,7 +60,8 @@
       .replace(/`([^`]+)`/g, '<code>$1</code>')
       .replace(/\*\*([^*]+?)\*\*/g, '<b>$1</b>')
       .replace(/(^|[^*\w])\*([^*\n]+?)\*(?!\w)/g, '$1<em>$2</em>')
-      .replace(/\[([^\]]+)\]\((#[^)]+)\)/g, '<a href="$2">$1</a>');
+      .replace(/\[([^\]]+)\]\((#[^)]+)\)/g, '<a href="$2">$1</a>')
+      .replace(/\[([^\]]+)\]\(([\w./-]+\.(?:pdf|html))\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
     return t.replace(/\u0001(\d+)\u0002/g, (_, i) => escMath(math[+i])).replace(/\u0003/g, () => '<span class="usd">$</span>');
   }
   const inlineSeg = inline;

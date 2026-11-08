@@ -14,16 +14,16 @@
     id: 'h-e2-past', num: '', title: 'Exam II: the past exam (holding)',
     lessons: [
       {
-        id: 'e2-past', title: 'What the exam two semesters ago tested', kind: 'read',
+        id: 'e2-past', title: 'What last spring\'s exam tested, and the drills for it', kind: 'read',
         steps: [
           R(md`
-            A student who took PHYS 435 two semesters ago says the exam was:
+            Last spring's Hour Exam II is on this site in full: [Spring 2026 Exam II](#/l/e2-s26) (original PDF: [sp26-exam2.pdf](sp26-exam2.pdf)). It tested:
 
             1. **A lot of D, E, P**: given free charge and dielectrics (or a frozen polarization), find $\vb D$, $\vb E$, $\vb P$ and the bound charges.
             2. **The magnetic field of a cylinder with an off-axis hole.** Given the total current, use the **ratio of the areas** to find the current of the full cylinder ($+$) and of the hole ($-$), then superpose with Ampère.
             3. **A vector potential you couldn't get by integrating**: you had to use the **curl** (and the D/E/P-style reasoning about which component survives).
 
-            That's a strong hint for tomorrow. This unit drills exactly those three, then Mock I puts them together in 50 minutes. Your **cheat sheet** ([printable PDF](cheatsheet-e2.pdf) · [page](cheatsheet-e2.html)) has a box for each.
+            This unit drills each of those problem types, then Mock I gives you a fresh exam of the same kind in 50 minutes. Your **cheat sheet** ([printable PDF](cheatsheet-e2.pdf) · [page](cheatsheet-e2.html)) has a box for each.
 
             | Past-exam problem | Lesson | Cheat-sheet box |
             |---|---|---|
@@ -291,9 +291,9 @@
 
       // ================================================================== Mock I
       {
-        id: 'e2-mockI', title: 'Mock Exam II (I): the exam from two semesters ago, reconstructed', kind: 'mock',
+        id: 'e2-mockI', title: 'Mock Exam II (I): same style as Spring 2026', kind: 'mock',
         steps: [
-          R(md`Rebuilt from a student's description of their exam (not the actual paper): D/E/P, a cylinder with an off-axis hole, and a vector potential you get from the curl. 50 minutes, formula sheet plus your cheat sheet. Do this one tonight.`),
+          R(md`A fresh exam of the same kind as Spring 2026: D/E/P, a cylinder with an off-axis hole, and a vector potential you get from the curl. 50 minutes, formula sheet plus your cheat sheet. Do this one tonight.`),
           paper('Mock Hour Exam II (I)', [
             {
               q: md`

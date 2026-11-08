@@ -40,8 +40,8 @@
   const PATH2 = [
     { id: 'q0', title: 'Start here: the exam format', blurb: 'What Exam I looked like (four problems, 50 minutes, the clock is the enemy) and which Exam II problem each one turns into.',
       ids: ['e2-format'] },
-    { id: 'qp', title: 'Night before: the exam from two semesters ago', blurb: 'A student who took it: lots of D, E, P; a cylinder with an off-axis hole (currents from the area ratio); a vector potential found from the curl. Drilled one by one, then Mock I puts them together.',
-      ids: ['e2-past', 'e2-dep', 'e2-hole', 'e2-Acurl', 'e2-mockI'] },
+    { id: 'qp', title: 'Spring 2026 Exam II (last spring, the real exam)', blurb: 'The actual four problems with full solutions: a point charge in a dielectric ball, a moving capacitor and a cylinder with an off-axis hole, A from the curl, a linear magnetic slab. Then drills on each type and Mock I.',
+      ids: ['e2-s26', 'e2-past', 'e2-dep', 'e2-hole', 'e2-Acurl', 'e2-mockI'] },
     { id: 'q1', title: 'Multipoles, and dipoles in a field', blurb: 'Lecture 14 and HW 5–6: the multipole expansion, dipole moments, then torque, energy and force on a dipole (HW 4.6, 4.7).',
       ids: mp.filter((id) => !/^uD-/.test(id)).concat(['e2-dipE'], mp.filter((id) => /^uD-/.test(id))) },
     { id: 'q2', title: 'Polarization, bound charge, and D', blurb: 'σ_b = P·n̂, ρ_b = −∇·P, the four standard shapes, and when Gauss for D works (HW 4.10, 4.11, 4.15).',
