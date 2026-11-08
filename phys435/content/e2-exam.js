@@ -18,7 +18,7 @@
         id: 'e2-sheet', title: 'Formula sheet: what you get and what to memorize', kind: 'read',
         steps: [
           R(md`
-            **Your handwritten cheat sheet (double-sided):** [printable PDF](cheatsheet-e2.pdf) · [page](cheatsheet-e2.html). Front: P, D, E and dielectrics. Back: B, the off-axis hole, A from the curl, M and H. Copy it by hand; the act of copying is half the studying.
+            **Your printed cheat sheet (double-sided, Exam I + Exam II):** [printable PDF](cheatsheet-e2.pdf) · [page](cheatsheet-e2.html). Front: Exam I electrostatics core, multipoles, P, D, E, dielectrics, BVPs. Back: B, the off-axis hole, A from the curl, M and H, plus Exam I separation of variables and images. Print it double-sided.
 
             **What the formula sheet likely has.** Exam I's sheet already listed Maxwell's equations, Biot–Savart, $\vb F = q(\vb E + \vb v\times\vb B)$, the Physics 212 results ($\mu_0I/2\pi s$, $\mu_0nI$, $\mu_0NI/2\pi s$) and the coordinate formulas (the full typed version is in the Exam I review under "The formula sheet"). Expect the Exam II sheet to look like it. Check the course schedule's "Formula sheet" link under Hour Exam II as soon as it is posted, and **assume nothing about materials is printed** until you have seen it.
 

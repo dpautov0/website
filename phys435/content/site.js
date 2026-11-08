@@ -18,7 +18,7 @@
     sheet: 'e2-sheet', quiz: 'e2-quiz', drill: 'e2-rapid',
     planTitle: 'How to use it',
     plan: [
-      '<b>Tonight: Unit 1 and the <a href="cheatsheet-e2.pdf">cheat sheet</a>.</b> A student from two semesters ago says their exam was mostly D/E/P, a cylinder with an off-axis hole, and a vector potential from the curl. Unit 1 drills exactly those, then Mock I (50 minutes) puts them together. Copy the double-sided cheat sheet by hand.',
+      '<b>Tonight: Unit 1 and the <a href="cheatsheet-e2.pdf">cheat sheet</a>.</b> A student from two semesters ago says their exam was mostly D/E/P, a cylinder with an off-axis hole, and a vector potential from the curl. Unit 1 drills exactly those, then Mock I (50 minutes) puts them together. Print the double-sided cheat sheet (it includes the Exam I material too).',
       '<b><a href="#/l/e2-format">Read this first</a></b> maps your Exam I (fields + energy integral, overlapping slab and sphere, images, sphere in a uniform field) to its Exam II version.',
       '<b>Units 2–9, topic by topic.</b> Each opens with the physical picture, gives the speed trick, drills it with concept cards and homework-style problems, and ends with an <b>endless speed drill</b>. Every HW 6–9 and Discussion 5–7 problem is worked somewhere.',
       '<b>Unit 10: exam-format problems</b> (given a field; overlapping shapes). <b>Unit 11 under time:</b> eight more 50-minute mocks (C mirrors Exam I; G is deliberately too long; H is the dress rehearsal), the <a href="#/l/e2-speed">speed tricks</a> and the <a href="#/l/e2-setups">setups table</a>.',

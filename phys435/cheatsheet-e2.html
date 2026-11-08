@@ -13,17 +13,19 @@
   @page { size: letter; margin: 0.2in; }
   * { box-sizing: border-box; }
   html, body { background: var(--paper); color: var(--ink); margin: 0; }
-  body { font: 7.15pt/1.17 "Segoe UI", Arial, sans-serif; }
+  body { font: 6.0pt/1.15 "Segoe UI", Arial, sans-serif; }
   .page { width: 8.1in; margin: 0 auto; }
   .page + .page { break-before: page; }
   .top { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1.1px solid var(--ink); margin-bottom: 2px; padding-bottom: 1px; }
-  .top b { font-size: 8.2pt; }
+  .top b { font-size: 7.6pt; }
   .top span { color: var(--soft); }
-  .cols { column-count: 4; column-gap: 6px; column-rule: 0.5px solid var(--rule); }
+  .cols { column-count: 5; column-gap: 5px; column-rule: 0.5px solid var(--rule); }
   section { break-inside: avoid; margin: 0 0 2.5px; }
   section.hot { border: 1px solid var(--red); padding: 0 2px 1px; border-radius: 2px; }
+  section.e1 { background: #fbf6ec; padding: 0 2px 1px; border-radius: 2px; }
+  .e1 h2 { color: #7a4b00; }
   section.ex { background: var(--ex); padding: 0 2px 1px; border-radius: 2px; }
-  h2 { font-size: 7.6pt; margin: 0 0 0.5px; color: var(--head); border-bottom: 0.5px solid var(--rule); }
+  h2 { font-size: 6.9pt; margin: 0 0 0.5px; color: var(--head); border-bottom: 0.5px solid var(--rule); }
   p { margin: 0 0 1px; }
   table { border-collapse: collapse; width: 100%; margin: 0 0 1px; }
   td { border-bottom: 0.4px solid var(--rule); padding: 0.2px 1.5px; vertical-align: top; }
@@ -42,7 +44,7 @@
 
 <!-- ============================== FRONT: electric ============================== -->
 <div class="page">
-<div class="top"><b>PHYS 435 · Exam II · FRONT: multipoles, P, D, E, dielectrics, BVPs</b><span>$k=\frac1{4\pi\epsilon_0}=8.99\times10^9$ · $\epsilon_0=8.85\times10^{-12}$ · $\epsilon=\epsilon_0\epsilon_r=\epsilon_0(1+\chi_e)$</span></div>
+<div class="top"><b>PHYS 435 · Exam II · FRONT: electrostatics (Exam I core) · multipoles · P, D, E · dielectrics · BVPs</b><span>$k=\frac1{4\pi\epsilon_0}=8.99\times10^9$ · $\epsilon_0=8.85\times10^{-12}$ · $\epsilon=\epsilon_0\epsilon_r=\epsilon_0(1+\chi_e)$</span></div>
 <div class="cols">
 
 <section class="hot"><h2>D → E → P chain (always this order)</h2>
@@ -150,6 +152,42 @@
 <p>$\nabla\times\nabla f=0$, $\nabla\cdot\nabla\times\mathbf A=0$, $\nabla\times\nabla\times\mathbf A=\nabla(\nabla\cdot\mathbf A)-\nabla^2\mathbf A$; $\nabla\cdot(f\mathbf A)=f\nabla\cdot\mathbf A+\mathbf A\cdot\nabla f$.</p>
 <p>$\nabla\cdot\frac{\hat r}{r^2}=4\pi\delta^3$; $\nabla\cdot\frac{\hat s}{s}=2\pi\delta^2$; $\nabla^2\frac1{\mathscr r}=-4\pi\delta^3$.</p></section>
 
+<section id="dense-front"><h2>Spherical calculus</h2>
+<p>$\nabla f=f_r\hat r+\frac1rf_\theta\hat\theta+\frac1{r\sin\theta}f_\phi\hat\phi$ · $\nabla\cdot\mathbf A=\frac1{r^2}\partial_r(r^2A_r)+\frac{\partial_\theta(\sin\theta A_\theta)}{r\sin\theta}+\frac{\partial_\phi A_\phi}{r\sin\theta}$</p>
+<p>$\nabla\times\mathbf A=\frac{\hat r}{r\sin\theta}[\partial_\theta(\sin\theta A_\phi)-\partial_\phi A_\theta]+\frac{\hat\theta}r[\frac{\partial_\phi A_r}{\sin\theta}-\partial_r(rA_\phi)]+\frac{\hat\phi}r[\partial_r(rA_\theta)-\partial_\theta A_r]$</p>
+<p>$\nabla^2f=\frac1{r^2}\partial_r(r^2f_r)+\frac{\partial_\theta(\sin\theta f_\theta)}{r^2\sin\theta}+\frac{f_{\phi\phi}}{r^2\sin^2\theta}$ · $d\tau=r^2\sin\theta\,dr\,d\theta\,d\phi$ · $da_{sph}=R^2\sin\theta\,d\theta\,d\phi$</p></section>
+
+<section><h2>Unit vectors & cross products</h2>
+<p>$\hat r=\sin\theta\cos\phi\hat x+\sin\theta\sin\phi\hat y+\cos\theta\hat z$ · $\hat\theta=\cos\theta\cos\phi\hat x+\cos\theta\sin\phi\hat y-\sin\theta\hat z$ · $\hat\phi=-\sin\phi\hat x+\cos\phi\hat y$</p>
+<p>$\hat z=\cos\theta\hat r-\sin\theta\hat\theta$ · $\hat s=\cos\phi\hat x+\sin\phi\hat y$ · $\hat s=\sin\theta\hat r+\cos\theta\hat\theta$ · equator: $\hat\theta=-\hat z$</p>
+<p>$\hat x{\times}\hat y=\hat z$, $\hat y{\times}\hat z=\hat x$, $\hat z{\times}\hat x=\hat y$ · $\hat s{\times}\hat\phi=\hat z$, $\hat\phi{\times}\hat z=\hat s$, $\hat z{\times}\hat s=\hat\phi$ · $\hat r{\times}\hat\theta=\hat\phi$, $\hat\theta{\times}\hat\phi=\hat r$, $\hat\phi{\times}\hat r=\hat\theta$</p></section>
+
+<section><h2>2D (cylinder) results</h2>
+<p>Line dipole (p per length): $V=\frac{p\cos\phi}{2\pi\epsilon_0s}$. Uniform P ⊥ axis: $\sigma_b=P\cos\phi$, $\mathbf E_{in}=-\frac{\mathbf P}{2\epsilon_0}$.</p>
+<p>Dielectric cyl in $E_0\hat x$: $V_{in}=-\frac{2E_0}{\epsilon_r+1}s\cos\phi$, $V_{out}=-E_0s\cos\phi+\frac{\epsilon_r-1}{\epsilon_r+1}\frac{E_0R^2\cos\phi}s$.</p>
+<p>Coax half-filled by angle ($\epsilon_1|\epsilon_2$): E shared, $E=\frac{\lambda}{\pi s(\epsilon_1+\epsilon_2)}$.</p></section>
+
+<section id="dense-front2"><h2>Dipole extras</h2>
+<p>Dipole near charge q (aligned, distance r): $F=\frac{2kqp}{r^3}$ (attract); $U=-\frac{kqp}{r^2}$. Field energy of a dipole outside R: $\frac{p^2}{12\pi\epsilon_0R^3}$. Uniform-P sphere: $\frac{\epsilon_0}2\int E^2=\frac{2\pi R^3P^2}{9\epsilon_0}$ (⅓ in, ⅔ out).</p>
+<p>Two charges $q_1$ at $z_1$, $q_2$ at $z_2$: $p=q_1z_1+q_2z_2$; p vanishes about $z_0=p/Q$. Rod $\lambda=\lambda_0z/L$ on $[-L,L]$: $p=\frac23\lambda_0L^2$. Ball $\rho=k\cos\theta$: $p=\frac{\pi kR^4}3$. Ball $\rho=kz$: $p=\frac{4\pi kR^5}{15}$. Shell $\sigma=k\cos\theta$: $\frac43\pi R^3k$. Ring $\lambda=\lambda_0\cos\phi$: $p_x=\pi R^2\lambda_0$.</p></section>
+
+<section><h2>Point charge in dielectric ball</h2>
+<p>q at center of ball R ($\epsilon_r$): $E_{in}=\frac{q}{4\pi\epsilon r^2}$, out $\frac{kq}{r^2}$; $q_b(0)=-\frac{\chi_e}{\epsilon_r}q$; $\sigma_b(R)=\frac{\chi_e}{\epsilon_r}\frac q{4\pi R^2}$; $V(R)=\frac{kq}R$.</p></section>
+
+<section class="ex"><h2>HW answers: dielectrics</h2>
+<p><b>4.6</b> image $\mathbf p'=(-p_x,-p_y,p_z)$ at −z; $N=\frac{p^2\sin\theta\cos\theta}{4\pi\epsilon_0(2z)^3}$; rests θ=0,π. <b>4.7</b> $U=-\mathbf p\cdot\mathbf E$ (work $\int qE$ over d). <b>4.10</b> $\sigma_b{=}kR$, $\rho_b{=}{-3k}$, $E_{in}{=}{-\frac{kr}{\epsilon_0}}$, out 0. <b>4.11</b> caps ±P, sides 0. <b>4.12</b> $V=\frac{\mathbf P}\rho\cdot\mathbf E_{ball}$: in $\frac{Pr\cos\theta}{3\epsilon_0}$, out $\frac{PR^3\cos\theta}{3\epsilon_0r^2}$. <b>4.15</b> $\rho_b{=}{-\frac k{r^2}}$, $\sigma_b(b){=}\frac kb$, $\sigma_b(a){=}{-\frac ka}$, $E{=}{-\frac{k}{\epsilon_0r}}$ in shell only. <b>4.18</b> D=σ; E=σ/2ε₀, 2σ/3ε₀; P=σ/2, σ/3; V=7σa/6ε₀; σ_b: −σ/2 top, +σ/2|−σ/3 mid, +σ/3 bottom. <b>4.19</b> $C/C_0$: (a) $\frac{2\epsilon_r}{1+\epsilon_r}$ (b) $\frac{1+\epsilon_r}2$. (a) D same, $E_{air}=\frac{2\epsilon_rV}{(1+\epsilon_r)d}$, $E_{diel}=\frac{E_{air}}{\epsilon_r}$; (b) $E=\frac Vd$ both, $\sigma_f=\epsilon E$. <b>4.21</b> $\frac CL=\frac{2\pi\epsilon_0}{\ln\frac ba+\frac1{\epsilon_r}\ln\frac cb}$. <b>4.24</b> $E=-A[(1+\frac{2a^3}{r^3})\cos\theta\hat r-(1-\frac{a^3}{r^3})\sin\theta\hat\theta]$. <b>4.26</b> $W=\frac{Q^2}{8\pi\epsilon_0(1+\chi_e)}(\frac1a+\frac{\chi_e}b)$.</p></section>
+
+<section><h2>Separation of variables (Cartesian)</h2>
+<p>Slot $V_0$ on end: $V=\frac{4V_0}\pi\sum_{odd}\frac1ne^{-n\pi x/a}\sin\frac{n\pi y}a$; $c_n=\frac2a\int_0^aV_0(y)\sin\frac{n\pi y}ady$; const $V_0$: $\frac{4V_0}{n\pi}$ odd n. Finite box: $\sinh$/$\cosh$.</p></section>
+
+<section class="e1" id="e1-core"><h2>EXAM I · electrostatics core</h2>
+<p>$\mathbf E=k\int\frac{dq\,\hat{\mathscr r}}{\mathscr r^2}$ · $V=k\int\frac{dq}{\mathscr r}$ · $\mathbf E=-\nabla V$ · $V(b)-V(a)=-\int_a^b\mathbf E\cdot d\mathbf l$ · $\nabla\cdot\mathbf E=\frac\rho{\epsilon_0}$ · $\nabla\times\mathbf E=0$ · $\nabla^2V=-\frac\rho{\epsilon_0}$ · $W=q\Delta V$</p>
+<p>BC: $E^\perp_{out}-E^\perp_{in}=\frac\sigma{\epsilon_0}$, $E^\parallel$ cont., V cont.; $\partial_nV_{out}-\partial_nV_{in}=-\frac\sigma{\epsilon_0}$.</p>
+<p><b>Conductors:</b> E=0 inside, V const, charge on surface; just outside $E=\frac\sigma{\epsilon_0}\hat n$; $\sigma=-\epsilon_0\partial_nV$; pressure $\frac{\sigma^2}{2\epsilon_0}$. Empty cavity: E=0. q in cavity: $-q$ on wall, $+q$(+Q) outside, outside field indep. of q's position. Grounded: V=0; isolated: Q fixed, V unknown const.</p>
+<p><b>Given E → ρ:</b> $\rho=\epsilon_0\nabla\cdot\mathbf E$; $Q_{enc}(r)=4\pi\epsilon_0r^2E_r$; $Q_{enc}\to q\ne0$ as $r\to0$ ⇒ $q\delta^3$ at origin; E jump at R ⇒ $\sigma=\epsilon_0(E_{out}-E_{in})$. $\int f\delta(x-a)=f(a)$, $\delta(kx)=\frac{\delta(x)}{|k|}$, $\delta^3(\mathbf r)=\frac{\delta(r)}{4\pi r^2}$. Ex: $E=\frac A{r^2}$ in, $\frac{AR^2}{r^4}$ out ⇒ $4\pi\epsilon_0A\,\delta^3$, $\rho_{out}=-\frac{2\epsilon_0AR^2}{r^5}$, $V_{in}=\frac Ar-\frac{2A}{3R}$, $V_{out}=\frac{AR^2}{3r^3}$.</p>
+<p><b>Laplace:</b> no max/min inside; $V(\mathbf r)$ = average over any sphere around it. <b>Uniqueness:</b> V given on all boundaries (or Q on each conductor + V at ∞) ⇒ unique; anything that fits is THE answer.</p>
+<p><b>Energy:</b> $W=\frac12\sum q_iV_i=\frac12\int\rho V=\frac{\epsilon_0}2\int E^2$; pair $\frac{kq_1q_2}r$; shell $\frac{kQ^2}{2R}$, ball $\frac{3kQ^2}{5R}$; not additive (cross term $\epsilon_0\int\mathbf E_1\cdot\mathbf E_2$).</p></section>
+
 <section><h2>Integrals</h2>
 <p>$\int\frac{dz}{(z^2+s^2)^{3/2}}=\frac{z}{s^2\sqrt{z^2+s^2}}$ · $\int\frac{z\,dz}{(z^2+s^2)^{3/2}}=\frac{-1}{\sqrt{z^2+s^2}}$ · $\int\frac{dz}{\sqrt{z^2+s^2}}=\ln(z+\sqrt{z^2+s^2})$ · $\int\frac{dx}{x^2+a^2}=\frac1a\tan^{-1}\frac xa$</p>
 <p>$\int_0^\pi\sin\theta=2$, $\int_0^\pi\sin^3\theta=\frac43$, $\int_0^\pi\cos^2\theta\sin\theta=\frac23$, $\int_0^{2\pi}\cos^2\phi=\pi$. Partial fractions: $\frac{a}{r^2(r+a)}=\frac1{r^2}-\frac1{ar}+\frac1{a(r+a)}$.</p></section>
@@ -158,7 +196,7 @@
 
 <!-- ============================== BACK: magnetic ============================== -->
 <div class="page">
-<div class="top"><b>PHYS 435 · Exam II · BACK: currents, B, A, m, M, H</b><span>$\mu_0=4\pi\times10^{-7}$ T·m/A · $\frac{\mu_0}{4\pi}=10^{-7}$ · $c=1/\sqrt{\mu_0\epsilon_0}$ · RHR: thumb I, fingers B</span></div>
+<div class="top"><b>PHYS 435 · Exam II · BACK: B, A, m, M, H · Exam I separation of variables & images</b><span>$\mu_0=4\pi\times10^{-7}$ T·m/A · $\frac{\mu_0}{4\pi}=10^{-7}$ · $c=1/\sqrt{\mu_0\epsilon_0}$ · RHR: thumb I, fingers B</span></div>
 <div class="cols">
 
 <section><h2>Currents & force</h2>
@@ -276,6 +314,40 @@
 <tr><td>loop in $\mathbf B$</td><td>$N=mB\sin\theta$; $U=-mB\cos\theta$</td></tr>
 <tr><td>wire ∥ sheet K</td><td>$f/L=I\frac{\mu_0K}2$ toward (∥ currents)</td></tr>
 </table></section>
+
+<section id="dense-back"><h2>More A results</h2>
+<table>
+<tr><td>M-sphere</td><td>in $\frac{\mu_0M}3r\sin\theta\hat\phi$; out $\frac{\mu_0MR^3}3\frac{\sin\theta}{r^2}\hat\phi$</td></tr>
+<tr><td>coax</td><td>$A_z=-\frac{\mu_0I}{2\pi}\ln\frac sb$ between; 0 out</td></tr>
+<tr><td>sol.+axis wire</td><td>$A_\phi$ (sol.) + $A_z$ (wire), superpose</td></tr>
+<tr><td>$\mathbf B=kz\hat x$</td><td>$\mathbf A=-\frac{kz^2}2\hat y$ ($B_x=-\partial_zA_y$)</td></tr>
+<tr><td>holed cyl, hole</td><td>$A_z=-\frac{\mu_0J}4(2\mathbf s\cdot\mathbf d-d^2)$</td></tr>
+</table></section>
+
+<section><h2>More loops</h2>
+<p>D-shape (semicircle + diameter) center: $\frac{\mu_0I}{4R}$. Two concentric arcs φ (a,b) + radial: $\frac{\mu_0I\phi}{4\pi}(\frac1a-\frac1b)$; m $=\frac{I\phi}2(b^2-a^2)$. Loop tangent leads: $\frac{\mu_0I}{4\pi R}(\phi+n_{tan})$. Semicircle in uniform $\mathbf B$: $\mathbf F=I(2R\hat x)\times\mathbf B$. Three sides of square (2R): $\frac{\sqrt5\mu_0I}{4\pi R}$.</p></section>
+
+<section id="dense-back2"><h2>Any straight wire, any point</h2>
+<p>Wire ∥ z through $(x_0,y_0)$, current I: $\mathbf B=\frac{\mu_0I}{2\pi}\frac{(-(y-y_0),\,x-x_0,\,0)}{(x-x_0)^2+(y-y_0)^2}$. Wire ∥ y through $(x_0,\cdot,z_0)$: $\frac{\mu_0I}{2\pi}\frac{(z-z_0,\,0,\,-(x-x_0))}{(x-x_0)^2+(z-z_0)^2}$.</p>
+<p><b>5.67</b>: $\mathbf B=\frac{\mu_0I}{2\pi}\left[\frac{(z,0,a-x)}{(x-a)^2+z^2}+\frac{(-y,x+a,0)}{(x+a)^2+y^2}\right]+\mathbf B_0$.</p>
+<p>Flux of wire through coplanar rect. (width a from s, height h): $\Phi=\frac{\mu_0Ih}{2\pi}\ln\frac{s+a}s$. Through toroid turn: $\frac{\mu_0NIh}{2\pi}\ln\frac ba$.</p>
+<p>Segment, angles α from the wire line: $\frac{\mu_0I}{4\pi s}|\cos\alpha_1-\cos\alpha_2|$. Point on extension: 0.</p>
+<p>Work to flip m in B: $2mB$. Dipole in field of wire: $\mathbf F=\nabla(\mathbf m\cdot\mathbf B)$.</p></section>
+
+<section class="ex"><h2>HW answers: magnetism</h2>
+<p><b>5.4</b> $\mathbf F=Ika^2\hat z$. <b>5.6</b> $K=\sigma\omega r$; $\mathbf J=\frac{3Q\omega}{4\pi R^3}r\sin\theta\hat\phi$. <b>5.8</b> $\frac{\sqrt2\mu_0I}{\pi R}$; $\frac{n\mu_0I}{2\pi R}\sin\frac\pi n\to\frac{\mu_0I}{2R}$. <b>5.10a</b> $\frac{\mu_0I^2a^2}{2\pi s(s+a)}$ toward. <b>5.11</b> $\frac{\mu_0nI}2(\cos\theta_2-\cos\theta_1)$; ∞: $\mu_0nI$. <b>5.14</b> (a) 0 in (b) $\frac{\mu_0Is^2}{2\pi a^3}$; out $\frac{\mu_0I}{2\pi s}$. <b>5.15</b> $-\mu_0Jz\hat y$, $\mp\mu_0Ja\hat y$. <b>5.17</b> $\mu_0I(n_1-n_2)$, $\mu_0In_2$, 0. <b>5.18</b> $\mu_0\sigma v$; $\frac{\mu_0\sigma^2v^2}2$ up (repel); $v=c$. <b>5.25</b> $\frac{\mu_0I}{4\pi}\ln\frac{z_2+\sqrt{z_2^2+s^2}}{z_1+\sqrt{z_1^2+s^2}}$; curl → $\frac{\mu_0I}{4\pi s}(\sin\theta_2-\sin\theta_1)$. <b>5.26</b> $\mathbf J=\frac{k}{\mu_0s^2}\hat\phi$. <b>5.29</b> $-\frac{\mu_0K}2|z|$ along K. <b>5.37</b> $m=I\pi R^2$; $B\to\frac{\mu_0IR^2}{2z^3}$. <b>5.39</b> disk $\frac\pi4\sigma\omega R^4$; shell $\frac{4\pi}3\sigma\omega R^4$. <b>5.63</b> $m=\frac{Q\omega R^2}5$; $B_{avg}=\frac{\mu_0Q\omega}{10\pi R}$; $\mathbf A\approx\frac{\mu_0Q\omega R^2\sin\theta}{20\pi r^2}\hat\phi$ (exact outside). <b>6.3</b> $\frac{3\mu_0m_1m_2}{2\pi r^4}$. <b>6.8</b> $J_b=3ks\hat z$, $K_b=-kR^2\hat z$, $B=\mu_0ks^2\hat\phi$ in, 0 out. <b>6.12</b> $J_b=-k\hat\phi$, $K_b=kR\hat\phi$, $B=\mu_0ks\hat z$ in. <b>6.16</b> $B=\frac{\mu_0(1+\chi_m)I}{2\pi s}$, $M=\frac{\chi_mI}{2\pi s}$, $K_b=\frac{\chi_mI}{2\pi a}\hat z$ (a), $-\frac{\chi_mI}{2\pi b}\hat z$ (b), $J_b=0$.</p></section>
+
+<section><h2>Mock answers to remember</h2>
+<p>Ball of εr, $\rho_f=kr$: $V(0)=\frac{kR^3}{4\epsilon_0}(1+\frac1{3\epsilon_r})$, $W=\frac{\pi k^2R^7}{8\epsilon_0}(1+\frac1{7\epsilon_r})$. $\epsilon=\epsilon_0\frac br$ shell: $C=\frac{4\pi\epsilon_0b}{\ln(b/a)}$. $\epsilon=\epsilon_0(1+\frac ra)$: $V=kQ[\frac1a-\frac1b+\frac1a\ln\frac{a+b}{2b}]$. Hole b=a/2, d=a/3: $I_\pm=\frac43I,-\frac13I$, $B_{hole}=\frac{2\mu_0I}{9\pi a}$. P=ks ŝ + axis λ: $E=\frac1{\epsilon_0}(\frac\lambda{2\pi s}-ks)$. $\mathbf E=kr^3$ ball: $W=\frac{20\pi\epsilon_0k^2R^9}9$.</p></section>
+
+<section class="e1" id="e1-sep"><h2>EXAM I · separation of variables</h2>
+<p><b>Cartesian</b> $V=XY$: two zero walls in y ⇒ $\sin\frac{n\pi y}a$; x: $e^{-n\pi x/a}$ (to ∞), $\frac{\sinh(n\pi(b-x)/a)}{\sinh(n\pi b/a)}$ (zero at b), $\cosh$ (symmetric). $C_n=\frac2a\int_0^aV_0(y)\sin\frac{n\pi y}ady$; const: $\frac{4V_0}{n\pi}$ odd. Slot: $V=\frac{4V_0}\pi\sum_{odd}\frac1ne^{-n\pi x/a}\sin\frac{n\pi y}a$. Two live faces: add. Box top+bottom $V_0$: $C_n\cosh\frac{n\pi}2=\frac{4V_0}{n\pi}$, center $\frac{V_0}2$; all faces $V_0$ ⇒ $V_0$. 3D: $\sinh(\pi\sqrt{(n/a)^2+(m/b)^2}\,x)$, const: $C_{nm}=\frac{16V_0}{nm\pi^2}$ odd. Jump in edge value: series gives average.</p>
+<p><b>Polar</b> (long in z): $\Theta=\sin k\theta,\cos k\theta$; $R=r^{\pm k}$ (k=0: $\ln r$, θ). Walls θ=0,α grounded ⇒ $\sin\frac{n\pi\theta}\alpha$, $k=\frac{n\pi}\alpha$. Center ⇒ $r^k$; ∞ ⇒ $r^{-k}$; zero arc at a: $(\frac ra)^k-(\frac ar)^k$. One wall $V_0$: $V=\frac{V_0\theta}\alpha$. Wedge a&lt;r&lt;b, V₀ on b: $C_n=\frac{4V_0}{n\pi[(b/a)^k-(a/b)^k]}$. Full circle: k = 1,2,…</p>
+<p><b>Legendre</b>: $\cos^2\theta=\frac13+\frac23P_2$; $\cos^3\theta=\frac35P_1+\frac25P_3$; $c_l=\frac{2l+1}2\int_{-1}^1fP_ldx$. Shell at $V(\theta)=\sum c_lP_l$: in $c_l(\frac rR)^lP_l$, out $c_l(\frac Rr)^{l+1}P_l$, $\sigma=\frac{\epsilon_0}R\sum(2l+1)c_lP_l$. Shell $\sigma=\sum\sigma_lP_l$: $A_l=\frac{\sigma_l}{(2l+1)\epsilon_0R^{l-1}}$, $B_l=A_lR^{2l+1}$. $V_0\cos^2\theta$ shell: in $V_0[\frac13+\frac23\frac{r^2}{R^2}P_2]$, out $V_0[\frac R{3r}+\frac23\frac{R^3}{r^3}P_2]$, $\sigma=\frac{\epsilon_0V_0}R[\frac13+\frac{10}3P_2]$. $\sigma=k\cos\theta$: $A=\frac k{3\epsilon_0}$, uniform E inside $\frac k{3\epsilon_0}$ down.</p></section>
+
+<section class="e1" id="e1-img"><h2>EXAM I · images & superposition</h2>
+<p>Plane: $\sigma$ total $-q$, half within $s=\sqrt3d$. q inside grounded shell at d: image $-\frac{qR}d$ at $\frac{R^2}d$; $F=\frac{kq^2Rd}{(R^2-d^2)^2}$ toward wall. Sphere at $V_0$ + q at a: images $-\frac{qR}a$ at $\frac{R^2}a$ & $4\pi\epsilon_0RV_0$ at center; $F=\frac{qRV_0}{a^2}-\frac{kq^2Ra}{(a^2-R^2)^2}$. Neutral: sphere's $V=\frac{kq}a$, always attracts. Corner 90° at $(x_0,y_0)$: $-q(-x_0,y_0)$, $-q(x_0,-y_0)$, $+q(-x_0,-y_0)$; 60°: 5 images. Images valid only outside metal.</p>
+<p>Cylinder (+ρ, radius a, along z) through ball (−ρ, R): inside both: $\frac{\rho s}{6\epsilon_0}$ out, $\frac{\rho z}{3\epsilon_0}$ in; plane z=0: $\frac{\rho a^2}{2\epsilon_0s}-\frac{\rho s}{3\epsilon_0}$. Hole = whole + negative copy, each from its own center.</p></section>
 
 <section><h2>Cyl one-liners</h2>
 <p>$F(s)\hat\phi$: div 0, curl $\frac1s(sF)'\hat z$ · $F(s)\hat z$: div 0, curl $-F'\hat\phi$ · $F(s)\hat s$: div $\frac1s(sF)'$, curl 0 · $F(z)\hat x$: curl $F'\hat y$. Valid B: div=0. $\frac{\hat\phi}s$: curl = line current on axis.</p>
