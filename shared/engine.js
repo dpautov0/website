@@ -60,7 +60,8 @@
       .replace(/`([^`]+)`/g, '<code>$1</code>')
       .replace(/\*\*([^*]+?)\*\*/g, '<b>$1</b>')
       .replace(/(^|[^*\w])\*([^*\n]+?)\*(?!\w)/g, '$1<em>$2</em>')
-      .replace(/\[([^\]]+)\]\((#[^)]+)\)/g, '<a href="$2">$1</a>');
+      .replace(/\[([^\]]+)\]\((#[^)]+)\)/g, '<a href="$2">$1</a>')
+      .replace(/\[([^\]]+)\]\(([\w./-]+\.(?:pdf|html))\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
     return t.replace(/\u0001(\d+)\u0002/g, (_, i) => escMath(math[+i])).replace(/\u0003/g, () => '<span class="usd">$</span>');
   }
   const inlineSeg = inline;
@@ -297,10 +298,14 @@
     return examOf(m.current) || EXAMS().find((e) => COURSE.units.some((u) => u.exam === e.id)) || { id: null, title: '' };
   }
   const examUnits = (e) => COURSE.units.filter((u) => u.exam === e.id && !u.extra);
+  // exam.include: other exams whose units are studied again with this one (they sit on its study path, not under review)
+  const included = (e) => (e.include || []).map(examOf).filter(Boolean);
+  const inExam = (e, u) => u.exam === e.id || (e.include || []).includes(u.exam);
+  const pathUnits = (e) => examUnits(e).concat(...included(e).map(examUnits));
   function courseProgress() {
     let tot = 0, got = 0;
     const cur = current();
-    LESSONS.filter((l) => !l.unit.extra && (!cur.id || l.unit.exam === cur.id)).forEach((l) => { const p = lessonProgress(l); tot += p.tot || 1; got += p.tot ? p.got : p.pct; });
+    LESSONS.filter((l) => !l.unit.extra && (!cur.id || inExam(cur, l.unit))).forEach((l) => { const p = lessonProgress(l); tot += p.tot || 1; got += p.tot ? p.got : p.pct; });
     return tot ? got / tot : 0;
   }
   const NAME = () => (COURSE.meta && COURSE.meta.name) || 'Course';
@@ -334,12 +339,13 @@
     const extras = COURSE.units.filter((u) => u.extra);
     const extraOpen = openUnit && openUnit.extra;
     // the current exam's units first; every other exam that has units sits in its own collapsed group
-    const others = EXAMS().filter((e) => e.id !== cur.id && examUnits(e).length).map((e) => {
+    const others = EXAMS().filter((e) => e.id !== cur.id && !inExam(cur, { exam: e.id }) && examUnits(e).length).map((e) => {
       const open = openUnit && openUnit.exam === e.id;
       return `<details class="extra-group" ${open ? 'open' : ''}><summary>${e.title}: ${e.scope || ''}</summary>${examUnits(e).map(unitHtml).join('')}</details>`;
     }).join('');
     const mine = COURSE.units.filter((u) => !u.extra && (!cur.id || u.exam === cur.id || !u.exam));
-    sb.innerHTML = `<nav aria-label="Course">${cur.id ? `<p class="sb-exam">${cur.title}</p>` : ''}${mine.map(unitHtml).join('')}${others}${extras.length ? `<details class="extra-group" ${extraOpen ? 'open' : ''}><summary>Extra: not needed for the exam</summary>${extras.map(unitHtml).join('')}</details>` : ''}</nav>`;
+    const alsoHtml = included(cur).map((e) => `<p class="sb-exam">${e.includeTitle || e.title}</p>${examUnits(e).map(unitHtml).join('')}`).join('');
+    sb.innerHTML = `<nav aria-label="Course">${cur.id ? `<p class="sb-exam">${cur.title}</p>` : ''}${mine.map(unitHtml).join('')}${alsoHtml}${others}${extras.length ? `<details class="extra-group" ${extraOpen ? 'open' : ''}><summary>Extra: not needed for the exam</summary>${extras.map(unitHtml).join('')}</details>` : ''}</nav>`;
     renderMath(sb);
     const act = sb.querySelector('li.active');
     if (act) act.scrollIntoView({ block: 'nearest' });
@@ -369,9 +375,9 @@
   function renderHome() {
     const main = document.getElementById('main');
     const M = META(), cur = current();
-    const units = cur.id ? examUnits(cur) : COURSE.units.filter((u) => !u.extra);
+    const units = cur.id ? pathUnits(cur) : COURSE.units.filter((u) => !u.extra);
     const study = units.filter((u) => !u.tools), tools = units.filter((u) => u.tools);
-    const mine = LESSONS.filter((l) => units.includes(l.unit));
+    const mine = units.flatMap((u) => u.lessons);      // the current exam's own units first, then any it includes
     const next = mine.find((l) => { const p = lessonProgress(l); return p.tot && p.got < p.tot; }) || mine[0] || LESSONS[0];
     const lastL = Store.s.last && BYID.get(Store.s.last);
     const last = lastL && units.includes(lastL.unit) ? lastL : null;
@@ -384,13 +390,16 @@
     const lessonRow = (l) => { const p = lessonProgress(l); return row(`#/l/${l.id}`, l.topic, l.title, l.ref || (l.sec ? `§${l.sec}` : ''), p.tot ? p.pct : null, p.tot && p.got >= p.tot); };
     const unitRow = (u) => { const f = unitProgress(u); return row(`#/l/${u.lessons[0].id}`, String(u.num).replace(/^Unit /, ''), u.title, u.blurb || '', f, f >= 0.999); };
     const group = (h, rows, cls = '') => `<section class="group ${cls}">${h ? `<h2 class="group-h">${h}</h2>` : ''}<div class="list">${rows}</div></section>`;
+    const own = study.filter((u) => !cur.id || u.exam === cur.id);
     const lists = M.home === 'units'
-      ? group(M.unitsTitle || 'Study path', study.map(unitRow).join(''))
+      ? group(M.unitsTitle || 'Study path', own.map(unitRow).join(''))
+        + included(cur).map((e) => group(`${e.includeTitle || e.title}${e.includeSub ? ` <span class="group-sub">${e.includeSub}</span>` : ''}`, study.filter((u) => u.exam === e.id).map(unitRow).join(''))).join('')
       : study.map((u) => group(`<span class="u-num">${u.num}</span> ${u.title}`, u.lessons.map(lessonRow).join(''))).join('');
-    const toolLists = tools.map((u) => group(u.title, u.lessons.filter((l) => !l.hideHome).map((l) => { const p = lessonProgress(l); return row(`#/l/${l.id}`, '', l.title, l.sub || '', p.tot ? p.pct : null, p.tot && p.got >= p.tot); }).join(''))).join('');
+    const toolTitle = (u) => (cur.id && u.exam !== cur.id && examOf(u.exam) ? `${examOf(u.exam).title}: ${u.title}` : u.title);
+    const toolLists = tools.map((u) => group(toolTitle(u), u.lessons.filter((l) => !l.hideHome).map((l) => { const p = lessonProgress(l); return row(`#/l/${l.id}`, '', l.title, l.sub || '', p.tot ? p.pct : null, p.tot && p.got >= p.tot); }).join(''))).join('');
     const extras = COURSE.units.filter((u) => u.extra);
-    const later = EXAMS().filter((e) => e.id !== cur.id && !e.past);
-    const earlier = EXAMS().filter((e) => e.id !== cur.id && e.past && examUnits(e).length);   // exam.past: already taken, kept as review
+    const later = EXAMS().filter((e) => e.id !== cur.id && !e.past && !inExam(cur, { exam: e.id }));
+    const earlier = EXAMS().filter((e) => e.id !== cur.id && e.past && !inExam(cur, { exam: e.id }) && examUnits(e).length);   // exam.past: already taken, kept as review
     main.innerHTML = `
       <section class="home">
         <header class="hero">
@@ -713,7 +722,7 @@
       const vars = Object.keys(pt.vars).map((v) => `<code>${v}</code>`).join(' ');
       return `<div class="part expr" data-part="${i}">${lbl}<input class="ans" type="text" autocomplete="off" spellcheck="false" aria-label="${U.esc(pt.lbl || 'answer')}"><span class="mark"></span><div class="expr-meta"><span class="vars">Variables: ${vars}</span><span class="preview"></span></div></div>`;
     }
-    return `<div class="part num" data-part="${i}">${lbl}<input class="ans" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" aria-label="${U.esc(pt.lbl || 'answer')}">${pt.unit ? `<span class="unit">$${unitTeX(pt.unit)}$</span>` : ''}<span class="mark"></span></div>`;
+    return `<div class="part num" data-part="${i}">${lbl}<input class="ans" type="text" inputmode="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" aria-label="${U.esc(pt.lbl || 'answer')}">${pt.unit ? `<span class="unit">$${unitTeX(pt.unit)}$</span>` : ''}<span class="mark"></span></div>`;
   }
 
   function checkPart(pt, box) {
@@ -731,7 +740,10 @@
     let u;
     try { u = Expr.parseNumber(v); } catch (e) { return { ok: false, err: e.message }; }
     if (pt.accept && pt.accept.some((a) => Math.abs(u - a) <= 0.015 * Math.abs(a) + 1e-12)) return { ok: true };
-    return Expr.compareNumber(u, pt._ans, pt.tol || {});
+    // traps: known wrong answers (a common slip) with a message that names the slip
+    const trap = (pt.traps || []).find((t) => Math.abs(u - t.v) <= 0.015 * Math.abs(t.v) + 1e-12);
+    if (trap) return { ok: false, msg: trap.msg };
+    return Expr.compareNumber(u, pt._ans, pt.tol || {}, v);
   }
 
   // ---------------------------------------------------------------- router

@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Serfs &amp; Lords</title>
+<link rel="stylesheet" href="style.css?v=1793942645">
+</head>
+<body>
+<div id="join" class="screen">
+  <div class="card join-card">
+    <h1>Serfs <span>&amp;</span> Lords</h1>
+    <p class="sub">Claim the land. Raise villages. Rule the realm.</p>
+    <label>Your name <input id="name" maxlength="20" placeholder="Lord Edmund"></label>
+    <button id="create" class="big">Found a new realm</button>
+    <div class="or">or join a friend</div>
+    <div class="row">
+      <input id="code" maxlength="8" placeholder="ROOM CODE">
+      <button id="joinbtn">Join</button>
+    </div>
+  </div>
+</div>
+
+<div id="lobby" class="screen hidden">
+  <div class="card join-card">
+    <h2>Realm <span id="lobby-code"></span></h2>
+    <p>Send this link to your friends:</p>
+    <div class="row"><input id="invite" readonly><button id="copy">Copy</button></div>
+    <ul id="lobby-players"></ul>
+    <div id="settings" class="settings"></div>
+    <button id="start" class="big">Begin the game</button>
+    <p id="lobby-wait" class="sub">Waiting for the host to begin…</p>
+    <button id="leave1" class="link">Leave</button>
+  </div>
+</div>
+
+<div id="game" class="screen hidden">
+  <div id="board-wrap">
+    <svg id="board"></svg>
+    <div id="dice-roll"></div>
+    <div id="turn-banner"></div>
+    <div id="cardhand" class="hidden"></div>
+    <div id="zoom"><button id="zoom-in" title="Zoom in">+</button><button id="zoom-out" title="Zoom out">−</button><button id="zoom-fit" title="Fit map">⤢</button></div>
+  </div>
+  <aside id="panel">
+    <div id="panel-main"></div>
+    <div class="box">
+      <h3>Chronicle</h3>
+      <div id="log"></div>
+    </div>
+    <button id="leave2" class="link">Leave game</button>
+  </aside>
+</div>
+
+<div id="chatwin" class="hidden">
+  <div id="chat-head">💬 Chat <span id="chat-badge" class="hidden">0</span><span id="chat-toggle">▾</span></div>
+  <div id="chat-body">
+    <div id="voice"></div>
+    <div id="chat"></div>
+    <form id="chat-form"><input id="chat-input" maxlength="300" placeholder="Say something… (Enter)" autocomplete="off"></form>
+  </div>
+</div>
+
+<div id="modal" class="hidden"><div class="card" id="modal-body"></div></div>
+<div id="toast" class="hidden"></div>
+<script>window.BUILD_ID = "1793942645";</script>
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script src="app.js?v=1793942645"></script>
+<script src="voice.js?v=1793942645"></script>
+<script src="p2p.js?v=1793942645"></script>
+</body>
+</html>

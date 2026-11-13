@@ -22,6 +22,8 @@
     'λ': 'lambda', lam: 'lambda', 'σ': 'sigma', sig: 'sigma', 'ρ': 'rho', 'θ': 'theta', th: 'theta', 'φ': 'phi', 'ϕ': 'phi',
     'α': 'alpha', 'β': 'beta', 'κ': 'kappa', 'τ': 'tau', 'μ': 'mu', 'Δ': 'Delta', 'δ': 'delta', 'ω': 'omega',
     'σ0': 'sigma0', sig0: 'sigma0', 'λ0': 'lambda0', 'ρ0': 'rho0',
+    'μ0': 'mu0', 'µ0': 'mu0', 'χ': 'chi', chie: 'chi', chim: 'chi', 'χe': 'chi', 'χm': 'chi',
+    'εr': 'epsr', 'ϵr': 'epsr', epsilonr: 'epsr',
   };
   const norm = (s) => { const t = s.replace(/_/g, ''); return ALIAS[t] || t; };
 

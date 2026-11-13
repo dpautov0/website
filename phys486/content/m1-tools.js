@@ -4,7 +4,7 @@
   const { R, G } = C;
 
   C.unit({
-    id: 'm1-x', exam: 'm1', tools: true, num: 'Midterm 1', title: 'Practice',
+    id: 'm1-x', exam: 'm1', tools: true, num: '', title: 'Midterm 1 formula sheet, mixed practice and mock exam',
     lessons: [
       {
         id: 'm1-sheet', title: 'Formula sheet', kind: 'read',

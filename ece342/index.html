@@ -12,8 +12,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.css">
-<link rel="stylesheet" href="../shared/site.css">
-<link rel="stylesheet" href="css/e2.css">
+<link rel="stylesheet" href="../shared/site.css?v=20261105b">
+<link rel="stylesheet" href="css/e2.css?v=20261105b">
+<link rel="stylesheet" href="css/e3.css?v=20261105b">
 <script>try { var t = localStorage.getItem('ece342.theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}</script>
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/contrib/auto-render.min.js"></script>
@@ -27,9 +28,10 @@
     <svg viewBox="0 0 20 20" width="20" height="20"><path d="M3 5.5h14M3 10h14M3 14.5h14"/></svg>
   </button>
   <a class="brand" href="#/"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22"><path d="M2 12h4l2-5 3 10 3-10 3 10 2-5h3"/></svg></span><span>ECE 342</span></a>
+  <a class="top-link" data-tab="practice" data-label="Gym" href="#/gym">Recognition gym</a>
   <a class="top-link" data-tab="cards" data-label="Cards" href="#/cards">Flashcards</a>
   <a class="top-link" data-tab="exam" data-label="Practice" href="#/prac">Practice exams</a>
-  <a class="top-link" data-tab="sheet" data-label="Sheet" href="#/sheet">Stage sheet</a>
+  <a class="top-link" data-tab="sheet" data-label="Sheet" href="#/sheet">Exam 3 sheet</a>
   <div class="top-progress" title="Progress">
     <div class="top-meter"><span id="top-bar"></span></div><span id="top-pct">0%</span>
   </div>
@@ -43,48 +45,98 @@
 </div>
 <div class="scrim" onclick="document.body.classList.remove('nav-open')"></div>
 
-<script src="../shared/core.js"></script>
-<script src="js/expr.js"></script>
-<script src="js/mna.js"></script>
-<script src="js/schem.js"></script>
-<script src="js/gens.js"></script>
-<script src="js/gens-dev.js"></script>
-<script src="js/gens-s26.js"></script>
-<script src="js/gens-lec.js"></script>
-<script src="js/draw.js"></script>
-<script src="../shared/figlabels.js"></script>
-<script src="../shared/declutter.js"></script>
-<script src="content/site.js"></script>
-<script src="content/u0-toolkit.js"></script>
-<script src="content/u1-linear.js"></script>
-<script src="content/u2-smallsignal.js"></script>
-<script src="content/u3-diodes.js"></script>
-<script src="content/u4-mosfet.js"></script>
-<script src="content/u5-exam.js"></script>
-<script src="content/s26.js"></script>
-<script src="content/lectures.js"></script>
-<script src="content/draw-u01.js"></script>
-<script src="content/draw-2port.js"></script>
-<script src="content/draw-u24.js"></script>
-<script src="content/draw-sol.js"></script>
-<script src="content/fix-leaks.js"></script>
-<script src="content/diode-numerics.js"></script>
-<script src="content/fet-extra.js"></script>
-<script src="content/paper-s26.js"></script>
-<script src="content/e2-units.js"></script>
-<script src="content/e2-figs.js"></script>
-<script src="js/gens-e2.js"></script>
-<script src="content/e2-l6-model.js"></script>
-<script src="content/e2-refresh.js"></script>
-<script src="content/e2-l7-imped.js"></script>
-<script src="content/e2-l8-stages.js"></script>
-<script src="content/e2-l9-multi.js"></script>
-<script src="content/e2-cards.js"></script>
-<script src="content/e2-prac.js"></script>
-<script src="content/e2-hw.js"></script>
-<script src="content/e2-mock.js"></script>
-<script src="content/e2-tools.js"></script>
-<script src="../shared/bank.js"></script>
-<script src="../shared/engine.js"></script>
+<script src="../shared/core.js?v=20261105b"></script>
+<script src="js/expr.js?v=20261105b"></script>
+<script src="js/mna.js?v=20261105b"></script>
+<script src="js/schem.js?v=20261105b"></script>
+<script src="js/gens.js?v=20261105b"></script>
+<script src="js/gens-dev.js?v=20261105b"></script>
+<script src="js/gens-s26.js?v=20261105b"></script>
+<script src="js/gens-lec.js?v=20261105b"></script>
+<script src="js/draw.js?v=20261105b"></script>
+<script src="../shared/figlabels.js?v=20261105b"></script>
+<script src="../shared/declutter.js?v=20261105b"></script>
+<script src="content/site.js?v=20261105b"></script>
+<script src="content/u0-toolkit.js?v=20261105b"></script>
+<script src="content/u1-linear.js?v=20261105b"></script>
+<script src="content/u2-smallsignal.js?v=20261105b"></script>
+<script src="content/u3-diodes.js?v=20261105b"></script>
+<script src="content/u4-mosfet.js?v=20261105b"></script>
+<script src="content/u5-exam.js?v=20261105b"></script>
+<script src="content/s26.js?v=20261105b"></script>
+<script src="content/lectures.js?v=20261105b"></script>
+<script src="content/draw-u01.js?v=20261105b"></script>
+<script src="content/draw-2port.js?v=20261105b"></script>
+<script src="content/draw-u24.js?v=20261105b"></script>
+<script src="content/draw-sol.js?v=20261105b"></script>
+<script src="content/fix-leaks.js?v=20261105b"></script>
+<script src="content/diode-numerics.js?v=20261105b"></script>
+<script src="content/fet-extra.js?v=20261105b"></script>
+<script src="content/paper-s26.js?v=20261105b"></script>
+<script src="content/e2-units.js?v=20261105b"></script>
+<script src="content/e2-figs.js?v=20261105b"></script>
+<script src="js/gens-e2.js?v=20261105b"></script>
+<script src="js/gens-e2-look.js?v=20261105b"></script>
+<script src="content/e2-l6-model.js?v=20261105b"></script>
+<script src="content/e2-refresh.js?v=20261105b"></script>
+<script src="content/e2-l7-imped.js?v=20261105b"></script>
+<script src="content/e2-look.js?v=20261105b"></script>
+<script src="content/e2-l8-stages.js?v=20261105b"></script>
+<script src="content/e2-l9-multi.js?v=20261105b"></script>
+<script src="content/e2-start.js?v=20261105b"></script>
+<script src="content/e2-glossary.js?v=20261105b"></script>
+<script src="content/e2-derive.js?v=20261105b"></script>
+<script src="content/e2-scratch.js?v=20261105b"></script>
+<script src="content/e2-cards.js?v=20261105b"></script>
+<script src="content/e2-prac.js?v=20261105b"></script>
+<script src="content/e2-sp26.js?v=20261105b"></script>
+<script src="content/e2-hkn.js?v=20261105b"></script>
+<script src="content/e2-hw.js?v=20261105b"></script>
+<script src="content/e2-mock.js?v=20261105b"></script>
+<script src="content/e2-tools.js?v=20261105b"></script>
+<script src="content/e3-units.js?v=20261105b"></script>
+<script src="content/bk-units.js?v=20261105b"></script>
+<script src="js/gens-e3-bjt.js?v=20261105b"></script>
+<script src="js/gens-e3-amp.js?v=20261105b"></script>
+<script src="js/gens-e3-bode.js?v=20261105b"></script>
+<script src="js/gens-e3-octc.js?v=20261105b"></script>
+<script src="js/gens-bk-a1.js?v=20261105b"></script>
+<script src="js/gens-bk-a2.js?v=20261105b"></script>
+<script src="js/gens-bk-a3.js?v=20261105b"></script>
+<script src="js/gens-bk-a4.js?v=20261105b"></script>
+<script src="js/gens-bk-a5.js?v=20261105b"></script>
+<script src="js/gens-bk-a6.js?v=20261105b"></script>
+<script src="js/gens-bk-a7.js?v=20261105b"></script>
+<script src="js/gens-bk-a8.js?v=20261105b"></script>
+<script src="js/gym-e3.js?v=20261105b"></script>
+<script src="content/e3-start.js?v=20261105b"></script>
+<script src="content/e3-u10-bjt.js?v=20261105b"></script>
+<script src="content/e3-u11-imped.js?v=20261105b"></script>
+<script src="content/e3-u12-amps.js?v=20261105b"></script>
+<script src="content/e3-u13-bode.js?v=20261105b"></script>
+<script src="content/e3-u14-freq.js?v=20261105b"></script>
+<script src="content/e3-u15-octc.js?v=20261105b"></script>
+<script src="content/bk01-signals.js?v=20261105b"></script>
+<script src="content/bk02-mosfet.js?v=20261105b"></script>
+<script src="content/bk03-mos-imped.js?v=20261105b"></script>
+<script src="content/bk04-mos-amps.js?v=20261105b"></script>
+<script src="content/bk05-mos-multi.js?v=20261105b"></script>
+<script src="content/bk06-bjt-dc.js?v=20261105b"></script>
+<script src="content/bk07-bjt-model.js?v=20261105b"></script>
+<script src="content/bk08-bjt-imped.js?v=20261105b"></script>
+<script src="content/bk09-bjt-amps.js?v=20261105b"></script>
+<script src="content/bk10-tf.js?v=20261105b"></script>
+<script src="content/bk11-bode.js?v=20261105b"></script>
+<script src="content/bk12-hf.js?v=20261105b"></script>
+<script src="content/bk13-octc.js?v=20261105b"></script>
+<script src="content/e3-gym.js?v=20261105b"></script>
+<script src="content/e3-cards.js?v=20261105b"></script>
+<script src="content/e3-prac.js?v=20261105b"></script>
+<script src="content/e3-prac2.js?v=20261105b"></script>
+<script src="content/e3-prac3.js?v=20261105b"></script>
+<script src="content/e2-prac2.js?v=20261105b"></script>
+<script src="content/e3-tools.js?v=20261105b"></script>
+<script src="../shared/bank.js?v=20261105b"></script>
+<script src="../shared/engine.js?v=20261105b"></script>
 </body>
 </html>

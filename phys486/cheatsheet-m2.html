@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>PHYS 486 Midterm 2 Cheat Sheet</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/contrib/auto-render.min.js"></script>
+<style>
+  :root { --ink: #111; --head: #1d4f91; --rule: #b9c3cf; --soft: #5a6470; --paper: #fff; --box: #f3f6fa; --red: #a4453b; }
+  @page { size: letter; margin: 0.17in 0.2in; }
+  * { box-sizing: border-box; }
+  html, body { background: var(--paper); color: var(--ink); margin: 0; }
+  body { font: 7.6pt/1.19 "Segoe UI", Arial, sans-serif; }
+  .page { width: 8.1in; margin: 0 auto; }
+  .top { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1.1px solid var(--ink); margin-bottom: 2px; }
+  .top b { font-size: 9pt; }
+  .top span { color: var(--soft); }
+  .cols { column-count: 3; column-gap: 7px; column-rule: 0.6px solid var(--rule); }
+  section { margin: 0 0 3px; }
+  section.box, li, .fig { break-inside: avoid; }
+  h2 { break-after: avoid; }
+  section.box { background: var(--box); padding: 1px 3px 2px; border-radius: 2px; }
+  h2 { font-size: 8pt; margin: 0 0 1px; color: var(--head); border-bottom: 0.6px solid var(--rule); }
+  p { margin: 0 0 1px; }
+  ul { margin: 0 0 1px; padding: 0; list-style: none; }
+  li { margin: 0 0 0.6px; padding-left: 6px; position: relative; }
+  li::before { content: "\2022"; position: absolute; left: 0; color: var(--soft); }
+  .t { color: var(--red); font-weight: 600; }
+  .k { color: var(--head); font-weight: 600; }
+  .katex { font-size: 1.02em; }
+  table.z { border-collapse: collapse; margin: 1px 0 2px; font-size: 7.2pt; }
+  table.z td, table.z th { border: 0.5px solid var(--rule); padding: 0 3px; text-align: center; font-weight: normal; }
+  .fig { float: right; width: 96px; margin: 0 0 1px 4px; }
+  .fig svg { display: block; width: 100%; height: auto; }
+  .fig text { font: italic 8.5px "Times New Roman", serif; fill: #111; }
+  .fig .thin { stroke: #111; stroke-width: 0.7; fill: none; }
+  .fig .thick { stroke: #1d4f91; stroke-width: 1.2; fill: none; }
+  .fig .acc { stroke: #a4453b; stroke-width: 1.1; fill: none; }
+  .fig .dash { stroke: #777; stroke-width: 0.6; fill: none; stroke-dasharray: 2 2; }
+  @media screen { body { padding: 14px; font-size: 9pt; } .page { max-width: 100%; } }
+  @media screen and (max-width: 760px) { body { padding: 10px; font-size: 10.5pt; } .cols { column-count: 1; } .top { flex-direction: column; } }
+</style>
+</head>
+<body>
+<div class="page">
+<div class="top"><b>PHYS 486 · Midterm 2 cheat sheet</b><span>Lecture 9 (Ehrenfest) onward · Griffiths 2.3, 3.5, 4.1–4.3 · HW 5–7 · Discussions 5–8</span></div>
+<div class="cols">
+
+<section><h2>1 · Dynamics of expectation values</h2>
+<ul>
+<li><span class="k">Generalized Ehrenfest:</span> $\tfrac{d}{dt}\langle Q\rangle=\tfrac i\hbar\langle[\hat H,\hat Q]\rangle+\langle\partial_t\hat Q\rangle$. Commutes with $\hat H$ (no explicit $t$) ⇒ <b>conserved</b>.</li>
+<li>$[\hat A\hat B,\hat C]=\hat A[\hat B,\hat C]+[\hat A,\hat C]\hat B$ · $[f(\hat x),\hat p]=i\hbar f'$ · $[\hat x,\hat p^2]=2i\hbar\hat p$ · $[\hat H,\hat x]=-\tfrac{i\hbar}m\hat p$ · $[\hat H,\hat p]=i\hbar V'$.</li>
+<li>$Q=1$: norm conserved; $\hat H$: energy; $\hat x$: $\tfrac{d\langle x\rangle}{dt}=\tfrac{\langle p\rangle}m$; $\hat p$: $\tfrac{d\langle p\rangle}{dt}=-\langle V'\rangle$ (Newton only if $V$ ≤ quadratic).</li>
+<li>Virial: $\tfrac{d}{dt}\langle xp\rangle=2\langle T\rangle-\langle xV'\rangle=0$ in stationary states. $V\propto x^2$: $\langle T\rangle=\langle V\rangle$; $V\propto-1/r$: $\langle T\rangle=-E$, $\langle V\rangle=2E$.</li>
+<li>Stationary state: every $\langle Q\rangle$ constant (no explicit $t$). Parity: even $V$ ⇒ $\hat\Pi$ conserved.</li>
+</ul></section>
+
+<section><h2>2 · Uncertainty, energy and time</h2>
+<ul>
+<li>$\sigma_A\sigma_B\ge\left|\tfrac1{2i}\langle[\hat A,\hat B]\rangle\right|$ · $\sigma_H\sigma_Q\ge\tfrac\hbar2\left|\tfrac{d\langle Q\rangle}{dt}\right|$ ⇒ $\Delta E\Delta t\ge\tfrac\hbar2$, $\Delta t=\tfrac{\sigma_Q}{|d\langle Q\rangle/dt|}$.</li>
+<li>$\sigma_x\sigma_H\ge\tfrac\hbar{2m}|\langle p\rangle|$: empty for stationary states (both sides 0). Lifetime $\tau$ ⇒ linewidth $\sim\hbar/\tau$. Fast change needs big $\sigma_H$.</li>
+<li>Equality iff $(\hat B-\langle B\rangle)\psi=i\lambda(\hat A-\langle A\rangle)\psi$, $\lambda$ real (Schwarz equality + $\mathrm{Re}\,z=0$). $x,p$: Gaussian, $\sigma_x^2=\hbar/2\lambda$. Free Gaussian leaves the bound as $\mathrm{Re}\,z=\tfrac12\langle xp+px\rangle-\langle x\rangle\langle p\rangle$ grows. ISW can't reach $\hbar/2$ (no Gaussian vanishes at walls).</li>
+</ul></section>
+
+<section><h2>3 · Oscillator: algebra</h2>
+<ul>
+<li>$\hat a_\pm=\tfrac1{\sqrt{2\hbar m\omega}}(\mp i\hat p+m\omega\hat x)$, $[\hat a_-,\hat a_+]=1$, $\hat H=\hbar\omega(\hat a_+\hat a_-+\tfrac12)$, $\hat a_\pm^\dagger=\hat a_\mp$.</li>
+<li>$\hat H\hat a_\pm\psi=(E\pm\hbar\omega)\hat a_\pm\psi$; ladder ends: $\hat a_-\psi_0=0$ ⇒ $E_n=\hbar\omega(n+\tfrac12)$, $n=0,1,\dots$; evenly spaced.</li>
+<li>$\hat a_+\ket n=\sqrt{n+1}\ket{n+1}$, $\hat a_-\ket n=\sqrt n\ket{n-1}$, $\ket n=\tfrac{(\hat a_+)^n}{\sqrt{n!}}\ket0$, $\hat N=\hat a_+\hat a_-$.</li>
+<li>$\hat x=\sqrt{\tfrac\hbar{2m\omega}}(\hat a_++\hat a_-)$, $\hat p=i\sqrt{\tfrac{\hbar m\omega}2}(\hat a_+-\hat a_-)$. <span class="k">x, p: n→n±1; x², p²: n→n, n±2.</span></li>
+<li>$\ket n$: $\langle x^2\rangle=(n+\tfrac12)\tfrac\hbar{m\omega}$, $\langle p^2\rangle=(n+\tfrac12)\hbar m\omega$, $\sigma_x\sigma_p=(n+\tfrac12)\hbar$, $\langle T\rangle=\langle V\rangle=\tfrac{E_n}2$.</li>
+<li>$\bra{n+1}\hat x\ket n=\sqrt{\tfrac{(n+1)\hbar}{2m\omega}}$; $\bra{n+2}\hat x^2\ket n=\tfrac{\hbar}{2m\omega}\sqrt{(n+1)(n+2)}$.</li>
+</ul></section>
+
+<section><h2>4 · Oscillator: wavefunctions and motion</h2>
+<span class="fig" data-f="sho"></span>
+<ul>
+<li>$\psi_0=(\tfrac{m\omega}{\pi\hbar})^{1/4}e^{-m\omega x^2/2\hbar}$; $\psi_n\propto H_n(\xi)e^{-\xi^2/2}$, $\xi=\sqrt{\tfrac{m\omega}\hbar}x$, norm $(\tfrac{m\omega}{\pi\hbar})^{1/4}(2^nn!)^{-1/2}$. $H_1=2\xi$, $H_2=4\xi^2-2$, $H_3=8\xi^3-12\xi$.</li>
+<li>$n$ nodes, parity $(-1)^n$, tails beyond turning point $x_n=\sqrt{2n+1}\,w_x$, $w_x=\sqrt{\hbar/m\omega}$. Large $n$ → $P_{cl}=\tfrac1{\pi\sqrt{x_0^2-x^2}}$ (peaks at the turning points).</li>
+<li>Half oscillator (wall at 0): odd $n$ only, $E=\tfrac32,\tfrac72,\dots\hbar\omega$, $\psi=\sqrt2\psi_{odd}$. $V+qEx$: complete the square, shift by $-qE/m\omega^2$, $E_n$ lowered by $\tfrac{q^2E^2}{2m\omega^2}$.</li>
+<li>$c_0\ket0+c_1\ket1$: $\langle x\rangle=\sqrt{\tfrac{2\hbar}{m\omega}}|c_0c_1|\cos(\omega t-\theta)$; phases: $\langle H\rangle$ gives $|c_n|$, $\langle x\rangle$ the relative phase, $\mathrm{sign}\,\langle p\rangle$ its sign.</li>
+<li>Phase space $(\langle x\rangle,\langle p\rangle/m\omega)$: clockwise circle, period $2\pi/\omega$. $\ket n$: a point at 0. $\ket0\pm\ket2$: $\langle x\rangle=0$, width breathes at $2\omega$.</li>
+<li>Classical iff $n\gg1$ and amplitude $x_0\gg w_x$ ($x_0/w_x=\sqrt{2n+1}$).</li>
+</ul></section>
+
+<section><h2>5 · Coherent states</h2>
+<ul>
+<li>$\hat a_-\ket\alpha=\alpha\ket\alpha$, $\ket\alpha=e^{-|\alpha|^2/2}\sum\tfrac{\alpha^n}{\sqrt{n!}}\ket n$, $P(n)=e^{-|\alpha|^2}\tfrac{|\alpha|^{2n}}{n!}$ (Poisson).</li>
+<li>$\langle n\rangle=|\alpha|^2$, $\sigma_n=|\alpha|$, $\sigma_H/\langle H\rangle\to1/|\alpha|$. $\alpha(t)=\alpha e^{-i\omega t}$: stays coherent.</li>
+<li>$\langle x\rangle=\sqrt{\tfrac{2\hbar}{m\omega}}\mathrm{Re}\,\alpha$, $\langle p\rangle=\sqrt{2\hbar m\omega}\,\mathrm{Im}\,\alpha$; $\sigma_x=\sqrt{\tfrac\hbar{2m\omega}}$, $\sigma_p=\sqrt{\tfrac{\hbar m\omega}2}$ always: minimum uncertainty, ground-state blob riding the classical orbit. $\ket0=\ket{\alpha=0}$.</li>
+<li>vs $\ket N$ ($|\alpha|^2=N$): same $\langle H\rangle$; $\ket N$ has $\sigma_H=0$ and doesn't move. Motion needs adjacent $n$ with fixed relative phases; price: $\sigma_H=\hbar\omega|\alpha|$.</li>
+</ul></section>
+
+<section class="box"><h2>Exam moves: see this → do this</h2>
+<ul>
+<li><b>Superposition of $\ket n$</b> → write $\hat x\ket\psi$ with ladders; only $n,n\pm1$ survive; frequencies = energy differences.</li>
+<li><b>Known system, two states</b> → it's a qubit: $\sigma_z$ = which level, $\sigma_x$ = which side.</li>
+<li><b>Function of θ, φ</b> → Cartesian shapes: $x\pm iy$, $z$, $(x\pm iy)^2$ → read off $\ell,m$; $e^{im\phi}$ alone gives $L_z$.</li>
+<li><b>Measure $L_x$ in ℓ=1</b> → $3\times3$ matrix, eigenvectors $\tfrac12(1,\pm\sqrt2,1)$, $\tfrac1{\sqrt2}(1,0,-1)$.</li>
+<li><b>Hermitian?</b> → by parts; say which boundary condition kills the boundary term.</li>
+<li><b>Central $V$</b> → $u=rR$, sketch $V_{\rm eff}$, mark allowed regions, count nodes.</li>
+<li><b>T/F</b> → verdict + the principle (conservation, $u(0)=0$, bound ⇔ $E\lt V(\infty)$, collapse, compatibility). Verdict alone = 1/5.</li>
+</ul></section>
+
+<section><h2>6 · Three dimensions</h2>
+<ul>
+<li>$\hat{\vec p}=-i\hbar\nabla$; $\nabla^2=\tfrac1{r^2}\partial_r(r^2\partial_r)-\tfrac{\hat L^2}{\hbar^2r^2}$; $d^3r=r^2\sin\theta\,dr\,d\theta\,d\phi$, $d\Omega=\sin\theta\,d\theta\,d\phi$.</li>
+<li>Central $V(r)$: $\psi=R(r)Y_\ell^m$, separation constant $\ell(\ell+1)$; $\int|R|^2r^2dr=1$, $\int|Y|^2d\Omega=1$.</li>
+<li>Cube: $E\propto n_x^2+n_y^2+n_z^2$. Isotropic SHO: $E=\hbar\omega(N+\tfrac32)$, deg. $\tfrac{(N+1)(N+2)}2$, $\ell=N,N-2,\dots$ (N=2: $\ell=0$ + $\ell=2$: accidental).</li>
+<li>Classically $\vec L$ fixed ⇒ plane (3D→2D), $|L|$ fixed ⇒ radial 1D. QM keeps only the second ($\hat L^2$ sharp, direction not).</li>
+</ul></section>
+
+<section><h2>7 · Angular momentum algebra</h2>
+<ul>
+<li>$\hat L_z=\hat x\hat p_y-\hat y\hat p_x$ (cyclic). $[\hat L_x,\hat L_y]=i\hbar\hat L_z$, $[\hat L^2,\hat L_i]=0$, $[\hat L_z,\hat x]=i\hbar\hat y$, $[\hat L_z,\hat y]=-i\hbar\hat x$, $[\hat L_z,\hat z]=0$ (same with $\hat p$). $[\hat L_z,r^2]=[\hat L_z,p^2]=0$.</li>
+<li>Only one component sharp (unless $\ell=0$). Compatible set $\{\hat H,\hat L^2,\hat L_z\}$ for central $V$; $\tfrac{d}{dt}\langle\vec L\rangle=\langle\vec r\times(-\nabla V)\rangle$.</li>
+<li>$\hat L_\pm=\hat L_x\pm i\hat L_y$, $\hat L_\pm^\dagger=\hat L_\mp$, $[\hat L_z,\hat L_\pm]=\pm\hbar\hat L_\pm$, $\hat L_\mp\hat L_\pm=\hat L^2-\hat L_z^2\mp\hbar\hat L_z$.</li>
+<li>$\hat L^2=\hbar^2\ell(\ell+1)$, $L_z=\hbar m$, $m=-\ell..\ell$; $\hat L_\pm Y_\ell^m=\hbar\sqrt{\ell(\ell+1)-m(m\pm1)}\,Y_\ell^{m\pm1}$; $\hat L_+Y_\ell^\ell=0$.</li>
+<li>Vector model: $|L|=\hbar\sqrt{\ell(\ell+1)}>\hbar\ell$; cone angle $\cos\theta=m/\sqrt{\ell(\ell+1)}$; $\langle L_x^2\rangle=\langle L_y^2\rangle=\tfrac{\hbar^2}2[\ell(\ell+1)-m^2]$ in $Y_\ell^m$.</li>
+<li>$\ell$ bounds $m$; $m$ only gives $\ell\ge|m|$.</li>
+</ul></section>
+
+<section><h2>8 · Spherical harmonics, measuring L</h2>
+<ul>
+<li>$\hat L_z=-i\hbar\partial_\phi$ ⇒ $e^{im\phi}$, $m\in\mathbb Z$ (single-valued). $\hat L_\pm=\pm\hbar e^{\pm i\phi}(\partial_\theta\pm i\cot\theta\,\partial_\phi)$ ⇒ $Y_\ell^\ell\propto\sin^\ell\theta\,e^{i\ell\phi}$.</li>
+<li>$Y_0^0=\tfrac1{\sqrt{4\pi}}$, $Y_1^0=\sqrt{\tfrac3{4\pi}}\cos\theta$, $Y_1^{\pm1}=\mp\sqrt{\tfrac3{8\pi}}\sin\theta e^{\pm i\phi}$, $Y_2^0=\sqrt{\tfrac5{16\pi}}(3\cos^2\theta-1)$, $Y_2^{\pm1}=\mp\sqrt{\tfrac{15}{8\pi}}\sin\theta\cos\theta e^{\pm i\phi}$, $Y_2^{\pm2}=\sqrt{\tfrac{15}{32\pi}}\sin^2\theta e^{\pm2i\phi}$. Parity $(-1)^\ell$.</li>
+<li>$\ell=1$ basis $(1,0,-1)$: $L_x=\tfrac\hbar{\sqrt2}\begin{pmatrix}0&1&0\\1&0&1\\0&1&0\end{pmatrix}$, $L_y=\tfrac\hbar{\sqrt2}\begin{pmatrix}0&-i&0\\i&0&-i\\0&i&0\end{pmatrix}$. $L_x$: $\pm\hbar$: $\tfrac12(1,\pm\sqrt2,1)$; $0$: $\tfrac1{\sqrt2}(1,0,-1)$. From $Y_1^{\pm1}$: $P(L_x=\hbar,0,-\hbar)=\tfrac14,\tfrac12,\tfrac14$; from $Y_1^0$: $\tfrac12,0,\tfrac12$.</li>
+<li>Successive: measuring $L_x$ erases $L_z$; $L^2$ survives. Probabilities need the full state, not just $\ell$.</li>
+<li>Rotor $\hat H=\tfrac{\hat L^2}{2I}$: $E_\ell=\tfrac{\hbar^2\ell(\ell+1)}{2I}$, gaps $\tfrac{\hbar^2}{I}(\ell+1)$, deg. $2\ell+1$. $I_z\ne I$: $E=\tfrac{\hbar^2}{2I}[\ell(\ell+1)-\tfrac{\epsilon}{1+\epsilon}m^2]$, $\pm m$ stay degenerate; $-\gamma B\hat L_z$ splits them.</li>
+</ul></section>
+
+<section><h2>9 · Radial equation, $V_{\rm eff}$, box</h2>
+<span class="fig" data-f="veff"></span>
+<ul>
+<li>$-\tfrac{\hbar^2}{2m}u''+V_{\rm eff}u=Eu$, $V_{\rm eff}=V+\tfrac{\hbar^2\ell(\ell+1)}{2mr^2}$; $u(0)=0$ (ℓ=0: $1/r$ would give a $\delta^3$); $|u|^2dr$ = radial probability.</li>
+<li>Near 0: $u\propto r^{\ell+1}$, $R\propto r^\ell$: only s-states have $\psi(0)\ne0$. Bound: $u\to0$, discrete; $E>V(\infty)$: oscillates, continuous. $+k/r$: no bound states.</li>
+<li>Spherical box $b$: $E=\tfrac{\hbar^2\beta^2}{2mb^2}$; ℓ=0: $u=\sin kr$, $\beta=N\pi$. Lowest ℓ ground state (centrifugal term > 0). Order 1s 1p 1d 2s 1f; magic 2, 8, 20.</li>
+</ul>
+<table class="z"><tr><th></th><th>N=1</th><th>2</th><th>3</th></tr><tr><td>ℓ=0</td><td>3.142</td><td>6.283</td><td>9.425</td></tr><tr><td>1</td><td>4.493</td><td>7.725</td><td>10.90</td></tr><tr><td>2</td><td>5.763</td><td>9.095</td><td></td></tr><tr><td>3</td><td>6.988</td><td>10.42</td><td></td></tr><tr><td>4</td><td>8.183</td><td></td><td></td></tr></table>
+</section>
+
+<section><h2>10 · Hydrogen</h2>
+<ul>
+<li>$V=-\tfrac kr$, $a=\tfrac{\hbar^2}{mk}=0.0529$ nm, $E_n=-\tfrac{k}{2an^2}=-\tfrac{13.6\text{ eV}}{n^2}$, $n=N+\ell$, $\ell\le n-1$; deg. $n^2$ (2ℓ+1 rotational, rest accidental: hidden $1/r$ symmetry).</li>
+<li>$\psi_{100}=\tfrac{e^{-r/a}}{\sqrt{\pi a^3}}$; $P(r)=\tfrac{4r^2}{a^3}e^{-2r/a}$, peak $a$, $\langle r\rangle=\tfrac32a$, $\langle\tfrac1r\rangle=\tfrac1a$; $P(r\lt b)=1-e^{-2b/a}(1+\tfrac{2b}a+\tfrac{2b^2}{a^2})$, $P(r\lt a)=0.323$.</li>
+<li>$R_{20}=\tfrac{1}{\sqrt2a^{3/2}}(1-\tfrac r{2a})e^{-r/2a}$, $R_{21}=\tfrac1{\sqrt{24}a^{3/2}}\tfrac rae^{-r/2a}$. $\langle r\rangle=\tfrac a2[3n^2-\ell(\ell+1)]$, $\langle\tfrac1r\rangle=\tfrac1{n^2a}$.</li>
+<li>$V_{\rm eff}$ min at $r=\ell(\ell+1)a$, depth $E_1/\ell(\ell+1)$. $\lambda=\tfrac{1240\text{ eV nm}}{\Delta E}$: Lyman α 122 nm; Balmer 656, 486, 434 nm.</li>
+<li>Extra $-\tfrac{\hbar^2\alpha^2}{2mr^2}$ (alkali core): $\ell\to\lambda_\ell$, $E=\tfrac{E_1}{(n-\delta_\ell)^2}$, $\delta_\ell\approx\tfrac{\alpha^2}{2\ell+1}$: s lowest (penetrates).</li>
+</ul></section>
+
+<section class="box"><h2>Traps</h2>
+<ul>
+<li><span class="t">$\hat a_-\ket0=0$</span>, not $\ket{-1}$; $n$ starts at 0. $\hat a_\pm$ not Hermitian.</li>
+<li>$\hat x\ket n$ has <b>two</b> terms; $\langle x^2\rangle$ needs $\hat a_-\hat a_+$ and $\hat a_+\hat a_-$ (they differ by 1).</li>
+<li>$|\vec L|^2=\hbar^2\ell(\ell+1)$, not $\hbar^2\ell^2$. $Y_1^{\pm1}$ carries $\mp$.</li>
+<li>$d\Omega$ has $\sin\theta$; $r^2|R|^2$ (not $|R|^2$) is the radial density.</li>
+<li>Energy can't leak or be "lost" with time-independent $\hat H$; bound needs $E\lt V(\infty)$.</li>
+</ul></section>
+
+<section><h2>Constants</h2>
+<p>$\hbar=6.582\times10^{-16}$ eV·s $=1.055\times10^{-34}$ J·s · $\hbar c=197.3$ eV·nm · $hc=1240$ eV·nm · $m_ec^2=0.511$ MeV · $\tfrac{\hbar^2}{2m_e}=0.0381$ eV·nm² · $a=0.0529$ nm · $\int e^{-\alpha x^2}=\sqrt{\pi/\alpha}$, $\int x^2e^{-\alpha x^2}=\tfrac1{2\alpha}\sqrt{\pi/\alpha}$ · $\int_0^\infty x^ne^{-\beta x}=\tfrac{n!}{\beta^{n+1}}$</p></section>
+
+</div>
+</div>
+<script>
+  (function () {
+    const W = 120, H = 80;
+    const ln = (x1, y1, x2, y2, c = 'thin') => `<line class="${c}" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"/>`;
+    const pl = (pts, c) => `<polyline class="${c}" points="${pts.map((p) => p.join(',')).join(' ')}"/>`;
+    const tx = (x, y, s, a = 'start') => `<text x="${x}" y="${y}" text-anchor="${a}">${s}</text>`;
+    const curve = (f, a, b, n = 90) => Array.from({ length: n + 1 }, (_, i) => { const x = a + (b - a) * i / n; return [x.toFixed(1), f(x).toFixed(1)]; });
+    const F = {
+      // oscillator: V = x^2/2 and psi_0..psi_2 drawn at their energies (x in units of w_x)
+      sho: () => {
+        const X = (x) => 60 + x * 14, Y = (e) => 76 - e * 22;
+        const herm = [(s) => 1, (s) => 2 * s, (s) => 4 * s * s - 2];
+        const nrm = [1, 1 / Math.sqrt(2), 1 / Math.sqrt(8)];
+        return pl(curve((x) => Y(x * x / 2), -3.4, 3.4).map(([x, y]) => [X(+x).toFixed(1), y]), 'thin') +
+          [0, 1, 2].map((n) => { const e = n + 0.5;
+            return ln(X(-3.6), Y(e), X(3.6), Y(e), 'dash') +
+              pl(curve((x) => Y(e) - 7 * nrm[n] * herm[n](x) * Math.exp(-x * x / 2), -3.6, 3.6).map(([x, y]) => [X(+x).toFixed(1), y]), 'thick') +
+              tx(X(3.7), Y(e) + 3, ['½', '³⁄₂', '⁵⁄₂'][n] + 'ħω'); }).join('');
+      },
+      // Coulomb V_eff for l = 0, 1, 2 (r in units of a, energy in units of |E1|)
+      veff: () => {
+        const X = (r) => 8 + r * 7.5, Y = (v) => 30 - v * 26;
+        const f = (l) => (r) => Y(Math.min(Math.max(-2 / r + l * (l + 1) / (r * r), -1.6), 1.05));
+        return ln(8, 30, 118, 30) + ln(8, 2, 8, 76) +
+          pl(curve(f(0), 1.25, 14), 'acc') + pl(curve(f(1), 0.62, 14), 'thick') + pl(curve(f(2), 1.2, 14), 'thick') +
+          tx(30, 72, 'ℓ=0') + tx(18, 52, 'ℓ=1') + tx(52, 40, 'ℓ=2') + tx(110, 26, 'r') + tx(10, 9, 'V_eff');
+      },
+    };
+    document.querySelectorAll('.fig[data-f]').forEach((el) => { el.innerHTML = `<svg viewBox="0 0 ${W + 10} ${H + 6}" xmlns="http://www.w3.org/2000/svg">${F[el.dataset.f]()}</svg>`; });
+  })();
+  document.addEventListener('DOMContentLoaded', function () {
+    renderMathInElement(document.body, { delimiters: [{ left: '$', right: '$', display: false }], throwOnError: false });
+    document.body.setAttribute('data-ready', '1');
+  });
+</script>
+</body>
+</html>

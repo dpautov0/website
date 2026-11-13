@@ -8,6 +8,9 @@
     id: 'e2-u6-refresh', title: 'Exam 1 refresher (15 minutes)', ref: 'Units 0–4',
     steps: [
       R(md`
+        !!key Notation (as on the Exam 1 paper)
+        $V_{TN} = 1\,\text{V}$, $|V_{TP}| = 1\,\text{V}$: thresholds. $V_T$: the diode's **thermal** voltage, $26\,\text{mV}$. $\mu_nC_{ox} = 100\,\mu\text{A/V}^2$, $\mu_pC_{ox} = 50\,\mu\text{A/V}^2$, sizes as $1X = W/L$. A controlled source is written $G_MV_X$ with $V_X$ the controlling voltage across marked $+$/$-$ terminals; for one transistor that is $g_mv_x$ with $v_x = v_{gs}$ (the lectures draw it exactly that way). Small-signal quantities are lower case ($v_{in}$, $v_{out}$, $i_d$), DC upper case ($V_{OUT}$, $I_D$).
+
         Exam 2 reuses five things from Exam 1. Each section below is the Exam 1 fact, then what it becomes on Exam 2. If one feels shaky, the full Exam 1 unit is under **Exam 1 review** in the sidebar.
 
         ### 1. Thévenin, Norton and the test source
@@ -26,15 +29,15 @@
         **On Exam 2:** the same move on the MOSFET. The bias gives $g_m = 2I_D/V_{ov}$ and $r_{ds}$, and the signal circuit is linear.
 
         ### 4. The MOSFET at DC
-        $$V_{ov} = V_{GS} - V_T\ (\text{NMOS}),\quad V_{SG} - |V_T|\ (\text{PMOS}),\qquad I_D = \tfrac12\mu C_{ox}\tfrac{W}{L}V_{ov}^2\ \text{in saturation}$$
-        - Course numbers: $\mu_nC_{ox} = 100\,\mu\text{A/V}^2$, $\mu_pC_{ox} = 50$, $|V_T| = 1\,\text{V}$. Precompute $K = \tfrac12\mu C_{ox}\tfrac{W}{L}$: $W/L = 500$ NMOS gives $K = 25\,\text{mA/V}^2$.
-        - **Saturated** iff NMOS $V_D \ge V_G - V_T$, PMOS $V_D \le V_G + |V_T|$. "Edge of saturation" is the equality.
+        $$V_{ov} = V_{GS} - V_{TN}\ (\text{NMOS}),\quad V_{SG} - |V_{TP}|\ (\text{PMOS}),\qquad I_D = \tfrac12\mu C_{ox}\tfrac{W}{L}V_{ov}^2\ \text{in saturation}$$
+        - Course numbers: $\mu_nC_{ox} = 100\,\mu\text{A/V}^2$, $\mu_pC_{ox} = 50$, $|V_{TP}| = 1\,\text{V}$. Precompute $K = \tfrac12\mu C_{ox}\tfrac{W}{L}$: $W/L = 500$ NMOS gives $K = 25\,\text{mA/V}^2$.
+        - **Saturated** iff NMOS $V_D \ge V_G - V_{TN}$, PMOS $V_D \le V_G + |V_{TP}|$. "Edge of saturation" is the equality.
         - Gate current is zero, always.
 
         **On Exam 2:** you only need DC far enough to get $g_m$. Typical: $1\,\text{mA}$ at $V_{ov} = 0.2\,\text{V}$ gives $g_m = 10\,\text{mS}$, $1/g_m = 100\,\Omega$.
 
         ### 5. Diodes, mirrors and stacks
-        - **Diode-connected** (gate tied to drain): always saturated, $V_{GS} = V_T + V_{ov}$.
+        - **Diode-connected** (gate tied to drain): always saturated, $V_{GS} = V_{TN} + V_{ov}$.
         - **Mirror** (same $V_{GS}$): $I_2/I_1 = (W/L)_2/(W/L)_1$.
         - **Stack** (same current): $V_{ov}\propto 1/\sqrt{W/L}$, so a $4\times$ wider device needs half the overdrive.
         - KCL at a node where mirrored currents meet a resistor: the resistor carries the difference.
@@ -48,14 +51,14 @@
         ['kill the independent sources, apply a test source, and take $v_t/i_t$', 'kill every source, dependent ones too, and combine resistors', 'short the output and divide $v_{OC}$ by nothing', 'cannot: Thévenin needs independent sources'], 0,
         [null, 'Dependent sources stay: they are part of the circuit\'s behavior.', '$R_{TH} = v_{OC}/i_{SC}$ works too, but you need both values.', 'Thévenin works for any linear circuit.'],
         md`Dependent sources stay in. This is exactly how every Exam 2 impedance is found, with $g_mv_{gs}$ as the dependent source.`),
-      Q(md`An NMOS has $V_G = 2\,\text{V}$, $V_D = 0.8\,\text{V}$, $V_T = 1\,\text{V}$. Is it saturated (assuming it is on)?`,
-        ['No: saturation needs $V_D \\ge V_G - V_T = 1\\,\\text{V}$', 'Yes: $V_D > 0$', 'Yes: $V_{GS} > V_T$', 'Cannot tell without $V_S$'], 0,
-        [null, 'The test compares $V_D$ with $V_G - V_T$, not with 0.', 'That only says it is on, not which region.', 'The shortcut $V_D \\ge V_G - V_T$ needs no $V_S$.'],
-        md`$V_G - V_T = 1\,\text{V} > 0.8\,\text{V}$: triode. The source voltage cancels out of the test.`),
-      Q(md`A diode carries $I_D = 1\,\text{mA}$ ($V_T = 25\,\text{mV}$). A MOSFET carries $1\,\text{mA}$ at $V_{ov} = 0.2\,\text{V}$. Compare the diode's $r_d$ with the MOSFET's $1/g_m$.`,
-        ['$r_d = 25\\,\\Omega$, $1/g_m = 100\\,\\Omega$', '$r_d = 100\\,\\Omega$, $1/g_m = 25\\,\\Omega$', 'Both $25\\,\\Omega$', 'Both $100\\,\\Omega$'], 0,
-        [null, 'Swapped: $r_d = V_T/I_D$, $1/g_m = V_{ov}/(2I_D)$.', '$1/g_m = V_{ov}/(2I_D) = 0.2/0.002$.', '$r_d = 0.025/0.001$.'],
-        md`Same idea, the slope at the bias point: $r_d = V_T/I_D = 25\,\Omega$; $g_m = 2I_D/V_{ov} = 10\,\text{mS}$, so $1/g_m = 100\,\Omega$.`),
+      Q(md`An NMOS has $V_G = 2\,\text{V}$, $V_D = 0.8\,\text{V}$, $V_{TN} = 1\,\text{V}$. Is it saturated (assuming it is on)?`,
+        ['No: saturation needs $V_D \\ge V_G - V_{TN} = 1\\,\\text{V}$', 'Yes: $V_D > 0$', 'Yes: $V_{GS} > V_{TN}$', 'Cannot tell without $V_S$'], 0,
+        [null, 'The test compares $V_D$ with $V_G - V_{TN}$, not with 0.', 'That only says it is on, not which region.', 'The shortcut $V_D \\ge V_G - V_{TN}$ needs no $V_S$.'],
+        md`$V_G - V_{TN} = 1\,\text{V} > 0.8\,\text{V}$: triode. The source voltage cancels out of the test.`),
+      Q(md`A diode carries $I_D = 1\,\text{mA}$ ($V_T = 26\,\text{mV}$, as on Exam 1). A MOSFET carries $1\,\text{mA}$ at $V_{ov} = 0.2\,\text{V}$. Compare the diode's $r_d$ with the MOSFET's $1/g_m$.`,
+        ['$r_d = 26\\,\\Omega$, $1/g_m = 100\\,\\Omega$', '$r_d = 100\\,\\Omega$, $1/g_m = 26\\,\\Omega$', 'Both $26\\,\\Omega$', 'Both $100\\,\\Omega$'], 0,
+        [null, 'Swapped: $r_d = V_T/I_D$, $1/g_m = V_{ov}/(2I_D)$.', '$1/g_m = V_{ov}/(2I_D) = 0.2/0.002$.', '$r_d = 0.026/0.001$.'],
+        md`Same idea, the slope at the bias point: $r_d = V_T/I_D = 26\,\Omega$; $g_m = 2I_D/V_{ov} = 10\,\text{mS}$, so $1/g_m = 100\,\Omega$.`),
       Q(md`$M_1$ ($1X$, diode-connected) carries $100\,\mu\text{A}$. $M_2$ ($4X$) shares its gate and source. What does $M_2$ carry, and how does its $V_{ov}$ compare with $M_1$'s?`,
         ['$400\\,\\mu\\text{A}$, same $V_{ov}$', '$400\\,\\mu\\text{A}$, half the $V_{ov}$', '$100\\,\\mu\\text{A}$, half the $V_{ov}$', '$200\\,\\mu\\text{A}$, same $V_{ov}$'], 0,
         [null, 'Half the overdrive is the rule for the same *current*. Here the $V_{GS}$ is shared.', 'That is a series stack, not a mirror.', 'Current scales with $W/L$, not its square root.'],

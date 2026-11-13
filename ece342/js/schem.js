@@ -20,6 +20,9 @@
      ['nmos'|'pmos', p, {n, sz, flip, dc}]  transistor centred at p. NMOS: D above, S below.
                                         PMOS: S above, D below. Gate 1 unit left (right if flip).
                                         dc: true draws the gate-drain (diode) connection.
+     ['npn', p, {n, flip, dc}]          NPN BJT centred at p: C above [x, y−1], E below [x, y+1], B 1 unit left (right if flip)
+                                        dc: true ties the base to the collector (a diode-connected BJT)
+     ['pnp', p, {n, flip, dc}]          PNP BJT: E above [x, y−1] (arrow pointing in), C below [x, y+1], B to the side
      ['C', p1, p2, {n, s}]              capacitor (drawn only; open at DC, left out of the netlist)
      ['opamp', p]                       op-amp: − in (x−1, y−0.5), + in (x−1, y+0.5), out (x+1, y)
      ['box', p1, p2, {n}]               labelled black box
@@ -30,6 +33,7 @@
   const G = 64;       // pixels per grid unit
   const PAD = 30;
   const TWO = new Set(['R', 'V', 'I', 'E', 'G', 'D', 'Vac', 'Iac', 'X', 'C']);
+  const KNOWN = new Set([...TWO, 'w', 'gnd', 'gndu', 'acg', 'rail', 'term', 'node', 'dot', 'vlab', 'iarr', 'nmos', 'pmos', 'npn', 'pnp', 'opamp', 'box', 'txt']);
   const k = (p) => `${Math.round(p[0] * 1000)},${Math.round(p[1] * 1000)}`;
 
   function parseEntry(e) {
@@ -47,6 +51,8 @@
   function mosPins(el) {
     const [x, y] = el.pts[0];
     const gx = el.opts.flip ? x + 1 : x - 1;
+    if (el.type === 'npn') return { D: [x, y - 1], S: [x, y + 1], G: [gx, y] };     // C, E, B in the MOS slots
+    if (el.type === 'pnp') return { S: [x, y - 1], D: [x, y + 1], G: [gx, y] };     // E on top, C below (like a PMOS)
     if (el.type === 'nmos') return { D: [x, y - 1], S: [x, y + 1], G: [gx, y] };
     return { S: [x, y - 1], D: [x, y + 1], G: [gx, y] };
   }
@@ -104,7 +110,7 @@
       } else if (t === 'opamp') {
         const P = ampPins(el);
         pins.push(P.M, P.P, P.O);
-      } else if (t === 'nmos' || t === 'pmos') {
+      } else if (t === 'nmos' || t === 'pmos' || t === 'npn' || t === 'pnp') {
         const P = mosPins(el);
         pins.push(P.D, P.G, P.S);
         if (el.opts.dc) {
@@ -154,7 +160,7 @@
         out.push({ type: t, a: id(el.pts[0]), b: id(el.pts[1]), gain: o.g, ca: ref(o.c[0]), cb: ref(o.c[1]), tag: o.id });
       }
       else if (t === 'rail' && o.v !== undefined) out.push({ type: 'V', a: id(el.pts[0]), b: '0', val: o.v, tag: o.id });
-      else if (t === 'D' || t === 'X' || t === 'nmos' || t === 'pmos' || t === 'opamp') linear = false;
+      else if (t === 'D' || t === 'X' || t === 'nmos' || t === 'pmos' || t === 'npn' || t === 'pnp' || t === 'opamp') linear = false;
     }
     return { elements: out, names, id, linear, devices };
   }
@@ -286,6 +292,23 @@
     return s;
   }
 
+  // NPN: base bar, collector and emitter as diagonals from the bar, arrow out of the emitter (bottom lead).
+  // PNP: the same drawing with the emitter on top and its arrow pointing in, toward the bar.
+  function drawNpn(el, X, Y) {
+    const [x0, y0] = el.pts[0];
+    const cx = X(x0), cy = Y(y0), f = el.opts.flip ? -1 : 1;
+    const P = mosPins(el);
+    const bx = cx - 16 * f, top = Y(y0 - 1), bot = Y(y0 + 1);
+    let s = `<path d="M${X(P.G[0])},${cy}H${bx}"/><path class="thick" d="M${bx},${cy - 14}V${cy + 14}"/>`;
+    s += `<path d="M${bx},${cy - 6}L${cx},${cy - 20}V${top}M${bx},${cy + 6}L${cx},${cy + 20}V${bot}"/>`;
+    const dx = cx - bx, dy = 14, len = Math.hypot(dx, dy);
+    if (el.type === 'pnp') s += head(bx + (dx / len) * 5, cy - 6 - (dy / len) * 5, -dx / len, dy / len, 6);   // into the bar
+    else s += head(cx - (dx / len) * 2, cy + 20 - (dy / len) * 2, dx / len, dy / len, 6);
+    if (el.opts.dc) s += `<path d="M${X(P.G[0])},${cy}V${Y(P.D[1])}H${cx}"/>`;   // base tied to the collector
+    s += f > 0 ? label(cx + 7, cy, tex(el.opts.n), 'l', 'small') : label(cx - 7, cy, tex(el.opts.n), 'r', 'small');
+    return s;
+  }
+
   function render(spec, opts = {}) {
     const { els, uf, pins, segs } = topology(spec);
     // bounds
@@ -293,7 +316,7 @@
     const grow = (p) => { minx = Math.min(minx, p[0]); maxx = Math.max(maxx, p[0]); miny = Math.min(miny, p[1]); maxy = Math.max(maxy, p[1]); };
     for (const el of els) {
       el.pts.forEach(grow);
-      if (el.type === 'nmos' || el.type === 'pmos') Object.values(mosPins(el)).forEach(grow);
+      if (el.type === 'nmos' || el.type === 'pmos' || el.type === 'npn' || el.type === 'pnp') Object.values(mosPins(el)).forEach(grow);
       if (el.type === 'opamp') { const [x, y] = el.pts[0]; grow([x - 1, y - 1]); grow([x + 1, y + 1]); }
     }
     const padL = 22 + (opts.padL || 0), padR = 22 + (opts.padR || 0), padT = 26 + (opts.padT || 0), padB = 26 + (opts.padB || 0);
@@ -365,6 +388,8 @@
         body += sideLabel(x + ox, y + oy, tex(o.n), o.side || (d[0] ? 'a' : 'r'), 8, 'accent');
       } else if (t === 'nmos' || t === 'pmos') {
         body += drawMos(el, X, Y);
+      } else if (t === 'npn' || t === 'pnp') {
+        body += drawNpn(el, X, Y);
       } else if (t === 'opamp') {
         const [x0, y0] = el.pts[0];
         const P = ampPins(el);
@@ -380,6 +405,11 @@
         body += label(x + w / 2, y + h / 2, o.n ? `<span class="boxtxt">${o.n}</span>` : '', 'c');
       } else if (t === 'txt') {
         body += label(X(el.pts[0][0]), Y(el.pts[0][1]), el.strs[0], o.a || 'c', o.cls || '');
+      } else if (!KNOWN.has(t)) {
+        // never fail silently: an element this file cannot draw shows as a red box and is reported
+        const [x, y] = el.pts[0] || [0, 0];
+        body += `<rect class="unknown-el" x="${X(x) - 16}" y="${Y(y) - 16}" width="32" height="32" style="stroke:#d70015;fill:none;stroke-dasharray:3 2"/>`;
+        if (window.console) console.error(`schem: cannot draw element type "${t}"`);
       }
     }
 
@@ -389,10 +419,12 @@
     for (const el of els) {
       if (el.type === 'w') el.pts.forEach((p, i) => bump(p, (i === 0 || i === el.pts.length - 1) ? 1 : 2));
       else if (TWO.has(el.type)) el.pts.forEach((p) => bump(p));
-      else if (el.type === 'nmos' || el.type === 'pmos') {
+      else if (el.type === 'nmos' || el.type === 'pmos' || el.type === 'npn' || el.type === 'pnp') {
         const P = mosPins(el);
         [P.D, P.G, P.S].forEach((p) => bump(p));
-        if (el.opts.dc) { bump(P.G); bump(P.D); }
+        // diode connection: the gate/base and drain/collector each get a wire; its corner is a junction only if
+        // something else meets it there (2 for the bend, so one more wire makes it a dot)
+        if (el.opts.dc) { bump(P.G); bump(P.D); bump([P.G[0], P.D[1]], 2); }
       } else if (el.type === 'opamp') {
         Object.values(ampPins(el)).forEach((p) => bump(p));
       } else if (el.type === 'rail' || el.type === 'gnd' || el.type === 'gndu' || el.type === 'acg') bump(el.pts[0]);

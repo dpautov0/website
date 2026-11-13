@@ -29,7 +29,7 @@
 
   const HW4 = [
     R(md`
-      **Course parameters:** $\mu_nC_{ox} = 100\,\mu\text{A/V}^2$, $\mu_pC_{ox} = 50\,\mu\text{A/V}^2$, $|V_{TH}| = 1\,\text{V}$, and on this set **$\lambda = 0$**, so $r_{ds} \to \infty$ in every answer (the solutions show where $r_{ds}$ would enter).
+      **Course parameters:** $\mu_nC_{ox} = 100\,\mu\text{A/V}^2$, $\mu_pC_{ox} = 50\,\mu\text{A/V}^2$, $|V_{TP}| = 1\,\text{V}$, and on this set **$\lambda = 0$**, so $r_{ds} \to \infty$ in every answer (the solutions show where $r_{ds}$ would enter).
 
       **What this set drills**
       - **#1:** the three single-transistor stages (degenerated CS, CG, CD), each with a gate resistor that does nothing. Learn to read "where does the input enter, where is the output taken".
@@ -106,7 +106,7 @@ $$\frac{v_{out}}{v_{in}} = \frac{R_S}{R_S + 1/g_m} = \frac{g_mR_S}{1+g_mR_S}$$
     ['rail', [2, -2]], ['pmos', [2, -1], { n: 'M_2', sz: '8X' }], ['nmos', [2, 1], { n: 'M_1', sz: '4X' }], ['gnd', [2, 2]],
     ['w', [1, -1], [0.7, -1], [0.7, 1], [1, 1]], ['w', [0.7, 0], [0, 0], [0, 0.4]], ['Vac', [0, 0.4], [0, 1.4], { n: 'v_{in}', side: 'l' }], ['V', [0, 1.4], [0, 2.4], { n: 'V_B', side: 'l' }], ['gnd', [0, 2.4]],
     ['rail', [4.4, -2]], ['pmos', [4.4, -1], { n: 'M_4', sz: '2X', dc: true }], ['nmos', [4.4, 1], { n: 'M_3', sz: '1X', dc: true }], ['gnd', [4.4, 2]],
-    ['w', [2, 0], [3.4, 0]], ['w', [4.4, 0], [5.2, 0]], out([5.2, 0], 'V_{OUT}+v_{out}'),
+    ['w', [2, 0], [3.4, 0]], ['dot', [3.4, 0]], ['w', [4.4, 0], [5.2, 0]], out([5.2, 0], 'V_{OUT}+v_{out}'),
   ];
   const hw43fig = [
     ['rail', [1, -2]], ['pmos', [1, -1], { n: 'M_2', flip: true, dc: true }], ['iarr', [0.5, -1.5], 'd', { n: '0.5\\,\\text{mA}', side: 'l' }],
@@ -117,7 +117,7 @@ $$\frac{v_{out}}{v_{in}} = \frac{R_S}{R_S + 1/g_m} = \frac{g_mR_S}{1+g_mR_S}$$
   ];
   const hw44fig = [
     ['rail', [2, -2]], ['pmos', [2, -1], { n: 'M_3', sz: '1X', flip: true }], ['w', [3, -1], [3.8, -1], [3.8, -0.6]], ['V', [3.8, -0.6], [3.8, 0.4], { n: 'V_{B3}', side: 'r' }], ['gnd', [3.8, 0.4]],
-    ['w', [1.2, 0], [3, 0]], ['node', [2, 0], { n: 'X', side: 'a' }],
+    ['w', [1.2, 0], [3, 0]], ['node', [2, 0], { n: 'X', side: 'b' }],
     ['nmos', [1.2, 1], { n: 'M_1', sz: '1X' }], ['gnd', [1.2, 2]], ['w', [0.2, 1], [0.2, 1.3]], ['Vac', [0.2, 1.3], [0.2, 2.3], { n: 'v_{in}', side: 'l' }], ['V', [0.2, 2.3], [0.2, 3.3], { n: 'V_{B1}', side: 'l' }], ['gnd', [0.2, 3.3]],
     ['pmos', [3, 1], { n: 'M_2', sz: '2X' }], ['w', [2, 1], [2, 1.5]], ['V', [2, 1.5], [2, 2.5], { n: 'V_{B2}', side: 'r' }], ['gnd', [2, 2.5]],
     ['w', [3, 2], [3.8, 2]], out([3.8, 2], 'V_{OUT}+v_{out}'), ['R', [3, 2], [3, 3.2], { n: 'R_D' }], ['gnd', [3, 3.2]],
@@ -166,7 +166,7 @@ $$A_V = -(g_{m1} + g_{m2})\left(\frac{1}{g_{m3}}\parallel\frac{1}{g_{m4}}\parall
       sol: md`
 With $V_{ov} = 0.2$: NMOS carries $\tfrac12(100\mu)(0.04) = 2\,\mu\text{A}$ per unit $W/L$, PMOS carries $1\,\mu\text{A}$ per unit.
 
-- $V_B = V_T + V_{ov} = $ **$1.2\,\text{V}$** (source at DC ground).
+- $V_B = V_{TN} + V_{ov} = $ **$1.2\,\text{V}$** (source at DC ground).
 - $M_1$ (NMOS, 0.5 mA): $W/L = 250$. $M_2$ (PMOS, 0.5 mA): $W/L = 500$.
 - $M_3$ mirrors $M_2$ with twice the current: $W/L = 1000$. $M_4$ (NMOS, 1 mA): $W/L = 500$.
 
@@ -215,7 +215,7 @@ $$A_V = -\frac{g_{m1}g_{m3}}{g_{m2}}\left(R + \frac{1}{g_{m4}}\right)$$
       sol: md`
 **(a)** $M_3$ ($1X$ PMOS): $V_{ov3} = 5 - 3.6 - 1 = 0.4$, $I_3 = \tfrac12(50\mu)(200)(0.16) = 800\,\mu\text{A}$. Edge: $V_X = 5 - 0.4 = 4.6\,\text{V}$. $M_1$: $I_1 = \tfrac12(100\mu)(200)(0.04) = 400\,\mu\text{A}$, so $I_2 = 400\,\mu\text{A}$ and $V_{ov2} = \sqrt{\dfrac{400\mu}{\tfrac12(50\mu)(400)}} = 0.2$. Then $V_{SG2} = 1.2$: **$V_{B2} = 4.6 - 1.2 = 3.4\,\text{V}$**.
 
-**(b)** $M_2$ saturated needs $V_{OUT} \le V_{G2} + |V_T| = 4.4\,\text{V}$; the current through $R_D$ is fixed at $400\,\mu\text{A}$, so **$R_{D,max} = 4.4/0.4\text{m} = 11\,\text{k}\Omega$**.
+**(b)** $M_2$ saturated needs $V_{OUT} \le V_{G2} + |V_{TP}| = 4.4\,\text{V}$; the current through $R_D$ is fixed at $400\,\mu\text{A}$, so **$R_{D,max} = 4.4/0.4\text{m} = 11\,\text{k}\Omega$**.
 
 **(d) What to see first:** $M_1$ is a CS transconductor, $M_3$ a current source, $M_2$ a **common-gate** device that passes current from $X$ to the output: a **folded cascode**. With $\lambda = 0$ node $X$ has nothing but $M_2$'s source to send current into, so all of $g_{m1}v_{in}$ is taken out of $M_2$'s current:
 $$A_V = -g_{m1}R_D = -(4\,\text{mA/V})(11\,\text{k}\Omega) = -44$$
@@ -259,7 +259,7 @@ $$A_V = -g_{m1}R_D = -(4\,\text{mA/V})(11\,\text{k}\Omega) = -44$$
 
   const HW5 = [
     R(md`
-      **Course parameters:** $\mu_nC_{ox} = 100\,\mu\text{A/V}^2$, $\mu_pC_{ox} = 50\,\mu\text{A/V}^2$, $|V_{TH}| = 1\,\text{V}$. Every device is saturated with $r_{ds}$ finite and $g_mr_{ds} \gg 1$.
+      **Course parameters:** $\mu_nC_{ox} = 100\,\mu\text{A/V}^2$, $\mu_pC_{ox} = 50\,\mu\text{A/V}^2$, $|V_{TP}| = 1\,\text{V}$. Every device is saturated with $r_{ds}$ finite and $g_mr_{ds} \gg 1$.
 
       **What this set drills:** finding $R_{EQ}$ by inspection. Apply a test source, kill independent sources (a DC current source becomes an **open**, a DC voltage source a **short**), then build the answer from the canonical results:
       - looking into a **drain** with $R_S$ at the source: $r_{ds} + R_S + g_mr_{ds}R_S$;
@@ -513,7 +513,7 @@ $$R_{DN} \approx \frac{g_mr_{ds}R_1}{2},\qquad R_{EQ} = R_{UP}\parallel R_{DN}$$
 
   const HW6 = [
     R(md`
-      **Course parameters:** $\mu_nC_{ox} = 100\,\mu\text{A/V}^2$, $\mu_pC_{ox} = 50\,\mu\text{A/V}^2$, $|V_{TH}| = 1\,\text{V}$; all devices saturated, $g_mr_{ds} \gg 1$, $r_{ds}$ finite.
+      **Course parameters:** $\mu_nC_{ox} = 100\,\mu\text{A/V}^2$, $\mu_pC_{ox} = 50\,\mu\text{A/V}^2$, $|V_{TP}| = 1\,\text{V}$; all devices saturated, $g_mr_{ds} \gg 1$, $r_{ds}$ finite.
 
       **What this set drills:** the $G_MR_{out}$ method on two-stage circuits.
       - $A_V = -G_MR_{out}$, with $G_M$ the short-circuit current **pulled down** into the stage per volt of input (output shorted) and $R_{out}$ the resistance at the output with the input zeroed.

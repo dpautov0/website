@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>ECE 340 Exam 2 Sheet</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/contrib/auto-render.min.js"></script>
+<style>
+  :root { --ink: #111; --head: #1d4f91; --rule: #b9c3cf; --soft: #5a6470; --paper: #fff; --ex: #f3f6fa; --red: #a4453b; }
+  @page { size: letter; margin: 0.26in; }
+  * { box-sizing: border-box; }
+  html, body { background: var(--paper); color: var(--ink); margin: 0; }
+  body { font: 10.4pt/1.27 "Segoe UI", Arial, sans-serif; }
+  .page { width: 7.98in; margin: 0 auto; }
+  .page + .page { break-before: page; }
+  .top { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1.2px solid var(--ink); margin-bottom: 3px; padding-bottom: 1px; }
+  .top b { font-size: 9.5pt; }
+  .top span { color: var(--soft); }
+  .cols { column-count: 3; column-gap: 9px; column-rule: 0.6px solid var(--rule); }
+  section { break-inside: avoid; margin: 0 0 4px; }
+  section.ex { background: var(--ex); padding: 1px 3px 2px; border-radius: 2px; }
+  h2 { font-size: 9pt; margin: 0 0 1px; color: var(--head); border-bottom: 0.6px solid var(--rule); }
+  p { margin: 0 0 1.4px; }
+  ul { margin: 0 0 1.4px; padding: 0; list-style: none; }
+  li { margin: 0 0 0.8px; padding-left: 7px; position: relative; }
+  li::before { content: "\2022"; position: absolute; left: 0; color: var(--soft); }
+  .t { color: var(--red); font-weight: 600; }
+  .katex { font-size: 1.0em; }
+  .fig { float: right; width: 116px; margin: 1px 0 2px 5px; }
+  .fig svg { display: block; width: 100%; height: auto; }
+  .fig svg text { font: italic 10px "Times New Roman", serif; fill: #111; }
+  .fig svg text.s { font-size: 9px; }
+  table { border-collapse: collapse; width: 100%; margin: 1px 0 2px; }
+  td, th { border-bottom: 0.5px solid var(--rule); padding: 0 2px; text-align: left; font-weight: 400; }
+  th { color: var(--soft); }
+  .page.dense { font-size: 9pt; line-height: 1.22; } .page.dense .fig { width: 100px; }
+  @media screen { body { padding: 16px; } .page { max-width: 100%; margin-bottom: 28px; } .page + .page { border-top: 2px dashed var(--rule); padding-top: 12px; } }
+  @media screen and (max-width: 760px) { body { padding: 10px; font-size: 10.5pt; } .cols { column-count: 1; } .fig { width: 130px; } .top { flex-direction: column; } }
+</style>
+</head>
+<body>
+
+<!-- ============================== FRONT: most important first ============================== -->
+<div class="page dense">
+<div class="top"><b>ECE 340 · Exam 2 · FRONT</b><span>$kT = 0.0259$ eV · $n_i^2 = 2.25\times10^{20}$ · $\epsilon_{Si} = 1.044\times10^{-12}$ F/cm · $kT\ln10 = 59.6$ mV · $E_g = 1.12$ eV</span></div>
+<div class="cols">
+
+<section><h2>0 · Knob → what moves (p⁺-n: the light side is n)</h2>
+<ul>
+<li><b>Light-side $N$ ↑:</b> $V_0$ ↑ (+60 mV/decade), $W$ ↓ ($N^{-1/2}$), $\mathscr{E}_0$ ↑ ($N^{1/2}$), $C_j$ ↑ ($N^{1/2}$), $I_0$ ↓ ($1/N$), $V_{br}$ ↓ ($1/N$, toward Zener).</li>
+<li><b>Heavy-side $N$ ↑:</b> only $V_0$ moves (+60 mV/decade). $W$, $C_j$, $I_0$, $V_{br}$ ≈ same.</li>
+<li><b>Reverse $V_r$ ↑:</b> $W$, $\mathscr{E}_0 \propto \sqrt{V_0 + V_r}$ ↑; $C_j$ ↓; $I \approx -I_0$, flat.</li>
+<li><b>Forward $V$ ↑:</b> $W$, $\mathscr{E}_0$ ↓; $C_j$ ↑; $I$, $\Delta p_n$, $Q_p$, $C_s$ ×10 per 60 mV.</li>
+<li><b>$T$ ↑:</b> $n_i^2$ ↑↑ → $I_0$ ↑ (~15%/K); $V$ at fixed $I$ ↓ ~2 mV/K; $V_0$ ↓; $V_{oc}$ ↓. Avalanche $V_{br}$ ↑, Zener $V_{br}$ ↓.</li>
+<li><b>$E_g$ ↑:</b> $n_i$ ↓↓ → $V_0$ ↑, $I_0$ ↓↓, $V_{oc}$ ↑, LED $\lambda$ ↓.</li>
+<li><b>$\tau_p$ ↑:</b> $L_p$ ↑ (√), $I_0$ ↓ ($1/\sqrt{\tau}$), $Q_p$, $C_s$, $t_{sd}$ ↑ (∝ $\tau$).</li>
+<li><b>Area ↑:</b> $I_0$, $I$, $C_j$, $C_s$, $I_{sc}$ ∝ $A$. $V_0$, $W$, $\mathscr{E}$, $V_{oc}$ unchanged.</li>
+<li><b>Light ×10:</b> $I_{sc}$ ×10, $V_{oc}$ +60 mV. <b>Narrow base $\ell$ ↓:</b> $I \propto 1/\ell$ ↑, $t_t \propto \ell^2$ ↓.</li>
+</ul></section>
+
+<section><h2>1 · Haynes–Shockley, quasi-Fermi levels</h2><span class="fig" data-f="hs"></span>
+<ul>
+<li>Peak drifts: $\mu_p = \frac{d}{\mathscr{E}t_d}$. Spreads: $\Delta x = v_d\Delta t$, $D_p = \frac{(\Delta x)^2}{16t_d}$. Area ∝ $e^{-t/\tau_p}$.</li>
+<li>$\Delta x \propto \sqrt{t_d}$. Check $D/\mu = kT/q$.</li>
+<li>$n = n_ie^{(F_n - E_i)/kT}$, $p = n_ie^{(E_i - F_p)/kT}$, $np = n_i^2e^{(F_n - F_p)/kT}$.</li>
+<li>Low level: the majority level barely moves; the minority level moves a lot.</li>
+<li>$J_n = \mu_nn\frac{dF_n}{dx}$: current needs a sloped quasi-Fermi level.</li>
+</ul></section>
+
+<section><h2>2 · Contact potential</h2><span class="fig" data-f="eq"></span>
+<ul>
+<li>$V_0 = \frac{kT}{q}\ln\frac{N_aN_d}{n_i^2}$ = (p side $E_i - E_F$) + (n side $E_F - E_i$).</li>
+<li>Si: $V_0 = 0.0596(\log N_a + \log N_d - 20.35)$.</li>
+<li>$E_F$ flat; bands bend by $qV_0$; $\frac{p_p}{p_n} = \frac{n_n}{n_p} = e^{qV_0/kT}$.</li>
+<li>Drift = diffusion for each carrier separately; each is large.</li>
+<li>Typical Si: 0.6–0.9 V; always $&lt; E_g/q$.</li>
+</ul></section>
+
+<section><h2>3 · Depletion region</h2><span class="fig" data-f="tri"></span>
+<ul>
+<li>$N_ax_{p0} = N_dx_{n0}$: the light side holds most of $W$. $x_{n0} = W\frac{N_a}{N_a + N_d}$.</li>
+<li>$W = \sqrt{\frac{2\epsilon(V_0 - V)}{q}\left(\frac1{N_a} + \frac1{N_d}\right)}$; one-sided $\sqrt{\frac{2\epsilon(V_0 - V)}{qN_{light}}}$.</li>
+<li>$\mathscr{E}_0 = \frac{qN_dx_{n0}}{\epsilon} = \frac{2(V_0 - V)}{W}$, peak at the junction, points n → p. Triangle area = $V_0 - V$.</li>
+<li>$\frac{V_n}{V_p} = \frac{x_{n0}}{x_{p0}} = \frac{N_a}{N_d}$: the light side drops most of it.</li>
+<li>Mobile carriers in $W$: essentially none.</li>
+</ul></section>
+
+<section><h2>4 · Bias, law of the junction</h2><span class="fig" data-f="fwd"></span>
+<ul>
+<li>Barrier → $V_0 - V$. Across $W$: $F_n - F_p = qV$.</li>
+<li>Edges: $\Delta p_n = p_n(e^{qV/kT} - 1)$, $\Delta n_p = n_p(e^{qV/kT} - 1)$. Reverse: $\to -p_n$.</li>
+<li>Long side: $\delta p = \Delta p_ne^{-x_n/L_p}$, $L_p = \sqrt{D_p\tau_p}$.</li>
+<li>Low level needs $\Delta p_n \ll N_d$.</li>
+</ul></section>
+
+<section><h2>5 · Diode current and its components</h2><span class="fig" data-f="comp"></span>
+<ul>
+<li>$I = I_0(e^{qV/kT} - 1)$, $I_0 = qA\left(\frac{D_p}{L_p}p_n + \frac{D_n}{L_n}n_p\right)$.</li>
+<li>Forward: majority carriers cross the lowered barrier and become injected minority carriers. Reverse: minority carriers within $L$ of $W$ are swept across.</li>
+<li>The light side's minority carriers carry it (p⁺-n: holes).</li>
+<li>$I_p(x_n) = I_p(0)e^{-x_n/L_p}$; the total is constant; far away it is majority drift, $\mathscr{E} = \frac{J}{q\mu_nN_d}$ (tiny).</li>
+<li>×10 per 60 mV. $e^{qV/nkT}$: $n \approx 2$ at low $I$ (recombination in $W$) and at high $I$ (high level); series $R$ bends the top.</li>
+<li><span class="t">Real reverse current grows with $V_r$:</span> generation in $W$, ∝ $W$.</li>
+</ul></section>
+
+<section><h2>6 · Narrow base ($\ell \ll L_p$)</h2><span class="fig" data-f="nb"></span>
+<ul>
+<li>Straight line, $\Delta p = 0$ at the contact. $I = qAD_p\frac{\Delta p_n}{\ell}$: $L_p \to \ell$, more current.</li>
+<li>$Q_p = \frac12qA\ell\Delta p_n$, $t_t = \frac{Q_p}{I} = \frac{\ell^2}{2D_p} \ll \tau_p$: fast.</li>
+<li>Base drop $V_{base} \approx \frac{kT}{q}\frac{\Delta p_n}{N_d}$: an electron field cancels electron diffusion.</li>
+</ul></section>
+
+<section><h2>7 · Breakdown</h2><span class="fig" data-f="iv"></span>
+<ul>
+<li>$V_{br} = \frac{\epsilon\mathscr{E}_{crit}^2}{2qN}$ ∝ $1/N$; $W_{br} = \frac{2V_{br}}{\mathscr{E}_{crit}}$.</li>
+<li>Zener (tunneling): heavy doping on both sides, $V_{br} &lt; 4E_g/q \approx 4.5$ V, TC negative.</li>
+<li>Avalanche (impact ionization): $V_{br} > 6E_g/q \approx 6.7$ V, TC positive. Between: both, TC ≈ 0.</li>
+<li>$M = \frac{1}{1 - P}$; $P \to 1$ is breakdown. APD uses $M$ as gain.</li>
+</ul></section>
+
+<section><h2>8 · Capacitance and switching</h2><span class="fig" data-f="tsd"></span>
+<ul>
+<li>$C_j = \frac{\epsilon A}{W} = A\sqrt{\frac{q\epsilon}{2(V_0 - V)}\frac{N_aN_d}{N_a + N_d}}$. Dominates in reverse.</li>
+<li>$\frac{1}{C_j^2} = \frac{2(V_0 + V_r)}{q\epsilon NA^2}$: slope → $N_{light}$, intercept at $V_r = -V_0$.</li>
+<li>$Q_p = I\tau_p$; $C_s = \frac{q}{kT}I\tau_p = G_s\tau_p$; $r = \frac{kT}{qI}$ (26 Ω at 1 mA). Dominates in forward.</li>
+<li>Turn-off: $I$ flips to $-I_r$ and holds; $V$ stays forward until $\Delta p_n = 0$. $t_{sd} \approx \tau_p\ln\left(1 + \frac{I_f}{I_r}\right)$.</li>
+<li>Faster: short $\tau_p$ (Au doping), narrow base, Schottky.</li>
+</ul></section>
+
+<section><h2>9 · Metal–semiconductor</h2><span class="fig" data-f="ms"></span>
+<ul>
+<li>n: $\phi_s = \chi + kT\ln\frac{N_c}{N_d}$. p: $\phi_s = \chi + E_g - kT\ln\frac{N_v}{N_a}$.</li>
+<li>n-type: $\phi_m > \phi_s$ rectifying, $\phi_m &lt; \phi_s$ ohmic. <span class="t">p-type: the reverse.</span></li>
+<li>n: $\phi_B = \phi_m - \chi$ (from the metal, bias can't move it); $V_0 = \phi_m - \phi_s$ (from the Si, bias lowers it). p: $\phi_B = \chi + E_g - \phi_m$.</li>
+<li>Majority-carrier device: no stored charge, fast, lower turn-on. Practical ohmic: dope the surface heavily so carriers tunnel.</li>
+</ul></section>
+
+<section><h2>10 · Light: solar cell, photodiode, LED</h2><span class="fig" data-f="solar"></span>
+<ul>
+<li>$I = I_{th}(e^{qV/kT} - 1) - I_{op}$, $I_{op} = qAg_{op}(L_p + L_n + W)$.</li>
+<li>$I_{sc} = I_{op}$; $V_{oc} = \frac{kT}{q}\ln\left(1 + \frac{I_{op}}{I_{th}}\right)$.</li>
+<li>$P_{max} = FF\cdot I_{sc}V_{oc}$, FF ≈ 0.7–0.85. Solar cell: 4th quadrant. Photodiode: 3rd (reverse), $I \propto$ light.</li>
+<li>PIN: wide i-region → collects more, low $C$, fast. APD: gain $M$.</li>
+<li>LED: $\lambda(\mu\text{m}) = 1.24/E_g(\text{eV})$, needs a direct gap. Laser: inversion ($F_n - F_p > h\nu$), a cavity, threshold current.</li>
+</ul></section>
+
+</div>
+</div>
+
+<!-- ============================== BACK: worked examples ============================== -->
+<div class="page">
+<div class="top"><b>ECE 340 · Exam 2 · BACK (worked examples)</b><span>equation → symbols → numbers with units → 3 s.f.</span></div>
+<div class="cols">
+
+<section class="ex"><h2>Mental math</h2>
+<ul>
+<li>×10 ↔ 59.6 mV; ×2 ↔ 18 mV; ×e ↔ 25.9 mV.</li>
+<li>$kT\ln(N/n_i)$: $10^{15}$ 0.288, $10^{16}$ 0.347, $10^{17}$ 0.407, $10^{18}$ 0.467 eV.</li>
+<li>$e^{V/kT}$: 0.5 V $2.42\times10^8$; 0.6 V $1.15\times10^{10}$; 0.7 V $5.47\times10^{11}$.</li>
+<li>$D = 10$, $\tau = 1\,\mu$s → $L = 31.6\,\mu$m. $\sqrt2 = 1.41$, $\sqrt{10} = 3.16$.</li>
+</ul></section>
+
+<section class="ex"><h2>Ex 1 · Junction at equilibrium</h2><span class="fig" data-f="tri"></span>
+<p>$N_a = 4\times10^{17}$, $N_d = 2\times10^{16}$.</p>
+<ul>
+<li>$V_0 = 0.0259\ln\frac{(4\times10^{17})(2\times10^{16})}{2.25\times10^{20}} = 0.808$ V.</li>
+<li>$W = \sqrt{\frac{2(1.044\times10^{-12})(0.808)}{1.6\times10^{-19}}\left(\frac{1}{4\times10^{17}} + \frac{1}{2\times10^{16}}\right)} = 0.235\,\mu$m; $x_{n0} = 0.224\,\mu$m, $x_{p0} = 11.2$ nm.</li>
+<li>$\mathscr{E}_0 = 2V_0/W = 6.87\times10^4$ V/cm; $V_n = V_0\frac{N_a}{N_a + N_d} = 0.770$ V.</li>
+<li>5 V reverse: $W \times \sqrt{5.808/0.808} = 0.631\,\mu$m; $\mathscr{E}_0 = 1.84\times10^5$ V/cm.</li>
+</ul></section>
+
+<section class="ex"><h2>Ex 2 · Haynes–Shockley</h2><span class="fig" data-f="hs"></span>
+<p>$\mathscr{E} = 2$ V/cm, probe at 0.25 cm, $t_d = 260\,\mu$s, $\Delta t = 237\,\mu$s.</p>
+<ul>
+<li>$v_d = 0.25/260\,\mu\text{s} = 960$ cm/s → $\mu_p = 480$ cm²/V·s.</li>
+<li>$\Delta x = 960(237\times10^{-6}) = 0.228$ cm; $D_p = \frac{0.228^2}{16(260\times10^{-6})} = 12.4$ cm²/s; $D/\mu = 0.0259$ ✓.</li>
+</ul></section>
+
+<section class="ex"><h2>Ex 3 · Edge carriers and quasi-Fermi levels</h2><span class="fig" data-f="fwd"></span>
+<p>n side $N_d = 5\times10^{15}$, $V = 0.55$ V.</p>
+<ul>
+<li>$p_n = 4.5\times10^4$; $e^{0.55/0.0259} = 1.67\times10^9$; $\Delta p_n = 7.51\times10^{13}$ (1.5% of $N_d$: low level).</li>
+<li>$F_n - E_i = 0.0259\ln\frac{5\times10^{15}}{1.5\times10^{10}} = 0.329$ eV; $E_i - F_p = 0.55 - 0.329 = 0.221$ eV.</li>
+</ul></section>
+
+<section class="ex"><h2>Ex 4 · Diode current and components</h2><span class="fig" data-f="comp"></span>
+<p>p⁺-n, $10^{18}/10^{16}$, $A = 10^{-4}$ cm². n: $D_p = 10$, $\tau_p = 1\,\mu$s, $\mu_n = 1250$. p: $D_n = 6$, $\tau_n = 0.1\,\mu$s. $V = 0.6$ V.</p>
+<ul>
+<li>$L_p = 31.6\,\mu$m, $L_n = 7.75\,\mu$m. $I_0 = qA\left(\frac{10(2.25\times10^4)}{3.16\times10^{-3}} + \frac{6(225)}{7.75\times10^{-4}}\right) = 1.17\times10^{-15}$ A.</li>
+<li>$I = I_0(1.15\times10^{10}) = 13.4\,\mu$A; holes $\frac{7.12}{7.29} = 97.6\%$.</li>
+<li>Far field $\frac{J}{q\mu_nN_d} = \frac{0.134}{2.0} = 0.067$ V/cm. For 10 mA: $0.0259\ln\frac{10^{-2}}{I_0} = 0.771$ V.</li>
+</ul></section>
+
+<section class="ex"><h2>Ex 5 · Narrow base</h2><span class="fig" data-f="nb"></span>
+<p>$\ell = 5\,\mu$m, $N_d = 10^{16}$, $D_p = 10$, $A = 10^{-4}$ cm², 0.55 V.</p>
+<ul>
+<li>$\Delta p_n = 2.25\times10^4(1.67\times10^9) = 3.76\times10^{13}$.</li>
+<li>$I = qAD_p\frac{\Delta p_n}{\ell} = 12.0\,\mu$A; $Q_p = \frac12qA\ell\Delta p_n = 1.50\times10^{-13}$ C.</li>
+<li>$t_t = \frac{\ell^2}{2D_p} = 12.5$ ns; $V_{base} = (25.9\text{ mV})(0.00376) = 97\,\mu$V.</li>
+</ul></section>
+
+<section class="ex"><h2>Ex 6 · Breakdown</h2><span class="fig" data-f="iv"></span>
+<ul>
+<li>p⁺-n, $N_d = 10^{17}$, $\mathscr{E}_{crit} = 5\times10^5$: $V_{br} = \frac{(1.044\times10^{-12})(2.5\times10^{11})}{2(1.6\times10^{-19})(10^{17})} = 8.2$ V. Avalanche, just above 6.7 V.</li>
+<li>$N_d = 10^{15}$, $\mathscr{E}_{crit} = 3\times10^5$: $V_{br} = 294$ V; $W_{br} = \frac{2V_{br}}{\mathscr{E}_{crit}} = 19.6\,\mu$m.</li>
+</ul></section>
+
+<section class="ex"><h2>Ex 7 · Junction capacitance</h2>
+<p>p⁺-n, $10^{18}/10^{16}$, $A = 10^{-3}$ cm².</p>
+<ul>
+<li>$V_0 = 0.814$ V. $C_j(0) = A\sqrt{\frac{q\epsilon}{2V_0}\frac{N_aN_d}{N_a + N_d}} = 31.9$ pF.</li>
+<li>−5 V: $\times\sqrt{0.814/5.814} = 11.9$ pF. +0.4 V: $\times\sqrt{0.814/0.414} = 44.7$ pF.</li>
+</ul></section>
+
+<section class="ex"><h2>Ex 8 · Stored charge and turn-off</h2><span class="fig" data-f="tsd"></span>
+<p>$\tau_p = 1.5\,\mu$s, $I_f = 2$ mA, switched to $I_r = 1$ mA.</p>
+<ul>
+<li>$Q_p = I\tau_p = 3.0$ nC; $C_s = \frac{Q_p}{kT/q} = 116$ nF; $r = \frac{kT}{qI} = 12.9\,\Omega$.</li>
+<li>$t_{sd} = 1.5\ln(1 + 2) = 1.65\,\mu$s.</li>
+</ul></section>
+
+<section class="ex"><h2>Ex 9 · Two metals on n-Si</h2><span class="fig" data-f="ms"></span>
+<p>$N_d = 10^{17}$, $\chi = 4.05$ eV.</p>
+<ul>
+<li>$E_c - E_F = 0.0259\ln280 = 0.146$ eV; $\phi_s = 4.196$ eV.</li>
+<li>$\phi_m = 4.6 > \phi_s$: rectifying, $\phi_B = 0.55$ eV, $V_0 = 0.40$ V.</li>
+<li>$\phi_m = 4.0 &lt; \phi_s$: ohmic (electrons pile up at the surface).</li>
+</ul></section>
+
+<section class="ex"><h2>Ex 10 · Solar cell</h2><span class="fig" data-f="solar"></span>
+<p>$A = 2$ cm², $g_{op} = 2\times10^{19}$, $L_p + L_n + W = 46\,\mu$m, $I_{th} = 10^{-11}$ A.</p>
+<ul>
+<li>$I_{sc} = qAg_{op}(46\times10^{-4}) = 29.4$ mA; $V_{oc} = 0.0259\ln(2.94\times10^9) = 0.565$ V.</li>
+<li>$V_{mp} \approx 0.487$ V: $P_{max} = 13.6$ mW, FF = 0.82. ×10 light: $V_{oc} = 0.624$ V.</li>
+</ul></section>
+
+<section class="ex"><h2>Ex 11 · Light, fast</h2>
+<ul>
+<li>GaN LED: $1.24/3.4 = 0.365\,\mu$m (UV). InP: $1.24/1.35 = 0.919\,\mu$m (IR).</li>
+<li>APD with $P = 0.75$: $M = \frac{1}{0.25} = 4$.</li>
+</ul></section>
+
+</div>
+</div>
+
+<script>
+  // hand-drawable sketches: band edges solid, EF long dashes, Ei and quasi-Fermi levels short dashes
+  (function () {
+    const W = 120, H = 80;
+    const ln = (x1, y1, x2, y2, o = '') => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#111" stroke-width="${/thick/.test(o) ? 1.8 : 1.1}" ${/dash/.test(o) ? 'stroke-dasharray="6 3"' : /dot/.test(o) ? 'stroke-dasharray="2 2"' : ''}/>`;
+    const pl = (pts, o = '') => `<polyline fill="none" points="${pts.map((p) => p.join(',')).join(' ')}" stroke="#111" stroke-width="${/thick/.test(o) ? 1.8 : 1.1}" ${/dash/.test(o) ? 'stroke-dasharray="6 3"' : /dot/.test(o) ? 'stroke-dasharray="2 2"' : ''}/>`;
+    const tx = (x, y, t, a = 'start', c = '') => `<text x="${x}" y="${y}" text-anchor="${a}" class="${c}">${t}</text>`;
+    const arr = (x1, y1, x2, y2) => { const a = Math.atan2(y2 - y1, x2 - x1), h = 4; return ln(x1, y1, x2, y2) + `<path d="M${x2},${y2}L${x2 - h * Math.cos(a - 0.45)},${y2 - h * Math.sin(a - 0.45)}L${x2 - h * Math.cos(a + 0.45)},${y2 - h * Math.sin(a + 0.45)}Z" fill="#111"/>`; };
+    const curve = (fn, x0, x1, n = 40) => { const pts = []; for (let i = 0; i <= n; i++) { const x = x0 + (x1 - x0) * i / n; pts.push([x.toFixed(1), fn(x).toFixed(1)]); } return pts; };
+    const bands = (ef, o = {}) => ln(6, 12, 96, 12, 'thick') + ln(6, 70, 96, 70, 'thick') + ln(6, 41, 96, 41, 'dot') + (ef !== null ? ln(6, ef, 96, ef, 'dash') : '') + tx(99, 15, 'Ec', 'start', 's') + tx(99, 73, 'Ev', 'start', 's') + tx(99, 44, 'Ei', 'start', 's') + (ef !== null ? tx(99, ef + (o.efUp ? -2 : 4), o.efl || 'EF', 'start', 's') : '');
+    const st = (x, a, b, x0, w) => { const t = Math.min(1, Math.max(0, (x - x0) / w)); return a + (b - a) * t * t * (3 - 2 * t); };
+    const F = {
+      hs: () => ln(6, 76, 116, 76) + [[22, 4.5, 58], [56, 7, 38], [92, 9, 26]].map(([c, w, a]) => pl(curve((x) => 76 - a * Math.exp(-(((x - c) / w) ** 2)), c - 3 * w, Math.min(116, c + 3 * w)), 'thick')).join('') + arr(10, 10, 46, 10) + tx(28, 7, 'E', 'middle', 's') + tx(112, 87, 'x', 'end', 's') + tx(92, 44, 'wider, lower', 'middle', 's'),
+      eq: () => pl(curve((x) => st(x, 14, 40, 44, 32), 6, 96), 'thick') + pl(curve((x) => st(x, 48, 74, 44, 32), 6, 96), 'thick') + ln(6, 44, 96, 44, 'dash') + ln(44, 14, 90, 14, 'dot') + arr(86, 15, 86, 39) + tx(83, 30, 'qV₀', 'end', 's') + tx(99, 38, 'Ec', 'start', 's') + tx(99, 50, 'EF', 'start', 's') + tx(99, 77, 'Ev', 'start', 's') + tx(20, 87, 'p', 'middle', 's') + tx(88, 87, 'n', 'middle', 's'),
+      tri: () => ln(6, 28, 116, 28) + `<rect x="40" y="28" width="8" height="20" fill="#eef1f5" stroke="#111"/><rect x="48" y="23" width="44" height="5" fill="#eef1f5" stroke="#111"/>` + tx(37, 44, '−qNa', 'end', 's') + tx(70, 19, '+qNd', 'middle', 's') + ln(6, 60, 116, 60) + pl([[40, 60], [48, 86], [92, 60]], 'thick') + tx(44, 88, 'E₀', 'end', 's') + tx(116, 82, 'area V₀−V', 'end', 's') + tx(8, 56, 'E', 'start', 's') + tx(8, 24, 'ρ', 'start', 's'),
+      fwd: () => pl(curve((x) => st(x, 20, 34, 44, 20), 6, 96), 'thick') + pl(curve((x) => st(x, 54, 68, 44, 20), 6, 96), 'thick') + pl([[6, 50], [64, 50]].concat(curve((x) => 38 + 12 * Math.exp(-(x - 64) / 10), 64, 96)), 'dash') + pl(curve((x) => 50 - 12 * Math.exp(-(44 - x) / 10), 6, 44).concat([[96, 38]]), 'dash') + arr(54, 39, 54, 49) + tx(57, 47, 'qV', 'start', 's') + tx(99, 31, 'Ec', 'start', 's') + tx(99, 42, 'Fn', 'start', 's') + tx(99, 71, 'Ev', 'start', 's') + tx(8, 47, 'Fp', 'start', 's'),
+      comp: () => ln(6, 76, 116, 76) + ln(52, 8, 52, 76, 'dot') + ln(60, 8, 60, 76, 'dot') + ln(6, 16, 116, 16, 'thick') + pl(curve((x) => 16 + 6 * Math.exp((x - 52) / 8), 6, 52).concat([[60, 22]], curve((x) => 76 - 54 * Math.exp(-(x - 60) / 18), 60, 116))) + pl(curve((x) => 76 - 6 * Math.exp((x - 52) / 8), 6, 52).concat([[60, 70]], curve((x) => 16 + 54 * Math.exp(-(x - 60) / 18), 60, 116)), 'dash') + tx(112, 13, 'I', 'end', 's') + tx(100, 66, 'Ip', 'start', 's') + tx(100, 32, 'In', 'start', 's') + tx(28, 87, 'p⁺', 'middle', 's') + tx(88, 87, 'n', 'middle', 's'),
+      nb: () => ln(16, 76, 104, 76) + ln(16, 76, 16, 6) + ln(100, 10, 100, 76, 'thick') + pl([[16, 16], [100, 76]], 'thick') + pl(curve((x) => 76 - 60 * Math.exp(-(x - 16) / 30), 16, 100), 'dash') + tx(20, 12, 'Δpₙ', 'start', 's') + tx(58, 87, 'ℓ', 'middle', 's') + tx(100, 87, 'contact', 'middle', 's') + tx(44, 66, 'long', 'middle', 's'),
+      iv: () => ln(8, 46, 116, 46) + ln(70, 6, 70, 86) + pl(curve((x) => 46 - 1.5 * (Math.exp((x - 70) / 7) - 1), 70, 93), 'thick') + pl([[20, 86], [24, 49], [70, 47]], 'thick') + tx(26, 78, '−Vbr', 'start', 's') + tx(112, 43, 'V', 'end', 's') + tx(73, 10, 'I', 'start', 's') + tx(50, 41, '≈ −I₀', 'middle', 's'),
+      tsd: () => ln(6, 44, 116, 44) + pl([[6, 22], [34, 22], [34, 62], [66, 62]].concat(curve((x) => 44 + 18 * Math.exp(-(x - 66) / 8), 66, 116)), 'thick') + ln(34, 72, 66, 72) + ln(34, 69, 34, 75) + ln(66, 69, 66, 75) + tx(50, 83, 'tsd', 'middle', 's') + tx(10, 18, 'If', 'start', 's') + tx(31, 66, '−Ir', 'end', 's') + tx(112, 40, 't', 'end', 's'),
+      ms: () => `<rect x="6" y="8" width="30" height="68" fill="#eef1f5" stroke="#111"/>` + ln(6, 44, 96, 44, 'dash') + pl(curve((x) => (x < 70 ? 38 - 20 * ((70 - x) / 34) ** 2 : 38), 36, 96), 'thick') + pl(curve((x) => (x < 70 ? 72 - 20 * ((70 - x) / 34) ** 2 : 72), 36, 96), 'thick') + arr(39, 43, 39, 19) + tx(33, 34, 'qφB', 'end', 's') + ln(36, 18, 90, 18, 'dot') + arr(80, 19, 80, 37) + tx(77, 30, 'qV₀', 'end', 's') + tx(99, 36, 'Ec', 'start', 's') + tx(99, 50, 'EF', 'start', 's') + tx(99, 75, 'Ev', 'start', 's') + tx(21, 87, 'metal', 'middle', 's') + tx(70, 87, 'n-Si', 'middle', 's'),
+      solar: () => `<rect x="20" y="30" width="36" height="15.8" fill="#eef1f5" stroke="#111" stroke-dasharray="2 2"/>` + ln(8, 30, 116, 30) + ln(20, 6, 20, 86) + pl(curve((x) => 30 - 2 * (Math.exp((x - 20) / 14) - 1), 20, 52), 'dash') + pl(curve((x) => 70 - 2 * (Math.exp((x - 20) / 14) - 1), 20, 69), 'thick') + tx(17, 73, 'Isc', 'end', 's') + tx(63, 26, 'Voc', 'middle', 's') + tx(38, 42, 'Pmax', 'middle', 's') + tx(112, 27, 'V', 'end', 's') + tx(23, 10, 'I', 'start', 's') + tx(54, 12, 'dark', 'middle', 's'),
+    };
+    document.querySelectorAll('.fig[data-f]').forEach((el) => {
+      const f = F[el.dataset.f];
+      if (f) el.innerHTML = `<svg viewBox="0 0 ${W} ${H + 10}" xmlns="http://www.w3.org/2000/svg">${f()}</svg>`;
+    });
+  })();
+
+  document.addEventListener('DOMContentLoaded', function () {
+    renderMathInElement(document.body, { delimiters: [{ left: '$', right: '$', display: false }], throwOnError: false });
+    document.body.setAttribute('data-ready', '1');
+  });
+</script>
+</body>
+</html>

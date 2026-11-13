@@ -10,7 +10,7 @@
     steps: [
       R(md`
         ### What the exam gives you
-        The Exam 2 formula sheet has only: $V_{ov}$ for NMOS and PMOS, the square law in saturation and triode, the diode law and $r_d = V_T/I_{D0}$, and $g_m = 2I_D/V_{ov}$. **Every result below is yours to bring.** Course parameters (printed on the cover): $\mu_nC_{ox} = 100\,\mu\text{A/V}^2$, $\mu_pC_{ox} = 50\,\mu\text{A/V}^2$, $|V_T| = 1\,\text{V}$.
+        The Exam 2 formula sheet has only: $V_{ov}$ for NMOS and PMOS, the square law in saturation and triode, the diode law and $r_d = V_T/I_{D0}$, and $g_m = 2I_D/V_{ov}$. **Every result below is yours to bring.** Course parameters (printed on the cover): $\mu_nC_{ox} = 100\,\mu\text{A/V}^2$, $\mu_pC_{ox} = 50\,\mu\text{A/V}^2$, $V_{TN} = 1\,\text{V}$, $|V_{TP}| = 1\,\text{V}$ ($V_T$ alone is the diode's thermal voltage). The lectures name the controlling voltage $v_x$: $g_mv_x$ with $v_x = v_{gs}$.
 
         ### The model
         $i_d = g_mv_{gs} + v_{ds}/r_{ds}$ (drain → source), **NMOS and PMOS alike**. Gate current zero.
@@ -59,7 +59,7 @@
         - **Signs:** CS-type stages invert; CG and CD do not; a PMOS gate driven by an inverted copy fights an NMOS driven by the input.
 
         ### DC
-        Same $V_{GS}$ (mirror): $I\propto W/L$. Same current: $V_{ov}\propto1/\sqrt{W/L}$, $g_m\propto\sqrt{W/L}$. PMOS needs $2\times$ the $W/L$. Saturation: NMOS $V_D\ge V_G - V_T$, PMOS $V_D\le V_G + |V_T|$. Diode-connected devices are always saturated. $1\,\text{mA}$ at $0.2\,\text{V}$: $g_m = 10\,\text{mS}$, $1/g_m = 100\,\Omega$.
+        Same $V_{GS}$ (mirror): $I\propto W/L$. Same current: $V_{ov}\propto1/\sqrt{W/L}$, $g_m\propto\sqrt{W/L}$. PMOS needs $2\times$ the $W/L$. Saturation: NMOS $V_D\ge V_G - V_{TN}$, PMOS $V_D\le V_G + |V_{TP}|$. Diode-connected devices are always saturated. $1\,\text{mA}$ at $0.2\,\text{V}$: $g_m = 10\,\text{mS}$, $1/g_m = 100\,\Omega$.
 
         A [printable version](stages.html) of this page fits on two sides.
       `),

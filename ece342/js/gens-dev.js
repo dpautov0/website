@@ -33,7 +33,8 @@
   // NMOS mirror: I_REF into diode-connected M1 (gate on right), M2 output into R_D.
   FIGS.nmirror = (o = {}) => {
     const fig = [
-      ['w', [1, 0], [3, 0]], ['rail', [2, 0], { n: o.vdds || 'V_{DD}' }],
+      // without R_D the supply only feeds I_REF: the top wire stops at the rail instead of running on to nothing
+      ['w', [1, 0], [o.RD === false ? 2 : 3, 0]], ['rail', [2, 0], { n: o.vdds || 'V_{DD}' }],
       ['I', [1, 0], [1, 1.5], { n: 'I_{REF}', s: o.irefs, side: 'l' }],
       ['nmos', [1, 2.5], { n: 'M_1', sz: o.s1, flip: true, dc: true }], ['gnd', [1, 3.5]],
       ['nmos', [3, 2.5], { n: 'M_2', sz: o.s2 }], ['gnd', [3, 3.5]],
@@ -216,7 +217,8 @@
     const tan = Schem.plot({ w: 360, h: 230, x: [a, b], y: [-ys, ys], xl: 'V_D\\,(\\text{V})', yl: 'f\\,(\\text{mA})', xt: [c.v0], yt: [0],
       curves: [{ pts: clipPts(fm, a, b, -ys, ys), cls: 'dc' }, { pts: clipPts((v) => f0 - g0 * (v - c.v0), a, b, -ys, ys) }],
       pts: [{ x: c.v0, y: f0, n: 'V_{D,0}' }, { x: v1, y: 0, n: 'V_{D,1}' }] });
-    const tbl = rows.map((r) => `| ${r.i} | ${r.v.toFixed(5)} | ${f(r.fv * 1e3)} | ${f(-r.g * 1e3)} | ${(r.dv * 1e3).toFixed(3)} |`).join('\n');
+    // f() writes tiny residuals as TeX (1.2\times10^{-8}), so the cells are math
+    const tbl = rows.map((r) => `| ${r.i} | ${r.v.toFixed(5)} | $${f(r.fv * 1e3)}$ | $${f(-r.g * 1e3)}$ | ${(r.dv * 1e3).toFixed(3)} |`).join('\n');
     return {
       fig: FIGS.vrd(Vv(c.Vs), kO(c.R)),
       q: md`$V_S = ${f(c.Vs)}\,\text{V}$ drives a diode through $R_S = ${kO(c.R)}$. The diode obeys $${law}$ with ${params}. Use Newton–Raphson from $V_{D,0} = ${f(c.v0)}\,\text{V}$: find $f(V_{D,0})$, $f'(V_{D,0})$ and $V_{D,1}$, then iterate to the operating current $I_D$.`,
@@ -526,7 +528,7 @@ $$|v_s|_{max} = 7.5\,\text{mV}\times\frac{R + ${two ? '2r_d' : 'r_d'}}{r_d} = 7.
       q: `$1X = ${unit}/1$. A current source pushes $${curTeX(I)}$ down through a stack of diode-connected NMOS. Find the node voltages, bottom-up (${labels.slice(0, n).map((x) => `$${x}$`).join(', ')}).`,
       fig, parts: labels.slice(0, n).map((l, i) => ({ lbl: l, unit: 'V', ans: nodes[i] })),
       hints: [`The ${xs(1)} device carries $${curTeX(I)}$: find its $V_{ov}$ first.`, 'Same current through every device ⇒ $V_{ov} \\propto \\dfrac{1}{\\sqrt{W/L}}$: $4X$ halves it, $\\tfrac14X$ doubles it.', 'Each node is the one below it plus that device\'s $V_{GS} = 1 + V_{ov}$.'],
-      sol: `For $1X$: $V_{ov} = \\sqrt{\\dfrac{2(${f(I * 1e3)}\\text{m})}{(100\\mu)(${unit})}} = ${f(vov1)}\\,\\text{V}$.\n\n${sizes.map((m, i) => `- ${xs(m)}: $V_{ov} = ${f(vovs[i])}$, $V_{GS} = ${f(vgs[i])}\\,\\text{V}$`).join('\n')}\n\nStacking from ground: ${labels.slice(0, n).map((l, i) => `$${l} = ${f(nodes[i])}\\,\\text{V}$`).join(', ')}.`,
+      sol: `For $1X$: $V_{ov} = \\sqrt{\\dfrac{2(${f(I * 1e3)}\\text{m})}{(100\\mu)(${unit})}} = ${f(vov1)}\\,\\text{V}$.\n\n${sizes.map((m, i) => `- $${xs(m)}$: $V_{ov} =${f(vovs[i])}$, $V_{GS} = ${f(vgs[i])}\\,\\text{V}$`).join('\n')}\n\nStacking from ground: ${labels.slice(0, n).map((l, i) => `$${l} = ${f(nodes[i])}\\,\\text{V}$`).join(', ')}.`,
     };
   };
 
