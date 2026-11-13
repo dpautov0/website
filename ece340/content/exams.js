@@ -15,6 +15,7 @@
     actions: [
       { href: '#/l/mcq-all', label: 'Multiple-choice bank' },
       { href: '#/l/hw1', label: 'Past homework' },
+      { href: '#/l/hw6', label: 'Homework 6–9' },
       { href: '#/l/e1-sp26', label: 'Spring 2026 exam' },
       { href: '#/l/e1-f24', label: 'Fall 2024 exam' },
       { href: '#/l/e1-x15', label: 'The 2015 exam' },
