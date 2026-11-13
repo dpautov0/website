@@ -401,7 +401,7 @@ What happens to **${r.qty}**?`, parts: [{ mc: order.map((d) => DIR[d]), a: order
       const right = `$${sf(E)}$ V/cm`;
       return MC('Field in the neutral region', md`Far from the junction in the n side ($N_d = ${sp(N)}$, $\mu_n = ${mu}$), the diode carries ${J} A/cm². The field there ≈ ?`, right,
         [[`$${sf(E * 10)}$ V/cm`, 'Off by ten.'], [`$${sf(E / 10)}$ V/cm`, 'Off by ten.'], ['0', 'All the current is carried by majority drift here, which needs a field.']],
-        md`There $\delta p \to 0$: the whole current is electron drift, $J = q\mu_nN_d\mathscr{E}$, so $\mathscr{E} = J/q\mu_nN_d$ = ${sf(E)} V/cm. Tiny: neutral regions drop almost no voltage.`);
+        md`There $\delta p \to 0$: the whole current is electron drift, $J = q\mu_nN_d\mathscr{E}$, so $\mathscr{E} = J/q\mu_nN_d = ${sf(E)}$ V/cm. Tiny: neutral regions drop almost no voltage.`);
     },
     () => one([
       () => MC('Long p⁺-n diode, deep in the n region', md`Several $L_p$ into the n side of a forward-biased p⁺-n diode, the current is carried by…`, 'majority electrons, by drift',
@@ -489,17 +489,17 @@ What happens to **${r.qty}**?`, parts: [{ mc: order.map((d) => DIR[d]), a: order
     () => {
       const I = pick([0.1, 0.5, 1, 2, 10]), tau = pick([0.1, 1, 10]);
       const Cs = (I * 1e-3) * (tau * 1e-6) / 0.0259;
-      const right = `${S.f(Cs * 1e9, 3)} nF`;
+      const right = `$${S.f(Cs * 1e9, 3)}$ nF`;
       return MC('Storage capacitance', md`A long p⁺-n diode carries ${I} mA, $\tau_p = ${tau}$ μs. $C_s$ ≈ ?`, right,
-        [[`${S.f(Cs * 1e12, 3)} nF`, 'Off by a thousand: watch mA and μs.'], [`${S.f(Cs * 1e9 * 0.0259 * 0.0259, 3)} nF`, md`That multiplies by $kT/q$; divide:$C_s = I\tau_p/(kT/q)$.`], [`${S.f(Cs * 1e9 * 10, 3)} nF`, 'Off by ten.']],
-        md`$C_s = \frac{q}{kT}I\tau_p = \frac{(${I}\times10^{-3})(${tau}\times10^{-6})}{0.0259}$ = ${S.f(Cs * 1e9, 3)} nF. Huge compared with typical $C_j$ (pF).`);
+        [[`$${S.f(Cs * 1e12, 3)}$ nF`, 'Off by a thousand: watch mA and μs.'], [`$${S.f(Cs * 1e9 * 0.0259 * 0.0259, 3)}$ nF`, md`That multiplies by $kT/q$; divide: $C_s = I\tau_p/(kT/q)$.`], [`$${S.f(Cs * 1e9 * 10, 3)}$ nF`, 'Off by ten.']],
+        md`$C_s = \frac{q}{kT}I\tau_p = \frac{(${I}\times10^{-3})(${tau}\times10^{-6})}{0.0259} = ${S.f(Cs * 1e9, 3)}$ nF. Huge compared with typical $C_j$ (pF).`);
     },
     () => {
       const I = pick([0.1, 0.5, 1, 2, 10]), r = 25.9 / I;
-      const right = `${S.f(r, 3)} Ω`;
+      const right = `$${S.f(r, 3)}$ Ω`;
       return MC('Small-signal resistance', md`A diode carries ${I} mA at 300 K. Its small-signal resistance $1/G_s$ ≈ ?`, right,
-        [[`${S.f(r * 10, 3)} Ω`, 'Off by ten.'], [`${S.f(0.7 / (I * 1e-3), 3)} Ω`, md`That is $V/I$, the dc resistance. Small-signal is $dV/dI = (kT/q)/I$.`], [`${S.f(r / 10, 3)} Ω`, 'Off by ten.']],
-        md`$G_s = dI/dV = I/(kT/q)$, so $r = 25.9\text{ mV}/I$ = ${S.f(r, 3)} Ω.`);
+        [[`$${S.f(r * 10, 3)}$ Ω`, 'Off by ten.'], [`$${S.f(0.7 / (I * 1e-3), 3)}$ Ω`, md`That is $V/I$, the dc resistance. Small-signal is $dV/dI = (kT/q)/I$.`], [`$${S.f(r / 10, 3)}$ Ω`, 'Off by ten.']],
+        md`$G_s = dI/dV = I/(kT/q)$, so $r = 25.9\text{ mV}/I = ${S.f(r, 3)}$ Ω.`);
     },
     () => {
       const [ratio, ln] = pick([[1, Math.log(2)], [3, Math.log(4)], [9, Math.log(10)], [0.5, Math.log(1.5)], [0.25, Math.log(1.25)]]);
@@ -511,9 +511,9 @@ What happens to **${r.qty}**?`, parts: [{ mc: order.map((d) => DIR[d]), a: order
     () => {
       const W = pick([0.1, 0.2, 0.5, 1, 2]), A = pick([1e-4, 1e-3, 1e-2]);
       const C = 1.044e-12 * A / (W * 1e-4);
-      const right = `${S.f(C * 1e12, 3)} pF`;
+      const right = `$${S.f(C * 1e12, 3)}$ pF`;
       return MC('Junction capacitance, fast', md`Si ($\epsilon = 1.04\times10^{-12}$ F/cm), $A = ${sp(A)}$ cm², $W = ${W}$ μm. $C_j$ ≈ ?`, right,
-        [[`${S.f(C * 1e14, 3)} pF`, 'Unit slip: 1 μm = $10^{-4}$ cm.'], [`${S.f(C * 1e12 / 11.8, 3)} pF`, md`That used $\epsilon_0$; Si is $11.8\epsilon_0$.`], [`${S.f(C * 1e12 * 2, 3)} pF`, 'No factor of 2: $C_j = \\epsilon A/W$.']],
+        [[`$${S.f(C * 1e14, 3)}$ pF`, 'Unit slip: 1 μm = $10^{-4}$ cm.'], [`$${S.f(C * 1e12 / 11.8, 3)}$ pF`, md`That used $\epsilon_0$; Si is $11.8\epsilon_0$.`], [`$${S.f(C * 1e12 * 2, 3)}$ pF`, 'No factor of 2: $C_j = \\epsilon A/W$.']],
         md`$C_j = \epsilon A/W$. Anchor: 100 μm × 100 μm with $W = 1$ μm ≈ 1 pF.`);
     },
     () => one([
