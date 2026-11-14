@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>ECE 329 Exam 3 Notecard</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/contrib/auto-render.min.js"></script>
+<style>
+  /* One 4" x 6" index card, both sides, printed landscape (6 in wide, 4 in tall): what is NOT on the official Exam 3
+     formula sheet, plus the speed rules. A template to copy by hand. Explained item by item at index.html#/l/e3-card. */
+  :root { --ink: #111; --head: #1d4f91; --rule: #b9c3cf; --soft: #5a6470; --red: #a4453b; --paper: #fff; }
+  @page { size: 6in 4in; margin: 0.1in; }
+  * { box-sizing: border-box; }
+  html, body { background: var(--paper); color: var(--ink); margin: 0; }
+  body { font: 6.6pt/1.16 "Segoe UI", Arial, sans-serif; }
+  .card { width: 5.8in; height: 3.8in; overflow: hidden; margin: 0 auto; }
+  .card + .card { break-before: page; }
+  .top { display: flex; justify-content: space-between; align-items: baseline; gap: 6px; border-bottom: 0.9px solid var(--ink); margin-bottom: 2px; }
+  .top b { font-size: 6.6pt; white-space: nowrap; }
+  .top span { color: var(--soft); text-align: right; }
+  .cols { column-count: 3; column-gap: 6px; column-rule: 0.5px solid var(--rule); column-fill: auto; height: 3.62in; }
+  section { margin: 0 0 2px; }
+  h2 { font-size: 6.4pt; margin: 0 0 0.6px; color: var(--head); border-bottom: 0.5px solid var(--rule); break-after: avoid; }
+  p { margin: 0 0 0.7px; break-inside: avoid; }
+  .t { color: var(--red); font-weight: 600; }
+  .sep { color: #9aa6b2; font-style: normal; padding: 0 1px; }
+  .katex { font-size: 1.0em; }
+  .katex .katex-html { white-space: nowrap; }   /* a formula never breaks after its "=" */
+  @media screen {
+    body { padding: 18px; font-size: 9.2pt; background: #eef1f5; }
+    .card { width: auto; max-width: 980px; height: auto; background: #fff; padding: 14px 16px; border-radius: 8px; box-shadow: 0 1px 4px rgba(0, 0, 0, .15); margin-bottom: 22px; }
+    .cols { height: auto; column-fill: balance; }
+    .top b { font-size: 10pt; }
+    .note { max-width: 980px; margin: 0 auto 14px; color: var(--soft); font: 10pt/1.4 "Segoe UI", Arial, sans-serif; }
+    .note a { color: var(--head); }
+  }
+  @media screen and (max-width: 760px) { body { padding: 10px; font-size: 10pt; } .cols { column-count: 1; } .top { flex-direction: column; } .top span { text-align: left; } }
+  @media print { .note { display: none; } }
+</style>
+</head>
+<body>
+
+<p class="note">Your one 4″×6″ card for Exam 3, front and back, laid out to copy by hand (the exam allows handwritten notes only). It holds what the <a href="index.html#/l/e3-sheet">official formula sheet</a> does not give you, plus the speed rules; every line is explained in <a href="index.html#/l/e3-card">What to write on your 4×6 card</a>. Print the <a href="notecard-e3.pdf">PDF</a> at actual size (one card side per page) to see how small you must write. Red marks the slips that cost the most points.</p>
+
+<!-- ================================ FRONT: waves ================================ -->
+<div class="card">
+<div class="top"><b>ECE 329 Exam 3 · FRONT: waves</b><span>$\mu_0 = 4\pi\!\times\!10^{-7}$ <i class="sep">|</i> $\epsilon_0 = \frac{10^{-9}}{36\pi}$ <i class="sep">|</i> $\eta_0 = 120\pi \approx 377$ <i class="sep">|</i> $c = 0.3$ m/ns <i class="sep">|</i> $\mu_0c = \eta_0$, $\epsilon_0c\eta_0 = 1$</span></div>
+<div class="cols">
+
+<section><h2>Phasors, no calculator</h2>
+<p>$X(t) = \Re\{\tilde Xe^{j\omega t}\}$ <i class="sep">|</i> $\partial_t \to j\omega$ <i class="sep">|</i> $\cos \to 1$, $\sin \to -j$, $-\cos \to -1$</p>
+<p>$\frac1j = -j$ <i class="sep">|</i> $\sqrt j = e^{j45°} = \frac{1+j}{\sqrt2}$ <i class="sep">|</i> $\sqrt{-j} = \frac{1-j}{\sqrt2}$ <i class="sep">|</i> $e^{j\pi} = -1$</p>
+<p>$\cos x = \frac{e^{jx} + e^{-jx}}{2}$ <i class="sep">|</i> $\sin x = \frac{e^{jx} - e^{-jx}}{2j}$</p>
+<p>divide: × conjugate <i class="sep">|</i> polar: sizes ÷, angles −</p>
+<p>$\langle\Re\{Ae^{j\omega t}\}\,\Re\{Be^{j\omega t}\}\rangle = \frac12\Re\{AB^*\}$</p>
+<p>triangles 1:1:$\sqrt2$ → 45° <i class="sep">|</i> 1:$\sqrt3$:2 → 30°, 60° <i class="sep">|</i> 3:4:5 → 36.9°, 53.1°</p>
+<p>travel: $e^{-j\beta z}$ or $\omega t - \beta z$ → $+z$</p>
+</section>
+
+<section><h2>Lossy medium</h2>
+<p>$x = \frac{\sigma}{\omega\epsilon} = \frac{60\,\sigma\lambda_0}{\epsilon_r}$ (conduction ÷ displacement): $x < 0.1$ low loss, $x > 10$ conductor, else exact</p>
+<p><b>method:</b> $k = \omega\sqrt{\mu\epsilon}$, $\eta_i = \sqrt{\mu/\epsilon}$; $1 - jx = \rho e^{-j\theta}$</p>
+<p>$\gamma = jk\sqrt\rho\,e^{-j\theta/2}$ <i class="sep">|</i> $\eta = \frac{\eta_i}{\sqrt\rho}e^{j\theta/2}$ <i class="sep">|</i> $\tau = \frac\theta2 \le 45°$</p>
+<p class="t">check: $\angle\gamma + \angle\eta = 90°$, $|\gamma||\eta| = \omega\mu$</p>
+<p>exact: $\beta^2 - \alpha^2 = k^2$ <i class="sep">|</i> $2\alpha\beta = \omega\mu\sigma$</p>
+<p><b>conductor:</b> $\delta = \frac1\alpha = \frac{1}{\sqrt{\pi f\mu\sigma}}$ <i class="sep">|</i> $\gamma = \frac{1+j}{\delta}$ <i class="sep">|</i> $\eta = \frac{1+j}{\sigma\delta}$</p>
+<p>inside: $\lambda = 2\pi\delta$, $v_p = \omega\delta$; at $z = \delta$: field 37%, power 13.5%</p>
+<p>$H$ lags $E$ by $\tau$; both decay as $e^{-\alpha z}$</p>
+</section>
+
+<section><h2>Reading a wave</h2>
+<p>$E_0e^{-\alpha z}\cos(\omega t - \beta z + \phi)$: $\lambda = \frac{2\pi}\beta$, $v_p = \frac\omega\beta$, $\frac1\alpha$ = the $\frac1e$ distance</p>
+<p>H from E: size ÷ $|\eta|$, phase $-\tau$, direction $\hat k\times\hat e$</p>
+<p>$\tan\tau = \frac\alpha\beta$ (because $\angle\gamma = 90° - \tau$)</p>
+<p>Cu $\sigma = 5.8\times10^7$: $\delta \approx 66\ \mu$m at 1 MHz, $\delta \propto \frac{1}{\sqrt f}$ <i class="sep">|</i> sea: $\sigma \approx 4$, $\epsilon_r \approx 81$</p>
+</section>
+
+<section><h2>Power and loss</h2>
+<p>$\langle S\rangle = \frac{E_0^2}{2|\eta|}\cos\tau\,e^{-2\alpha z} = \frac12|H_0|^2\Re\{\eta\}\,e^{-2\alpha z}$</p>
+<p>lossless $\frac{E_0^2}{2\eta}$ <i class="sep">|</i> field $e^{-\alpha z}$, <span class="t">power $e^{-2\alpha z}$</span></p>
+<p>dB $= 10\log\frac{P_1}{P_2} = 8.69\,\alpha z$ <i class="sep">|</i> 3 dB = ½, 10 dB = $\frac1{10}$, 20 dB = $\frac1{100}$</p>
+<p>heat per volume $\frac12\sigma|\tilde E|^2 = -\nabla\cdot\langle\mathbf S\rangle$</p>
+<p>$R_s = \frac{1}{\sigma\delta} = \sqrt{\frac{\pi f\mu}{\sigma}}$ <i class="sep">|</i> conductor $\eta = (1+j)R_s$</p>
+<p>loss/area $\frac12R_s|\tilde J_s|^2$, $\tilde{\mathbf J}_s = \hat n\times\tilde{\mathbf H}$ (mirror: $|\tilde J_s| = 2|\tilde H_i|$); mirror absorbs $\frac{4R_s}{\eta_0}$</p>
+<p>pressure: mirror $\frac{2\langle S_i\rangle}{c}$, absorber $\frac{\langle S_i\rangle}{c}$ (N/m²)</p>
+<p>$\langle w_e\rangle = \frac14\epsilon|\tilde E|^2$, $\langle w_m\rangle = \frac14\mu|\tilde H|^2$; lossless: equal, $\langle S\rangle = v_p(\langle w_e\rangle + \langle w_m\rangle)$</p>
+<p class="t">$-\nabla\cdot\mathbf S = \partial_t(w_e + w_m) + \mathbf J\cdot\mathbf E$: both terms; on average only $\mathbf J\cdot\mathbf E$ is left</p>
+</section>
+
+<section><h2>Polarization</h2>
+<p>linear: in phase or 180° <i class="sep">|</i> circular: equal sizes, ±90° <i class="sep">|</i> else elliptical</p>
+<p><b>hand:</b> $\tilde{\mathbf E} = \mathbf a + j\mathbf b$ at one plane: $\mathbf E$ turns $\mathbf a \to -\mathbf b$; spin axis $\mathbf b\times\mathbf a$ along travel: RH, against: LH</p>
+<p>right thumb along travel, fingers turn with $\mathbf E$ → RH</p>
+<p>$+z$: $\hat x - j\hat y$ RH <i class="sep">|</i> $\hat x + j\hat y$ LH <i class="sep">|</i> $\cos\psi\,\hat x + \sin\psi\,\hat y$ RH ($\psi = \omega t - \beta z$)</p>
+<p class="t">reflection (real Γ) flips the hand</p>
+<p>$\langle S\rangle = \frac{|\tilde E_x|^2 + |\tilde E_y|^2}{2\eta}$: the two parts add</p>
+</section>
+
+<section><h2>Current sheets</h2>
+<p>sheet at $z_s$: $\tilde{\mathbf E} = -\frac\eta2\tilde{\mathbf J}_se^{-jk|z - z_s|}$ both sides (lossy $e^{-\gamma|z - z_s|}$): E even</p>
+<p>$\tilde{\mathbf H} = \frac12\tilde{\mathbf J}_s\times\hat n\,e^{-jk|z - z_s|}$, $\hat n$ sheet → point: H odd, jumps $J_s$</p>
+<p>want $\tilde{\mathbf E}_0$ beside it: $\tilde{\mathbf J}_s = -\frac2\eta\tilde{\mathbf E}_0$ <i class="sep">|</i> per side $\langle S\rangle = \frac\eta8|\tilde J_s|^2$</p>
+<p>two sheets: add, each with its own $|z - z_k|$; between them $e^{-jkz}$ + $e^{+jkz}$ → cos, sin</p>
+<p>equal $\tilde{\mathbf J}_s$ at 0 and $d$, between: $\tilde{\mathbf E} = -\eta\tilde{\mathbf J}_se^{-jkd/2}\cos k(z - \frac d2)$, $\tilde{\mathbf H} = -j(\tilde{\mathbf J}_s\times\hat z)e^{-jkd/2}\sin k(z - \frac d2)$; beyond $d$: $-\frac\eta2\tilde{\mathbf J}_s(1 + e^{jkd})e^{-jkz}$</p>
+<p>gap $\frac\lambda2$, same current: 0 outside <i class="sep">|</i> gap $\frac\lambda4$, $\tilde J_2 = -j\tilde J_1$: all toward sheet 2's side</p>
+</section>
+
+<section><h2>Reflection, standing waves</h2>
+<p>$\tilde E_r = \Gamma\tilde E_i$, <span class="t">$\tilde H_r$ gets $-\Gamma$</span> <i class="sep">|</i> $\eta_2 < \eta_1$ ⇒ $\Gamma < 0$</p>
+<p>power: back $|\Gamma|^2$, through $1 - |\Gamma|^2 = \frac{\eta_1}{\eta_2}|\tau|^2$</p>
+<p>$|\tilde E_1| = E_0|1 + \Gamma e^{-j2\beta\ell}|$ ($\ell$ from boundary): max $(1 + |\Gamma|)E_0$, min $(1 - |\Gamma|)E_0$, $\frac\lambda4$ apart; $\Gamma < 0$: min at the boundary</p>
+<p>PEC at $z = 0$: $\mathbf E_1 = 2E_0\sin\beta z\,\sin\omega t\,\hat x$ <i class="sep">|</i> $\mathbf H_1 = \frac{2E_0}{\eta}\cos\beta z\cos\omega t\,\hat y$ <i class="sep">|</i> $\mathbf J_s = \frac{2E_0}{\eta}\cos\omega t\,\hat x$ <i class="sep">|</i> $\langle S\rangle = 0$</p>
+<p>E nodes every $\frac\lambda2$ from the wall; H max at the wall</p>
+<p>$\frac\lambda4$ layer with $\eta_2 = \sqrt{\eta_1\eta_3}$: no reflection <i class="sep">|</i> $\frac\lambda2$ slab: invisible</p>
+</section>
+
+</div></div>
+
+<!-- ================================ BACK: lines ================================ -->
+<div class="card">
+<div class="top"><b>ECE 329 Exam 3 · BACK: lines</b><span>$v = \frac{c}{\sqrt{\epsilon_r}}$ <i class="sep">|</i> $T = \frac lv$ <i class="sep">|</i> $\beta = \frac\omega v = \frac{2\pi}\lambda$ <i class="sep">|</i> $\beta\frac\lambda8 = 45°$, $\beta\frac\lambda4 = 90°$, $\beta\frac\lambda2 = 180°$</span></div>
+<div class="cols">
+
+<section><h2>Line from the fields</h2>
+<p>$\mathcal L = \frac{\mu}{GF}$ <i class="sep">|</i> $\mathcal C = \epsilon\,GF$ <i class="sep">|</i> $G = \sigma GF$ <i class="sep">|</i> $\mathcal L\mathcal C = \mu\epsilon$ <i class="sep">|</i> $\frac{G}{\mathcal C} = \frac\sigma\epsilon$</p>
+<p>GF: plates $\frac Wd$ <i class="sep">|</i> coax $\frac{2\pi}{\ln(b/a)}$ <i class="sep">|</i> <span style="white-space: nowrap">twin lead $\frac{\pi}{\cosh^{-1}(D/2a)}$</span></p>
+<p>coax $Z_0 = \frac{\eta}{2\pi}\ln\frac ba = \frac{60}{\sqrt{\epsilon_r}}\ln\frac ba$ <i class="sep">|</i> plates $Z_0 = \eta\frac dW$</p>
+<p>plates $V = E_xd$, $I = H_yW$ <i class="sep">|</i> coax $V = \int_a^bE_r\,dr$, $I = 2\pi rH_\phi$</p>
+<p>$Z_0 = \frac{1}{v\mathcal C} = v\mathcal L$ <i class="sep">|</i> $\mathcal C = \frac{Q'}{V}$, $\mathcal L = \frac{\Psi'}{I}$ (per meter)</p>
+</section>
+
+<section><h2>Launch, reflect, steady state</h2>
+<p>$V^+ = \tau_gV_g$ (line looks like $Z_0$) <i class="sep">|</i> $I^\pm = \pm\frac{V^\pm}{Z_0}$ <i class="sep">|</i> <span class="t">current reflects with $-\Gamma$</span></p>
+<p>Γ: matched 0, short −1, open +1; $R > Z_0$ ⇒ $\Gamma > 0$</p>
+<p>$V_L = (1 + \Gamma_L)V^+$ <i class="sep">|</i> $I_L = (1 - \Gamma_L)\frac{V^+}{Z_0}$</p>
+<p>joint $Z_a \to Z_b$: $\Gamma = \frac{Z_b - Z_a}{Z_b + Z_a}$, $\tau = 1 + \Gamma$; <span class="t">from b's side: $-\Gamma$, $1 - \Gamma$</span></p>
+<p>two lines after the joint: $Z_b\|Z_c$ <i class="sep">|</i> resistor at the joint: $R\|Z_b$</p>
+<p><b>steady state (DC):</b> the line vanishes: $V = V_g\frac{R_L}{R_g + R_L}$, $I = \frac{V_g}{R_g + R_L}$; $= \tau_gV_g\frac{1 + \Gamma_L}{1 - \Gamma_L\Gamma_g}$</p>
+<p>C load: short first (−1), open at the end (+1) <i class="sep">|</i> L: open first, short at the end</p>
+</section>
+
+<section><h2>Bounce diagrams</h2>
+<p>$t$ down, $z$ across, slopes $\pm v$; write each wave's value on its line</p>
+<p>$V(z,t)$ = sum of every wave whose front has passed $z$ by $t$</p>
+<p>arrivals at $z$: $\frac zv$, $\frac{2l - z}v$, $\frac{2l + z}v$, $\frac{4l - z}v$, …</p>
+<p>snapshot at $t$: fronts at $z = vt$, $2l - vt$, …; <span class="t">first in time = farthest in $z$</span></p>
+<p>pulse of width $w$: $u(t) - u(t - w)$, length $vw$ on the line</p>
+<p>impulse: spikes $\tau_g(\Gamma_L\Gamma_g)^n$ (the sheet's sums)</p>
+<p>scope at $z = 0$: level $\tau_gV_g$; jump at $2T$ is $\tau_gV_g\Gamma_L(1 + \Gamma_g)$ → $\Gamma_L$; $T$ → $l = vT$</p>
+<p>junctions: each its own Γ, τ; every transmitted wave starts new bounces</p>
+</section>
+
+<section><h2>Phasor lines</h2>
+<p>$Z_{in} = Z_0\frac{Z_L + jZ_0\tan\beta l}{Z_0 + jZ_L\tan\beta l}$</p>
+<p>$\frac\lambda4$: $Z_{in} = \frac{Z_0^2}{Z_L}$ (inverts) <i class="sep">|</i> $\frac\lambda2$: $Z_{in} = Z_L$</p>
+<p>match $R_L$ to $R_{in}$: $\frac\lambda4$ of $Z_0 = \sqrt{R_{in}R_L}$ (at that $f$, and odd multiples)</p>
+<p>$\Gamma_L = \frac{Z_L - Z_0}{Z_L + Z_0}$; $\Gamma(d) = \Gamma_Le^{-j2\beta d}$ turns clockwise toward the generator</p>
+<p>$|\tilde V|$ max where $\Gamma(d)$ is real and $> 0$: $2\beta d_{max} = \theta_L + 2\pi n$; min $\frac\lambda4$ away</p>
+<p>real $R_L > Z_0$: max at load, VSWR $= \frac{R_L}{Z_0}$ <i class="sep">|</i> $R_L < Z_0$: min at load, VSWR $= \frac{Z_0}{R_L}$</p>
+<p>$P_L = \frac{|\tilde V^+|^2}{2Z_0}(1 - |\Gamma_L|^2)$ = power in (lossless)</p>
+<p>$\tilde V^+ = \frac{\tilde V(l)}{e^{j\beta l}(1 + \Gamma(l))}$</p>
+</section>
+
+<section><h2>Stubs and resonance</h2>
+<p>short: $Z = jZ_0\tan\beta l$: under $\frac\lambda4$ → L; 0 at $l = n\frac\lambda2$, ∞ at $l = (2n - 1)\frac\lambda4$</p>
+<p>open: $Z = -jZ_0\cot\beta l$: under $\frac\lambda4$ → C; ∞ at $n\frac\lambda2$, 0 at $(2n - 1)\frac\lambda4$</p>
+<p>in $f$ ($\beta l = \frac{2\pi fl}{v}$): short stub 0 at $f = \frac{nv}{2l}$, ∞ at $f = \frac{(2n - 1)v}{4l}$; open: swap</p>
+<p>short, $\beta l \ll 1$: $L = \mathcal Ll$ <i class="sep">|</i> open: $C = \mathcal Cl$</p>
+<p>shunt stub that is 0 at $f$: notch (kills $f$) <i class="sep">|</i> ∞ at $f$: invisible <i class="sep">|</i> series stub ∞: blocks</p>
+<p>ringing line: same ends (S-S, O-O) $f = \frac{nv}{2l}$, period $\frac{2l}v$ <i class="sep">|</i> mixed (S-O) $f = \frac{(2n - 1)v}{4l}$, period $\frac{4l}v$</p>
+</section>
+
+<section><h2>Speed rules and numbers</h2>
+<p>1. lossless numbers first, then $x = \frac{\sigma}{\omega\epsilon}$, then the matching sheet line</p>
+<p>2. $\tilde{\mathbf H} = \frac1\eta\hat k\times\tilde{\mathbf E}$ <i class="sep">|</i> $\tilde{\mathbf E} = \eta\tilde{\mathbf H}\times\hat k$ ($\hat k$ = travel)</p>
+<p>3. sign of Γ first: smaller η or R ahead ⇒ $\Gamma < 0$ ⇒ minimum at the boundary or load</p>
+<p>4. $\frac\lambda4$ inverts, $\frac\lambda2$ repeats; short under $\frac\lambda4$ = L, open under $\frac\lambda4$ = C</p>
+<p>5. last bounce level = the DC divider: check it</p>
+<p>6. a joint: $V$ continuous and currents add (that is $\tau = 1 + \Gamma$)</p>
+<p class="t">7. three τ's: angle of η <i class="sep">|</i> $1 + \Gamma$ <i class="sep">|</i> $\tau_g = \frac{Z_0}{R_g + Z_0}$: name which one</p>
+<p>$e^{-1} = .368$ <i class="sep">|</i> $e^{-2} = .135$ <i class="sep">|</i> $e^{-3} = .050$ <i class="sep">|</i> $e^{-4} = .018$ <i class="sep">|</i> $e^{-5} = .0067$</p>
+<p>$\ln2 = .693$ <i class="sep">|</i> $\ln10 = 2.30$ <i class="sep">|</i> $\sqrt2 = 1.414$ <i class="sep">|</i> $\sqrt3 = 1.732$ <i class="sep">|</i> $\pi^2 \approx 9.87$</p>
+<p>300 MHz: $\lambda_0 = 1$ m, $k_0 = 2\pi$ <i class="sep">|</i> $\omega\mu_0 = k_0\eta_0$ <i class="sep">|</i> $\omega\epsilon_0 = \frac{k_0}{\eta_0}$</p>
+<p>units: α Np/m, β rad/m, η Ω, S W/m², $J_s$ A/m, $\mathcal L$ H/m, $\mathcal C$ F/m; 1 Np = 8.69 dB</p>
+</section>
+
+</div></div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    renderMathInElement(document.body, {
+      delimiters: [{ left: '$', right: '$', display: false }], throwOnError: false,
+      macros: { '\\Re': '\\operatorname{Re}', '\\Im': '\\operatorname{Im}' },
+    });
+    document.body.setAttribute('data-ready', '1');
+  });
+</script>
+</body>
+</html>

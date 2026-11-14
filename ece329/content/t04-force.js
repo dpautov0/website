@@ -381,7 +381,7 @@
       const Fl = 2e-7 * I1 * I2 / (dc / 100) * 1e6;
       const o = (x) => `${p(r3(x))} µN/m`;
       return MC('Two wires', md`Two long parallel wires $${dc}$ cm apart carry $${I1}$ A and $${I2}$ A. The force per meter on each is…`, o(Fl),
-        [[o(Fl / 100), 'Convert cm to m: $d = ${dc / 100}$ m.'], [o(Fl * Math.PI), 'That uses $\\mu_0/2$ instead of $\\mu_0/2\\pi$.'], [o(Fl / 2), 'That uses $\\mu_0/4\\pi$ instead of $\\mu_0/2\\pi$.'], [o(Fl * 2), 'One factor of 2 too many.']],
+        [[o(Fl / 100), `Convert cm to m: $d = ${dc / 100}$ m.`], [o(Fl * Math.PI), 'That uses $\\mu_0/2$ instead of $\\mu_0/2\\pi$.'], [o(Fl / 2), 'That uses $\\mu_0/4\\pi$ instead of $\\mu_0/2\\pi$.'], [o(Fl * 2), 'One factor of 2 too many.']],
         md`$F/\ell = \dfrac{\mu_0I_1I_2}{2\pi d} = (2\times10^{-7})\dfrac{(${I1})(${I2})}{${dc / 100}} = ${p(r3(Fl))}\ \mu\text{N/m}$.`);
     },
     // F = I l B sin(theta)
