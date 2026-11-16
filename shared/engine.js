@@ -588,16 +588,33 @@
     const S = (p.fig && window.Schem && parts.some((pt) => typeof pt.ans === 'function')) ? Schem.solve(p.fig) : null;
     parts.forEach((pt) => { if (typeof pt.ans === 'function') pt._ans = pt.ans(S); else pt._ans = pt.ans; });
 
+    // Plan first (optional): p.plan is one step or a list of steps { q, opts, a, why: [md|null], move }. Each step asks
+    // how to attack the problem before any number; a wrong pick explains itself and is crossed out, the right one shows
+    // the move. The answer boxes, hints and solution stay hidden until every step is answered.
+    const plan = p.plan ? (Array.isArray(p.plan) ? p.plan : [p.plan]).map((s) => {
+      const pt = { mc: s.opts || s.mc, a: s.a, why: s.why };
+      return Object.assign({}, s, META().shuffle && !s.fixed ? shufflePart(pt) : pt);
+    }) : null;
+    const planHtml = plan ? `<div class="plan">${plan.map((s, k) => `
+      <div class="plan-step" data-k="${k}"${k ? ' hidden' : ''}>
+        <div class="plan-q"><span class="plan-tag">${plan.length > 1 ? `Plan · step ${k + 1} of ${plan.length}` : 'Plan first'}</span>${rich(s.q || 'Before any numbers: how do you attack this?')}</div>
+        <div class="opts">${s.mc.map((o, j) => `<button type="button" class="opt plan-opt" data-j="${j}">${inline(o)}</button>`).join('')}</div>
+        <div class="plan-fb" hidden></div>
+      </div>`).join('')}</div>` : '';
+
     const tag = ctx.gen ? 'Practice' : (p.src ? '' : 'Practice');
     const srcHtml = p.src ? `<span class="src">${p.src}</span>` : `<span class="src">${tag}</span>`;
     const genMeter = ctx.gen ? `<span class="streak" title="Correct answers counted toward completion">${meterDots(ctx.count, ctx.need)}</span>` : '';
-    host.className = 'prob' + (ctx.solved ? ' solved' : '') + (p.big ? ' big' : '');
+    host.className = 'prob' + (ctx.solved ? ' solved' : '') + (p.big ? ' big' : '') + (plan ? ' has-plan' : '');
     host.innerHTML = `
       <header class="p-head"><span class="p-num">${ctx.n}</span>${srcHtml}${p.title ? `<span class="p-title">${p.title}</span>` : ''}${genMeter}<span class="p-status" aria-live="polite"></span></header>
       <div class="p-q">${rich(p.q, p.figs)}</div>
       ${p.fig ? `<figure class="fig">${figOf(p.fig, p.figOpts)}</figure>` : ''}
       ${p.figHtml ? `<figure class="fig">${p.figHtml}</figure>` : ''}
       ${p.q2 ? `<div class="p-q">${mdToHtml(p.q2)}</div>` : ''}
+      ${planHtml}
+      <div class="p-work"${plan ? ' hidden' : ''}>
+      ${plan && parts.length ? '<div class="plan-go">Now carry it out.</div>' : ''}
       <div class="parts">${parts.map((pt, i) => partHtml(pt, i)).join('')}</div>
       <div class="p-actions">
         ${parts.length ? '<button class="btn primary chk">Check</button>' : ''}
@@ -607,9 +624,51 @@
       </div>
       <div class="p-fb" aria-live="polite"></div>
       <div class="p-hints"></div>
-      <div class="p-sol" hidden>${p.sol ? `<div class="sol-h">Worked solution</div>${rich(p.sol, p.figs)}` : ''}</div>`;
+      <div class="p-sol" hidden>${p.sol ? `<div class="sol-h">Worked solution</div>${rich(p.sol, p.figs)}` : ''}</div>
+      </div>`;
     if (ctx.solved) host.querySelector('.p-status').innerHTML = '<span class="ok-badge">Solved</span>';
     if (window.MathInput) window.MathInput.upgrade(host);          // Desmos-style math boxes over the text inputs
+
+    if (plan) {
+      const work = host.querySelector('.p-work');
+      let missed = 0;
+      const settle = (k) => {
+        const st = host.querySelector(`.plan-step[data-k="${k}"]`), s = plan[k];
+        st.querySelectorAll('.plan-opt').forEach((b) => { b.disabled = true; if (+b.dataset.j === s.a) b.classList.add('right'); });
+        const fb = st.querySelector('.plan-fb');
+        fb.hidden = false;
+        fb.className = 'plan-fb good';
+        fb.innerHTML = `<p class="plan-verdict"><b>Right.</b></p>${s.move ? `<div class="plan-move"><span>The move</span>${rich(s.move, p.figs)}</div>` : ''}`;
+        renderMath(fb);
+        const nx = host.querySelector(`.plan-step[data-k="${k + 1}"]`);
+        if (nx) { nx.hidden = false; renderMath(nx); return; }
+        work.hidden = false;
+        renderMath(work);
+        if (!parts.length && !host.classList.contains('solved')) {     // a plan-only card is solved by its plan
+          if (ctx.gen && missed) { host.querySelector('.p-fb').className = 'p-fb'; host.querySelector('.p-fb').innerHTML = 'Got there. A first-try pick counts toward the meter; try a new one.'; return; }
+          host.classList.add('solved');
+          host.querySelector('.p-status').innerHTML = '<span class="ok-badge">Solved</span>';
+          const c = ctx.onCorrect(false);
+          if (ctx.gen) { const m = host.querySelector('.streak'); if (m) m.innerHTML = meterDots(c, ctx.need); const nb2 = host.querySelector('.newp'); if (nb2) nb2.classList.add('primary'); }
+        }
+      };
+      host.querySelectorAll('.plan-step').forEach((st) => {
+        const k = +st.dataset.k, s = plan[k];
+        st.querySelectorAll('.plan-opt').forEach((b) => b.addEventListener('click', () => {
+          const j = +b.dataset.j;
+          if (j === s.a) { settle(k); return; }
+          missed++;
+          b.disabled = true;
+          b.classList.add('wrong');
+          const fb = st.querySelector('.plan-fb');
+          fb.hidden = false;
+          fb.className = 'plan-fb bad';
+          fb.innerHTML = `<p class="plan-verdict"><b>Not that one.</b> ${s.why && s.why[j] ? inline(s.why[j]) : ''} Try again.</p>`;
+          renderMath(fb);
+        }));
+      });
+      if (ctx.solved) plan.forEach((_, k) => settle(k));            // solved before: show the plan already worked out
+    }
 
     let hintIx = 0, viewedSol = false, attempts = 0;
     const fb = host.querySelector('.p-fb');
