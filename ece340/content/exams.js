@@ -13,6 +13,7 @@
     cheatsheet: 'cheatsheet-e2.html',
     eyebrow: 'Semiconductor Electronics',
     actions: [
+      { href: '#/l/e2-one', label: 'Exam 2 on one page' },
       { href: '#/l/e2-speed', label: 'Speed round' },
       { href: '#/l/e2-mock', label: 'Practice exams' },
       { href: '#/l/hw6', label: 'Homework 6–9' },
