@@ -66,7 +66,7 @@
   const SECTIONS = [
     ['A good conductor', md`**On the exam:** "a wave travels in a good conductor with penetration depth $\delta = 1$ mm" (Spring 2024 #2). You give $\gamma$, an amplitude at a depth, $\eta$, the power, and judge statements about $\mathbf S$. Review: [Topic 7](#/l/w2-limits), [Topic 8](#/l/w2-loss).`, 'ex_goodcond'],
     ['Reading a lossy wave', md`**On the exam:** "$\mathbf E = 3e^{-3x}\cos(\omega t - 4x + 60°)\,\hat z$; find $\gamma$, $\eta$, $\sigma$, $\epsilon$ and $\mathbf H$" (Spring 2017 #3, Spring 2019 #1). Review: [Topic 5](#/l/w2-gamma), [Topic 6](#/l/w2-read).`, 'ex_lossyread'],
-    ['Which regime?', md`**On the exam:** a material and a frequency; first decide whether it is a good conductor, a low-loss dielectric or neither, then use the right line of the sheet. Review: [Topic 7](#/l/w2-limits).`, 'ex_regime'],
+    ['Which regime?', md`**On the exam:** a material and a frequency; first decide whether it is a good conductor, a low-loss dielectric or neither, then use the right row of the given loss-limits table. Review: [Topic 7](#/l/w2-limits).`, 'ex_regime'],
     ['Polarization and hand', md`**On the exam:** "identify the polarization of $\mathbf H = \hat x A\cos(\omega t - kz) + \hat y B\cos(\omega t - kz + \phi)$" (Fall 2023 #2, Spring 2018 (iii)–(iv)). Review: [Topic 9](#/l/w3-pol).`, 'ex_pol'],
     ['Two current sheets', md`**On the exam:** "two sheets at $z = 0$ and $z = 0.5$ m carry $\mathbf J_s = -2\hat x$; write $\tilde{\mathbf E}$ and $\tilde{\mathbf H}$ in every region" (Spring 2024 #1), or crossed sheets designed for a circular wave. Review: [Topic 10](#/l/w3-antenna).`, 'ex_twosheets'],
     ['A wave hits a dielectric', md`**On the exam:** "the transmitted field is $10e^{-j12y}\hat z$; find $\Gamma$, $\tau$ and the incident and reflected fields" (Spring 2018 #2). Review: [Topic 11](#/l/w4-gamma), [Topic 12](#/l/w4-standing).`, 'ex_interface'],
@@ -77,7 +77,7 @@
     ['A scope trace, backwards', md`**On the exam:** "a delta pulse with unknown $R_g$ and $R_L$; pulses of heights $A$ and $A/2$ at 1 µs and 3 µs; find $R_g$, $R_L$, $A$ and $\epsilon_r$" (Fall 2023 #4, Spring 2017 (v)–(vi)). Review: [Topic 16](#/l/w5-multi).`, 'ex_scope'],
     ['Stubs and resonance', md`**On the exam:** "a shorted line's lowest series resonance is $\omega_0$; at $2\omega_0$ and $\omega_0/2$ is $Z_{in}$ zero, infinite, inductive or capacitive?" (Spring 2018 (ix)–(x), Fall 2023 #7, Spring 2017 #6). Review: [Topic 18](#/l/w6-stubs).`, 'ex_stub'],
     ['Quarter- and half-wave sections', md`**On the exam:** "$Z_L = 100\ \Omega$ on a $\lambda/4$ line of $50\ \Omega$ behind a $50\ \Omega$ source: find $Z_{in}$ and $\tilde V_{in}$" (Spring 2018 #4b). Review: [Topic 19](#/l/w6-qw).`, 'ex_qw'],
-    ['Γ(d), VSWR and Z(d)', md`**On the exam:** older papers ask for $\Gamma(d)$, the VSWR, $Z$ at a distance and where the voltage peaks (Spring 2018 (vi)); the formula sheet has all of it. Review: [Topic 17](#/l/w6-vd).`, 'ex_vd'],
+    ['Γ(d), VSWR and Z(d)', md`**On the exam:** older papers ask for $\Gamma(d)$, the VSWR, $Z$ at a distance and where the voltage peaks (Spring 2018 (vi)); none of it is given, so know it or carry it on your card. Review: [Topic 17](#/l/w6-vd).`, 'ex_vd'],
   ];
 
   EM.lesson('e3-prac', {
@@ -164,7 +164,7 @@
     ];
     const etaT = f(eta);
     const s1 = giveD ? md`
-        **Step 1: what "good conductor" buys you.** In a good conductor the conduction current dwarfs the displacement current, $\sigma/\omega\epsilon \gg 1$. The last line of the sheet then gives
+        **Step 1: what "good conductor" buys you.** In a good conductor the conduction current dwarfs the displacement current, $\sigma/\omega\epsilon \gg 1$. The good-conductor row of the given table then gives
         $$\alpha \approx \beta \approx \sqrt{\omega\mu\sigma/2}$$
         The penetration depth $\delta$ is the distance over which the amplitude falls by $1/e$. Since the amplitude goes as $e^{-\alpha ${K}}$, that distance is
         $$\delta = \frac{1}{\alpha}$$
@@ -188,7 +188,7 @@
       ` : md`
         **Step 1: check the regime.** Compare the two currents with the loss tangent. With $\omega\epsilon = 2\pi f\epsilon_r\epsilon_0 = 2\pi f\epsilon_r/(36\pi\times10^9) = f\epsilon_r/(18\times10^9)$:
         $$\frac{\sigma}{\omega\epsilon} = \frac{18\times10^9\,\sigma}{f\,\epsilon_r} = ${f(lt)}$$
-        That is $\gg 1$: a good conductor. The last line of the sheet applies:
+        That is $\gg 1$: a good conductor. The good-conductor row of the given table applies:
         $$\alpha \approx \beta \approx \sqrt{\omega\mu\sigma/2} = \sqrt{\pi f\mu\sigma}$$
         (the second form because $\omega/2 = \pi f$).
 
@@ -213,7 +213,7 @@
         $$|\mathbf E| = ${E0}\,e^{-${m}}$$
         $$\boxed{|\mathbf E| \approx ${f(amp)}\ \text{V/m}}$$
 
-        **Step 5: $\eta$.** In a good conductor the sheet gives $\tau = 45°$ and $|\eta| = \sqrt{\omega\mu/\sigma}$. Use $\sigma = 2\alpha^2/(\omega\mu)$ to write it with $\delta$:
+        **Step 5: $\eta$.** In a good conductor the given table gives $\tau = 45°$ and $|\eta| = \sqrt{\omega\mu/\sigma}$. Use $\sigma = 2\alpha^2/(\omega\mu)$ to write it with $\delta$:
         $$\frac{\omega\mu}{\sigma} = \frac{(\omega\mu)^2}{2\alpha^2} = \frac{(\omega\mu\delta)^2}{2}$$
         Take the square root:
         $$|\eta| = \frac{\omega\mu\delta}{\sqrt2}$$
@@ -300,7 +300,7 @@
       parts,
       hints: [md`Match to $E_0e^{\mp\alpha ${K}}\cos(\omega t \mp \beta ${K} + \phi)$. Then $\eta = j\omega\mu/\gamma$.`, md`$\gamma/\eta = \gamma^2/(j\omega\mu) = \sigma + j\omega\epsilon$. Expand $\gamma^2 = \alpha^2 - \beta^2 + j2\alpha\beta$.`],
       sol: md`
-        **Step 1: read off the numbers.** Compare with the sheet's form $E_0e^{\mp\alpha ${K}}\cos(\omega t \mp \beta ${K} + \phi)$:
+        **Step 1: read off the numbers.** Compare with the standard form $E_0e^{\mp\alpha ${K}}\cos(\omega t \mp \beta ${K} + \phi)$:
         $$\alpha = ${a}\ \text{Np/m},\qquad \beta = ${b}\ \text{rad/m}$$
         $$\omega = ${p(k0 * 3)}\times10^8\ \text{rad/s},\qquad \phi = ${dg(ph)}$$
         The decay and the phase term carry the same sign, $${sgnE}$, so the wave travels toward $${hv(kh)}$${s > 0 ? '' : md` (and it shrinks as it travels: $e^{+${a}${K}}$ gets smaller as $${K}$ decreases)`}.
@@ -313,7 +313,7 @@
         $$|\gamma| = \sqrt{${a}^2 + ${b}^2} = ${Number.isInteger(g) ? g : md`\sqrt{${a * a + b * b}}`}${Number.isInteger(g) ? '' : md` \approx ${f(g)}`}\ \text{m}^{-1}$$
         $$\angle\gamma = \tan^{-1}(${b}/${a}) = 90° - ${dg(tau)} = ${dg(ga)}$$
 
-        **Step 4: $\eta$.** The sheet's $\eta\gamma = j\omega\mu$ gives $\eta = j\omega\mu/\gamma$. First $\omega\mu$:
+        **Step 4: $\eta$.** The relation $\eta\gamma = j\omega\mu$ (not given: know it) gives $\eta = j\omega\mu/\gamma$. First $\omega\mu$:
         $$\omega\mu_0 = (${p(k0 * 3)}\times10^8)(4\pi\times10^{-7}) = ${piT(k0 * 120)}\ \Omega/\text{m}$$
         Dividing complex numbers divides the sizes and subtracts the angles. $j$ has angle $90°$:
         $$|\eta| = \frac{\omega\mu}{|\gamma|} = \frac{${piT(k0 * 120)}}{${f(g)}}$$
@@ -321,7 +321,7 @@
         $$\tau = 90° - ${dg(ga)}$$
         $$\boxed{\tau = ${dg(tau)}}$$
 
-        **Step 5: $\sigma$ and $\epsilon$.** The sheet's other line is $\gamma/\eta = \sigma + j\omega\epsilon$. Replace $\eta$ by $j\omega\mu/\gamma$:
+        **Step 5: $\sigma$ and $\epsilon$.** The other relation (also not given) is $\gamma/\eta = \sigma + j\omega\epsilon$. Replace $\eta$ by $j\omega\mu/\gamma$:
         $$\frac{\gamma}{\eta} = \frac{\gamma^2}{j\omega\mu}$$
         Square $\gamma$:
         $$\gamma^2 = ${a * a} - ${b * b} + j2(${a})(${b}) = ${a * a - b * b} + j${2 * a * b}$$
@@ -403,7 +403,7 @@
       NT(`\\sigma/\\omega\\epsilon\\ \\text{at}\\ ${up ? '100f' : 'f/100'}`, R2, '', [[up ? Rt * 100 : Rt / 100, 'Backwards: ω is in the denominator. Raising f lowers the ratio.'], [up ? Rt / 1e4 : Rt * 1e4, 'The ratio goes as 1/f, not 1/f².']]),
     ];
     const step3 = kind === 'low' ? md`
-        **Step 3: $\alpha$ (low-loss line of the sheet).** For $\sigma/\omega\epsilon \ll 1$:
+        **Step 3: $\alpha$ (imperfect-dielectric row of the given table).** For $\sigma/\omega\epsilon \ll 1$:
         $$\alpha \approx \frac{\sigma}{2}\sqrt{\frac{\mu}{\epsilon}} = \frac{\sigma}{2}\cdot\frac{120\pi}{\sqrt{\epsilon_r}}$$
         $$\alpha \approx \frac{${p(sig)}}{2}\cdot\frac{120\pi}{${p(n)}}$$
         $$\boxed{\alpha \approx ${f(a)}\ \text{Np/m}}$$
@@ -637,7 +637,7 @@
         ${sheetT}
         at $f = ${fTex(fq)}$ (phasors with a cosine reference; $e^{j\pi} = -1$, $e^{\pm j\pi/2} = \pm j$).`;
     const single = md`
-        **Step 1: one sheet alone.** A sheet $\mathbf J_s$ at $z = z_0$ radiates a wave each way. From the sheet's formula ($\mathbf E = -\tfrac{\eta}{2}\mathbf J_s$ at the sheet), in phasors:
+        **Step 1: one sheet alone.** A sheet $\mathbf J_s$ at $z = z_0$ radiates a wave each way. From the current-sheet formula ($\mathbf E = -\tfrac{\eta}{2}\mathbf J_s$ at the sheet; not given in the exam), in phasors:
         $$\tilde{\mathbf E} = -\frac{\eta_0}{2}\tilde{\mathbf J}_s\,e^{-j\beta|z - z_0|}$$
         The $-j\beta|z - z_0|$ is the phase the wave picks up traveling from the sheet to $z$. Here
         $$\beta = \frac{2\pi f}{c} = \frac{2\pi(${p(fq)})}{3\times10^8} = ${bT}\ \text{rad/m}$$
@@ -959,7 +959,7 @@
         $$\mathcal L = (2\times10^{-7})(${ln})$$
         $$\boxed{\mathcal L \approx ${f(L0 * 1e9)}\ \text{nH/m}}$$
 
-        **Step 3: the geometric factor.** The sheet writes $\mathcal C = \epsilon\,GF$ and $\mathcal L = \mu/GF$:
+        **Step 3: the geometric factor.** Use $\mathcal C = \epsilon\,GF$ and $\mathcal L = \mu/GF$ (not given: know them):
         $$\boxed{GF = \frac{2\pi}{\ln(b/a)} = \frac{2\pi}{${ln}} \approx ${f(GF)}}$$
 
         **Step 4: $Z_0$.**
@@ -1042,7 +1042,7 @@
       ],
       hints: [md`$\mathcal C = \epsilon W/d$ and $\mathcal L = \mu d/W$, so $GF = W/d$, $Z_0 = \eta\,d/W$.`, md`The voltage is $E$ times the gap; the current per width is the surface current, which equals $H$.`],
       sol: md`
-        **Step 1: the geometric factor.** A parallel-plate capacitor of width $W$ and gap $d$ has $\mathcal C = \epsilon W/d$ per length. The sheet writes $\mathcal C = \epsilon\,GF$:
+        **Step 1: the geometric factor.** A parallel-plate capacitor of width $W$ and gap $d$ has $\mathcal C = \epsilon W/d$ per length. Use $\mathcal C = \epsilon\,GF$ (not given):
         $$\boxed{GF = \frac{W}{d} = \frac{${p(W)}}{${p(d)}} = ${p(GF)}}$$
 
         **Step 2: $\mathcal C$ and $\mathcal L$.**
@@ -1619,7 +1619,7 @@ ${probeTable(s, zp, t2)}
       parts,
       hints: [md`$\lambda/4$: $Z_{in} = Z_0^2/R_L$. $\lambda/2$: $Z_{in} = R_L$. Then the input circuit is a voltage divider: $\tilde V_{in} = \tilde F Z_{in}/(R_g + Z_{in})$.`, md`The line is lossless, so the power into the input is the power to the load: $|\tilde V_{in}|^2/(2Z_{in})$.`],
       sol: md`
-        **Step 1: what a ${quarter ? 'quarter' : 'half'} wave does.** On the formula sheet, $Z(d) = Z_0\frac{1 + \Gamma(d)}{1 - \Gamma(d)}$ with $\Gamma(d) = \Gamma_Le^{-j2\beta d}$. At $d = \lambda/${quarter ? 4 : 2}$, $2\beta d = ${quarter ? '\\pi' : '2\\pi'}$, so $\Gamma(d) = ${quarter ? '-' : ''}\Gamma_L$. ${quarter ? md`Flipping the sign of $\Gamma$ turns $Z_0\frac{1 + \Gamma_L}{1 - \Gamma_L} = R_L$ into $Z_0\frac{1 - \Gamma_L}{1 + \Gamma_L} = Z_0^2/R_L$:
+        **Step 1: what a ${quarter ? 'quarter' : 'half'} wave does.** Know (not given in the exam) $Z(d) = Z_0\frac{1 + \Gamma(d)}{1 - \Gamma(d)}$ with $\Gamma(d) = \Gamma_Le^{-j2\beta d}$. At $d = \lambda/${quarter ? 4 : 2}$, $2\beta d = ${quarter ? '\\pi' : '2\\pi'}$, so $\Gamma(d) = ${quarter ? '-' : ''}\Gamma_L$. ${quarter ? md`Flipping the sign of $\Gamma$ turns $Z_0\frac{1 + \Gamma_L}{1 - \Gamma_L} = R_L$ into $Z_0\frac{1 - \Gamma_L}{1 + \Gamma_L} = Z_0^2/R_L$:
         $$Z_{in} = \frac{Z_0^2}{R_L}$$` : md`Nothing changes:
         $$Z_{in} = R_L$$`}
         ${kind === 'match' ? md`

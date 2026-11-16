@@ -89,7 +89,7 @@
   }
 
   // the header every paper shares
-  const RULES = md`**75 minutes, 100 points, four problems.** Closed book, **no calculator**. You may use the official [formula sheet](#/l/e3-sheet) and one 4″×6″ card of your own handwritten notes. Show your reasoning, box each answer, and give its units.`;
+  const RULES = md`**75 minutes, 100 points, four problems.** Closed book, **no calculator**. You may use the given [loss-limits table](#/l/e3-sheet) and one 4″×6″ card of your own handwritten notes. Show your reasoning, box each answer, and give its units.`;
   const HOWTO = md`**How to use this paper.** Set a 75-minute timer and work it on paper first, as if it were Monday night. Then type your answers into the boxes; a wrong number that matches a common slip tells you which slip. Open a hint only for a part you could not start. Read every worked solution, including the parts you got right: each one gives the full working step by step, then a **speed path** (the fastest correct route on the exam) and **where points go** (the slips that cost points on this kind of part). The next day, redo every part you missed on a blank sheet.`;
   const CONSTS = md`**Constants.** $\mu_0 = 4\pi\times10^{-7}$ H/m, $\epsilon_0 = \tfrac{1}{36\pi}\times10^{-9}$ F/m, $c = 3\times10^8$ m/s, $\eta_0 = 120\pi\ \Omega$. Answers within about 2% count. You can type <code>pi</code> for $\pi$ and arithmetic like <code>5/pi</code>.`;
 
@@ -177,7 +177,7 @@
       [[fig:d1]]
     `, { d1: { svg: figD1(), cap: 'Not to scale. The material fills all of space; the wave leaves the source sheet toward +z and shrinks as it goes.' } }),
     P({ src: 'Practice D #1(a) · 4 pts', title: 'The loss tangent',
-      q: md`**(a) (4 pts)** Find the loss tangent $\sigma/\omega\epsilon$ at this frequency. Which column of the formula sheet does it put you in?`,
+      q: md`**(a) (4 pts)** Find the loss tangent $\sigma/\omega\epsilon$ at this frequency. Which row of the given table does it put you in?`,
       parts: [
         trap(N(md`$\sigma/\omega\epsilon$`, 1 / (2 * PI), ''), [[9 / (2 * PI), md`That uses $\epsilon_0$ in place of $\epsilon = 9\epsilon_0$: the loss tangent uses the material's own permittivity.`], [1, md`That uses $f$ in place of $\omega = 2\pi f$.`]]),
         mc('The material is', [md`an imperfect dielectric: $\sigma/\omega\epsilon \ll 1$`, md`a good conductor: $\sigma/\omega\epsilon \gg 1$`, md`a perfect dielectric: $\sigma = 0$`, md`in between: only the exact formulas work`], 0,
@@ -185,7 +185,7 @@
       ],
       hints: [md`$\omega\epsilon_0 = 2\pi f\cdot\dfrac{10^{-9}}{36\pi} = \dfrac{f}{18\times10^9}$ S/m. At 100 MHz that is $\tfrac{1}{180}$ S/m. Multiply by $\epsilon_r$.`],
       sol: md`
-        **1. What the ratio means.** $\sigma/\omega\epsilon$ is the size of the conduction current $\sigma E$ divided by the size of the displacement current $\omega\epsilon E$ ([Topic 5](#/l/w2-gamma)). It decides which column of the formula sheet you may use.
+        **1. What the ratio means.** $\sigma/\omega\epsilon$ is the size of the conduction current $\sigma E$ divided by the size of the displacement current $\omega\epsilon E$ ([Topic 5](#/l/w2-gamma)). It decides which row of the given table you may use.
 
         **2. The displacement part.** First $\omega$:
         $$\omega = 2\pi f = 2\pi\times10^8\ \text{rad/s}$$
@@ -211,7 +211,7 @@
         trap(N('\\alpha', 0.5, 'Np/m'), [[1, md`That drops the $\tfrac12$: $\alpha \approx \tfrac{\sigma}{2}\sqrt{\mu/\epsilon}$.`], [1.5, md`That uses $\eta_0 = 120\pi$. The material's lossless impedance is $\sqrt{\mu/\epsilon} = 120\pi/3 = 40\pi$.`]]),
         trap(N('\\beta', 2 * PI, 'rad/m'), [[2 * PI / 3, md`That is $\omega/c$, the free-space value. The wave is slower here: $v = c/\sqrt{\epsilon_r} = c/3$.`], [6 * PI, md`That uses $\epsilon_r = 9$ where $\sqrt{\epsilon_r} = 3$ belongs.`]]),
       ],
-      hints: [md`Lossless pieces first: $v = c/\sqrt{\epsilon_r}$ and $\sqrt{\mu/\epsilon} = \eta_0/\sqrt{\epsilon_r}$. The sheet's imperfect-dielectric column: $\beta \approx \omega\sqrt{\mu\epsilon}$ and $\alpha \approx \frac{\sigma}{2}\sqrt{\mu/\epsilon}$.`],
+      hints: [md`Lossless pieces first: $v = c/\sqrt{\epsilon_r}$ and $\sqrt{\mu/\epsilon} = \eta_0/\sqrt{\epsilon_r}$. The given table's imperfect-dielectric row: $\beta \approx \omega\sqrt{\mu\epsilon}$ and $\alpha \approx \frac{\sigma}{2}\sqrt{\mu/\epsilon}$.`],
       sol: md`
         **1. The lossless pieces.** Without loss the speed would be
         $$v = \frac{c}{\sqrt{\epsilon_r}} = \frac{3\times10^8}{3} = 10^8\ \text{m/s}$$
@@ -222,7 +222,7 @@
         $$\boxed{\beta \approx 2\pi\ \text{rad/m}}$$
         So $\lambda = 2\pi/\beta \approx 1$ m.
 
-        **3. Where the α line comes from.** The sheet gives $\gamma = j\omega\sqrt{\mu(\epsilon - j\sigma/\omega)}$. Pull $\epsilon$ out of the bracket, and write $x = \sigma/\omega\epsilon$ and $\beta_0 = \omega\sqrt{\mu\epsilon}$:
+        **3. Where the α line comes from.** Start from $\gamma = j\omega\sqrt{\mu(\epsilon - j\sigma/\omega)}$. Pull $\epsilon$ out of the bracket, and write $x = \sigma/\omega\epsilon$ and $\beta_0 = \omega\sqrt{\mu\epsilon}$:
         $$\gamma = j\beta_0\sqrt{1 - jx}$$
         For a small $x$, $\sqrt{1 - jx} \approx 1 - jx/2$. (Square the right side: $1 - jx - x^2/4$, which is $1 - jx$ up to a tiny $x^2$ term.) Multiply out:
         $$\gamma \approx j\beta_0 + \beta_0\frac{x}{2}$$
@@ -246,9 +246,9 @@
         trap(N(md`$\Im\{\eta\}$`, 10, 'Ω', 0.03), [[20, md`That forgets the $\tfrac12$: $\eta \approx \sqrt{\mu/\epsilon}\,(1 + j\sigma/2\omega\epsilon)$.`], [-10, md`Sign: $\eta$ of a lossy medium has a positive angle ($H$ lags $E$), so its imaginary part is positive.`]]),
         trap(N('\\tau', 4.56, '°', 0.03), [[9.12, md`That is $\tan^{-1}(\sigma/\omega\epsilon)$. The square root in $\eta$ halves it.`], [0.0796, md`That is $\tau$ in radians. The box asks for degrees: multiply by $180/\pi \approx 57.3$.`]]),
       ],
-      hints: [md`The sheet's line for $1 \gg \sigma/\omega\epsilon$: $\eta \approx \sqrt{\mu/\epsilon}\left(1 + j\dfrac{\sigma}{2\omega\epsilon}\right)$. For a small angle, $\tau \approx \tan\tau$ in radians.`],
+      hints: [md`The given table's line for $1 \gg \sigma/\omega\epsilon$: $\eta \approx \sqrt{\mu/\epsilon}\left(1 + j\dfrac{\sigma}{2\omega\epsilon}\right)$. For a small angle, $\tau \approx \tan\tau$ in radians.`],
       sol: md`
-        **1. Where the sheet's line comes from.** $\eta = \sqrt{\mu/(\epsilon - j\sigma/\omega)}$. Pull $\epsilon$ out, with $x = \sigma/\omega\epsilon$:
+        **1. Where the table's line comes from.** $\eta = \sqrt{\mu/(\epsilon - j\sigma/\omega)}$. Pull $\epsilon$ out, with $x = \sigma/\omega\epsilon$:
         $$\eta = \sqrt{\frac{\mu}{\epsilon}}\,\frac{1}{\sqrt{1 - jx}}$$
         From part (b), $\sqrt{1 - jx} \approx 1 - jx/2$. And $1/(1 - u) \approx 1 + u$ for small $u$:
         $$\eta \approx \sqrt{\frac{\mu}{\epsilon}}\left(1 + j\frac{x}{2}\right)$$
@@ -335,7 +335,7 @@
       $$\tilde{\mathbf J}_{s1} = 0.1\,\hat x\ \ \text{A/m}$$
       Sheet 2 carries $\tilde{\mathbf J}_{s2} = 0.1\,e^{j\phi}\,\hat y$ A/m. In **design A** it lies in the same plane $z = 0$; in **design B** it lies in the plane $z = d = 0.125$ m.
 
-      The formula sheet gives the field of a sheet: for $\mathbf J_s = -J_s(t)\,\hat x$ at $z = 0$, $E_x(z,t) = \frac{\eta}{2}J_s(t \mp z/v_p)$ for $z \gtrless 0$. Handedness follows the course rule: point your thumb along the direction of travel; the fingers of the matching hand curl the way $\mathbf E$ turns at a fixed point.
+      Know the field of a current sheet (not given in the exam): for $\mathbf J_s = -J_s(t)\,\hat x$ at $z = 0$, $E_x(z,t) = \frac{\eta}{2}J_s(t \mp z/v_p)$ for $z \gtrless 0$. Handedness follows the course rule: point your thumb along the direction of travel; the fingers of the matching hand curl the way $\mathbf E$ turns at a fixed point.
 
       [[fig:sheets]]
     `, { sheets: { svg: PF.row([{ svg: sheetsFig(false), cap: 'Design A: both sheets at z = 0.' }, { svg: sheetsFig(true), cap: 'Design B: sheet 2 at z = d = λ/8.' }]).svg } }),
@@ -345,9 +345,9 @@
         trap(N(md`$\tilde E_x(0^+)$`, -6 * PI, 'V/m'), [[6 * PI, md`Sign: the field right outside a sheet points **against** its current. That is how the sheet pushes power out: $-\mathbf E\cdot\mathbf J_s > 0$.`], [-12 * PI, md`That drops the $\tfrac12$: half of the sheet's field goes each way, $\frac{\eta_0}{2}J_s$.`]]),
         trap(N(md`$\tilde H_y(0^+)$`, -0.05, 'A/m'), [[0.05, md`Sign: for a wave going toward $+z$, $\tilde{\mathbf H} = \frac{1}{\eta_0}\hat z\times\tilde{\mathbf E}$, and $\hat z\times(-\hat x) = -\hat y$.`], [-0.1, md`That drops the $\tfrac12$: $|H| = J_s/2$ on each side.`]]),
       ],
-      hints: [md`Match the sheet's form: $\tilde{\mathbf J}_{s1} = 0.1\,\hat x$ means $-J_s = 0.1$, so $J_s = -0.1$. Then $\tilde E_x = \frac{\eta_0}{2}J_s e^{\mp j\beta z}$.`, md`$\mathbf E\times\mathbf H$ must point along the travel, $+\hat z$, above the sheet.`],
+      hints: [md`Match the standard form: $\tilde{\mathbf J}_{s1} = 0.1\,\hat x$ means $-J_s = 0.1$, so $J_s = -0.1$. Then $\tilde E_x = \frac{\eta_0}{2}J_s e^{\mp j\beta z}$.`, md`$\mathbf E\times\mathbf H$ must point along the travel, $+\hat z$, above the sheet.`],
       sol: md`
-        **1. Read the sheet's formula.** It is written for a current $-J_s\hat x$. Ours is $+0.1\,\hat x$, so $J_s = -0.1$ A/m, and the field above the sheet is
+        **1. Read the current-sheet formula.** It is written for a current $-J_s\hat x$. Ours is $+0.1\,\hat x$, so $J_s = -0.1$ A/m, and the field above the sheet is
         $$\tilde E_x = \frac{\eta_0}{2}J_s\,e^{-j\beta z} = \frac{120\pi}{2}(-0.1)\,e^{-j2\pi z}$$
         $$\boxed{\tilde E_x(0^+) = -6\pi \approx -18.8\ \text{V/m}}$$
         The same value starts the wave below the sheet, $-6\pi\,e^{+j2\pi z}\,\hat x$ for $z < 0$.
@@ -467,7 +467,7 @@
     RF(md`
       ### Problem 3 (24 points): standing waves on a phasor line
 
-      A lossless line with $Z_0 = 50\ \Omega$, length $l = 3$ m and wave speed $v = 2\times10^8$ m/s ends in the load $Z_L = 30 + j40\ \Omega$. A generator with open-circuit voltage phasor $\tilde F = 20$ V and internal impedance $Z_g = 50\ \Omega$ drives it at $f = 100$ MHz. As on the formula sheet, $d$ is the distance back from the load, and
+      A lossless line with $Z_0 = 50\ \Omega$, length $l = 3$ m and wave speed $v = 2\times10^8$ m/s ends in the load $Z_L = 30 + j40\ \Omega$. A generator with open-circuit voltage phasor $\tilde F = 20$ V and internal impedance $Z_g = 50\ \Omega$ drives it at $f = 100$ MHz. As usual, $d$ is the distance back from the load, and
       $$\tilde V(d) = \tilde V^+e^{j\beta d}\bigl(1 + \Gamma(d)\bigr),\quad \Gamma(d) = \Gamma_Le^{-j2\beta d}$$
 
       [[fig:d3]]

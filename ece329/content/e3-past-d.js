@@ -96,7 +96,7 @@
 
         So just to the right of the sheet ($\hat v = +\hat ${n}$) and just to the left ($\hat v = -\hat ${n}$):
         $$\mathbf H_\pm = \pm\frac{1}{\eta_0}\,\hat ${n}\times\mathbf E_s$$
-        The current in the sheet is the jump in tangential $\mathbf H$ (the boundary condition on your formula sheet):
+        The current in the sheet is the jump in tangential $\mathbf H$ (the boundary condition; not given in the exam, so know it):
         $$\hat ${n}\times(\mathbf H_+ - \mathbf H_-) = \mathbf J_s$$
         Put the two fields in. The difference is $\frac{2}{\eta_0}\hat ${n}\times\mathbf E_s$:
         $$\frac{2}{\eta_0}\,\hat ${n}\times(\hat ${n}\times\mathbf E_s) = \mathbf J_s$$
@@ -119,7 +119,7 @@
     $$\frac{\sigma}{\omega\epsilon} = \frac{4}{4.5\times10^{-6}} \approx 8.9\times10^5$$
     The conduction current wins by almost a million to one.
 
-    **Step 2: what that does to γ.** Start from the sheet's formula:
+    **Step 2: what that does to γ.** Start from the formula for $\gamma$ (not given in the exam):
     $$\gamma = j\omega\sqrt{\mu\left(\epsilon - j\frac{\sigma}{\omega}\right)}$$
     Next to $\sigma/\omega$, the $\epsilon$ is a millionth of the size. Drop it:
     $$\gamma \approx j\omega\sqrt{-j\frac{\mu\sigma}{\omega}}$$
@@ -955,7 +955,7 @@ In the choices, $t$ is in µs, $x$ in m and $c = 300$ m/µs.`,
 
   const su18 = [
     R(md`
-      **Summer 2018 · ECE 329 · Exam 3** (Prof. Kudeki). Thursday, July 25, 2018, 11:00–11:50 AM. Three problems of 25 points, 75 in all; the class averaged about 63. Closed book, calculators allowed, three formula sheets. Yours: closed book, no calculator, the official sheet and one 4″×6″ card.
+      **Summer 2018 · ECE 329 · Exam 3** (Prof. Kudeki). Thursday, July 25, 2018, 11:00–11:50 AM. Three problems of 25 points, 75 in all; the class averaged about 63. Closed book, calculators allowed, three formula sheets. Yours: closed book, no calculator, the given loss-limits table and one 4″×6″ card.
 
       The handwritten key has two slips, both flagged below: a phase sign in $\Et$ (Problem 1) and the sign of a whole sketch (Problem 2f).
 
@@ -1028,7 +1028,7 @@ To measure the permeability $\mu$ of a solid rod, you slide it into a long solen
         $$\alpha = 1\ \text{Np/m},\qquad \beta = \sqrt3\ \text{rad/m}$$
         **Step 2: γ, in polar form.** $\gamma = 1 + j\sqrt3$ has size $\sqrt{1 + 3} = 2$ and angle $\tan^{-1}\sqrt3 = 60°$:
         $$\boxed{\gamma = 1 + j\sqrt3 = 2\,e^{j\pi/3}\ \text{1/m}}$$
-        **(ii) Step 3: η.** Put the sheet's first relation to work: $\eta = j\omega\mu/\gamma$. First $\omega\mu_0$:
+        **(ii) Step 3: η.** Put the first relation (not given: know it) to work: $\eta = j\omega\mu/\gamma$. First $\omega\mu_0$:
         $$\omega\mu_0 = (8\pi\times10^6)(4\pi\times10^{-7}) = 3.2\pi^2\ \Omega/\text{m}$$
         The $j$ is $e^{j90°}$. Divide sizes and subtract angles:
         $$\eta = \frac{3.2\pi^2\,e^{j90°}}{2\,e^{j60°}} = 1.6\pi^2\,e^{j30°}$$
@@ -1037,7 +1037,7 @@ To measure the permeability $\mu$ of a solid rod, you slide it into a long solen
 
         **(iii) Step 4: γ/η.** Divide again, sizes and angles:
         $$\frac\gamma\eta = \frac{2\,e^{j60°}}{1.6\pi^2\,e^{j30°}} = \frac{5}{4\pi^2}\,e^{j30°}$$
-        The sheet's second relation says this equals $\sigma + j\omega\epsilon$. So $\omega\epsilon$ is the imaginary part:
+        The second relation (also not given) says this equals $\sigma + j\omega\epsilon$. So $\omega\epsilon$ is the imaginary part:
         $$\omega\epsilon = \frac{5}{4\pi^2}\sin30° = \frac{5}{8\pi^2} \approx 0.0633\ \text{S/m}$$
         Divide by $\omega$:
         $$\epsilon = \frac{5}{8\pi^2(8\pi\times10^6)} = \boxed{\frac{5\times10^{-6}}{64\pi^3} \approx 2.52\times10^{-9}\ \text{F/m}}$$
@@ -1284,7 +1284,7 @@ ${gcSpeed}` }),
 
   const su17 = [
     R(md`
-      **Summer 2017 · ECE 329 · Exam 3** (Prof. Kudeki). Friday, July 28, 2017, 11:00–11:50 AM. Three problems of 25 points, 75 in all; the class averaged about 64. Closed book, calculators allowed, three formula sheets. Yours: closed book, no calculator, the official sheet and one 4″×6″ card.
+      **Summer 2017 · ECE 329 · Exam 3** (Prof. Kudeki). Friday, July 28, 2017, 11:00–11:50 AM. Three problems of 25 points, 75 in all; the class averaged about 64. Closed book, calculators allowed, three formula sheets. Yours: closed book, no calculator, the given loss-limits table and one 4″×6″ card.
 
       The handwritten key is right throughout, apart from one mislabeled line, flagged in Problem 3.
 
@@ -1328,7 +1328,7 @@ In the choices, $t$ is in µs, $z$ in m and $c = 300$ m/µs.`,
 
         **(a) Step 1: $z > 0$.** With $t' = t - z/c$:
         $$\mathbf E = -\hat x\,60\pi\,u(t')\sin(2\pi t')$$
-        So $\boxed{\mathbf E(z, t) = -\hat x\,60\pi\,u(t - \tfrac zc)\sin2\pi(t - \tfrac zc)}$ V/m. This is exactly the formula on your sheet, which is written for this geometry.
+        So $\boxed{\mathbf E(z, t) = -\hat x\,60\pi\,u(t - \tfrac zc)\sin2\pi(t - \tfrac zc)}$ V/m. This is the standard current-sheet formula (not given in the exam), written here for this geometry.
 
         **Step 2: a value.** At $z = 150$ m the delay is 0.5 µs; at $t = 0.75$ µs, $t' = 0.25$ and $\sin(\pi/2) = 1$:
         $$E_x = \boxed{-60\pi \approx -188\ \text{V/m}}$$
@@ -1341,7 +1341,7 @@ In the choices, $t$ is in µs, $z$ in m and $c = 300$ m/µs.`,
         !!intuition Does this make sense?
           $\mathbf E\times\mathbf H = (-\hat x)\times(-\hat y)\cdot(\ldots)^2 = +\hat z(\ldots)^2$: power leaves the sheet ✓. And $|\mathbf E|/|\mathbf H| = 60\pi/\tfrac12 = 120\pi = \eta_0$ ✓.
 
-        **Speed path.** The sheet's own formula: $E_x = \frac{\eta_0}{2}J_s$ for a current $-J_s\hat x$, so $-60\pi$ for $+\hat x$; $H_y = \pm\tfrac12J_s$ with the sign flipped: $-\tfrac12$ for $z > 0$.
+        **Speed path.** The current-sheet formula: $E_x = \frac{\eta_0}{2}J_s$ for a current $-J_s\hat x$, so $-60\pi$ for $+\hat x$; $H_y = \pm\tfrac12J_s$ with the sign flipped: $-\tfrac12$ for $z > 0$.
 
         **Where points go.** The two minus signs; $t + z/c$; a period of 2 µs from mixing $f$ and $\omega$.
       ` }),

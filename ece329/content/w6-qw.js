@@ -1,5 +1,5 @@
 /* Topic 19: half- and quarter-wave transformers, and the whole circuit (Lecture 33; the quarter-wave coating footnote of
-   Lecture 25; formula sheet page 3, "Phasor equations", including V(l) = F Z(l)/(Zg + Z(l)) and P(d)).
+   Lecture 25; phasor equations, including V(l) = F Z(l)/(Zg + Z(l)) and P(d)).
    From V(d) and I(d): e^{±jβd} = −1 at a half wave and ±j at a quarter wave; Z_in = Z_L and Z_in = Z0²/Z_L; the four
    quarter-wave V/I relations with their signs; matching with Z0 = √(R_in R_L) and why it is narrow-band; cascades; the
    input divider and power; the same idea for plane waves (anti-reflection coatings).
@@ -153,7 +153,7 @@
 
         ### Notation
 
-        - $d$: distance **back from the load**, in m. $d = 0$ at the load and $d = l$ at the input, where the source is. This is the coordinate on your formula sheet.
+        - $d$: distance **back from the load**, in m. $d = 0$ at the load and $d = l$ at the input, where the source is. This is the standard coordinate.
         - $\lambda$: the wavelength **on the line**, $\lambda = v/f$, where $v$ is the line's speed. Not the free-space wavelength.
         - $\beta = 2\pi/\lambda$: the phase constant, in rad/m.
         - $\beta d$: the **electrical length** of a stretch of line, in radians. It says how much phase a wave gains crossing that stretch. A quarter wave is $\beta d = \pi/2$. A half wave is $\beta d = \pi$.
@@ -164,7 +164,7 @@
         - $Z_L$, $\tilde V_L$, $\tilde I_L$: the load impedance, voltage and current, at $d = 0$.
         - $Z_{in}$, $\tilde V_{in}$, $\tilde I_{in}$: the same three at the input, $d = l$. $Z_{in} = Z(l)$ is what the source sees.
         - $Z(d) = \tilde V(d)/\tilde I(d)$: the line impedance at $d$ ([Topic 17](#/l/w6-vd)).
-        - $\tilde F$, $Z_g$: the source's open-circuit voltage phasor and its internal impedance. These are the formula sheet's names.
+        - $\tilde F$, $Z_g$: the source's open-circuit voltage phasor and its internal impedance. These are the standard names.
         - $P$: time-averaged power, in W.
 
         [[fig:ckt]]
@@ -436,7 +436,7 @@
         $$\boxed{\tilde I_{in} = \frac{\tilde F}{Z_g + Z_{in}}}$$
         Multiply by $Z_{in}$ to get the input voltage:
         $$\boxed{\tilde V_{in} = \tilde F\,\frac{Z_{in}}{Z_g + Z_{in}}}$$
-        That is the sheet's line $\tilde V(l) = \tilde F\,Z(l)/(Z_g + Z(l))$: a voltage divider.
+        That is the line $\tilde V(l) = \tilde F\,Z(l)/(Z_g + Z(l))$: a voltage divider.
 
         **The recipe for every circuit in this lesson.** Walk from the load to the input to get $Z_{in}$. Use the divider for $\tilde V_{in}$. Walk back to the load with (3), (4) and the half-wave flip.
 

@@ -1,4 +1,4 @@
-/* Topic 5: where gamma and eta come from (Lecture 22, formula sheet page 2). The whole derivation from Maxwell's curl
+/* Topic 5: where gamma and eta come from (Lecture 22). The whole derivation from Maxwell's curl
    equations, one line at a time: the two kinds of current and their ratio, phasors, the 1-D equations, the wave equation
    and gamma, what alpha and beta do, eta and its two relations, the angle tau, the exact alpha and beta.
    THE PACE OF THIS FILE IS THE PACE OF EVERY EXAM 3 LESSON: one display equation at a time, one small sentence saying
@@ -42,7 +42,7 @@
     steps: [
       RF(md`
         !!key Why you care
-          Every Exam 3 has a wave in a lossy material. It is 30 of the 100 points on Prof. Chen's Spring 2024 paper. The formula sheet hands you $\gamma$ and $\eta$, but it does not tell you what they mean or why they look that way. In this lesson you build both from Maxwell's equations, one line at a time. After this, the top half of page 2 of the sheet will read like something you wrote yourself.
+          Every Exam 3 has a wave in a lossy material. It is 30 of the 100 points on Prof. Chen's Spring 2024 paper. The exam does not give you $\gamma$ and $\eta$: you must know them, and what they mean and why they look that way. In this lesson you build both from Maxwell's equations, one line at a time. After this, $\gamma$ and $\eta$ will read like something you wrote yourself.
 
         ### Notation
 
@@ -106,7 +106,7 @@
 
         Take the plane wave you know from Exam 2: $\mathbf E$ along $\hat x$, $\mathbf H$ along $\hat y$, and everything depends only on $z$.
         $$\tilde{\mathbf E} = \hat x\,\tilde E_x(z), \qquad \tilde{\mathbf H} = \hat y\,\tilde H_y(z)$$
-        We need the curl of each one. The $y$-component of a curl, from the sheet, is
+        We need the curl of each one. The $y$-component of a curl (know it; not given in the exam) is
         $$(\nabla\times\tilde{\mathbf E})_y = \frac{\partial\tilde E_x}{\partial z} - \frac{\partial\tilde E_z}{\partial x}$$
         There is no $\tilde E_z$, so the second term is zero. And $\tilde E_x$ depends only on $z$, so the partial derivative is an ordinary one:
         $$(\nabla\times\tilde{\mathbf E})_y = \frac{d\tilde E_x}{dz}$$
@@ -145,7 +145,7 @@
         $$\frac{d^2}{dz^2}e^{-\gamma z} = (-\gamma)(-\gamma)\,e^{-\gamma z} = \gamma^2e^{-\gamma z}$$
         That is what the equation asked for. The same steps show $e^{+\gamma z}$ works too. So the general solution is
         $$\tilde E_x(z) = E^+e^{-\gamma z} + E^-e^{+\gamma z}$$
-        **Step 6.** Now put $\gamma$ into the form on your formula sheet. Pull $j\omega$ out of the bracket:
+        **Step 6.** Now put $\gamma$ into the standard form. Pull $j\omega$ out of the bracket:
         $$\sigma + j\omega\epsilon = j\omega\left(\epsilon + \frac{\sigma}{j\omega}\right)$$
         Since $1/j = -j$, this is
         $$\sigma + j\omega\epsilon = j\omega\left(\epsilon - j\frac{\sigma}{\omega}\right)$$
@@ -153,7 +153,7 @@
         $$\gamma^2 = j\omega\mu\cdot j\omega\left(\epsilon - j\frac{\sigma}{\omega}\right) = (j\omega)^2\,\mu\left(\epsilon - j\frac{\sigma}{\omega}\right)$$
         Take the square root:
         $$\boxed{\gamma = j\omega\sqrt{\mu\left(\epsilon - j\frac{\sigma}{\omega}\right)}}$$
-        That is the line on the sheet.
+        That is the line to know (not given in the exam).
 
         !!intuition Does this make sense?
           Set $\sigma = 0$. Then $\gamma = j\omega\sqrt{\mu\epsilon}$: purely imaginary, so $\alpha = 0$ and $\beta = \omega\sqrt{\mu\epsilon}$, exactly what you had on Exam 2. Conductivity does only one thing to the formula: it replaces the real $\epsilon$ with the complex number $\epsilon - j\sigma/\omega$. All of the loss lives in that one extra term.
@@ -229,7 +229,7 @@
         $$\frac{d\tilde E_x}{dz} = +\gamma\tilde E_x$$
         Equation (5) gives $+\gamma\tilde E_x = -j\omega\mu\tilde H_y$, so
         $$\tilde H_y = -\frac{\gamma}{j\omega\mu}\tilde E_x = -\frac{\tilde E_x}{\eta}$$
-        There is the $\pm$ on the sheet. Forward: $\tilde H_y = +\tilde E_x/\eta$. Backward: $\tilde H_y = -\tilde E_x/\eta$. It has to be this way: $\mathbf E\times\mathbf H$ must point along the direction of travel, so reversing the travel with the same $\mathbf E$ must reverse $\mathbf H$.
+        There is the $\pm$. Forward: $\tilde H_y = +\tilde E_x/\eta$. Backward: $\tilde H_y = -\tilde E_x/\eta$. It has to be this way: $\mathbf E\times\mathbf H$ must point along the direction of travel, so reversing the travel with the same $\mathbf E$ must reverse $\mathbf H$.
       `, {}),
       Q(md`**Predict.** A wave in a material has $\gamma = 2 + j2$ 1/m, and $\omega\mu = 400$. What is $\eta$?`,
         ['$100 + j100\\ \\Omega$', '$100 - j100\\ \\Omega$', '$200 + j200\\ \\Omega$', '$j100\\ \\Omega$'], 0,
@@ -267,7 +267,7 @@
         Compare with $E_x$. Same decay, same $\beta$, and an extra $-\tau$ in the phase. At any fixed point, $H$ reaches its peak a little later than $E$. **$H$ lags $E$ by $\tau$.**
 
         !!intuition Does this make sense?
-          No loss: $\sigma = 0$, $\tau = 0$. $E$ and $H$ rise and fall together, which is Exam 2. Extreme loss: $\sigma/\omega\epsilon \to \infty$, so $\tan^{-1}\to 90°$ and $\tau \to 45°$. That is the good-conductor line on your sheet. In [Topic 8](#/l/w2-loss) you will see the power formula has $\cos\tau$ in it, so the lag also reduces how much power the wave carries for a given $E$ and $|\eta|$.
+          No loss: $\sigma = 0$, $\tau = 0$. $E$ and $H$ rise and fall together, which is Exam 2. Extreme loss: $\sigma/\omega\epsilon \to \infty$, so $\tan^{-1}\to 90°$ and $\tau \to 45°$. That is the good-conductor line of the given table. In [Topic 8](#/l/w2-loss) you will see the power formula has $\cos\tau$ in it, so the lag also reduces how much power the wave carries for a given $E$ and $|\eta|$.
       `, { tri: { svg: triFig(), cap: 'The number 1 − jσ/ωε. Its size comes from Pythagoras, its angle θ from the triangle.' } }),
       Q(md`**Predict.** A material has $\sigma/\omega\epsilon = 1$ at the frequency of interest. What is $\tau$?`,
         ['$22.5°$', '$45°$', '$90°$', '$0°$'], 0,
@@ -297,7 +297,7 @@
         Take square roots, using $\omega\sqrt{\mu\epsilon}$ as the common piece:
         $$\boxed{\alpha = \omega\sqrt{\mu\epsilon}\;\sqrt{\tfrac12\left[\sqrt{1 + (\sigma/\omega\epsilon)^2} - 1\right]}}$$
         $$\boxed{\beta = \omega\sqrt{\mu\epsilon}\;\sqrt{\tfrac12\left[\sqrt{1 + (\sigma/\omega\epsilon)^2} + 1\right]}}$$
-        These are not on your sheet, and you do not need to memorize them. The polar method below is faster for the numbers an exam without a calculator can use. But the derivation shows that everything depends on just two things: $\omega\sqrt{\mu\epsilon}$, the lossless answer, and $\sigma/\omega\epsilon$, the loss tangent.
+        These are not given in the exam, and you do not need to memorize them. The polar method below is faster for the numbers an exam without a calculator can use. But the derivation shows that everything depends on just two things: $\omega\sqrt{\mu\epsilon}$, the lossless answer, and $\sigma/\omega\epsilon$, the loss tangent.
 
         !!intuition Does this make sense?
           $\sigma = 0$ makes the bracket $\sqrt1 - 1 = 0$ in $\alpha$ and $\sqrt1 + 1 = 2$ in $\beta$. So $\alpha = 0$ and $\beta = \omega\sqrt{\mu\epsilon}$. ✓ As the loss grows, both grow, and $\beta$ is always larger than $\alpha$.
@@ -401,7 +401,7 @@
 
         ### Check questions
       `),
-      Q(md`Which line is on the formula sheet and follows directly from putting $e^{-\gamma z}$ into Faraday's law?`,
+      Q(md`Which line (not given in the exam, so know it) follows directly from putting $e^{-\gamma z}$ into Faraday's law?`,
         ['$\\eta\\gamma = j\\omega\\mu$', '$\\gamma/\\eta = j\\omega\\mu$', '$\\eta/\\gamma = \\sigma + j\\omega\\epsilon$', '$\\eta\\gamma = \\sigma + j\\omega\\epsilon$'], 0,
         [null, md`$\gamma/\eta$ comes from Ampère's law and equals $\sigma + j\omega\epsilon$.`, md`That has the ratio upside down: it is $\gamma/\eta$ that equals $\sigma + j\omega\epsilon$.`, md`The product goes with Faraday's law, which has $\mu$. The material terms $\sigma$ and $\epsilon$ come with the ratio.`],
         md`Faraday's law in phasors is (5): $d\tilde E_x/dz = -j\omega\mu\tilde H_y$. With $e^{-\gamma z}$ it gives $\gamma\tilde E_x = j\omega\mu\tilde H_y$, so $\eta\gamma = j\omega\mu$.`),
@@ -783,7 +783,7 @@
     Q(md`Given only $\gamma$ and $\eta$ and $\omega$, you can recover…`,
       ['$\\mu$, $\\epsilon$ and $\\sigma$', 'only $\\mu$', 'only $\\sigma$', 'none of them without knowing $E_0$'], 0,
       [null, md`$\gamma/\eta$ also gives $\sigma$ and $\epsilon$.`, md`$\eta\gamma/j\omega$ also gives $\mu$.`, md`$\gamma$ and $\eta$ describe the medium and do not depend on the amplitude.`],
-      md`$\mu = \eta\gamma/j\omega$; $\sigma = \Re\{\gamma/\eta\}$; $\epsilon = \Im\{\gamma/\eta\}/\omega$. All on the sheet.`),
+      md`$\mu = \eta\gamma/j\omega$; $\sigma = \Re\{\gamma/\eta\}$; $\epsilon = \Im\{\gamma/\eta\}/\omega$. None is given in the exam: know them.`),
     Q(md`Two media differ only in $\sigma$. Compared at the same $\omega$, the one with the larger $\sigma$ has…`,
       ['larger $\\alpha$, larger $\\beta$, larger $\\tau$, smaller $|\\eta|$', 'larger $\\alpha$, smaller $\\beta$, larger $\\tau$, smaller $|\\eta|$', 'larger $\\alpha$, larger $\\beta$, smaller $\\tau$, larger $|\\eta|$', 'the same $\\beta$ and the same $\\tau$'], 0,
       [null, md`Both $\alpha$ and $\beta$ grow: the bracket in $\beta$ has $\sqrt{1 + (\sigma/\omega\epsilon)^2} + 1$.`, md`More loss means more lag and a lower impedance, so this has them backward.`, md`Both change with the loss tangent.`],

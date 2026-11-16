@@ -1,7 +1,7 @@
 /* Exam 3, loaded after every Exam 3 content file. Puts each study unit's lessons in topic order, builds the question bank
    (one quiz per lesson from EM.BANK, plus "random from the whole bank"), adds a mini quiz after every section and a mixed
    quiz closing every unit, and builds mixed practice (#/quiz). Mixed practice draws its rapid-fire cards and problems from
-   whatever generators the lessons use, so a new lesson joins it automatically. The formula sheet is in e3-sheet.js. */
+   whatever generators the lessons use, so a new lesson joins it automatically. The formula reference page is e3-sheet.js. */
 (function () {
   'use strict';
   const { R, G } = C;

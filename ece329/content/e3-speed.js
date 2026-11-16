@@ -111,7 +111,7 @@
 
           **Rule.** $\hat h = \hat k\times\hat e$: the travel direction crossed into the direction of $\mathbf E$.
 
-          **Why.** The formula sheet says $\hat e\times\hat h = \hat k$. So $(\hat e, \hat h, \hat k)$ is a right-handed set, in the same order as $(\hat x, \hat y, \hat z)$. In such a set each vector is the cross product of the next two in cyclic order, the way $\hat y = \hat z\times\hat x$. So $\hat h = \hat k\times\hat e$.
+          **Why.** Know that $\hat e\times\hat h = \hat k$ (not given in the exam). So $(\hat e, \hat h, \hat k)$ is a right-handed set, in the same order as $(\hat x, \hat y, \hat z)$. In such a set each vector is the cross product of the next two in cyclic order, the way $\hat y = \hat z\times\hat x$. So $\hat h = \hat k\times\hat e$.
 
           **10-second example.** $\mathbf E$ along $\hat z$, travel toward $-\hat y$: $\hat h = (-\hat y)\times\hat z = -\hat x$. Check: $\hat z\times(-\hat x) = -\hat y$ ✓.
 
@@ -241,7 +241,7 @@
 
           **Rule.** $\eta = (1 + j)/(\sigma\delta)$: $\tau = 45°$ and $|\eta| = \sqrt2/(\sigma\delta)$. The surface resistance is its real part, $R_s = 1/(\sigma\delta)$.
 
-          **Why.** The sheet gives $\gamma/\eta = \sigma + j\omega\epsilon \approx \sigma$, so $\eta = \gamma/\sigma$. Put in trick 12. Lecture 26 defines $R_s = \alpha/\sigma$, the same number since $\alpha = 1/\delta$. It is the resistance of a square of the metal one skin depth thick.
+          **Why.** From $\gamma/\eta = \sigma + j\omega\epsilon \approx \sigma$ (not given in the exam: know it), so $\eta = \gamma/\sigma$. Put in trick 12. Lecture 26 defines $R_s = \alpha/\sigma$, the same number since $\alpha = 1/\delta$. It is the resistance of a square of the metal one skin depth thick.
 
           **10-second example.** $\sigma = 10^6$ S/m and $\delta = 0.1$ mm: $\sigma\delta = 100$ S, so $\eta = 0.01(1 + j)\ \Omega$ and $R_s = 0.01\ \Omega$.
 
@@ -334,7 +334,7 @@
 
           **Rule.** A sheet sends the same pattern of components both ways, so the two sides have opposite hands.
 
-          **Why.** A sheet $\tilde{\mathbf J}_s$ at $z = 0$ radiates $\tilde{\mathbf E} = -\frac{\eta}{2}\tilde{\mathbf J}_s\,e^{-j\beta|z|}$ (the sheet solution on the formula sheet, as phasors). The factor $-\eta/2$ is common to both components. The pattern is the same on both sides, and the travel directions are opposite.
+          **Why.** A sheet $\tilde{\mathbf J}_s$ at $z = 0$ radiates $\tilde{\mathbf E} = -\frac{\eta}{2}\tilde{\mathbf J}_s\,e^{-j\beta|z|}$ (the current-sheet solution, as phasors; not given in the exam). The factor $-\eta/2$ is common to both components. The pattern is the same on both sides, and the travel directions are opposite.
 
           **10-second example.** $\tilde{\mathbf J}_s = J_0(\hat x - j\hat y)$: $\hat x$ is ahead and $\hat x\times\hat y = \hat z$. In $z > 0$ the wave goes toward $+z$: RHCP. In $z < 0$: LHCP.
 
@@ -406,7 +406,7 @@
           $$\tilde E_x = E_0(e^{-j\beta z} - e^{j\beta z}) = -2jE_0\sin\beta z$$
           It is zero where $\beta z = -n\pi$, which is every $\lambda/2$. The reflected $H$ carries two minus signs ($\Gamma$ and the backward travel), so it adds: $\tilde H_y = (2E_0/\eta)\cos\beta z$. Times $e^{j\omega t}$, the real part of $-2j$ gives $2\sin\omega t$, and of $2$ gives $2\cos\omega t$. $E$ and $H$ are $90°$ apart in time, so no average power flows.
 
-          **10-second example.** 300 MHz in air, $\lambda = 1$ m: $E$ is zero at 0, 50 and 100 cm from the wall; the nearest $|E|$ maximum is at 25 cm, where $H$ is zero. An open circuit on a line swaps the roles: $\tilde V \propto 2\cos\beta d$ is largest at the open (formula sheet).
+          **10-second example.** 300 MHz in air, $\lambda = 1$ m: $E$ is zero at 0, 50 and 100 cm from the wall; the nearest $|E|$ maximum is at 25 cm, where $H$ is zero. An open circuit on a line swaps the roles: $\tilde V \propto 2\cos\beta d$ is largest at the open.
 
           **Trap.** Spacing the nulls by $\lambda$. $|\sin\beta z|$ repeats every half wavelength.
 
@@ -1045,7 +1045,7 @@
     steps: [
       R(md`
         !!key How to use this page
-          Same format as [the waves page](#/l/e3-speed): a rule, why it is true, a 10-second example, the trap. A drill closes each group. Two conventions, as on the formula sheet: in the time domain $z$ runs from the generator ($z = 0$) to the load ($z = l$); in phasors $d$ is the distance back from the load ($d = 0$ at the load).
+          Same format as [the waves page](#/l/e3-speed): a rule, why it is true, a 10-second example, the trap. A drill closes each group. Two conventions (use the same ones every time): in the time domain $z$ runs from the generator ($z = 0$) to the load ($z = l$); in phasors $d$ is the distance back from the load ($d = 0$ at the load).
 
         Three different taus appear in this course. Here only one does: $\tau_g = Z_0/(R_g + Z_0)$, the **injection coefficient**, the fraction of $V_g$ that the first wave carries. At a junction, $\tau = 1 + \Gamma$ is a **transmission coefficient**, like the one for waves at a boundary.
 
@@ -1314,7 +1314,7 @@
 
           **Rule.** Shorted stub: $Z = jZ_0\tan\beta d$. Open stub: $Z = -jZ_0\cot\beta d$. At $d = \lambda/8$, $\beta d = 45°$, so they are $+jZ_0$ and $-jZ_0$.
 
-          **Why.** The formula sheet gives $Z(d) = jZ_0\tan\beta d$ for a short and $Y(d) = jY_0\tan\beta d$ for an open. Invert the second: $Z = 1/(jY_0\tan\beta d) = -jZ_0\cot\beta d$.
+          **Why.** Know (not given in the exam) $Z(d) = jZ_0\tan\beta d$ for a short and $Y(d) = jY_0\tan\beta d$ for an open. Invert the second: $Z = 1/(jY_0\tan\beta d) = -jZ_0\cot\beta d$.
 
           **10-second example.** A 50 Ω shorted stub $\lambda/8$ long is $j50\ \Omega$, an inductor; the open one is $-j50\ \Omega$, a capacitor.
 
@@ -1345,7 +1345,7 @@
         !!method
           **22. The input circuit: a divider with Z(l)**
 
-          **Rule.** In steady state the source sees the line's input impedance: $\tilde V(l) = \tilde F\,\dfrac{Z(l)}{Z_g + Z(l)}$, as on the formula sheet.
+          **Rule.** In steady state the source sees the line's input impedance: $\tilde V(l) = \tilde F\,\dfrac{Z(l)}{Z_g + Z(l)}$. This is not given in the exam.
 
           **Why.** At the input terminals, the whole line and its load behave like one impedance $Z(l)$. The source and $Z_g$ do not care what is behind it.
 
@@ -1402,7 +1402,7 @@
 
           **Rule.** The load gets $\frac{|\tilde V^+|^2}{2Z_0}(1 - |\Gamma_L|^2)$.
 
-          **Why.** The formula sheet: $P = |\tilde V^+|^2/2Z_0 - |\tilde V^-|^2/2Z_0$, with $|\tilde V^-| = |\Gamma_L||\tilde V^+|$. On a lossless line this is the same at every $d$.
+          **Why.** Know (not given in the exam): $P = |\tilde V^+|^2/2Z_0 - |\tilde V^-|^2/2Z_0$, with $|\tilde V^-| = |\Gamma_L||\tilde V^+|$. On a lossless line this is the same at every $d$.
 
           **10-second example.** $|\tilde V^+| = 10$ V on 50 Ω with $\Gamma_L = 1/3$: $\frac{100}{100}\cdot\frac89 = 0.889$ W.
 

@@ -1,4 +1,4 @@
-/* Topics 6 and 7 (Lectures 22-24, formula sheet pages 2-3).
+/* Topics 6 and 7 (Lectures 22-24).
    w2-read:   reading a lossy wave (alpha, beta, omega, lambda, v_p, delta, direction), gamma as an arrow and tan(tau) = alpha/beta,
               eta from an E and H pair, H from E in any orientation, mu, sigma, eps back from eta*gamma and gamma/eta.
    w2-limits: the loss tangent decides; the binomial expansion gives the imperfect dielectric; the large-x limit gives the good
@@ -102,7 +102,7 @@
     steps: [
       R(md`
         !!key Why you care
-          Exams like to hand you one line, a field written out in full, and ask for everything hidden in it. Spring 2017 #3 gave $\mathbf E = 3e^{-3x}\cos(8\pi\times10^6t - 4x + 60°)\,\hat z$ V/m and asked for $\alpha$, $\beta$, $\gamma$, $\lambda$, $f$, $v_p$, $\eta$ and $\mathbf H$. HW 9 and Summer 2018 hand you $\mathbf H$ instead, and ask for $\epsilon$ and $\sigma$ as well. Spring 2024 #2 asks which statements about such a wave are true. In [Topic 5](#/l/w2-gamma) you went from the material to the wave. This lesson runs the other way, from the wave back to the material. Most of it is careful reading, plus two lines of the formula sheet.
+          Exams like to hand you one line, a field written out in full, and ask for everything hidden in it. Spring 2017 #3 gave $\mathbf E = 3e^{-3x}\cos(8\pi\times10^6t - 4x + 60°)\,\hat z$ V/m and asked for $\alpha$, $\beta$, $\gamma$, $\lambda$, $f$, $v_p$, $\eta$ and $\mathbf H$. HW 9 and Summer 2018 hand you $\mathbf H$ instead, and ask for $\epsilon$ and $\sigma$ as well. Spring 2024 #2 asks which statements about such a wave are true. In [Topic 5](#/l/w2-gamma) you went from the material to the wave. This lesson runs the other way, from the wave back to the material. Most of it is careful reading, plus two relations you must know (not given in the exam).
 
         ### Notation
 
@@ -162,7 +162,7 @@
         $$\tilde E_x = E_0e^{j\phi}\,e^{-\alpha z}e^{-j\beta z}$$
         The two $z$ factors join, because exponents add: $e^{-\alpha z}e^{-j\beta z} = e^{-(\alpha + j\beta)z} = e^{-\gamma z}$. So
         $$\boxed{\tilde E_x = E_0e^{j\phi}\,e^{-\gamma z}}$$
-        That is the line on the formula sheet. The complex constant $E_0e^{j\phi}$ holds the size and the starting phase. The exponential holds every bit of the $z$ dependence. A wave toward $-z$ has $e^{+\gamma z}$ instead.
+        That is the form to know (not given in the exam). The complex constant $E_0e^{j\phi}$ holds the size and the starting phase. The exponential holds every bit of the $z$ dependence. A wave toward $-z$ has $e^{+\gamma z}$ instead.
 
         !!intuition Does this make sense?
           At $z = 0$ the phasor is $E_0e^{j\phi}$, and $\Re\{E_0e^{j\phi}e^{j\omega t}\} = E_0\cos(\omega t + \phi)$: exactly the given field at $z = 0$. ✓ A phase of $-90°$ is the factor $e^{-j90°} = -j$, so "$\sin$" in the time domain is "$-j$" in the phasor.
@@ -181,7 +181,7 @@
         Pythagoras gives the size, and the triangle gives the angle from the real axis:
         $$|\gamma| = \sqrt{\alpha^2 + \beta^2}$$
         $$\angle\gamma = \tan^{-1}\frac{\beta}{\alpha}$$
-        Now bring in a line of the formula sheet:
+        Now bring in a relation you must know (not given in the exam):
         $$\eta\gamma = j\omega\mu$$
         The right side is $j$ times a positive real number, so it points straight up: its angle is $90°$. When you multiply complex numbers, their angles add. So
         $$\angle\eta + \angle\gamma = 90°$$
@@ -263,7 +263,7 @@
       R(md`
         ### 6. Getting μ back: ηγ = jωμ
 
-        Divide the formula sheet's line by $j\omega$:
+        Divide that relation by $j\omega$:
         $$\mu = \frac{\eta\gamma}{j\omega}$$
         $\mu$ is a real, positive number. So $\eta\gamma$ must point straight up, at $90°$, and its size must be $\omega\mu$. Write both in polar form and multiply, sizes times sizes:
         $$|\eta|\,|\gamma| = \omega\mu$$
@@ -287,7 +287,7 @@
         $$\frac{\gamma}{\eta} = \sigma + j\omega\epsilon$$
         $\sigma$, $\omega$ and $\epsilon$ are all real. So the real part of $\gamma/\eta$ is $\sigma$, and the imaginary part is $\omega\epsilon$:
         $$\sigma = \Re\{\gamma/\eta\}, \qquad \epsilon = \frac{1}{\omega}\Im\{\gamma/\eta\}$$
-        Those are the sheet's lines. In polar form, $\gamma/\eta = (|\gamma|/|\eta|)\,e^{j(\angle\gamma - \tau)}$, then take the cosine and sine parts.
+        Those are the two relations to know. In polar form, $\gamma/\eta = (|\gamma|/|\eta|)\,e^{j(\angle\gamma - \tau)}$, then take the cosine and sine parts.
 
         **A shortcut with no complex division.** From $\eta\gamma = j\omega\mu$, $\eta = j\omega\mu/\gamma$. Put that into $\gamma/\eta$:
         $$\frac{\gamma}{\eta} = \frac{\gamma^2}{j\omega\mu}$$
@@ -417,7 +417,7 @@
         $$\epsilon = \frac{1}{5\pi\times10^8}\ \text{F/m}$$
         Divide by $\epsilon_0 = 10^{-9}/36\pi$:
         $$\epsilon_r = \frac{36\pi\times10^9}{5\pi\times10^8} = 72$$
-        **Check with the sheet's form.** $\gamma/\eta = 2e^{j60°}/(10\pi e^{j30°}) = (1/5\pi)\,e^{j30°}$. Real part $(1/5\pi)(\sqrt3/2) = \sqrt3/10\pi$ ✓. Imaginary part $(1/5\pi)(1/2) = 1/10\pi = \omega\epsilon$ ✓. Loss tangent $\sqrt3$, so $2\tau = 60°$ ✓.
+        **Check with the polar form.** $\gamma/\eta = 2e^{j60°}/(10\pi e^{j30°}) = (1/5\pi)\,e^{j30°}$. Real part $(1/5\pi)(\sqrt3/2) = \sqrt3/10\pi$ ✓. Imaginary part $(1/5\pi)(1/2) = 1/10\pi = \omega\epsilon$ ✓. Loss tangent $\sqrt3$, so $2\tau = 60°$ ✓.
 
         **Speed path.** $|\eta|$ and $\tau$ by eye, $\mu$ by one multiplication, then the two shortcut lines. No complex division at all.
 
@@ -1007,7 +1007,7 @@
       ['The amplitude of $\\mathbf H$', 'The amplitude of $\\mathbf E$', 'The angle between the phases of $E$ and $H$', 'The penetration depth'], 0,
       [null, md`$E = \eta H$ at the sheet, and $\eta$ depends on $\omega$.`, md`That is $\tau$, which depends on the loss tangent.`, md`$\delta = 1/\alpha$ depends on $\omega$.`],
       md`The jump condition gives $H = J_s/2$ on each side of the sheet, with no material constant and no $\omega$ in it. (This is Spring 2024 #2(e)(i).)`),
-    Q(md`Which line of the formula sheet tells you $\mu$ from a wave?`,
+    Q(md`Which relation (not given in the exam, so know it) tells you $\mu$ from a wave?`,
       [md`$\mu = \gamma\eta/j\omega$`, md`$\mu = \Re\{\gamma/\eta\}$`, md`$\mu = \tfrac1\omega\Im\{\gamma/\eta\}$`, md`$\mu = \gamma/(j\omega\eta)$`], 0,
       [null, md`That is $\sigma$.`, md`That is $\epsilon$.`, md`That has $\eta$ in the denominator. It is the product $\gamma\eta$ that equals $j\omega\mu$.`],
       md`$\eta\gamma = j\omega\mu$, so $\mu = \gamma\eta/j\omega$, and its size is $|\gamma||\eta|/\omega$.`),
@@ -1080,7 +1080,7 @@
     steps: [
       RF(md`
         !!key Why you care
-          Spring 2024 #2 was worth 30 points: a wave in a good conductor with $\delta = 1$ mm. Summer 2018 and 2019 sent a wave into seawater at 1 kHz. Summer 2020 asked about dry earth at 100 Hz. HW 9 #4 sends a signal down to a submarine. Without a calculator, the exact formulas of [Topic 5](#/l/w2-gamma) are slow for all of these. Each one becomes a single square root once you know which **limit** the material is in. Page 3 of your formula sheet has the limits in three lines. This lesson derives every line from Topic 5, shows when you may use it, and drills the numbers that come out clean.
+          Spring 2024 #2 was worth 30 points: a wave in a good conductor with $\delta = 1$ mm. Summer 2018 and 2019 sent a wave into seawater at 1 kHz. Summer 2020 asked about dry earth at 100 Hz. HW 9 #4 sends a signal down to a submarine. Without a calculator, the exact formulas of [Topic 5](#/l/w2-gamma) are slow for all of these. Each one becomes a single square root once you know which **limit** the material is in. The loss-limits table the exam gives you has the limits in three rows. This lesson derives every line from Topic 5, shows when you may use it, and drills the numbers that come out clean.
 
         ### Notation
 
@@ -1093,7 +1093,7 @@
 
         ### 1. One number decides: the loss tangent
 
-        Start from the line on your formula sheet that Topic 5 derived:
+        Start from the line Topic 5 derived (not given in the exam: know it):
         $$\gamma = j\omega\sqrt{\mu\left(\epsilon - j\frac{\sigma}{\omega}\right)}$$
         Pull $\epsilon$ out of the bracket. Inside, $\sigma/\omega$ becomes $\sigma/\omega\epsilon$:
         $$\gamma = j\omega\sqrt{\mu\epsilon}\,\sqrt{1 - j\frac{\sigma}{\omega\epsilon}}$$
@@ -1147,11 +1147,11 @@
         $$\alpha \approx \frac{\sigma}{2}\cdot\frac{\omega\sqrt{\mu\epsilon}}{\omega\epsilon}$$
         The $\omega$ cancels, and $\sqrt{\mu\epsilon}/\epsilon = \sqrt{\mu/\epsilon}$:
         $$\boxed{\alpha \approx \frac{\sigma}{2}\sqrt{\frac{\mu}{\epsilon}} = \frac{\sigma\eta_i}{2}}$$
-        That is the line on your sheet.
+        That is the imperfect-dielectric $\alpha$ in the given table.
 
         **η.** Put the same $u$ into (2), using the inverse-root result:
         $$\eta \approx \eta_i\left(1 + j\frac{\sigma}{2\omega\epsilon}\right)$$
-        That is on your sheet too. Its size is $\eta_i$, up to a correction of order $u^2$. Its angle is the angle of a number with real part 1 and a small imaginary part:
+        That is in the given table too. Its size is $\eta_i$, up to a correction of order $u^2$. Its angle is the angle of a number with real part 1 and a small imaginary part:
         $$\tau \approx \tan^{-1}\frac{\sigma}{2\omega\epsilon} \approx \frac{\sigma}{2\omega\epsilon}$$
         **in radians**, because $\tan\theta \approx \theta$ for a small angle. Compare the exact $\tau = \tfrac12\tan^{-1}(\sigma/\omega\epsilon)$ of Topic 5: with $\tan^{-1}x \approx x$ it gives the same thing ✓.
 
@@ -1216,11 +1216,11 @@
         $$\boxed{\eta \approx \frac{1 + j}{\sigma\delta}}$$
         The real and imaginary parts are equal, so its angle is
         $$\tau \approx 45°$$
-        and its size is $\sqrt2/\sigma\delta$. To see the sheet's form, put $1/\delta = \sqrt{\omega\mu\sigma/2}$ back in:
+        and its size is $\sqrt2/\sigma\delta$. To see the table's form, put $1/\delta = \sqrt{\omega\mu\sigma/2}$ back in:
         $$|\eta| = \frac{\sqrt2}{\sigma}\sqrt{\frac{\omega\mu\sigma}{2}}$$
         The $\sqrt2$'s cancel and one $\sigma$ comes out of the root:
         $$|\eta| = \sqrt{\frac{\omega\mu}{\sigma}}$$
-        ✓ That is the line on your sheet.
+        ✓ That is the good-conductor $|\eta|$ in the given table.
 
         **The real part has a name.** $\Re\{\eta\} = 1/\sigma\delta$ is the **surface resistance** $R_s$. It is the resistance of one square of the conductor's surface layer, one $\delta$ thick. [Topic 8](#/l/w2-loss) uses it to find the power a conductor absorbs.
 
@@ -1811,7 +1811,7 @@
     () => {
       const [sig, q] = pick([[4, 0.01], [4, 0.02], [4, 0.05], [4, 0.1], [1e6, 1e-5], [1e6, 1e-4], [1e6, 1e-3], [4e7, 1e-4], [4e7, 1e-3], [4e7, 1e-2]]);
       const fr = 5e6 * q * q * sig, ans = 2 * Math.PI * q;
-      return MC('|η| from the sheet', md`A good conductor has $\sigma = ${p(sig)}$ S/m and $\mu = \mu_0$. At $f = ${frX(fr)}$, $|\eta| = \sqrt{\omega\mu/\sigma}$ is…`, o3(ans, 'Ω'),
+      return MC('|η| of a good conductor', md`A good conductor has $\sigma = ${p(sig)}$ S/m and $\mu = \mu_0$. At $f = ${frX(fr)}$, $|\eta| = \sqrt{\omega\mu/\sigma}$ is…`, o3(ans, 'Ω'),
         [[o3(Math.sqrt(2 * Math.PI) * q, 'Ω'), md`That used $f$ for $\omega$ inside the root.`], [o3(ans * ans, 'Ω'), md`That forgot the square root.`],
           [o3(ans * sig, 'Ω'), md`That is $\sqrt{\omega\mu\sigma}$, which is in 1/m: $\sigma$ belongs in the denominator.`], ['$120\\pi$ Ω', md`That is free space. A good conductor's $|\eta|$ is tiny.`]],
         md`$\omega\mu_0/\sigma = (2\pi f)(4\pi\times10^{-7})/\sigma = 4\pi^2(2\times10^{-7}f/\sigma) = 4\pi^2(${p(q * q)})$. The root is $2\pi(${p(q)}) = ${f(ans)}\ \Omega$.`);
@@ -1921,7 +1921,7 @@
 
         **Step 4: η.** $\sigma\delta = ${f(c.sig * d)}$ S, so $\eta = (1 + j)/\sigma\delta = ${f(1 / (c.sig * d))}(1 + j)\ \Omega$, and
         $$|\eta| = \frac{\sqrt2}{\sigma\delta} = ${f(em)}\ \Omega$$
-        Check with the sheet's form: $\sqrt{\omega\mu_0/\sigma} = ${f(Math.sqrt(w * MU0 / c.sig))}\ \Omega$ ✓.
+        Check with the table's form: $\sqrt{\omega\mu_0/\sigma} = ${f(Math.sqrt(w * MU0 / c.sig))}\ \Omega$ ✓.
 
         **Step 5: λ and v_p.**
         $$\lambda = 2\pi\delta = ${lenX(2 * Math.PI * d)}$$

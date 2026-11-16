@@ -84,7 +84,7 @@
     steps: [
       RF(md`
         !!key Why you care
-          Every Exam 3 has a wave hitting a boundary. Spring 2018 #2 (20 points) gives you only the transmitted field and asks for everything else. Summer 2017 #3 (25 points) is the same skill. HW 11 #1-#3 drill it with a dielectric, a perfect conductor, and waves along $x$ and $y$ instead of $z$. The formula sheet gives you two lines: $\Gamma = (\eta_2 - \eta_1)/(\eta_2 + \eta_1)$ and $\tau = 1 + \Gamma$. It does not say where they come from, which $\eta$ is which, what happens to $\mathbf H$, where the power goes, or what a mirror feels. In this lesson you derive all of it from two boundary conditions.
+          Every Exam 3 has a wave hitting a boundary. Spring 2018 #2 (20 points) gives you only the transmitted field and asks for everything else. Summer 2017 #3 (25 points) is the same skill. HW 11 #1-#3 drill it with a dielectric, a perfect conductor, and waves along $x$ and $y$ instead of $z$. The exam does not give you $\Gamma = (\eta_2 - \eta_1)/(\eta_2 + \eta_1)$ or $\tau = 1 + \Gamma$, so know them. It does not say where they come from, which $\eta$ is which, what happens to $\mathbf H$, where the power goes, or what a mirror feels. In this lesson you derive all of it from two boundary conditions.
 
         ### Notation
 
@@ -104,7 +104,7 @@
         $$\tilde{\mathbf E}_i = \hat x\,E_0e^{-j\beta_1z}$$
         Its $\mathbf H$ is $\tilde E$ divided by $\eta_1$, turned so that $\mathbf E\times\mathbf H$ points along the travel, $+\hat z$. Since $\hat x\times\hat y = \hat z$:
         $$\tilde{\mathbf H}_i = \hat y\,\frac{E_0}{\eta_1}e^{-j\beta_1z}$$
-        Suppose this were the only wave. Just left of the boundary, $\tilde E_x = E_0$. Just right of it there is nothing. But tangential $\mathbf E$ must be continuous across any boundary (your sheet: $\hat n\times(\mathbf E^+ - \mathbf E^-) = 0$). One wave alone breaks the rule.
+        Suppose this were the only wave. Just left of the boundary, $\tilde E_x = E_0$. Just right of it there is nothing. But tangential $\mathbf E$ must be continuous across any boundary (know it; not given in the exam: $\hat n\times(\mathbf E^+ - \mathbf E^-) = 0$). One wave alone breaks the rule.
 
         What is the least we can add? Two more plane waves, each a solution of Maxwell's equations in its own region:
 
@@ -139,7 +139,7 @@
         $$E_0 + \Gamma E_0 = \tau E_0$$
         Divide by $E_0$:
         $$\boxed{1 + \Gamma = \tau} \qquad (1)$$
-        That is the last line of the reflection block on your sheet. It says nothing more than "the field just left equals the field just right."
+        That is the boundary condition on tangential $\mathbf E$ (not given in the exam: know it). It says nothing more than "the field just left equals the field just right."
 
         !!intuition Does this make sense?
           If region 2 were the same material as region 1, nothing should reflect: $\Gamma = 0$. Then (1) gives $\tau = 1$: the whole wave goes on unchanged. ✓
@@ -151,7 +151,7 @@
       R(md`
         ### 3. Condition two: tangential H is continuous
 
-        The other tangential condition on your sheet is $\hat n\times(\mathbf H^+ - \mathbf H^-) = \mathbf J_s$. Is there a surface current on this boundary? A surface current is a finite current squeezed into a layer of zero thickness. A material with finite $\sigma$ carries $\mathbf J = \sigma\mathbf E$, a finite current density, and a finite density in zero thickness carries zero current. So unless region 2 is a perfect conductor,
+        The other tangential condition (also not given in the exam) is $\hat n\times(\mathbf H^+ - \mathbf H^-) = \mathbf J_s$. Is there a surface current on this boundary? A surface current is a finite current squeezed into a layer of zero thickness. A material with finite $\sigma$ carries $\mathbf J = \sigma\mathbf E$, a finite current density, and a finite density in zero thickness carries zero current. So unless region 2 is a perfect conductor,
         $$\mathbf J_s = 0$$
         and tangential $\mathbf H$ is continuous too. At $z = 0$ the three $y$-components are: incident $E_0/\eta_1$, reflected $-\Gamma E_0/\eta_1$, transmitted $\tau E_0/\eta_2$. Left side equals right side:
         $$\frac{E_0}{\eta_1} - \frac{\Gamma E_0}{\eta_1} = \frac{\tau E_0}{\eta_2}$$
@@ -1136,13 +1136,13 @@
     steps: [
       RF(md`
         !!key Why you care
-          Prof. Chen's Spring 2024 Exam 3 opened with a standing wave: two current sheets half a wavelength apart, 18 points, the fields in three regions. Fall 2023 #1(c) and (d) asked whether a standing wave has zero energy and which plot shows one. The review session worked the standing wave in front of a perfect conductor. And Unit 6 lives on the same pattern: the formula sheet's $\tilde V(d) = \tilde V^+e^{j\beta d}(1 + \Gamma_Le^{-j2\beta d})$ and VSWR are this lesson with $V$ in place of $E$. Learn it here once, with fields you can picture.
+          Prof. Chen's Spring 2024 Exam 3 opened with a standing wave: two current sheets half a wavelength apart, 18 points, the fields in three regions. Fall 2023 #1(c) and (d) asked whether a standing wave has zero energy and which plot shows one. The review session worked the standing wave in front of a perfect conductor. And Unit 6 lives on the same pattern: the line formulas $\tilde V(d) = \tilde V^+e^{j\beta d}(1 + \Gamma_Le^{-j2\beta d})$ and VSWR (not given in the exam: know them) are this lesson with $V$ in place of $E$. Learn it here once, with fields you can picture.
 
         ### Notation
 
         - Region 1: where the wave comes from. Unless a problem says otherwise, the boundary is at $z = 0$ and region 1 is $z < 0$.
         - $\beta$, $\lambda = 2\pi/\beta$, $\eta_1$: region 1's phase constant, wavelength and impedance.
-        - $d = -z$: the **distance back from the boundary**, in m. $d = 0$ at the boundary, and $d$ grows into region 1. The formula sheet uses the same $d$ on transmission lines.
+        - $d = -z$: the **distance back from the boundary**, in m. $d = 0$ at the boundary, and $d$ grows into region 1. Transmission lines use the same $d$.
         - $\Gamma = |\Gamma|e^{j\theta}$: the reflection coefficient of [Topic 11](#/l/w4-gamma), with size $|\Gamma|$ and angle $\theta$.
         - **Envelope** $|\tilde E(d)|$: the amplitude of the oscillation at the point $d$; what a meter held there would read.
         - **Node**: a point where the envelope is smallest (zero, in a pure standing wave). **Antinode**: where it is largest.
@@ -1162,7 +1162,7 @@
         $$\tilde H_y = \frac{E_0}{\eta_1}e^{j\beta d}\left(1 - \Gamma e^{-j2\beta d}\right)$$
         The factor $e^{j\beta d}$ has size 1. So the **envelope**, the size of the field at each point, is
         $$\boxed{|\tilde E_x(d)| = |E_0|\,\left|1 + \Gamma e^{-j2\beta d}\right|}$$
-        Compare the sheet's line $\tilde V(d) = \tilde V^+e^{j\beta d}(1 + \Gamma_Le^{-j2\beta d})$: identical.
+        Compare the line formula $\tilde V(d) = \tilde V^+e^{j\beta d}(1 + \Gamma_Le^{-j2\beta d})$: identical.
 
         Read the bracket as two arrows added: a fixed arrow of length 1, and an arrow of length $|\Gamma|$ that turns as you move. Stepping back a distance $d$ turns it by $-2\beta d$: twice $\beta d$, because the reflected wave had to travel out to the boundary and back. Where the two arrows line up, the field is large; where they point opposite ways, it is small.
 
@@ -1241,7 +1241,7 @@
 
         Two facts to keep: neighbouring nodes of the same field are $\lambda/2$ apart. A node of $E$ sits on an antinode of $H$, $\lambda/4$ from the nearest node of $H$.
 
-        **The circuit picture.** A node of $E$ acts like a short circuit ($V = 0$, current flows); a node of $H$ acts like an open circuit ($I = 0$). On a transmission line ended in a short, the sheet gives $\tilde V(d) = j2\tilde V^+\sin\beta d$: the same sine. You will meet it again in [Topic 18](#/l/w6-stubs).
+        **The circuit picture.** A node of $E$ acts like a short circuit ($V = 0$, current flows); a node of $H$ acts like an open circuit ($I = 0$). On a transmission line ended in a short, the voltage is $\tilde V(d) = j2\tilde V^+\sin\beta d$ (know it; not given in the exam): the same sine. You will meet it again in [Topic 18](#/l/w6-stubs).
 
         !!intuition Does this make sense?
           Slide a thin metal sheet into region 1 exactly at an $E$ node, $d = \lambda/2$. Nothing changes: $E$ is already zero there, and the sheet just carries the current that $H$ needs. That is how a cavity works (Section 8).

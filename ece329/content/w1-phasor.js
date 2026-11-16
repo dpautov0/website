@@ -319,7 +319,7 @@
         $$\tilde E_x(z) = E_0e^{j\phi}\,e^{-\alpha z}e^{-j\beta z}$$
         The two exponentials combine:
         $$\tilde E_x(z) = E_0e^{j\phi}\,e^{-(\alpha + j\beta)z}$$
-        With $\gamma = \alpha + j\beta$ this is $E_0e^{j\phi}e^{-\gamma z}$, the line on your formula sheet. [Topic 5](#/l/w2-gamma) derives $\gamma$.
+        With $\gamma = \alpha + j\beta$ this is $E_0e^{j\phi}e^{-\gamma z}$, the standard form (not given in the exam: know it). [Topic 5](#/l/w2-gamma) derives $\gamma$.
 
         !!intuition Does this make sense?
           Follow a crest of $\cos(\omega t - \beta z)$: its argument stays at 0, so $z = \omega t/\beta$, which grows with $t$. The crest moves toward $+z$ at speed $\omega/\beta$ ✓. The phasor shows the same thing with its minus sign.
@@ -390,7 +390,7 @@
 
         **Vectors.** Apply the rule to each pair of components. $\mathbf E\times\mathbf H$ is a sum of products like $E_xH_y$, so
         $$\langle\mathbf E\times\mathbf H\rangle = \tfrac12\Re\{\Et\times\Ht^*\}$$
-        That is the time-averaged Poynting vector on your formula sheet. The same step gives $\langle\mathbf J\cdot\mathbf E\rangle = \tfrac12\Re\{\tilde{\mathbf J}\cdot\Et^*\}$, and on a transmission line $P = \tfrac12\Re\{\Vt\It^*\}$. [Topic 4](#/l/w1-avg) uses this one line for every power in the course.
+        That is the time-averaged Poynting vector (not given in the exam: know it). The same step gives $\langle\mathbf J\cdot\mathbf E\rangle = \tfrac12\Re\{\tilde{\mathbf J}\cdot\Et^*\}$, and on a transmission line $P = \tfrac12\Re\{\Vt\It^*\}$. [Topic 4](#/l/w1-avg) uses this one line for every power in the course.
 
         !!intuition Does this make sense?
           In phase ($\theta_a = \theta_b$): $\langle ab\rangle = \tfrac12AB$, the largest it can be. A quarter period apart: $\cos90° = 0$, so the average is zero. The product is positive half the time and negative half the time: energy goes out and comes back. Opposite ($180°$): $-\tfrac12AB$, the power flows the other way.
@@ -1204,7 +1204,7 @@
 
         ### Notation
 
-        - $\nabla\times$, $\nabla\cdot$: the curl and the divergence. Their component formulas are on page 1 of your formula sheet.
+        - $\nabla\times$, $\nabla\cdot$: the curl and the divergence. Know their component formulas (not given in the exam) or put them on your card.
         - $\Et(\mathbf r)$, $\Ht(\mathbf r)$, $\tilde{\mathbf D}$, $\tilde{\mathbf B}$, $\tilde{\mathbf J}$, $\tilde\rho$: the phasors of the fields and sources ([Topic 1](#/l/w1-phasor)). Each is a function of position only.
         - $\epsilon$, $\mu$, $\sigma$: the material's permittivity, permeability and conductivity, with $\tilde{\mathbf D} = \epsilon\Et$, $\tilde{\mathbf B} = \mu\Ht$, $\tilde{\mathbf J} = \sigma\Et$.
         - $\beta$: the **wavenumber**, in rad/m. How fast the phase turns with distance.
@@ -1214,7 +1214,7 @@
 
         ### 1. Each law: ∂/∂t becomes jω
 
-        Start with Faraday's law, as it is on your sheet:
+        Start with Faraday's law (not given in the exam: know it):
         $$\nabla\times\mathbf E = -\frac{\partial\mathbf B}{\partial t}$$
         At one frequency, write both fields through their phasors:
         $$\mathbf E = \Re\{\Et\,e^{j\omega t}\}, \qquad \mathbf B = \Re\{\tilde{\mathbf B}\,e^{j\omega t}\}$$
@@ -1262,7 +1262,7 @@
         $$\nabla\times\nabla\times\Et = -j\omega\mu\,(j\omega\epsilon\Et)$$
         **Step 3.** $-j\cdot j = -j^2 = +1$:
         $$\nabla\times\nabla\times\Et = \omega^2\mu\epsilon\,\Et$$
-        **Step 4.** Your sheet has the identity $\nabla\times\nabla\times\mathbf A = \nabla(\nabla\cdot\mathbf A) - \nabla^2\mathbf A$. Here $\nabla\cdot\Et = 0$, so only $-\nabla^2\Et$ is left:
+        **Step 4.** Use the identity $\nabla\times\nabla\times\mathbf A = \nabla(\nabla\cdot\mathbf A) - \nabla^2\mathbf A$. Here $\nabla\cdot\Et = 0$, so only $-\nabla^2\Et$ is left:
         $$-\nabla^2\Et = \omega^2\mu\epsilon\,\Et$$
         Move everything to one side:
         $$\boxed{\nabla^2\Et + \omega^2\mu\epsilon\,\Et = 0}$$
@@ -1319,7 +1319,7 @@
         $$\Ht = \frac{j}{\omega\mu}\,\nabla\times\Et \qquad\text{(3)}$$
         Now take a general wave toward $+z$, with two complex constants $E_{x0}$ and $E_{y0}$:
         $$\Et = (E_{x0}\,\hat x + E_{y0}\,\hat y)\,e^{-j\beta z}$$
-        **The curl, one component at a time** (from page 1 of the sheet). There is no $\tilde E_z$, and nothing depends on $x$ or $y$.
+        **The curl, one component at a time** (know the component formulas; not given in the exam). There is no $\tilde E_z$, and nothing depends on $x$ or $y$.
 
         The $x$-component:
         $$(\nabla\times\Et)_x = \frac{\partial\tilde E_z}{\partial y} - \frac{\partial\tilde E_y}{\partial z}$$
@@ -1384,7 +1384,7 @@
           2. **The right β.** $\beta = \omega\sqrt{\mu\epsilon}$, which is $\beta = \omega\sqrt{\mu_r\epsilon_r}/c$. If the medium is unknown, this tells you $\sqrt{\mu_r\epsilon_r}$.
           3. **The right H.** $\Ht = \hat k\times\Et/\eta$: the size ratio is $\eta = 120\pi\sqrt{\mu_r/\epsilon_r}$, and $\Et\times\Ht^*$ points along $\hat k$.
 
-        Tests 2 and 3 together pin down both $\epsilon$ and $\mu$. With $\gamma = j\beta$ they are the sheet's line $\eta\gamma = j\omega\mu$, which gives $\mu = \eta\beta/\omega$, and its partner $\epsilon = \beta/(\omega\eta)$.
+        Tests 2 and 3 together pin down both $\epsilon$ and $\mu$. With $\gamma = j\beta$ they are the relation $\eta\gamma = j\omega\mu$ (not given: know it), which gives $\mu = \eta\beta/\omega$, and its partner $\epsilon = \beta/(\omega\eta)$.
 
         !!intuition Does this make sense?
           In free space, $\eta_0 = 120\pi$ and $\beta = \omega/c$. Then $\eta_0\beta/\omega = 120\pi/c = 120\pi/(3\times10^8) = 4\pi\times10^{-7} = \mu_0$ ✓.
@@ -1469,7 +1469,7 @@
         With conductivity, put $\sigma + j\omega\epsilon$ in place of $j\omega\epsilon$:
         $$\gamma = \sqrt{j\omega\mu(\sigma + j\omega\epsilon)}$$
         $$\eta = \sqrt{\frac{j\omega\mu}{\sigma + j\omega\epsilon}}$$
-        Multiply the two: $\eta\gamma = j\omega\mu$. Divide them: $\gamma/\eta = \sigma + j\omega\epsilon$. Those are the two lines on page 2 of your sheet. [Topic 5](#/l/w2-gamma) derives them from scratch and finds what $\alpha$, $\beta$ and the angle of $\eta$ do.
+        Multiply the two: $\eta\gamma = j\omega\mu$. Divide them: $\gamma/\eta = \sigma + j\omega\epsilon$. Those are two relations to know (not given in the exam). [Topic 5](#/l/w2-gamma) derives them from scratch and finds what $\alpha$, $\beta$ and the angle of $\eta$ do.
 
         !!intuition Does this make sense?
           Set $\sigma = 0$: $\gamma = j\omega\sqrt{\mu\epsilon} = j\beta$ and $\eta = \sqrt{\mu/\epsilon}$, the lossless values ✓. And $\eta\gamma = \sqrt{\mu/\epsilon}\cdot j\omega\sqrt{\mu\epsilon} = j\omega\mu$ ✓.
@@ -1601,7 +1601,7 @@
 
         !!mistake Common mistakes
           - **Losing the $j$ in a derivative.** $\partial e^{-j\beta z}/\partial z = -j\beta e^{-j\beta z}$, not $-\beta e^{-j\beta z}$.
-          - **The signs inside the curl.** Copy the component formula from the sheet and fill it in one term at a time.
+          - **The signs inside the curl.** Write the component formula from memory and fill it in one term at a time.
           - **$\Ht = \Et/\eta$ with the same direction.** $\Ht$ is turned $90°$ about the travel.
           - **$\hat k$ with the wrong sign.** $e^{+j\beta y}$ means $\hat k = -\hat y$.
           - **Dropping a $j$** from a component when forming $\Ht$. Each component of $\Ht$ keeps the phase of its partner in $\Et$.
@@ -1804,7 +1804,7 @@
         const k = -s * sd;
         const cv = (sg, j = true) => md`$${sg < 0 ? '-' : ''}${j ? 'j' : ''}${co(String(E0))}${bt === '2' || bt === '4' || bt === '6' || bt === '10' ? `(${bt})` : bt}\,\hat ${d}\,${e}$`;
         return MC('One curl', md`$\Et = ${E0}\hat ${c}\,${e}$. Then $\nabla\times\Et$ is…`, cv(k),
-          [[cv(-k), md`The sign is off. Use $\partial/\partial ${u}\to${s > 0 ? '-' : '+'}j${bt}$ in the sheet's formula, minus signs included.`], [cv(k, false), md`The derivative of an imaginary exponential keeps the $j$.`], [md`$${k < 0 ? '-' : ''}j${co(String(E0))}${bt === '2' || bt === '4' || bt === '6' || bt === '10' ? `(${bt})` : bt}\,\hat ${c}\,${e}$`, md`A curl is perpendicular to the field here: it points along $\hat k\times\hat ${c}$.`], [md`$0$`, md`The field varies along $${u}$, across its own direction, so it curls.`]],
+          [[cv(-k), md`The sign is off. Use $\partial/\partial ${u}\to${s > 0 ? '-' : '+'}j${bt}$ in the component formula, minus signs included.`], [cv(k, false), md`The derivative of an imaginary exponential keeps the $j$.`], [md`$${k < 0 ? '-' : ''}j${co(String(E0))}${bt === '2' || bt === '4' || bt === '6' || bt === '10' ? `(${bt})` : bt}\,\hat ${c}\,${e}$`, md`A curl is perpendicular to the field here: it points along $\hat k\times\hat ${c}$.`], [md`$0$`, md`The field varies along $${u}$, across its own direction, so it curls.`]],
           md`For $${e}$, $\nabla\to${s > 0 ? '-' : '+'}j${bt}\hat ${u}$. So $\nabla\times\Et = (${s > 0 ? '-' : '+'}j${bt})\hat ${u}\times${E0}\hat ${c}$, and $\hat ${u}\times\hat ${c} = ${unitTex(sd, d)}$.`);
       },
     ]);

@@ -148,7 +148,7 @@
     steps: [
       RF(md`
         !!key Why you care
-          Prof. Chen's Spring 2024 Exam 3 gave 18 of its 100 points to one coax question: given $C$, find $L$, $Z_0$ and $v$. Every bounce diagram after that uses $Z_0$ and $v$ too. The formula sheet lists the telegrapher's equations, $Z_0 = \sqrt{L/C}$ and $v = 1/\sqrt{LC}$, but not where they come from or what $Z_0$ means. In this lesson you build all of it from Faraday's law and charge conservation, the same way [Topic 5](#/l/w2-gamma) built $\gamma$ and $\eta$. By the end, a transmission line is just a plane wave squeezed between two conductors.
+          Prof. Chen's Spring 2024 Exam 3 gave 18 of its 100 points to one coax question: given $C$, find $L$, $Z_0$ and $v$. Every bounce diagram after that uses $Z_0$ and $v$ too. The exam does not give you the telegrapher's equations, $Z_0 = \sqrt{L/C}$ or $v = 1/\sqrt{LC}$, so you must know them, and where they come from and what $Z_0$ means. In this lesson you build all of it from Faraday's law and charge conservation, the same way [Topic 5](#/l/w2-gamma) built $\gamma$ and $\eta$. By the end, a transmission line is just a plane wave squeezed between two conductors.
 
         ### Notation
 
@@ -165,7 +165,7 @@
 
         Start from the plane wave of Exam 2: $\mathbf E = \hat x\,E_x(z,t)$ and $\mathbf H = \hat y\,H_y(z,t)$, traveling along $z$ in a uniform material. Now slide two flat perfect conductors into it, one in the plane $x = 0$ and one in the plane $x = d$. Point $\hat x$ **down** the page, so the plate at $x = 0$ is on top.
 
-        Does the wave notice? Check the two boundary conditions at the surface of a perfect conductor (they are on your sheet):
+        Does the wave notice? Check the two boundary conditions at the surface of a perfect conductor (know them; not given in the exam):
 
         - Tangential $\mathbf E$ must be zero. The plates are perpendicular to $\hat x$ and $\mathbf E$ is along $\hat x$, so $\mathbf E$ meets them head-on. It has no tangential part. ✓
         - Normal $\mathbf B$ must be zero. $\mathbf H$ is along $\hat y$, which lies in the plates. It has no normal part. ✓
@@ -285,7 +285,7 @@
         !!intuition Does this make sense?
           A capacitor obeys $i = C\,dv/dt$. Here the current **lost** along $\Delta z$ is $C\Delta z\,\partial V/\partial t$: each slice is a small capacitor across the line, with a small resistor ($G\Delta z$ of conductance) beside it when the filling leaks.
 
-        **The lossless line.** From here on the filling is a perfect dielectric, $\sigma = 0$, so $G = 0$. (A real line also loses a little in its metal, a series $RI$ term that perfect plates leave out.) The pair on your formula sheet is
+        **The lossless line.** From here on the filling is a perfect dielectric, $\sigma = 0$, so $G = 0$. (A real line also loses a little in its metal, a series $RI$ term that perfect plates leave out.) The pair to know (not given in the exam) is
         $$-\frac{\partial V}{\partial z} = L\frac{\partial I}{\partial t}$$
         $$-\frac{\partial I}{\partial z} = C\frac{\partial V}{\partial t}$$
         These are the **telegrapher's equations**.
@@ -436,7 +436,7 @@
 
         $Z_0$ is the ratio of voltage to current **in one traveling wave**. Call the forward wave's voltage and current $V^+$, $I^+$, and the backward wave's $V^-$, $I^-$:
         $$\frac{V^+}{I^+} = Z_0, \qquad \frac{V^-}{I^-} = -Z_0$$
-        That is the line $Z_0 = \pm V^\pm/I^\pm$ on your formula sheet. In terms of the geometrical factor:
+        That is the line $Z_0 = \pm V^\pm/I^\pm$ (know it; not given in the exam). In terms of the geometrical factor:
         $$Z_0 = \sqrt{\frac{L}{C}} = \sqrt{\frac{\mu/\text{GF}}{\epsilon\,\text{GF}}} = \frac{1}{\text{GF}}\sqrt{\frac{\mu}{\epsilon}}$$
         $$\boxed{Z_0 = \frac{\eta}{\text{GF}}}$$
         The fields say the same thing directly. In the forward wave $E_x/H_y = \eta$, so
@@ -1351,7 +1351,7 @@ Now take $b/a = ${B.r}$ ($\ln(b/a) = ${B.lnT}$), $\epsilon = ${er}\epsilon_0$, $
         $$V^-(R_L + Z_0) = V^+(R_L - Z_0)$$
         Divide:
         $$\boxed{\Gamma_L \equiv \frac{V^-}{V^+} = \frac{R_L - Z_0}{R_L + Z_0}}$$
-        This is the line on your formula sheet. The reflected wave is $V^- = \Gamma_LV^+$, and it leaves the load at $t = T$.
+        This is the line to know (not given in the exam). The reflected wave is $V^- = \Gamma_LV^+$, and it leaves the load at $t = T$.
 
         [[fig:ld]]
 

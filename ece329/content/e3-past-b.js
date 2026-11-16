@@ -133,7 +133,7 @@
 
   const sp19 = [
     R(md`
-      **Spring 2019 · ECE 329 · Exam 3** (Chen, Goddard, Zhao). Wednesday, April 17, 2019, 8:30–9:45 PM: 75 minutes. Five problems, 100 points (25, 20, 15, 25, 15). Closed book, no calculators. That term allowed three double-sided 3×5 cards; you get one 4″×6″ card and the official formula sheet. The paper asked for answers as fractions, not decimals, and gave $c = 3\times10^8$ m/s, $\epsilon_0 = \tfrac{1}{36\pi}\times10^{-9}$ F/m, $\mu_0 = 4\pi\times10^{-7}$ H/m and $\eta_0 = 120\pi\ \Omega$.
+      **Spring 2019 · ECE 329 · Exam 3** (Chen, Goddard, Zhao). Wednesday, April 17, 2019, 8:30–9:45 PM: 75 minutes. Five problems, 100 points (25, 20, 15, 25, 15). Closed book, no calculators. That term allowed three double-sided 3×5 cards; you get one 4″×6″ card and one printed table (the loss limits). The paper asked for answers as fractions, not decimals, and gave $c = 3\times10^8$ m/s, $\epsilon_0 = \tfrac{1}{36\pi}\times10^{-9}$ F/m, $\mu_0 = 4\pi\times10^{-7}$ H/m and $\eta_0 = 120\pi\ \Omega$.
 
       **Why this paper.** Prof. Chen, who writes your exam, co-wrote it. It is a compact tour of Exam 3: a lossy wave read off its phasor, a parallel-plate line built from its fields, circular polarization hitting a perfect conductor, a two-line bounce diagram, and the resonances of a line.
 
@@ -143,7 +143,7 @@
 
       **Three different τ's appear.** In Problem 1, $\tau$ is the **angle of $\eta$**. In Problem 4, $\tau_g$ is the **injection coefficient** (the share of the source voltage that launches the first wave), and $\tau_{12} = 1 + \Gamma_{12}$ is the **transmission coefficient** at a junction.
 
-      **How to use it.** Set a 75-minute timer and work on paper, with only your card and the formula sheet. Then enter your answers. Number boxes take arithmetic, so type the exact form: <code>8*pi^2</code>, <code>sqrt(3)</code>, <code>650/9</code>. Symbolic boxes list the variables you may use. Open each solution after you check, even when you are right: each ends with a **speed path** (how to do it in under a minute) and **where points go**.
+      **How to use it.** Set a 75-minute timer and work on paper, with only your card and the given table. Then enter your answers. Number boxes take arithmetic, so type the exact form: <code>8*pi^2</code>, <code>sqrt(3)</code>, <code>650/9</code>. Symbolic boxes list the variables you may use. Open each solution after you check, even when you are right: each ends with a **speed path** (how to do it in under a minute) and **where points go**.
     `),
 
     // ------------------------------------------------------------ Problem 1
@@ -684,7 +684,7 @@
         modes: { svg: PF.row([1, 2, 3].map((m) => ({ svg: modeFig(m), cap: `$\\beta l = ${m === 1 ? '' : 2 * m - 1}\\pi/2$` }))).svg, cap: md`The three lowest modes, input at $z = 0$ and load at $z = l$. Solid: the shape of $\tilde V$, zero at the input. Dashed: the shape of $\tilde I$, zero at the load.` },
       },
       sol: md`
-        **Step 1: the standing wave on an open-ended line.** $Z_L = \infty$ gives $\Gamma_L = +1$. The formula sheet ([Topic 17](#/l/w6-vd)) gives the voltage at a distance $d$ back from the load:
+        **Step 1: the standing wave on an open-ended line.** $Z_L = \infty$ gives $\Gamma_L = +1$. Know the voltage at a distance $d$ back from the load ([Topic 17](#/l/w6-vd); not given in the exam):
         $$\tilde V(d) = V^+\left(e^{j\beta d} + \Gamma_Le^{-j\beta d}\right)$$
         With $\Gamma_L = 1$, Euler's formula ($e^{j\theta} + e^{-j\theta} = 2\cos\theta$) gives
         $$\tilde V(d) = 2V^+\cos(\beta d)$$
@@ -761,7 +761,7 @@
 
   const sp18 = [
     R(md`
-      **Spring 2018 · ECE 329 · Exam 3** (He, Goddard, Ilie). Wednesday, April 18, 2018, 7:15–8:30 PM: 75 minutes. Four problems, 100 points (30, 20, 30, 20). Closed book, no calculators. That term allowed three double-sided 3×5 cards; you get one 4″×6″ card and the official formula sheet. The paper asked for answers as fractions, gave the same constants as every Exam 3 ($c = 3\times10^8$ m/s, $\epsilon_0 = \tfrac{1}{36\pi}\times10^{-9}$ F/m, $\mu_0 = 4\pi\times10^{-7}$ H/m, $\eta_0 = 120\pi\ \Omega$), and printed the imperfect-dielectric / good-conductor table that is now on your formula sheet.
+      **Spring 2018 · ECE 329 · Exam 3** (He, Goddard, Ilie). Wednesday, April 18, 2018, 7:15–8:30 PM: 75 minutes. Four problems, 100 points (30, 20, 30, 20). Closed book, no calculators. That term allowed three double-sided 3×5 cards; you get one 4″×6″ card and one printed table (the loss limits). The paper asked for answers as fractions, gave the same constants as every Exam 3 ($c = 3\times10^8$ m/s, $\epsilon_0 = \tfrac{1}{36\pi}\times10^{-9}$ F/m, $\mu_0 = 4\pi\times10^{-7}$ H/m, $\eta_0 = 120\pi\ \Omega$), and printed the imperfect-dielectric / good-conductor table that is the table the exam now gives you.
 
       **What it tests.** Problem 1 is ten quick concept questions: good conductors ([Topic 7](#/l/w2-limits)), the telegrapher's equations ([Topic 13](#/l/w5-telegraph)), polarization and handedness ([Topic 9](#/l/w3-pol)), $Z_0$ and $\Gamma(d)$ ([Topic 17](#/l/w6-vd)), matching through several lines ([Topic 16](#/l/w5-multi)), and the resonances of a shorted line ([Topic 18](#/l/w6-stubs)). Problem 2: a wave entering a dielectric, read backward from the transmitted field ([Topic 11](#/l/w4-gamma), [Topic 5](#/l/w2-gamma)). Problem 3: a single-line bounce diagram for voltage and current, and the traces at both ends ([Topic 14](#/l/w5-launch), [Topic 15](#/l/w5-bounce)). Problem 4: the input circuit of a line, a stub resonance and a quarter-wave section ([Topic 18](#/l/w6-stubs), [Topic 19](#/l/w6-qw)). All of it is in scope for the Fall 2026 Exam 3.
 
@@ -967,9 +967,9 @@ III. has constant phase along the line.`,
       [md`That is the incident wave alone. A short reflects everything ($\Gamma_L = -1$), so a reflected wave is there too.`,
         md`That is the reflected wave's current alone. The incident wave is there too.`, null,
         md`That is the voltage pattern divided by $Z_0$. The current has $-\Gamma_L = +1$ in front of the reflected term.`,
-        md`The cosine form, $\tfrac{V^+}{Z_0}(e^{j\beta d} + e^{-j\beta d})$, is listed.`],
+        md`The cosine form, $\tfrac{V^+}{Z_0}(e^{j\beta d} + e^{-j\beta d})$, is the one to know.`],
       md`
-        **The formula sheet** ([Topic 17](#/l/w6-vd)):
+        **The formula to know** ([Topic 17](#/l/w6-vd); not given in the exam):
         $$\tilde I(d) = \frac{V^+}{Z_0}\left(e^{j\beta d} - \Gamma_Le^{-j\beta d}\right)$$
         **A short.** $Z_L = 0$, so
         $$\Gamma_L = \frac{0 - Z_0}{0 + Z_0} = -1$$
@@ -1315,7 +1315,7 @@ III. has constant phase along the line.`,
         $$\tilde I_{in} = \frac{\tilde V}{R + Z_{in}} = \frac{2}{75}\ \text{A}$$
         so the power into the line is
         $$\tfrac12|\tilde I_{in}|^2Z_{in} = \tfrac12\cdot\tfrac{4}{5625}\cdot25 \approx 8.9\ \text{mW}$$
-        Now the load. $\Gamma_L = \tfrac{100 - 50}{150} = \tfrac13$. At $d = \lambda/4$, $e^{j\beta d} = j$ and $e^{-j\beta d} = -j$, so the formula sheet's $\tilde V(d)$ gives
+        Now the load. $\Gamma_L = \tfrac{100 - 50}{150} = \tfrac13$. At $d = \lambda/4$, $e^{j\beta d} = j$ and $e^{-j\beta d} = -j$, so $\tilde V(d)$ gives
         $$\tilde V_{in} = V^+\left(j - \tfrac{j}{3}\right) = \tfrac{2j}{3}V^+$$
         With $\tilde V_{in} = \tfrac23$ V, that makes $V^+ = -j$ V. At the load ($d = 0$):
         $$|\tilde V_L| = |V^+|\left(1 + \tfrac13\right) = \tfrac43\ \text{V}$$

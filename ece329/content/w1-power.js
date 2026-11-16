@@ -91,7 +91,7 @@
     steps: [
       RF(md`
         !!key Why you care
-          Energy questions are on every Exam 3. Prof. Chen's Spring 2024 paper asked you to judge five statements about $\mathbf S$ and $\nabla\cdot\mathbf S$ for a wave in a good conductor (SP24 #2(c)). Fall 2023 asked whether $\tfrac12\epsilon_0\mathbf E\cdot\mathbf E + \tfrac12\mu_0\mathbf H\cdot\mathbf H$ is zero in a standing wave (FA23 #1(c)). The homework asks whether energy is being stored or released inside a box, given $\mathbf S$ on its faces (the skill HW 8 #3(g) asks for). All three are one equation, the **Poynting theorem**, and it is on your formula sheet. In Exam 2 ([Topic 17](#/l/t17-poynting)) you used $\mathbf S = \mathbf E\times\mathbf H$ for one plane wave. Here you derive the theorem from Maxwell's equations, line by line, so you know what every term means and when one of them is zero.
+          Energy questions are on every Exam 3. Prof. Chen's Spring 2024 paper asked you to judge five statements about $\mathbf S$ and $\nabla\cdot\mathbf S$ for a wave in a good conductor (SP24 #2(c)). Fall 2023 asked whether $\tfrac12\epsilon_0\mathbf E\cdot\mathbf E + \tfrac12\mu_0\mathbf H\cdot\mathbf H$ is zero in a standing wave (FA23 #1(c)). The homework asks whether energy is being stored or released inside a box, given $\mathbf S$ on its faces (the skill HW 8 #3(g) asks for). All three are one equation, the **Poynting theorem**, and it is not given in the exam, so know it. In Exam 2 ([Topic 17](#/l/t17-poynting)) you used $\mathbf S = \mathbf E\times\mathbf H$ for one plane wave. Here you derive the theorem from Maxwell's equations, line by line, so you know what every term means and when one of them is zero.
 
         ### Notation
 
@@ -106,7 +106,7 @@
 
         ### 1. What a conservation law looks like
 
-        Start with a law you already have: charge. Take a small box. The charge inside can change for one reason only: current carries charge in or out through the walls. On your sheet that is the **continuity equation**:
+        Start with a law you already have: charge. Take a small box. The charge inside can change for one reason only: current carries charge in or out through the walls. That is the **continuity equation** (not given in the exam):
         $$\nabla\cdot\mathbf J + \frac{\partial\rho}{\partial t} = 0$$
         Read it term by term. $\nabla\cdot\mathbf J$ is the net current flowing **out** of a tiny box, per unit volume. $\partial\rho/\partial t$ is how fast the stored charge grows. Their sum is zero: whatever flows out is lost from storage.
 
@@ -121,7 +121,7 @@
       R(md`
         ### 2. Dot the two curl equations
 
-        Write Faraday's law and Ampère's law for a simple material, with the current kept in. Both are on your sheet; put in $\mathbf B = \mu\mathbf H$ and $\mathbf D = \epsilon\mathbf E$:
+        Write Faraday's law and Ampère's law for a simple material, with the current kept in. Both are to be known (not given in the exam); put in $\mathbf B = \mu\mathbf H$ and $\mathbf D = \epsilon\mathbf E$:
         $$\nabla\times\mathbf E = -\mu\frac{\partial\mathbf H}{\partial t} \qquad\text{(1)}$$
         $$\nabla\times\mathbf H = \mathbf J + \epsilon\frac{\partial\mathbf E}{\partial t} \qquad\text{(2)}$$
         We want a power per unit volume, W/m³. One product already has those units: $\mathbf J\cdot\mathbf E$, since (A/m²)(V/m) = W/m³. It appears if you take the dot product of (2) with $\mathbf E$:
@@ -167,7 +167,7 @@
 
         The left sides of (5) and (6) are each a field dotted with the curl of the other field. One identity joins them:
         $$\nabla\cdot(\mathbf E\times\mathbf H) = \mathbf H\cdot(\nabla\times\mathbf E) - \mathbf E\cdot(\nabla\times\mathbf H)$$
-        It is not on your sheet, so here is the proof. It uses only the cross product and the product rule.
+        It is not given in the exam, so here is the proof. It uses only the cross product and the product rule.
 
         **Step 1.** Write the three components of $\mathbf E\times\mathbf H$:
         $$(\mathbf E\times\mathbf H)_x = E_yH_z - E_zH_y$$
@@ -183,7 +183,7 @@
         $$H_x(\partial_yE_z - \partial_zE_y)$$
         $$+\,H_y(\partial_zE_x - \partial_xE_z)$$
         $$+\,H_z(\partial_xE_y - \partial_yE_x)$$
-        Compare with the curl on your sheet. The three brackets are exactly $(\nabla\times\mathbf E)_x$, $(\nabla\times\mathbf E)_y$ and $(\nabla\times\mathbf E)_z$. So these six terms add up to $\mathbf H\cdot(\nabla\times\mathbf E)$.
+        Compare with the curl formula. The three brackets are exactly $(\nabla\times\mathbf E)_x$, $(\nabla\times\mathbf E)_y$ and $(\nabla\times\mathbf E)_z$. So these six terms add up to $\mathbf H\cdot(\nabla\times\mathbf E)$.
 
         **Step 5.** Now the six terms where $\mathbf H$ is differentiated:
         $$E_x(\partial_zH_y - \partial_yH_z)$$
@@ -214,7 +214,7 @@
         $$\boxed{\nabla\cdot\mathbf S + \frac{\partial w}{\partial t} + \mathbf J\cdot\mathbf E = 0}$$
         with
         $$\mathbf S = \mathbf E\times\mathbf H, \qquad w = \tfrac12\epsilon E^2 + \tfrac12\mu H^2$$
-        That is the line on your sheet, $\nabla\cdot\mathbf S + \partial_t(\tfrac12\mathbf D\cdot\mathbf E + \tfrac12\mathbf B\cdot\mathbf H) + \mathbf J\cdot\mathbf E = 0$, because $\mathbf D\cdot\mathbf E = \epsilon E^2$ and $\mathbf B\cdot\mathbf H = \mu H^2$.
+        That is the line to know (not given in the exam), $\nabla\cdot\mathbf S + \partial_t(\tfrac12\mathbf D\cdot\mathbf E + \tfrac12\mathbf B\cdot\mathbf H) + \mathbf J\cdot\mathbf E = 0$, because $\mathbf D\cdot\mathbf E = \epsilon E^2$ and $\mathbf B\cdot\mathbf H = \mu H^2$.
 
         Now line it up with the continuity equation, slot by slot:
 
@@ -405,7 +405,7 @@
         ### Worked example 3: the power a sheet delivers, from a thin box
 
         !!graded Problem
-          A current sheet on $z = 0$ in a lossless dielectric with $\epsilon_r = 9$, $\mu_r = 1$ carries $\mathbf J_s = -2\cos(\omega t)\,\hat x$ A/m. Using the sheet's fields from your formula sheet, find $-\mathbf J_s\cdot\mathbf E$ at the sheet and $\mathbf S$ on each side, and show that the Poynting theorem holds for a thin box around the sheet. Evaluate at $\omega t = 60°$.
+          A current sheet on $z = 0$ in a lossless dielectric with $\epsilon_r = 9$, $\mu_r = 1$ carries $\mathbf J_s = -2\cos(\omega t)\,\hat x$ A/m. Using the fields of a current sheet (know them; not given in the exam), find $-\mathbf J_s\cdot\mathbf E$ at the sheet and $\mathbf S$ on each side, and show that the Poynting theorem holds for a thin box around the sheet. Evaluate at $\omega t = 60°$.
 
         **Step 1: the medium.** $\eta = 120\pi/3 = 40\pi\ \Omega$.
 
@@ -470,7 +470,7 @@
       Q(md`A wave travels through a good conductor. Which statement holds at every point and instant?`,
         [md`$-\nabla\cdot\mathbf S = \partial w/\partial t + \mathbf J\cdot\mathbf E$`, md`$-\nabla\cdot\mathbf S = \partial w/\partial t$`, md`$\nabla\cdot\mathbf S = \partial w/\partial t + \mathbf J\cdot\mathbf E$`, md`$-\nabla\cdot\mathbf S = \mathbf J\cdot\mathbf E$ only`], 0,
         [null, md`That drops the Ohmic term. It is true only where $\mathbf J = 0$; in a good conductor $\sigma E^2$ is the largest term.`, md`That has the sign of $\nabla\cdot\mathbf S$ backward: inflow ($-\nabla\cdot\mathbf S$) feeds the storage and the heat.`, md`That drops the storage term. The stored energy changes within each period, so $\partial w/\partial t$ is not zero at an instant.`],
-        md`Rearrange the sheet's theorem: $-\nabla\cdot\mathbf S = \partial w/\partial t + \mathbf J\cdot\mathbf E$. Net inflow at a point is either stored or turned into heat. This is the idea SP24 #2(c)(i) tests.`, { src: 'the idea in SP24 #2(c)(i)' }),
+        md`Rearrange the Poynting theorem: $-\nabla\cdot\mathbf S = \partial w/\partial t + \mathbf J\cdot\mathbf E$. Net inflow at a point is either stored or turned into heat. This is the idea SP24 #2(c)(i) tests.`, { src: 'the idea in SP24 #2(c)(i)' }),
       Q(md`FA23 #1(c): "In a region of free space where a standing wave exists, $\tfrac12\epsilon_0\mathbf E\cdot\mathbf E + \tfrac12\mu_0\mathbf H\cdot\mathbf H = 0$." Judge it.`,
         ['False: the energy density is zero only at isolated points and instants', 'True: the two waves cancel each other', 'True on average, false at each instant', 'True at the nodes of E, at all times'], 0,
         [null, md`The waves cancel $E$ at the nodes of $E$, but $H$ is largest there. The energy just changes form.`, md`Its average is $\epsilon_0E_0^2$, the energy of the two waves added. It is the average power that is zero.`, md`At a node of $E$, $w = w_m = 2\epsilon_0E_0^2\cos^2\omega t$, which is zero only at the instants $\cos\omega t = 0$.`],
@@ -711,7 +711,7 @@
       const R3 = { x: md`$\partial_yE_z - \partial_zE_y$`, y: md`$\partial_zE_x - \partial_xE_z$`, z: md`$\partial_xE_y - \partial_yE_x$` };
       const NEG = { x: md`$\partial_zE_y - \partial_yE_z$`, y: md`$\partial_xE_z - \partial_zE_x$`, z: md`$\partial_yE_x - \partial_xE_y$` };
       const others = ['x', 'y', 'z'].filter((o) => o !== c);
-      return MC('A curl component', md`From your sheet, $(\nabla\times\mathbf E)_${c}$ is…`, R3[c],
+      return MC('A curl component', md`Recall (not given in the exam): $(\nabla\times\mathbf E)_${c}$ is…`, R3[c],
         [[NEG[c], 'The two terms are in the wrong order, which flips the sign.'], [R3[others[0]], md`That is $(\nabla\times\mathbf E)_${others[0]}$.`], [R3[others[1]], md`That is $(\nabla\times\mathbf E)_${others[1]}$.`],
           [md`$\partial_${c}E_${c}$`, md`That is one term of the divergence. A curl component never differentiates a component along its own axis.`]],
         md`The sheet: $\nabla\times\mathbf A = \hat x(\partial_yA_z - \partial_zA_y) + \hat y(\partial_zA_x - \partial_xA_z) + \hat z(\partial_xA_y - \partial_yA_x)$. Cyclic order $x\to y\to z$.`);
@@ -1050,7 +1050,7 @@
     steps: [
       R(md`
         !!key Why you care
-          Almost every exam asks for a time-averaged Poynting vector. Spring 2017 asked for $\langle\mathbf S\rangle$ of a wave with two components (SP17 #4(b)). Spring 2024 asked how $\langle\mathbf S\rangle$ changes as a wave moves through a good conductor (SP24 #2(c)). The homework asks for the average power through 1 m². Your sheet gives one line, $\langle\mathbf S\rangle = \tfrac12\Re\{\tilde{\mathbf E}\times\tilde{\mathbf H}^*\}$. In this lesson you derive it from the average of a product of two cosines, then use it on one wave, on two polarizations, on waves going both ways, and on lossy waves. Three slips cost the most points: **dropping the conjugate, dropping the ½, and treating an rms value as a peak.**
+          Almost every exam asks for a time-averaged Poynting vector. Spring 2017 asked for $\langle\mathbf S\rangle$ of a wave with two components (SP17 #4(b)). Spring 2024 asked how $\langle\mathbf S\rangle$ changes as a wave moves through a good conductor (SP24 #2(c)). The homework asks for the average power through 1 m². One line gives it (not given in the exam), $\langle\mathbf S\rangle = \tfrac12\Re\{\tilde{\mathbf E}\times\tilde{\mathbf H}^*\}$. In this lesson you derive it from the average of a product of two cosines, then use it on one wave, on two polarizations, on waves going both ways, and on lossy waves. Three slips cost the most points: **dropping the conjugate, dropping the ½, and treating an rms value as a peak.**
 
         ### Notation
 
@@ -1139,7 +1139,7 @@
         $$\langle S_x\rangle = \tfrac12\Re\{\tilde E_y\tilde H_z^* - \tilde E_z\tilde H_y^*\}$$
         The bracket is the $x$-component of $\tilde{\mathbf E}\times\tilde{\mathbf H}^*$. The $y$- and $z$-components work the same way, so
         $$\boxed{\langle\mathbf S\rangle = \tfrac12\Re\{\tilde{\mathbf E}\times\tilde{\mathbf H}^*\}}$$
-        That is the line on your sheet. The vector $\tilde{\mathbf E}\times\tilde{\mathbf H}^*$ itself is called the **complex Poynting vector**.
+        That is the line to know. The vector $\tilde{\mathbf E}\times\tilde{\mathbf H}^*$ itself is called the **complex Poynting vector**.
 
         !!intuition Does this make sense?
           Where does the ½ come from? From $\langle\cos^2\rangle = \tfrac12$: a sinusoid spends only part of its time near its peak. Where does the star come from? From the angle **difference**: only the part of $\mathbf H$ that is in time phase with $\mathbf E$ carries power on average.
@@ -1226,7 +1226,7 @@
         $$\eta\,\tilde E_x\tilde H_y^* = |E^+|^2 - |E^-|^2 + X - X^*$$
         A number minus its conjugate is purely imaginary: $X - X^* = 2j\,\Im\{X\}$. It disappears under $\Re$:
         $$\boxed{\langle S_z\rangle = \frac{|E^+|^2 - |E^-|^2}{2\eta}}$$
-        **The net power is the difference of the two powers.** The cross terms make the energy slosh back and forth ([Topic 3](#/l/w1-poynting)) but carry no net power. Your sheet has the same structure for transmission lines: $P = |\tilde V^+|^2/2Z_0 - |\tilde V^-|^2/2Z_0$.
+        **The net power is the difference of the two powers.** The cross terms make the energy slosh back and forth ([Topic 3](#/l/w1-poynting)) but carry no net power. The same structure holds for transmission lines (know it; not given in the exam): $P = |\tilde V^+|^2/2Z_0 - |\tilde V^-|^2/2Z_0$.
 
         **A pure standing wave** has $|E^-| = |E^+|$, so $\langle S\rangle = 0$ everywhere. Yet its energy is not zero. Energy without net flow.
       `),
@@ -1783,7 +1783,7 @@
       ],
       hints: [md`Each sheet alone: $\tilde E_x = \tfrac{\eta}{2}J\,e^{-j\beta|z - z_s|}$, where $\tilde{\mathbf J}_s = -J\hat x$. Here $\eta = ${eP}\pi\ \Omega$ and $\beta d = ${bd}°$.`, md`$|1 + e^{jx}|^2 = 4\cos^2(x/2)$. Sheet 1 delivers $\tfrac12\Re\{-\tilde{\mathbf J}_{s1}\cdot\tilde{\mathbf E}^*(0)\}$.`],
       sol: md`
-        **Step 1: each sheet alone.** From the sheet formula, a sheet $\tilde{\mathbf J}_s = -J\hat x$ makes $\tilde E_x = \tfrac{\eta}{2}Je^{-j\beta|z - z_s|}$ on both sides, with $\eta = ${eP}\pi\ \Omega$ and $\tfrac{\eta}{2}J_0 = ${f(eta * J0 / 2)}$ V/m. Sheet 2 has $J = ${J0}${psi ? 'e^{j180°}' : ''}$. The spacing is $\beta d = 360°\times(${dT})/${lam} = ${bd}°$.
+        **Step 1: each sheet alone.** From the current-sheet formula, a sheet $\tilde{\mathbf J}_s = -J\hat x$ makes $\tilde E_x = \tfrac{\eta}{2}Je^{-j\beta|z - z_s|}$ on both sides, with $\eta = ${eP}\pi\ \Omega$ and $\tfrac{\eta}{2}J_0 = ${f(eta * J0 / 2)}$ V/m. Sheet 2 has $J = ${J0}${psi ? 'e^{j180°}' : ''}$. The spacing is $\beta d = 360°\times(${dT})/${lam} = ${bd}°$.
 
         **Step 2: z > d.** Both waves go toward $+z$:
         $$\tilde E_x = \tfrac{\eta}{2}J_0e^{-j\beta z}\big(1 + e^{j(\beta d + ${psi}°)}\big)$$

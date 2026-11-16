@@ -132,7 +132,7 @@
       | 3 | Two lines, delta source: bounce diagram to 6 µs, $V$ at a midpoint, steady state | 29 | [Topic 14](#/l/w5-launch), [Topic 15](#/l/w5-bounce), [Topic 16](#/l/w5-multi) |
       | 4 | Periodic oscillations: $\lambda/2$ and $\lambda/4$ lines, frequency from length, nulls and peaks | 18 | [Topic 17](#/l/w6-vd), [Topic 18](#/l/w6-stubs), [Topic 19](#/l/w6-qw) |
 
-      **How to use it.** Start a 75-minute timer and do the whole paper on paper first, closed book, with only the [formula sheet](#/l/e3-sheet) and your card. Then enter your answers in the boxes. Sketch questions (the bounce diagram and the voltage at a point) are asked here as the numbers you would write on the sketch. Then read every solution, also for parts you got right: each ends with a **Speed path** (the fastest correct route) and **Where points go** (the slips that cost points).
+      **How to use it.** Start a 75-minute timer and do the whole paper on paper first, closed book, with only the [given table](#/l/e3-sheet) and your card. Then enter your answers in the boxes. Sketch questions (the bounce diagram and the voltage at a point) are asked here as the numbers you would write on the sketch. Then read every solution, also for parts you got right: each ends with a **Speed path** (the fastest correct route) and **Where points go** (the slips that cost points).
 
       **Constants.** $\mu_0 = 4\pi\times10^{-7}$ H/m, $\epsilon_0 = \tfrac{10^{-9}}{36\pi}$ F/m, $c = 3\times10^8$ m/s, $\eta_0 = 120\pi\ \Omega$. Numeric answers within about 2% count; you may type <code>pi</code>, as in <code>0.06*pi</code>.
 

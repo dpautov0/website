@@ -1,4 +1,4 @@
-/* Topics 17 and 18 (Lectures 31, 32 and 34; formula sheet page 3, "Phasor equations").
+/* Topics 17 and 18 (Lectures 31, 32 and 34; phasor line equations).
    w6-vd: the phasor telegrapher's equations, d measured back from the load, Gamma_L from Ohm's law at the load, Gamma(d),
    Z(d) and its tangent form (derived), the standing-wave envelope, where the maxima and minima sit, VSWR = z(d_max), power
    that is the same at every d, and the source end as a voltage divider.
@@ -110,15 +110,15 @@
     steps: [
       RF(md`
         !!key Why you care
-          Exam 3 ends with transmission lines driven by a sinusoid. Spring 2018 asked three multiple-choice parts on $\Gamma(d)$ and on a shorted line, then a 20-point problem on an input impedance and the voltage at the input. Spring 2017 had an 11-point shorted line inside a circuit. The bottom of page 3 of your formula sheet, under "Phasor equations", lists $\tilde V(d)$, $\tilde I(d)$, $Z(d)$, $P(d)$ and the VSWR. This lesson derives every one of those lines from the telegrapher's equations, one step at a time. [Topic 18](#/l/w6-stubs) (stubs and resonance) and [Topic 19](#/l/w6-qw) (quarter-wave transformers) are built on top of it.
+          Exam 3 ends with transmission lines driven by a sinusoid. Spring 2018 asked three multiple-choice parts on $\Gamma(d)$ and on a shorted line, then a 20-point problem on an input impedance and the voltage at the input. Spring 2017 had an 11-point shorted line inside a circuit. The exam does not give you $\tilde V(d)$, $\tilde I(d)$, $Z(d)$, $P(d)$ or the VSWR: know them or carry them on your card. This lesson derives every one of those lines from the telegrapher's equations, one step at a time. [Topic 18](#/l/w6-stubs) (stubs and resonance) and [Topic 19](#/l/w6-qw) (quarter-wave transformers) are built on top of it.
 
         ### Notation
 
         [[fig:ck]]
 
-        - $d$: **distance back from the load**, in m. $d = 0$ at the load and $d = l$ at the input. The sheet uses $d$ everywhere in the phasor section.
+        - $d$: **distance back from the load**, in m. $d = 0$ at the load and $d = l$ at the input. Use $d$ everywhere in the phasor section.
         - $\tilde V(d)$, $\tilde I(d)$: the **phasors** of the line voltage and current at $d$. The time signal is $V(d,t) = \Re\{\tilde V(d)\,e^{j\omega t}\}$, as in [Topic 1](#/l/w1-phasor).
-        - $L$, $C$: inductance and capacitance **per meter** of line (H/m, F/m). The sheet writes them $\mathcal L$ and $\mathcal C$. From [Topic 13](#/l/w5-telegraph): $Z_0 = \sqrt{L/C}$ and $v = 1/\sqrt{LC}$.
+        - $L$, $C$: inductance and capacitance **per meter** of line (H/m, F/m). They are also written $\mathcal L$ and $\mathcal C$. From [Topic 13](#/l/w5-telegraph): $Z_0 = \sqrt{L/C}$ and $v = 1/\sqrt{LC}$.
         - $\beta = \omega/v = 2\pi/\lambda$: the **phase constant**, in rad/m. $\beta d$ is how many radians of phase fit in the distance $d$.
         - $V^+$, $V^-$: complex amplitudes of the wave going **toward** the load and the wave coming **back**, both measured at the load.
         - $Z_L$: the **load impedance**, any complex number with a real part $\ge 0$.
@@ -137,7 +137,7 @@
         Now let everything oscillate at one frequency $\omega$. Write $V(z,t) = \Re\{\tilde V(z)\,e^{j\omega t}\}$ and the same for $I$. As in [Topic 1](#/l/w1-phasor), $\partial/\partial t$ becomes multiplication by $j\omega$:
         $$-\frac{d\tilde V}{dz} = j\omega L\,\tilde I \qquad\text{(1)}$$
         $$-\frac{d\tilde I}{dz} = j\omega C\,\tilde V \qquad\text{(2)}$$
-        These are the first two lines of the sheet's phasor section. Now get one equation with only $\tilde V$ in it. Differentiate (1) with respect to $z$:
+        These are the first two phasor line equations (not given in the exam: know them). Now get one equation with only $\tilde V$ in it. Differentiate (1) with respect to $z$:
         $$-\frac{d^2\tilde V}{dz^2} = j\omega L\,\frac{d\tilde I}{dz}$$
         Equation (2) says $d\tilde I/dz = -j\omega C\tilde V$. Substitute it:
         $$-\frac{d^2\tilde V}{dz^2} = j\omega L\,(-j\omega C\,\tilde V)$$
@@ -147,7 +147,7 @@
         $$\beta \equiv \omega\sqrt{LC} = \frac{\omega}{v}$$
         and the equation becomes
         $$\boxed{\frac{d^2\tilde V}{dz^2} = -\beta^2\,\tilde V}$$
-        The sheet writes it as $d^2\tilde V/dz^2 - (j\omega)^2LC\,\tilde V = 0$. That is the same line, because $(j\omega)^2 = -\omega^2$.
+        It is also written $d^2\tilde V/dz^2 - (j\omega)^2LC\,\tilde V = 0$. That is the same line, because $(j\omega)^2 = -\omega^2$.
 
         **Solve it.** Try $e^{-j\beta z}$. Each derivative pulls down a factor $-j\beta$, so the second derivative gives $(-j\beta)^2 = -\beta^2$. That is what the equation asks for. $e^{+j\beta z}$ works the same way. So
         $$\tilde V(z) = V^+e^{-j\beta z} + V^-e^{+j\beta z}$$
@@ -233,7 +233,7 @@
         Do the same for the current. The only change is the minus sign in front of $V^-$:
         $$\boxed{\tilde V(d) = V^+e^{j\beta d}\bigl(1 + \Gamma(d)\bigr)}$$
         $$\boxed{\tilde I(d) = \frac{V^+}{Z_0}\,e^{j\beta d}\bigl(1 - \Gamma(d)\bigr)}$$
-        These are the third and fourth lines of the sheet's phasor section.
+        These are the next two phasor line equations (not given in the exam: know them).
 
         **How $\Gamma(d)$ moves.** Its size never changes, because $|e^{-j2\beta d}| = 1$. Its angle falls by $2\beta d$:
         $$\Gamma(d) = |\Gamma_L|\,e^{j(\theta_L - 2\beta d)}$$
@@ -327,7 +327,7 @@
         $$|\Gamma_L| = \frac{\text{VSWR} - 1}{\text{VSWR} + 1}$$
         **The impedance at a maximum.** There $\Gamma(d) = +|\Gamma_L|$, a real number, so section 5 gives a real impedance:
         $$Z(d_{\max}) = Z_0\,\frac{1 + |\Gamma_L|}{1 - |\Gamma_L|} = Z_0\cdot\text{VSWR}$$
-        That is the last entry of the VSWR line on the sheet: $z(d_{\max}) = \text{VSWR}$. At a minimum $\Gamma(d) = -|\Gamma_L|$, and $Z(d_{\min}) = Z_0/\text{VSWR}$.
+        That is the last VSWR relation (not given in the exam): $z(d_{\max}) = \text{VSWR}$. At a minimum $\Gamma(d) = -|\Gamma_L|$, and $Z(d_{\min}) = Z_0/\text{VSWR}$.
 
         !!intuition Does this make sense?
           A resistor $R_L > Z_0$ has $\Gamma_L > 0$, so $\theta_L = 0$ and the voltage maximum sits right at the load, with VSWR $= R_L/Z_0$. A resistor $R_L < Z_0$ has $\Gamma_L < 0$: a minimum at the load, VSWR $= Z_0/R_L$. Large voltage with small current means large impedance, and the other way round.
@@ -357,7 +357,7 @@
         $$(1 + \Gamma)(1 - \Gamma^*) = 1 - |\Gamma|^2 + (\Gamma - \Gamma^*)$$
         A number minus its own conjugate is purely imaginary: $\Gamma - \Gamma^* = j2\Im\{\Gamma\}$. So it drops out of the real part. And $|\Gamma(d)| = |\Gamma_L|$:
         $$\boxed{P(d) = \frac{|V^+|^2}{2Z_0}\left(1 - |\Gamma_L|^2\right)}$$
-        Expand it and you get the sheet's form: incident power minus reflected power,
+        Expand it and you get the usual form: incident power minus reflected power,
         $$P = \frac{|V^+|^2}{2Z_0} - \frac{|V^-|^2}{2Z_0}$$
         There is no $d$ left in it. The power is the same at every point of the line, and so it equals the power into the load, $\tfrac12\Re\{\tilde V_L\tilde I_L^*\}$.
 
@@ -1201,7 +1201,7 @@
     steps: [
       RF(md`
         !!key Why you care
-          Shorted and open lines come back on Exam 3 again and again. Spring 2018 asked three multiple-choice parts on a shorted line (its current, and its input impedance at twice and at half its resonance) and a 20-point problem where the current in a resistor vanishes. Spring 2017 had an 11-point shorted line in series with a resistor. The last two lines of your formula sheet are exactly the shorted and the open line. This lesson builds them, first from the standing waves a line can hold with no source at all (Lecture 31), then as circuit elements (Lecture 32): inductors, capacitors, resonators and filters.
+          Shorted and open lines come back on Exam 3 again and again. Spring 2018 asked three multiple-choice parts on a shorted line (its current, and its input impedance at twice and at half its resonance) and a 20-point problem where the current in a resistor vanishes. Spring 2017 had an 11-point shorted line in series with a resistor. The shorted and the open line are exactly the standing waves you must know (not given in the exam). This lesson builds them, first from the standing waves a line can hold with no source at all (Lecture 31), then as circuit elements (Lecture 32): inductors, capacitors, resonators and filters.
 
         ### Notation
 
@@ -1314,7 +1314,7 @@
         $$\tilde V(d) = V^+\left(e^{j\beta d} - e^{-j\beta d}\right) = j2V^+\sin\beta d$$
         and in the current, which has the opposite sign on the reflected wave:
         $$\tilde I(d) = \frac{V^+}{Z_0}\left(e^{j\beta d} + e^{-j\beta d}\right) = \frac{2V^+}{Z_0}\cos\beta d$$
-        These are the sheet's short-circuit line and the current from the 2025 review session. Divide; $2V^+$ cancels:
+        These are the short-circuit line (not given in the exam: know it) and the current from the 2025 review session. Divide; $2V^+$ cancels:
         $$\boxed{Z(l) = jZ_0\tan\beta l}$$
         Read it like a circuit element:
         - It is **purely reactive**: no resistance. A lossless stub cannot use up power.
@@ -1341,7 +1341,7 @@
         **Way 2.** An open has $\Gamma_L = +1$:
         $$\tilde V(d) = V^+\left(e^{j\beta d} + e^{-j\beta d}\right) = 2V^+\cos\beta d$$
         $$\tilde I(d) = \frac{V^+}{Z_0}\left(e^{j\beta d} - e^{-j\beta d}\right) = j\,\frac{2V^+}{Z_0}\sin\beta d$$
-        Divide: $Z = Z_0\cos\beta d/(j\sin\beta d) = -jZ_0\cot\beta d$. ✓ The sheet writes it as an admittance, $Y(d) = jY_0\tan\beta d$: the same line, turned over.
+        Divide: $Z = Z_0\cos\beta d/(j\sin\beta d) = -jZ_0\cot\beta d$. ✓ It is often written as an admittance, $Y(d) = jY_0\tan\beta d$: the same line, turned over.
 
         - $0 < l < \lambda/4$: $\cot > 0$, so $X < 0$: **capacitive**.
         - $\lambda/4 < l < \lambda/2$: **inductive**.
@@ -1543,7 +1543,7 @@
         [md`a parallel resonance, at $v/4l$`, md`a series resonance, at $v/4l$`, md`a series resonance, at $v/2l$`, md`a parallel resonance, at $v/2l$`], 0,
         [null, md`At $v/4l$ the shorted stub is a quarter wave: an open, which is a parallel resonance.`, md`That is the second one. The first comes at a quarter wave.`, md`At $v/2l$ a shorted stub is a short.`],
         md`At DC the stub is a wire (a short). It turns into an open at $l = \lambda/4$ first.`),
-      Q(md`The sheet writes the open line as $Y(d) = jY_0\tan\beta d$. In impedance form that is…`,
+      Q(md`The open line is often written $Y(d) = jY_0\tan\beta d$. In impedance form that is…`,
         [md`$-jZ_0\cot\beta d$`, md`$jZ_0\cot\beta d$`, md`$jZ_0\tan\beta d$`, md`$-jZ_0\tan\beta d$`], 0,
         [null, md`$1/j = -j$: the sign flips.`, md`That is the shorted line.`, md`Inverting $\tan$ gives $\cot$.`],
         md`$Z = 1/Y = 1/(jY_0\tan\beta d) = -jZ_0\cot\beta d$.`),

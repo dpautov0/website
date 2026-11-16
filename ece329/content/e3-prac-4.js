@@ -107,7 +107,7 @@
   }
 
   // the header every paper shares
-  const RULES = md`**75 minutes, 100 points.** Closed book, **no calculator**. You may use the official [formula sheet](#/l/e3-sheet) and one 4″×6″ card of your own handwritten notes. Show your reasoning, box each answer, and give its units.`;
+  const RULES = md`**75 minutes, 100 points.** Closed book, **no calculator**. You may use the given [loss-limits table](#/l/e3-sheet) and one 4″×6″ card of your own handwritten notes. Show your reasoning, box each answer, and give its units.`;
   const HOWTO = md`**How to use this paper.** Set a 75-minute timer and work it on paper first, as if it were Monday night. Then enter your answers. Open a hint only for a part you could not start. Read every worked solution, including the parts you got right: each one ends with a **speed path** (how to get the answer in well under a minute) and **where points go** (the slips that cost points on this kind of part). The next day, redo every part you missed on a blank sheet.`;
   const CONSTS = md`**Constants.** $\mu_0 = 4\pi\times10^{-7}$ H/m, $\epsilon_0 = \tfrac{1}{36\pi}\times10^{-9}$ F/m, $c = 3\times10^8$ m/s $= 300$ m/µs, $\eta_0 = 120\pi\ \Omega$. Numeric answers within about 2% count. You can type <code>pi</code> for $\pi$, and arithmetic like <code>1/60</code>.`;
 
@@ -207,7 +207,7 @@
 
       ### Question 1 (12 points): the Poynting theorem, term by term
 
-      The formula sheet writes energy conservation for fields at a point as
+      Energy conservation for fields at a point (not given in the exam: know it) reads
       $$\nabla\cdot\mathbf S + \frac{\partial w}{\partial t} + \mathbf J\cdot\mathbf E = 0$$
       with $\mathbf S = \mathbf E\times\mathbf H$ and the stored energy density
       $$w = \tfrac12\epsilon\,\mathbf E\cdot\mathbf E + \tfrac12\mu\,\mathbf H\cdot\mathbf H$$
@@ -223,7 +223,7 @@
         tf(md`(c) For a traveling wave in a lossless medium, $\partial w/\partial t = 0$ everywhere: the energy just flows through, so the energy density at a fixed point never changes.`, false,
           md`At a fixed point $E = E_0\cos(\omega t - \beta z)$, so $w = \epsilon E_0^2\cos^2(\omega t - \beta z)$ swings between 0 and $\epsilon E_0^2$ twice per period. Only its **time average** is constant. $\partial w/\partial t = -\nabla\cdot\mathbf S$ is not zero at an instant.`),
         tf(md`(d) On the surface of a current-sheet antenna, $\mathbf J_s\cdot\mathbf E > 0$: the sheet absorbs power from its own field.`, false,
-          md`At the sheet $\mathbf E = -\frac{\eta}{2}\mathbf J_s$ (formula sheet), so $\mathbf J_s\cdot\mathbf E = -\frac{\eta}{2}|\mathbf J_s|^2 < 0$. A **negative** $\mathbf J\cdot\mathbf E$ is a source: whatever drives the current pushes charge against the field and hands energy to it.`),
+          md`At the sheet $\mathbf E = -\frac{\eta}{2}\mathbf J_s$ (not given: know it), so $\mathbf J_s\cdot\mathbf E = -\frac{\eta}{2}|\mathbf J_s|^2 < 0$. A **negative** $\mathbf J\cdot\mathbf E$ is a source: whatever drives the current pushes charge against the field and hands energy to it.`),
       ],
       hints: [md`Read each term as a rate of energy, in W/m³: $\nabla\cdot\mathbf S$ is energy leaving, $\partial w/\partial t$ is energy piling up, $\mathbf J\cdot\mathbf E$ is energy handed from the field to moving charges.`, md`For (c), write $w$ at a fixed $z$ as a function of $t$. For (d), use the sheet formula $\mathbf E = -\frac{\eta}{2}\mathbf J_s$ at $z = 0$.`],
       sol: md`
@@ -249,7 +249,7 @@
         $$w = \epsilon E_0^2\cos^2(\omega t - \beta z)$$
         That swings from 0 up to $\epsilon E_0^2$ and back, twice per period. So $\partial w/\partial t \ne 0$ at most instants. The theorem balances it: $\nabla\cdot\mathbf S = -\partial w/\partial t$, so at an instant more energy flows in than out, then the reverse. What is constant is the **time average**: $\langle w\rangle = \tfrac12\epsilon E_0^2$ and $\langle\nabla\cdot\mathbf S\rangle = 0$.
 
-        **(d) False.** The sheet's own field at $z = 0$ is (formula sheet, in vector form)
+        **(d) False.** The sheet's own field at $z = 0$ is (not given: know it, in vector form)
         $$\mathbf E = -\frac{\eta}{2}\,\mathbf J_s$$
         Dot it with $\mathbf J_s$:
         $$\mathbf J_s\cdot\mathbf E = -\frac{\eta}{2}|\mathbf J_s|^2 < 0$$
@@ -321,7 +321,7 @@
     R(md`
       ### Question 3 (12 points): resonances and $\mathcal L\mathcal C = \mu\epsilon$
 
-      Circle all that apply: mark each statement True or False. All lines are lossless TEM lines; $\mathcal L$ and $\mathcal C$ are the inductance and capacitance per meter, as on the formula sheet.
+      Circle all that apply: mark each statement True or False. All lines are lossless TEM lines; $\mathcal L$ and $\mathcal C$ are the inductance and capacitance per meter.
     `),
     P({ src: 'Practice J #3 · 12 pts', title: 'Which statements are true?',
       q: md`**(a)–(d) (3 pts each).** Judge each statement on its own.`,
@@ -335,14 +335,14 @@
         tf(md`(d) Filling an air coax with a dielectric of $\epsilon_r = 4$ halves its wave speed and **doubles** its $Z_0$.`, false,
           md`$\mathcal L$ is unchanged (still $\mu_0$) and $\mathcal C$ goes up 4 times. Then $v = 1/\sqrt{\mathcal L\mathcal C}$ halves **and** $Z_0 = \sqrt{\mathcal L/\mathcal C}$ halves. Nothing doubles.`),
       ],
-      hints: [md`A resonance is a standing wave that fits both ends: a short forces $\tilde V = 0$ there, an open forces $\tilde I = 0$. On a shorted line $\tilde V \propto \sin\beta d$ and $\tilde I \propto \cos\beta d$ (formula sheet).`, md`For (c) and (d): $\mathcal L = \mu/GF$, $\mathcal C = \epsilon\,GF$, $v = 1/\sqrt{\mathcal L\mathcal C}$, $Z_0 = \sqrt{\mathcal L/\mathcal C}$.`],
+      hints: [md`A resonance is a standing wave that fits both ends: a short forces $\tilde V = 0$ there, an open forces $\tilde I = 0$. On a shorted line $\tilde V \propto \sin\beta d$ and $\tilde I \propto \cos\beta d$ (not given: know it).`, md`For (c) and (d): $\mathcal L = \mu/GF$, $\mathcal C = \epsilon\,GF$, $v = 1/\sqrt{\mathcal L\mathcal C}$, $Z_0 = \sqrt{\mathcal L/\mathcal C}$.`],
       sol: md`
         **What a resonance is.** A line with no source can still ring if a standing wave fits between its ends. Each end imposes one condition:
 
         - a **short** forces $\tilde V = 0$ there (a voltage node);
         - an **open** forces $\tilde I = 0$ there (a current node, so a voltage maximum).
 
-        Measure $d$ back from one end. If that end is shorted, the formula sheet gives
+        Measure $d$ back from one end. If that end is shorted, you should know (not given in the exam)
         $$\tilde V(d) = j2\tilde V^+\sin\beta d$$
         and the current is $\propto\cos\beta d$.
 
@@ -511,7 +511,7 @@
       ],
       hints: [md`Measured from a shorted end, $\tilde V(d) = j2\tilde V^+\sin\beta d$. The other end is shorted too: $\sin\beta l = 0$.`, md`The current on a shorted line goes as $\cos\beta d$: largest where the voltage is zero.`],
       sol: md`
-        **1. The pattern from one end.** Measured from the right-hand short, the formula sheet gives
+        **1. The pattern from one end.** Measured from the right-hand short, you should know (not given in the exam)
         $$\tilde V(d) = j2\tilde V^+\sin\beta d$$
         and the current is $\tilde I(d) \propto \cos\beta d$ (a quarter wavelength out of step with $\tilde V$).
 
@@ -818,7 +818,7 @@
 
       A current sheet in the plane $z = 0$ in free space carries
       $$\mathbf J_s(t) = -\hat y\,2u(t)\sin(\omega t)\ \text{A/m}$$
-      with $f = 0.5$ MHz, so $\omega = \pi\times10^6$ rad/s $= \pi$ rad/µs. $u(t)$ is the unit step: the sheet is off before $t = 0$. The sheet radiates a truncated sine wave toward both $+z$ and $-z$. The field of a sheet is (formula sheet, in vector form)
+      with $f = 0.5$ MHz, so $\omega = \pi\times10^6$ rad/s $= \pi$ rad/µs. $u(t)$ is the unit step: the sheet is off before $t = 0$. The sheet radiates a truncated sine wave toward both $+z$ and $-z$. The field of a sheet is (not given: know it, in vector form)
       $$\mathbf E(z,t) = -\frac{\eta_0}{2}\,\mathbf J_s\!\left(t - \frac{|z|}{c}\right)$$
       on both sides.
 
@@ -1054,7 +1054,7 @@
         [null, md`A good conductor has $\alpha = \beta$, so $\delta = \lambda/2\pi$: it dies within a wavelength. Here $\delta = 100\lambda$.`, md`A perfect dielectric has $\alpha = 0$, $\delta = \infty$. 300 m is finite.`, md`$\beta/\alpha = 2\pi\delta/\lambda$ is exactly what decides the regime.`]),
         trap(N(md`(b) $\epsilon_r$`, 4, ''), [[2, md`That is $c/v_p$. $v_p = c/\sqrt{\epsilon_r}$, so $\epsilon_r = (c/v_p)^2$.`]]),
         trap(N(md`(c) $\sigma$ (S/m)`, 1 / (9000 * PI), 'S/m'), [[1 / (18000 * PI), md`That is $\alpha/\eta$, or $2\alpha/\eta_0$: a factor 2 is lost either way. In this dielectric $\eta = \eta_0/\sqrt{\epsilon_r} = 60\pi$, and $\alpha = \frac{\sigma}{2}\eta$ gives $\sigma = 2\alpha/\eta$.`], [1 / (4500 * PI), md`That is $4\alpha/\eta$: the factor 2 went into the numerator twice. $\sigma = 2\alpha/\eta = 2/(300\cdot60\pi)$.`]])],
-      hints: [md`$\beta = 2\pi/\lambda$ and $\alpha = 1/\delta$. Compare them.`, md`For $\sigma \ll \omega\epsilon$: $\beta \approx \omega\sqrt{\mu\epsilon}$ and $\alpha \approx \frac{\sigma}{2}\sqrt{\mu/\epsilon}$ (formula sheet, page 3).`],
+      hints: [md`$\beta = 2\pi/\lambda$ and $\alpha = 1/\delta$. Compare them.`, md`For $\sigma \ll \omega\epsilon$: $\beta \approx \omega\sqrt{\mu\epsilon}$ and $\alpha \approx \frac{\sigma}{2}\sqrt{\mu/\epsilon}$ (the given table).`],
       sol: md`
         **(a) Compare α and β.**
         $$\alpha = \frac1\delta = \frac{1}{300}\ \text{Np/m}, \qquad \beta = \frac{2\pi}{\lambda} = \frac{2\pi}{3}\ \text{rad/m}$$
@@ -1064,7 +1064,7 @@
         $$v_p = \lambda f = (3)(5\times10^7) = 1.5\times10^8\ \text{m/s}$$
         $$\epsilon_r = \left(\frac{c}{v_p}\right)^2 = 2^2 = \boxed{4}$$
 
-        **(c) σ.** The sheet's imperfect-dielectric line, with $\sqrt{\mu/\epsilon} = \eta_0/2 = 60\pi\ \Omega$:
+        **(c) σ.** The given table's imperfect-dielectric row, with $\sqrt{\mu/\epsilon} = \eta_0/2 = 60\pi\ \Omega$:
         $$\alpha \approx \frac\sigma2\sqrt{\frac\mu\epsilon} = \frac\sigma2(60\pi) = 30\pi\,\sigma$$
         Set it equal to $1/300$:
         $$\sigma = \frac{1}{300\cdot30\pi} = \boxed{\frac{1}{9000\pi} \approx 3.54\times10^{-5}\ \text{S/m}}$$
@@ -1080,7 +1080,7 @@
       q: md`**(d) (3 pts)** Does medium B behave as an imperfect dielectric or as a good conductor? **(e) (3 pts)** Find its conductivity $\sigma$.`,
       parts: [mc('(d) Medium B is', ['a good conductor', 'an imperfect dielectric', 'a perfect conductor', 'a perfect dielectric'], 0,
         [null, md`An imperfect dielectric has $\delta \gg \lambda$. Here $\lambda = 2\pi\delta$: the field dies within one wavelength.`, md`A perfect conductor has $\delta = 0$: no field inside at all.`, md`A perfect dielectric does not attenuate at all.`]),
-        trap(N(md`(e) $\sigma$ (S/m)`, 4, 'S/m'), [[2, md`That uses $\delta = 1/\sqrt{2\pi f\mu\sigma}$. The sheet's good-conductor $\alpha = \sqrt{\omega\mu\sigma/2} = \sqrt{\pi f\mu\sigma}$.`], [4 / PI, md`Square $\delta$ fully: $\delta^2 = 100/\pi^2$.`]])],
+        trap(N(md`(e) $\sigma$ (S/m)`, 4, 'S/m'), [[2, md`That uses $\delta = 1/\sqrt{2\pi f\mu\sigma}$. The given table's good-conductor $\alpha = \sqrt{\omega\mu\sigma/2} = \sqrt{\pi f\mu\sigma}$.`], [4 / PI, md`Square $\delta$ fully: $\delta^2 = 100/\pi^2$.`]])],
       hints: [md`$2\pi\delta = 20$ m $= \lambda$. What does $\lambda = 2\pi\delta$ say about $\alpha$ and $\beta$?`, md`$\delta = 1/\sqrt{\pi f\mu\sigma}$, so $\sigma = 1/(\pi f\mu\delta^2)$.`],
       sol: md`
         **(d) Compare.** $\beta = 2\pi/\lambda = 2\pi/20 = \pi/10$ rad/m and $\alpha = 1/\delta = \pi/10$ Np/m. They are **equal**, the signature of a good conductor ($\sigma \gg \omega\epsilon$, $\alpha \approx \beta$, $\lambda = 2\pi\delta$).
@@ -1400,7 +1400,7 @@
       $$\mathbf H = \hat x\,5e^{-z}\cos(10^8t - \sqrt3z)\ \text{A/m}$$
       ($z$ in meters, $t$ in seconds), and a probe at $z = 0$ measures the electric field
       $$\mathbf E(0,t) = -\hat y\,100\pi\cos(10^8t + 30°)\ \text{V/m}$$
-      Formula sheet: $\eta\gamma = j\omega\mu$ and $\gamma/\eta = \sigma + j\omega\epsilon$.
+      Know (not given): $\eta\gamma = j\omega\mu$ and $\gamma/\eta = \sigma + j\omega\epsilon$.
     `),
     P({ src: 'Practice L #1(a) · 4 pts', title: 'γ from H',
       q: md`**(a) (4 pts)** Read off $\alpha$ and $\beta$, and write $\gamma$ in polar form.`,
@@ -1494,7 +1494,7 @@
       sol: md`
         **1. The ratio.**
         $$\frac{\sigma}{\omega\epsilon} = \frac{\sqrt3/20\pi}{1/20\pi} = \boxed{\sqrt3 \approx 1.73}$$
-        **2. Check with τ.** The sheet says $\tau = \tfrac12\tan^{-1}(\sigma/\omega\epsilon)$: $\tan^{-1}\sqrt3 = 60°$, half of it is $30°$ ✓.
+        **2. Check with τ.** Use $\tau = \tfrac12\tan^{-1}(\sigma/\omega\epsilon)$: $\tan^{-1}\sqrt3 = 60°$, half of it is $30°$ ✓.
 
         **3. Regime.** 1.73 is neither $\ll 1$ nor $\gg 1$: conduction and displacement currents are comparable. **No** approximation applies; that is why every step above used the exact relations.
 

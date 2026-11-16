@@ -1,6 +1,6 @@
 /* Start here (unit e3s, Topic 0): the three pages every other Exam 3 lesson leans on.
    e3-map       The map of Exam 3: what the nine old papers asked (counted from the papers), Prof. Chen's Spring 2024
-                paper problem by problem, what the formula sheet gives and what it leaves out, then the big idea derived:
+                paper problem by problem, what the exam gives and what it leaves out, then the big idea derived:
                 a transmission line obeys the same two equations as a plane wave (V <-> E, I <-> H, L <-> mu, C <-> eps,
                 Z0 <-> eta), and how to spend the days left.
    e3-complex   Complex numbers from zero, and arithmetic without a calculator.
@@ -63,16 +63,16 @@
 
   // ================================================================ lesson: the map of Exam 3
   EM.lesson('e3s', {
-    id: 'e3-map', topic: 0, order: 0, kind: 'read', ref: 'nine past papers, the formula sheet', title: 'The map of Exam 3',
+    id: 'e3-map', topic: 0, order: 0, kind: 'read', ref: 'nine past papers, the given table', title: 'The map of Exam 3',
     steps: [
       RF(md`
         !!key What this page is for
-          Before you study anything, know what the exam asks, what the formula sheet hands you, and how the pieces connect. This page answers those three questions from the nine old Exam 3 papers. Then it shows you the one idea that halves the course: **a transmission line obeys the same two equations as a plane wave.** Everything you learn about one is free for the other.
+          Before you study anything, know what the exam asks, what the exam hands you, and how the pieces connect. This page answers those three questions from the nine old Exam 3 papers. Then it shows you the one idea that halves the course: **a transmission line obeys the same two equations as a plane wave.** Everything you learn about one is free for the other.
 
         ### The exam
 
         - **When:** Monday, November 16, 7:00 to 8:15 pm. That is **75 minutes**.
-        - **What you bring:** one 4"×6" card of handwritten notes. You get the official formula sheet (3 pages).
+        - **What you bring:** one 4"×6" card of handwritten notes. The exam gives you one printed table, the loss limits.
         - **No calculator.** Every number is chosen to work by hand. That is why [complex numbers from zero](#/l/e3-complex) is the next page.
         - **Who writes it:** Prof. Xu Chen. His Spring 2024 Exam 3 is the best model of what you will see.
         - **Scope:** Lectures 20 to 33. Poynting's theorem and power; phasors; waves in lossy materials; polarization; reflection and standing waves; transmission lines in time (bounce diagrams) and in phasors (stubs, resonance, quarter-wave transformers). **The Smith chart is not on it.**
@@ -139,35 +139,31 @@
         [null, md`That uses the full speed of light, $c = 300$ m/µs. The waves move at $c/2 = 150$ m/µs.`, md`That is the round trip, there and back.`, md`That is $\tau_g = \tfrac34$, a coefficient, not a time.`],
         md`$v_p = c/2 = 150$ m/µs. Time $= 150\ \text{m}/(150\ \text{m}/\mu\text{s}) = 1\ \mu\text{s}$. Writing $c$ as 300 m/µs makes every line problem a division you can do in your head.`),
       R(md`
-        ### What the formula sheet gives you, and what it does not
+        ### What the exam gives you, and what it does not
 
-        You get the official three-page sheet ([read it here](#/l/e3-sheet)). Know what is on it, so your 4"×6" card holds only what is not.
+        The exam prints only one reference table ([see it here](#/l/e3-sheet)). Everything else you know or carry on your 4"×6" card.
 
-        **It gives you:**
-        - Maxwell's equations and the boundary conditions, with $\hat n\times(\mathbf H^+ - \mathbf H^-) = \mathbf J_s$.
-        - The fields of a current sheet, written for the sheet $\mathbf J_s = -J_s(t)\hat x$.
-        - $\hat e\times\hat h = \hat v_p$, $\mathbf S = \mathbf E\times\mathbf H$, Poynting's theorem, and $\langle\mathbf S\rangle = \tfrac12\Re\{\tilde{\mathbf E}\times\tilde{\mathbf H}^*\}$.
-        - The lossy wave in time and in phasors, $\gamma$, $\eta$, $\tau$, $\eta\gamma = j\omega\mu$, $\gamma/\eta = \sigma + j\omega\epsilon$, and the three limits (no loss, imperfect dielectric, good conductor).
-        - $\Gamma = (\eta_2 - \eta_1)/(\eta_2 + \eta_1)$ and $\tau = 1 + \Gamma$.
-        - The telegrapher's equations, $Z_0$, $v_p$, $\tau_g$, $\Gamma_L$, $\Gamma_g$, and the sums for $V(z,t)$ and $I(z,t)$ after a delta input.
-        - $\tilde V(d)$, $\tilde I(d)$, $\Gamma(d)$, $Z(d)$, the power $P(d)$, VSWR, and the short and open loads.
+        **It gives you one table, the loss limits.** Rows: perfect dielectric ($\sigma = 0$), imperfect dielectric ($\sigma/\omega\epsilon \ll 1$), good conductor ($\sigma/\omega\epsilon \gg 1$), perfect conductor ($\sigma = \infty$). Columns: $\beta$, $\alpha$, $|\eta|$, $\tau$ (the angle of $\eta$), $\lambda = 2\pi/\beta$, $\delta = 1/\alpha$. For example, a good conductor has $\beta \approx \alpha \approx \sqrt{\pi f\mu\sigma}$, $|\eta| = \sqrt{\omega\mu/\sigma}$, $\tau = 45°$.
 
-        **It does not give you:**
+        **It does not give you** (know it or put it on your card):
+        - Maxwell's equations, the boundary conditions, the current-sheet fields, $\hat e\times\hat h = \hat v_p$, $\langle\mathbf S\rangle = \tfrac12\Re\{\tilde{\mathbf E}\times\tilde{\mathbf H}^*\}$, and Poynting's theorem.
+        - The general $\gamma$, $\eta$, $\eta\gamma = j\omega\mu$, $\gamma/\eta = \sigma + j\omega\epsilon$, $\Gamma = (\eta_2 - \eta_1)/(\eta_2 + \eta_1)$ and $\tau = 1 + \Gamma$.
+        - The telegrapher's equations, $Z_0$, $v_p$, $\tau_g$, $\Gamma_L$, $\Gamma_g$, the bounce sums, $\tilde V(d)$, $\tilde I(d)$, $\Gamma(d)$, $Z(d)$, $P(d)$, VSWR, and the short and open loads.
         - Any complex arithmetic, or the values of $\sqrt2$, $\sqrt3$, $e^{-1}$, $\cos 30°$ and friends. ([Complex numbers from zero](#/l/e3-complex).)
         - **Anything about polarization.** Which hand is which is a rule you must carry.
-        - The skin depth by name: $\delta = 1/\alpha$. The sheet gives only $\alpha \approx \sqrt{\omega\mu\sigma/2}$.
+        - The skin depth in terms of $f$, $\mu$, $\sigma$. The table gives $\delta = 1/\alpha$ and $\alpha \approx \sqrt{\pi f\mu\sigma}$, so $\delta = 1/\sqrt{\pi f\mu\sigma}$ follows.
         - Decibels: $10\log_{10}$ of a power ratio, and $1$ Np $\approx 8.69$ dB.
         - $\langle\mathbf S\rangle$ for a lossy wave already worked out: $\dfrac{E_0^2}{2|\eta|}e^{-2\alpha z}\cos\tau$.
         - $L$ and $C$ for a coax or parallel plates. (Spring 2024 gave $C$ in the problem.)
         - The coefficients at a junction of two lines, $\Gamma_{12} = (Z_{02} - Z_{01})/(Z_{02} + Z_{01})$ and $\tau_{12} = 1 + \Gamma_{12}$, and the fact that current reflects with $-\Gamma$.
         - The resonance lengths of shorted and open lines, and $Z_{in} = Z_0^2/Z_L$ for a quarter-wave line.
 
-        !!trap One line on the sheet is shorthand
-          The sheet writes $Z(d) = Y(d \pm \lambda/4)$. Read literally, the units do not match: ohms on the left, siemens on the right. It is true only for the **normalized** values, $z(d) = y(d \pm \lambda/4)$, with $z = Z/Z_0$ and $y = Z_0Y$. In ohms it says $Z(d)\,Z(d \pm \lambda/4) = Z_0^2$. That is the quarter-wave transformer.
+        !!trap A common line is shorthand
+          You may see $Z(d) = Y(d \pm \lambda/4)$ written. Read literally, the units do not match: ohms on the left, siemens on the right. It is true only for the **normalized** values, $z(d) = y(d \pm \lambda/4)$, with $z = Z/Z_0$ and $y = Z_0Y$. In ohms it says $Z(d)\,Z(d \pm \lambda/4) = Z_0^2$. That is the quarter-wave transformer.
       `),
       Q(md`**Predict.** A line has $Z_0 = 50\ \Omega$. At some point $Z(d) = 100\ \Omega$. What is $Z$ a quarter wavelength farther along, $Z(d + \lambda/4)$?`,
         [md`$25\ \Omega$`, md`$0.01\ \Omega$`, md`$100\ \Omega$`, md`$200\ \Omega$`], 0,
-        [null, md`That reads $Z(d) = Y(d \pm \lambda/4)$ literally and takes $1/100$. The sheet's line holds only for normalized values.`, md`That is what a **half** wavelength does: $z(d) = z(d \pm \lambda/2)$.`, md`That multiplies by 2. The quarter-wave line inverts the normalized impedance: $z = 2$ becomes $z = \tfrac12$.`],
+        [null, md`That reads $Z(d) = Y(d \pm \lambda/4)$ literally and takes $1/100$. That line holds only for normalized values.`, md`That is what a **half** wavelength does: $z(d) = z(d \pm \lambda/2)$.`, md`That multiplies by 2. The quarter-wave line inverts the normalized impedance: $z = 2$ becomes $z = \tfrac12$.`],
         md`Normalized: $z(d) = 100/50 = 2$. A quarter wave inverts it: $z = \tfrac12$. In ohms, $\tfrac12\cdot50 = 25\ \Omega$. Check: $Z(d)\,Z(d + \lambda/4) = 100\cdot25 = 2500 = Z_0^2$ ✓.`),
       RF(md`
         ### The big idea: a line is a plane wave in disguise
@@ -195,7 +191,7 @@
         $$I(z + \Delta z) - I(z) = -C\,\Delta z\,\frac{\partial V}{\partial t}$$
         Divide by $\Delta z$ and let $\Delta z \to 0$:
         $$\frac{\partial I}{\partial z} = -C\frac{\partial V}{\partial t} \qquad\text{(4)}$$
-        Equations (3) and (4) are the **telegrapher's equations**, the first line under "Guided TEM waves" on your sheet.
+        Equations (3) and (4) are the **telegrapher's equations**, the first line under "Guided TEM waves" (know it; not given in the exam).
 
         **Now lay (1) next to (3), and (2) next to (4).** They are the same equations with different letters:
         $$E_x \to V, \quad H_y \to I, \quad \mu \to L, \quad \epsilon \to C$$
@@ -222,9 +218,9 @@
 
         Multiply the two:
         $$LC = \frac{\mu h}{w}\cdot\frac{\epsilon w}{h} = \mu\epsilon$$
-        The shape cancels. So $v = 1/\sqrt{LC} = 1/\sqrt{\mu\epsilon}$: **a wave on a line travels at the speed of light in whatever fills it.** The sheet's $v_p = 1/\sqrt{LC} = 1/\sqrt{\mu\epsilon}$ says exactly this. Divide instead:
+        The shape cancels. So $v = 1/\sqrt{LC} = 1/\sqrt{\mu\epsilon}$: **a wave on a line travels at the speed of light in whatever fills it.** The line speed $v_p = 1/\sqrt{LC} = 1/\sqrt{\mu\epsilon}$ (know it) says exactly this. Divide instead:
         $$Z_0 = \sqrt{\frac{L}{C}} = \sqrt{\frac{\mu}{\epsilon}}\,\frac{h}{w} = \eta\,\frac{h}{w}$$
-        The impedance does depend on the shape. The sheet writes the shape factor as $1/GF$.
+        The impedance does depend on the shape. The shape factor is written $1/GF$ (not given: know it).
 
         !!intuition Does this make sense?
           Units: $L/C$ is H/F, and H/F $= \Omega^2$, so $\sqrt{L/C}$ is in ohms ✓. Plates as wide as their gap ($w = h$) in air give $Z_0 = \eta_0 = 377\ \Omega$: the line is a square chunk of plane wave. Wider plates or a smaller gap mean more capacitance and less inductance, so $Z_0$ falls ✓. And $LC = \mu\epsilon$ for **every** shape of TEM line, not only plates. That is how Spring 2024 #3 got $L$ from $C$ for a coax: $L = \mu\epsilon/C$.
@@ -252,7 +248,7 @@
         **Three differences to remember.**
         - A line has a **generator with its own resistance** at one end, so waves reflect at both ends: $\Gamma_L$ at the load and $\Gamma_g$ at the source. Plane-wave problems almost never have the second reflection.
         - **Current reflects with $-\Gamma$**, just as $\mathbf H$ does. Fall 2023 #3 asked for the current coefficient on purpose.
-        - **Two position variables.** In time-domain line problems $z$ runs from the generator ($z = 0$) to the load ($z = l$). In phasor line problems $d$ runs backward from the load ($d = 0$ at the load). Your sheet uses both.
+        - **Two position variables.** In time-domain line problems $z$ runs from the generator ($z = 0$) to the load ($z = l$). In phasor line problems $d$ runs backward from the load ($d = 0$ at the load). Know both.
       `),
       Q(md`**Predict.** A 150 $\Omega$ line joins a 50 $\Omega$ line. A voltage wave arrives from the 150 $\Omega$ side. Use the dictionary: what fraction reflects?`,
         [md`$-\tfrac12$`, md`$+\tfrac12$`, md`$\tfrac12$ of the power, so $-\tfrac{1}{\sqrt2}$ of the voltage`, md`$-\tfrac13$`], 0,
@@ -279,7 +275,7 @@
 
         **Sunday.** [Practice exams C](#/l/e3-prac-c) and [D](#/l/e3-prac-d), then [Fall 2023](#/l/e3-past-fa23) and [Spring 2019](#/l/e3-past-sp19). Redo Saturday's misses blank. Learn the [speed tricks](#/l/e3-speed). Gym and flashcards.
 
-        **Monday.** One last timed paper in the morning, [Spring 2018](#/l/e3-past-sp18) or a practice exam. Afternoon: [the formula sheet](#/l/e3-sheet), then copy your <a href="notecard-e3.html">notecard</a> by hand. Gym. Nothing new after 4 pm.
+        **Monday.** One last timed paper in the morning, [Spring 2018](#/l/e3-past-sp18) or a practice exam. Afternoon: [the given table](#/l/e3-sheet), then copy your <a href="notecard-e3.html">notecard</a> by hand. Gym. Nothing new after 4 pm.
 
         ### Where each topic is taught
 
@@ -303,7 +299,7 @@
 
         ### Check questions
       `),
-      Q(md`On the formula sheet, what does the shape factor $GF$ do for a parallel-plate line of width $w$ and gap $h$?`,
+      Q(md`What does the shape factor $GF$ do for a parallel-plate line of width $w$ and gap $h$?`,
         [md`$GF = w/h$, so $Z_0 = \eta/GF = \eta h/w$`, md`$GF = h/w$, so $Z_0 = \eta w/h$`, md`$GF = wh$, the area of the cross-section`, md`$GF = 1$ for every line`], 0,
         [null, md`That is upside down: a wide plate (large $w$) has a large capacitance and so a small $Z_0$.`, md`A shape factor is a ratio with no units. An area has units of m².`, md`$GF$ is what makes a coax differ from a pair of plates. Only $LC = \mu\epsilon$ is the same for every shape.`],
         md`$C = \epsilon w/h = \epsilon\,GF$ and $L = \mu h/w = \mu/GF$. Then $Z_0 = \sqrt{L/C} = \sqrt{\mu/\epsilon}/GF = \eta h/w$.`),
@@ -317,9 +313,9 @@
   // ---------------------------------------------------------------- the question bank: e3-map
   EM.BANK['e3-map'] = [
     Q(md`How long is Exam 3, and what may you bring?`,
-      ['75 minutes, one handwritten 4"×6" card, plus the official formula sheet', '75 minutes, a calculator and the formula sheet', '50 minutes, three 3"×5" cards', '120 minutes, open book'], 0,
+      ['75 minutes, one handwritten 4"×6" card, plus the given loss-limits table', '75 minutes, a calculator and the full formula sheet', '50 minutes, three 3"×5" cards', '120 minutes, open book'], 0,
       [null, md`No calculator is allowed. That is why every number on the exam is chosen to work by hand.`, md`Older spring papers allowed three 3×5 cards. This term it is one 4×6 card, for 75 minutes.`, md`It is closed book, 7:00 to 8:15 pm.`],
-      md`Monday 7:00 to 8:15 pm: 75 minutes, closed book, no calculator, one 4"×6" card, and the 3-page formula sheet.`),
+      md`Monday 7:00 to 8:15 pm: 75 minutes, closed book, no calculator, one 4"×6" card, and one printed table (the loss limits).`),
     Q(md`Which topic is **not** on Exam 3?`,
       ['The Smith chart', 'Quarter-wave transformers', 'Bounce diagrams with two lines', 'Skin depth in a good conductor'], 0,
       [null, md`Half- and quarter-wave transformers are Lecture 33, inside the scope (Lectures 20 to 33).`, md`Multi-line bounce diagrams are Lecture 30 and were 34 points in Spring 2024.`, md`Good conductors are Lecture 23 and were 30 points in Spring 2024.`],
@@ -348,14 +344,14 @@
       ['0.8 A', '1.6 A', '0.4 A', '0.53 A'], 0,
       [null, md`That uses only $R_g$: $80/50$. In DC the load is in series too.`, md`That counts $R_g$, $R_L$ and an extra 100 $\Omega$. Lossless lines are plain wires in DC.`, md`That puts $Z_{01} = 150\ \Omega$ in series. In DC steady state the characteristic impedances do not appear.`],
       md`At DC the lines are just wires: $I = 80/(50 + 50) = 0.8$ A.`),
-    Q(md`Which of these is **not** on the formula sheet, so it must go on your card or in your head?`,
-      ['The rule for which hand a circular wave has', '$\\Gamma = (\\eta_2 - \\eta_1)/(\\eta_2 + \\eta_1)$', '$\\tau_g = Z_0/(R_g + Z_0)$', '$\\langle\\mathbf S\\rangle = \\tfrac12\\Re\\{\\tilde{\\mathbf E}\\times\\tilde{\\mathbf H}^*\\}$'], 0,
-      [null, md`It is on page 3, with $\tau = 1 + \Gamma$.`, md`It is on page 3, with $\Gamma_L$ and $\Gamma_g$.`, md`It is on page 2.`],
-      md`The sheet has nothing about polarization. The handedness rule is yours to carry.`),
+    Q(md`Which of these is **given in the exam**, so it need not go on your card?`,
+      ['$\\alpha \\approx \\sqrt{\\pi f\\mu\\sigma}$ for a good conductor', '$\\Gamma =(\\eta_2 - \\eta_1)/(\\eta_2 + \\eta_1)$', '$\\tau_g = Z_0/(R_g + Z_0)$', '$\\langle\\mathbf S\\rangle = \\tfrac12\\Re\\{\\tilde{\\mathbf E}\\times\\tilde{\\mathbf H}^*\\}$'], 0,
+      [null, md`Not given: know it, with $\tau = 1 + \Gamma$.`, md`Not given: know it, with $\Gamma_L$ and $\Gamma_g$.`, md`Not given: know it.`],
+      md`The only printed reference is the loss-limits table. It gives $\alpha \approx \sqrt{\pi f\mu\sigma}$ for a good conductor. The other three, and the polarization rules, are yours to carry.`),
     Q(md`The skin depth $\delta$ of a good conductor is…`,
-      [md`$1/\alpha$, which is **not** written on the sheet`, md`$\alpha$ itself, on the sheet`, md`$2\pi/\beta$, on the sheet`, md`$1/(2\alpha)$, the power's decay length`], 0,
+      [md`$1/\alpha$, the column the given table labels $\delta$`, md`$\alpha$ itself, in Np/m`, md`$2\pi/\beta$, the wavelength`, md`$1/(2\alpha)$, the power's decay length`], 0,
       [null, md`$\alpha$ is in Np/m; a depth is in meters.`, md`$2\pi/\beta$ is the wavelength, which is $2\pi\delta$ in a good conductor.`, md`$1/(2\alpha)$ is where the **power** falls to $1/e$. The skin depth is defined with the field.`],
-      md`$\delta = 1/\alpha$: the field falls to $1/e$. The sheet gives $\alpha \approx \sqrt{\omega\mu\sigma/2}$ but never names $\delta$.`),
+      md`$\delta = 1/\alpha$: the field falls to $1/e$. The given table has $\delta = 1/\alpha$ and $\alpha \approx \sqrt{\pi f\mu\sigma}$.`),
     Q(md`From Kirchhoff's voltage law on a piece of line, $\partial V/\partial z = -L\,\partial I/\partial t$. The plane-wave equation it matches is…`,
       [md`$\partial E_x/\partial z = -\mu\,\partial H_y/\partial t$ (Faraday)`, md`$\partial H_y/\partial z = -\epsilon\,\partial E_x/\partial t$ (Ampère)`, md`$\partial E_x/\partial z = -\epsilon\,\partial H_y/\partial t$`, md`$\partial^2E_x/\partial z^2 = \mu\epsilon\,\partial^2E_x/\partial t^2$`], 0,
       [null, md`That matches the current law, $\partial I/\partial z = -C\,\partial V/\partial t$.`, md`$\epsilon$ goes with the capacitor and Ampère's law. Faraday's law has $\mu$.`, md`That is the wave equation, which both systems give after combining the two first-order equations.`],
@@ -375,7 +371,7 @@
     Q(md`In a time-domain line problem, $z$ is measured from…; in a phasor line problem, $d$ is measured from…`,
       ['the generator, toward the load; the load, back toward the generator', 'the load in both', 'the generator in both', 'the middle of the line in both'], 0,
       [null, md`Time-domain problems start the clock and the distance at the generator.`, md`Phasor formulas like $\Gamma(d) = \Gamma_Le^{-j2\beta d}$ need $d = 0$ at the load.`, md`Neither convention uses the middle.`],
-      md`Bounce diagrams use $z$ from the generator. $V(d)$, $\Gamma(d)$, $Z(d)$ use $d$ from the load, as on the sheet.`),
+      md`Bounce diagrams use $z$ from the generator. $V(d)$, $\Gamma(d)$, $Z(d)$ use $d$ from the load.`),
     Q(md`A wave hits a material that has the same $\eta$ as the one it came from, but a different $\mu$ and $\epsilon$. On a line, the same thing is…`,
       ['joining two lines with the same $Z_0$ but different speeds: no reflection', 'a short circuit', 'an open circuit', 'a quarter-wave transformer'], 0,
       [null, md`A short has $Z_L = 0$, which reflects everything.`, md`An open has $Z_L = \infty$, which reflects everything with $\Gamma = +1$.`, md`A transformer needs a different $Z_0$ in the middle.`],
@@ -672,7 +668,7 @@
         $$\gamma = \sqrt{\omega\mu\sigma}\,\sqrt j = \sqrt{\omega\mu\sigma}\,\frac{1 + j}{\sqrt2}$$
         Split it into real and imaginary parts:
         $$\alpha = \beta = \sqrt{\frac{\omega\mu\sigma}{2}}$$
-        That is the good-conductor line on your sheet, and now you know where it comes from. The same $\sqrt j$ gives $\eta = \sqrt{j\omega\mu/\sigma} = \sqrt{\omega\mu/\sigma}\,e^{j45°}$: the $\tau \approx 45°$ on the sheet.
+        That is the good-conductor line of the given table, and now you know where it comes from. The same $\sqrt j$ gives $\eta = \sqrt{j\omega\mu/\sigma} = \sqrt{\omega\mu/\sigma}\,e^{j45°}$: the $\tau = 45°$ in the given table.
 
         !!intuition Does this make sense?
           A square root halves the angle, so it pulls every number toward the positive real axis. That is why $\tau$ never exceeds $45°$: it is half of an angle that is at most $90°$. And Spring 2024's $\delta = 1$ mm means $\alpha = \beta = 1000$ m⁻¹, so $\gamma = 1000(1 + j)$ m⁻¹: a $45°$ arrow.
@@ -1381,7 +1377,7 @@
         $$\nabla\times\mathbf H = \epsilon\frac{\partial\mathbf E}{\partial t}$$
         In words: an $\mathbf H$ that changes in time makes $\mathbf E$ curl (Faraday), and an $\mathbf E$ that changes in time makes $\mathbf H$ curl (Ampère, with Maxwell's displacement current).
 
-        Now take the simplest wave: $\mathbf E = \hat x\,E_x(z,t)$ and $\mathbf H = \hat y\,H_y(z,t)$. Nothing depends on $x$ or $y$. The $y$-component of $\nabla\times\mathbf E$, from the sheet, is
+        Now take the simplest wave: $\mathbf E = \hat x\,E_x(z,t)$ and $\mathbf H = \hat y\,H_y(z,t)$. Nothing depends on $x$ or $y$. The $y$-component of $\nabla\times\mathbf E$, (know it; not given), is
         $$(\nabla\times\mathbf E)_y = \frac{\partial E_x}{\partial z} - \frac{\partial E_z}{\partial x}$$
         There is no $E_z$, so only the first term is left. Faraday's law then says
         $$\frac{\partial E_x}{\partial z} = -\mu\frac{\partial H_y}{\partial t} \qquad\text{(1)}$$
@@ -1401,7 +1397,7 @@
         $$\frac{\partial^2E_x}{\partial z^2} = -\mu\frac{\partial}{\partial t}\left(-\epsilon\frac{\partial E_x}{\partial t}\right)$$
         The two minus signs cancel:
         $$\boxed{\frac{\partial^2E_x}{\partial z^2} = \mu\epsilon\,\frac{\partial^2E_x}{\partial t^2}}$$
-        That is the **wave equation**, the first line under "TEM waves" on your sheet.
+        That is the **wave equation**, the first line under "TEM waves" (know it; not given in the exam).
 
         !!intuition Does this make sense?
           Units: the left side is (V/m)/m², the right side is $\mu\epsilon$ times (V/m)/s². So $\mu\epsilon$ must have units s²/m²: one over a speed squared. That speed is $v = 1/\sqrt{\mu\epsilon}$. In vacuum, $\mu_0\epsilon_0 = 4\pi\times10^{-7}\cdot10^{-9}/(36\pi) = 10^{-16}/9$, so $v = 3\times10^8$ m/s $= c$ ✓. In a material, $v = c/\sqrt{\mu_r\epsilon_r}$.
@@ -1460,7 +1456,7 @@
 
         **The direction rule.** For the forward wave, $\mathbf E\times\mathbf H = E_xH_y\,(\hat x\times\hat y) = (E_x^2/\eta)\,\hat z$. That points along $+\hat z$, the direction of travel, whatever the sign of $E_x$. For the backward wave it points along $-\hat z$. In general:
         $$\boxed{\hat e\times\hat h = \hat v}$$
-        That is the line $\hat e\times\hat h = \hat v_p$ on your sheet. To find $\hat h$ from $\hat e$ and $\hat v$, use the same cyclic order, one step on:
+        That is the line $\hat e\times\hat h = \hat v_p$ (know it; not given in the exam). To find $\hat h$ from $\hat e$ and $\hat v$, use the same cyclic order, one step on:
         $$\hat h = \hat v\times\hat e$$
         Check it on the forward wave: $\hat v\times\hat e = \hat z\times\hat x = \hat y$ ✓.
 
@@ -1488,7 +1484,7 @@
         $$\oint\mathbf E\cdot d\mathbf l = -\frac{d}{dt}\int\mathbf B\cdot d\mathbf S$$
         As $h \to 0$, the loop encloses no area, so the flux on the right goes to zero (the fields are finite). The two short sides have no length left. Only the two long sides remain, traversed in opposite directions:
         $$E_{2,t}\,w - E_{1,t}\,w = 0$$
-        So the tangential $\mathbf E$ is the same on both sides. In vector form, as on your sheet:
+        So the tangential $\mathbf E$ is the same on both sides. In vector form (not given in the exam):
         $$\boxed{\hat n\times(\mathbf E_2 - \mathbf E_1) = 0}$$
         **Tangential $\mathbf H$.** Ampère's law in integral form:
         $$\oint\mathbf H\cdot d\mathbf l = I_{\text{enc}} + \frac{d}{dt}\int\mathbf D\cdot d\mathbf S$$
@@ -1534,7 +1530,7 @@
 
         [[fig:sheet]]
 
-        **Compare with your sheet.** The formula sheet uses $\mathbf J_s = -J_s(t)\,\hat x$, a current along $-\hat x$. Put that into the box: $\mathbf E = +\tfrac\eta2J_s\,\hat x$ and $H_y = \pm\tfrac12J_s$ for $z \gtrless 0$. Exactly the sheet's lines. The vector form above works for any sheet in any plane.
+        **Compare with the textbook form.** It is usually written with $\mathbf J_s = -J_s(t)\,\hat x$, a current along $-\hat x$. Put that into the box: $\mathbf E = +\tfrac\eta2J_s\,\hat x$ and $H_y = \pm\tfrac12J_s$ for $z \gtrless 0$. Exactly the standard lines. The vector form above works for any sheet in any plane.
 
         **In phasors.** A sheet with phasor current $\tilde{\mathbf J}_s$ at one frequency radiates
         $$\tilde{\mathbf E} = -\frac\eta2\,\tilde{\mathbf J}_s\,e^{-j\beta|z|}$$
@@ -1544,7 +1540,7 @@
           - **$\mathbf E$ points against the current**, on both sides. So $\mathbf J_s\cdot\mathbf E < 0$: the sheet pushes its current against the field it makes, like the charges inside a battery. That is how it gives energy to the waves.
           - **$\mathbf E\times\mathbf H$ points away from the sheet** on both sides. Above: $(-\hat x)\times(-\hat y) = +\hat z$ ✓. Below: $(-\hat x)\times(+\hat y) = -\hat z$ ✓.
           - **The amplitude does not fall with distance.** An infinite sheet's wave does not spread out.
-          - **Static limit.** A steady current gives $\mathbf H = \tfrac12\mathbf J_s\times\hat n$, the magnetostatic sheet field on page 2 of the sheet ✓.
+          - **Static limit.** A steady current gives $\mathbf H = \tfrac12\mathbf J_s\times\hat n$, the magnetostatic sheet field ✓.
       `, { sheet: { svg: sheetFig(), cap: 'A sheet with current along +x, seen edge-on. E points against the current on both sides; H points into the page on the right and out of it on the left; both waves move away from the sheet.' } }),
       Q(md`**Predict.** A sheet at $z = 0$ in vacuum carries the phasor current $\tilde{\mathbf J}_s = -2\hat x$ A/m at a frequency where $\lambda = 1$ m. What is $\tilde{\mathbf E}$ at $z = 0.25$ m?`,
         [md`$-j120\pi\,\hat x$ V/m`, md`$+j120\pi\,\hat x$ V/m`, md`$-j60\pi\,\hat x$ V/m`, md`$120\pi\,\hat x$ V/m`], 0,
@@ -1913,7 +1909,7 @@
     Q(md`The time average of $\cos^2(\omega t - \beta z)$ is…`, [md`$\tfrac12$`, md`$1$`, md`$0$`, md`$\tfrac1{\sqrt2}$`], 0,
       [null, md`That is its peak.`, md`That is the average of $\cos$, not $\cos^2$.`, md`That is the rms of $\cos$, not the mean of $\cos^2$.`],
       md`$\cos^2x = \tfrac12(1 + \cos2x)$, and $\cos2x$ averages to zero.`),
-    Q(md`The formula sheet writes its sheet as $\mathbf J_s = -J_s(t)\hat x$. When $J_s(t) > 0$, the sheet's $\mathbf E$ points along…`, [md`$+\hat x$ on both sides`, md`$-\hat x$ on both sides`, md`$+\hat x$ above, $-\hat x$ below`, md`$\pm\hat y$`], 0,
+    Q(md`A standard form writes the sheet as $\mathbf J_s = -J_s(t)\hat x$. When $J_s(t) > 0$, the sheet's $\mathbf E$ points along…`, [md`$+\hat x$ on both sides`, md`$-\hat x$ on both sides`, md`$+\hat x$ above, $-\hat x$ below`, md`$\pm\hat y$`], 0,
       [null, md`The current itself points along $-\hat x$, and $\mathbf E$ points against the current.`, md`$\mathbf E$ is continuous across the sheet.`, md`That is the direction of $\mathbf H$.`],
       md`$\mathbf E = -\tfrac\eta2\mathbf J_s = +\tfrac\eta2J_s\hat x$: the sheet's $E_x = \tfrac\eta2J_s(t \mp z/v)$.`),
     Q(md`A sheet switches on at $t = 0$ in a non-magnetic medium with $\epsilon_r = 9$. When does its field reach 300 m?`, [md`3 µs`, md`1 µs`, md`9 µs`, md`0.33 µs`], 0,

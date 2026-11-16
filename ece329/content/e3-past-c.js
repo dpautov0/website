@@ -162,7 +162,7 @@
     R(md`
       **Spring 2017 · ECE 329 · Exam 3** (Waldrop, Lee, Goddard, Ilie). Thursday, April 20, 2017, 7:00–8:15 PM (75 minutes). Six problems, 100 points: true or false (6), multiple choice (18), reading a lossy wave (27), a general polarization and its power (18), a bounce diagram and a pulse (20), a shorted line (11). Closed book, no calculators.
 
-      The paper gives $c = 3\times10^8$ m/s, $\epsilon_0 = \frac{10^{-9}}{36\pi}$ F/m, $\mu_0 = 4\pi\times10^{-7}$ H/m, $\eta_0 = 120\pi\ \Omega$, and asks for **answers as fractions, not decimals**. It also prints the table of the imperfect-dielectric and good-conductor limits, which is on your formula sheet too.
+      The paper gives $c = 3\times10^8$ m/s, $\epsilon_0 = \frac{10^{-9}}{36\pi}$ F/m, $\mu_0 = 4\pi\times10^{-7}$ H/m, $\eta_0 = 120\pi\ \Omega$, and asks for **answers as fractions, not decimals**. It also prints the table of the imperfect-dielectric and good-conductor limits, which is the table the exam now gives you.
 
       **No key was posted for this paper.** Every answer below was derived from first principles here and checked numerically.
 

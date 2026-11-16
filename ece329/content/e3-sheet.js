@@ -1,4 +1,4 @@
-/* Exam 3 reference (unit e3-x): the official formula sheet typed in full (v8, three pages, its own order and symbols),
+/* Exam 3 reference (unit e3-x): the one table printed on the exam, then the course formula sheet typed in full (v8, three pages, its own order and symbols),
    with what each group is for and where it is derived; then every formula of pages 2 and 3 derived compactly from first
    principles; then what goes on the 4x6 card (notecard-e3.html) and why. The site routes #/sheet to e3-sheet and
    #/derive to e3-derive. */
@@ -67,11 +67,29 @@
 
   // ================================================================ 1. the sheet, typed
   EM.lesson('e3-x', {
-    id: 'e3-sheet', order: 1, kind: 'read', title: 'Exam 3 formula sheet', ref: 'official sheet, v8',
-    sub: 'The official three pages, typed, with what each part is for and what is missing',
+    id: 'e3-sheet', order: 1, kind: 'read', title: 'Exam 3 formulas: the one table you get, and the rest you carry', ref: 'given: one table',
+    sub: 'The only thing printed on the exam is one table. Everything else is on your card or in your head',
     steps: [
       R(md`
-        This is the **official Exam 3 formula sheet** (version 8, three pages), typed in full, in its own order and with its own symbols. You get a printed copy in the exam. Read it once now, so that on Monday you know where every line sits and what it is for. After each group there is one line on **what it is for** and a link to the lesson that derives it. Every formula on pages 2 and 3 is also rebuilt from scratch, compactly, in [Every formula on the sheet, derived](#/l/e3-derive). At the end: what the sheet does **not** give you, which goes on your 4″×6″ card ([what to write on it](#/l/e3-card), and the printable layout <a href="notecard-e3.html">notecard-e3.html</a>).
+        ## What the exam gives you: one table
+
+        The exam prints **one reference table and nothing else** (Fall 2025 put it on page 2). It is the four loss limits:
+
+        | Medium | Condition | $\beta$ | $\alpha$ | $\lvert\eta\rvert$ | $\tau$ (angle of $\eta$) |
+        |---|---|---|---|---|---|
+        | Perfect dielectric | $\sigma = 0$ | $\omega\sqrt{\mu\epsilon}$ | $0$ | $\sqrt{\mu/\epsilon}$ | $0$ |
+        | Imperfect dielectric | $\sigma/\omega\epsilon \ll 1$ | $\approx\omega\sqrt{\mu\epsilon}$ | $\approx\tfrac{\sigma}{2}\sqrt{\mu/\epsilon}$ | $\approx\sqrt{\mu/\epsilon}$ | $\approx\tfrac{\sigma}{2\omega\epsilon}$ |
+        | Good conductor | $\sigma/\omega\epsilon \gg 1$ | $\approx\sqrt{\pi f\mu\sigma}$ | $\approx\sqrt{\pi f\mu\sigma}$ | $\sqrt{\omega\mu/\sigma}$ | $45°$ |
+        | Perfect conductor | $\sigma = \infty$ | $\infty$ | $\infty$ | $0$ | — |
+
+        with $\lambda = 2\pi/\beta$ and $\delta = 1/\alpha$ for every row. So the table hands you the **lossy-medium numbers** (and, from the good-conductor row, $\delta = 1/\sqrt{\pi f\mu\sigma}$ and $\lambda = 2\pi\delta$). It does **not** give you Maxwell's equations, the general $\gamma$ and $\eta$, Poynting, $\Gamma$ and $\tau$ at a boundary, or any transmission-line formula.
+
+        !!trap Everything outside this table is yours to carry
+          Your 4″×6″ handwritten card is the only other help. [What to write on it](#/l/e3-card), and the printable layout <a href="notecard-e3.html">notecard-e3.html</a>, now carry every formula the problems need. Before Monday, write each core formula from memory once: $\gamma$, $\eta$, $\langle\mathbf S\rangle$, $\Gamma$, $\tau = 1 + \Gamma$, $Z_0$, $v$, $\tau_g$, $\Gamma_L$, $\Gamma_g$, $\tilde V(d)$, $\tilde I(d)$, $\Gamma(d)$, $Z(d)$, $Z_{in}$, VSWR.
+
+        ## The course's formula sheet (not handed out in the exam)
+
+        Below is the course's three-page formula sheet (version 8), typed in its own order and symbols. **You do not get it in the exam.** Use it as the checklist of what you must know: cover each line and write it from memory. After each group there is one line on **what it is for** and a link to the lesson that derives it. Every formula on pages 2 and 3 is rebuilt from scratch in [Every formula, derived](#/l/e3-derive).
 
         !!trap Symbols that mean different things on this sheet
           - **Three taus.** On page 2, $\tau$ is the **angle of $\eta$** ($\eta = |\eta|e^{j\tau}$). On page 3, $\tau = 1 + \Gamma$ is the **transmission coefficient** of a boundary. On lines, $\tau_g = Z_0/(R_g + Z_0)$ is the **injection coefficient** of the generator. Always say which one you mean.
@@ -239,12 +257,12 @@
         **What it is for.** Stubs: a shorted or open line is a pure reactance, so it can resonate, and it can block or pass one frequency (a filter). Derived in [Topic 18](#/l/w6-stubs).
       `),
       R(md`
-        ## Not on the sheet: carry these on your card
+        ## Not even on the course sheet: carry these too
 
-        The sheet is silent on all of the following, and Prof. Chen's exams use them. Each one is explained, with its trap, in [What to write on your 4×6 card](#/l/e3-card). Same symbols as the sheet.
+        The course sheet is silent on all of the following, and Prof. Chen's exams use them. Each one is on your card and explained, with its trap, in [What to write on your 4×6 card](#/l/e3-card).
 
         **Constants and quick numbers**
-        - $\mu_0 = 4\pi\times10^{-7}$ H/m and $\epsilon_0 = \dfrac{10^{-9}}{36\pi}$ F/m (the sheet gives only $c$ and $\eta_0$). $\mu_0c = \eta_0$ and $\epsilon_0c\eta_0 = 1$, so $\omega\mu_0 = k_0\eta_0$ and $\omega\epsilon_0 = k_0/\eta_0$ with $k_0 = \omega/c$.
+        - $\mu_0 = 4\pi\times10^{-7}$ H/m and $\epsilon_0 = \dfrac{10^{-9}}{36\pi}$ F/m (nothing gives these). $\mu_0c = \eta_0$ and $\epsilon_0c\eta_0 = 1$, so $\omega\mu_0 = k_0\eta_0$ and $\omega\epsilon_0 = k_0/\eta_0$ with $k_0 = \omega/c$.
         - $c = 0.3$ m/ns; at 300 MHz, $\lambda_0 = 1$ m. Loss tangent in one step: $\dfrac{\sigma}{\omega\epsilon} = \dfrac{60\,\sigma\lambda_0}{\epsilon_r}$ ($\sigma$ in S/m, $\lambda_0$ in m). [Topic 7](#/l/w2-limits)
 
         **Phasors** ([Topic 1](#/l/w1-phasor), [Topic 4](#/l/w1-avg))
@@ -279,7 +297,7 @@
         - Shorted stub: $Z = 0$ at $f = \dfrac{nv}{2l}$, $Z = \infty$ at $f = \dfrac{(2n-1)v}{4l}$. Open stub: the other way round.
         - Power to the load: $P_L = \dfrac{|\tilde V^+|^2}{2Z_0}(1 - |\Gamma_L|^2)$.
 
-        ### Check: do you know the sheet?
+        ### Check: do you know these formulas?
       `),
       Q(md`In the sheet's line $H_y(z,t) = \pm\frac{E_0}{|\eta|}e^{\mp\alpha z}\cos(\omega t \mp \beta z + \phi - \tau)$, the symbol $\tau$ is…`,
         [md`the angle of $\eta$, from $\eta = |\eta|e^{j\tau}$`, md`the transmission coefficient $1 + \Gamma$`, md`the injection coefficient $Z_0/(R_g + Z_0)$`, md`a time delay, in seconds`], 0,
@@ -289,10 +307,10 @@
         ['the normalized impedance, a pure number', 'the position on the line, in meters', 'the impedance looking toward the load, in ohms', 'the distance from the generator, in wavelengths'], 0,
         [null, md`In the phasor section the position is $d$. The same letter $z$ is the position only in the time-domain section.`, md`That is $Z(d)$, capital. Dividing by $Z_0$ removes the ohms.`, md`$Z(d)/Z_0$ is a ratio of two impedances, not a distance.`],
         md`$z(d) = Z(d)/Z_0 = \frac{1 + \Gamma(d)}{1 - \Gamma(d)} = r(d) + jx(d)$: the impedance in units of $Z_0$. A matched load has $z = 1$.`),
-      Q(md`Which of these is **not** on the official sheet, so it has to go on your card?`,
-        [md`the skin depth $\delta = 1/\sqrt{\pi f\mu\sigma}$`, md`$\tau \approx \pi/4$ for a good conductor`, md`$\langle\mathbf S\rangle = \frac12\Re\{\tilde{\mathbf E}\times\tilde{\mathbf H}^*\}$`, md`$VSWR = \frac{1 + |\Gamma_L|}{1 - |\Gamma_L|}$`, md`$Z_0 = \sqrt{\mu/\epsilon}\,\frac{1}{GF}$`], 0,
-        [null, md`That is on page 3, in the good-conductor line ($1 \ll \sigma/\omega\epsilon$).`, md`That is on page 2, next to $\eta\gamma = j\omega\mu$.`, md`That is on page 3, in the phasor section.`, md`That is on page 3, in the time-domain section (only the formula for $GF$ itself is missing).`],
-        md`The sheet gives $\alpha \approx \sqrt{\omega\mu\sigma/2}$ but never names $\delta = 1/\alpha$. With $\omega = 2\pi f$, $\delta = 1/\sqrt{\pi f\mu\sigma}$. Put it on your card.`),
+      Q(md`Which of these does the exam's one printed table give you?`,
+        [md`$|\eta| = \sqrt{\omega\mu/\sigma}$ for a good conductor`, md`$\Gamma = \frac{\eta_2 - \eta_1}{\eta_2 + \eta_1}$`, md`$\langle\mathbf S\rangle = \frac12\Re\{\tilde{\mathbf E}\times\tilde{\mathbf H}^*\}$`, md`$VSWR = \frac{1 + |\Gamma_L|}{1 - |\Gamma_L|}$`, md`$Z_0 = \sqrt{\mathcal L/\mathcal C}$`], 0,
+        [null, md`Not given. The table only covers $\beta$, $\alpha$, $|\eta|$, $\tau$, $\lambda$, $\delta$ in the four loss limits. Carry $\Gamma$ on your card.`, md`Not given. Carry it on your card.`, md`Not given: no line formula is printed.`, md`Not given: no line formula is printed.`],
+        md`The table is the loss limits only: $\beta$, $\alpha$, $|\eta|$ and the angle $\tau$ for a perfect dielectric, an imperfect dielectric, a good conductor and a perfect conductor, plus $\lambda = 2\pi/\beta$ and $\delta = 1/\alpha$. Every other formula is on your card or in your head.`),
       Q(md`The sheet's sum $V(z,t) = \tau_g\sum_n(\Gamma_L\Gamma_g)^n\delta(\cdots) + \cdots$ is the line's response to which generator voltage?`,
         [md`a unit impulse, $v_g(t) = \delta(t)$`, md`a unit step, $v_g(t) = u(t)$`, md`a cosine, $v_g(t) = \cos\omega t$`, md`any $v_g(t)$, with no change`], 0,
         [null, md`A step response is made of steps, not spikes. For a step, replace each $\delta(\cdot)$ by $u(\cdot)$ with the same argument.`, md`A cosine in steady state is the phasor section's job, with $\tilde F$.`, md`The sum is built from $\delta$'s. For another input, replace every $\delta(\cdot)$ by the input's own shape, with the same argument.`],
@@ -318,14 +336,14 @@
 
   // ================================================================ 2. every formula on pages 2 and 3, derived
   EM.lesson('e3-x', {
-    id: 'e3-derive', order: 2, kind: 'read', title: 'Every formula on the sheet, derived', ref: 'sheet pages 2 and 3',
+    id: 'e3-derive', order: 2, kind: 'read', title: 'Every formula, derived', ref: 'course sheet pages 2 and 3',
     sub: 'Pages 2 and 3 rebuilt from Maxwell and Kirchhoff, one line at a time',
     steps: [
       R(md`
-        Every formula on pages 2 and 3 of the [official sheet](#/l/e3-sheet), rebuilt from first principles. The only starting points are Maxwell's equations and the boundary conditions from page 1, Ohm's law at a point ($\mathbf J = \sigma\mathbf E$), the phasor rule ($\partial/\partial t \to j\omega$), and Euler's formula $e^{jx} = \cos x + j\sin x$. Each derivation is compact: one move per line, a short sentence saying the move, every step shown, a check at the end, and a link to the lesson that builds it slowly, with pictures and practice.
+        Every formula on pages 2 and 3 of the [course formula sheet](#/l/e3-sheet) (not handed out in the exam), rebuilt from first principles. The only starting points are Maxwell's equations and the boundary conditions from page 1, Ohm's law at a point ($\mathbf J = \sigma\mathbf E$), the phasor rule ($\partial/\partial t \to j\omega$), and Euler's formula $e^{jx} = \cos x + j\sin x$. Each derivation is compact: one move per line, a short sentence saying the move, every step shown, a check at the end, and a link to the lesson that builds it slowly, with pictures and practice.
 
         !!method How to use this page
-          1. When a line of the sheet feels like magic, read its derivation here, then do the full lesson.
+          1. When a formula feels like magic, read its derivation here, then do the full lesson.
           2. The night before the exam, cover a derivation, rebuild the boxed result on paper, then compare. If you can rebuild it, you will also remember its signs.
 
         ## Page 2: static B fields
@@ -545,7 +563,7 @@
         $$\langle\mathbf S\rangle = \tfrac14\bigl(\tilde{\mathbf E}\times\tilde{\mathbf H}^* + \tilde{\mathbf E}^*\times\tilde{\mathbf H}\bigr)$$
         The second term is the conjugate of the first, and $X + X^* = 2\Re\{X\}$:
         $$\boxed{\langle\mathbf S\rangle = \tfrac12\Re\{\tilde{\mathbf E}\times\tilde{\mathbf H}^*\}}$$
-        **For one lossy wave** (not on the sheet): in $\tilde{\mathbf E}\times\tilde{\mathbf H}^*$, the factor $e^{-\gamma z}(e^{-\gamma z})^*$ is $e^{-2\alpha z}$ (the $\beta$ phases cancel), and $e^{-j\tau}$ conjugates to $e^{+j\tau}$:
+        **For one lossy wave** (not on the course sheet): in $\tilde{\mathbf E}\times\tilde{\mathbf H}^*$, the factor $e^{-\gamma z}(e^{-\gamma z})^*$ is $e^{-2\alpha z}$ (the $\beta$ phases cancel), and $e^{-j\tau}$ conjugates to $e^{+j\tau}$:
         $$\langle\mathbf S\rangle = \hat z\frac{E_0^2}{2|\eta|}\cos\tau\,e^{-2\alpha z}$$
         **Check.** Lossless: $E_0^2/2\eta$, half the peak $E_0^2/\eta$, because $\cos^2$ averages to $\frac12$ ✓. Full lesson: [Topic 4](#/l/w1-avg).
 
@@ -809,23 +827,31 @@
   // ================================================================ 3. the 4x6 card, explained
   EM.lesson('e3-x', {
     id: 'e3-card', order: 3, kind: 'read', title: 'What to write on your 4×6 card', ref: 'notecard-e3.html',
-    sub: 'What the sheet leaves out, and the speed rules, line by line',
+    sub: 'Every formula you need beyond the one printed table, and the speed rules, line by line',
     steps: [
       R(md`
-        The exam allows **one 4″×6″ card of handwritten notes**, next to the official sheet. The sheet already gives you most formulas ([typed here](#/l/e3-sheet)), so the card should hold only what the sheet leaves out, plus the speed rules that save minutes. The printable layout is <a href="notecard-e3.html">notecard-e3.html</a> (<a href="notecard-e3.pdf">PDF</a>, one card side per page, at about 6.6 pt). Print it at actual size and copy it by hand: the card must be handwritten.
+        The exam allows **one 4″×6″ card of handwritten notes**, and the exam prints **only one table**: the loss limits ($\beta$, $\alpha$, $|\eta|$, $\tau$, $\lambda$, $\delta$ for the four kinds of media, [shown here](#/l/e3-sheet)). So the card must carry **every other formula** you need: the core equations on each side (Maxwell, $\gamma$, $\eta$, Poynting, $\Gamma$; the line formulas), then what even the course sheet leaves out, then the speed rules. The printable layout is <a href="notecard-e3.html">notecard-e3.html</a> (<a href="notecard-e3.pdf">PDF</a>, one card side per page, at about 6.6 pt). Print it at actual size and copy it by hand: the card must be handwritten.
 
         !!method Making the card (about 40 minutes)
           1. Print the PDF at actual size, so you see how small you must write.
           2. Copy the front (waves), then the back (lines). As you write each line, say what it means and when you use it: the notes below give you both. Copying this way is studying.
           3. Write the red items in a second color. They are the slips that cost the most points.
           4. Leave out any line you already know cold, and use the room for your own weak spots.
-          5. Do one timed practice exam with only the sheet and your card before Monday, and fix whatever you had to look for.
+          5. Do one timed practice exam with only the table and your card before Monday, and fix whatever you had to look for.
 
         Below is every line of the card, in the card's order: what it means, when you use it, and the slip it prevents.
 
         ## Front: waves
 
-        **The header.** $\mu_0 = 4\pi\times10^{-7}$ H/m and $\epsilon_0 = \frac{10^{-9}}{36\pi}$ F/m: the sheet gives $c$ and $\eta_0$ but neither of these as a number. $\mu_0c = \eta_0$ and $\epsilon_0c\eta_0 = 1$ let you write $\omega\mu_0 = k_0\eta_0$ and $\omega\epsilon_0 = k_0/\eta_0$ (with $k_0 = \omega/c$) instead of multiplying powers of ten.
+        **The header.** $\mu_0 = 4\pi\times10^{-7}$ H/m and $\epsilon_0 = \frac{10^{-9}}{36\pi}$ F/m: nothing printed on the exam gives these. $\mu_0c = \eta_0$ and $\epsilon_0c\eta_0 = 1$ let you write $\omega\mu_0 = k_0\eta_0$ and $\omega\epsilon_0 = k_0/\eta_0$ (with $k_0 = \omega/c$) instead of multiplying powers of ten.
+
+        ### Core (not printed on the exam)
+
+        - $\nabla\times\tilde{\mathbf E} = -j\omega\mu\tilde{\mathbf H}$ and $\nabla\times\tilde{\mathbf H} = (\sigma + j\omega\epsilon)\tilde{\mathbf E}$: Faraday and Ampère in phasors, where every wave formula starts. [Topic 2](#/l/w1-maxwell)
+        - $\gamma = \sqrt{j\omega\mu(\sigma + j\omega\epsilon)} = \alpha + j\beta$ and $\eta = \sqrt{\dfrac{j\omega\mu}{\sigma + j\omega\epsilon}} = |\eta|e^{j\tau}$, with $\gamma\eta = j\omega\mu$. The table only gives their four limits; between the limits you need these. [Topic 5](#/l/w2-gamma)
+        - The wave: $\mathbf E = E_0e^{-\alpha z}\cos(\omega t - \beta z + \phi)\,\hat x$ and $\mathbf H = \frac{E_0}{|\eta|}e^{-\alpha z}\cos(\omega t - \beta z + \phi - \tau)\,\hat y$. **Slip:** forgetting the $-\tau$ in $H$.
+        - $\langle\mathbf S\rangle = \frac12\Re\{\tilde{\mathbf E}\times\tilde{\mathbf H}^*\}$, and $\hat e\times\hat h = \hat v_p$ (E cross H points along the travel). [Topic 4](#/l/w1-avg)
+        - Boundary: tangential $\mathbf E$ and $\mathbf H$ are continuous (H jumps by $J_s$ at a current sheet). From them, $\Gamma = \frac{\eta_2 - \eta_1}{\eta_2 + \eta_1}$ and $\tau = 1 + \Gamma$, medium 1 holding the incident wave. [Topic 11](#/l/w4-gamma)
 
         ### Phasors, no calculator
 
@@ -839,11 +865,11 @@
 
         ### Lossy medium
 
-        - $x = \frac{\sigma}{\omega\epsilon} = \frac{60\,\sigma\lambda_0}{\epsilon_r}$, with $\lambda_0 = c/f$ in meters. Why: $\omega\epsilon_0 = k_0/\eta_0 = \frac{2\pi/\lambda_0}{120\pi} = \frac{1}{60\lambda_0}$. Seawater ($\sigma = 4$, $\epsilon_r = 81$) at 1 MHz ($\lambda_0 = 300$ m): $x = 60\cdot4\cdot300/81 \approx 890$, a good conductor. The regimes: below about 0.1 use the low-loss line of the sheet, above about 10 the good-conductor line, in between the exact formulas. [Topic 7](#/l/w2-limits)
+        - $x = \frac{\sigma}{\omega\epsilon} = \frac{60\,\sigma\lambda_0}{\epsilon_r}$, with $\lambda_0 = c/f$ in meters. Why: $\omega\epsilon_0 = k_0/\eta_0 = \frac{2\pi/\lambda_0}{120\pi} = \frac{1}{60\lambda_0}$. Seawater ($\sigma = 4$, $\epsilon_r = 81$) at 1 MHz ($\lambda_0 = 300$ m): $x = 60\cdot4\cdot300/81 \approx 890$, a good conductor. The regimes: below about 0.1 use the imperfect-dielectric row of the table, above about 10 the good-conductor row, in between the exact formulas. [Topic 7](#/l/w2-limits)
         - **The method** for the exact case: the lossless $k = \omega\sqrt{\mu\epsilon}$ and $\eta_i = \sqrt{\mu/\epsilon}$ first; then $1 - jx = \rho e^{-j\theta}$; then $\gamma = jk\sqrt\rho\,e^{-j\theta/2}$, $\eta = (\eta_i/\sqrt\rho)e^{j\theta/2}$, $\tau = \theta/2$. [Topic 5](#/l/w2-gamma)
         - **Check (red):** the angles of $\gamma$ and $\eta$ add to $90°$ and $|\gamma||\eta| = \omega\mu$. Ten seconds; it catches most algebra slips.
         - $\beta^2 - \alpha^2 = k^2$ and $2\alpha\beta = \omega\mu\sigma$: from the real and imaginary parts of $\gamma^2$. Given one of $\alpha$, $\beta$, they give the other.
-        - **Good conductor:** $\delta = 1/\alpha = 1/\sqrt{\pi f\mu\sigma}$ (the sheet's $\sqrt{\omega\mu\sigma/2}$ with $\omega = 2\pi f$), $\gamma = (1+j)/\delta$, $\eta = (1+j)/(\sigma\delta)$. The Spring 2024 exam gave $\delta = 1$ mm and asked for $\gamma$: $(1 + j)\times10^3$ 1/m, done.
+        - **Good conductor:** $\delta = 1/\alpha = 1/\sqrt{\pi f\mu\sigma}$ (the table's good-conductor $\alpha$), $\gamma = (1+j)/\delta$, $\eta = (1+j)/(\sigma\delta)$. The Spring 2024 exam gave $\delta = 1$ mm and asked for $\gamma$: $(1 + j)\times10^3$ 1/m, done.
         - Inside a conductor $\lambda = 2\pi\delta$ and $v_p = \omega\delta$: tiny and slow. At $z = \delta$ the field is down to $e^{-1} = 37\%$ and the power to $e^{-2} = 13.5\%$.
         - $H$ lags $E$ by $\tau$, and both decay together.
 
@@ -856,7 +882,7 @@
 
         ### Power and loss
 
-        - $\langle S\rangle = \frac{E_0^2}{2|\eta|}\cos\tau\,e^{-2\alpha z} = \frac12|H_0|^2\Re\{\eta\}e^{-2\alpha z}$: the sheet's $\frac12\Re\{\tilde{\mathbf E}\times\tilde{\mathbf H}^*\}$, worked out for one lossy wave. **Slips:** dropping $\cos\tau$; writing $e^{-\alpha z}$. The field decays as $e^{-\alpha z}$, the power as $e^{-2\alpha z}$ (red). [Topic 8](#/l/w2-loss)
+        - $\langle S\rangle = \frac{E_0^2}{2|\eta|}\cos\tau\,e^{-2\alpha z} = \frac12|H_0|^2\Re\{\eta\}e^{-2\alpha z}$: the general $\frac12\Re\{\tilde{\mathbf E}\times\tilde{\mathbf H}^*\}$, worked out for one lossy wave. **Slips:** dropping $\cos\tau$; writing $e^{-\alpha z}$. The field decays as $e^{-\alpha z}$, the power as $e^{-2\alpha z}$ (red). [Topic 8](#/l/w2-loss)
         - Loss in dB: $10\log_{10}e^{2\alpha z} = 20\alpha z\log_{10}e = 8.69\,\alpha z$. Then 3 dB is a half, 10 dB a tenth, 20 dB a hundredth.
         - Heat per volume $\frac12\sigma|\tilde E|^2 = -\nabla\cdot\langle\mathbf S\rangle$: the time-averaged Poynting theorem, where the stored energy averages out.
         - $R_s = 1/\sigma\delta = \sqrt{\pi f\mu/\sigma}$, and a good conductor's $\eta = (1+j)R_s$. The power lost per area of a conductor's surface is $\frac12R_s|\tilde J_s|^2$, with $\tilde{\mathbf J}_s = \hat n\times\tilde{\mathbf H}$ at the surface; on a mirror $|\tilde J_s| = 2|\tilde H_i|$. The fraction a good-conductor mirror absorbs is $1 - |\Gamma|^2 \approx 4R_s/\eta_0$.
@@ -875,7 +901,7 @@
 
         ### Current sheets
 
-        - A sheet $\tilde{\mathbf J}_s$ at $z_s$ radiates $\tilde{\mathbf E} = -\frac\eta2\tilde{\mathbf J}_se^{-jk|z - z_s|}$ on both sides: the phasor form of the sheet's $E_x = \frac\eta2J_s(t \mp z/v_p)$ (the sheet's current is $-J_s\hat x$, hence the minus here). $\mathbf E$ is even in $z - z_s$. In a lossy medium use $e^{-\gamma|z - z_s|}$. [Topic 10](#/l/w3-antenna)
+        - A sheet $\tilde{\mathbf J}_s$ at $z_s$ radiates $\tilde{\mathbf E} = -\frac\eta2\tilde{\mathbf J}_se^{-jk|z - z_s|}$ on both sides: the phasor form of the course sheet's $E_x = \frac\eta2J_s(t \mp z/v_p)$ (the sheet's current is $-J_s\hat x$, hence the minus here). $\mathbf E$ is even in $z - z_s$. In a lossy medium use $e^{-\gamma|z - z_s|}$. [Topic 10](#/l/w3-antenna)
         - $\tilde{\mathbf H} = \frac12\tilde{\mathbf J}_s\times\hat n\,e^{-jk|z - z_s|}$, with $\hat n$ from the sheet toward the point: $\mathbf H$ is odd and jumps by $J_s$.
         - To radiate a chosen field $\tilde{\mathbf E}_0$ next to the sheet, use $\tilde{\mathbf J}_s = -\frac2\eta\tilde{\mathbf E}_0$. Each side then carries $\langle S\rangle = \frac\eta8|\tilde J_s|^2$.
         - Two sheets: add the two fields, each with its own $|z - z_k|$. Between the sheets one term goes as $e^{-jkz}$ and the other as $e^{+jkz}$, which combine into a cosine or a sine.
@@ -894,6 +920,15 @@
         ## Back: lines
 
         **The header.** $v = c/\sqrt{\epsilon_r}$ and the one-way time $T = l/v$ set every bounce diagram. $\beta\lambda/8 = 45°$, $\beta\lambda/4 = 90°$ and $\beta\lambda/2 = 180°$ turn lengths into angles for $\tan\beta l$ and $e^{-j2\beta d}$.
+
+        ### Core (not printed on the exam)
+
+        - $Z_0 = \sqrt{\mathcal L/\mathcal C}$ and $v = 1/\sqrt{\mathcal L\mathcal C} = 1/\sqrt{\mu\epsilon}$. [Topic 13](#/l/w5-telegraph)
+        - $\tau_g = \frac{Z_0}{R_g + Z_0}$ (what the generator launches), $\Gamma_L = \frac{R_L - Z_0}{R_L + Z_0}$, $\Gamma_g = \frac{R_g - Z_0}{R_g + Z_0}$. [Topic 14](#/l/w5-launch)
+        - An impulse $v_g = \delta(t)$ launches spikes $\tau_g(\Gamma_L\Gamma_g)^n$ going forward, arriving at $z$ at $t = \frac zv + n\frac{2l}v$, and $\tau_g\Gamma_L(\Gamma_L\Gamma_g)^n$ going back, at $t = (n + 1)\frac{2l}v - \frac zv$. For a step or a pulse, replace each spike by that shape. **A delta source settles to 0 V**, not to the divider. [Topic 20](#/l/w6-reads)
+        - $\tilde V(d) = \tilde V^+e^{j\beta d}(1 + \Gamma(d))$ and $\tilde I(d) = \frac{\tilde V^+}{Z_0}e^{j\beta d}(1 - \Gamma(d))$, with $\Gamma(d) = \Gamma_Le^{-j2\beta d}$ and $d$ measured back from the load. [Topic 17](#/l/w6-vd)
+        - $Z(d) = Z_0\frac{1 + \Gamma(d)}{1 - \Gamma(d)}$, VSWR $= \frac{1 + |\Gamma_L|}{1 - |\Gamma_L|}$, $P = \frac12\Re\{\tilde V\tilde I^*\}$, and the input voltage $\tilde V(l) = \tilde V_g\frac{Z(l)}{Z_g + Z(l)}$.
+        - Short load: $\tilde V(d) = j2\tilde V^+\sin\beta d$, $Z = jZ_0\tan\beta d$. Open load: $\tilde V(d) = 2\tilde V^+\cos\beta d$, $Z = -jZ_0\cot\beta d$. [Topic 18](#/l/w6-stubs)
 
         ### Line from the fields
 
@@ -920,13 +955,13 @@
         - At a point $z$ the waves arrive at $z/v$, $(2l - z)/v$, $(2l + z)/v$, $(4l - z)/v$, …
         - A snapshot at time $t$ has its fronts at $z = vt$, $2l - vt$, …. **Red:** the part of a pulse sent first is the part farthest down the line.
         - A pulse of width $w$ is $u(t) - u(t - w)$, and it is $vw$ long on the line.
-        - An impulse makes spikes of size $\tau_g(\Gamma_L\Gamma_g)^n$: the sheet's two sums.
+        - An impulse makes spikes of size $\tau_g(\Gamma_L\Gamma_g)^n$: the two impulse sums (core block, back).
         - Reading a scope trace at $z = 0$ backward: the first level is $\tau_gV_g$; the jump at $2T$ is $\tau_gV_g\Gamma_L(1 + \Gamma_g)$, which gives $\Gamma_L$; the time $2T$ gives the length $l = vT$. [Topic 16](#/l/w5-multi)
         - With junctions, each joint has its own $\Gamma$ and $\tau$, and every transmitted wave starts new bounces.
 
         ### Phasor lines
 
-        - $Z_{in} = Z_0\frac{Z_L + jZ_0\tan\beta l}{Z_0 + jZ_L\tan\beta l}$: the same as the sheet's $Z_0\frac{1 + \Gamma(l)}{1 - \Gamma(l)}$, already worked out. [Topic 17](#/l/w6-vd)
+        - $Z_{in} = Z_0\frac{Z_L + jZ_0\tan\beta l}{Z_0 + jZ_L\tan\beta l}$: the same as $Z(l) = Z_0\frac{1 + \Gamma(l)}{1 - \Gamma(l)}$, already worked out. [Topic 17](#/l/w6-vd)
         - $\lambda/4$: $Z_{in} = Z_0^2/Z_L$, it inverts. $\lambda/2$: $Z_{in} = Z_L$, it repeats.
         - To match $R_L$ to $R_{in}$, put a $\lambda/4$ section of $Z_0 = \sqrt{R_{in}R_L}$ between them. It works at that frequency and its odd multiples only. [Topic 19](#/l/w6-qw)
         - $\Gamma(d) = \Gamma_Le^{-j2\beta d}$ keeps its size and turns clockwise as you move toward the generator.
@@ -938,7 +973,7 @@
         ### Stubs and resonance
 
         - A shorted stub, $Z = jZ_0\tan\beta l$: shorter than $\lambda/4$ it is an inductor; $Z = 0$ at $l = n\lambda/2$ and $Z = \infty$ at $l = (2n - 1)\lambda/4$. [Topic 18](#/l/w6-stubs)
-        - An open stub, $Z = -jZ_0\cot\beta l$ (the sheet's $Y = jY_0\tan\beta l$ turned over): shorter than $\lambda/4$ it is a capacitor; $\infty$ at $n\lambda/2$ and 0 at $(2n - 1)\lambda/4$.
+        - An open stub, $Z = -jZ_0\cot\beta l$ ($Y = jY_0\tan\beta l$ turned over): shorter than $\lambda/4$ it is a capacitor; $\infty$ at $n\lambda/2$ and 0 at $(2n - 1)\lambda/4$.
         - In frequency, with $\beta l = 2\pi fl/v$: a shorted stub is $Z = 0$ at $f = nv/2l$ and $Z = \infty$ at $f = (2n - 1)v/4l$; an open stub the other way round.
         - A short line ($\beta l \ll 1$) is an inductor $L = \mathcal Ll$ if shorted and a capacitor $C = \mathcal Cl$ if open.
         - Filters: a stub in shunt that is a short at $f$ kills $f$ there (a notch); one that is open at $f$ is invisible; a stub in series that is $\infty$ at $f$ blocks it.
@@ -946,7 +981,7 @@
 
         ### Speed rules and numbers
 
-        1. Lossless numbers first, then the loss tangent, then the matching line of the sheet.
+        1. Lossless numbers first, then the loss tangent, then the matching row of the table.
         2. $\tilde{\mathbf H} = \frac1\eta\hat k\times\tilde{\mathbf E}$ and $\tilde{\mathbf E} = \eta\tilde{\mathbf H}\times\hat k$, with $\hat k$ the travel: never guess a direction.
         3. Get the sign of $\Gamma$ first: a smaller $\eta$ or $R$ ahead means $\Gamma < 0$, and a minimum on the boundary or at the load.
         4. $\lambda/4$ inverts and $\lambda/2$ repeats; a short under $\lambda/4$ is an L, an open under $\lambda/4$ a C.

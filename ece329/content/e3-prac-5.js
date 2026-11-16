@@ -98,7 +98,7 @@
     return g.svg();
   }
 
-  const RULES = md`**Exam rules: 75 minutes, 100 points.** Closed book, closed notes, **no calculator**. You may use the official [formula sheet](#/l/e3-sheet) and one 4″×6″ card of handwritten notes. Show your reasoning and give units on every answer.`;
+  const RULES = md`**Exam rules: 75 minutes, 100 points.** Closed book, closed notes, **no calculator**. You may use the given [loss-limits table](#/l/e3-sheet) and one 4″×6″ card of handwritten notes. Show your reasoning and give units on every answer.`;
   const HOWTO = md`**How to use this paper.** Start a 75-minute timer and do the whole paper on paper first. Then type your answers into the boxes. Sketch questions are asked as the numbers you would write on the sketch. Read every solution, including the parts you got right: each ends with a **Speed path** and **Where points go**. Redo every missed part tomorrow on a blank sheet.`;
   const CONSTS = md`**Constants.** $\mu_0 = 4\pi\times10^{-7}$ H/m, $\epsilon_0 = \tfrac{10^{-9}}{36\pi}$ F/m, $c = 3\times10^8$ m/s, $\eta_0 = 120\pi\ \Omega$. Numeric answers within about 2% count; you may type <code>pi</code>.`;
   const LEARN = (links) => `**Learn it:** ${links}.`;
@@ -128,7 +128,7 @@
     R(md`
       ### Problem 1 (18 points): a wave in wet sand
 
-      Wet sand has $\mu = \mu_0$, $\epsilon = 4\epsilon_0$ and $\sigma = 10^{-2}$ S/m. Use the regime table of the formula sheet (perfect dielectric, imperfect dielectric, good conductor, perfect conductor).
+      Wet sand has $\mu = \mu_0$, $\epsilon = 4\epsilon_0$ and $\sigma = 10^{-2}$ S/m. Use the given loss-limits table (perfect dielectric, imperfect dielectric, good conductor, perfect conductor).
     `),
     P({ src: 'Practice M #1(a) · 4 pts', title: 'α of an imperfect dielectric',
       q: md`In an imperfect dielectric ($\sigma/\omega\epsilon \ll 1$), the attenuation constant $\alpha$ is nearly independent of frequency. True or false? Explain.`,
@@ -147,7 +147,7 @@
         !!intuition Does this make sense?
           Each meter of path costs the same fraction of the field at every (high) frequency, because the loss comes from $\sigma$, which does not care about $f$. In a good conductor it is the opposite: $\alpha = \sqrt{\pi f\mu\sigma}$ grows as $\sqrt f$.
 
-        **Speed path.** Formula sheet: imperfect dielectric $\alpha = \tfrac\sigma2\eta$. No $\omega$. True.
+        **Speed path.** Given table: imperfect dielectric $\alpha = \tfrac\sigma2\eta$. No $\omega$. True.
 
         **Where points go.** Confusing $\alpha$ with the loss tangent $\sigma/\omega\epsilon$ (which does fall with $f$); no reason given.
 

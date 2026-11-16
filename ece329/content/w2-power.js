@@ -75,7 +75,7 @@
     steps: [
       R(md`
         !!key Why you care
-          A wave in a lossy material does two things on every exam: it carries power, and it loses power. Summer 2018 and Summer 2019 both asked the same question: seawater at 1 kHz carries 1 W/m² at $z = 0$; how much is left 10 m further on? Prof. Chen's Spring 2024 paper asked you to judge five statements about $\langle\mathbf S\rangle$ in a good conductor (SP24 #2(c)), and whether the power absorbed between two planes changes with frequency (#2(e)). The homework asks for the power dissipated inside a cube (the skill HW 9 #3(f) asks for) and how deep a submarine can go and still receive 1% of the signal (HW 9 #4). This lesson derives everything those questions need. The starting line, $\langle\mathbf S\rangle = \tfrac12\Re\{\tilde{\mathbf E}\times\tilde{\mathbf H}^*\}$, is on your sheet. The rest (decibels, the 1% depth, surface resistance) is **not**, so you build it here.
+          A wave in a lossy material does two things on every exam: it carries power, and it loses power. Summer 2018 and Summer 2019 both asked the same question: seawater at 1 kHz carries 1 W/m² at $z = 0$; how much is left 10 m further on? Prof. Chen's Spring 2024 paper asked you to judge five statements about $\langle\mathbf S\rangle$ in a good conductor (SP24 #2(c)), and whether the power absorbed between two planes changes with frequency (#2(e)). The homework asks for the power dissipated inside a cube (the skill HW 9 #3(f) asks for) and how deep a submarine can go and still receive 1% of the signal (HW 9 #4). This lesson derives everything those questions need. The starting line, $\langle\mathbf S\rangle = \tfrac12\Re\{\tilde{\mathbf E}\times\tilde{\mathbf H}^*\}$, is not given in the exam either (know it). Neither are decibels, the 1% depth or surface resistance, so you build them here.
 
         ### Notation
 
@@ -103,7 +103,7 @@
         $$\tilde A\tilde B^* = |A||B|\,e^{j(a - b)}$$
         Its real part is $|A||B|\cos(a - b)$, which is exactly twice the average. So
         $$\boxed{\langle A(t)B(t)\rangle = \tfrac12\Re\{\tilde A\tilde B^*\}}$$
-        This is why the sheet writes $\langle\mathbf S\rangle = \tfrac12\Re\{\tilde{\mathbf E}\times\tilde{\mathbf H}^*\}$. The conjugate subtracts the two phases, because only the phase **difference** matters for the average. [Topic 4](#/l/w1-avg) spends longer on this.
+        This is why it is written $\langle\mathbf S\rangle = \tfrac12\Re\{\tilde{\mathbf E}\times\tilde{\mathbf H}^*\}$. The conjugate subtracts the two phases, because only the phase **difference** matters for the average. [Topic 4](#/l/w1-avg) spends longer on this.
 
         !!intuition Does this make sense?
           Set $B = A$. Then $\langle A^2\rangle = \tfrac12|A|^2$: the familiar "the average of $\cos^2$ is one half". And if $A$ and $B$ are $90°$ apart, $\cos(a - b) = 0$. That is a capacitor's voltage and current: they trade energy back and forth and deliver none on average.
@@ -520,7 +520,7 @@
         !!graded Problem
           The skill HW 9 #3(e, f) asks for, with new numbers. In a non-magnetic material, $\tilde{\mathbf E} = \hat x\,20e^{-\gamma z}$ V/m with $\gamma = 1 + j\sqrt3$ 1/m, and $\eta = 100e^{j30°}\ \Omega$. Find $\sigma$, the power entering and leaving the cube $0 < x, y, z < 1$ m, and the power dissipated inside it. Check with the heat integral.
 
-        **Step 1: σ from the sheet.** $\sigma = \Re\{\gamma/\eta\}$. In polar form $\gamma = 2e^{j60°}$:
+        **Step 1: σ from $\gamma/\eta$.** $\sigma = \Re\{\gamma/\eta\}$. In polar form $\gamma = 2e^{j60°}$:
         $$\frac\gamma\eta = \frac{2e^{j60°}}{100e^{j30°}} = 0.02e^{j30°}$$
         $$\sigma = 0.02\cos30° = \frac{\sqrt3}{100} \approx 0.0173\ \text{S/m}$$
         Check with (1): $2\alpha\cos\tau/|\eta| = 2(1)(\sqrt3/2)/100 = \sqrt3/100$. ✓ And $60° + 30° = 90°$, as $\eta\gamma = j\omega\mu$ demands.

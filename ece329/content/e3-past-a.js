@@ -189,7 +189,7 @@ Write the electric field phasor $\Et$ everywhere, simplified, with direction and
 
         Just above the sheet $\hat v = +\hat z$; just below, $\hat v = -\hat z$. So the two magnetic fields are
         $$\Ht_\pm = \pm\frac{1}{\eta_0}\,\hat z\times\Et_s$$
-        The current is the jump in tangential $\Ht$ (the boundary condition on your sheet):
+        The current is the jump in tangential $\Ht$ (the boundary condition; not given in the exam, so know it):
         $$\hat z\times(\Ht_+ - \Ht_-) = \tilde{\mathbf J}_s$$
         The difference of the two fields is $\frac{2}{\eta_0}\hat z\times\Et_s$, so
         $$\frac{2}{\eta_0}\,\hat z\times(\hat z\times\Et_s) = \tilde{\mathbf J}_s$$

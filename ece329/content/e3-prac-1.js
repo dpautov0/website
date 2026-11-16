@@ -95,7 +95,7 @@
   }
 
   // the header every paper shares
-  const RULES = md`**Exam rules: 75 minutes, 100 points.** Closed book and **no calculator**. You may use the official [formula sheet](#/l/e3-sheet) and one 4″×6″ card of your own handwritten notes. Show your reasoning, box each answer, and give its units.`;
+  const RULES = md`**Exam rules: 75 minutes, 100 points.** Closed book and **no calculator**. You may use the given [loss-limits table](#/l/e3-sheet) and one 4″×6″ card of your own handwritten notes. Show your reasoning, box each answer, and give its units.`;
   const HOWTO = md`**How to use this paper.** Start a 75-minute timer and do the whole paper on paper first, exactly as you will on Monday. Only then type your answers into the boxes. Open a hint only for a part you could not start at all. Then read every worked solution, also for the parts you got right. Each one goes slowly, one step at a time, and ends with a **Speed path** (the fastest correct route under exam pressure) and **Where points go** (the slips that cost points on that kind of part). Tomorrow, redo every missed part on a blank sheet without looking.`;
   const CONSTS = md`**Constants.** $\mu_0 = 4\pi\times10^{-7}$ H/m, $\epsilon_0 = \tfrac{1}{36\pi}\times10^{-9}$ F/m, $c = 3\times10^8$ m/s, $\eta_0 = 120\pi\ \Omega$. Numeric answers within about 2% count. You can type <code>pi</code> for $\pi$ and arithmetic such as <code>120*pi</code> or <code>2*exp(-3)</code>.`;
 
@@ -221,7 +221,7 @@
       - Sheet 1, in the plane $z = 0$, carries $\mathbf J_{s1}(t) = 2\cos(\omega t)\,\hat x$ A/m.
       - Sheet 2, in the plane $z = d = \tfrac18$ m, carries $\mathbf J_{s2}(t) = 2\cos(\omega t + 45°)\,\hat y$ A/m.
 
-      So the currents are perpendicular, equal in size, and sheet 2 **leads** sheet 1 by $45°$. The frequency is $f = 300$ MHz. A sheet at $z = z_0$ radiates, on both sides (formula sheet, written for a vector current and a sheet at $z_0$):
+      So the currents are perpendicular, equal in size, and sheet 2 **leads** sheet 1 by $45°$. The frequency is $f = 300$ MHz. A sheet at $z = z_0$ radiates, on both sides (not given in the exam: know it; here for a vector current and a sheet at $z_0$):
       $$\mathbf E = -\frac{\eta_0}{2}\,\mathbf J_s\!\left(t \mp \frac{z - z_0}{c}\right),\ z \gtrless z_0$$
       In phasor form, with the cosine reference, that is $\tilde{\mathbf E} = -\tfrac{\eta_0}{2}\tilde{\mathbf J}_s\,e^{-j\beta|z - z_0|}$.
 
@@ -392,7 +392,7 @@
         trap(N(md`$\beta$ (rad/m)`, 1e6, 'rad/m'), [[2 * PI * 1e6, md`That treats $\delta$ as a wavelength. In a good conductor $\beta = \alpha = 1/\delta$, and $\lambda = 2\pi\delta$.`]])],
       hints: [md`Skin depth is defined as $\delta = 1/\alpha$. In a good conductor $\gamma \approx \sqrt{j\omega\mu\sigma}$, whose angle is $45°$, so $\beta = \alpha$.`],
       sol: md`
-        **1. Why α = β in a good conductor.** Start from the sheet: $\gamma = j\omega\sqrt{\mu(\epsilon - j\sigma/\omega)}$. When $\sigma \gg \omega\epsilon$, drop $\epsilon$ next to $-j\sigma/\omega$:
+        **1. Why α = β in a good conductor.** Start from $\gamma = j\omega\sqrt{\mu(\epsilon - j\sigma/\omega)}$. When $\sigma \gg \omega\epsilon$, drop $\epsilon$ next to $-j\sigma/\omega$:
         $$\gamma \approx j\omega\sqrt{-j\mu\sigma/\omega}$$
         Bring $j\omega$ inside the root as $(j\omega)^2 = -\omega^2$:
         $$\gamma \approx \sqrt{(-\omega^2)(-j\mu\sigma/\omega)} = \sqrt{j\omega\mu\sigma}$$
@@ -416,7 +416,7 @@
         trap(N(md`$\tau$ (degrees)`, 45, '°'), [[PI / 4, md`Right angle, in radians. The box asks for degrees.`]])],
       hints: [md`$\eta\gamma = j\omega\mu$, so $\eta = j\omega\mu/\gamma$. (The good-conductor line of the sheet, $\eta \approx \sqrt{j\omega\mu/\sigma}$, gives the same thing.)`,md`With $\delta = \sqrt{2/(\omega\mu\sigma)}$, $\omega\mu = 2/(\sigma\delta^2)$. Substitute into $\eta = j\omega\mu/\gamma$.`],
       sol: md`
-        **1. Start from ηγ = jωμ** (formula sheet). Solve for $\eta$:
+        **1. Start from ηγ = jωμ** (not given: know it). Solve for $\eta$:
         $$\eta = \frac{j\omega\mu}{\gamma}$$
         **2. Write ωμ with δ.** From $\delta^2 = 2/(\omega\mu\sigma)$:
         $$\omega\mu = \frac{2}{\sigma\delta^2}$$
@@ -432,7 +432,7 @@
         $$\boxed{|\eta| = 0.02\sqrt2 \approx 0.0283\ \Omega,\quad \tau = 45°}$$
 
         !!intuition Does this make sense?
-          Compare with $\eta_0 = 377\ \Omega$: the metal's $\eta$ is about 13,000 times smaller. Since $|\mathbf H| = |\mathbf E|/|\eta|$, a metal carries a huge $\mathbf H$ (current) with almost no $\mathbf E$: that is what "conductor" means. The $45°$ is the signature of a good conductor (formula sheet: $\tau \approx \pi/4$). The real part, $1/(\sigma\delta) = 0.02\ \Omega$, is the surface resistance $R_s$.
+          Compare with $\eta_0 = 377\ \Omega$: the metal's $\eta$ is about 13,000 times smaller. Since $|\mathbf H| = |\mathbf E|/|\eta|$, a metal carries a huge $\mathbf H$ (current) with almost no $\mathbf E$: that is what "conductor" means. The $45°$ is the signature of a good conductor (the given table: $\tau = 45°$). The real part, $1/(\sigma\delta) = 0.02\ \Omega$, is the surface resistance $R_s$.
 
         **Speed path.** Good conductor: $\eta = (1 + j)/(\sigma\delta)$. With $\sigma\delta = 50$: $0.02(1 + j)$.
 
@@ -468,7 +468,7 @@
         trap(N(md`$H_y(0^+, 0)$ (A/m)`, 50, 'A/m'), [[50 * Math.SQRT2, md`That is the amplitude. At $t = 0$, $\mathbf H$ is $45°$ behind its peak: $50\sqrt2\cos(-45°) = 50$.`]])],
       hints: [md`$\tilde H_y = \tilde E_x/\eta$ for a wave toward $+z$ with $\mathbf E$ along $\hat x$. Divide $2$ by $0.02(1 + j)$.`, md`Then $H_y(t) = \Re\{\tilde H_ye^{j\omega t}\}$: the phase of $\tilde H_y$ is $-\tau$.`],
       sol: md`
-        **1. The direction.** For travel along $+\hat z$ with $\mathbf E$ along $\hat x$, $\hat x\times\hat y = \hat z$, so $\mathbf H$ is along $+\hat y$, and $\tilde H_y = \tilde E_x/\eta$ (formula sheet: $\tilde{\mathbf H} = \hat y\,(E_0/|\eta|)\,e^{-\gamma z}e^{-j\tau}$).
+        **1. The direction.** For travel along $+\hat z$ with $\mathbf E$ along $\hat x$, $\hat x\times\hat y = \hat z$, so $\mathbf H$ is along $+\hat y$, and $\tilde H_y = \tilde E_x/\eta$ (not given in the exam: $\tilde{\mathbf H} = \hat y\,(E_0/|\eta|)\,e^{-\gamma z}e^{-j\tau}$).
 
         **2. Divide.** At the surface $\tilde E_x = 2$ V/m:
         $$\tilde H_y = \frac{2}{0.02(1 + j)} = \frac{100}{1 + j}$$
@@ -499,7 +499,7 @@
         tf(md`(iii) $-\nabla\cdot\langle\mathbf S\rangle$ is the time-averaged power per unit volume turned into heat.`, true, md`Time-average the Poynting theorem: the stored energy no longer changes on average, so $\nabla\cdot\langle\mathbf S\rangle + \langle\mathbf J\cdot\mathbf E\rangle = 0$, and $\langle\mathbf J\cdot\mathbf E\rangle$ is the heating.`)],
       hints: [md`$\langle S_z\rangle = \tfrac12\Re\{\tilde E_x\tilde H_y^*\}$, with $\tilde H_y = 50(1 - j)$ from (d).`],
       sol: md`
-        **1. Compute.** The time-average Poynting vector (formula sheet):
+        **1. Compute.** The time-average Poynting vector (not given: know it):
         $$\langle\mathbf S\rangle = \tfrac12\Re\{\tilde{\mathbf E}\times\tilde{\mathbf H}^*\}$$
         Here $\hat x\times\hat y = \hat z$, so $\langle S_z\rangle = \tfrac12\Re\{\tilde E_x\tilde H_y^*\}$. The conjugate of $50(1 - j)$ is $50(1 + j)$:
         $$\langle S_z\rangle = \tfrac12\Re\{2\cdot50(1 + j)\}$$
@@ -969,7 +969,7 @@
         trap(N(md`$\beta$ (rad/m)`, 2 * PI, 'rad/m'), [[PI, md`That is $\alpha$. $\beta$ multiplies $x$ inside the cosine.`]])],
       hints: [md`Match the field to $E_0e^{-\alpha x}\cos(\omega t - \beta x)$, term by term.`],
       sol: md`
-        **1. The template.** A forward wave in a lossy medium has the form (formula sheet, with $x$ in place of $z$)
+        **1. The template.** A forward wave in a lossy medium has the form (not given: know it; here with $x$ in place of $z$)
         $$E_0\,e^{-\alpha x}\cos(\omega t - \beta x + \phi)$$
         **2. Match.** The exponential is $e^{-\pi x}$ and the cosine holds $-2\pi x$:
         $$\boxed{\alpha = \pi \approx 3.14\ \text{Np/m},\quad \beta = 2\pi \approx 6.28\ \text{rad/m}}$$
@@ -1034,7 +1034,7 @@
     P({ src: 'Practice B #1(d) · 4 pts', title: 'The permeability',
       q: md`**(d) (4 pts)** Find the relative permeability $\mu_r$ of the material.`,
       parts: [trap(N(md`$\mu_r$`, 2, ''), [[1, md`Nothing in the problem says the material is nonmagnetic. Compute $\mu = \gamma\eta/(j\omega)$ from the two things you measured.`], [0.5, md`That divides by $\gamma\eta$ instead of multiplying, or inverts the ratio at the end.`]])],
-      hints: [md`Formula sheet: $\eta\gamma = j\omega\mu$, so $\mu = \gamma\eta/(j\omega)$. Multiply $\pi(1 + 2j)$ by $24\pi(2 + j)$ first.`],
+      hints: [md`Know (not given): $\eta\gamma = j\omega\mu$, so $\mu = \gamma\eta/(j\omega)$. Multiply $\pi(1 + 2j)$ by $24\pi(2 + j)$ first.`],
       sol: md`
         **1. The law.** Both $\gamma$ and $\eta$ come from the same two Maxwell equations; their product keeps only Faraday's law:
         $$\eta\gamma = j\omega\mu \quad\Rightarrow\quad \mu = \frac{\gamma\eta}{j\omega}$$
@@ -1060,7 +1060,7 @@
         trap(N(md`$\epsilon_r$`, 6, ''), [[12, md`That comes from assuming $\mu = \mu_0$.`], [8, md`That takes $\epsilon = \sigma/\omega$: the real part instead of the imaginary part of $\gamma/\eta$.`]]),
         mc('The material is', [md`neither: $\sigma/\omega\epsilon = 4/3$`, md`a good conductor: it decays by $e^{-\pi}$ per meter`, md`a good dielectric: $\tau$ is well below $45°$`, md`a good conductor, because $\alpha$ and $\beta$ are close`], 0,
           [null, md`Every lossy wave decays. The classification uses the ratio of the two currents, $\sigma/\omega\epsilon$, which here is close to 1.`, md`A good dielectric needs $\sigma/\omega\epsilon \ll 1$ and $\tau \approx 0$. Here $\tau \approx 27°$, more than halfway to $45°$.`, md`A good conductor has $\alpha = \beta$ exactly. Here $\beta = 2\alpha$.`])],
-      hints: [md`Formula sheet: $\gamma/\eta = \sigma + j\omega\epsilon$. Divide $\pi(1 + 2j)$ by $24\pi(2 + j)$: multiply top and bottom by $2 - j$.`],
+      hints: [md`Know (not given): $\gamma/\eta = \sigma + j\omega\epsilon$. Divide $\pi(1 + 2j)$ by $24\pi(2 + j)$: multiply top and bottom by $2 - j$.`],
       sol: md`
         **1. The law.** The ratio keeps only Ampère's law:
         $$\frac{\gamma}{\eta} = \sigma + j\omega\epsilon$$
@@ -1291,7 +1291,7 @@
         [[fig:bd]]
 
         !!intuition Does this make sense?
-          This is exactly the formula sheet's sum: forward pulses $\tau_g(\Gamma_L\Gamma_g)^n$ at $t = z/v + 6n$ µs, backward pulses $\tau_g\Gamma_L(\Gamma_L\Gamma_g)^n$ at $t = 6(n + 1) - z/v$ µs. With $\tau_g\cdot80 = 20$ and $\Gamma_L\Gamma_g = -\tfrac12$ you can write any pulse without the diagram.
+          This is exactly the bounce sum (not given: know it): forward pulses $\tau_g(\Gamma_L\Gamma_g)^n$ at $t = z/v + 6n$ µs, backward pulses $\tau_g\Gamma_L(\Gamma_L\Gamma_g)^n$ at $t = 6(n + 1) - z/v$ µs. With $\tau_g\cdot80 = 20$ and $\Gamma_L\Gamma_g = -\tfrac12$ you can write any pulse without the diagram.
 
         **Speed path.** One list: $20 \xrightarrow{\times(-1)} -20 \xrightarrow{\times\frac12} -10 \xrightarrow{\times(-1)} 10 \xrightarrow{\times\frac12} 5$, departing at $0, 3, 6, 9, 12$ µs.
 
@@ -1373,7 +1373,7 @@
     RF(md`
       ### Problem 4 (24 points): a shorted stub and an open stub
 
-      Two stubs are cut from the same lossless line: $Z_0 = 50\ \Omega$, $v = 2\times10^8$ m/s, each $l = 0.5$ m long. Stub **S** is shorted at its far end; stub **O** is open. You look into the near end of each. From the formula sheet, a line of length $d$ ending in a short has $Z(d) = jZ_0\tan\beta d$; one ending in an open has $Y(d) = jY_0\tan\beta d$, that is $Z(d) = -jZ_0\cot\beta d$. Write $Z_\text{in} = jX$; $X$ is the **reactance**.
+      Two stubs are cut from the same lossless line: $Z_0 = 50\ \Omega$, $v = 2\times10^8$ m/s, each $l = 0.5$ m long. Stub **S** is shorted at its far end; stub **O** is open. You look into the near end of each. Know (not given in the exam) that a line of length $d$ ending in a short has $Z(d) = jZ_0\tan\beta d$; one ending in an open has $Y(d) = jY_0\tan\beta d$, that is $Z(d) = -jZ_0\cot\beta d$. Write $Z_\text{in} = jX$; $X$ is the **reactance**.
 
       [[fig:stubs]]
     `, { stubs: { svg: figB4(), cap: 'The two stubs. Same line, same length; only the far end differs.' } }),
@@ -1776,7 +1776,7 @@
         !!intuition Does this make sense?
           The space part $\sin(\pi z)$ and the time part $\sin\omega t$ are separate: the pattern does not move. That is a standing wave. It is zero at the wall ($z = 0$) for all time ✓, and the peaks are twice the incident amplitude, where the two waves arrive in step.
 
-        **Speed path.** PEC standing wave: $\tilde E = -2jE_0\sin\beta z$ (the formula sheet's short-circuit line, $\tilde V(d) = j2\tilde V^+\sin\beta d$, is the same thing measured from the wall).
+        **Speed path.** PEC standing wave: $\tilde E = -2jE_0\sin\beta z$ (the short-circuit line, $\tilde V(d) = j2\tilde V^+\sin\beta d$, is the same thing measured from the wall).
 
         **Where points go.** The $\sin\omega t$ (a $\cos\omega t$ means you lost the $-j$). The factor 2.
       ` }),
@@ -1866,7 +1866,7 @@
         trap(N(md`$l$ (m)`, 0.5, 'm'), [[0.75, md`That uses $c$. On this line $v = 2\times10^8$ m/s, so $\lambda = 2$ m.`], [1, md`That is $\lambda/2$, which just copies the load. A transformer needs $\lambda/4$.`]])],
       hints: [md`A quarter-wave section turns $Z_L$ into $Z_Q^2/Z_L$. Set that equal to 50 Ω.`],
       sol: md`
-        **1. What a quarter wave does.** On a lossless line, $Z(d)$ at $d = \lambda/4$ is $Z_Q^2/Z_L$ (formula sheet: $z(d \pm \lambda/4) = 1/z(d)$, in units of $Z_Q$). So the source sees
+        **1. What a quarter wave does.** On a lossless line, $Z(d)$ at $d = \lambda/4$ is $Z_Q^2/Z_L$ (not given: know $z(d \pm \lambda/4) = 1/z(d)$, in units of $Z_Q$). So the source sees
         $$Z_\text{in} = \frac{Z_Q^2}{R_L}$$
         **2. Match it to 50 Ω.**
         $$\frac{Z_Q^2}{200} = 50 \quad\Rightarrow\quad Z_Q^2 = 10^4$$
@@ -1905,7 +1905,7 @@
         trap(N(md`$\langle P_\text{in}\rangle$ (W)`, 1, 'W'), [[2, md`That forgets the $\tfrac12$ for peak phasors.`], [4, md`That is $V_g^2/(2Z_\text{in})$, using the full 20 V.`]])],
       hints: [md`The source sees $Z_\text{in} = 50\ \Omega$: a divider. Then $\langle P\rangle = |\tilde V_\text{in}|^2/(2Z_\text{in})$.`],
       sol: md`
-        **1. The input circuit.** The whole section and load look like $Z_\text{in} = 50\ \Omega$ to the source (formula sheet: $\tilde V(l) = \tilde F\,Z(l)/(Z_g + Z(l))$, here at the section's input):
+        **1. The input circuit.** The whole section and load look like $Z_\text{in} = 50\ \Omega$ to the source (not given: $\tilde V(l) = \tilde F\,Z(l)/(Z_g + Z(l))$, here at the section's input):
         $$\tilde V_\text{in} = 20\cdot\frac{50}{50 + 50}$$
         $$\boxed{|\tilde V_\text{in}| = 10\ \text{V}}$$
         **2. Power in.** $\tilde I_\text{in} = 10/50 = 0.2$ A, in phase with $\tilde V_\text{in}$:
@@ -1931,7 +1931,7 @@
         $$\boxed{\langle P_L\rangle = 1\ \text{W}}$$
         **2. Amplitude.** $\langle P_L\rangle = |\tilde V_L|^2/(2R_L)$:
         $$|\tilde V_L| = \sqrt{2(200)(1)} = \boxed{20\ \text{V}}$$
-        **3. Phase.** From the formula sheet with $\beta d = 90°$ at the input ($e^{j90°} = j$, $e^{-j180°} = -1$):
+        **3. Phase.** Using $\tilde V(d)$ (not given: know it) with $\beta d = 90°$ at the input ($e^{j90°} = j$, $e^{-j180°} = -1$):
         $$\tilde V_\text{in} = \tilde V^+\,j\,(1 - \Gamma_L) = j\tfrac23\tilde V^+$$
         Set this to 10 V:
         $$\tilde V^+ = \frac{10}{j\,2/3} = -j15\ \text{V}$$
@@ -1958,7 +1958,7 @@
       sol: md`
         **1. New electrical length.** $\lambda = v/f = 1$ m, so $l = 0.5$ m is $\lambda/2$ and $\beta l = 180°$.
 
-        **2. A half wave copies the load** (formula sheet: $z(d \pm \lambda/2) = z(d)$):
+        **2. A half wave copies the load** (not given: know $z(d \pm \lambda/2) = z(d)$):
         $$Z_\text{in} = 200\ \Omega$$
         **3. Input voltage and power.**
         $$\tilde V_\text{in} = 20\cdot\frac{200}{50 + 200} = 16\ \text{V}$$

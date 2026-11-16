@@ -1123,7 +1123,7 @@
     steps: [
       RF(md`
         !!key Why you care
-          Prof. Chen's SP24 Exam 3 opened with two current sheets: 18 of the 100 points for the fields in three regions. HW 9 #2 and #5 and HW 10 #4 are sheet problems, and HW 10 #4 is exactly "design two sheets for RHCP". The formula sheet gives you one line, $\mathbf E = -\frac{\eta}{2}\mathbf J_s(t \mp z/v)$. In this lesson you derive it in phasor form from the boundary conditions, then use nothing but superposition and [Topic 9](#/l/w3-pol)'s hand test to handle any number of sheets: standing waves between them, cancellation or doubling outside, a pair that radiates only one way, and a pair that sends the same hand both ways.
+          Prof. Chen's SP24 Exam 3 opened with two current sheets: 18 of the 100 points for the fields in three regions. HW 9 #2 and #5 and HW 10 #4 are sheet problems, and HW 10 #4 is exactly "design two sheets for RHCP". The exam does not give you the sheet formula, so know it: $\mathbf E = -\frac{\eta}{2}\mathbf J_s(t \mp z/v)$. In this lesson you derive it in phasor form from the boundary conditions, then use nothing but superposition and [Topic 9](#/l/w3-pol)'s hand test to handle any number of sheets: standing waves between them, cancellation or doubling outside, a pair that radiates only one way, and a pair that sends the same hand both ways.
 
         ### Notation
 
@@ -1161,7 +1161,7 @@
         !!intuition Does this make sense?
           **The minus sign.** At the sheet, $\mathbf E$ points against $\mathbf J_s$. The sheet pushes current against the field, like a battery pushing current from $-$ to $+$: it is a **source**, and $-\mathbf J_s\cdot\mathbf E > 0$ is the power it delivers.
           **The $\tfrac12$.** Right at the sheet, $|\mathbf H| = |J_s|/2$ on each side, pointing opposite ways: the static current-sheet result from Exam 1, now carried off by waves.
-          **Time domain.** $e^{\mp j\beta z}$ is a delay of $|z|/v$, so $\mathbf E = -\frac{\eta}{2}\mathbf J_s(t \mp z/v)$: the line on your formula sheet.
+          **Time domain.** $e^{\mp j\beta z}$ is a delay of $|z|/v$, so $\mathbf E = -\frac{\eta}{2}\mathbf J_s(t \mp z/v)$: the formula to know (not given in the exam).
       `, { sheet: { svg: sheetFig(), cap: 'One sheet, current up (along +x, with y out of the page). E points against the current on both sides; H points opposite ways on the two sides; both waves travel away.' } }),
       Q(md`**Predict.** A sheet at $z = 0$ in free space carries $\tilde{\mathbf J}_s = 4\,\hat x$ A/m. For $z > 0$, $\tilde{\mathbf E}$ is…`,
         [md`$-240\pi\,e^{-j\beta z}\,\hat x$ V/m`, md`$+240\pi\,e^{-j\beta z}\,\hat x$ V/m`, md`$-480\pi\,e^{-j\beta z}\,\hat x$ V/m`, md`$-240\pi\,e^{+j\beta z}\,\hat x$ V/m`], 0,
@@ -1977,7 +1977,7 @@
       ['$60\\pi$ W/m²', '$15\\pi$ W/m²', '$30\\pi$ W/m²', '$120\\pi$ W/m²'], 0,
       [null, md`That is one sheet alone, one side.`, md`That adds powers. The fields add: $(2\cdot60\pi)^2/240\pi$.`, md`That would be a field of $120\sqrt2\,\pi$.`],
       md`$|\tilde{\mathbf E}| = \eta_0\cdot1 = 120\pi$; $\langle S\rangle = (120\pi)^2/240\pi = 60\pi$ W/m².`),
-    Q(md`The formula sheet writes $\mathbf E = -\frac{\eta}{2}\mathbf J_s(t \mp z/v)$. In phasor form the delay $z/v$ becomes…`,
+    Q(md`The sheet formula is $\mathbf E = -\frac{\eta}{2}\mathbf J_s(t \mp z/v)$. In phasor form the delay $z/v$ becomes…`,
       ['the factor $e^{-j\\beta|z|}$', 'the factor $e^{-|z|/v}$', 'the factor $j\\omega z/v$', 'nothing: phasors have no delay'], 0,
       [null, md`A delay is a phase, not a decay.`, md`A delay multiplies by $e^{-j\omega\tau}$, not by $j\omega\tau$.`, md`A delay $\tau$ is the phase factor $e^{-j\omega\tau}$.`],
       md`$e^{-j\omega|z|/v} = e^{-j\beta|z|}$, since $\beta = \omega/v$.`),

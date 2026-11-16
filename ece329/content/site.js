@@ -29,7 +29,7 @@
       { href: '#/cards', label: 'Flashcards' },
       { href: '#/derive', label: 'Every formula, derived' },
       { href: '#/quiz', label: 'Mixed practice' },
-      { href: '#/sheet', label: 'Formula sheet' },
+      { href: '#/sheet', label: 'The one table you get, and every formula to carry' },
       { href: 'notecard-e3.html', label: 'Your 4×6 notecard' },
     ],
     howto: 'Answers: type numbers as <code>2.5e-6</code>, <code>2.5*10^-6</code> or arithmetic like <code>120*pi/2</code>; <code>pi</code> works. Formula boxes take expressions such as <code>mu0*H/(2*pi*r)</code> or <code>exp(-t/tau)</code>; the variables you may use are listed under the box. The unit is printed next to each box; answers within about 2% count. Constants unless a problem says otherwise: $\\mu_0 = 4\\pi\\times10^{-7}$ H/m, $\\epsilon_0 = \\tfrac{1}{36\\pi}\\times10^{-9}$ F/m, $c = 3\\times10^8$ m/s, $\\eta_0 = 120\\pi\\ \\Omega$. Every wrong multiple-choice option explains itself. A randomized problem doesn\'t count once you open its solution. Progress is saved in this browser.',
@@ -39,7 +39,7 @@
     id: 'e3', title: 'Exam 3',
     when: 'Mon Nov 16, 7:00–8:15 pm', date: '2026-11-16T19:00:00-06:00',
     scope: 'Lectures 20–33: Poynting, phasors, lossy media, polarization, reflection, standing waves, transmission lines (bounce diagrams, stubs, quarter-wave transformers). The Smith chart is on the Final, not here',
-    blurb: 'Written by Prof. Chen, in the format of his Spring 2024 Exam 3: four problems, 75 minutes, one 4″×6″ card of handwritten notes, no calculator. Every result here is derived from Maxwell\'s equations, one line at a time, before you are asked to use it. Then you practice it until it is automatic: predictions, rapid-fire cards, problems with new numbers, a quiz after each section, past exams, and a stack of practice exams.',
+    blurb: 'Written by Prof. Chen, in the format of his Spring 2024 Exam 3: four problems, 75 minutes, no calculator. The exam prints <b>only one table</b> (the loss limits: β, α, |η|, τ, λ, δ); everything else comes from your one 4″×6″ card of handwritten notes or your head. Every result here is derived from Maxwell\'s equations, one line at a time, before you are asked to use it. Then you practice it until it is automatic: predictions, rapid-fire cards, problems with new numbers, a quiz after each section, past exams, and a stack of practice exams.',
     sheet: 'e3-sheet', quiz: 'e3-mix', drill: 'e3-gym',
     planTitle: 'How to use the days you have',
     plan: [
@@ -48,7 +48,7 @@
       '<b>Every day, 10 minutes: the <a href="#/gym">recognition gym</a> and <a href="#/cards">flashcards</a>.</b> They train the instant reads: which way does it travel, which hand, which medium, what does the next bounce do.',
       '<b>Exams, timed (75 minutes), as many as you can.</b> Start with <a href="#/past">the Fall 2025 Exam 3 (Chen, Mitchell, Shao)</a> and Spring 2024, then <a href="#/prac">practice exams A–N</a>, then the older papers. Redo every problem you lost points on, the next day, blank. <a href="#/endless">Endless exam problems</a> give you a fresh version of any problem type.',
       '<b>Speed:</b> learn the <a href="#/speed">speed tricks</a>, then drill them in the <a href="#/gym">gym</a> until each read takes a few seconds.',
-      '<b>The last two days:</b> <a href="#/sheet">the formula sheet</a> (what you are given, and what you must carry), copy your <a href="notecard-e3.html">notecard</a> by hand, and mixed practice.',
+      '<b>The last two days:</b> <a href="#/sheet">the one printed table</a> (everything else is yours to carry), copy your <a href="notecard-e3.html">notecard</a> by hand, write the core formulas from memory once, and mixed practice.',
     ],
   });
   C.exam({

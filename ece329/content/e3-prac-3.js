@@ -124,7 +124,7 @@
   }
 
   // the header every paper shares
-  const RULES = md`**75 minutes, 100 points.** Closed book, **no calculator**. You may use the official [formula sheet](#/l/e3-sheet) and one 4″×6″ card of your own handwritten notes. Show your reasoning, box each answer, and give its units.`;
+  const RULES = md`**75 minutes, 100 points.** Closed book, **no calculator**. You may use the given [loss-limits table](#/l/e3-sheet) and one 4″×6″ card of your own handwritten notes. Show your reasoning, box each answer, and give its units.`;
   const HOWTO = md`**How to use this paper.** Set a 75-minute timer and work it on paper first, as if it were Monday night. Then type your answers into the boxes. Open a hint only for a part you could not start. Read every worked solution, including the parts you got right: each one ends with a **speed path** (how to get the answer in well under a minute) and **where points go** (the slips that cost points on this kind of part). The next day, redo every part you missed on a blank sheet.`;
   const CONSTS = md`**Constants.** $\mu_0 = 4\pi\times10^{-7}$ H/m, $\epsilon_0 = \tfrac{1}{36\pi}\times10^{-9}$ F/m, $c = 3\times10^8$ m/s, $\eta_0 = 120\pi\ \Omega$. Answers within about 2% count. You can type <code>pi</code> for $\pi$, and arithmetic like <code>1/60</code>.`;
 
@@ -287,7 +287,7 @@
         **Where points go.** Reading the envelope at the trough of the curve (about 0.85 m) instead of at the touching point. Answering $1/\alpha$ when $\alpha$ is asked. Saying "cannot tell".
       ` }),
     P({ src: 'Practice G #1(c) · 6 pts', title: 'The loss tangent from γ',
-      q: md`**(c) (6 pts)** Find $\gamma^2$ and the loss tangent $\sigma/\omega\epsilon$. Which approximation (if any) from page 3 of the formula sheet may you use for this material?`,
+      q: md`**(c) (6 pts)** Find $\gamma^2$ and the loss tangent $\sigma/\omega\epsilon$. Which row (if any) of the given table may you use for this material?`,
       parts: [trap(N(md`$\sigma/\omega\epsilon$`, 4 / 3, ''), [[0.75, md`That is upside down: the ratio of the real part to the imaginary part. The loss tangent is $\text{Im}(\gamma^2)$ over $-\text{Re}(\gamma^2)$, conduction over displacement.`], [0.5, md`That is $\alpha/\beta = \tan\tau$. The loss tangent is $\tan 2\tau$.`]]),
         mc('Which approximation applies?', [md`None: $\sigma/\omega\epsilon$ is close to 1, so use the exact $\gamma$ and $\eta$`, md`Good conductor: $\alpha \approx \beta$`, md`Imperfect dielectric: $\alpha \approx \frac{\sigma}{2}\sqrt{\mu/\epsilon}$`, md`Perfect dielectric: $\alpha = 0$`], 0,
           [null, md`A good conductor needs $\sigma/\omega\epsilon \gg 1$, and then $\alpha \approx \beta$. Here $\beta = 2\alpha$.`, md`That needs $\sigma/\omega\epsilon \ll 1$. Here the two currents are about equal.`, md`$\alpha = \pi/2$ Np/m is not zero: the envelope decays.`])],
@@ -311,7 +311,7 @@
         **5. Regime.** $4/3$ is neither much smaller nor much larger than 1: the conduction current is only a third bigger than the displacement current. None of the page-3 approximations holds. Use the exact formulas, which is what parts (d) and (e) do.
 
         !!intuition Does this make sense?
-          The angle of $\gamma$ is $\tan^{-1}(\beta/\alpha) = \tan^{-1}2 \approx 63.4°$, so $\tau = 90° - 63.4° = 26.6°$. The sheet says $\tau = \tfrac12\tan^{-1}(\sigma/\omega\epsilon) = \tfrac12\tan^{-1}(4/3) = \tfrac12(53.1°) = 26.6°$ ✓.
+          The angle of $\gamma$ is $\tan^{-1}(\beta/\alpha) = \tan^{-1}2 \approx 63.4°$, so $\tau = 90° - 63.4° = 26.6°$. Use $\tau = \tfrac12\tan^{-1}(\sigma/\omega\epsilon) = \tfrac12\tan^{-1}(4/3) = \tfrac12(53.1°) = 26.6°$ ✓.
 
         **Speed path.** Loss tangent $= \text{Im}(\gamma^2)/(-\text{Re}\,\gamma^2)$. Or in one line: $\tan\tau = \alpha/\beta = 1/2$, and $\tan2\tau = \dfrac{2(1/2)}{1 - 1/4} = 4/3$.
 
@@ -340,7 +340,7 @@
         !!intuition Does this make sense?
           With no loss, this material would have $\beta = \omega\sqrt{\mu\epsilon} = (\pi/2)\sqrt3 \approx 2.72$ rad/m. The loss raised $\beta$ to $\pi$: loss always makes $\beta$ bigger than its lossless value. That is why reading $\epsilon_r$ from $(c/v_p)^2 = 4$ would be wrong.
 
-        **Speed path.** Get $\omega/c = \pi/2$ first. Then $\epsilon_r = -\text{Re}(\gamma^2)/(\omega/c)^2$ and $\sigma = \text{Im}(\gamma^2)/\omega\mu_0$. The sheet's version: $\sigma = \text{Re}\{\gamma/\eta\}$ and $\epsilon = \text{Im}\{\gamma/\eta\}/\omega$, which needs $\eta$ from (e) first.
+        **Speed path.** Get $\omega/c = \pi/2$ first. Then $\epsilon_r = -\text{Re}(\gamma^2)/(\omega/c)^2$ and $\sigma = \text{Im}(\gamma^2)/\omega\mu_0$. The other way (not given: know it): $\sigma = \text{Re}\{\gamma/\eta\}$ and $\epsilon = \text{Im}\{\gamma/\eta\}/\omega$, which needs $\eta$ from (e) first.
 
         **Where points go.** Using $f$ for $\omega$. Dropping the $4\pi$ in $\mu_0$. Reporting $\epsilon$ in F/m when $\epsilon_r$ is asked. Taking $\epsilon_r = (c/v_p)^2$, which holds only without loss.
       ` }),
@@ -350,7 +350,7 @@
         trap(N(md`$\tau$ (degrees)`, 26.565, '°'), [[53.13, md`That is $\tan^{-1}(4/3)$, the angle of $\eta^2$. The square root halves it.`], [63.43, md`That is the angle of $\gamma$. The angles of $\gamma$ and $\eta$ add to $90°$.`]]),
         mc(md`$H_y(z,t)$ in A/m is`, [md`$0.0593\,e^{-\pi z/2}\cos(\omega t - \pi z - 26.6°)$`, md`$0.0593\,e^{-\pi z/2}\cos(\omega t - \pi z + 26.6°)$`, md`$0.0593\cos(\omega t - \pi z - 26.6°)$`, md`$-0.0593\,e^{-\pi z/2}\cos(\omega t - \pi z - 26.6°)$`], 0,
           [null, md`That adds $\tau$. $\tilde H = \tilde E/\eta$, and dividing by $e^{j\tau}$ subtracts it: $H$ lags $E$.`, md`$H$ decays exactly as $E$ does; the factor $e^{-\pi z/2}$ cannot disappear.`, md`The minus sign belongs to a wave going toward $-z$. This one goes toward $+z$, with $\hat x\times\hat y = \hat z$.`])],
-      hints: [md`$\eta\gamma = j\omega\mu$ (formula sheet), so $\eta = j\omega\mu_0/\gamma$ with $\omega\mu_0 = 60\pi^2$ and $\gamma = \frac{\pi}{2}(1 + j2)$.`],
+      hints: [md`$\eta\gamma = j\omega\mu$ (not given: know it), so $\eta = j\omega\mu_0/\gamma$ with $\omega\mu_0 = 60\pi^2$ and $\gamma = \frac{\pi}{2}(1 + j2)$.`],
       sol: md`
         **1. η from ηγ = jωμ.**
         $$\eta = \frac{j\omega\mu_0}{\gamma} = \frac{j60\pi^2}{\frac{\pi}{2}(1 + j2)}$$
@@ -381,7 +381,7 @@
 
       A current sheet in the plane $z = 0$ in free space radiates at $f = 300$ MHz, so $\beta = 2\pi$ rad/m. For $z > 0$ its field is
       $$\begin{aligned}\mathbf E = {}&120\pi\cos(\omega t - \beta z)\,\hat x\\ &+ 60\pi\sin(\omega t - \beta z)\,\hat y\ \ \text{V/m}\end{aligned}$$
-      Use $\sin\theta = \cos(\theta - 90°)$. The field of a sheet $\mathbf J_s(t)$ at $z = 0$ is (formula sheet, in vector form)
+      Use $\sin\theta = \cos(\theta - 90°)$. The field of a sheet $\mathbf J_s(t)$ at $z = 0$ is (not given: know it, in vector form)
       $$\mathbf E = -\frac{\eta_0}{2}\,\mathbf J_s\!\left(t \mp \frac zc\right)\quad (z \gtrless 0)$$
 
       [[fig:sheet]]
@@ -462,7 +462,7 @@
     P({ src: 'Practice G #2(d) · 4 pts', title: 'The other side',
       q: md`**(d) (4 pts)** What is the field for $z < 0$, and what is its polarization?`,
       parts: [mc('For z < 0', [md`$\mathbf E = 120\pi\cos(\omega t + \beta z)\,\hat x + 60\pi\sin(\omega t + \beta z)\,\hat y$: left-handed elliptical`, md`$\mathbf E = 120\pi\cos(\omega t + \beta z)\,\hat x + 60\pi\sin(\omega t + \beta z)\,\hat y$: right-handed elliptical`, md`$\mathbf E = -120\pi\cos(\omega t + \beta z)\,\hat x - 60\pi\sin(\omega t + \beta z)\,\hat y$: right-handed elliptical`, md`$\mathbf E = 120\pi\cos(\omega t + \beta z)\,\hat x - 60\pi\sin(\omega t + \beta z)\,\hat y$: right-handed elliptical`], 0,
-        [null, md`The expression is right, but the hand is not. The tip turns the same way on both sides, $\hat x\to\hat y$, while the travel direction flips to $-z$. With the thumb on $-z$, only the left hand's fingers curl from $\hat x$ to $\hat y$.`, md`The formula sheet's field has the same sign on both sides: $\mathbf E = -\frac{\eta_0}{2}\mathbf J_s(t \mp z/c)$. It is $\mathbf H$ that flips sign across the sheet, not $\mathbf E$. Tangential $\mathbf E$ is continuous at $z = 0$.`, md`Flipping the $\hat y$ part to make it "right-handed" breaks continuity: at $z = 0$ both sides must have the same tangential $\mathbf E$.`])],
+        [null, md`The expression is right, but the hand is not. The tip turns the same way on both sides, $\hat x\to\hat y$, while the travel direction flips to $-z$. With the thumb on $-z$, only the left hand's fingers curl from $\hat x$ to $\hat y$.`, md`The current-sheet field has the same sign on both sides: $\mathbf E = -\frac{\eta_0}{2}\mathbf J_s(t \mp z/c)$. It is $\mathbf H$ that flips sign across the sheet, not $\mathbf E$. Tangential $\mathbf E$ is continuous at $z = 0$.`, md`Flipping the $\hat y$ part to make it "right-handed" breaks continuity: at $z = 0$ both sides must have the same tangential $\mathbf E$.`])],
       hints: [md`Put $t + z/c$ into the same $\mathbf J_s$ for $z < 0$. Then freeze $z = 0$: does the tip turn the same way as before? Which way does this wave travel?`],
       sol: md`
         !!trap The trap
@@ -520,7 +520,7 @@
 
       A source with $R_g = 50\ \Omega$ sends two tones down a $50\ \Omega$ line, 1.25 m long, to a $50\ \Omega$ receiver: the signal at $f_0 = 100$ MHz and an unwanted harmonic at $2f_0 = 200$ MHz. You may connect one **stub** (a piece of $50\ \Omega$ line, **shorted** or **open** at its far end) in parallel with the receiver, right at its terminals. Every line has $v = 2\times10^8$ m/s and no loss. Goal: let $f_0$ through untouched, and stop $2f_0$.
 
-      From the formula sheet, a line of length $d$ ending in a short has $Z = jZ_0\tan\beta d$; one ending in an open has $Y = jY_0\tan\beta d$, so $Z = -jZ_0\cot\beta d$.
+      Know (not given in the exam) that a line of length $d$ ending in a short has $Z = jZ_0\tan\beta d$; one ending in an open has $Y = jY_0\tan\beta d$, so $Z = -jZ_0\cot\beta d$.
 
       [[fig:filt]]
     `, { filt: { svg: figG3(), cap: 'The stub hangs across the receiver terminals. Its length and its far end are yours to choose.' } }),
@@ -919,7 +919,7 @@
         N(md`$\delta$ (m)`, 2.5 / PI, 'm'), trap(N(md`$\lambda$ in the water (m)`, 5, 'm'), [[3000, md`That is the free-space wavelength, $c/f$. In seawater $\lambda = 2\pi/\beta$, and $\beta = \alpha$.`]])],
       hints: [md`Good conductor: $\alpha \approx \beta \approx \sqrt{\pi f\mu\sigma}$. Multiply out what is under the root before taking it; it is a perfect square.`],
       sol: md`
-        **1. The good-conductor formula.** From the sheet, $\alpha \approx \sqrt{\omega\mu\sigma/2}$. With $\omega = 2\pi f$ this is
+        **1. The good-conductor formula.** From the given table, $\alpha \approx \sqrt{\omega\mu\sigma/2}$. With $\omega = 2\pi f$ this is
         $$\alpha \approx \beta \approx \sqrt{\pi f\mu\sigma}$$
         **2. Under the root.**
         $$\pi f\mu_0\sigma = \pi(10^5)(4\pi\times10^{-7})(4)$$
@@ -953,7 +953,7 @@
         **3. Size and angle.** $|1 + j| = \sqrt2$ and its angle is $45°$:
         $$\boxed{|\eta| = 0.1\sqrt2\,\pi \approx 0.444\ \Omega}$$
         $$\boxed{\tau = 45°}$$
-        **4. Check with the sheet's formula.** $|\eta| = \sqrt{\omega\mu/\sigma}$:
+        **4. Check with the given table.** $|\eta| = \sqrt{\omega\mu/\sigma}$:
         $$\frac{\omega\mu_0}{\sigma} = \frac{(2\pi\times10^5)(4\pi\times10^{-7})}{4} = 0.02\pi^2$$
         and $\sqrt{0.02\pi^2} = 0.1\sqrt2\,\pi$ ✓.
 
@@ -1024,7 +1024,7 @@
         $$\frac{\sigma}{\omega\epsilon} = \frac{8.9\times10^8}{10^{10}} \approx 0.09 \ll 1$$
         An **imperfect dielectric**: the displacement current is about 11 times the conduction current.
 
-        **2. The right α.** From the sheet, $\alpha \approx \dfrac{\sigma}{2}\sqrt{\mu/\epsilon}$. Here $\sqrt{\mu/\epsilon} = \eta_0/\sqrt{81} = 120\pi/9$:
+        **2. The right α.** From the given table, $\alpha \approx \dfrac{\sigma}{2}\sqrt{\mu/\epsilon}$. Here $\sqrt{\mu/\epsilon} = \eta_0/\sqrt{81} = 120\pi/9$:
         $$\alpha \approx \frac{4}{2}\cdot\frac{120\pi}{9} = \frac{80\pi}{3}$$
         $$\alpha \approx 84\ \text{Np/m}$$
         **3. Depth.**
@@ -1888,9 +1888,9 @@
         [[fig:s]]
 
         !!intuition Does this make sense?
-          The sheet's form gives the same: $\frac{|E|^2}{2|\eta|}\cos\tau = \frac{100}{2(5\sqrt2)}\cdot\frac{1}{\sqrt2} = 5$ ✓. The power decays at $2\alpha = 1$ Np/m, twice the field's rate.
+          The Poynting form gives the same: $\frac{|E|^2}{2|\eta|}\cos\tau = \frac{100}{2(5\sqrt2)}\cdot\frac{1}{\sqrt2} = 5$ ✓. The power decays at $2\alpha = 1$ Np/m, twice the field's rate.
 
-        **Speed path.** $\langle S\rangle = \frac{|E_0|^2}{2|\eta|}\cos\tau\,e^{-2\alpha z}$, straight from the sheet.
+        **Speed path.** $\langle S\rangle = \frac{|E_0|^2}{2|\eta|}\cos\tau\,e^{-2\alpha z}$, straight from the Poynting vector.
 
         **Where points go.** Leaving out $\cos\tau$. Decaying the power at $\alpha$ instead of $2\alpha$.
       `,
@@ -1933,13 +1933,13 @@
         mc(md`(b) graph of $\tilde V(d)$`, ['A', 'B', 'C', 'D', 'E', 'F'], 0, [null, md`B is zero at both ends: that is the current's shape (zero at both opens), not the voltage's.`, md`C is a quarter wave: it fits a line open at one end and shorted at the other.`, md`D is a quarter wave too.`, md`E is a full wavelength: the second resonance.`, md`F is a full wavelength: the second resonance's current.`], true),
         mc(md`(b) graph of $\tilde I(d)$`, ['A', 'B', 'C', 'D', 'E', 'F'], 1, [md`A is largest at both ends; the current must be zero at both ends.`, null, md`C is not zero at $d = 0$.`, md`D is zero at $d = 0$ but largest at $d = l$, where the current must vanish.`, md`E is not zero at the ends.`, md`F is zero at both ends but is a full wavelength: the second resonance.`], true),
       ],
-      hints: [md`Open load: $\tilde V(d) = 2\tilde V^+\cos\beta d$ and $\tilde I(d) = j\frac{2\tilde V^+}{Z_0}\sin\beta d$ (formula sheet, $Y(d) = jY_0\tan\beta d$).`, md`The current must also vanish at $d = l$: $\sin\beta l = 0$, so $\beta l = n\pi$.`],
+      hints: [md`Open load: $\tilde V(d) = 2\tilde V^+\cos\beta d$ and $\tilde I(d) = j\frac{2\tilde V^+}{Z_0}\sin\beta d$ (not given: know it, along with $Y(d) = jY_0\tan\beta d$).`, md`The current must also vanish at $d = l$: $\sin\beta l = 0$, so $\beta l = n\pi$.`],
       sol: md`
         **(a)** At both ends the current is zero while the voltage is not (otherwise nothing would be oscillating). $Z = V/I$:
         $$\boxed{Z_{\text{in}} = \infty,\quad Z_L = \infty}$$
         Both ends are open.
 
-        **(b) 1. The pattern from an open load.** From the sheet:
+        **(b) 1. The pattern from an open load.** Know (not given in the exam):
         $$\tilde V(d) = 2\tilde V^+\cos\beta d$$
         $$\tilde I(d) = j\frac{2\tilde V^+}{Z_0}\sin\beta d$$
         **2. The input must be open too.** $\tilde I(l) = 0$ needs
