@@ -833,7 +833,7 @@
   const stubIdx = (sh, n) => { const m = ((n % 4) + 4) % 4; return sh ? [0, 2, 1, 3][m] : [1, 3, 0, 2][m]; };
   const WHO = ['a short at length 0 or $\\lambda/2$, or an open at $\\lambda/4$', 'a short at $\\lambda/4$, or an open at 0 or $\\lambda/2$', 'a short at $\\lambda/8$, or an open at $3\\lambda/8$', 'a short at $3\\lambda/8$, or an open at $\\lambda/8$'];
   deck({
-    id: 'g3_stub', title: 'Shorted and open stubs', chip: 'Stubs',
+    id: 'g3_stub', later: true, title: 'Shorted and open stubs', chip: 'Stubs',
     sub: 'Input impedance of a shorted or open stub at λ/8, λ/4, 3λ/8, λ/2',
     rule: md`Short: $Z_{in} = jZ_0\tan\beta\ell$. Open: $Z_{in} = -jZ_0\cot\beta\ell$. With $\beta\ell = 2\pi\ell/\lambda$: **every $\lambda/4$ swaps short and open; every $\lambda/2$ repeats.** In between, a short starts **inductive** ($+j$) and an open starts **capacitive** ($-j$); at the $\lambda/8$ points $|Z_{in}| = Z_0$. Table: short at $\lambda/8, \lambda/4, 3\lambda/8, \lambda/2$: $+jZ_0, \infty, -jZ_0, 0$. Open: $-jZ_0, 0, +jZ_0, \infty$.`,
     make() {
@@ -857,7 +857,7 @@
   [50, 60, 75, 100, 150].forEach((Z0) => [25, 36, 50, 75, 100, 150, 200, 300, 450].forEach((ZL) => { const z = (Z0 * Z0) / ZL; if (ZL !== Z0 && Math.abs(z - Math.round(z)) < 1e-9 && z <= 900 && z >= 10) QW.push([Z0, ZL]); }));
   const MATCH = [[25, 100], [50, 200], [36, 100], [50, 72], [75, 300], [50, 450], [100, 400], [25, 400], [20, 80]];
   deck({
-    id: 'g3_qw', title: 'Quarter-wave and half-wave lines', chip: 'λ/4 and λ/2',
+    id: 'g3_qw', later: true, title: 'Quarter-wave and half-wave lines', chip: 'λ/4 and λ/2',
     sub: 'Input impedance of a λ/4 or λ/2 line, and the quarter-wave matching Z₀',
     rule: md`**Half wave ($\lambda/2$, or any multiple): $Z_{in} = Z_L$**, whatever $Z_0$ is. **Quarter wave ($\lambda/4$, $3\lambda/4$, ...): $Z_{in} = Z_0^2/Z_L$**: it inverts the load around $Z_0$ (big becomes small, short becomes open). To match $R_L$ to $R_{in}$ with a quarter wave: $Z_0 = \sqrt{R_{in}R_L}$, the **geometric** mean.`,
     make() {
@@ -885,7 +885,7 @@
   // ================================================================ 19. VSWR
   const VS = [[1 / 9, 1.25], [1 / 5, 1.5], [1 / 3, 2], [1 / 2, 3], [3 / 5, 4], [2 / 3, 5], [4 / 5, 9]];
   deck({
-    id: 'g3_vswr', title: 'VSWR and |Γ|', chip: 'VSWR',
+    id: 'g3_vswr', later: true, title: 'VSWR and |Γ|', chip: 'VSWR',
     sub: 'Standing-wave ratio from the reflection coefficient and back, and from a resistive load',
     rule: md`$\text{VSWR} = \dfrac{|V|_{max}}{|V|_{min}} = \dfrac{1 + |\Gamma|}{1 - |\Gamma|}$, and back: $|\Gamma| = \dfrac{\text{VSWR} - 1}{\text{VSWR} + 1}$. VSWR is always $\ge 1$; $|\Gamma|\le 1$. For a **resistive** load, $\text{VSWR} = R_L/Z_0$ or $Z_0/R_L$, whichever is $\ge 1$. Pairs to know: $|\Gamma| = \tfrac13\leftrightarrow 2$, $\tfrac12\leftrightarrow 3$, $\tfrac15\leftrightarrow 1.5$.`,
     make() {
@@ -913,5 +913,6 @@
   const ORDER = ['g3_dir', 'g3_hdir', 'g3_phasor', 'g3_read', 'g3_regime', 'g3_pol', 'g3_hand', 'g3_gamma', 'g3_power', 'g3_nodes', 'g3_lc', 'g3_launch', 'g3_ss', 'g3_bounce', 'g3_next', 'g3_junction', 'g3_stub', 'g3_qw', 'g3_vswr'];
   const byId = {};
   DECKS.forEach((d) => { byId[d.id] = d; });
-  window.GYM = { DECKS: ORDER.map((id) => byId[id]), byId };
+  // decks tagged later: true (stubs, quarter-wave lines, VSWR on lines: Lectures 32-34) are not on this Exam 3: they stay out of DECKS
+  window.GYM = { DECKS: ORDER.map((id) => byId[id]).filter((d) => !d.later), byId };
 })();

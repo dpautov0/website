@@ -156,14 +156,15 @@
 
       ${CONSTS}
 
+      *The phasor-line problem on VSWR and Z(d) (Lecture 34) is not on Exam 3, so it has been moved to Not on Exam 3.*
+
       | Problem | Topic | Points |
       |---|---|---|
       | 1 | A wave in an imperfect dielectric: loss tangent, $\alpha$, $\beta$, $\eta$, power in dB | 22 |
       | 2 | Two current sheets designed for circular polarization, and what goes the other way | 24 |
-      | 3 | A phasor line: $\Gamma_L$, VSWR, where the maxima sit, $Z(d)$, power to the load | 24 |
       | 4 | Three lines in cascade driven by a step: bounce diagram, $V(z,t)$, steady state | 30 |
 
-      **Draws on:** [imperfect dielectrics](#/l/w2-limits), [power in lossy media](#/l/w2-loss), [polarization](#/l/w3-pol), [current-sheet antennas](#/l/w3-antenna), [V(d), Γ(d) and VSWR](#/l/w6-vd), [bounce diagrams](#/l/w5-bounce) and [junctions](#/l/w5-multi).
+      **Draws on:** [imperfect dielectrics](#/l/w2-limits), [power in lossy media](#/l/w2-loss), [polarization](#/l/w3-pol), [current-sheet antennas](#/l/w3-antenna), [bounce diagrams](#/l/w5-bounce) and [junctions](#/l/w5-multi).
     `),
 
     // ---------------------------------------------------------------- D Problem 1
@@ -464,15 +465,15 @@
       ` }),
 
     // ---------------------------------------------------------------- D Problem 3
-    RF(md`
+    Object.assign(RF(md`
       ### Problem 3 (24 points): standing waves on a phasor line
 
       A lossless line with $Z_0 = 50\ \Omega$, length $l = 3$ m and wave speed $v = 2\times10^8$ m/s ends in the load $Z_L = 30 + j40\ \Omega$. A generator with open-circuit voltage phasor $\tilde F = 20$ V and internal impedance $Z_g = 50\ \Omega$ drives it at $f = 100$ MHz. As usual, $d$ is the distance back from the load, and
       $$\tilde V(d) = \tilde V^+e^{j\beta d}\bigl(1 + \Gamma(d)\bigr),\quad \Gamma(d) = \Gamma_Le^{-j2\beta d}$$
 
       [[fig:d3]]
-    `, { d3: { svg: figD3(), cap: 'The generator is matched to the line ($Z_g = Z_0$). $d$ runs from the load ($d = 0$) back to the generator ($d = l = 3$ m).' } }),
-    P({ src: 'Practice D #3(a) · 4 pts', title: 'The load reflection coefficient',
+    `, { d3: { svg: figD3(), cap: 'The generator is matched to the line ($Z_g = Z_0$). $d$ runs from the load ($d = 0$) back to the generator ($d = l = 3$ m).' } }), { later: true }),
+    P({ later: true, src: 'Practice D #3(a) · 4 pts', title: 'The load reflection coefficient',
       q: md`**(a) (4 pts)** Find $\Gamma_L$: its size and its angle.`,
       parts: [
         trap(N(md`$|\Gamma_L|$`, 0.5, ''), [[0.25, md`That ignores the reactance: $(30 - 50)/(30 + 50)$. The $j40$ belongs in both the top and the bottom.`]]),
@@ -497,7 +498,7 @@
 
         **Where points go.** The conjugate arithmetic ($-j^2 = +1$); flipping the order of $Z_L - Z_0$.
       ` }),
-    P({ src: 'Practice D #3(b) · 4 pts', title: 'VSWR and the incident wave',
+    P({ later: true, src: 'Practice D #3(b) · 4 pts', title: 'VSWR and the incident wave',
       q: md`**(b) (4 pts)** Find the VSWR and the amplitude $|\tilde V^+|$ of the incident wave.`,
       parts: [
         N('\\text{VSWR}', 3, ''),
@@ -524,7 +525,7 @@
 
         **Where points go.** Taking $|\tilde V^+| = |\tilde F|$; confusing $|\tilde V|$ at a point with the incident amplitude.
       ` }),
-    P({ src: 'Practice D #3(c) · 4 pts', title: 'Where the maxima sit',
+    P({ later: true, src: 'Practice D #3(c) · 4 pts', title: 'Where the maxima sit',
       q: md`**(c) (4 pts)** How far from the load is the voltage maximum nearest the load? And the nearest minimum?`,
       parts: [
         trap(N(md`$d_{\max}$`, 0.25, 'm'), [[0.5, md`That sets $\beta d = 90°$. The phase of $\Gamma(d)$ turns by $2\beta d$, so $2\beta d = 90°$.`], [1, md`That is $\lambda/2$, the spacing between maxima, not the first one.`]]),
@@ -553,7 +554,7 @@
         **Where points go.** $\beta d$ in place of $2\beta d$; turning the wrong way (the angle decreases moving toward the generator).
       `,
       figs: { v: { svg: figD3V(), cap: '|V(d)| along the whole line: 15 V at the maxima, 5 V at the minima, the pattern repeating every λ/2 = 1 m.' } } }),
-    P({ src: 'Practice D #3(d) · 4 pts', title: 'The standing-wave pattern',
+    P({ later: true, src: 'Practice D #3(d) · 4 pts', title: 'The standing-wave pattern',
       q: md`**(d) (4 pts)** Find $|\tilde V|_{\max}$ and $|\tilde V|_{\min}$ on the line, and the line impedance $Z(d_{\max})$ at a voltage maximum.`,
       parts: [
         N(md`$|\tilde V|_{\max}$`, 15, 'V'),
@@ -577,7 +578,7 @@
 
         **Where points go.** Swapping the max and min impedances.
       ` }),
-    P({ src: 'Practice D #3(e) · 4 pts', title: 'A quarter wave from the load',
+    P({ later: true, src: 'Practice D #3(e) · 4 pts', title: 'A quarter wave from the load',
       q: md`**(e) (4 pts)** Find the line impedance $Z(d)$ a quarter wavelength from the load, at $d = 0.5$ m.`,
       parts: [
         N(md`$\Re\{Z\}$`, 30, 'Ω'),
@@ -602,7 +603,7 @@
 
         **Where points go.** Using the half-wave rule; a sign slip in the conjugate.
       ` }),
-    P({ src: 'Practice D #3(f) · 4 pts', title: 'Power to the load',
+    P({ later: true, src: 'Practice D #3(f) · 4 pts', title: 'Power to the load',
       q: md`**(f) (4 pts)** How much time-averaged power reaches the load?`,
       parts: [trap(N(md`$P_L$`, 0.75, 'W'), [[1.25, md`That is $|\tilde V_L|^2/(2|Z_L|)$. Only the resistance absorbs power: $P = \tfrac12|\tilde I_L|^2R_L$.`], [125 / 60, md`That is $|\tilde V_L|^2/(2R_L)$, as if all of $\tilde V_L$ were across the 30 Ω part.`], [1, md`That is the incident power. A quarter of it is reflected.`], [0.25, md`That is the reflected power.`]])],
       hints: [md`$P = \dfrac{|\tilde V^+|^2}{2Z_0}\bigl(1 - |\Gamma_L|^2\bigr)$: incident power minus reflected power.`],
@@ -790,7 +791,7 @@
         **Where points go.** Using $Z_0$ to turn $V_{ss}$ into $I_{ss}$; reading the steady state off the first few arrivals.
       ` }),
   ];
-  EM.lesson('e3-prac', { id: 'e3-prac-d', order: 4, title: 'Practice exam D', kind: 'mock', sub: '75 min · 100 pts · imperfect dielectric, current sheets for circular polarization, VSWR and V(d), three lines in cascade', steps: examD });
+  EM.lesson('e3-prac', { id: 'e3-prac-d', order: 4, title: 'Practice exam D', kind: 'mock', sub: '75 min · 100 pts · imperfect dielectric, current sheets for circular polarization, three lines in cascade', steps: examD });
 
   // ======================================================================================== EXAM E: figures
   function figE1() {
@@ -1531,14 +1532,15 @@
 
       ${CONSTS}
 
+      *The half- and quarter-wave sections problem (Lectures 32-33) is not on Exam 3, so it has been moved to Not on Exam 3.*
+
       | Problem | Topic | Points |
       |---|---|---|
       | 1 | Phasor Maxwell: $\tilde{\mathbf H}$ from $\tilde{\mathbf E}$ by Faraday, $\epsilon$ from Ampère, $\langle\mathbf S\rangle$, polarization | 24 |
       | 2 | A wave from air onto a good conductor: $\Gamma \approx -1$ plus a correction, absorbed power | 24 |
-      | 3 | Half-wave and quarter-wave sections in cascade: $Z_{\text{in}}$, $\tilde V_{\text{in}}$, power, VSWR, a new frequency | 24 |
       | 4 | An ideal source on an open line, and a resistive source on a shorted line: what settles and what never does | 28 |
 
-      **Draws on:** [phasor Maxwell](#/l/w1-maxwell), [time-averaged power](#/l/w1-avg), [polarization](#/l/w3-pol), [good conductors](#/l/w2-limits), [reflection](#/l/w4-gamma), [power and surface resistance](#/l/w2-loss), [half- and quarter-wave transformers](#/l/w6-qw), [launching and reflecting](#/l/w5-launch) and [bounce diagrams](#/l/w5-bounce).
+      **Draws on:** [phasor Maxwell](#/l/w1-maxwell), [time-averaged power](#/l/w1-avg), [polarization](#/l/w3-pol), [good conductors](#/l/w2-limits), [reflection](#/l/w4-gamma), [power and surface resistance](#/l/w2-loss), [launching and reflecting](#/l/w5-launch) and [bounce diagrams](#/l/w5-bounce).
     `),
 
     // ---------------------------------------------------------------- F Problem 1
@@ -1837,14 +1839,14 @@
       ` }),
 
     // ---------------------------------------------------------------- F Problem 3
-    RF(md`
+    Object.assign(RF(md`
       ### Problem 3 (24 points): half-wave and quarter-wave sections in cascade
 
       A generator with open-circuit voltage phasor $\tilde F = 20$ V and $R_g = 100\ \Omega$ drives line A ($Z_{0A} = 50\ \Omega$, length 0.5 m). Line A feeds line B ($Z_{0B} = 75\ \Omega$, length 1 m), which ends in $R_L = 25\ \Omega$. Both lines are lossless with $v = 2\times10^8$ m/s, and $f = 100$ MHz. Phasors are amplitudes (peak values).
 
       [[fig:f3]]
-    `, { f3: { svg: figF3(), cap: 'The generator, line A, line B and the load. Lengths in meters; v = 2×10⁸ m/s on both lines.' } }),
-    P({ src: 'Practice F #3(a) · 4 pts', title: 'Looking into line B',
+    `, { f3: { svg: figF3(), cap: 'The generator, line A, line B and the load. Lengths in meters; v = 2×10⁸ m/s on both lines.' } }), { later: true }),
+    P({ later: true, src: 'Practice F #3(a) · 4 pts', title: 'Looking into line B',
       q: md`**(a) (4 pts)** Find the impedance looking into line B at the junction.`,
       parts: [trap(N(md`$Z_{\text{in},B}$`, 25, 'Ω'), [[225, md`That is $Z_{0B}^2/R_L$, the quarter-wave rule. Line B is a half wavelength long: it repeats the load.`], [75, md`The line's $Z_0$ is not what you see unless the line is matched.`]])],
       hints: [md`$\lambda = v/f$. How many wavelengths long is line B? $\Gamma(d) = \Gamma_Le^{-j2\beta d}$.`],
@@ -1864,7 +1866,7 @@
 
         **Where points go.** Applying $Z_0^2/Z_L$ to a half-wave section.
       ` }),
-    P({ src: 'Practice F #3(b) · 4 pts', title: 'The input impedance',
+    P({ later: true, src: 'Practice F #3(b) · 4 pts', title: 'The input impedance',
       q: md`**(b) (4 pts)** Find the impedance $Z_{\text{in}}$ the generator sees.`,
       parts: [trap(N(md`$Z_{\text{in}}$`, 100, 'Ω'), [[25, md`Line A is a quarter wave: it inverts, $Z_{0A}^2/25$.`], [6.25, md`That uses $Z_L^2/Z_0$. The rule is $Z_0^2/Z_L$.`]])],
       hints: [md`$\Gamma(\lambda/4) = -\Gamma$ at the far end, which gives $Z(\lambda/4) = Z_0^2/Z_{\text{end}}$.`],
@@ -1880,7 +1882,7 @@
 
         **Where points go.** Inverting the wrong way.
       ` }),
-    P({ src: 'Practice F #3(c) · 4 pts', title: 'Input voltage and current',
+    P({ later: true, src: 'Practice F #3(c) · 4 pts', title: 'Input voltage and current',
       q: md`**(c) (4 pts)** Find $|\tilde V_{\text{in}}|$ and $|\tilde I_{\text{in}}|$ at the generator end of line A.`,
       parts: [
         trap(N(md`$|\tilde V_{\text{in}}|$`, 10, 'V'), [[20, md`That is $\tilde F$. The source resistor takes half.`]]),
@@ -1897,7 +1899,7 @@
 
         **Where points go.** Using $\tilde F$ for $\tilde V_{\text{in}}$.
       ` }),
-    P({ src: 'Practice F #3(d) · 4 pts', title: 'Power to the load',
+    P({ later: true, src: 'Practice F #3(d) · 4 pts', title: 'Power to the load',
       q: md`**(d) (4 pts)** Find the power delivered to $R_L$ and the amplitude $|\tilde V_L|$ across it.`,
       parts: [
         trap(N(md`$P_L$`, 0.5, 'W'), [[1, md`That forgets the $\tfrac12$: $P = \tfrac12\Re\{\tilde V\tilde I^*\}$ for peak phasors.`]]),
@@ -1919,7 +1921,7 @@
 
         **Where points go.** Assuming the load voltage equals the input voltage.
       ` }),
-    P({ src: 'Practice F #3(e) · 4 pts', title: 'Standing waves on each line',
+    P({ later: true, src: 'Practice F #3(e) · 4 pts', title: 'Standing waves on each line',
       q: md`**(e) (4 pts)** Find the VSWR on line B and on line A.`,
       parts: [
         N(md`VSWR on B`, 3, ''),
@@ -1942,7 +1944,7 @@
         **Where points go.** Calling line A matched because the generator is.
       `,
       figs: { v: { svg: figF3V(), cap: '|V| along the cascade; x is the distance from the generator (x = 0) to the load (x = 1.5 m). The dashed line is the A|B junction.' } } }),
-    P({ src: 'Practice F #3(f) · 4 pts', title: 'Twice the frequency',
+    P({ later: true, src: 'Practice F #3(f) · 4 pts', title: 'Twice the frequency',
       q: md`**(f) (4 pts)** The frequency is doubled to 200 MHz. Find the new $Z_{\text{in}}$ and the power to the load.`,
       parts: [
         trap(N(md`$Z_{\text{in}}$ at 200 MHz`, 25, 'Ω'), [[100, md`At 200 MHz line A is $\lambda/2$, not $\lambda/4$: it repeats instead of inverting.`]]),
@@ -2146,5 +2148,5 @@
         **Where points go.** Using $Z_0$ in the DC circuit.
       ` }),
   ];
-  EM.lesson('e3-prac', { id: 'e3-prac-f', order: 6, title: 'Practice exam F', kind: 'mock', sub: '75 min · 100 pts · phasor Maxwell, a wave onto a good conductor, half- and quarter-wave sections, ideal and shorted lines', steps: examF });
+  EM.lesson('e3-prac', { id: 'e3-prac-f', order: 6, title: 'Practice exam F', kind: 'mock', sub: '75 min · 100 pts · phasor Maxwell, a wave onto a good conductor, ideal and shorted lines', steps: examF });
 })();

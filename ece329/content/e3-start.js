@@ -42,10 +42,9 @@
   const TOPICS = [
     ['Lossy media, skin depth', 5, 4], ['Power and Poynting', 4, 4], ['Polarization', 4, 3], ['Current sheets', 1, 4],
     ['Bounce diagrams', 5, 0], ['Reflection, Γ and τ', 3, 1], ['Standing waves', 4, 0], ['L, C, Z₀ of a line', 4, 0],
-    ['Stubs and resonance', 4, 0], ['Quarter-wave, Γ(d)', 1, 0],
   ];
   function barsFig() {
-    const g = PF.fig({ alt: 'bar chart: out of nine past papers, lossy media 9, power 8, polarization 7, current sheets 5, bounce diagrams 5, reflection 4, standing waves 4, L C Z0 of a line 4, stubs and resonance 4, quarter-wave 1; bounce diagrams, lines and stubs come only from the five spring and fall papers' });
+    const g = PF.fig({ alt: 'bar chart: out of nine past papers, lossy media 9, power 8, polarization 7, current sheets 5, bounce diagrams 5, reflection 4, standing waves 4, L C Z0 of a line 4; bounce diagrams and lines come only from the five spring and fall papers' });
     const xb = 150, u = 19, h = 22, y0 = 18;
     TOPICS.forEach(([name, sf, su], i) => {
       const y = y0 + i * h;
@@ -75,17 +74,17 @@
         - **What you bring:** one 4"×6" card of handwritten notes. The exam gives you one printed table, the loss limits.
         - **No calculator.** Every number is chosen to work by hand. That is why [complex numbers from zero](#/l/e3-complex) is the next page.
         - **Who writes it:** Prof. Xu Chen. His Spring 2024 Exam 3 is the best model of what you will see.
-        - **Scope:** Lectures 20 to 33. Poynting's theorem and power; phasors; waves in lossy materials; polarization; reflection and standing waves; transmission lines in time (bounce diagrams) and in phasors (stubs, resonance, quarter-wave transformers). **The Smith chart is not on it.**
+        - **Scope:** Lectures 20 to 30 and Homework 8 to 11. Poynting's theorem and power; phasors; waves in lossy materials; polarization and current-sheet antennas; reflection, transmission and standing waves; transmission lines in time (L, C, $Z_0$, bounce diagrams, junctions of lines). **Not on it:** stubs, $Z_{in}$, quarter-wave transformers on lines, $\Gamma(d)$, VSWR on lines, ringing (resonating) lines, the Smith chart. Those are Lectures 31 to 34, for the Final. They are collected on [Not on Exam 3](#/l/e3-later).
 
         ### What the old papers asked
 
         There are nine old Exam 3 papers with solutions. Five are spring or fall papers, the same kind of term you are in. Four are summer papers by Prof. Kudeki, which are shorter (three problems, 75 points).
 
         - [Spring 2024](#/l/e3-past-sp24) (Chen, Shao, Waldrop). Four problems: two current sheets, a good conductor, a coax, a two-line bounce diagram. The next section takes it apart.
-        - [Fall 2023](#/l/e3-past-fa23) (Goddard, Ilie, Zhao). Seven questions, many multiple choice: polarization, the loss tangent, standing waves, line junctions, a scope trace read backward, a shorted line driven by a pulse, power in water, a resonant line.
-        - [Spring 2019](#/l/e3-past-sp19) (Chen, Goddard, Zhao). Five problems: a lossy wave from its phasor, a parallel-plate line from its fields, a circular wave hitting a perfect conductor, a two-line bounce, resonances.
-        - [Spring 2018](#/l/e3-past-sp18) (He, Goddard, Ilie). Ten multiple-choice parts, reflection into a dielectric, a bounce diagram with plots, a shorted-line resonance and a quarter-wave transformer.
-        - [Spring 2017](#/l/e3-past-sp17) (Waldrop, Lee, Goddard, Ilie). True or false, multiple choice, reading a lossy wave, polarization with power, a bounce with a sine pulse, a shorted line in series with a resistor.
+        - [Fall 2023](#/l/e3-past-fa23) (Goddard, Ilie, Zhao). Seven questions, many multiple choice: polarization, the loss tangent, standing waves, line junctions, a scope trace read backward, a shorted line driven by a pulse, power in water, a resonant line (not on this term's exam).
+        - [Spring 2019](#/l/e3-past-sp19) (Chen, Goddard, Zhao). Five problems: a lossy wave from its phasor, a parallel-plate line from its fields, a circular wave hitting a perfect conductor, a two-line bounce, resonances (not on this term's exam).
+        - [Spring 2018](#/l/e3-past-sp18) (He, Goddard, Ilie). Ten multiple-choice parts, reflection into a dielectric, a bounce diagram with plots, a shorted-line resonance and a quarter-wave transformer (those last two are not on this term's exam).
+        - [Spring 2017](#/l/e3-past-sp17) (Waldrop, Lee, Goddard, Ilie). True or false, multiple choice, reading a lossy wave, polarization with power, a bounce with a sine pulse, a shorted line in series with a resistor (a phasor-line problem, not on this term's exam).
         - [Summer 2017](#/l/e3-past-su17), [2018](#/l/e3-past-su18), [2019](#/l/e3-past-su19), [2020](#/l/e3-past-su20) (Kudeki). Each has a switched-on current sheet sketched against $t$ and $z$, a circular wave with its power, and a lossy medium. **None has a transmission line.**
 
         I went through every part of every paper and marked which topic it tests. The count:
@@ -102,14 +101,14 @@
         | Reflection: $\Gamma$ and $\tau$ at a boundary | — | 3 of 5 | 1 of 4 |
         | Standing waves | #1, between the sheets | 4 of 5 | 0 of 4 |
         | $L$, $C$, $Z_0$ from the fields | #3, 18 pts | 4 of 5 | 0 of 4 |
-        | Stubs, resonance, input impedance | — | 4 of 5 | 0 of 4 |
-        | Quarter-wave transformer, $\Gamma(d)$ | — | 1 of 5 | 0 of 4 |
 
         Three things to take from this.
 
         1. **A lossy wave is on every paper.** Nine of nine. Know $\gamma$, $\eta$, $\tau$, the good-conductor limit and the skin depth cold.
         2. **A bounce diagram is on every spring and fall paper.** Five of five, and it was the largest problem on Prof. Chen's (34 points).
         3. **Power and polarization are on almost every paper**, usually as a part of a bigger problem or as multiple choice.
+
+        The old papers also asked about stubs, resonance, input impedance and quarter-wave transformers on lines. **This term those are not on Exam 3** (Lectures 31 to 34). The papers' problems on them are tagged and collected on [Not on Exam 3](#/l/e3-later).
       `, { bars: { svg: barsFig(), cap: 'How many of the nine papers ask each topic. The solid part of each bar counts spring and fall papers; the outlined part counts summer papers.' } }),
       Q(md`**Predict.** Prof. Chen's Spring 2024 paper used $f = 300$ MHz in free space. What is the wavelength? (Clean numbers like this are the point: no calculator.)`,
         ['1 m', '0.1 m', '3 m', '10 m'], 0,
@@ -148,7 +147,7 @@
         **It does not give you** (know it or put it on your card):
         - Maxwell's equations, the boundary conditions, the current-sheet fields, $\hat e\times\hat h = \hat v_p$, $\langle\mathbf S\rangle = \tfrac12\Re\{\tilde{\mathbf E}\times\tilde{\mathbf H}^*\}$, and Poynting's theorem.
         - The general $\gamma$, $\eta$, $\eta\gamma = j\omega\mu$, $\gamma/\eta = \sigma + j\omega\epsilon$, $\Gamma = (\eta_2 - \eta_1)/(\eta_2 + \eta_1)$ and $\tau = 1 + \Gamma$.
-        - The telegrapher's equations, $Z_0$, $v_p$, $\tau_g$, $\Gamma_L$, $\Gamma_g$, the bounce sums, $\tilde V(d)$, $\tilde I(d)$, $\Gamma(d)$, $Z(d)$, $P(d)$, VSWR, and the short and open loads.
+        - The telegrapher's equations, $Z_0$, $v_p$, $\tau_g$, $\Gamma_L$, $\Gamma_g$, the bounce sums, and the short and open loads. (The phasor-line formulas $\tilde V(d)$, $\Gamma(d)$, $Z(d)$ and VSWR on lines are not on this exam.)
         - Any complex arithmetic, or the values of $\sqrt2$, $\sqrt3$, $e^{-1}$, $\cos 30°$ and friends. ([Complex numbers from zero](#/l/e3-complex).)
         - **Anything about polarization.** Which hand is which is a rule you must carry.
         - The skin depth in terms of $f$, $\mu$, $\sigma$. The table gives $\delta = 1/\alpha$ and $\alpha \approx \sqrt{\pi f\mu\sigma}$, so $\delta = 1/\sqrt{\pi f\mu\sigma}$ follows.
@@ -156,15 +155,15 @@
         - $\langle\mathbf S\rangle$ for a lossy wave already worked out: $\dfrac{E_0^2}{2|\eta|}e^{-2\alpha z}\cos\tau$.
         - $L$ and $C$ for a coax or parallel plates. (Spring 2024 gave $C$ in the problem.)
         - The coefficients at a junction of two lines, $\Gamma_{12} = (Z_{02} - Z_{01})/(Z_{02} + Z_{01})$ and $\tau_{12} = 1 + \Gamma_{12}$, and the fact that current reflects with $-\Gamma$.
-        - The resonance lengths of shorted and open lines, and $Z_{in} = Z_0^2/Z_L$ for a quarter-wave line.
-
-        !!trap A common line is shorthand
-          You may see $Z(d) = Y(d \pm \lambda/4)$ written. Read literally, the units do not match: ohms on the left, siemens on the right. It is true only for the **normalized** values, $z(d) = y(d \pm \lambda/4)$, with $z = Z/Z_0$ and $y = Z_0Y$. In ohms it says $Z(d)\,Z(d \pm \lambda/4) = Z_0^2$. That is the quarter-wave transformer.
       `),
+      Object.assign(R(md`
+        !!trap (Final material) A common line is shorthand
+          You may see $Z(d) = Y(d \pm \lambda/4)$ written. Read literally, the units do not match: ohms on the left, siemens on the right. It is true only for the **normalized** values, $z(d) = y(d \pm \lambda/4)$, with $z = Z/Z_0$ and $y = Z_0Y$. In ohms it says $Z(d)\,Z(d \pm \lambda/4) = Z_0^2$. That is the quarter-wave transformer on a line.
+      `), { later: true }),
       Q(md`**Predict.** A line has $Z_0 = 50\ \Omega$. At some point $Z(d) = 100\ \Omega$. What is $Z$ a quarter wavelength farther along, $Z(d + \lambda/4)$?`,
         [md`$25\ \Omega$`, md`$0.01\ \Omega$`, md`$100\ \Omega$`, md`$200\ \Omega$`], 0,
         [null, md`That reads $Z(d) = Y(d \pm \lambda/4)$ literally and takes $1/100$. That line holds only for normalized values.`, md`That is what a **half** wavelength does: $z(d) = z(d \pm \lambda/2)$.`, md`That multiplies by 2. The quarter-wave line inverts the normalized impedance: $z = 2$ becomes $z = \tfrac12$.`],
-        md`Normalized: $z(d) = 100/50 = 2$. A quarter wave inverts it: $z = \tfrac12$. In ohms, $\tfrac12\cdot50 = 25\ \Omega$. Check: $Z(d)\,Z(d + \lambda/4) = 100\cdot25 = 2500 = Z_0^2$ ✓.`),
+        md`Normalized: $z(d) = 100/50 = 2$. A quarter wave inverts it: $z = \tfrac12$. In ohms, $\tfrac12\cdot50 = 25\ \Omega$. Check: $Z(d)\,Z(d + \lambda/4) = 100\cdot25 = 2500 = Z_0^2$ ✓.`, { later: true }),
       RF(md`
         ### The big idea: a line is a plane wave in disguise
 
@@ -241,14 +240,12 @@
         | $\mathbf S = \mathbf E\times\mathbf H$ | $P = VI$ | power |
         | $\tfrac12\Re\{\tilde E\tilde H^*\}$ | $\tfrac12\Re\{\tilde V\tilde I^*\}$ | average power |
         | a perfect conductor, $\eta_2 = 0$ | a short, $Z_L = 0$ | $\Gamma = -1$: a standing wave |
-        | a slab $\lambda/2$ thick | a line $\lambda/2$ long | invisible: $Z_{in} = Z_L$ |
-        | a $\lambda/4$ coating, $\eta_c = \sqrt{\eta_1\eta_3}$ | a $\lambda/4$ line, $Z_0 = \sqrt{Z_{in}Z_L}$ | no reflection |
         | conductivity $\sigma$ | leakage $G$ | loss |
 
         **Three differences to remember.**
         - A line has a **generator with its own resistance** at one end, so waves reflect at both ends: $\Gamma_L$ at the load and $\Gamma_g$ at the source. Plane-wave problems almost never have the second reflection.
         - **Current reflects with $-\Gamma$**, just as $\mathbf H$ does. Fall 2023 #3 asked for the current coefficient on purpose.
-        - **Two position variables.** In time-domain line problems $z$ runs from the generator ($z = 0$) to the load ($z = l$). In phasor line problems $d$ runs backward from the load ($d = 0$ at the load). Know both.
+        - **Position.** In time-domain line problems $z$ runs from the generator ($z = 0$) to the load ($z = l$). (Phasor line problems, with $d$ measured back from the load, are Lecture 34: not on Exam 3.)
       `),
       Q(md`**Predict.** A 150 $\Omega$ line joins a 50 $\Omega$ line. A voltage wave arrives from the 150 $\Omega$ side. Use the dictionary: what fraction reflects?`,
         [md`$-\tfrac12$`, md`$+\tfrac12$`, md`$\tfrac12$ of the power, so $-\tfrac{1}{\sqrt2}$ of the voltage`, md`$-\tfrac13$`], 0,
@@ -271,7 +268,7 @@
 
         **Friday night.** These three start pages. Then [Spring 2024](#/l/e3-past-sp24), timed, 75 minutes, closed book. Grade it with the solutions. List each miss next to the lesson that fixes it.
 
-        **Saturday.** Morning: fix Friday's misses. Then [practice exam A](#/l/e3-prac-a) and [practice exam B](#/l/e3-prac-b), each timed, each graded and fixed the same way. Gym. If lines were weak, read [Topic 15](#/l/w5-bounce) and [Topic 18](#/l/w6-stubs).
+        **Saturday.** Morning: fix Friday's misses. Then [practice exam A](#/l/e3-prac-a) and [practice exam B](#/l/e3-prac-b), each timed, each graded and fixed the same way. Gym. If lines were weak, read [Topic 15](#/l/w5-bounce) and [Topic 16](#/l/w5-multi).
 
         **Sunday.** [Practice exams C](#/l/e3-prac-c) and [D](#/l/e3-prac-d), then [Fall 2023](#/l/e3-past-fa23) and [Spring 2019](#/l/e3-past-sp19). Redo Saturday's misses blank. Learn the [speed tricks](#/l/e3-speed). Gym and flashcards.
 
@@ -292,9 +289,6 @@
         | $L$, $C$, $Z_0$, coax | [Topic 13](#/l/w5-telegraph) |
         | $\tau_g$, $\Gamma_L$, $\Gamma_g$, DC | [Topic 14](#/l/w5-launch) |
         | bounce diagrams | [Topic 15](#/l/w5-bounce), [Topic 16](#/l/w5-multi) |
-        | $V(d)$, $\Gamma(d)$, VSWR | [Topic 17](#/l/w6-vd) |
-        | stubs, resonance | [Topic 18](#/l/w6-stubs) |
-        | quarter-wave, half-wave | [Topic 19](#/l/w6-qw) |
         | complex arithmetic by hand | [complex numbers from zero](#/l/e3-complex) |
 
         ### Check questions
@@ -317,9 +311,9 @@
       [null, md`No calculator is allowed. That is why every number on the exam is chosen to work by hand.`, md`Older spring papers allowed three 3×5 cards. This term it is one 4×6 card, for 75 minutes.`, md`It is closed book, 7:00 to 8:15 pm.`],
       md`Monday 7:00 to 8:15 pm: 75 minutes, closed book, no calculator, one 4"×6" card, and one printed table (the loss limits).`),
     Q(md`Which topic is **not** on Exam 3?`,
-      ['The Smith chart', 'Quarter-wave transformers', 'Bounce diagrams with two lines', 'Skin depth in a good conductor'], 0,
-      [null, md`Half- and quarter-wave transformers are Lecture 33, inside the scope (Lectures 20 to 33).`, md`Multi-line bounce diagrams are Lecture 30 and were 34 points in Spring 2024.`, md`Good conductors are Lecture 23 and were 30 points in Spring 2024.`],
-      md`The Smith chart is Lecture 34, on exam day. It is on the Final.`),
+      ['Input impedance and stubs on a line (the Smith chart, quarter-wave transformers on lines)', 'Standing waves of a plane wave', 'Bounce diagrams with two lines', 'Skin depth in a good conductor'], 0,
+      [null, md`Standing waves of plane waves are Lecture 26, inside the scope (Lectures 20 to 30).`, md`Multi-line bounce diagrams are Lecture 30 and were 34 points in Spring 2024.`, md`Good conductors are Lecture 23 and were 30 points in Spring 2024.`],
+      md`Input impedance, stubs, quarter-wave transformers on lines, $\Gamma(d)$, VSWR on lines and the Smith chart are Lectures 31 to 34. The exam covers Lectures 20 to 30 and HW 8 to 11. Those are for the Final.`),
     Q(md`Which topic appeared on all nine old Exam 3 papers?`,
       ['Waves in lossy media ($\\gamma$, $\\eta$, skin depth)', 'Bounce diagrams', 'Polarization', 'Current sheets'], 0,
       [null, md`Bounce diagrams are on all five spring and fall papers, but on none of the summer ones.`, md`Polarization is on seven of nine; Spring 2024 has none.`, md`Current sheets are on five of nine: Spring 2024 and the four summer papers.`],
@@ -371,7 +365,7 @@
     Q(md`In a time-domain line problem, $z$ is measured from…; in a phasor line problem, $d$ is measured from…`,
       ['the generator, toward the load; the load, back toward the generator', 'the load in both', 'the generator in both', 'the middle of the line in both'], 0,
       [null, md`Time-domain problems start the clock and the distance at the generator.`, md`Phasor formulas like $\Gamma(d) = \Gamma_Le^{-j2\beta d}$ need $d = 0$ at the load.`, md`Neither convention uses the middle.`],
-      md`Bounce diagrams use $z$ from the generator. $V(d)$, $\Gamma(d)$, $Z(d)$ use $d$ from the load.`),
+      md`Bounce diagrams use $z$ from the generator. $V(d)$, $\Gamma(d)$, $Z(d)$ use $d$ from the load.`, { later: true }),
     Q(md`A wave hits a material that has the same $\eta$ as the one it came from, but a different $\mu$ and $\epsilon$. On a line, the same thing is…`,
       ['joining two lines with the same $Z_0$ but different speeds: no reflection', 'a short circuit', 'an open circuit', 'a quarter-wave transformer'], 0,
       [null, md`A short has $Z_L = 0$, which reflects everything.`, md`An open has $Z_L = \infty$, which reflects everything with $\Gamma = +1$.`, md`A transformer needs a different $Z_0$ in the middle.`],
@@ -702,10 +696,11 @@
         | $45°$ | $1/\sqrt2 \approx 0.707$ | $1/\sqrt2 \approx 0.707$ |
         | $60°$ | $1/2$ | $\sqrt3/2 \approx 0.866$ |
         | $90°$ | $0$ | $1$ |
+      `),
+      Object.assign(RF(md`
+        ### 9. $e^{-j2\beta d}$: the rotation on a line (Final material, not on Exam 3)
 
-        ### 9. $e^{-j2\beta d}$: the rotation on a line
-
-        On a transmission line the reflection coefficient changes with distance $d$ from the load as $\Gamma(d) = \Gamma_Le^{-j2\beta d}$ ([Topic 17](#/l/w6-vd)). With $\beta = 2\pi/\lambda$, the angle is
+        On a transmission line the reflection coefficient changes with distance $d$ from the load as $\Gamma(d) = \Gamma_Le^{-j2\beta d}$. With $\beta = 2\pi/\lambda$, the angle is
         $$2\beta d = \frac{4\pi d}{\lambda}$$
         Measure $d$ in eighths of a wavelength. Each eighth adds $\pi/2$ to $2\beta d$:
 
@@ -718,16 +713,16 @@
 
         [[fig:rot]]
 
-        So $\Gamma$ turns **clockwise by a quarter turn every $\lambda/8$**, and returns to where it started every $\lambda/2$. Two facts follow at once. A half-wave line repeats its load. A quarter-wave line flips the sign of $\Gamma$, which turns a high impedance into a low one ([Topic 19](#/l/w6-qw)).
+        So $\Gamma$ turns **clockwise by a quarter turn every $\lambda/8$**, and returns to where it started every $\lambda/2$. Two facts follow at once. A half-wave line repeats its load. A quarter-wave line flips the sign of $\Gamma$, which turns a high impedance into a low one.
 
         Example: $\Gamma_L = \tfrac12$. At $d = \lambda/8$, $\Gamma = \tfrac12(-j) = -j\tfrac12$. At $d = \lambda/4$, $\Gamma = -\tfrac12$.
 
         The one-way factor $e^{-j\beta d}$ turns half as fast: $e^{-j\beta d} = -j$ at $d = \lambda/4$ and $-1$ at $d = \lambda/2$.
-      `, { rot: { svg: rotFig(), cap: '$\\Gamma(d) = \\Gamma_Le^{-j2\\beta d}$ keeps its size and turns clockwise, a quarter turn for every $\\lambda/8$.' } }),
+      `, { rot: { svg: rotFig(), cap: '$\\Gamma(d) = \\Gamma_Le^{-j2\\beta d}$ keeps its size and turns clockwise, a quarter turn for every $\\lambda/8$.' } }), { later: true }),
       Q(md`**Predict.** A load has $\Gamma_L = j\tfrac12$. What is $\Gamma(d)$ at $d = 3\lambda/8$?`,
         [md`$-\tfrac12$`, md`$+\tfrac12$`, md`$-j\tfrac12$`, md`$j\tfrac12$`], 0,
         [null, md`That turns by only one eighth-step: $j\tfrac12\cdot(-j) = \tfrac12$ is $d = \lambda/8$.`, md`That is $d = \lambda/4$: a half turn, multiplying by $-1$.`, md`That is a full turn, $d = \lambda/2$.`],
-        md`$d = 3\lambda/8$ gives $2\beta d = 3\pi/2$ and $e^{-j3\pi/2} = j$. So $\Gamma = j\tfrac12\cdot j = -\tfrac12$.`),
+        md`$d = 3\lambda/8$ gives $2\beta d = 3\pi/2$ and $e^{-j3\pi/2} = j$. So $\Gamma = j\tfrac12\cdot j = -\tfrac12$.`, { later: true }),
       R(md`
         ### 10. Numbers to know
 
@@ -817,7 +812,6 @@
           - **Adding angles when dividing.** Division subtracts: top angle minus bottom angle.
           - **$1/j = j$.** It is $-j$.
           - **Dropping the conjugate** in $\tfrac12\Re\{\tilde E\tilde H^*\}$. Without it the traveling phases do not cancel, and the answer depends on $z$.
-          - **$e^{-j2\beta d}$ versus $e^{-j\beta d}$.** $\Gamma(d)$ uses the round trip, $2\beta d$.
 
         ### Check questions
       `),
@@ -864,7 +858,7 @@
 
         Press **New problem** for fresh values. Two correct answers without opening the solution complete each one.
       `),
-      G('s0_gamma', { need: 2 }),
+      Object.assign(G('s0_gamma', { need: 2 }), { later: true }),
       G('s0_addcos', { need: 2 }),
       G('s0_root', { need: 2 }),
     ],
@@ -955,14 +949,6 @@
       return MC('Exponentials to sines and cosines', md`$${it[0]}$ equals…`, `$${it[1]}$`,
         Object.keys(ALL).filter((k) => k !== it[1]).map((k) => [`$${k}$`, md`${ALL[k]} Write $e^{\pm j\theta} = \cos\theta \pm j\sin\theta$ and combine.`]),
         md`With $e^{\pm j\theta} = \cos\theta \pm j\sin\theta$: $${it[0]} = ${it[1]}$.`);
-    },
-    () => {
-      const n = pick([1, 2, 3, 4, 5, 6, 7]), i = ((-n % 4) + 4) % 4;
-      const dT = n === 1 ? '\\lambda/8' : n === 4 ? '\\lambda/2' : n === 2 ? '\\lambda/4' : n === 6 ? '3\\lambda/4' : `${n}\\lambda/8`;
-      const dOf = { 0: '\\lambda/2', 1: '3\\lambda/8', 2: '\\lambda/4', 3: '\\lambda/8' };
-      return MC('Round trip on a line', md`$\beta = 2\pi/\lambda$. At $d = ${dT}$, $e^{-j2\beta d}$ equals…`, `$${QV[i]}$`,
-        QV.map((v, k) => [`$${v}$`, md`That is the value at $d = ${dOf[k]}$ (or that plus a multiple of $\lambda/2$).`]).filter((x, k) => k !== i),
-        md`$2\beta d = 4\pi d/\lambda = ${n}\pi/2$: ${n} quarter turns clockwise, which lands on $${QV[i]}$.`);
     },
   ]);
 

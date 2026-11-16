@@ -57,11 +57,11 @@
   const EPS0 = 1e-9 / (36 * PI);                                         // the course's epsilon_0
 
   // ======================================================================================== the lesson
-  const sec = (n, title, body, gen) => [R(md`
+  const sec = (n, title, body, gen, later) => [Object.assign(R(md`
     ### ${n}. ${title}
 
     ${body}
-  `), Object.assign(G(gen, { need: 2 }), { id: `e3-endless.${gen}` })];
+  `), later ? { later: true } : {}), Object.assign(G(gen, { need: 2 }), { id: `e3-endless.${gen}` }, later ? { later: true } : {})];
 
   const SECTIONS = [
     ['A good conductor', md`**On the exam:** "a wave travels in a good conductor with penetration depth $\delta = 1$ mm" (Spring 2024 #2). You give $\gamma$, an amplitude at a depth, $\eta$, the power, and judge statements about $\mathbf S$. Review: [Topic 7](#/l/w2-limits), [Topic 8](#/l/w2-loss).`, 'ex_goodcond'],
@@ -96,7 +96,7 @@
 
         Each section opens with how the problem is worded on real exams and which lesson to review if it goes badly.
       `),
-      ...SECTIONS.flatMap(([title, body, gen], k) => sec(k + 1, title, body, gen)),
+      ...SECTIONS.flatMap(([title, body, gen], k) => sec(k + 1, title, body, gen, /^ex_(stub|qw|vd)$/.test(gen))),
     ],
   });
 

@@ -184,19 +184,19 @@
 
       ${HOWTO}
 
-      **The format.** The Fall 2023 Exam 3 (Goddard, Ilie, Zhao) had seven questions. Part I was multiple choice: "circle all that apply" statements, then transmission-line questions with numeric choices. Part II was worked problems. This paper keeps that shape. Each statement below is one True/False choice: judge every statement on its own, which is what "circle all that apply" asks of you. The statements aim at the topics the other practice papers test least: the terms of the Poynting theorem, radiation pressure, surface resistance, line resonances and $\mathcal L\mathcal C = \mu\epsilon$.
+      **The format.** The Fall 2023 Exam 3 (Goddard, Ilie, Zhao) had seven questions. Part I was multiple choice: "circle all that apply" statements, then transmission-line questions with numeric choices. Part II was worked problems. This paper keeps that shape. Each statement below is one True/False choice: judge every statement on its own, which is what "circle all that apply" asks of you. The statements aim at the topics the other practice papers test least: the terms of the Poynting theorem, radiation pressure, surface resistance, and $\mathcal L\mathcal C = \mu\epsilon$. (Questions 3 and 6, on line resonances, use Lecture 31 and are moved to [Not on Exam 3](#/l/e3-later).)
 
       | Question | Topic | Points |
       |---|---|---|
       | 1 | Circle all that apply: the Poynting theorem, term by term | 12 |
       | 2 | Circle all that apply: radiation pressure and surface resistance | 12 |
-      | 3 | Circle all that apply: resonances, $\mathcal L\mathcal C = \mu\epsilon$, a filled coax | 12 |
+      | 3 | (not on Exam 3) Circle all that apply: resonances, $\mathcal L\mathcal C = \mu\epsilon$, a filled coax | 12 |
       | 4 | Three line sections: $\tau_g$, $\Gamma$ at a junction, current reflection, a return time | 12 |
       | 5 | A scope trace read backwards: $R_g$, $R_L$, the pulse weight, $\epsilon_r$ | 16 |
-      | 6 | A line shorted at both ends: resonant frequencies and the standing pattern | 12 |
+      | 6 | (not on Exam 3) A line shorted at both ends: resonant frequencies and the standing pattern | 12 |
       | 7 | Worked problem: a plane wave on a metal wall | 24 |
 
-      **Draws on:** [the Poynting theorem](#/l/w1-poynting), [power in lossy media and surface resistance](#/l/w2-loss), [reflection and radiation pressure](#/l/w4-gamma), [standing waves](#/l/w4-standing), [fields to telegrapher's equations](#/l/w5-telegraph), [launching waves](#/l/w5-launch), [junctions and scope traces](#/l/w5-multi) and [stubs and resonance](#/l/w6-stubs).
+      **Draws on:** [the Poynting theorem](#/l/w1-poynting), [power in lossy media and surface resistance](#/l/w2-loss), [reflection and radiation pressure](#/l/w4-gamma), [standing waves](#/l/w4-standing), [fields to telegrapher's equations](#/l/w5-telegraph), [launching waves](#/l/w5-launch) and [junctions and scope traces](#/l/w5-multi).
 
       ${CONSTS}
     `),
@@ -318,12 +318,12 @@
       ` }),
 
     // ---------------------------------------------------------------- J Question 3
-    R(md`
+    Object.assign(R(md`
       ### Question 3 (12 points): resonances and $\mathcal L\mathcal C = \mu\epsilon$
 
       Circle all that apply: mark each statement True or False. All lines are lossless TEM lines; $\mathcal L$ and $\mathcal C$ are the inductance and capacitance per meter.
-    `),
-    P({ src: 'Practice J #3 · 12 pts', title: 'Which statements are true?',
+    `), { later: true }),
+    P({ later: true, src: 'Practice J #3 · 12 pts', title: 'Which statements are true?',
       q: md`**(a)–(d) (3 pts each).** Judge each statement on its own.`,
       parts: [
         tf(md`(a) A line open at both ends and the same line shorted at both ends have the same resonant frequencies.`, true,
@@ -488,14 +488,14 @@
       figs: { bd: { svg: TL.diagram(sJ5, { tMax: 4, w: 360, h: 300, unit: '', probe: 100 }), cap: 'The bounce diagram once everything is known (weights in V·µs). The dots are what the probe at z = 100 m sees.' } } }),
 
     // ---------------------------------------------------------------- J Question 6
-    RF(md`
+    Object.assign(RF(md`
       ### Question 6 (12 points): a line shorted at both ends
 
       A lossless line of length $l = 100$ m with $v = 2\times10^8$ m/s is shorted at both ends. With no source, it supports resonant oscillations. In cosinusoidal steady state the voltage phasor is zero at both ends. Measure $d$ from the right-hand end.
 
       [[fig:line]]
-    `, { line: { svg: figJ6(), cap: 'Shorted at both ends: a voltage node at each end.' } }),
-    P({ src: 'Practice J #6 · 12 pts', title: 'Resonances and the standing pattern',
+    `, { line: { svg: figJ6(), cap: 'Shorted at both ends: a voltage node at each end.' } }), { later: true }),
+    P({ later: true, src: 'Practice J #6 · 12 pts', title: 'Resonances and the standing pattern',
       q: md`**(a)–(d) (3 pts each).** For (c) the candidates are drawn below; each shows $\tilde V(d)$ up to a constant factor, for $0 \le d \le 100$ m.
 
 [[fig:cands]]`,
@@ -688,7 +688,7 @@
       ` }),
   ];
 
-  EM.lesson('e3-prac', { id: 'e3-prac-j', order: 10, title: 'Practice exam J', kind: 'mock', sub: '75 min · 100 pts · circle-all-that-apply on Poynting, pressure, surface resistance and resonance; three line sections; a scope trace; a resonant line; a metal wall', steps: examJ });
+  EM.lesson('e3-prac', { id: 'e3-prac-j', order: 10, title: 'Practice exam J', kind: 'mock', sub: '75 min · 100 pts · circle-all-that-apply on Poynting, pressure and surface resistance; three line sections; a scope trace; a metal wall (the two resonance questions are not on Exam 3)', steps: examJ });
 
   // ======================================================================================== EXAM K: figures
   const stepF = (x) => (x > 0 ? 1 : 0);
@@ -1383,11 +1383,11 @@
       | Problem | Topic | Points |
       |---|---|---|
       | 1 | A measured $\mathbf H$ and $\mathbf E$ in an unknown lossy medium: $\gamma$, $\eta$, $\mu$, $\sigma$, $\epsilon$, power | 28 |
-      | 2 | A quarter-wave coating on glass: the line analog, the coating, its thickness, other colors | 24 |
-      | 3 | A charged line shorted at $t = 0$: the waveform, its frequencies, energy, a resistor instead | 22 |
+      | 2 | (not on Exam 3) A quarter-wave coating on glass: the line analog, the coating, its thickness, other colors | 24 |
+      | 3 | A charged line shorted at $t = 0$: the waveform, energy, a resistor instead (part (c), the ringing frequencies, is not on Exam 3) | 22 |
       | 4 | An impulse on two lines with different speeds: coefficients, arrivals at a point, a merged pulse | 26 |
 
-      **Draws on:** [where γ and η come from](#/l/w2-gamma), [reading a lossy wave](#/l/w2-read), [power in lossy media](#/l/w2-loss), [reflection](#/l/w4-gamma), [quarter-wave transformers](#/l/w6-qw), [periodic oscillations and stubs](#/l/w6-stubs), [launching waves](#/l/w5-launch) and [junctions](#/l/w5-multi).
+      **Draws on:** [where γ and η come from](#/l/w2-gamma), [reading a lossy wave](#/l/w2-read), [power in lossy media](#/l/w2-loss), [reflection](#/l/w4-gamma), [launching waves](#/l/w5-launch) and [junctions](#/l/w5-multi).
 
       ${CONSTS}
     `),
@@ -1530,14 +1530,14 @@
     `, { ge: { svg: figL1(), cap: 'γ at 60°, η at 30°: product at 90° (so μ is real), quotient at 30° (so σ/ωε = tan 60° = √3).' } }),
 
     // ---------------------------------------------------------------- L Problem 2
-    RF(md`
+    Object.assign(RF(md`
       ### Problem 2 (24 points): a quarter-wave coating on glass
 
       Orange light, free-space wavelength $\lambda_0 = 600$ nm, hits a flat piece of glass head-on from air. The glass is nonmagnetic with $\epsilon_r = 4$ (a high-index glass, refractive index 2) and fills all of the space behind it. To stop the reflection, a thin nonmagnetic, lossless coating of thickness $d$ and relative permittivity $\epsilon_{rc}$ is laid on the glass.
 
       [[fig:g]]
-    `, { g: { svg: figL2(), cap: 'Air, a coating of thickness d, then glass that goes on forever. Not to scale: d is about a sixth of a wavelength.' } }),
-    P({ src: 'Practice L #2(a) · 4 pts', title: 'Bare glass',
+    `, { g: { svg: figL2(), cap: 'Air, a coating of thickness d, then glass that goes on forever. Not to scale: d is about a sixth of a wavelength.' } }), { later: true }),
+    P({ later: true, src: 'Practice L #2(a) · 4 pts', title: 'Bare glass',
       q: md`**(a) (4 pts)** Without the coating, find $\Gamma$ at the air-glass surface and the fraction of the power reflected.`,
       parts: [trap(N(md`$\Gamma$`, -1 / 3, ''), [[1 / 3, md`$\Gamma = (\eta_2 - \eta_1)/(\eta_2 + \eta_1)$ with $\eta_2 = 60\pi < \eta_1 = 120\pi$: negative.`]]),
         trap(N(md`fraction reflected`, 1 / 9, ''), [[1 / 3, md`That is $|\Gamma|$. The power goes as the field squared: $|\Gamma|^2$.`]])],
@@ -1554,7 +1554,7 @@
 
         **Where points go.** Reporting $|\Gamma|$ as the power fraction.
       ` }),
-    P({ src: 'Practice L #2(b) · 4 pts', title: 'The line analog',
+    P({ later: true, src: 'Practice L #2(b) · 4 pts', title: 'The line analog',
       q: md`**(b) (4 pts)** Pick the transmission-line circuit that behaves exactly like air, coating and glass at normal incidence. Then use the same idea on a real line: a 75 Ω line must feed a 300 Ω antenna with no reflection, through a quarter-wave section. What $Z_0$ must that section have?`,
       parts: [mc('The analog is', [
         md`a $120\pi\ \Omega$ line, then a section of $Z_0 = \eta_c$ and length $d$, ending in a **resistor** $60\pi\ \Omega$`,
@@ -1578,7 +1578,7 @@
 
         **Where points go.** Modeling the glass as a short or an open. The arithmetic mean.
       ` }),
-    P({ src: 'Practice L #2(c)–(d) · 8 pts', title: 'Design the coating',
+    P({ later: true, src: 'Practice L #2(c)–(d) · 8 pts', title: 'Design the coating',
       q: md`**(c) (4 pts)** Find $\epsilon_{rc}$ so that nothing is reflected at $\lambda_0 = 600$ nm. **(d) (4 pts)** Find the thinnest $d$ that works, and the amplitude of $\mathbf E$ in the glass as a fraction of the incident amplitude.`,
       parts: [trap(N(md`(c) $\epsilon_{rc}$`, 2, ''), [[2.5, md`That is the arithmetic mean of 1 and 4. A quarter-wave matcher needs the **geometric** mean of the impedances, $\eta_c = \sqrt{\eta_0\eta_g}$, which gives $\epsilon_{rc} = \sqrt{1\cdot4}$.`], [Math.SQRT2, md`That is the coating's refractive index $\sqrt{\epsilon_{rc}}$. Square it.`]]),
         trap(N(md`(d) $d$ (nm)`, 75 * Math.SQRT2, 'nm'), [[150, md`That is $\lambda_0/4$, a quarter of the **free-space** wavelength. Inside the coating the wavelength is shorter: $\lambda_0/\sqrt2$.`], [75, md`That divides by $\epsilon_{rc} = 2$. The wavelength shrinks by $\sqrt{\epsilon_{rc}}$.`]]),
@@ -1608,7 +1608,7 @@
 
         **Where points go.** $\lambda_0/4$ instead of $\lambda_c/4$. Taking $E_g = E_i$ because "everything is transmitted".
       ` }),
-    P({ src: 'Practice L #2(e)–(f) · 8 pts', title: 'Other colors',
+    P({ later: true, src: 'Practice L #2(e)–(f) · 8 pts', title: 'Other colors',
       q: md`The coating of (c) and (d) stays the same. **(e) (4 pts)** What fraction of the power is reflected at $\lambda_0 = 300$ nm (ultraviolet)? **(f) (4 pts)** And at $\lambda_0 = 400$ nm (violet)?`,
       parts: [trap(N(md`(e) fraction reflected at 300 nm`, 1 / 9, ''), [[0, md`The coating is a quarter wave only at 600 nm. At 300 nm it is a **half** wave, which repeats the glass's impedance: the coating vanishes.`], [1 / 3, md`That is $|\Gamma|$; the power fraction is $|\Gamma|^2$.`]]),
         trap(N(md`(f) fraction reflected at 400 nm`, 1 / 17, ''), [[1 / 9, md`At 400 nm the coating is $3/8$ of a wavelength, neither a quarter nor a half: it helps partly.`], [Math.sqrt(1 / 17), md`That is $|\Gamma|$. Square it.`]])],
@@ -1702,7 +1702,7 @@
 
         **Where points go.** Period $2l/v$. Forgetting that the open end sees the arriving wave **and** its reflection.
       ` }),
-    P({ src: 'Practice L #3(c) · 4 pts', title: 'Which frequencies ring?',
+    P({ later: true, src: 'Practice L #3(c) · 4 pts', title: 'Which frequencies ring?',
       q: md`**(c) (4 pts)** Find the lowest frequency in the oscillation, and say which others are present.`,
       parts: [trap(N(md`lowest frequency (kHz)`, 125, 'kHz'), [[250, md`That is $v/2l$, the lowest resonance of a line with the **same** kind of end at both sides. Short-open: $v/4l$.`]]),
         mc('The other frequencies present are', [md`odd multiples only: 375, 625, 875 kHz, ...`, md`all multiples: 250, 375, 500 kHz, ...`, md`none: the oscillation is a pure sinusoid`, md`even multiples only: 250, 500 kHz, ...`], 0,
@@ -1849,5 +1849,5 @@
       figs: { tr: { svg: figL4trace(), cap: 'What the probe at z = 525 m records up to 9 µs (weights in V·µs). The last impulse is two arrivals merged.' } } }),
   ];
 
-  EM.lesson('e3-prac', { id: 'e3-prac-l', order: 12, title: 'Practice exam L', kind: 'mock', sub: '75 min · 100 pts · the hardest: a measured wave in an unknown medium, a quarter-wave coating on glass, a charged line shorted at t = 0, an impulse on two lines with different speeds', steps: examL });
+  EM.lesson('e3-prac', { id: 'e3-prac-l', order: 12, title: 'Practice exam L', kind: 'mock', sub: '75 min · 100 pts · the hardest: a measured wave in an unknown medium, a charged line shorted at t = 0, an impulse on two lines with different speeds', steps: examL });
 })();

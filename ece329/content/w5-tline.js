@@ -1511,7 +1511,7 @@ Now take $b/a = ${B.r}$ ($\ln(b/a) = ${B.lnT}$), $\epsilon = ${er}\epsilon_0$, $
         $$\frac{\partial V}{\partial z} = 0, \qquad \frac{\partial I}{\partial z} = 0$$
         The voltage and current are the same all along the line: at DC, a lossless line is just a pair of wires.
 
-        **When it fails.** The series needs $|\Gamma_g\Gamma_L| < 1$. That fails only when both ends reflect perfectly: $R_g = 0$ with an open or shorted load. Then nothing ever absorbs energy, and the waves bounce forever (Lecture 31 studies those oscillations).
+        **When it fails.** The series needs $|\Gamma_g\Gamma_L| < 1$. That fails only when both ends reflect perfectly: $R_g = 0$ with an open or shorted load. Then nothing ever absorbs energy, and the waves bounce forever (Lecture 31 studies those oscillations; they are not on Exam 3).
 
         !!intuition Does this make sense?
           An open load: $V_\infty = V_g$ and $I_\infty = 0$, for any $R_g > 0$. A shorted load: $V_\infty = 0$ and $I_\infty = V_g/R_g$. Exactly the DC circuit. ✓
@@ -2179,7 +2179,7 @@ Now take $b/a = ${B.r}$ ($\ln(b/a) = ${B.lnT}$), $\epsilon = ${er}\epsilon_0$, $
     Q(md`$R_g = 0$ and an open load. The load voltage…`,
       ['jumps between $2V_g$ and $0$ forever', 'settles at $V_g$', 'settles at $2V_g$', 'is $V_g$ from $t = T$ on'], 0,
       [null, md`It would, if anything absorbed energy. $\Gamma_g\Gamma_L = -1$: nothing does.`, md`$2V_g$ is only its value for $T < t < 3T$.`, md`The first value at the open end is $2V_g$, not $V_g$.`],
-      md`$\tau_g = 1$, $\Gamma_L = 1$, $\Gamma_g = -1$: steps $+2V_g$, $-2V_g$, $+2V_g$, … The lossless resonator of Lecture 31.`),
+      md`$\tau_g = 1$, $\Gamma_L = 1$, $\Gamma_g = -1$: steps $+2V_g$, $-2V_g$, $+2V_g$, … The lossless resonator of Lecture 31 (not on Exam 3).`),
     Q(md`$\Gamma_g = -\tfrac12$ and $\Gamma_L = -\tfrac12$. The load voltage…`,
       ['climbs as a staircase', 'rings around its final value', 'reaches its final value at $T$', 'falls to zero'], 0,
       [null, md`The product $+\tfrac14$ is positive.`, md`That needs a zero coefficient.`, md`It heads to the DC divider, which is not zero unless $R_L = 0$.`],

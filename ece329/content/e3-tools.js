@@ -5,8 +5,36 @@
 (function () {
   'use strict';
   const { R, G } = C;
-  const STUDY = ['e3s', 'w1', 'w2', 'w3', 'w4', 'w5', 'w6'];
+  const STUDY = ['e3s', 'w1', 'w2', 'w3', 'w4', 'w5'];
   const study = COURSE.units.filter((u) => STUDY.includes(u.id));
+
+  // ---------------------------------------------------------------- not on this Exam 3 (Lectures 31-34)
+  // This term's Exam 3 stops at Lecture 30 and HW 11. Any step a content file marks { later: true } (a past-exam problem on
+  // stubs, a phasor-line card, ...) and any bank question marked the same way is taken out of its lesson here and collected,
+  // under its source's title, in one lesson of the extra unit 'w6' (Lectures 31-34, for the Final).
+  const later = COURSE.units.find((u) => u.id === 'w6');
+  const moved = [];
+  COURSE.units.filter((u) => u.exam === 'e3' && !u.extra).forEach((u) => u.lessons.forEach((l) => {
+    const out = l.steps.filter((s) => s && s.later);
+    if (!out.length) return;
+    l.steps = l.steps.filter((s) => !(s && s.later));
+    moved.push([l, out]);
+    l.steps.splice(1, 0, R(md`!!key Not on this term's Exam 3
+  ${out.length} step${out.length > 1 ? 's' : ''} of this page covered Lectures 31–34 (ringing lines, stubs and input impedance, quarter- and half-wave transformers, phasor lines), which this term's Exam 3 does not cover. ${out.length > 1 ? 'They were' : 'It was'} moved to [Not on Exam 3](#/l/e3-later).`));
+  }));
+  Object.keys(EM.BANK).forEach((k) => {
+    const out = EM.BANK[k].filter((q) => q.later);
+    if (!out.length) return;
+    EM.BANK[k] = EM.BANK[k].filter((q) => !q.later);
+    moved.push([{ id: k, title: `question bank: ${k}` }, out]);
+  });
+  if (later) {
+    later.lessons.unshift({
+      id: 'e3-later', order: -1, title: 'Moved here: everything past Lecture 30', kind: 'read', sub: 'Problems, cards and questions on Lectures 31–34, kept for the Final',
+      steps: [R(md`This term's Exam 3 covers **Lectures 20–30 and HW 8–11** only. Everything below was on a page of the Exam 3 path but uses Lectures 31–34: periodic oscillations on lines, input impedance, stubs and filters, quarter- and half-wave transformers, $\Gamma(d)$, $Z(d)$ and VSWR. **Skip it for Exam 3.** It comes back on the Final.${moved.length ? '' : '\n\nNothing has been moved yet.'}`),
+        ...[].concat(...moved.map(([l, out]) => [R(md`## From ${l.unit ? `[${l.title}](#/l/${l.id})` : l.title}`), ...out]))],
+    });
+  }
 
   // topic order inside each unit (stable: lessons without an order keep their place)
   const key = (l, i) => (l.order ?? (typeof l.topic === 'number' ? l.topic : i / 1000));

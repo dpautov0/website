@@ -938,16 +938,15 @@
 
       ${HOWTO}
 
-      **The format.** Four problems cut into short parts, numbers that work without a calculator, statements to judge, and one trap part, as on Prof. Chen's Spring 2024 Exam 3. This paper leans on reading things off: a wave's formula, a material's response, a pulse's echoes.
+      **The format.** Four problems cut into short parts, numbers that work without a calculator, statements to judge, and one trap part, as on Prof. Chen's Spring 2024 Exam 3. This paper leans on reading things off: a wave's formula, a material's response, a pulse's echoes. Its shorted-and-open-stub problem (Lectures 32-34) is not on Exam 3, so it has been moved to Not on Exam 3.
 
       | Problem | Topic | Points |
       |---|---|---|
       | 1 | Reading a lossy wave $\mathbf E(x,t)$, $\mathbf H(x,t)$: $\alpha$, $\beta$, $f$, $\eta$, then $\mu$, $\sigma$, $\epsilon$, and the power | 26 |
       | 2 | A dielectric-to-air interface: $\Gamma$, $\tau$, the three waves, power fractions, the standing wave in region 1 | 24 |
       | 3 | A delta pulse on a shorted line: bounce diagram, $V$ vs $t$ at a probe, $V$ vs $z$ at an instant, currents | 26 |
-      | 4 | Shorted and open stubs: reactance, equivalent $L$ and $C$, resonances, a pair in parallel | 24 |
 
-      **Draws on:** [where γ and η come from](#/l/w2-gamma), [reading a lossy wave](#/l/w2-read), [power in lossy media](#/l/w2-loss), [reflection and transmission](#/l/w4-gamma), [standing waves](#/l/w4-standing), [launching waves](#/l/w5-launch), [bounce diagrams](#/l/w5-bounce) and [stubs and resonance](#/l/w6-stubs).
+      **Draws on:** [where γ and η come from](#/l/w2-gamma), [reading a lossy wave](#/l/w2-read), [power in lossy media](#/l/w2-loss), [reflection and transmission](#/l/w4-gamma), [standing waves](#/l/w4-standing), [launching waves](#/l/w5-launch) and [bounce diagrams](#/l/w5-bounce).
 
       ${CONSTS}
     `),
@@ -1370,14 +1369,14 @@
       ` }),
 
     // ---------------------------------------------------------------- B Problem 4
-    RF(md`
+    Object.assign(RF(md`
       ### Problem 4 (24 points): a shorted stub and an open stub
 
       Two stubs are cut from the same lossless line: $Z_0 = 50\ \Omega$, $v = 2\times10^8$ m/s, each $l = 0.5$ m long. Stub **S** is shorted at its far end; stub **O** is open. You look into the near end of each. Know (not given in the exam) that a line of length $d$ ending in a short has $Z(d) = jZ_0\tan\beta d$; one ending in an open has $Y(d) = jY_0\tan\beta d$, that is $Z(d) = -jZ_0\cot\beta d$. Write $Z_\text{in} = jX$; $X$ is the **reactance**.
 
       [[fig:stubs]]
-    `, { stubs: { svg: figB4(), cap: 'The two stubs. Same line, same length; only the far end differs.' } }),
-    P({ src: 'Practice B #4(a) · 4 pts', title: 'Stub S at 50 MHz',
+    `, { stubs: { svg: figB4(), cap: 'The two stubs. Same line, same length; only the far end differs.' } }), { later: true }),
+    P({ later: true, src: 'Practice B #4(a) · 4 pts', title: 'Stub S at 50 MHz',
       q: md`**(a) (4 pts)** At $f = 50$ MHz, find the reactance $X_S$ of the shorted stub, and the inductance that has the same reactance.`,
       parts: [trap(N(md`$X_S$ ($\Omega$)`, 50, 'Ω'), [[-50, md`That is the open stub's reactance. A shorted stub shorter than $\lambda/4$ is $+jZ_0\tan\beta l$, positive.`]]),
         trap(N(md`equivalent $L$ (nH)`, 1000 / (2 * PI), 'nH'), [[1000, md`That is $X/f$. Inductive reactance is $\omega L$: divide by $\omega = 2\pi f$.`]])],
@@ -1399,7 +1398,7 @@
 
         **Where points go.** Dividing by $f$ instead of $2\pi f$.
       ` }),
-    P({ src: 'Practice B #4(b) · 4 pts', title: 'Stub O at 50 MHz',
+    P({ later: true, src: 'Practice B #4(b) · 4 pts', title: 'Stub O at 50 MHz',
       q: md`**(b) (4 pts)** At $f = 50$ MHz, find the reactance $X_O$ of the open stub, and the capacitance that has the same reactance.`,
       parts: [trap(N(md`$X_O$ ($\Omega$)`, -50, 'Ω'), [[50, md`That is the shorted stub. An open stub shorter than $\lambda/4$ is $-jZ_0\cot\beta l$: negative, capacitive.`]]),
         trap(N(md`equivalent $C$ (pF)`, 1000 / (5 * PI), 'pF'), [[400, md`That is $1/(fX)$. A capacitor has $|Z| = 1/(\omega C)$ with $\omega = 2\pi f$.`]])],
@@ -1419,7 +1418,7 @@
 
         **Where points go.** The sign of $X_O$. $\omega$ vs $f$ again.
       ` }),
-    P({ src: 'Practice B #4(c) · 6 pts', title: 'Resonances',
+    P({ later: true, src: 'Practice B #4(c) · 6 pts', title: 'Resonances',
       q: md`**(c) (6 pts)** Raise the frequency from 50 MHz. Find (i) the lowest frequency at which stub S looks like an **open** circuit, (ii) the lowest at which stub O looks like a **short**, and (iii) the lowest nonzero frequency at which stub S looks like a short.`,
       parts: [trap(N(md`(i) S open (MHz)`, 100, 'MHz'), [[200, md`At 200 MHz the stub is $\lambda/2$ long, which repeats its short. An open needs $\lambda/4$.`]]),
         trap(N(md`(ii) O short (MHz)`, 100, 'MHz'), [[200, md`At 200 MHz the open stub is $\lambda/2$: it repeats the open. A short needs $\lambda/4$.`]]),
@@ -1443,7 +1442,7 @@
         **Where points go.** Mixing up which stub is open at $\lambda/4$. Forgetting that S is a short at $f = 0$ too (the question asked for the lowest **nonzero** one).
       `,
       figs: { react: { svg: figB4sol(), cap: 'Reactance vs frequency. Solid: shorted stub S. Dashed: open stub O. They swap roles every 100 MHz.' } } }),
-    P({ src: 'Practice B #4(d) · 5 pts', title: 'Which one is the inductor at 150 MHz?',
+    P({ later: true, src: 'Practice B #4(d) · 5 pts', title: 'Which one is the inductor at 150 MHz?',
       q: md`**(d) (5 pts)** At $f = 150$ MHz, which stub acts like an inductor? Give that stub's reactance.`,
       parts: [mc('At 150 MHz the inductive stub is', ['stub O, the open one', 'stub S, the shorted one', 'both', 'neither: at 150 MHz both are resonant'], 0,
         [null, md`That is the "shorted stubs are inductive" rule, which only holds below $\lambda/4$. At 150 MHz, $\beta l = 135°$ and $\tan135° = -1$: stub S is capacitive.`, md`They always have opposite reactances here: $\tan135° = -1$ and $-\cot135° = +1$.`, md`Resonances are at 100 and 200 MHz. At 150 MHz both reactances are finite and nonzero ($\pm50\ \Omega$).`]),
@@ -1468,7 +1467,7 @@
 
         **Where points go.** Answering from the rule of thumb. Evaluating $\tan135°$ as $+1$.
       ` }),
-    P({ src: 'Practice B #4(e) · 5 pts', title: 'The pair in parallel',
+    P({ later: true, src: 'Practice B #4(e) · 5 pts', title: 'The pair in parallel',
       q: md`**(e) (5 pts)** Stubs S and O are connected in parallel with each other, and the pair is placed across a matched 50 Ω line just in front of a 50 Ω receiver. What does the pair look like at 50 MHz, and at 100 MHz?`,
       parts: [mc('At 50 MHz the pair looks like', ['an open circuit: the receiver gets all the power', 'a short circuit: the receiver gets nothing', md`a $25\ \Omega$ resistor`, 'an inductor'], 0,
         [null, md`The admittances are $1/(j50) = -j0.02$ and $1/(-j50) = +j0.02$ S: they cancel, the total admittance is zero, which is an **open** circuit.`, md`Parallel reactances do not combine like resistors, and lossless stubs absorb no power.`, md`$+j50$ and $-j50$ in parallel cancel in admittance; the result is not inductive.`]),
@@ -1495,7 +1494,7 @@
       ` }),
   ];
 
-  EM.lesson('e3-prac', { id: 'e3-prac-b', order: 2, title: 'Practice exam B', kind: 'mock', sub: '75 min · 100 pts · reading a lossy wave, a dielectric-to-air interface, a delta pulse on a shorted line, shorted and open stubs', steps: examB });
+  EM.lesson('e3-prac', { id: 'e3-prac-b', order: 2, title: 'Practice exam B', kind: 'mock', sub: '75 min · 100 pts · reading a lossy wave, a dielectric-to-air interface, a delta pulse on a shorted line', steps: examB });
 
   // ======================================================================================== EXAM C: figures
   // xy-plane seen from +z, with an optional ellipse or circle and its sense of rotation
@@ -1590,16 +1589,15 @@
 
       ${HOWTO}
 
-      **The format.** Four problems in short parts, clean numbers, statements to judge and one trap part, as on Prof. Chen's Spring 2024 Exam 3. Problem 4 is the Fall 2023 kind of question: you are handed a scope trace and must work out the circuit that made it.
+      **The format.** Four problems in short parts, clean numbers, statements to judge and one trap part, as on Prof. Chen's Spring 2024 Exam 3. Problem 4 is the Fall 2023 kind of question: you are handed a scope trace and must work out the circuit that made it. Its quarter-wave-transformer problem (Lecture 33) is not on Exam 3, so it has been moved to Not on Exam 3.
 
       | Problem | Topic | Points |
       |---|---|---|
       | 1 | Circular waves: handedness, a sum of two circular waves, a linear wave split into RHCP + LHCP | 22 |
       | 2 | A wave on a perfect conductor: reflected and total fields, nulls, the surface current, radiation pressure | 24 |
-      | 3 | A quarter-wave transformer: $Z_Q$ and length, the load's standing wave, $V_\text{in}$, power, a frequency change | 24 |
       | 4 | A scope trace read backwards: $\epsilon_r$, $l$, $R_L$, $R_g$, the source strength, the next pulse | 30 |
 
-      **Draws on:** [polarization](#/l/w3-pol), [reflection and transmission](#/l/w4-gamma), [standing waves](#/l/w4-standing), [V(d), Γ(d) and Z(d)](#/l/w6-vd), [quarter-wave transformers](#/l/w6-qw), [bounce diagrams](#/l/w5-bounce) and [reading a scope trace](#/l/w5-multi).
+      **Draws on:** [polarization](#/l/w3-pol), [reflection and transmission](#/l/w4-gamma), [standing waves](#/l/w4-standing), [bounce diagrams](#/l/w5-bounce) and [reading a scope trace](#/l/w5-multi).
 
       ${CONSTS}
     `),
@@ -1853,14 +1851,14 @@
       ` }),
 
     // ---------------------------------------------------------------- C Problem 3
-    RF(md`
+    Object.assign(RF(md`
       ### Problem 3 (24 points): a quarter-wave transformer
 
       A source $v_g(t) = 20\cos(\omega t)$ V with $R_g = 50\ \Omega$ must feed a $200\ \Omega$ resistive load at $f = 100$ MHz. You connect them with one section of lossless line of characteristic impedance $Z_Q$ and length $l$, with $v = 2\times10^8$ m/s, chosen so the source sees a matched load. Phasor distance $d$ is measured back from the load ($d = 0$ at the load). Here $\Gamma_L = (R_L - Z_Q)/(R_L + Z_Q)$ is the load reflection coefficient on the section.
 
       [[fig:qw]]
-    `, { qw: { svg: figC3(), cap: md`One line section between the source and the load. Choose $Z_Q$ and $l$.` } }),
-    P({ src: 'Practice C #3(a) · 5 pts', title: 'Design it',
+    `, { qw: { svg: figC3(), cap: md`One line section between the source and the load. Choose $Z_Q$ and $l$.` } }), { later: true }),
+    P({ later: true, src: 'Practice C #3(a) · 5 pts', title: 'Design it',
       q: md`**(a) (5 pts)** Find the shortest section that works: its $Z_Q$ and its length $l$.`,
       parts: [trap(N(md`$Z_Q$ ($\Omega$)`, 100, 'Ω'), [[125, md`That is the average $(50 + 200)/2$. The transformer needs the **geometric** mean, $\sqrt{50\cdot200}$.`], [40, md`That is $50\cdot200/250$, the parallel combination. Use $\sqrt{R_gR_L}$.`]]),
         trap(N(md`$l$ (m)`, 0.5, 'm'), [[0.75, md`That uses $c$. On this line $v = 2\times10^8$ m/s, so $\lambda = 2$ m.`], [1, md`That is $\lambda/2$, which just copies the load. A transformer needs $\lambda/4$.`]])],
@@ -1881,7 +1879,7 @@
 
         **Where points go.** The arithmetic mean. $\lambda$ from $c$ instead of the line's $v$.
       ` }),
-    P({ src: 'Practice C #3(b) · 4 pts', title: 'The section is not matched',
+    P({ later: true, src: 'Practice C #3(b) · 4 pts', title: 'The section is not matched',
       q: md`**(b) (4 pts)** Find $\Gamma_L$ on the section and the standing-wave ratio (VSWR) on the section.`,
       parts: [trap(N(md`$\Gamma_L$`, 1 / 3, ''), [[0.6, md`That uses 50 Ω, the source side. On the section, the load is compared with the section's own $Z_Q = 100\ \Omega$.`], [0, md`The **source** sees a match, but the load does not: $200 \ne 100$.`]]),
         trap(N(md`VSWR`, 2, ''), [[4, md`That is $R_L/50$. The VSWR on the section is $R_L/Z_Q = 2$.`]])],
@@ -1899,7 +1897,7 @@
 
         **Where points go.** Using 50 Ω in $\Gamma_L$. Assuming no standing wave because the input is matched.
       ` }),
-    P({ src: 'Practice C #3(c) · 5 pts', title: 'The input',
+    P({ later: true, src: 'Practice C #3(c) · 5 pts', title: 'The input',
       q: md`**(c) (5 pts)** Find the amplitude of the voltage $\tilde V_\text{in}$ at the input of the section, and the time-averaged power delivered into the section.`,
       parts: [trap(N(md`$|\tilde V_\text{in}|$ (V)`, 10, 'V'), [[20, md`That is the open-circuit source voltage. With a matched load the source splits it in half across $R_g$ and $Z_\text{in}$.`]]),
         trap(N(md`$\langle P_\text{in}\rangle$ (W)`, 1, 'W'), [[2, md`That forgets the $\tfrac12$ for peak phasors.`], [4, md`That is $V_g^2/(2Z_\text{in})$, using the full 20 V.`]])],
@@ -1919,7 +1917,7 @@
 
         **Where points go.** Using 20 V across the input. Missing the $\tfrac12$.
       ` }),
-    P({ src: 'Practice C #3(d) · 5 pts', title: 'At the load',
+    P({ later: true, src: 'Practice C #3(d) · 5 pts', title: 'At the load',
       q: md`**(d) (5 pts)** Find the time-averaged power reaching the load, the amplitude of the load voltage, and the load voltage phasor.`,
       parts: [N(md`$\langle P_L\rangle$ (W)`, 1, 'W'),
         trap(N(md`$|\tilde V_L|$ (V)`, 20, 'V'), [[10, md`The voltage is not the same at both ends of the section. Power is: $1 = |V_L|^2/(2\cdot200)$ gives 20 V.`]]),
@@ -1950,7 +1948,7 @@
         **Where points go.** Assuming the voltage is the same at both ends. Getting the sign of the $90°$.
       `,
       figs: { vd: { svg: figC3sol(), cap: 'The voltage amplitude along the section, from the input (z = 0) to the load (z = 0.5 m): a minimum of 10 V at the input, a maximum of 20 V at the load.' } } }),
-    P({ src: 'Practice C #3(e) · 5 pts', title: 'At twice the frequency',
+    P({ later: true, src: 'Practice C #3(e) · 5 pts', title: 'At twice the frequency',
       q: md`**(e) (5 pts)** The source frequency is changed to 200 MHz; nothing else changes. Find the power delivered to the load, and judge the statement.`,
       parts: [trap(N(md`$\langle P_L\rangle$ at 200 MHz (W)`, 0.64, 'W'), [[1, md`At 200 MHz the section is $\lambda/2$ long. It no longer transforms; it copies $200\ \Omega$ to the input.`], [0.25, md`That keeps $|\tilde V_L| = 10$ V. At 200 MHz the input sees $200\ \Omega$: $V_\text{in} = 20\cdot200/250 = 16$ V.`]]),
         tf(md`"At 200 MHz the load receives exactly the power it would receive with no section at all (load wired straight to the source)."`, true, md`A half-wave section copies its load impedance to its input, so the source sees $200\ \Omega$ either way: $16^2/400 = 0.64$ W in both cases.`)],
@@ -2107,5 +2105,5 @@
       figs: { bd: { svg: TL.diagram(sC4, { tMax: 9, w: 380, h: 330, probe: 75 }), cap: 'The bounce diagram rebuilt from the answers (Rg = 30 Ω, RL = 180 Ω, l = 300 m, v = 150 m/µs, V₀ = 36 V). Dots: the spikes the probe records. Times in µs.' } } }),
   ];
 
-  EM.lesson('e3-prac', { id: 'e3-prac-c', order: 3, title: 'Practice exam C', kind: 'mock', sub: '75 min · 100 pts · circular waves added and split, a wave on a perfect conductor, a quarter-wave transformer, a scope trace read backwards', steps: examC });
+  EM.lesson('e3-prac', { id: 'e3-prac-c', order: 3, title: 'Practice exam C', kind: 'mock', sub: '75 min · 100 pts · circular waves added and split, a wave on a perfect conductor, a scope trace read backwards', steps: examC });
 })();

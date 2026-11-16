@@ -123,14 +123,14 @@
     R(md`
       **Fall 2025 · ECE 329 · Exam 3** (Chen, Mitchell, Shao). Monday, December 1, 2025, 7:00–8:15 PM (75 minutes). Four problems, 100 points: 18, 35, 29 and 18. Closed book and closed notes, **no calculators**, one 4″×6″ index card of handwritten notes. Show all work and reasoning; every answer needs its units. Work on scratch pages earns no credit.
 
-      **Why this paper matters most.** It is the most recent Exam 3, and Prof. Chen writes yours. Expect the same feel: one lossy-medium problem decided by the ratio $\sigma/\omega\epsilon$, one reflection problem worth a third of the paper (fields with directions, then power), one delta-pulse bounce diagram on two lines, and six quick standing-wave questions on a phasor line. The numbers are chosen so that every answer is a fraction or a multiple of $\pi$.
+      **Why this paper matters most.** It is the most recent Exam 3, and Prof. Chen writes yours. Expect the same feel: one lossy-medium problem decided by the ratio $\sigma/\omega\epsilon$, one reflection problem worth a third of the paper (fields with directions, then power), and one delta-pulse bounce diagram on two lines. (The paper also had six quick standing-wave questions on a phasor line, Problem 4. They use Lectures 31-34, so they are **not on this term's Exam 3**: they are moved to [Not on Exam 3](#/l/e3-later).) The numbers are chosen so that every answer is a fraction or a multiple of $\pi$.
 
       | Problem | What it tests | Points | Learn it |
       |---|---|---|---|
       | 1 | Dry earth: which regime at 10 GHz and at 100 Hz, $\gamma$, $\lambda$ vs $\delta$ | 18 | [Topic 5](#/l/w2-gamma), [Topic 7](#/l/w2-limits) |
       | 2 | Sea water to air: $\Gamma$, $\tilde{\mathbf E}_t$, $\tilde{\mathbf H}_r$, three powers, energy balance | 35 | [Topic 11](#/l/w4-gamma), [Topic 4](#/l/w1-avg) |
       | 3 | Two lines, delta source: bounce diagram to 6 µs, $V$ at a midpoint, steady state | 29 | [Topic 14](#/l/w5-launch), [Topic 15](#/l/w5-bounce), [Topic 16](#/l/w5-multi) |
-      | 4 | Periodic oscillations: $\lambda/2$ and $\lambda/4$ lines, frequency from length, nulls and peaks | 18 | [Topic 17](#/l/w6-vd), [Topic 18](#/l/w6-stubs), [Topic 19](#/l/w6-qw) |
+      | 4 | (not on Exam 3) Periodic oscillations: $\lambda/2$ and $\lambda/4$ lines, frequency from length, nulls and peaks | 18 | Lectures 31-34 |
 
       **How to use it.** Start a 75-minute timer and do the whole paper on paper first, closed book, with only the [given table](#/l/e3-sheet) and your card. Then enter your answers in the boxes. Sketch questions (the bounce diagram and the voltage at a point) are asked here as the numbers you would write on the sketch. Then read every solution, also for parts you got right: each ends with a **Speed path** (the fastest correct route) and **Where points go** (the slips that cost points).
 
@@ -607,7 +607,7 @@
       ` }),
 
     // ---------------------------------------------------------------- Problem 4
-    RF(md`
+    Object.assign(RF(md`
       ### Problem 4 (18 points): periodic oscillations on a lossless line
 
       Answer the following short, **independent** questions about periodic oscillations on a lossless transmission-line circuit. In the diagram on the left, the circuit is driven by an AC voltage source with phasor $\tilde V_g$ and internal resistance $R_g = 50\ \Omega$, and the line is terminated by an arbitrary load $Z_L = R_L + jX_L$. The line has length $l$, characteristic impedance $Z_0 = 25\ \Omega$, and supports wave propagation at $v = c$. In the diagram on the right, the line and its load are represented by an equivalent impedance $Z_{eq} = R_{eq} + jX_{eq}$.
@@ -617,8 +617,8 @@
       Distance $d$ is measured back from the load ($d = 0$) to the source end ($d = l$). The two formulas behind every part:
       $$\tilde V(d) = V^+\left(e^{j\beta d} + \Gamma_L e^{-j\beta d}\right)$$
       $$\tilde I(d) = \frac{V^+}{Z_0}\left(e^{j\beta d} - \Gamma_L e^{-j\beta d}\right)$$
-    `, { p4: { svg: PF.row([{ svg: p4Line(), cap: 'The line circuit.' }, { svg: p4Eq(), cap: 'Its equivalent: $Z_{eq}$ is what the source sees.' }]).svg, cap: 'Left: the line circuit, $d$ measured from the load. Right: the same circuit with the line and load replaced by $Z_{eq}$.' } }),
-    P({ src: 'Fall 2025 #4(a) · 3 pts', title: 'A 5λ/2 line',
+    `, { p4: { svg: PF.row([{ svg: p4Line(), cap: 'The line circuit.' }, { svg: p4Eq(), cap: 'Its equivalent: $Z_{eq}$ is what the source sees.' }]).svg, cap: 'Left: the line circuit, $d$ measured from the load. Right: the same circuit with the line and load replaced by $Z_{eq}$.' } }), { later: true }),
+    P({ later: true, src: 'Fall 2025 #4(a) · 3 pts', title: 'A 5λ/2 line',
       q: md`Let the line have electrical length $l = 5\lambda/2$. What is the voltage $\tilde V_{in} = \tilde V(l)$ across the input end of the line, in terms of $\tilde V_L$, the voltage across the load?`,
       parts: [mc(md`$\tilde V_{in}$`, [md`$-\tilde V_L$`, md`$\tilde V_L$`, md`$j\tilde V_L$`, md`$-j\tilde V_L$`, md`It depends on $Z_L$`], 0,
         [null, md`That holds for a whole number of wavelengths. A half wavelength gives $e^{\pm j\pi} = -1$, and $5\lambda/2$ is an odd number of half wavelengths.`, md`$\pm j$ appears at odd quarter wavelengths, where $e^{j\beta d} = \pm j$. At $5\lambda/2$, $\beta d = 5\pi$.`, md`$\pm j$ appears at odd quarter wavelengths. At $5\lambda/2$, $e^{\pm j5\pi} = -1$.`, md`At $\beta d = 5\pi$ both exponentials equal $-1$, so $\tilde V(l) = -V^+(1 + \Gamma_L) = -\tilde V_L$ for every load.`])],
@@ -641,7 +641,7 @@
 
         ${LEARN('[Topic 17: V(d), Γ(d), Z(d)](#/l/w6-vd), [Topic 19: half-wave lines](#/l/w6-qw)')}
       ` }),
-    P({ src: 'Fall 2025 #4(b) · 3 pts', title: 'A 3λ/4 line on 50 Ω',
+    P({ later: true, src: 'Fall 2025 #4(b) · 3 pts', title: 'A 3λ/4 line on 50 Ω',
       q: md`Let the line have electrical length $l = 3\lambda/4$ and be terminated by a purely resistive load $Z_L = 50\ \Omega$. What is the equivalent impedance $Z_{eq}$?`,
       parts: [NT('Z_{eq}', 12.5, 'Ω', [[50, 'That is the half-wave rule. 3λ/4 is an odd number of quarter waves: the impedance inverts, Z₀²/Z_L.'], [100, 'That is Z_L²/Z₀, upside down. The quarter-wave rule is Z₀²/Z_L = 625/50.'], [25, 'That is Z₀ itself, which you get only for a matched load.']])],
       hints: [md`$3\lambda/4 = \lambda/2 + \lambda/4$. The half wavelength changes nothing; the quarter wavelength inverts: $Z_{eq} = Z_0^2/Z_L$.`],
@@ -663,7 +663,7 @@
 
         ${LEARN('[Topic 19: half- and quarter-wave transformers](#/l/w6-qw)')}
       ` }),
-    P({ src: 'Fall 2025 #4(c) · 3 pts', title: 'Frequency from length',
+    P({ later: true, src: 'Fall 2025 #4(c) · 3 pts', title: 'Frequency from length',
       q: md`Let the line have actual length $l = 1$ km, which corresponds to an electrical length $l = \lambda/3$. What is the angular frequency $\omega$ of the oscillating source?`,
       parts: [NT('\\omega', 2 * PI * 1e5, 'rad/s', [[1e5, 'That is f in hertz. The question asks for ω = 2πf.'], [2 * PI * 3e5, 'That uses λ = 1 km. Here 1 km is λ/3, so λ = 3 km.'], [2 * PI * 1e5 / 9, 'That uses λ = l/3. If l = λ/3 then λ = 3l = 3 km.']])],
       hints: [md`$\lambda = 3l = 3$ km. Then $f = v/\lambda$ with $v = c$, and $\omega = 2\pi f$.`],
@@ -684,7 +684,7 @@
 
         ${LEARN('[Topic 18: periodic oscillations](#/l/w6-stubs)')}
       ` }),
-    P({ src: 'Fall 2025 #4(d) · 3 pts', title: 'Shorted line with a voltage peak at l/2',
+    P({ later: true, src: 'Fall 2025 #4(d) · 3 pts', title: 'Shorted line with a voltage peak at l/2',
       q: md`The load $Z_L$ is replaced by a short. A maximum of the voltage oscillation along the line is observed at $d = l/2$. What is $Z_{eq}$?`,
       parts: [mc(md`$Z_{eq}$`, [md`$0\ \Omega$ (a short)`, md`$\infty$ (an open)`, md`$25\ \Omega$`, md`$j25\ \Omega$`, md`$-j25\ \Omega$`], 0,
         [null, md`That is a shorted quarter-wave line. The peak at $d = l/2$ makes the line a half wavelength (or $\lambda/2 + n\lambda$), which repeats the short.`, md`A purely reactive (lossless, shorted) line can never present a real $Z_0$; that needs a matched load.`, md`$jZ_0\tan\beta l$ equals $j25$ only for $\beta l = \pi/4$ (an eighth of a wavelength). The peak position says $\beta l = \pi$.`, md`That is $\beta l = 3\pi/4$. The peak position says $\beta l = \pi$ (plus multiples of $2\pi$).`])],
@@ -711,7 +711,7 @@
         ${LEARN('[Topic 18: stubs and resonance](#/l/w6-stubs)')}
       `,
       figs: { pk: { svg: p4dFig(), cap: '|V(d)| on the shorted line, for the shortest length l = λ/2: zero at both ends, largest at d = l/2.' } } }),
-    P({ src: 'Fall 2025 #4(e) · 3 pts', title: 'Open line with a current null at l/4',
+    P({ later: true, src: 'Fall 2025 #4(e) · 3 pts', title: 'Open line with a current null at l/4',
       q: md`The line is disconnected from $Z_L$ (the line is left open). A current null is observed at $d = l/4$, that is $\tilde I(l/4) = 0$. What is the shortest possible electrical length of the line?`,
       parts: [NT(md`$l$, in wavelengths`, 2, 'λ', [[1, 'That puts the null at d = λ/4. An open line has its first current null (after d = 0) at d = λ/2, not λ/4: current nulls of an open line are λ/2 apart, starting at the open end.'], [0.5, 'That is l = λ/2, which puts d = l/4 = λ/8: sin(β λ/8) is not zero.'], [0.25, 'An open line has a current null at d = 0 and every λ/2 after. l/4 = λ/16 is not one of them.']])],
       hints: [md`Open: $\Gamma_L = +1$, so $\tilde I(d) = \frac{2jV^+}{Z_0}\sin\beta d$. Its nulls are at $d = n\lambda/2$. The point $d = l/4$ must be one of them with $n \ge 1$.`],
@@ -738,7 +738,7 @@
         ${LEARN('[Topic 18](#/l/w6-stubs), [Topic 17](#/l/w6-vd)')}
       `,
       figs: { nl: { svg: p4eFig(), cap: '|I(d)| on an open line of length 2λ: nulls every λ/2, so one sits at d = l/4.' } } }),
-    P({ src: 'Fall 2025 #4(f) · 3 pts', title: 'Matched load: is V(0) = V(l)?',
+    P({ later: true, src: 'Fall 2025 #4(f) · 3 pts', title: 'Matched load: is V(0) = V(l)?',
       q: md`Let $Z_L = Z_0$, a condition known as "matched impedance". In this case, does $\tilde V(0) = \tilde V(l)$? Explain.`,
       parts: [mc(md`Does $\tilde V(0) = \tilde V(l)$ when $Z_L = Z_0$?`, [md`No, in general: $|\tilde V(0)| = |\tilde V(l)|$, but the phases differ by $\beta l$`, md`Yes, always: a matched line has no reflection, so the voltage is the same everywhere`, md`No: the voltage decays along the line`, md`Yes, but only if $R_g = Z_0$ too`], 0,
         [null, md`No reflection makes the **amplitude** the same everywhere, but the single traveling wave still delays the phase: $\tilde V(d) = V^+e^{j\beta d}$, so $\tilde V(l) = \tilde V(0)\,e^{j\beta l}$.`, md`The line is lossless: no decay. Only the phase changes.`, md`$R_g$ only sets $V^+$. It does not change the phase difference $\beta l$ between the two ends.`])],
@@ -765,7 +765,7 @@
       ### After the paper
 
       - **Score yourself honestly**, then redo every missed part tomorrow on a blank sheet.
-      - The patterns to own before Monday: the ratio $\sigma/\omega\epsilon$ decides everything in a lossy medium, and $\omega\epsilon_0 = f/(18\times10^9)$ S/m; $\Gamma$, $\tau$, $\mathbf H = \frac1\eta\hat v\times\mathbf E$ with the reflected wave's direction flipped; power with the right $\eta$ on each side, then $S_i = S_r + S_t$; a bounce diagram walked one arrival at a time; a delta source has a zero steady state; and every standing-wave question is $e^{\pm j\beta d}$ at multiples of $\lambda/4$.
+      - The patterns to own before Monday: the ratio $\sigma/\omega\epsilon$ decides everything in a lossy medium, and $\omega\epsilon_0 = f/(18\times10^9)$ S/m; $\Gamma$, $\tau$, $\mathbf H = \frac1\eta\hat v\times\mathbf E$ with the reflected wave's direction flipped; power with the right $\eta$ on each side, then $S_i = S_r + S_t$; a bounce diagram walked one arrival at a time; and a delta source has a zero steady state.
       - Two new papers in exactly this style: [Practice exam M](#/l/e3-prac-m) and [Practice exam N](#/l/e3-prac-n).
     `),
   ];

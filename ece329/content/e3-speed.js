@@ -1,6 +1,6 @@
 /* Speed tricks for Exam 3 (unit e3-gymu, reached from #/speed). Three lessons:
      e3-speed      waves and media: reading a wave, phasors and power, lossy media, polarization, reflection
-     e3-speed-tl   transmission lines: L C Z0 v, launching, bounces, steady state, stubs and lambda/4, Gamma(d) and VSWR
+     e3-speed-tl   transmission lines: L C Z0 v, launching, bounces, steady state (stubs, lambda/4, Gamma(d), VSWR are tagged later)
      e3-speed-num  no-calculator arithmetic: roots, exponentials, dB, constants, complex angles, Gamma fractions, series
    Each trick: a name, the rule in one line, why it is true (a short derivation from first principles), a 10-second
    example and the trap it avoids. Each group ends with its own rapid-fire generator (prefix rf_sp_). EM.BANK holds 20+
@@ -43,7 +43,7 @@
   const attachBank = (lesson) => {
     const qs = EM.BANK[lesson.id];
     qs.forEach((q) => { q.tags = [lesson.id]; });
-    lesson.bank = qs;
+    lesson.bank = qs.filter((q) => !q.later);   // e3-tools.js collects the later ones on 'Not on Exam 3'
   };
 
   // ================================================================ LESSON 1: waves and media
@@ -1041,11 +1041,11 @@
 
   const L2 = EM.lesson('e3-gymu', {
     id: 'e3-speed-tl', order: 2, kind: 'lesson', title: 'Speed tricks: transmission lines',
-    sub: '27 tricks: L C Z₀ v, τg and Γ, bounces, steady state, scope traces, stubs, λ/4 and λ/2, Γ(d), VSWR',
+    sub: '16 tricks: L C Z₀ v, τg and Γ, bounces, steady state, scope traces',
     steps: [
       R(md`
         !!key How to use this page
-          Same format as [the waves page](#/l/e3-speed): a rule, why it is true, a 10-second example, the trap. A drill closes each group. Two conventions (use the same ones every time): in the time domain $z$ runs from the generator ($z = 0$) to the load ($z = l$); in phasors $d$ is the distance back from the load ($d = 0$ at the load).
+          Same format as [the waves page](#/l/e3-speed): a rule, why it is true, a 10-second example, the trap. A drill closes each group. One convention (use it every time): in the time domain $z$ runs from the generator ($z = 0$) to the load ($z = l$).
 
         Three different taus appear in this course. Here only one does: $\tau_g = Z_0/(R_g + Z_0)$, the **injection coefficient**, the fraction of $V_g$ that the first wave carries. At a junction, $\tau = 1 + \Gamma$ is a **transmission coefficient**, like the one for waves at a boundary.
 
@@ -1282,7 +1282,7 @@
         md`At DC the two lines are wires: $I = 80/(50 + 50) = 0.8$ A, the same at every $z$. (The posted key gets 0.8 A too.)`),
       R(md`**Drill D: steady state and scope traces.**`),
       Object.assign(G('rf_sp_ss', { need: 8 }), { id: 'e3-speed-tl.r4' }),
-      R(md`
+      Object.assign(R(md`
         ### E. Stubs and quarter- and half-wave lines
 
         Derived slowly in [Topic 18](#/l/w6-stubs) and [Topic 19](#/l/w6-qw).
@@ -1352,14 +1352,14 @@
           **10-second example.** A 50 Ω source drives a quarter wave of 100 Ω line ending in 400 Ω. $Z(l) = 100^2/400 = 25\ \Omega$, so $\tilde V(l) = \tilde F\cdot25/75 = \tilde F/3$.
 
           **Trap.** Putting $Z_L$ into the divider.
-      `),
+      `), { later: true }),
       Q(md`**Predict.** A shorted 50 Ω stub is $\lambda/8$ long at 1 GHz, so it looks like $j50\ \Omega$. At 2 GHz it looks like…`,
         ['an open circuit', md`$j50\ \Omega$`, 'a short circuit', md`$-j50\ \Omega$`], 0,
         [null, md`The length in wavelengths doubled: it is now $\lambda/4$.`, md`A short repeats at $\lambda/2$; this stub is now $\lambda/4$.`, md`That is a $3\lambda/8$ shorted stub (or a $\lambda/8$ open one).`],
-        md`Doubling $f$ halves $\lambda$, so the same stub is now $\lambda/4$ long: $\beta d = 90°$ and $\tan\beta d \to \infty$. A shorted quarter wave is an open circuit.`),
-      R(md`**Drill E: stubs and transformers.**`),
-      Object.assign(G('rf_sp_stub', { need: 8 }), { id: 'e3-speed-tl.r5' }),
-      R(md`
+        md`Doubling $f$ halves $\lambda$, so the same stub is now $\lambda/4$ long: $\beta d = 90°$ and $\tan\beta d \to \infty$. A shorted quarter wave is an open circuit.`, { later: true }),
+      Object.assign(R(md`**Drill E: stubs and transformers.**`), { later: true }),
+      Object.assign(G('rf_sp_stub', { need: 8 }), { id: 'e3-speed-tl.r5', later: true }),
+      Object.assign(R(md`
         ### F. Γ(d), VSWR and power
 
         Derived slowly in [Topic 17](#/l/w6-vd).
@@ -1407,13 +1407,13 @@
           **10-second example.** $|\tilde V^+| = 10$ V on 50 Ω with $\Gamma_L = 1/3$: $\frac{100}{100}\cdot\frac89 = 0.889$ W.
 
           **Trap.** Using $1 - |\Gamma|$. Power goes as the voltage squared.
-      `),
+      `), { later: true }),
       Q(md`**Predict.** A 50 Ω line has VSWR 3 and a voltage minimum right at its resistive load. The load is…`,
         [md`$16.7\ \Omega$`, md`$150\ \Omega$`, md`$25\ \Omega$`, md`$100\ \Omega$`], 0,
         [null, md`That load would put a voltage maximum at the load ($R_L > Z_0$).`, md`$25\ \Omega$ gives $\Gamma = -1/3$ and VSWR 2.`, md`$100\ \Omega$ gives VSWR 2, with a maximum at the load.`],
-        md`A minimum at the load means $R_L < Z_0$. Then $\text{VSWR} = Z_0/R_L = 3$, so $R_L = 50/3 = 16.7\ \Omega$.`),
-      R(md`**Drill F: Γ(d), VSWR and power.**`),
-      Object.assign(G('rf_sp_vswr', { need: 8 }), { id: 'e3-speed-tl.r6' }),
+        md`A minimum at the load means $R_L < Z_0$. Then $\text{VSWR} = Z_0/R_L = 3$, so $R_L = 50/3 = 16.7\ \Omega$.`, { later: true }),
+      Object.assign(R(md`**Drill F: Γ(d), VSWR and power.**`), { later: true }),
+      Object.assign(G('rf_sp_vswr', { need: 8 }), { id: 'e3-speed-tl.r6', later: true }),
       R(md`
         ### The whole page on one card
 
@@ -1433,13 +1433,6 @@
         | matched end | final at $T$ (load) or $2T$ (source) |
         | scope | $Z_0 = R_gV_1/(V_g - V_1)$ |
         | DC | $V_gR_L/(R_g + R_L)$ |
-        | $\lambda/2$ | repeats $Z_L$ |
-        | $\lambda/4$ | $Z_0^2/Z_L$; match with $\sqrt{R_\text{in}R_L}$ |
-        | $\lambda/8$ | short $+jZ_0$, open $-jZ_0$ |
-        | resonance | short opens at $v/4l$ |
-        | $\Gamma(d)$ | turns by $2\beta d$ |
-        | VSWR | $(1 + |\Gamma|)/(1 - |\Gamma|)$ |
-        | power | $\frac{|V^+|^2}{2Z_0}(1 - |\Gamma|^2)$ |
       `),
       ...miniQuiz('e3-speed-tl'),
     ],
@@ -2012,47 +2005,47 @@
     Q(md`A $\lambda/4$ section of 50 Ω line ends in 100 Ω. The input impedance is…`,
       [md`$25\ \Omega$`, md`$100\ \Omega$`, md`$200\ \Omega$`, md`$70.7\ \Omega$`], 0,
       [null, md`That is the half-wave rule.`, md`That is $Z_L^2/Z_0$, upside down.`, md`That is the $Z_0$ that would match 50 to 100.`],
-      md`$Z_0^2/Z_L = 2500/100 = 25\ \Omega$.`),
+      md`$Z_0^2/Z_L = 2500/100 = 25\ \Omega$.`, { later: true }),
     Q(md`To match a 200 Ω load to 50 Ω with a quarter-wave section, its $Z_0$ must be…`,
       [md`$100\ \Omega$`, md`$125\ \Omega$`, md`$40\ \Omega$`, md`$800\ \Omega$`], 0,
       [null, md`That is the average. Inversion needs the geometric mean.`, md`That is the parallel combination.`, md`That is $R_L^2/R_\text{in}$.`],
-      md`$Z_0 = \sqrt{50\times200} = 100\ \Omega$. Check: $100^2/200 = 50$ ✓.`),
+      md`$Z_0 = \sqrt{50\times200} = 100\ \Omega$. Check: $100^2/200 = 50$ ✓.`, { later: true }),
     Q(md`An open stub of 75 Ω line, $\lambda/8$ long, has input impedance…`,
       [md`$-j75\ \Omega$`, md`$+j75\ \Omega$`, 'an open circuit', 'a short circuit'], 0,
       [null, md`That is the shorted stub.`, md`That is an open of length 0 or $\lambda/2$.`, md`That is an open stub $\lambda/4$ long.`],
-      md`$-jZ_0\cot45° = -j75\ \Omega$: a capacitor.`),
+      md`$-jZ_0\cot45° = -j75\ \Omega$: a capacitor.`, { later: true }),
     Q(md`A shorted stub $0.3\lambda$ long looks like…`,
       ['a capacitor', 'an inductor', 'an open circuit', 'a short circuit'], 0,
       [null, md`Only below $\lambda/4$. Here $\beta d = 108°$ and $\tan108° < 0$.`, md`Only at exactly $\lambda/4$ (or $3\lambda/4$, ...).`, md`Only at multiples of $\lambda/2$.`],
-      md`$jZ_0\tan108°$ has a negative imaginary part: capacitive.`),
+      md`$jZ_0\tan108°$ has a negative imaginary part: capacitive.`, { later: true }),
     Q(md`A shorted stub is 0.5 m long and $v = 2\times10^8$ m/s. The lowest frequency at which it looks like an open circuit is…`,
       [md`100 MHz`, md`200 MHz`, md`150 MHz`, md`400 MHz`], 0,
       [null, md`At 200 MHz the stub is $\lambda/2$: a short again.`, md`That uses $c$.`, md`That is a full wavelength.`],
-      md`Open when $l = \lambda/4$: $f = v/4l = 2\times10^8/2 = 100$ MHz.`),
+      md`Open when $l = \lambda/4$: $f = v/4l = 2\times10^8/2 = 100$ MHz.`, { later: true }),
     Q(md`A shorted stub that is $\lambda/4$ long at $f_0$ is connected across a line. At $2f_0$ it…`,
       ['shorts the line', 'is invisible', 'adds an inductor', 'adds a capacitor'], 0,
       [null, md`That is at $f_0$, where it is an open circuit in parallel.`, md`At $2f_0$ it is exactly $\lambda/2$: a short.`, md`At exactly $\lambda/2$ the reactance is zero, not capacitive.`],
-      md`At $2f_0$ the stub is $\lambda/2$ long, so it repeats its short across the line: $2f_0$ is blocked.`),
+      md`At $2f_0$ the stub is $\lambda/2$ long, so it repeats its short across the line: $2f_0$ is blocked.`, { later: true }),
     Q(md`$|\Gamma_L| = 1/2$. The VSWR is…`,
       ['3', '2', '1/3', '1.5'], 0,
       [null, md`That is for $|\Gamma| = 1/3$.`, md`Upside down: a VSWR is at least 1.`, md`That is $1 + |\Gamma|$.`],
-      md`$(1 + 1/2)/(1 - 1/2) = 3$.`),
+      md`$(1 + 1/2)/(1 - 1/2) = 3$.`, { later: true }),
     Q(md`A VSWR of 9 means $|\Gamma_L|$ is…`,
       ['4/5', '1/9', '8/9', '5/4'], 0,
       [null, md`That is $1/\text{VSWR}$.`, md`The bottom is $\text{VSWR} + 1 = 10$.`, md`Upside down: $|\Gamma| \le 1$.`],
-      md`$(9 - 1)/(9 + 1) = 8/10 = 4/5$.`),
+      md`$(9 - 1)/(9 + 1) = 8/10 = 4/5$.`, { later: true }),
     Q(md`$\Gamma_L = 1/2$. At $d = \lambda/4$, $\Gamma(d)$ is…`,
       [md`$-1/2$`, md`$-j/2$`, md`$1/2$`, md`$j/2$`], 0,
       [null, md`That turns by $\beta d = 90°$. The turn is $2\beta d = 180°$.`, md`That is $d = \lambda/2$.`, md`That turns the wrong way, and by $\beta d$.`],
-      md`$2\beta d = 180°$: $\Gamma(d) = \frac12e^{-j180°} = -\frac12$. This is why a quarter wave inverts.`),
+      md`$2\beta d = 180°$: $\Gamma(d) = \frac12e^{-j180°} = -\frac12$. This is why a quarter wave inverts.`, { later: true }),
     Q(md`On a 50 Ω line $|\tilde V^+| = 10$ V and $|\Gamma_L| = 1/2$. The power delivered is…`,
       [md`$0.75$ W`, md`$1$ W`, md`$0.5$ W`, md`$0.25$ W`], 0,
       [null, md`That ignores the reflection.`, md`That uses $1 - |\Gamma|$. Power goes as voltage squared.`, md`That is the reflected power.`],
-      md`$\frac{100}{100}(1 - \frac14) = 0.75$ W.`),
+      md`$\frac{100}{100}(1 - \frac14) = 0.75$ W.`, { later: true }),
     Q(md`A 50 Ω line has VSWR 2. At a voltage maximum, $Z(d)$ is…`,
       [md`$100\ \Omega$`, md`$25\ \Omega$`, md`$50\ \Omega$`, md`$j100\ \Omega$`], 0,
       [null, md`That is at a voltage minimum.`, md`Only on a matched line.`, md`At a maximum $\Gamma(d)$ is real and positive, so $Z$ is real.`],
-      md`$Z = Z_0(1 + |\Gamma|)/(1 - |\Gamma|) = \text{VSWR}\cdot Z_0 = 100\ \Omega$.`),
+      md`$Z = Z_0(1 + |\Gamma|)/(1 - |\Gamma|) = \text{VSWR}\cdot Z_0 = 100\ \Omega$.`, { later: true }),
   ];
   attachBank(L2);
 

@@ -135,9 +135,9 @@
     R(md`
       **Spring 2019 · ECE 329 · Exam 3** (Chen, Goddard, Zhao). Wednesday, April 17, 2019, 8:30–9:45 PM: 75 minutes. Five problems, 100 points (25, 20, 15, 25, 15). Closed book, no calculators. That term allowed three double-sided 3×5 cards; you get one 4″×6″ card and one printed table (the loss limits). The paper asked for answers as fractions, not decimals, and gave $c = 3\times10^8$ m/s, $\epsilon_0 = \tfrac{1}{36\pi}\times10^{-9}$ F/m, $\mu_0 = 4\pi\times10^{-7}$ H/m and $\eta_0 = 120\pi\ \Omega$.
 
-      **Why this paper.** Prof. Chen, who writes your exam, co-wrote it. It is a compact tour of Exam 3: a lossy wave read off its phasor, a parallel-plate line built from its fields, circular polarization hitting a perfect conductor, a two-line bounce diagram, and the resonances of a line.
+      **Why this paper.** Prof. Chen, who writes your exam, co-wrote it. It is a compact tour of Exam 3: a lossy wave read off its phasor, a parallel-plate line built from its fields, circular polarization hitting a perfect conductor, and a two-line bounce diagram. (Problem 5, on resonances of a line, uses Lectures 31-34: it is moved to [Not on Exam 3](#/l/e3-later).)
 
-      **What it tests.** Problem 1: $\gamma$, $\eta$ and the loss tangent from a given phasor ([Topic 5](#/l/w2-gamma), [Topic 6](#/l/w2-read), [Topic 7](#/l/w2-limits)). Problem 2: $Z_0$, the field of a current pulse, and power on a parallel-plate line ([Topic 13](#/l/w5-telegraph), [Topic 4](#/l/w1-avg)). Problem 3: handedness and reflection at a PEC ([Topic 9](#/l/w3-pol), [Topic 11](#/l/w4-gamma), [Topic 12](#/l/w4-standing)). Problem 4: junctions and a bounce diagram ([Topic 14](#/l/w5-launch), [Topic 15](#/l/w5-bounce), [Topic 16](#/l/w5-multi)). Problem 5: the resonances of a line ([Topic 17](#/l/w6-vd), [Topic 18](#/l/w6-stubs)). All of it is in scope for the Fall 2026 Exam 3.
+      **What it tests.** Problem 1: $\gamma$, $\eta$ and the loss tangent from a given phasor ([Topic 5](#/l/w2-gamma), [Topic 6](#/l/w2-read), [Topic 7](#/l/w2-limits)). Problem 2: $Z_0$, the field of a current pulse, and power on a parallel-plate line ([Topic 13](#/l/w5-telegraph), [Topic 4](#/l/w1-avg)). Problem 3: handedness and reflection at a PEC ([Topic 9](#/l/w3-pol), [Topic 11](#/l/w4-gamma), [Topic 12](#/l/w4-standing)). Problem 4: junctions and a bounce diagram ([Topic 14](#/l/w5-launch), [Topic 15](#/l/w5-bounce), [Topic 16](#/l/w5-multi)). Problem 5: the resonances of a line, which is **not on this term's Exam 3** (Lectures 31-34). Problems 1-4 are all in scope.
 
       **The key.** This is the official key, re-derived line by line. Every final answer on it is right. Its working for 1(d) has one slip, pointed out there.
 
@@ -644,12 +644,12 @@
       ` }),
 
     // ------------------------------------------------------------ Problem 5
-    R(md`
+    Object.assign(R(md`
       ### Problem 5 (15 points): resonances of a line
 
       A lossless transmission line of length $l = 100$ m and velocity $v = 2\times10^8$ m/s supports resonant oscillations. In cosine steady state, the voltage phasor of these oscillations is measured to be $\tilde V_{in} = 0$ V at the input, and the current phasor at the load is measured to be $\tilde I_L = 0$ A.
-    `),
-    P({ src: 'Spring 2019 #5(a) · 5 pts', title: 'Input and load impedance',
+    `), { later: true }),
+    P({ later: true, src: 'Spring 2019 #5(a) · 5 pts', title: 'Input and load impedance',
       q: md`What are the input impedance $Z_{in}$ and the load impedance $Z_L$ for these resonances?`,
       parts: [CH('', [md`$Z_{in} = 0$ and $Z_L = \infty$`, md`$Z_{in} = \infty$ and $Z_L = 0$`, md`$Z_{in} = 0$ and $Z_L = 0$`, md`$Z_{in} = \infty$ and $Z_L = \infty$`], 0,
         [null, md`That swaps them. $Z = \tilde V/\tilde I$: at the input $\tilde V = 0$ gives 0, and at the load $\tilde I = 0$ gives $\infty$.`, md`At the load the current is zero while the voltage is not, so $Z_L = \tilde V_L/0 = \infty$.`, md`At the input the voltage is zero, so $Z_{in} = 0/\tilde I_{in} = 0$.`])],
@@ -672,7 +672,7 @@
 
         **Where points go.** Swapping the two.
       ` }),
-    P({ src: 'Spring 2019 #5(b) · 10 pts', title: 'The three lowest resonant frequencies',
+    P({ later: true, src: 'Spring 2019 #5(b) · 10 pts', title: 'The three lowest resonant frequencies',
       q: md`Determine the three lowest possible frequencies for resonant oscillations.`,
       parts: [
         NT('f_1', 0.5, 'MHz', [[1, 'That is l = λ/2, which needs the same kind of end on both sides. Short-to-open needs l = λ/4.'], [Math.PI, 'That is ω/10⁶, not f. Divide by 2π.']]),
@@ -717,7 +717,7 @@
       ` }),
   ];
 
-  EM.lesson('e3-past', { id: 'e3-past-sp19', order: 3, title: 'Spring 2019 Exam 3', kind: 'exam', sub: 'Chen, Goddard, Zhao · 5 problems, 100 pts · keyed · a lossy wave, a parallel-plate line, a PEC, a two-line bounce, resonances', steps: sp19 });
+  EM.lesson('e3-past', { id: 'e3-past-sp19', order: 3, title: 'Spring 2019 Exam 3', kind: 'exam', sub: 'Chen, Goddard, Zhao · 5 problems, 100 pts · keyed · a lossy wave, a parallel-plate line, a PEC, a two-line bounce (Problem 5, on resonances, is not on Exam 3)', steps: sp19 });
 
   // ======================================================================================== SPRING 2018
   // the bounce of Problem 3: length in cm, speed in cm/ns (2c/3 = 20 cm/ns), times in ns
@@ -755,7 +755,7 @@
   }
 
   // the ten 3-point questions of Problem 1
-  const C3 = (k, title, q, opts, a, why, sol, figs) => P(Object.assign({ src: `Spring 2018 #1(${k}) · 3 pts`, title, q, parts: [CH('', opts, a, why)], sol }, figs ? { figs } : {}));
+  const C3 = (k, title, q, opts, a, why, sol, figs) => P(Object.assign({ ...(['vi', 'viii', 'ix', 'x'].includes(k) ? { later: true } : {}), src: `Spring 2018 #1(${k}) · 3 pts`, title, q, parts: [CH('', opts, a, why)], sol }, figs ? { figs } : {}));
   const ROMAN = ['I only', 'II only', 'III only', 'I and II only', 'I, II, and III', 'None of the above'];
   const ROMAN13 = ['I only', 'II only', 'III only', 'I and III only', 'I, II, and III', 'None of the above'];
 
@@ -763,7 +763,7 @@
     R(md`
       **Spring 2018 · ECE 329 · Exam 3** (He, Goddard, Ilie). Wednesday, April 18, 2018, 7:15–8:30 PM: 75 minutes. Four problems, 100 points (30, 20, 30, 20). Closed book, no calculators. That term allowed three double-sided 3×5 cards; you get one 4″×6″ card and one printed table (the loss limits). The paper asked for answers as fractions, gave the same constants as every Exam 3 ($c = 3\times10^8$ m/s, $\epsilon_0 = \tfrac{1}{36\pi}\times10^{-9}$ F/m, $\mu_0 = 4\pi\times10^{-7}$ H/m, $\eta_0 = 120\pi\ \Omega$), and printed the imperfect-dielectric / good-conductor table that is the table the exam now gives you.
 
-      **What it tests.** Problem 1 is ten quick concept questions: good conductors ([Topic 7](#/l/w2-limits)), the telegrapher's equations ([Topic 13](#/l/w5-telegraph)), polarization and handedness ([Topic 9](#/l/w3-pol)), $Z_0$ and $\Gamma(d)$ ([Topic 17](#/l/w6-vd)), matching through several lines ([Topic 16](#/l/w5-multi)), and the resonances of a shorted line ([Topic 18](#/l/w6-stubs)). Problem 2: a wave entering a dielectric, read backward from the transmitted field ([Topic 11](#/l/w4-gamma), [Topic 5](#/l/w2-gamma)). Problem 3: a single-line bounce diagram for voltage and current, and the traces at both ends ([Topic 14](#/l/w5-launch), [Topic 15](#/l/w5-bounce)). Problem 4: the input circuit of a line, a stub resonance and a quarter-wave section ([Topic 18](#/l/w6-stubs), [Topic 19](#/l/w6-qw)). All of it is in scope for the Fall 2026 Exam 3.
+      **What it tests.** Problem 1 is ten quick concept questions: good conductors ([Topic 7](#/l/w2-limits)), the telegrapher's equations ([Topic 13](#/l/w5-telegraph)), polarization and handedness ([Topic 9](#/l/w3-pol)), $Z_0$, and matching through several lines ([Topic 16](#/l/w5-multi)). (Questions vi, viii, ix and x use $\Gamma(d)$, $V(d)$ and $Z_{in}$ on lines, which are Lectures 31-34: they are moved to [Not on Exam 3](#/l/e3-later).) Problem 2: a wave entering a dielectric, read backward from the transmitted field ([Topic 11](#/l/w4-gamma), [Topic 5](#/l/w2-gamma)). Problem 3: a single-line bounce diagram for voltage and current, and the traces at both ends ([Topic 14](#/l/w5-launch), [Topic 15](#/l/w5-bounce)). Problem 4: the input circuit of a line, a stub resonance and a quarter-wave section, which is **not on this term's Exam 3** (Lectures 31-34; moved to [Not on Exam 3](#/l/e3-later)). Problems 1 to 3 are in scope, except the four questions named above.
 
       **No key was posted.** Every answer here was derived from first principles and checked twice: the algebra in Python, and every bounce value against the site's own transmission-line solver.
 
@@ -906,7 +906,7 @@ III. sum of the incident and reflected waves.`,
 
         **II. Reflected wave.** It carries power back toward the generator, so $V^-I^- < 0$: its current flows toward $-z$ when its voltage is positive. $V^-/I^- = -Z_0$. **False** (that is the polarity).
 
-        **III. Sum.** The ratio of total voltage to total current is the line impedance ([Topic 17](#/l/w6-vd)):
+        **III. Sum.** The ratio of total voltage to total current is the line impedance (a Lecture 34 idea, not on Exam 3):
         $$Z(d) = Z_0\,\frac{1 + \Gamma(d)}{1 - \Gamma(d)}$$
         That equals $Z_0$ only when $\Gamma = 0$. **False** in general.
         $$\boxed{\text{I only}}$$
@@ -956,7 +956,7 @@ III. has constant phase along the line.`,
 
         All three: $Z_{01} = Z_{02} = Z_{03} = R_L$. The listed conditions all leave out at least the load:
         $$\boxed{\text{more conditions are needed}}$$
-        **A note on sinusoids.** At a single frequency, a quarter-wave section can cancel the reflections even with $\Gamma_{12} \neq 0$ ([Topic 19](#/l/w6-qw)). For a general $f(t)$, as drawn, that does not work. Either way, the listed conditions are not enough.
+        **A note on sinusoids.** At a single frequency, a quarter-wave section can cancel the reflections even with $\Gamma_{12} \neq 0$ (Lecture 33, not on Exam 3). For a general $f(t)$, as drawn, that does not work. Either way, the listed conditions are not enough.
 
         **Speed path.** "No reflection anywhere" means every boundary the wave meets is matched, and the load is a boundary too.
 
@@ -1256,14 +1256,14 @@ III. has constant phase along the line.`,
       ` }),
 
     // ------------------------------------------------------------ Problem 4
-    RF(md`
+    Object.assign(RF(md`
       ### Problem 4 (20 points): the input circuit of a line
 
       A line segment has propagation velocity $v = 200$ m/µs, characteristic impedance $Z_0 = 50\ \Omega$ and length $l = 50$ m, and is terminated by a load $Z_L$. The segment is connected **in series** with a resistor $R = 50\ \Omega$ and a sinusoidal voltage source with phasor $\tilde V = 2\angle0°$ V.
 
       [[fig:c4]]
-    `, { c4: { svg: ckt4(), cap: md`$\tilde V_{in}$ is across the line input and $\tilde V_L$ across the load.` } }),
-    P({ src: 'Spring 2018 #4(a) · 10 pts', title: 'Zero current through R',
+    `, { c4: { svg: ckt4(), cap: md`$\tilde V_{in}$ is across the line input and $\tilde V_L$ across the load.` } }), { later: true }),
+    P({ later: true, src: 'Spring 2018 #4(a) · 10 pts', title: 'Zero current through R',
       q: md`If $Z_L = 0$ and the current through the resistor $R$ is found to be zero, find all the possible wavelengths $\lambda$ for the system.`,
       parts: [
         NT('\\text{the longest}\\ \\lambda', 200, 'm', [[100, 'That is l = λ/2. A shorted half-wave line has Z_in = 0: the current would be largest, not zero.'], [50, 'That is l = λ: Z_in = 0 there too.']]),
@@ -1294,7 +1294,7 @@ III. has constant phase along the line.`,
 
         **Where points go.** Using half waves ($\lambda = 2l/n$), which give $Z_{in} = 0$, the opposite; giving only the longest $\lambda$ when the paper asks for all.
       ` }),
-    P({ src: 'Spring 2018 #4(b) · 10 pts', title: 'A quarter-wave section',
+    P({ later: true, src: 'Spring 2018 #4(b) · 10 pts', title: 'A quarter-wave section',
       q: md`If instead $Z_L = 100\ \Omega$, and the source frequency makes $l = \lambda/4$, find the impedance $Z_{in}$ and the voltage phasor $\tilde V_{in}$ at the input of the line. (The current through the resistor is not specified for this part.)`,
       parts: [
         NT('Z_{in}', 25, 'Ω', [[100, 'That is Z_L itself. A quarter-wave line inverts: Z_in = Z0²/Z_L.'], [50, 'That is Z0. Only a matched load gives Z_in = Z0.'], [200, 'That is Z_L²/Z0, upside down. Z_in = Z0²/Z_L.']]),
@@ -1329,5 +1329,5 @@ III. has constant phase along the line.`,
       ` }),
   ];
 
-  EM.lesson('e3-past', { id: 'e3-past-sp18', order: 4, title: 'Spring 2018 Exam 3', kind: 'exam', sub: 'He, Goddard, Ilie · 4 problems, 100 pts · solved here · ten concept questions, an interface, a bounce, a quarter-wave section', steps: sp18 });
+  EM.lesson('e3-past', { id: 'e3-past-sp18', order: 4, title: 'Spring 2018 Exam 3', kind: 'exam', sub: 'He, Goddard, Ilie · 4 problems, 100 pts · solved here · ten concept questions, an interface, a bounce (the quarter-wave section, Problem 4, is not on Exam 3)', steps: sp18 });
 })();

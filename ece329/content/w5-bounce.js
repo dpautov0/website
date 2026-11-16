@@ -271,7 +271,7 @@
         So the forward labels are $40, 8, 1.6, \dots$ and the backward ones $24, 4.8, 0.96, \dots$: each is five times smaller than the one a round trip before.
 
         !!intuition Does this make sense?
-          If both ends had $|\Gamma| = 1$ (a short or an open at each end), the labels would never shrink and the wave would bounce forever: a lossless resonator ([Topic 18](#/l/w6-stubs)). Real resistors absorb a part of every wave that hits them, which is why $|\Gamma_L\Gamma_g| < 1$ and the bouncing dies out.
+          If both ends had $|\Gamma| = 1$ (a short or an open at each end), the labels would never shrink and the wave would bounce forever: a lossless resonator (Lecture 31, not on Exam 3). Real resistors absorb a part of every wave that hits them, which is why $|\Gamma_L\Gamma_g| < 1$ and the bouncing dies out.
       `, {
         circ: { svg: circA, cap: md`Circuit A: $V_g = 120u(t)$ V, $R_g = 100\ \Omega$, $Z_0 = 50\ \Omega$, $R_L = 200\ \Omega$, a 300 m line with $v = 150$ m/µs. The dashed mark is the probe used in Section 3.` },
         bd: { svg: diag(sA, { tMax: 10 }), cap: 'The voltage bounce diagram of circuit A for the first 10 µs. Bright lines travel toward the load, gray lines toward the generator. Each label is the line before it times the Γ of the end they share.' },
@@ -470,10 +470,10 @@
 
         [[fig:sine]]
 
-        In general the two copies differ in delay by $2(l - z)/v$, and the final amplitude depends on $z$. That is a **standing-wave pattern**, and it is what the phasor methods of [Topic 17](#/l/w6-vd) compute directly for all time.
+        In general the two copies differ in delay by $2(l - z)/v$, and the final amplitude depends on $z$. That is a **standing-wave pattern**.
 
         !!intuition Does this make sense?
-          At the load both copies arrive together, so the amplitude there is $(\tfrac12 + \tfrac14)\cdot10 = 7.5$ V. A lumped check: at 1 MHz the wavelength is $300/1 = 300$ m, so the line is exactly two wavelengths long, and a whole number of half-wavelengths repeats the load impedance at the input ([Topic 19](#/l/w6-qw)). The source then sees 150 Ω in series with 50 Ω, and $10\cdot150/200 = 7.5$ V ✓.
+          At the load both copies arrive together, so the amplitude there is $(\tfrac12 + \tfrac14)\cdot10 = 7.5$ V. A lumped check (the idea that a whole number of half wavelengths repeats the load at the input is Lecture 32, not on Exam 3; skip this check if you like): at 1 MHz the wavelength is $300/1 = 300$ m, so the line is exactly two wavelengths long. The source then sees 150 Ω in series with 50 Ω, and $10\cdot150/200 = 7.5$ V ✓.
       `, { sine: { svg: PF.row([{ svg: TL.plotT(sS, 450, { input: sine, tMax: 6, w: 340, name: 'V(450\\ \\text{m},t)', yt: [[7.5, '7.5'], [5, '5'], [-7.5, '-7.5']] }), cap: 'At 450 m: 5 V, then 7.5 V once the copies are in phase.' }, { svg: TL.plotT(sS, 525, { input: sine, tMax: 6, w: 340, name: 'V(525\\ \\text{m},t)', yt: [[5, '5'], [2.5, '2.5'], [-2.5, '-2.5']] }), cap: 'At 525 m: 5 V, then 2.5 V once they are opposite.' }]).svg, cap: '' } }),
       Q(md`**Predict.** The sine example. Once both copies have arrived, what is the amplitude at $z = 300$ m (the middle)?`,
         [md`$7.5$ V`, md`$2.5$ V`, md`$5$ V`, md`$10$ V`], 0,

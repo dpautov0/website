@@ -121,22 +121,18 @@
 <p>$|\tilde E_1| = E_0|1 + \Gamma e^{-j2\beta\ell}|$ ($\ell$ from boundary): max $(1 + |\Gamma|)E_0$, min $(1 - |\Gamma|)E_0$, $\frac\lambda4$ apart; $\Gamma < 0$: min at the boundary</p>
 <p>PEC at $z = 0$: $\mathbf E_1 = 2E_0\sin\beta z\,\sin\omega t\,\hat x$ <i class="sep">|</i> $\mathbf H_1 = \frac{2E_0}{\eta}\cos\beta z\cos\omega t\,\hat y$ <i class="sep">|</i> $\mathbf J_s = \frac{2E_0}{\eta}\cos\omega t\,\hat x$ <i class="sep">|</i> $\langle S\rangle = 0$</p>
 <p>E nodes every $\frac\lambda2$ from the wall; H max at the wall</p>
-<p>$\frac\lambda4$ layer with $\eta_2 = \sqrt{\eta_1\eta_3}$: no reflection <i class="sep">|</i> $\frac\lambda2$ slab: invisible</p>
 </section>
 
 </div></div>
 
 <!-- ================================ BACK: lines ================================ -->
 <div class="card">
-<div class="top"><b>ECE 329 Exam 3 · BACK: lines</b><span>$v = \frac{c}{\sqrt{\epsilon_r}}$ <i class="sep">|</i> $T = \frac lv$ <i class="sep">|</i> $\beta = \frac\omega v = \frac{2\pi}\lambda$ <i class="sep">|</i> $\beta\frac\lambda8 = 45°$, $\beta\frac\lambda4 = 90°$, $\beta\frac\lambda2 = 180°$</span></div>
+<div class="top"><b>ECE 329 Exam 3 · BACK: lines</b><span>$v = \frac{c}{\sqrt{\epsilon_r}}$ <i class="sep">|</i> $T = \frac lv$ <i class="sep">|</i> round trip $\frac{2l}v$ <i class="sep">|</i> $t = 0$ at the generator</span></div>
 <div class="cols">
 
 <section><h2>Core (not printed)</h2>
 <p>$Z_0 = \sqrt{\mathcal L/\mathcal C}$ <i class="sep">|</i> $v = \frac{1}{\sqrt{\mathcal L\mathcal C}}$ <i class="sep">|</i> $\tau_g = \frac{Z_0}{R_g + Z_0}$ <i class="sep">|</i> $\Gamma_{L,g} = \frac{R - Z_0}{R + Z_0}$</p>
 <p>impulse: fwd $\tau_g(\Gamma_L\Gamma_g)^n$ at $\frac zv + n\frac{2l}v$; back $\tau_g\Gamma_L(\Gamma_L\Gamma_g)^n$ at $(n{+}1)\frac{2l}v - \frac zv$; <span class="t">δ source → 0 V</span></p>
-<p>$\tilde V(d) = \tilde V^+e^{j\beta d}(1 + \Gamma(d))$ <i class="sep">|</i> $\tilde I(d) = \frac{\tilde V^+}{Z_0}e^{j\beta d}(1 - \Gamma(d))$ ($d$ from load)</p>
-<p>$Z(d) = Z_0\frac{1 + \Gamma(d)}{1 - \Gamma(d)}$ <i class="sep">|</i> VSWR $= \frac{1 + |\Gamma_L|}{1 - |\Gamma_L|}$ <i class="sep">|</i> $P = \frac12\Re\{\tilde V\tilde I^*\}$ <i class="sep">|</i> $\tilde V(l) = \tilde V_g\frac{Z(l)}{Z_g + Z(l)}$</p>
-<p>short: $\tilde V = j2\tilde V^+\sin\beta d$ <i class="sep">|</i> open: $\tilde V = 2\tilde V^+\cos\beta d$</p>
 </section>
 
 <section><h2>Line from the fields</h2>
@@ -153,45 +149,42 @@
 <p>joint $Z_a \to Z_b$: $\Gamma = \frac{Z_b - Z_a}{Z_b + Z_a}$, $\tau = 1 + \Gamma$; <span class="t">from b's side: $-\Gamma$, $1 - \Gamma$</span></p>
 <p>two lines after the joint: $Z_b\|Z_c$ <i class="sep">|</i> resistor at the joint: $R\|Z_b$</p>
 <p><b>steady state (DC):</b> the line vanishes: $V = V_g\frac{R_L}{R_g + R_L}$, $I = \frac{V_g}{R_g + R_L}$; $= \tau_gV_g\frac{1 + \Gamma_L}{1 - \Gamma_L\Gamma_g}$</p>
-<p>C load: short first (−1), open at the end (+1) <i class="sep">|</i> L: open first, short at the end</p>
 </section>
 
 <section><h2>Bounce diagrams</h2>
 <p>$t$ down, $z$ across, slopes $\pm v$; write each wave's value on its line</p>
 <p>arrivals at $z$: $\frac zv$, $\frac{2l - z}v$, $\frac{2l + z}v$, $\frac{4l - z}v$, …</p>
 <p>snapshot at $t$: fronts at $z = vt$, $2l - vt$, …; <span class="t">first in time = farthest in $z$</span></p>
+<p>$V(z,t)$ = sum of every wave whose front has passed $z$ by $t$; $I(z,t)$ same with $\pm\frac{V^\pm}{Z_0}$</p>
+<p>Γ: matched 0, short −1, open +1; $R > Z_0$ ⇒ $\Gamma > 0$</p>
+<p>step $V_g u(t)$: each wave a step <i class="sep">|</i> pulse width $w$: $u(t) - u(t - w)$, length $vw$ on the line</p>
+<p>delta source: spikes only, they shrink by $\Gamma_L\Gamma_g$ per round trip; <span class="t">final value 0</span></p>
+<p>junctions: each its own Γ, τ both ways; every transmitted wave starts new bounces on the next line ($v$ may differ)</p>
+<p>energy check: $\frac{(V^+)^2}{Z_a} = \frac{(V^-)^2}{Z_a} + \frac{(V^t)^2}{Z_b}$ at a joint</p>
 <p>scope at $z = 0$: level $\tau_gV_g$; jump at $2T$ is $\tau_gV_g\Gamma_L(1 + \Gamma_g)$ → $\Gamma_L$; $T$ → $l = vT$</p>
-</section>
-
-<section><h2>Phasor lines</h2>
-<p>$Z_{in} = Z_0\frac{Z_L + jZ_0\tan\beta l}{Z_0 + jZ_L\tan\beta l}$</p>
-<p>$\frac\lambda4$: $Z_{in} = \frac{Z_0^2}{Z_L}$ (inverts) <i class="sep">|</i> $\frac\lambda2$: $Z_{in} = Z_L$</p>
-<p>match $R_L$ to $R_{in}$: $\frac\lambda4$ of $Z_0 = \sqrt{R_{in}R_L}$ (at that $f$, and odd multiples)</p>
-<p>$\Gamma_L = \frac{Z_L - Z_0}{Z_L + Z_0}$; $\Gamma(d) = \Gamma_Le^{-j2\beta d}$ turns clockwise toward the generator</p>
-<p>$|\tilde V|$ max where $\Gamma(d)$ is real and $> 0$: $2\beta d_{max} = \theta_L + 2\pi n$; min $\frac\lambda4$ away</p>
-<p>real $R_L > Z_0$: max at load, VSWR $= \frac{R_L}{Z_0}$ <i class="sep">|</i> $R_L < Z_0$: min at load, VSWR $= \frac{Z_0}{R_L}$</p>
-<p>$P_L = \frac{|\tilde V^+|^2}{2Z_0}(1 - |\Gamma_L|^2)$ = power in (lossless)</p>
-<p>$\tilde V^+ = \frac{\tilde V(l)}{e^{j\beta l}(1 + \Gamma(l))}$</p>
-</section>
-
-<section><h2>Stubs and resonance</h2>
-<p>short: $Z = jZ_0\tan\beta l$: under $\frac\lambda4$ → L; 0 at $l = n\frac\lambda2$, ∞ at $l = (2n - 1)\frac\lambda4$</p>
-<p>open: $Z = -jZ_0\cot\beta l$: under $\frac\lambda4$ → C; ∞ at $n\frac\lambda2$, 0 at $(2n - 1)\frac\lambda4$</p>
-<p>in $f$ ($\beta l = \frac{2\pi fl}{v}$): short stub 0 at $f = \frac{nv}{2l}$, ∞ at $f = \frac{(2n - 1)v}{4l}$; open: swap</p>
-<p>short, $\beta l \ll 1$: $L = \mathcal Ll$ <i class="sep">|</i> open: $C = \mathcal Cl$</p>
-<p>shunt stub that is 0 at $f$: notch (kills $f$) <i class="sep">|</i> ∞ at $f$: invisible <i class="sep">|</i> series stub ∞: blocks</p>
-<p>ringing line: same ends (S-S, O-O) $f = \frac{nv}{2l}$, period $\frac{2l}v$ <i class="sep">|</i> mixed (S-O) $f = \frac{(2n - 1)v}{4l}$, period $\frac{4l}v$</p>
 </section>
 
 <section><h2>Speed rules and numbers</h2>
 <p>1. lossless numbers first, then $x = \frac{\sigma}{\omega\epsilon}$, then the matching table row</p>
 <p>2. $\tilde{\mathbf H} = \frac1\eta\hat k\times\tilde{\mathbf E}$ <i class="sep">|</i> $\tilde{\mathbf E} = \eta\tilde{\mathbf H}\times\hat k$ ($\hat k$ = travel)</p>
 <p>3. sign of Γ first: smaller η or R ahead ⇒ $\Gamma < 0$ ⇒ minimum at the boundary or load</p>
-<p>4. $\frac\lambda4$ inverts, $\frac\lambda2$ repeats; short under $\frac\lambda4$ = L, open under $\frac\lambda4$ = C</p>
+<p>4. each new wave = (wave that hit) × Γ or τ of that end or joint; never Γ of the far end</p>
 <p>5. last bounce level = the DC divider: check it</p>
 <p>6. a joint: $V$ continuous and currents add (that is $\tau = 1 + \Gamma$)</p>
 <p class="t">7. three τ's: angle of η <i class="sep">|</i> $1 + \Gamma$ <i class="sep">|</i> $\tau_g = \frac{Z_0}{R_g + Z_0}$: name which one</p>
+<p class="t">8. sketch V vs t at a point: list arrival times first, then add the jumps</p>
+</section>
+
+<section><h2>Lecture 30 example (two lines)</h2>
+<p>$R_g = 2Z_1$, $Z_2 = 2Z_1$, matched load: $\tau_g = \Gamma_g = \Gamma_{12} = \frac13$, $\tau_{12} = \frac43$</p>
+<p>back from line 2: $\Gamma_{21} = -\frac13$, $\tau_{21} = \frac23$ <i class="sep">|</i> check $\tau_{12}\tau_{21} = 1 - \Gamma_{12}^2$</p>
+<p>at the joint, after a hit: $V = (1 + \Gamma)V^{inc} = \tau V^{inc}$ on both sides</p>
+<p>different $v$ on each line: redraw the slopes; times add per segment, $\frac{l_1}{v_1} + \frac{l_2}{v_2}$</p>
+</section>
+
+<section><h2>Numbers</h2>
 <p>$e^{-1} = .368$ <i class="sep">|</i> $e^{-2} = .135$ <i class="sep">|</i> $e^{-3} = .050$ <i class="sep">|</i> $e^{-4} = .018$ <i class="sep">|</i> $e^{-5} = .0067$</p>
+<p>units: α Np/m, β rad/m, η Ω, S W/m², $J_s$ A/m, $\mathcal L$ H/m, $\mathcal C$ F/m; 1 Np = 8.69 dB</p>
 <p>$\ln2 = .693$ <i class="sep">|</i> $\ln10 = 2.30$ <i class="sep">|</i> $\sqrt2 = 1.414$ <i class="sep">|</i> $\sqrt3 = 1.732$ <i class="sep">|</i> $\pi^2 \approx 9.87$</p>
 <p>300 MHz: $\lambda_0 = 1$ m, $k_0 = 2\pi$ <i class="sep">|</i> $\omega\mu_0 = k_0\eta_0$ <i class="sep">|</i> $\omega\epsilon_0 = \frac{k_0}{\eta_0}$</p>
 </section>

@@ -1162,8 +1162,6 @@
         $$\tilde H_y = \frac{E_0}{\eta_1}e^{j\beta d}\left(1 - \Gamma e^{-j2\beta d}\right)$$
         The factor $e^{j\beta d}$ has size 1. So the **envelope**, the size of the field at each point, is
         $$\boxed{|\tilde E_x(d)| = |E_0|\,\left|1 + \Gamma e^{-j2\beta d}\right|}$$
-        Compare the line formula $\tilde V(d) = \tilde V^+e^{j\beta d}(1 + \Gamma_Le^{-j2\beta d})$: identical.
-
         Read the bracket as two arrows added: a fixed arrow of length 1, and an arrow of length $|\Gamma|$ that turns as you move. Stepping back a distance $d$ turns it by $-2\beta d$: twice $\beta d$, because the reflected wave had to travel out to the boundary and back. Where the two arrows line up, the field is large; where they point opposite ways, it is small.
 
         !!intuition Does this make sense?
@@ -1241,7 +1239,7 @@
 
         Two facts to keep: neighbouring nodes of the same field are $\lambda/2$ apart. A node of $E$ sits on an antinode of $H$, $\lambda/4$ from the nearest node of $H$.
 
-        **The circuit picture.** A node of $E$ acts like a short circuit ($V = 0$, current flows); a node of $H$ acts like an open circuit ($I = 0$). On a transmission line ended in a short, the voltage is $\tilde V(d) = j2\tilde V^+\sin\beta d$ (know it; not given in the exam): the same sine. You will meet it again in [Topic 18](#/l/w6-stubs).
+        **The circuit picture.** A node of $E$ acts like a short circuit ($V = 0$, current flows); a node of $H$ acts like an open circuit ($I = 0$). (The same picture holds on a shorted transmission line, where $V$ has the same sine pattern. Phasor patterns on lines are Lecture 34, not on Exam 3.)
 
         !!intuition Does this make sense?
           Slide a thin metal sheet into region 1 exactly at an $E$ node, $d = \lambda/2$. Nothing changes: $E$ is already zero there, and the sheet just carries the current that $H$ needs. That is how a cavity works (Section 8).
@@ -1974,7 +1972,7 @@
     Q(md`On a transmission line ended in a short, $\tilde V(d) = j2\tilde V^+\sin\beta d$. The field version of this is…`,
       ['the electric field in front of a perfect conductor', 'the magnetic field in front of a perfect conductor', 'a traveling wave in a matched medium', 'the field between two sheets one wavelength apart with equal currents'], 0,
       [null, md`$H$ goes as $\cos$, like the current on a shorted line.`, md`A matched line has no standing wave.`, md`Equal currents one wavelength apart add outside, not cancel.`],
-      md`A short forces $V = 0$, a conductor forces $E = 0$: both give $\sin\beta d$ from the end.`),
+      md`A short forces $V = 0$, a conductor forces $E = 0$: both give $\sin\beta d$ from the end.`, { later: true }),
     Q(md`$\Gamma = -0.5$ and $E_0 = 10$ V/m. The VSWR and the smallest $|E|$ are…`,
       ['3 and 5 V/m', '3 and 0 V/m', '1/3 and 5 V/m', '2 and 5 V/m'], 0,
       [null, md`Zero minimum is only for $|\Gamma| = 1$.`, md`VSWR is max over min, at least 1.`, md`$(1 + 0.5)/(1 - 0.5) = 3$, not 2.`],

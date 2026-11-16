@@ -202,16 +202,15 @@
 
       ${HOWTO}
 
-      **The format.** Prof. Chen's Spring 2024 Exam 3 had four problems of 18 to 34 points cut into short parts, numbers that work without a calculator, statements to judge, and one part that tests a concept rather than algebra. This paper has the same shape.
+      **The format.** Prof. Chen's Spring 2024 Exam 3 had four problems of 18 to 34 points cut into short parts, numbers that work without a calculator, statements to judge, and one part that tests a concept rather than algebra. This paper has the same shape. Its stub-filter problem (Lectures 32-34) is not on Exam 3, so it has been moved to Not on Exam 3.
 
       | Problem | Topic | Points |
       |---|---|---|
       | 1 | Reading a lossy wave off a snapshot: $\beta$, $\alpha$, the loss tangent, $\epsilon_r$, $\sigma$, $\eta$ | 24 |
       | 2 | An elliptical wave from one current sheet: type, hand, the sheet current, the other side | 24 |
-      | 3 | A stub filter: pass $f_0$, block $2f_0$, and what the source sees | 22 |
       | 4 | Voltage and current bounce diagrams, $I(z,t)$ at a point, the load, steady state | 30 |
 
-      **Draws on:** [where γ and η come from](#/l/w2-gamma), [reading a lossy wave](#/l/w2-read), [polarization](#/l/w3-pol), [current-sheet antennas](#/l/w3-antenna), [stubs and filters](#/l/w6-stubs), [launching waves](#/l/w5-launch) and [bounce diagrams](#/l/w5-bounce).
+      **Draws on:** [where γ and η come from](#/l/w2-gamma), [reading a lossy wave](#/l/w2-read), [polarization](#/l/w3-pol), [current-sheet antennas](#/l/w3-antenna), [launching waves](#/l/w5-launch) and [bounce diagrams](#/l/w5-bounce).
 
       ${CONSTS}
     `),
@@ -515,7 +514,7 @@
       ` }),
 
     // ---------------------------------------------------------------- G Problem 3
-    RF(md`
+    Object.assign(RF(md`
       ### Problem 3 (22 points): a stub filter
 
       A source with $R_g = 50\ \Omega$ sends two tones down a $50\ \Omega$ line, 1.25 m long, to a $50\ \Omega$ receiver: the signal at $f_0 = 100$ MHz and an unwanted harmonic at $2f_0 = 200$ MHz. You may connect one **stub** (a piece of $50\ \Omega$ line, **shorted** or **open** at its far end) in parallel with the receiver, right at its terminals. Every line has $v = 2\times10^8$ m/s and no loss. Goal: let $f_0$ through untouched, and stop $2f_0$.
@@ -523,8 +522,8 @@
       Know (not given in the exam) that a line of length $d$ ending in a short has $Z = jZ_0\tan\beta d$; one ending in an open has $Y = jY_0\tan\beta d$, so $Z = -jZ_0\cot\beta d$.
 
       [[fig:filt]]
-    `, { filt: { svg: figG3(), cap: 'The stub hangs across the receiver terminals. Its length and its far end are yours to choose.' } }),
-    P({ src: 'Practice G #3(a) · 4 pts', title: 'What the stub must look like',
+    `, { filt: { svg: figG3(), cap: 'The stub hangs across the receiver terminals. Its length and its far end are yours to choose.' } }), { later: true }),
+    P({ later: true, src: 'Practice G #3(a) · 4 pts', title: 'What the stub must look like',
       q: md`**(a) (4 pts)** What impedance must the stub present at $f_0$, and at $2f_0$?`,
       parts: [mc('The stub must look like', [md`an open circuit at $f_0$ and a short circuit at $2f_0$`, md`a short circuit at $f_0$ and an open circuit at $2f_0$`, md`$50\ \Omega$ at $f_0$ and a short circuit at $2f_0$`, md`an open circuit at both frequencies`], 0,
         [null, md`That is the reverse filter: a short across the receiver at $f_0$ would reflect the signal you want.`, md`A lossless stub is a pure reactance $jX$; it can never be a resistor. And $50\parallel50 = 25\ \Omega$ would mismatch $f_0$.`, md`An open in parallel does nothing at all, so $2f_0$ would reach the receiver too.`])],
@@ -543,7 +542,7 @@
 
         **Where points go.** Mixing up series and parallel. For a stub in **series** with the receiver it is the other way round: short passes, open blocks.
       ` }),
-    P({ src: 'Practice G #3(b) · 5 pts', title: 'Choose the stub',
+    P({ later: true, src: 'Practice G #3(b) · 5 pts', title: 'Choose the stub',
       q: md`**(b) (5 pts)** Which stub does the job? What is the next-longer stub of the same kind that also works?`,
       parts: [mc('The shortest stub that works', [md`shorted, 0.5 m`, md`open, 0.5 m`, md`shorted, 1 m`, md`open, 1 m`, md`shorted, 0.25 m`], 0,
         [null, md`An open stub of $\lambda_0/4$ is a **short** at $f_0$: it blocks the signal and passes the harmonic. The reverse filter.`, md`A shorted $\lambda_0/2$ stub is a short at $f_0$ (and at $2f_0$): it blocks both tones.`, md`An open $\lambda_0/2$ stub is open at $f_0$, but at $2f_0$ it is a full wavelength, open again. It passes both.`, md`$0.25$ m is $\lambda_0/8$: $jZ_0\tan45° = j50\ \Omega$ at $f_0$, which mismatches the signal.`]),
@@ -567,7 +566,7 @@
 
         **Where points go.** Using $\lambda$ at $2f_0$ for the quarter wave. Forgetting that doubling $f$ doubles $\beta l$ for the same physical stub.
       ` }),
-    P({ src: 'Practice G #3(c) · 4 pts', title: 'What the line sees',
+    P({ later: true, src: 'Practice G #3(c) · 4 pts', title: 'What the line sees',
       q: md`**(c) (4 pts)** With your 0.5 m stub in place: what is the stub's impedance at each frequency, what impedance ends the feed line at $f_0$, and what is the reflection coefficient at the receiver terminals at $2f_0$?`,
       parts: [mc(md`$Z_{\text{stub}}$ at $f_0$ and at $2f_0$`, [md`$\infty$ and $0$`, md`$0$ and $\infty$`, md`$j50\ \Omega$ and $0$`, md`$\infty$ and $\infty$`], 0,
         [null, md`That is an open stub of the same length.`, md`$j50\ \Omega$ is $jZ_0\tan45°$: a $\lambda/8$ shorted stub, not $\lambda/4$.`, md`At $2f_0$ the stub is a half wave long, and a shorted half wave is a short.`]),
@@ -591,7 +590,7 @@
 
         **Where points go.** Writing $\Gamma = +1$ for a short.
       ` }),
-    P({ src: 'Practice G #3(d) · 3 pts', title: 'What the source sees',
+    P({ later: true, src: 'Practice G #3(d) · 3 pts', title: 'What the source sees',
       q: md`**(d) (3 pts)** At $2f_0$, what impedance does the source see at the start of the 1.25 m feed line?`,
       parts: [mc('At 2f₀ the source sees', [md`an open circuit`, md`a short circuit`, md`$50\ \Omega$`, md`$j50\ \Omega$`], 0,
         [null, md`The far end is a short, but 1.25 m is $5\lambda/4$ at $2f_0$. A quarter wave (plus whole half waves) turns a short into an open.`, md`$50\ \Omega$ is what it sees at $f_0$, where the line is matched. At $2f_0$ the load is a short.`, md`$j50\ \Omega$ needs $\tan\beta d = 1$, a line $\lambda/8$ (plus half waves) long.`])],
@@ -609,7 +608,7 @@
 
         **Where points go.** Using $\lambda_0 = 2$ m (that gives $\beta d = 1.25\pi$ and $Z = j50$, wrong frequency).
       ` }),
-    P({ src: 'Practice G #3(e) · 3 pts', title: 'The reverse filter',
+    P({ later: true, src: 'Practice G #3(e) · 3 pts', title: 'The reverse filter',
       q: md`**(e) (3 pts)** Suppose instead you wanted to pass $2f_0$ and block $f_0$. Which stub would you use?`,
       parts: [mc('To pass 2f₀ and block f₀, use', [md`an open stub 0.5 m long`, md`a shorted stub 0.5 m long`, md`an open stub 1 m long`, md`a shorted stub 1 m long`], 0,
         [null, md`That is the filter from (b): it passes $f_0$ and blocks $2f_0$.`, md`An open $\lambda_0/2$ stub is open at $f_0$: it lets $f_0$ through.`, md`A shorted $\lambda_0/2$ stub is a short at both frequencies.`])],
@@ -626,7 +625,7 @@
 
         **Where points go.** Picking a shorted half-wave stub: short at $f_0$, but short again at $2f_0$.
       ` }),
-    P({ src: 'Practice G #3(f) · 3 pts', title: 'Halfway between',
+    P({ later: true, src: 'Practice G #3(f) · 3 pts', title: 'Halfway between',
       q: md`**(f) (3 pts)** With the shorted 0.5 m stub of (b), a third tone at 150 MHz arrives. What fraction of its incident power reaches the receiver?`,
       parts: [trap(N('fraction delivered', 0.8, ''), [[0.2, md`That is $|\Gamma|^2$, the fraction reflected. The receiver gets the rest.`], [0.5, md`That treats the stub as if it took half the power. A lossless stub absorbs nothing; the loss here is reflection.`]])],
       hints: [md`At 150 MHz, $\lambda = 4/3$ m and $\beta l = 3\pi/4$, so $Z_{\text{stub}} = j50\tan135° = -j50\ \Omega$.`, md`$Z_{\text{end}} = 50\parallel(-j50)$; then $\Gamma$; then the fraction delivered is $1 - |\Gamma|^2$ (the stub absorbs nothing).`],
@@ -797,7 +796,7 @@
       ` }),
   ];
 
-  EM.lesson('e3-prac', { id: 'e3-prac-g', order: 7, title: 'Practice exam G', kind: 'mock', sub: '75 min · 100 pts · reading a lossy wave, an elliptical wave from a sheet, a stub filter, voltage and current bounce diagrams', steps: examG });
+  EM.lesson('e3-prac', { id: 'e3-prac-g', order: 7, title: 'Practice exam G', kind: 'mock', sub: '75 min · 100 pts · reading a lossy wave, an elliptical wave from a sheet, voltage and current bounce diagrams', steps: examG });
 
   // ======================================================================================== EXAM H: figures
   function figH1() {
@@ -864,16 +863,15 @@
 
       ${HOWTO}
 
-      **The format.** Same shape as Prof. Chen's Spring 2024 paper: four problems in short parts, numbers that work by hand, one part that is a trap. Where a logarithm is needed, the problem gives it.
+      **The format.** Same shape as Prof. Chen's Spring 2024 paper: four problems in short parts, numbers that work by hand, one part that is a trap. Its stub-and-quarter-wave-section problem (Lectures 32-33) is not on Exam 3, so it has been moved to Not on Exam 3. Where a logarithm is needed, the problem gives it.
 
       | Problem | Topic | Points |
       |---|---|---|
       | 1 | Seawater at two frequencies: the regime, the skin depth, how deep a submarine can listen | 26 |
       | 2 | Two sheets a quarter wave apart, $90°$ out of phase: the field and the power on each side | 24 |
-      | 3 | Matching a load with a shunt stub and a quarter-wave section | 22 |
       | 4 | Two lines with a resistor across the junction: $\Gamma$ and $\tau$ there, the bounces, steady state | 28 |
 
-      **Draws on:** [the limits: imperfect dielectric and good conductor](#/l/w2-limits), [power in lossy media](#/l/w2-loss), [current-sheet antennas](#/l/w3-antenna), [stubs](#/l/w6-stubs), [quarter-wave transformers](#/l/w6-qw) and [junctions and multi-line circuits](#/l/w5-multi).
+      **Draws on:** [the limits: imperfect dielectric and good conductor](#/l/w2-limits), [power in lossy media](#/l/w2-loss), [current-sheet antennas](#/l/w3-antenna) and [junctions and multi-line circuits](#/l/w5-multi).
 
       ${CONSTS}
     `),
@@ -1181,14 +1179,14 @@
       ` }),
 
     // ---------------------------------------------------------------- H Problem 3
-    RF(md`
+    Object.assign(RF(md`
       ### Problem 3 (22 points): a stub and a quarter-wave section
 
       A source with phasor amplitude $\tilde V_g = 100$ V and $R_g = 50\ \Omega$ drives a long $50\ \Omega$ main line at $f = 500$ MHz. The load is a $200\ \Omega$ resistor in parallel with a capacitor whose impedance at 500 MHz is $-j50\ \Omega$. To match it you add two things: a **shorted stub** of $50\ \Omega$ line across the load terminals, and a **quarter-wave section** of impedance $Z_T$ between the main line and the load. Every line is lossless with $v = 2\times10^8$ m/s.
 
       [[fig:qw]]
-    `, { qw: { svg: figH3(), cap: 'The quarter-wave section sits between the main line and the load; the shorted stub sits across the load.' } }),
-    P({ src: 'Practice H #3(a) · 4 pts', title: 'What the stub has to cancel',
+    `, { qw: { svg: figH3(), cap: 'The quarter-wave section sits between the main line and the load; the shorted stub sits across the load.' } }), { later: true }),
+    P({ later: true, src: 'Practice H #3(a) · 4 pts', title: 'What the stub has to cancel',
       q: md`**(a) (4 pts)** Find the load's susceptance $B_L$ (the imaginary part of $Y_L$), and the impedance the stub must have.`,
       parts: [trap(N(md`$B_L$ (S)`, 0.02, 'S'), [[0.005, md`That is the conductance $1/200$, the real part.`], [-0.02, md`$1/(-j50) = j/50$: a capacitor has **positive** susceptance.`]]),
         mc(md`The stub's impedance must be`, [md`$+j50\ \Omega$ (inductive)`, md`$-j50\ \Omega$ (capacitive)`, md`$50\ \Omega$`, md`$-j200\ \Omega$`], 0,
@@ -1212,7 +1210,7 @@
 
         **Where points go.** Adding impedances instead of admittances. Getting the sign of $1/(-j)$ wrong.
       ` }),
-    P({ src: 'Practice H #3(b) · 5 pts', title: 'The stub length',
+    P({ later: true, src: 'Practice H #3(b) · 5 pts', title: 'The stub length',
       q: md`**(b) (5 pts)** Find the shortest shorted stub that does it. Which other stub would also work?`,
       parts: [trap(N(md`$l_s$ (cm)`, 5, 'cm'), [[15, md`$3\lambda/8$ shorted gives $j50\tan135° = -j50\ \Omega$: capacitive, the wrong sign.`], [2.5, md`That is $\lambda/16$, from using $\lambda = 20$ cm. Here $\lambda = v/f = 40$ cm.`]]),
         mc('Another stub that works', [md`an open stub 15 cm long`, md`an open stub 5 cm long`, md`a shorted stub 15 cm long`, md`a shorted stub 10 cm long`], 0,
@@ -1232,7 +1230,7 @@
 
         **Where points go.** Picking the open $\lambda/8$ stub, which is capacitive.
       ` }),
-    P({ src: 'Practice H #3(c) · 5 pts', title: 'The quarter-wave section',
+    P({ later: true, src: 'Practice H #3(c) · 5 pts', title: 'The quarter-wave section',
       q: md`**(c) (5 pts)** Find $Z_T$ and the physical length of the quarter-wave section.`,
       parts: [trap(N(md`$Z_T$ (Ω)`, 100, 'Ω'), [[125, md`That is the average $(50 + 200)/2$. The match needs the geometric mean, $\sqrt{50\cdot200}$.`]]),
         N('length (cm)', 10, 'cm')],
@@ -1253,7 +1251,7 @@
 
         **Where points go.** Plugging the complex $Z_L$ (or $|Z_L|$) into $\sqrt{Z_0Z_L}$. Using $\lambda/2$.
       ` }),
-    P({ src: 'Practice H #3(d) · 4 pts', title: 'VSWR on each section',
+    P({ later: true, src: 'Practice H #3(d) · 4 pts', title: 'VSWR on each section',
       q: md`**(d) (4 pts)** Find the VSWR on the main line and inside the quarter-wave section.`,
       parts: [N('VSWR on the main line', 1, ''), trap(N('VSWR in the quarter-wave section', 2, ''), [[4, md`That is $200/50$, the mismatch to the main line. Inside the section the line is $Z_T = 100\ \Omega$: $\Gamma = (200 - 100)/(200 + 100)$.`]])],
       hints: [md`Main line: is it matched? Inside the section, $\Gamma_L = (200 - Z_T)/(200 + Z_T)$, and VSWR $= (1 + |\Gamma|)/(1 - |\Gamma|)$.`],
@@ -1270,7 +1268,7 @@
 
         **Where points go.** Using $Z_0 = 50$ for the section.
       ` }),
-    P({ src: 'Practice H #3(e) · 4 pts', title: 'Power and voltage at the load',
+    P({ later: true, src: 'Practice H #3(e) · 4 pts', title: 'Power and voltage at the load',
       q: md`**(e) (4 pts)** Find the average power delivered to the $200\ \Omega$ resistor and the voltage amplitude across the load.`,
       parts: [trap(N('power (W)', 25, 'W'), [[50, md`That is $|\tilde V_g|^2/4R_g$: the factor $\tfrac12$ for a phasor amplitude is missing.`], [12.5, md`The source sees a matched 50 Ω load, so it gives its full available power, $|\tilde V_g|^2/8R_g$.`]]),
         trap(N(md`$|\tilde V_L|$ (V)`, 100, 'V'), [[50, md`50 V is the voltage at the **input** of the section. A quarter-wave section steps the voltage up by $\sqrt{200/50} = 2$.`]])],
@@ -1419,7 +1417,7 @@
       ` }),
   ];
 
-  EM.lesson('e3-prac', { id: 'e3-prac-h', order: 8, title: 'Practice exam H', kind: 'mock', sub: '75 min · 100 pts · seawater and a submarine, two sheets a quarter wave apart, a stub plus a quarter-wave section, two lines with a resistor at the junction', steps: examH });
+  EM.lesson('e3-prac', { id: 'e3-prac-h', order: 8, title: 'Practice exam H', kind: 'mock', sub: '75 min · 100 pts · seawater and a submarine, two sheets a quarter wave apart, two lines with a resistor at the junction', steps: examH });
 
   // ======================================================================================== EXAM I: figures
   // Q1(d): three panels of snapshots, each curve one instant
@@ -1486,7 +1484,7 @@
 
       ${HOWTO}
 
-      **The format.** This paper copies the shape of the Fall 2023 Exam 3 (Goddard, Ilie, Zhao): seven questions in two parts. **Part I** is multiple choice: "circle all that apply" statements on concepts, polarization cases, and transmission-line questions where you pick a number from a list. **Part II** is worked problems: a pulse on a line to sketch, power in a good conductor, and resonances. A different instructor may write this term's exam in this style, so it is worth one sitting.
+      **The format.** This paper copies the shape of the Fall 2023 Exam 3 (Goddard, Ilie, Zhao): seven questions in two parts. **Part I** is multiple choice: "circle all that apply" statements on concepts, polarization cases, and transmission-line questions where you pick a number from a list. **Part II** is worked problems: a pulse on a line to sketch, and power in a good conductor. (Question 7, on resonances of a line, is Lecture 31 and is not on Exam 3, so it has been moved to Not on Exam 3.) A different instructor may write this term's exam in this style, so it is worth one sitting.
 
       | Question | Topic | Points |
       |---|---|---|
@@ -1496,9 +1494,8 @@
       | 4 | Read a scope trace backwards: $R_L$, $R_g$, the pulse height, $\epsilon_r$ | 16 |
       | 5 | A pulse on a line with an open end: $V(0,t)$ and $I(0,t)$ | 22 |
       | 6 | Power going down into wet soil: $\eta$, $\langle S\rangle$, dB per meter | 13 |
-      | 7 | Resonances of a line open at both ends | 16 |
 
-      **Draws on:** [γ and η](#/l/w2-gamma), [power in lossy media](#/l/w2-loss), [polarization](#/l/w3-pol), [standing waves](#/l/w4-standing), [bounce diagrams](#/l/w5-bounce), [junctions and scope traces](#/l/w5-multi) and [stubs and resonance](#/l/w6-stubs).
+      **Draws on:** [γ and η](#/l/w2-gamma), [power in lossy media](#/l/w2-loss), [polarization](#/l/w3-pol), [standing waves](#/l/w4-standing), [bounce diagrams](#/l/w5-bounce) and [junctions and scope traces](#/l/w5-multi).
 
       ${CONSTS}
     `),
@@ -1915,7 +1912,7 @@
       ` }),
 
     // ---------------------------------------------------------------- I Question 7
-    RF(md`
+    Object.assign(RF(md`
       ### Question 7 (16 points): resonances of a line open at both ends
 
       A lossless line of length $l = 500$ m with $v = 2\times10^8$ m/s rings in a resonant oscillation, a cosinusoidal steady state with no source connected. The current phasor is zero at the input ($d = l$) and also zero at the load ($d = 0$). Here $d$ is the distance back from the load.
@@ -1923,8 +1920,8 @@
       The graphs show eight candidate shapes for a phasor as a function of $d$, from the load ($d = 0$, left) to the input ($d = l$, right). Each shows the shape only: the actual phasor may be the graph times any constant, real or complex.
 
       [[fig:gr]]
-    `, { gr: { svg: figI7(), cap: 'Eight shapes, d from 0 (load) to l (input).' } }),
-    P({ src: 'Practice I #7(a)(b) · 10 pts', title: 'The ends and the lowest resonance',
+    `, { gr: { svg: figI7(), cap: 'Eight shapes, d from 0 (load) to l (input).' } }), { later: true }),
+    P({ later: true, src: 'Practice I #7(a)(b) · 10 pts', title: 'The ends and the lowest resonance',
       q: md`**(a) (4 pts)** What are $Z_{\text{in}}$ (at $d = l$) and $Z_L$? **(b) (6 pts)** Find the lowest resonant $\omega$, and pick the graphs for $\tilde V(d)$ and $\tilde I(d)$ at that resonance.`,
       parts: [
         mc(md`(a) $Z_{\text{in}}$ and $Z_L$`, [md`$Z_{\text{in}} = \infty$, $Z_L = \infty$`, md`$Z_{\text{in}} = 0$, $Z_L = 0$`, md`$Z_{\text{in}} = \infty$, $Z_L = 0$`, md`$Z_{\text{in}} = 0$, $Z_L = \infty$`], 0,
@@ -1955,7 +1952,7 @@
 
         **Where points go.** Using the quarter-wave rule from the Fall 2023 version (open at one end, shorted at the other). Swapping the $V$ and $I$ graphs.
       ` }),
-    P({ src: 'Practice I #7(c)(d) · 6 pts', title: 'The second resonance',
+    P({ later: true, src: 'Practice I #7(c)(d) · 6 pts', title: 'The second resonance',
       q: md`**(c) (4 pts)** Find the second-lowest resonant $\omega$, and pick the graphs for $\tilde V$ and $\tilde I$. **(d) (2 pts)** At that resonance, how far from the load is the nearest point where the line's voltage is zero (where it acts like a short)?`,
       parts: [N(md`second $\omega$ (rad/s)`, 8 * PI * 1e5, 'rad/s'),
         mc(md`(c) graphs of $\tilde V$ and $\tilde I$`, ['E and F', 'F and E', 'G and H', 'A and B'], 0,
@@ -1978,5 +1975,5 @@
       ` }),
   ];
 
-  EM.lesson('e3-prac', { id: 'e3-prac-i', order: 9, title: 'Practice exam I', kind: 'mock', sub: '75 min · 100 pts · Fall 2023 format: circle-all-that-apply concepts, polarization, TL numbers, a scope trace, a pulse on an open line, power in soil, resonances', steps: examI });
+  EM.lesson('e3-prac', { id: 'e3-prac-i', order: 9, title: 'Practice exam I', kind: 'mock', sub: '75 min · 100 pts · Fall 2023 format: circle-all-that-apply concepts, polarization, TL numbers, a scope trace, a pulse on an open line, power in soil', steps: examI });
 })();

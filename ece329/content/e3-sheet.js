@@ -85,7 +85,7 @@
         with $\lambda = 2\pi/\beta$ and $\delta = 1/\alpha$ for every row. So the table hands you the **lossy-medium numbers** (and, from the good-conductor row, $\delta = 1/\sqrt{\pi f\mu\sigma}$ and $\lambda = 2\pi\delta$). It does **not** give you Maxwell's equations, the general $\gamma$ and $\eta$, Poynting, $\Gamma$ and $\tau$ at a boundary, or any transmission-line formula.
 
         !!trap Everything outside this table is yours to carry
-          Your 4″×6″ handwritten card is the only other help. [What to write on it](#/l/e3-card), and the printable layout <a href="notecard-e3.html">notecard-e3.html</a>, now carry every formula the problems need. Before Monday, write each core formula from memory once: $\gamma$, $\eta$, $\langle\mathbf S\rangle$, $\Gamma$, $\tau = 1 + \Gamma$, $Z_0$, $v$, $\tau_g$, $\Gamma_L$, $\Gamma_g$, $\tilde V(d)$, $\tilde I(d)$, $\Gamma(d)$, $Z(d)$, $Z_{in}$, VSWR.
+          Your 4″×6″ handwritten card is the only other help. [What to write on it](#/l/e3-card), and the printable layout <a href="notecard-e3.html">notecard-e3.html</a>, now carry every formula the problems need. Before the exam, write each core formula from memory once: $\gamma$, $\eta$, $\langle\mathbf S\rangle$, $\Gamma$, $\tau = 1 + \Gamma$, $Z_0$, $v$, $\tau_g$, $\Gamma_L$, $\Gamma_g$, and for bounce diagrams the impulse sums. ($\tilde V(d)$, $\Gamma(d)$, $Z(d)$, $Z_{in}$ and VSWR are Lectures 32–34: not on this Exam 3.)
 
         ## The course's formula sheet (not handed out in the exam)
 
@@ -231,7 +231,7 @@
 
         **What it is for.** Bounce diagrams: what the generator launches ($\tau_g$), what each end sends back ($\Gamma_L$, $\Gamma_g$), and the speed and $Z_0$ of a line from its geometry ($GF$ is the geometric factor). The two sums are the line's response to an **impulse** $v_g(t) = \delta(t)$; for a step or a pulse, replace each $\delta(\cdot)$ by that input's shape. Derived in [Topic 13](#/l/w5-telegraph), [Topic 14](#/l/w5-launch), [Topic 15](#/l/w5-bounce) and [Topic 16](#/l/w5-multi).
 
-        ### Phasor equations
+        ### Phasor equations (Lectures 32–34: not on this Exam 3)
 
         $$-\frac{\partial\tilde V}{\partial z} = j\omega\mathcal L\tilde I \qquad -\frac{\partial\tilde I}{\partial z} = j\omega\mathcal C\tilde V$$
         $$\frac{\partial^2\tilde V}{\partial z^2} - (j\omega)^2\mathcal L\mathcal C\tilde V = 0$$
@@ -247,7 +247,7 @@
 
         **What it is for.** A line driven by a sinusoid, in steady state: voltage and current anywhere on it, the impedance looking toward the load, the power delivered, the standing-wave ratio, and the input voltage from the generator circuit. Derived in [Topic 17](#/l/w6-vd) and [Topic 19](#/l/w6-qw).
 
-        ### Short and open
+        ### Short and open (Lecture 32: not on this Exam 3)
 
         For a short-circuit load, $Z_L = 0$:
         $$\tilde V(d) = j2\tilde V^+\sin(\beta d) \qquad Z(d) = jZ_0\tan(\beta d)$$
@@ -699,8 +699,8 @@
 
         **Check.** The line is linear and does not change with time, so for a step input every $\delta$ becomes a $u$: that is a bounce diagram ✓. Full lessons: [Topic 15](#/l/w5-bounce), [Topic 16](#/l/w5-multi).
       `, { plates: { svg: plateFig(), cap: 'A parallel-plate line seen end-on, the wave traveling into the page. $V = E_xd$ between the plates; $I = H_yW$ flows into the page on the + plate and back on the − plate.' } }),
-      R(md`
-        ## Page 3: lines in phasors
+      Object.assign(R(md`
+        ## Page 3: lines in phasors (Lectures 32–34, not on Exam 3)
 
         ### The phasor equations
 
@@ -787,6 +787,8 @@
         $$\boxed{Y(d) = \frac{\tilde I(d)}{\tilde V(d)} = jY_0\tan\beta d}$$
         **Check.** Both are purely imaginary, so no average power goes into a short or an open ✓. A short seen through $\lambda/4$: $\tan90° = \infty$, an open ✓. Full lesson: [Topic 18](#/l/w6-stubs).
 
+      `), { later: true }),
+      R(md`
         ### Check: can you rebuild them?
       `),
       Q(md`To derive $\Gamma = \frac{\eta_2 - \eta_1}{\eta_2 + \eta_1}$, which two conditions do you use at the boundary?`,
@@ -800,7 +802,7 @@
       Q(md`In $P(d) = \frac12\Re\{\tilde V\tilde I^*\}$, why do the terms with $e^{\pm j2\beta d}$ drop out?`,
         [md`together they form $w - w^*$, which is purely imaginary`, 'they are zero at the load, so they are zero everywhere', 'they average to zero over one period in time', md`because $|\Gamma_L| < 1$`], 0,
         [null, md`At the load they are $\tilde V^-\tilde V^{+*} - \tilde V^+\tilde V^{-*}$, which is not zero unless $\Gamma_L = 0$. They drop out of the real part, not out of the product.`, md`The phasors have already removed the time. Averaging over time is exactly what $\frac12\Re\{\cdots\}$ does.`, md`The cancellation works for any $\Gamma_L$, even $|\Gamma_L| = 1$.`],
-        md`With $a = \tilde V^+e^{j\beta d}$ and $b = \tilde V^-e^{-j\beta d}$: $(a + b)(a^* - b^*) = |a|^2 - |b|^2 + (ba^* - ab^*)$, and $ba^* - ab^* = w - w^* = 2j\Im\{w\}$.`),
+        md`With $a = \tilde V^+e^{j\beta d}$ and $b = \tilde V^-e^{-j\beta d}$: $(a + b)(a^* - b^*) = |a|^2 - |b|^2 + (ba^* - ab^*)$, and $ba^* - ab^* = w - w^* = 2j\Im\{w\}$.`, { later: true }),
       Q(md`Which single approximation turns the exact $\gamma$ into the good-conductor line $\alpha \approx \beta \approx \sqrt{\omega\mu\sigma/2}$?`,
         [md`$\epsilon - j\sigma/\omega \approx -j\sigma/\omega$`, md`$\sqrt{1 - jx} \approx 1 - jx/2$`, md`$\epsilon - j\sigma/\omega \approx \epsilon$`, md`$\tan^{-1}x \approx x$`], 0,
         [null, md`That is the low-loss step, valid when $x = \sigma/\omega\epsilon$ is small.`, md`That drops the loss altogether: the $\sigma = 0$ line.`, md`That small-angle step gives the low-loss $\tau \approx \sigma/2\omega\epsilon$.`],
@@ -816,7 +818,7 @@
       Q(md`Why does $Z(d)$ repeat every $\lambda/2$ along a line?`,
         [md`$\Gamma(d) = \Gamma_Le^{-j2\beta d}$ turns by $2\beta\cdot\frac\lambda2 = 2\pi$`, md`$\tilde V(d)$ itself repeats every $\lambda/2$`, md`$e^{j\beta d}$ repeats every $\lambda/2$`, 'the line is lossless, so nothing changes along it'], 0,
         [null, md`$\tilde V(d)$ carries $e^{j\beta d}$, which changes sign over $\lambda/2$. Only the ratio $\tilde V/\tilde I$ repeats.`, md`$e^{j\beta d}$ repeats every $\lambda$, and it cancels out of $Z(d)$ anyway.`, md`A lossless line still changes $Z$ from point to point; it only repeats after $\lambda/2$.`],
-        md`$Z(d) = Z_0\frac{1 + \Gamma(d)}{1 - \Gamma(d)}$ depends on $d$ only through $\Gamma(d)$, and $e^{-j2\beta d}$ comes back to itself when $2\beta d$ grows by $2\pi$, that is, when $d$ grows by $\lambda/2$.`),
+        md`$Z(d) = Z_0\frac{1 + \Gamma(d)}{1 - \Gamma(d)}$ depends on $d$ only through $\Gamma(d)$, and $e^{-j2\beta d}$ comes back to itself when $2\beta d$ grows by $2\pi$, that is, when $d$ grows by $\lambda/2$.`, { later: true }),
       Q(md`A parallel-plate line has width $W = 10$ mm, gap $d = 1$ mm, and air between the plates. What is $Z_0$?`,
         [md`$12\pi\ \Omega$`, md`$1200\pi\ \Omega$`, md`$120\pi\ \Omega$`, md`$1.2\pi\ \Omega$`], 0,
         [null, md`That uses $d/W$ instead of $W/d$. A wide line has a large $\mathcal C$ and so a low $Z_0$.`, md`That is $\eta_0$ itself; the geometry divides it by $GF = 10$.`, md`That divides by $GF^2$. $Z_0 = \sqrt{\mathcal L/\mathcal C} = \eta/GF$: one power of $GF$.`],
@@ -837,7 +839,7 @@
           2. Copy the front (waves), then the back (lines). As you write each line, say what it means and when you use it: the notes below give you both. Copying this way is studying.
           3. Write the red items in a second color. They are the slips that cost the most points.
           4. Leave out any line you already know cold, and use the room for your own weak spots.
-          5. Do one timed practice exam with only the table and your card before Monday, and fix whatever you had to look for.
+          5. Do one timed practice exam with only the table and your card before the exam, and fix whatever you had to look for.
 
         Below is every line of the card, in the card's order: what it means, when you use it, and the slip it prevents.
 
@@ -915,20 +917,16 @@
         - The envelope in medium 1, at a distance $\ell$ from the boundary, is $E_0|1 + \Gamma e^{-j2\beta\ell}|$: maximum $(1 + |\Gamma|)E_0$, minimum $(1 - |\Gamma|)E_0$, a quarter wavelength apart. $\Gamma < 0$ puts a minimum on the boundary. [Topic 12](#/l/w4-standing)
         - A perfect conductor at $z = 0$: $\mathbf E_1 = 2E_0\sin\beta z\sin\omega t\,\hat x$, $\mathbf H_1 = \frac{2E_0}{\eta}\cos\beta z\cos\omega t\,\hat y$, and the wall carries $\mathbf J_s = \frac{2E_0}{\eta}\cos\omega t\,\hat x$. $E$ and $H$ are $90°$ apart in time, so $\langle S\rangle = 0$.
         - $E$ is zero on the wall and every $\lambda/2$ from it; $H$ is largest on the wall.
-        - A $\lambda/4$ layer with $\eta_2 = \sqrt{\eta_1\eta_3}$ removes the reflection (the wave version of the quarter-wave transformer); a $\lambda/2$ slab is invisible. [Topic 19](#/l/w6-qw)
 
         ## Back: lines
 
-        **The header.** $v = c/\sqrt{\epsilon_r}$ and the one-way time $T = l/v$ set every bounce diagram. $\beta\lambda/8 = 45°$, $\beta\lambda/4 = 90°$ and $\beta\lambda/2 = 180°$ turn lengths into angles for $\tan\beta l$ and $e^{-j2\beta d}$.
+        **The header.** $v = c/\sqrt{\epsilon_r}$, the one-way time $T = l/v$ and the round trip $2l/v$ set every bounce diagram; $t = 0$ is when the generator switches on, at $z = 0$.
 
         ### Core (not printed on the exam)
 
         - $Z_0 = \sqrt{\mathcal L/\mathcal C}$ and $v = 1/\sqrt{\mathcal L\mathcal C} = 1/\sqrt{\mu\epsilon}$. [Topic 13](#/l/w5-telegraph)
         - $\tau_g = \frac{Z_0}{R_g + Z_0}$ (what the generator launches), $\Gamma_L = \frac{R_L - Z_0}{R_L + Z_0}$, $\Gamma_g = \frac{R_g - Z_0}{R_g + Z_0}$. [Topic 14](#/l/w5-launch)
         - An impulse $v_g = \delta(t)$ launches spikes $\tau_g(\Gamma_L\Gamma_g)^n$ going forward, arriving at $z$ at $t = \frac zv + n\frac{2l}v$, and $\tau_g\Gamma_L(\Gamma_L\Gamma_g)^n$ going back, at $t = (n + 1)\frac{2l}v - \frac zv$. For a step or a pulse, replace each spike by that shape. **A delta source settles to 0 V**, not to the divider. [Topic 20](#/l/w6-reads)
-        - $\tilde V(d) = \tilde V^+e^{j\beta d}(1 + \Gamma(d))$ and $\tilde I(d) = \frac{\tilde V^+}{Z_0}e^{j\beta d}(1 - \Gamma(d))$, with $\Gamma(d) = \Gamma_Le^{-j2\beta d}$ and $d$ measured back from the load. [Topic 17](#/l/w6-vd)
-        - $Z(d) = Z_0\frac{1 + \Gamma(d)}{1 - \Gamma(d)}$, VSWR $= \frac{1 + |\Gamma_L|}{1 - |\Gamma_L|}$, $P = \frac12\Re\{\tilde V\tilde I^*\}$, and the input voltage $\tilde V(l) = \tilde V_g\frac{Z(l)}{Z_g + Z(l)}$.
-        - Short load: $\tilde V(d) = j2\tilde V^+\sin\beta d$, $Z = jZ_0\tan\beta d$. Open load: $\tilde V(d) = 2\tilde V^+\cos\beta d$, $Z = -jZ_0\cot\beta d$. [Topic 18](#/l/w6-stubs)
 
         ### Line from the fields
 
@@ -946,7 +944,6 @@
         - A joint from $Z_a$ into $Z_b$: $\Gamma = \frac{Z_b - Z_a}{Z_b + Z_a}$, $\tau = 1 + \Gamma$. **From $b$'s side** (red) the signs swap: $-\Gamma$ and $1 - \Gamma$. Spring 2024 Problem 4 ($150\ \Omega$ into $50\ \Omega$): $\Gamma_{12} = -\frac12$, $\tau_{12} = \frac12$; back the other way $\Gamma_{21} = +\frac12$, $\tau_{21} = \frac32$. [Topic 16](#/l/w5-multi)
         - Two lines leaving a joint look like $Z_b\|Z_c$ in parallel; a resistor at the joint looks like $R\|Z_b$.
         - **Steady state** with a DC source: after the bounces die out, the line is just two wires, so $V = V_g\frac{R_L}{R_g + R_L}$ and $I = \frac{V_g}{R_g + R_L}$. The geometric sum of the bounces, $\tau_gV_g\frac{1 + \Gamma_L}{1 - \Gamma_L\Gamma_g}$, gives the same number.
-        - A capacitor load is a short at first ($\Gamma = -1$) and an open at the end ($+1$); an inductor is the reverse.
 
         ### Bounce diagrams
 
@@ -956,35 +953,18 @@
         - A snapshot at time $t$ has its fronts at $z = vt$, $2l - vt$, …. **Red:** the part of a pulse sent first is the part farthest down the line.
         - A pulse of width $w$ is $u(t) - u(t - w)$, and it is $vw$ long on the line.
         - An impulse makes spikes of size $\tau_g(\Gamma_L\Gamma_g)^n$: the two impulse sums (core block, back).
+        - A delta source makes only spikes; each round trip multiplies them by $\Gamma_L\Gamma_g$, so the line settles to **0 V**, not to the divider (Fall 2025, 3c). [Topic 15](#/l/w5-bounce)
+        - Energy check at a joint from $Z_a$ into $Z_b$: $(V^+)^2/Z_a = (V^-)^2/Z_a + (V^t)^2/Z_b$. If it fails, a $\Gamma$ or $\tau$ is wrong.
+        - The Lecture 30 example: $R_g = 2Z_1$, $Z_2 = 2Z_1$, matched load. Then $\tau_g = \Gamma_g = \Gamma_{12} = \frac13$ and $\tau_{12} = \frac43$; from line 2 back, $\Gamma_{21} = -\frac13$, $\tau_{21} = \frac23$. [Topic 16](#/l/w5-multi)
         - Reading a scope trace at $z = 0$ backward: the first level is $\tau_gV_g$; the jump at $2T$ is $\tau_gV_g\Gamma_L(1 + \Gamma_g)$, which gives $\Gamma_L$; the time $2T$ gives the length $l = vT$. [Topic 16](#/l/w5-multi)
         - With junctions, each joint has its own $\Gamma$ and $\tau$, and every transmitted wave starts new bounces.
-
-        ### Phasor lines
-
-        - $Z_{in} = Z_0\frac{Z_L + jZ_0\tan\beta l}{Z_0 + jZ_L\tan\beta l}$: the same as $Z(l) = Z_0\frac{1 + \Gamma(l)}{1 - \Gamma(l)}$, already worked out. [Topic 17](#/l/w6-vd)
-        - $\lambda/4$: $Z_{in} = Z_0^2/Z_L$, it inverts. $\lambda/2$: $Z_{in} = Z_L$, it repeats.
-        - To match $R_L$ to $R_{in}$, put a $\lambda/4$ section of $Z_0 = \sqrt{R_{in}R_L}$ between them. It works at that frequency and its odd multiples only. [Topic 19](#/l/w6-qw)
-        - $\Gamma(d) = \Gamma_Le^{-j2\beta d}$ keeps its size and turns clockwise as you move toward the generator.
-        - $|\tilde V|$ is largest where $\Gamma(d)$ is real and positive: $2\beta d_{max} = \theta_L + 2\pi n$. The minima sit $\lambda/4$ from the maxima.
-        - A real load: $R_L > Z_0$ puts a maximum at the load and VSWR $= R_L/Z_0$; $R_L < Z_0$ puts a minimum there and VSWR $= Z_0/R_L$.
-        - $P_L = \frac{|\tilde V^+|^2}{2Z_0}(1 - |\Gamma_L|^2)$ is the power delivered, and on a lossless line it is also the power into the input.
-        - $\tilde V^+ = \tilde V(l)/[e^{j\beta l}(1 + \Gamma(l))]$: after the input divider, this gives the wave amplitude and so the voltage anywhere.
-
-        ### Stubs and resonance
-
-        - A shorted stub, $Z = jZ_0\tan\beta l$: shorter than $\lambda/4$ it is an inductor; $Z = 0$ at $l = n\lambda/2$ and $Z = \infty$ at $l = (2n - 1)\lambda/4$. [Topic 18](#/l/w6-stubs)
-        - An open stub, $Z = -jZ_0\cot\beta l$ ($Y = jY_0\tan\beta l$ turned over): shorter than $\lambda/4$ it is a capacitor; $\infty$ at $n\lambda/2$ and 0 at $(2n - 1)\lambda/4$.
-        - In frequency, with $\beta l = 2\pi fl/v$: a shorted stub is $Z = 0$ at $f = nv/2l$ and $Z = \infty$ at $f = (2n - 1)v/4l$; an open stub the other way round.
-        - A short line ($\beta l \ll 1$) is an inductor $L = \mathcal Ll$ if shorted and a capacitor $C = \mathcal Cl$ if open.
-        - Filters: a stub in shunt that is a short at $f$ kills $f$ there (a notch); one that is open at $f$ is invisible; a stub in series that is $\infty$ at $f$ blocks it.
-        - A line left ringing: equal ends (short-short or open-open) oscillate at $f = nv/2l$, period $2l/v$; mixed ends (short-open) at $f = (2n - 1)v/4l$, period $4l/v$.
 
         ### Speed rules and numbers
 
         1. Lossless numbers first, then the loss tangent, then the matching row of the table.
         2. $\tilde{\mathbf H} = \frac1\eta\hat k\times\tilde{\mathbf E}$ and $\tilde{\mathbf E} = \eta\tilde{\mathbf H}\times\hat k$, with $\hat k$ the travel: never guess a direction.
         3. Get the sign of $\Gamma$ first: a smaller $\eta$ or $R$ ahead means $\Gamma < 0$, and a minimum on the boundary or at the load.
-        4. $\lambda/4$ inverts and $\lambda/2$ repeats; a short under $\lambda/4$ is an L, an open under $\lambda/4$ a C.
+        4. Each new wave is the wave that hit times the $\Gamma$ (or $\tau$) of the end or joint it hit, never the far end's.
         5. The last level of a bounce diagram must equal the DC divider. Check it.
         6. At a joint, $V$ is continuous and the currents add: that is all $\tau = 1 + \Gamma$ says.
         7. **Red:** three different $\tau$'s (the angle of $\eta$, $1 + \Gamma$, and $\tau_g$). Write which one you mean.

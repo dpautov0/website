@@ -160,7 +160,7 @@
 
   const sp17 = [
     R(md`
-      **Spring 2017 · ECE 329 · Exam 3** (Waldrop, Lee, Goddard, Ilie). Thursday, April 20, 2017, 7:00–8:15 PM (75 minutes). Six problems, 100 points: true or false (6), multiple choice (18), reading a lossy wave (27), a general polarization and its power (18), a bounce diagram and a pulse (20), a shorted line (11). Closed book, no calculators.
+      **Spring 2017 · ECE 329 · Exam 3** (Waldrop, Lee, Goddard, Ilie). Thursday, April 20, 2017, 7:00–8:15 PM (75 minutes). Six problems, 100 points: true or false (6), multiple choice (18), reading a lossy wave (27), a general polarization and its power (18), a bounce diagram and a pulse (20), a shorted line (11; not on this term's Exam 3, moved to [Not on Exam 3](#/l/e3-later)). Closed book, no calculators.
 
       The paper gives $c = 3\times10^8$ m/s, $\epsilon_0 = \frac{10^{-9}}{36\pi}$ F/m, $\mu_0 = 4\pi\times10^{-7}$ H/m, $\eta_0 = 120\pi\ \Omega$, and asks for **answers as fractions, not decimals**. It also prints the table of the imperfect-dielectric and good-conductor limits, which is the table the exam now gives you.
 
@@ -745,12 +745,12 @@ So $t'$ runs from 0 to 1 as $z$ runs from 500 m to 750 m. Nothing else is on the
 **Where points go.** Leaving a forward pulse on the line at 4 µs; forgetting the sign of $\Gamma_L$; drawing the reflected pulse mirrored the wrong way.`,
       figs: { s4: { svg: snap4(), cap: 'V(z) at t = 4 µs: only the reflected pulse, times −1/9, front at 500 m. At the load the end of the pulse is just leaving.' } } }),
 
-    R(md`
+    Object.assign(R(md`
       ### Problem 6 (11 points): a shorted line
 
       A lossless, short-circuited line of length $l$, characteristic impedance $Z_0$ and speed $v = \tfrac23c = 2\times10^8$ m/s is connected in series with a resistor $R = 50\ \Omega$ and an ideal source $f(t) = \Re\{\tilde Fe^{j\omega t}\}$, with $\tilde F = 10$ V and $\omega = \pi\times10^8$ rad/s. $d$ is the distance back from the short.
-    `),
-    P({ src: 'Spring 2017 #6(a), (b)(i), (b)(ii) · 6 pts', title: 'When no current flows',
+    `), { later: true }),
+    P({ later: true, src: 'Spring 2017 #6(a), (b)(i), (b)(ii) · 6 pts', title: 'When no current flows',
       q: md`[[fig:c]]
 
 [[fig:e]]
@@ -786,7 +786,7 @@ $$\frac{2\pi}{\lambda}l = \frac\pi2 \quad\Rightarrow\quad \boxed{l = \frac\lambd
 **Speed path.** No current in a series loop means an open; a shorted stub is open at $l = \lambda/4$. $\lambda = v/f = 4$ m.
 
 **Where points go.** Using $c$ for the wavelength (6 m); answering $\lambda/2$, which looks like a short.` }),
-    P({ src: 'Spring 2017 #6(b)(iii) · 2 pts', title: 'A voltage zero at the middle?',
+    P({ later: true, src: 'Spring 2017 #6(b)(iii) · 2 pts', title: 'A voltage zero at the middle?',
       q: md`Still with $\tilde I_R = 0$: is it possible for $\tilde V(l/2) = 0$? If so, what is the shortest possible length of the line, in terms of $\lambda$? Also find $|\tilde V(l/2)|$ for the line of part (b)(ii).`,
       parts: [
         CH('', ['No, it is not possible', md`Yes, shortest $l = \lambda/2$`, md`Yes, shortest $l = \lambda$`, md`Yes, shortest $l = 3\lambda/4$`], 0,
@@ -816,7 +816,7 @@ The same size comes out for every allowed length: $l/2$ is always an odd number 
 
 **Where points go.** Answering "yes, $l = \lambda$" and forgetting that the condition $\tilde I_R = 0$ still applies.`,
       figs: { vd: { svg: PF.row([{ svg: vdFig(1), cap: md`$l = \lambda/4 = 1$ m` }, { svg: vdFig(3), cap: md`$l = 3\lambda/4 = 3$ m` }]).svg, cap: md`$|\tilde V(d)|$ on the shorted line with $|\tilde V(l)| = 10$ V. The dot is $d = l/2$: $7.07$ V each time, never zero.` } } }),
-    P({ src: 'Spring 2017 #6(b)(iv) · 3 pts', title: 'Series or parallel?',
+    P({ later: true, src: 'Spring 2017 #6(b)(iv) · 3 pts', title: 'Series or parallel?',
       q: md`For the same length as in (b)(ii), an inductor $L$ is connected to the input end of the line (at $d = l$). Now the current through the resistor, $\tilde I_R$, is no longer zero. Is the inductor connected in series with the line or in parallel? Explain.`,
       parts: [CH('', ['in parallel with the line', 'in series with the line', md`either way: any inductor changes $\tilde I_R$`, md`neither: an inductor cannot change $\tilde I_R$`], 0,
         [null, md`In series, the total is $j\omega L + \infty = \infty$: still an open, still $\tilde I_R = 0$.`, md`In series it changes nothing: an open plus anything is still open.`, md`In parallel it gives the current a path around the open line.`])],
@@ -849,7 +849,7 @@ $$\boxed{\text{In parallel}}$$
       | 3 | 27 | reading $\gamma$, $\eta$, $\mathbf H$ from a lossy wave | [Topic 6](#/l/w2-read) |
       | 4 | 18 | phasors, $\langle\mathbf S\rangle$, handedness | [Topic 4](#/l/w1-avg), [Topic 9](#/l/w3-pol) |
       | 5 | 20 | $\tau_g$, $\Gamma$, bounce diagram, a pulse vs $z$ | [Topic 15](#/l/w5-bounce) |
-      | 6 | 11 | shorted stubs, $Z(d)$, $V(d)$ | [Topic 18](#/l/w6-stubs) |
+      | 6 | 11 | shorted stubs, $Z(d)$, $V(d)$ | not on Exam 3 (Lectures 31-34) |
     `),
   ];
 

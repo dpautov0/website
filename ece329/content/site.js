@@ -38,7 +38,7 @@
   C.exam({
     id: 'e3', title: 'Exam 3',
     when: 'Mon Nov 16, 7:00–8:15 pm', date: '2026-11-16T19:00:00-06:00',
-    scope: 'Lectures 20–33: Poynting, phasors, lossy media, polarization, reflection, standing waves, transmission lines (bounce diagrams, stubs, quarter-wave transformers). The Smith chart is on the Final, not here',
+    scope: 'Lectures 20–30 and HW 8–11 only: Poynting, phasors, lossy media, polarization, reflection, standing waves, transmission lines in time (L, C, Z₀, bounce diagrams, multi-line circuits). Lectures 31–34 (ringing lines, stubs, input impedance, quarter-wave transformers, phasor lines) are not on it',
     blurb: 'Written by Prof. Chen, in the format of his Spring 2024 Exam 3: four problems, 75 minutes, no calculator. The exam prints <b>only one table</b> (the loss limits: β, α, |η|, τ, λ, δ); everything else comes from your one 4″×6″ card of handwritten notes or your head. Every result here is derived from Maxwell\'s equations, one line at a time, before you are asked to use it. Then you practice it until it is automatic: predictions, rapid-fire cards, problems with new numbers, a quiz after each section, past exams, and a stack of practice exams.',
     sheet: 'e3-sheet', quiz: 'e3-mix', drill: 'e3-gym',
     planTitle: 'How to use the days you have',
@@ -57,7 +57,7 @@
     blurb: 'Exam 3 builds directly on plane waves, η and E×H from this material.',
     sheet: 'e2-sheet', quiz: 'e2-mix',
   });
-  C.exam({ id: 'final', title: 'Final', scope: 'Dec 14, 7–10 pm. Everything, plus Lectures 34–39 (Smith chart and distribution networks)' });
+  C.exam({ id: 'final', title: 'Final', scope: 'Dec 14, 7–10 pm. Everything, plus Lectures 31–39 (phasor lines, stubs, transformers, Smith chart, distribution networks)' });
 
   // Exam 3: the study path, then the tool units
   const u3 = (id, num, title, blurb, extra = {}) => C.unit(Object.assign({ id, exam: 'e3', num, title, blurb, lessons: [] }, extra));
@@ -67,7 +67,7 @@
   u3('w3', 'Unit 3', 'Polarization and adding waves', 'Linear, circular, elliptical, which hand; two sheets and what the phase does');
   u3('w4', 'Unit 4', 'Reflection and standing waves', 'Γ and τ from the boundary conditions; nodes, envelopes, and why no power moves');
   u3('w5', 'Unit 5', 'Transmission lines in time', 'L, C and Z₀ from the fields; launching, reflecting, bounce diagrams, junctions');
-  u3('w6', 'Unit 6', 'Transmission lines in phasors', 'V(d), Γ(d), Z(d); shorts, opens and resonance; quarter-wave matching; the whole circuit');
+  u3('w6', 'Not on Exam 3', 'Lectures 31–34: lines in phasors (for the Final)', 'Not on this term\'s Exam 3, which stops at Lecture 30 and HW 11. Ringing lines, V(d), Γ(d), Z(d), stubs, quarter- and half-wave transformers, and every past-exam problem on them', { extra: true });
   u3('e3-prac', 'Exam 3', 'Practice exams and endless exam problems', '', { tools: true });
   u3('e3-past', 'Exam 3', 'Past exams (blank, with solutions)', '', { tools: true });
   u3('e3-hw', 'Exam 3', 'Homework 8–11, with full solutions', '', { tools: true });

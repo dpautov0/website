@@ -119,7 +119,7 @@
       | 1 | Wet sand: which regime at three frequencies, $\gamma$ | 18 |
       | 2 | Air into a dielectric with $\epsilon = 9\epsilon_0$: $\Gamma$, fields with directions, powers | 35 |
       | 3 | Two lines, delta source: bounce diagram, $V$ in the middle of line 2, steady state | 29 |
-      | 4 | Periodic oscillations on a line: six short parts | 18 |
+      | 4 | (not on Exam 3, moved to [Not on Exam 3](#/l/e3-later)) Periodic oscillations on a line: six short parts | 18 |
 
       ${CONSTS}
     `),
@@ -452,14 +452,14 @@
       ` }),
 
     // ---------------------------------------------------------------- M4
-    RF(md`
+    Object.assign(RF(md`
       ### Problem 4 (18 points): periodic oscillations
 
       Six short, **independent** questions. An AC source $\tilde V_g$ with $R_g = 50\ \Omega$ drives a lossless line of length $l$, $Z_0 = 100\ \Omega$ and $v = c$, ending in a load $Z_L$; $Z_{eq}$ is the impedance the source sees. $d$ is measured from the load.
 
       [[fig:pl]]
-    `, { pl: { svg: phasorLine('Z_0 = 100 ohm'), cap: 'The line circuit; $d = 0$ at the load, $d = l$ at the source.' } }),
-    P({ src: 'Practice M #4(a) · 3 pts', title: 'Current through a 7λ/2 line',
+    `, { pl: { svg: phasorLine('Z_0 = 100 ohm'), cap: 'The line circuit; $d = 0$ at the load, $d = l$ at the source.' } }), { later: true }),
+    P({ later: true, src: 'Practice M #4(a) · 3 pts', title: 'Current through a 7λ/2 line',
       q: md`Let $l = 7\lambda/2$. Express the input current $\tilde I(l)$ in terms of the load current $\tilde I_L$.`,
       parts: [mc(md`$\tilde I(l)$`, [md`$-\tilde I_L$`, md`$\tilde I_L$`, md`$j\tilde I_L$`, md`It depends on $Z_L$`], 0,
         [null, md`$7\lambda/2$ is an odd number of half waves: $e^{\pm j7\pi} = -1$.`, md`$\pm j$ belongs to odd quarter waves.`, md`Both exponentials in $\tilde I(d)$ become $-1$, whatever $\Gamma_L$ is.`])],
@@ -473,7 +473,7 @@
 
         ${LEARN('[Topic 17](#/l/w6-vd)')}
       ` }),
-    P({ src: 'Practice M #4(b) · 3 pts', title: 'A 5λ/4 line on 400 Ω',
+    P({ later: true, src: 'Practice M #4(b) · 3 pts', title: 'A 5λ/4 line on 400 Ω',
       q: md`Let $l = 5\lambda/4$ and $Z_L = 400\ \Omega$. Find $Z_{eq}$.`,
       parts: [NT('Z_{eq}', 25, 'Ω', [[400, 'That is the half-wave rule. 5λ/4 is an odd number of quarter waves.'], [1600, 'That is Z_L²/Z₀. The inverter gives Z₀²/Z_L.']])],
       sol: md`
@@ -486,7 +486,7 @@
 
         ${LEARN('[Topic 19](#/l/w6-qw)')}
       ` }),
-    P({ src: 'Practice M #4(c) · 3 pts', title: 'Frequency from length',
+    P({ later: true, src: 'Practice M #4(c) · 3 pts', title: 'Frequency from length',
       q: md`The line is $500$ m long, which is an electrical length of $5\lambda/4$. Find $\omega$.`,
       parts: [NT('\\omega', 1.5 * PI * 1e6, 'rad/s', [[7.5e5, 'That is f. ω = 2πf.'], [2 * PI * 3e8 / 625, 'That uses λ = 500 · 5/4. If l = 5λ/4 then λ = 4l/5 = 400 m.']])],
       sol: md`
@@ -499,7 +499,7 @@
 
         ${LEARN('[Topic 18](#/l/w6-stubs)')}
       ` }),
-    P({ src: 'Practice M #4(d) · 3 pts', title: 'Open line, current null at l/3',
+    P({ later: true, src: 'Practice M #4(d) · 3 pts', title: 'Open line, current null at l/3',
       q: md`The load is removed (open). Besides the open end, a current null is observed at $d = l/3$. Find the shortest possible $l$ and the resulting $Z_{eq}$.`,
       parts: [
         NT(md`shortest $l$, in wavelengths`, 1.5, 'λ', [[0.75, 'That puts the null at λ/4. Current nulls of an open line are at d = 0, λ/2, λ, ...'], [0.5, 'Then l/3 = λ/6, not a null.']]),
@@ -521,7 +521,7 @@
 
         ${LEARN('[Topic 18](#/l/w6-stubs)')}
       ` }),
-    P({ src: 'Practice M #4(e) · 3 pts', title: 'Shorted line, voltage null at l/5',
+    P({ later: true, src: 'Practice M #4(e) · 3 pts', title: 'Shorted line, voltage null at l/5',
       q: md`The load is a short. Besides the short itself, a voltage null is observed at $d = l/5$. What is the shortest possible electrical length?`,
       parts: [NT(md`$l$, in wavelengths`, 2.5, 'λ', [[1.25, 'That puts the first voltage null at λ/4. On a shorted line the voltage nulls are at d = 0, λ/2, λ, ...'], [5, 'That uses λ for the first null. The spacing is λ/2.']])],
       sol: md`
@@ -533,7 +533,7 @@
 
         ${LEARN('[Topic 18](#/l/w6-stubs)')}
       ` }),
-    P({ src: 'Practice M #4(f) · 3 pts', title: 'Matched load: the input voltage',
+    P({ later: true, src: 'Practice M #4(f) · 3 pts', title: 'Matched load: the input voltage',
       q: md`Let $Z_L = Z_0 = 100\ \Omega$. Find $|\tilde V(l)|/|\tilde V_g|$, the size of the input voltage relative to the source.`,
       parts: [NT(md`$|\tilde V(l)|/|\tilde V_g|$`, 2 / 3, '', [[1 / 3, 'That is R_g/(R_g + Z₀), the drop across R_g.'], [0.5, 'That assumes R_g = Z₀. Here R_g = 50 Ω and Z_eq = 100 Ω.']])],
       sol: md`
@@ -551,7 +551,7 @@
     R(md`**Done.** Score yourself, then compare with the [Fall 2025 paper](#/l/e3-past-fa25) and try [Practice exam N](#/l/e3-prac-n) tomorrow.`),
   ];
 
-  EM.lesson('e3-prac', { id: 'e3-prac-m', order: 13, title: 'Practice exam M', kind: 'mock', sub: 'Fall 2025 style · 75 min · 100 pts · wet sand, air into glass, a delta pulse on two lines, six standing-wave parts', steps: examM });
+  EM.lesson('e3-prac', { id: 'e3-prac-m', order: 13, title: 'Practice exam M', kind: 'mock', sub: 'Fall 2025 style · 75 min · 100 pts · wet sand, air into glass, a delta pulse on two lines (the six standing-wave parts are not on Exam 3)', steps: examM });
 
   // ======================================================================================== EXAM N
   const sN = TL.solve({ Vg: 80, Rg: 75, RL: Infinity, sections: [{ Z0: 75, len: 1, v: 1 }, { Z0: 25, len: 1, v: 1 }], tMax: 6 });
@@ -569,7 +569,7 @@
       | 1 | Lake mud: regime at two frequencies, $\gamma$, skin depth and frequency | 18 |
       | 2 | A wave leaving a dielectric toward $-z$ into air: $\Gamma$, fields, powers | 35 |
       | 3 | Two lines with an open end, delta source: bounce diagram, $V$ at a point, steady state | 29 |
-      | 4 | Periodic oscillations on a line: six short parts | 18 |
+      | 4 | (not on Exam 3, moved to [Not on Exam 3](#/l/e3-later)) Periodic oscillations on a line: six short parts | 18 |
 
       ${CONSTS}
     `),
@@ -866,14 +866,14 @@
       ` }),
 
     // ---------------------------------------------------------------- N4
-    RF(md`
+    Object.assign(RF(md`
       ### Problem 4 (18 points): periodic oscillations
 
       Independent questions. An AC source $\tilde V_g$ with $R_g = 75\ \Omega$ drives a lossless line of length $l$, $Z_0 = 50\ \Omega$, $v = c$, ending in $Z_L$. $Z_{eq}$ is the impedance the source sees; $d$ is measured from the load.
 
       [[fig:pl]]
-    `, { pl: { svg: phasorLine('Z_0 = 50 ohm'), cap: 'The line circuit; $d = 0$ at the load, $d = l$ at the source.' } }),
-    P({ src: 'Practice N #4(a) · 3 pts', title: 'Input voltage of a 9λ/4 line',
+    `, { pl: { svg: phasorLine('Z_0 = 50 ohm'), cap: 'The line circuit; $d = 0$ at the load, $d = l$ at the source.' } }), { later: true }),
+    P({ later: true, src: 'Practice N #4(a) · 3 pts', title: 'Input voltage of a 9λ/4 line',
       q: md`Let $l = 9\lambda/4$. Express $\tilde V(l)$ in terms of the load current $\tilde I_L$.`,
       parts: [mc(md`$\tilde V(l)$`, [md`$j50\,\tilde I_L$`, md`$-j50\,\tilde I_L$`, md`$50\,\tilde I_L$`, md`$-\tilde V_L$`], 0,
         [null, md`Check the sign: $e^{j9\pi/2} = e^{j\pi/2} = +j$.`, md`A real factor would need a whole number of half waves.`, md`$-\tilde V_L$ is for an odd number of half waves; $9\lambda/4$ is an odd number of quarter waves.`])],
@@ -893,7 +893,7 @@
 
         ${LEARN('[Topic 17](#/l/w6-vd), [Topic 19](#/l/w6-qw)')}
       ` }),
-    P({ src: 'Practice N #4(b) · 3 pts', title: 'A 5λ/4 line on 25 Ω',
+    P({ later: true, src: 'Practice N #4(b) · 3 pts', title: 'A 5λ/4 line on 25 Ω',
       q: md`Let $l = 5\lambda/4$ and $Z_L = 25\ \Omega$. Find $Z_{eq}$.`,
       parts: [NT('Z_{eq}', 100, 'Ω', [[25, 'That is the half-wave rule.'], [12.5, 'That is Z_L²/Z₀.']])],
       sol: md`
@@ -905,7 +905,7 @@
 
         ${LEARN('[Topic 19](#/l/w6-qw)')}
       ` }),
-    P({ src: 'Practice N #4(c) · 3 pts', title: 'Frequency from length',
+    P({ later: true, src: 'Practice N #4(c) · 3 pts', title: 'Frequency from length',
       q: md`The line is 3 km long, an electrical length of $3\lambda/4$. Find $\omega$.`,
       parts: [NT('\\omega', 1.5 * PI * 1e5, 'rad/s', [[7.5e4, 'That is f.'], [2 * PI * 3e8 / 2250, 'That uses λ = 3 · 3/4 km. λ = 4l/3 = 4 km.']])],
       sol: md`
@@ -918,7 +918,7 @@
 
         ${LEARN('[Topic 18](#/l/w6-stubs)')}
       ` }),
-    P({ src: 'Practice N #4(d) · 3 pts', title: 'Shorted line, current peak at l/3',
+    P({ later: true, src: 'Practice N #4(d) · 3 pts', title: 'Shorted line, current peak at l/3',
       q: md`The load is a short. Besides the short itself, a maximum of the current oscillation is observed at $d = l/3$. What is $Z_{eq}$?`,
       parts: [mc(md`$Z_{eq}$`, [md`$0\ \Omega$`, md`$\infty$`, md`$50\ \Omega$`, md`$j50\ \Omega$`], 0,
         [null, md`An open needs an odd quarter wave of shorted line. Current peaks on a shorted line are $\lambda/2$ apart, so $l = 3\lambda/2$: whole half waves, which repeat the short.`, md`A shorted lossless line is purely reactive.`, md`$j50$ needs $\beta l = \pi/4$.`])],
@@ -932,7 +932,7 @@
 
         ${LEARN('[Topic 18](#/l/w6-stubs)')}
       ` }),
-    P({ src: 'Practice N #4(e) · 3 pts', title: 'Open line, voltage null at l/3',
+    P({ later: true, src: 'Practice N #4(e) · 3 pts', title: 'Open line, voltage null at l/3',
       q: md`The line is left open. A voltage null is observed at $d = l/3$. What is the shortest possible electrical length?`,
       parts: [NT(md`$l$, in wavelengths`, 0.75, 'λ', [[1.5, 'That uses λ/2 for the first voltage null. On an open line the voltage is largest at the end; its first null is λ/4 away.'], [0.25, 'That is the null position itself, l/3 = λ/4. Solve for l.']])],
       sol: md`
@@ -944,7 +944,7 @@
 
         ${LEARN('[Topic 18](#/l/w6-stubs)')}
       ` }),
-    P({ src: 'Practice N #4(f) · 3 pts', title: 'Matched line: |V(d)|',
+    P({ later: true, src: 'Practice N #4(f) · 3 pts', title: 'Matched line: |V(d)|',
       q: md`Let $Z_L = Z_0$. Then $|\tilde V(d)|$ is the same at every point of the line. True or false? Explain.`,
       parts: [TF('|V(d)| is constant along a matched line', true, md`With $\Gamma_L = 0$, $\tilde V(d) = V^+e^{j\beta d}$, whose magnitude is $|V^+|$ everywhere. Only the phase changes.`)],
       sol: md`
@@ -961,5 +961,5 @@
     R(md`**Done.** Score yourself, then redo the missed parts tomorrow. Back to the [Fall 2025 paper](#/l/e3-past-fa25) or on to [Practice exam M](#/l/e3-prac-m).`),
   ];
 
-  EM.lesson('e3-prac', { id: 'e3-prac-n', order: 14, title: 'Practice exam N', kind: 'mock', sub: 'Fall 2025 style · 75 min · 100 pts · lake mud, leaving a dielectric, a delta pulse into an open line, six standing-wave parts', steps: examN });
+  EM.lesson('e3-prac', { id: 'e3-prac-n', order: 14, title: 'Practice exam N', kind: 'mock', sub: 'Fall 2025 style · 75 min · 100 pts · lake mud, leaving a dielectric, a delta pulse into an open line (the six standing-wave parts are not on Exam 3)', steps: examN });
 })();

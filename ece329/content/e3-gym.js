@@ -9,7 +9,7 @@
 
   EM.lesson('e3-gymu', {
     id: 'e3-gym', order: 5, kind: 'review', title: 'Recognition gym: every deck, mixed',
-    sub: `${ALL_IDS.length} decks of one-tap reads: direction, H, phasors, α β λ δ, loss, polarization, hand, Γ, power, nodes, lines, bounces, stubs, λ/4, VSWR`,
+    sub: `${ALL_IDS.length} decks of one-tap reads: direction, H, phasors, α β λ δ, loss, polarization, hand, Γ, power, nodes, lines, bounces, junctions`,
     steps: [
       R(md`
         ### How the gym works

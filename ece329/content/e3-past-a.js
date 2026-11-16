@@ -778,7 +778,7 @@ Find the inductance per unit length $\mathcal L$, the characteristic impedance $
       - Question 4: reading a scope trace backward to $R_g$, $R_L$ and $\epsilon_r$ ([Topic 16](#/l/w5-multi)).
       - Question 5: a shorted line driven by a step and by a pulse ([Topic 15](#/l/w5-bounce)).
       - Question 6: power and dB attenuation in water ([Topic 8](#/l/w2-loss)).
-      - Question 7: resonances of a shorted line, $\tilde V(d)$ and $\tilde I(d)$ ([Topic 18](#/l/w6-stubs), [Topic 17](#/l/w6-vd)).
+      - Question 7: resonances of a shorted line, $\tilde V(d)$ and $\tilde I(d)$. **Not on this term's Exam 3** (Lectures 31-34): moved to [Not on Exam 3](#/l/e3-later).
 
       **About the posted key.** It is typed and every final answer in it is right. A few things in it are sloppy, and the solutions point them out: Question 2 gives the amplitudes of a magnetic field in V/m (they are A/m); 1(d) says "circle all that apply" but fills in only the combined option; 6(a) writes $\eta$ in one line where $\eta^*$ belongs (the next line is right).
 
@@ -1171,12 +1171,12 @@ Sketch both the voltage and the current at $z = 0$ versus time, with numbers on 
       ` }),
 
     // ---------------------------------------------------------------- Question 7
-    R(md`
+    Object.assign(R(md`
       ### Part II, Question 7 (16 points): resonances of a line
 
       A lossless transmission line of length $l = 1000$ m has wave speed $v = 1\times10^8$ m/s and supports resonant oscillations. In a cosinusoidal steady state, the current phasor at the input ($d = l$, a distance $l$ from the load) is measured to be $\tilde I_{in} = 0$, and the voltage phasor at the load is $\tilde V_L = 0$.
-    `),
-    P({ src: 'Fall 2023 #7(a) · 4 pts', title: 'Z_in and Z_L',
+    `), { later: true }),
+    P({ later: true, src: 'Fall 2023 #7(a) · 4 pts', title: 'Z_in and Z_L',
       q: md`What are the input impedance $Z_{in}$ at $d = l$ and the load impedance $Z_L$ for these resonances?`,
       parts: [
         mc('Z_in', [md`$\infty$ (an open circuit)`, md`$0$ (a short circuit)`, md`$Z_0$`, md`it cannot be found without $Z_0$`], 0,
@@ -1195,7 +1195,7 @@ Sketch both the voltage and the current at $z = 0$ versus time, with numbers on 
 
         **Where points go.** Swapping the two.
       ` }),
-    P({ src: 'Fall 2023 #7(b) · 9 pts', title: 'The two lowest resonances',
+    P({ later: true, src: 'Fall 2023 #7(b) · 9 pts', title: 'The two lowest resonances',
       q: md`Find the two lowest resonant frequencies $\omega$ and choose the graph (A to L) of $\tilde V$ and of $\tilde I$ versus $d$ for each.
 
 [[fig:g7]]`,
@@ -1239,7 +1239,7 @@ Sketch both the voltage and the current at $z = 0$ versus time, with numbers on 
         **Where points go.** Half-wave resonances ($\pi\times10^5$) from treating both ends alike; giving $f$ for $\omega$; reading the graphs with $d$ increasing to the right (the paper's $d$ increases to the left).
       `,
       figs: { g7: { svg: graphsFig(), cap: 'In every graph d runs from l (the input) on the left to 0 (the load) on the right.' }, r1: { svg: resPlot(1), cap: 'Lowest resonance: a quarter wave. V (solid) is zero at the load; I (dashed) is zero at the input.' }, r2: { svg: resPlot(3), cap: 'Second resonance: three quarter waves.' } } }),
-    P({ src: 'Fall 2023 #7(c) · 3 pts', title: 'Where the line looks like a short',
+    P({ later: true, src: 'Fall 2023 #7(c) · 3 pts', title: 'Where the line looks like a short',
       q: md`At the second resonance, what is the shortest distance from the load (other than the load itself) at which the voltage is zero, so that the line there acts as a short-circuit input? Give $d$ in units of $\lambda$.`,
       parts: [
         NT(md`$d/\lambda$`, 0.5, '', [{ v: 0.25, msg: 'At λ/4 the voltage is at its peak and the current is zero: an open, not a short.' }, { v: 2 / 3, msg: 'That is d in units of l (666.7 m = 2l/3). In units of λ it is λ/2.' }, { v: 0.75, msg: 'That is the input (d = l = 3λ/4), where the current is zero: an open.' }]),
@@ -1257,5 +1257,5 @@ Sketch both the voltage and the current at $z = 0$ versus time, with numbers on 
       ` }),
   ];
 
-  EM.lesson('e3-past', { id: 'e3-past-fa23', order: 2, title: 'Fall 2023 Exam 3', kind: 'exam', sub: 'Goddard, Ilie, Zhao · 7 questions, 100 pts · polarization, three-line junctions, a scope trace read backward, a shorted line, power in water, resonances', steps: fa23 });
+  EM.lesson('e3-past', { id: 'e3-past-fa23', order: 2, title: 'Fall 2023 Exam 3', kind: 'exam', sub: 'Goddard, Ilie, Zhao · 7 questions, 100 pts · polarization, three-line junctions, a scope trace read backward, a shorted line, power in water (Question 7, on resonances, is not on Exam 3)', steps: fa23 });
 })();
