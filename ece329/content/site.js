@@ -19,7 +19,7 @@
       '\\xh': '\\hat{x}', '\\yh': '\\hat{y}', '\\zh': '\\hat{z}', '\\rh': '\\hat{r}', '\\ph': '\\hat{\\phi}', '\\nh': '\\hat{n}',
       '\\Et': '\\tilde{\\mathbf{E}}', '\\Ht': '\\tilde{\\mathbf{H}}', '\\Vt': '\\tilde{V}', '\\It': '\\tilde{I}', '\\Re': '\\operatorname{Re}', '\\Im': '\\operatorname{Im}',
     },
-    aliases: { '#/prac': 'e3-prac-a', '#/past': 'e3-past-sp24', '#/gym': 'e3-gym', '#/cards': 'e3-cards', '#/speed': 'e3-speed', '#/derive': 'e3-derive', '#/start': 'e3-map', '#/endless': 'e3-endless' },
+    aliases: { '#/prac': 'e3-prac-a', '#/past': 'e3-past-fa25', '#/gym': 'e3-gym', '#/cards': 'e3-cards', '#/speed': 'e3-speed', '#/derive': 'e3-derive', '#/start': 'e3-map', '#/endless': 'e3-endless' },
     actions: [
       { href: '#/prac', label: 'Practice exams A–L' },
       { href: '#/past', label: 'Past exams, cleaned and solved' },
@@ -46,7 +46,7 @@
       '<b>Start here:</b> <a href="#/l/e3-map">the map of Exam 3</a>, then complex numbers from zero. Everything else leans on them. Short on time? Go straight to the exams and use the lessons to fix what you miss.',
       '<b>Units 1–6, one lesson at a time.</b> Read each derivation with a pencil and redo it on paper without looking. Answer each prediction before you read on. Finish the lesson\'s mini quiz before moving on.',
       '<b>Every day, 10 minutes: the <a href="#/gym">recognition gym</a> and <a href="#/cards">flashcards</a>.</b> They train the instant reads: which way does it travel, which hand, which medium, what does the next bounce do.',
-      '<b>Exams, timed (75 minutes), as many as you can.</b> Start with <a href="#/past">Prof. Chen\'s Spring 2024 exam</a>, then <a href="#/prac">practice exams A–L</a>, then the eight older papers. Redo every problem you lost points on, the next day, blank. <a href="#/endless">Endless exam problems</a> give you a fresh version of any problem type.',
+      '<b>Exams, timed (75 minutes), as many as you can.</b> Start with <a href="#/past">the Fall 2025 Exam 3 (Chen, Mitchell, Shao)</a> and Spring 2024, then <a href="#/prac">practice exams A–N</a>, then the older papers. Redo every problem you lost points on, the next day, blank. <a href="#/endless">Endless exam problems</a> give you a fresh version of any problem type.',
       '<b>Speed:</b> learn the <a href="#/speed">speed tricks</a>, then drill them in the <a href="#/gym">gym</a> until each read takes a few seconds.',
       '<b>The last two days:</b> <a href="#/sheet">the formula sheet</a> (what you are given, and what you must carry), copy your <a href="notecard-e3.html">notecard</a> by hand, and mixed practice.',
     ],
