@@ -104,6 +104,14 @@ Five questions on this section that you have not seen above, drawn at random fro
     ],
   });
 
+  // ---------------------------------------------------------------- paper versions: every practice and past exam as a PDF
+  // pdf/<id>.pdf (the paper, with the printed table at the end) and pdf/<id>-key.pdf (answers and worked solutions),
+  // built by js/print-exam.js (index.html?print=<id>, &key=1) with headless Edge.
+  COURSE.units.filter((u) => u.id === 'e3-prac' || u.id === 'e3-past').forEach((u) => u.lessons.forEach((l) => {
+    if (!/^(mock|exam)$/.test(l.kind)) return;
+    l.steps.unshift({ t: 'widget', html: `<div class="px-links"><span>Take it on paper:</span><a class="btn primary" href="pdf/${l.id}.pdf" target="_blank" rel="noopener">PDF exam</a><a class="btn" href="pdf/${l.id}-key.pdf" target="_blank" rel="noopener">PDF answer key</a></div>` });
+  }));
+
   // a unit whose content file is missing would have no lessons; the home page and the sidebar need at least one
   for (let i = COURSE.units.length - 1; i >= 0; i--) if (!COURSE.units[i].lessons.length) COURSE.units.splice(i, 1);
 })();
