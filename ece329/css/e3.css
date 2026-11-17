@@ -103,3 +103,42 @@
   .gym-keys { display: none; }
   .gym-opt kbd { display: none; }
 }
+
+/* ---------------------------------------------------------------- exam paper / answer key (js/print-exam.js) */
+.px-body { background: #fff; color: #111; }
+#px { max-width: 7.2in; margin: 0 auto; padding: 0.3in 0; font-size: 11.5pt; line-height: 1.45; }
+#px h1 { font-size: 19pt; margin: 2px 0 8px; }
+#px h2, #px h3 { font-size: 13pt; margin: 18px 0 6px; border-bottom: 1.5px solid #111; padding-bottom: 3px; break-after: avoid; }
+.px-kicker { font-size: 9pt; letter-spacing: .08em; text-transform: uppercase; color: #555; }
+.px-rules { font-size: 10pt; color: #333; }
+.px-name { margin: 14px 0 6px; font-size: 11pt; }
+.px-name span { display: inline-block; width: 2.4in; border-bottom: 1px solid #111; margin-right: 24px; }
+.px-note { font-size: 9.5pt; color: #444; border: 1px solid #bbb; padding: 6px 9px; border-radius: 4px; }
+.px-setup { margin-top: 14px; }
+.px-prob { margin: 10px 0 4px; }
+.px-src { font-size: 8.5pt; color: #666; text-transform: uppercase; letter-spacing: .05em; break-after: avoid; }
+.px-parts { margin: 6px 0 0 4px; padding-left: 18px; list-style: lower-roman; font-size: 10.5pt; }
+.px-parts:empty { display: none; }
+.px-parts > li { margin: 3px 0; }
+.px-opts { padding-left: 22px; margin: 2px 0 4px; }
+.px-opts li { margin: 1px 0; }
+.px-tf { float: right; font-size: 9.5pt; color: #333; }
+.px-blank { display: inline-block; width: 1.6in; border-bottom: 1px solid #999; }
+.px-work { border: 1px dashed #ccc; border-radius: 4px; margin: 6px 0 10px; break-inside: avoid; }
+.px-ans { border: 1.5px solid #1a7f37; background: #f1faf3; border-radius: 5px; padding: 6px 10px; margin: 8px 0; break-inside: avoid; }
+.px-ans ul { margin: 2px 0; padding-left: 18px; }
+.px-sol { border-left: 3px solid #bbb; padding-left: 10px; margin: 6px 0 16px; font-size: 10.5pt; }
+.px-h { font-weight: 700; font-size: 9pt; text-transform: uppercase; letter-spacing: .06em; color: #333; }
+.px-table { break-before: page; }
+.px-table table { border-collapse: collapse; font-size: 10pt; }
+.px-table th, .px-table td { border: 1px solid #888; padding: 5px 7px; }
+#px .fig { break-inside: avoid; margin: 8px auto; text-align: center; }
+#px .fig svg { max-width: 100%; height: auto; }
+#px figcaption { font-size: 9pt; color: #555; }
+@media print { @page { size: letter; margin: 0.55in 0.6in; } #px { padding: 0; } }
+#px [class^="call-"], #px [class*=" call-"] { font-size: 10.5pt; padding: 6px 10px; margin: 6px 0; }
+#px .call-t { font-size: 8.5pt; }
+.px-body:not(.px-key) .px-setup ~ .px-setup { break-before: page; }
+.px-links { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0; }
+.px-links span { font-weight: 600; margin-right: 4px; }
+.px-links a.btn { text-decoration: none; }
