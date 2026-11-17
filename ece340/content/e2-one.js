@@ -34,11 +34,61 @@
   const ivFig = BD.prof({ w: 340, h: 210, x: [-3.6, 1], y: [-1.2, 1.2], xl: 'V', yl: 'I', zero: true, xt: [[-3, '-V_{br}'], [0, '0']],
     curves: [{ f: (v) => 0.03 * (Math.exp(v / 0.12) - 1) - 0.03, from: -3, to: 0.62, lab: '\\text{forward}', labAt: 0.4, dx: -8, dy: -6, anchor: 'r' },
       { pts: [[-3, -0.06], [-3.02, -1.2]], lab: '\\text{breakdown}', labAt: -3, dx: 8, dy: 40 }] });
-  const msRect = (() => {
-    const top = 0.744, bulk = 0.205, Ec = (x) => bulk + top * Math.max(0, 1 - x) ** 2;
-    return BD.prof({ w: 280, h: 190, x: [-0.6, 2.2], y: [-1.15, 1.15], xl: 'x', yl: 'E', vlines: [[0, '']], xt: [[-0.3, '\\text{metal}'], [1.3, '\\text{n-Si}']],
-      curves: [{ f: () => 0, lab: 'E_F', labAt: 2.2, dy: 4 }, { f: Ec, from: 0, to: 2.2, lab: 'E_c', labAt: 2.2, dy: -6 }, { f: (x) => Ec(x) - 1.12, from: 0, to: 2.2, lab: 'E_v', labAt: 2.2, dy: -6 }] });
-  })();
+  // metal | n-Si band pictures, drawn to scale from phi_m, chi, Ec - EF. mode 'before' = apart, with the vacuum level;
+  // otherwise in contact with bias V (metal + is forward), vac: true adds the vacuum level. Energies in eV.
+  const msFig = (o = {}) => {
+    const phiM = o.phiM ?? 4.8, chi = 4.05, EcF = 0.21, Eg = 1.12, V = o.V || 0, s = o.s || 40, f = PF.fig();
+    const phiS = chi + EcF;
+    if (o.mode === 'before') {
+      const y = (E) => 10 - E * s, bot = -(chi + Eg + 0.35);
+      f.rect(0, y(-phiM), 120, y(bot) - y(-phiM), { cls: 'shade' }).line(0, y(-phiM), 120, y(-phiM), { cls: 'thick' });
+      f.label(-4, y(-phiM), 'E_F', 'r').text(60, y(bot) + 6, 'metal: a sea of electrons', 't');
+      f.line(0, y(0), 120, y(0), { cls: 'dim dash' }).line(200, y(0), 370, y(0), { cls: 'dim dash' }).label(374, y(0), 'E_0\\ (\\text{vacuum})', 'l');
+      f.dim(60, y(0), 60, y(-phiM), 'q\\phi_m', { at: 'r' });
+      f.line(200, y(-chi), 370, y(-chi)).line(200, y(-chi - Eg), 370, y(-chi - Eg)).line(200, y(-phiS), 370, y(-phiS), { cls: 'ef' });
+      f.label(374, y(-chi), 'E_c', 'l').label(374, y(-chi - Eg), 'E_v', 'l').label(196, y(-phiS) + 2, 'E_F', 'tr');
+      for (let x = 290; x <= 362; x += 12) f.dot(x, y(-chi) - 4, 2.2);
+      f.dim(232, y(0), 232, y(-chi), 'q\\chi', { at: 'l' }).dim(275, y(0), 275, y(-phiS), 'q\\phi_s', { at: 'r' });
+      f.text(285, y(bot) + 6, 'n-type Si', 't');
+      return f.svg();
+    }
+    const xi = 120, xr = 390, EcB = V + EcF, Ec0 = phiM - chi, Vb = Ec0 - EcB;
+    const Wp = Vb > 0 ? 120 * Math.sqrt(Vb / (phiM - phiS)) : 24;
+    const Ec = (x) => (x < xi + Wp ? EcB + Vb * (1 - (x - xi) / Wp) ** 2 : EcB);
+    const top = (o.vac ? phiM : Math.max(Ec0, EcB)) + 0.15, low = Math.min(0, V) - Eg - 0.25;
+    const y = (E) => (top - E) * s, xs = [...Array(41)].map((_, i) => xi + (xr - xi) * i / 40);
+    f.rect(0, y(0), xi, y(low) - y(0), { cls: 'shade' }).line(0, y(0), xi, y(0), { cls: 'thick' });
+    f.line(xi, y(top), xi, y(low), { cls: 'dim thin' });
+    f.pl(xs.map((x) => [x, y(Ec(x))])).pl(xs.map((x) => [x, y(Ec(x) - Eg)]));
+    f.line(xi, y(V), xr, y(V), { cls: 'ef' });
+    f.label(xr + 4, y(EcB), 'E_c', 'l').label(xr + 4, y(EcB - Eg), 'E_v', 'l');
+    if (V) { f.line(xi, y(0), xr, y(0), { cls: 'dim dash thin' }).label(-4, y(0), 'E_{F,\\text{metal}}', 'r').label(xr + 4, y(V), 'E_{F,\\text{semi}}', 'l'); f.dim(xr - 22, y(0), xr - 22, y(V), 'qV', { at: 'l' }); }
+    else f.label(xr + 4, y(0), 'E_F', 'l');
+    // the two barriers
+    if (Vb > 0) {
+      f.line(xi - 34, y(Ec0), xr - 50, y(Ec0), { cls: 'dim dash thin' });
+      f.dim(xi - 18, y(0), xi - 18, y(Ec0), 'q\\phi_B', { at: 'l' });
+      f.dim(xr - 60, y(EcB), xr - 60, y(Ec0), V > 0 ? 'q(V_0 - V)' : V < 0 ? 'q(V_0 + V_R)' : 'qV_0', { at: 'l' });
+      for (let x = xi + 12; x < xi + Wp - 4; x += 16) f.text(x, y(Ec(x) - Eg / 2), '+', 'c');
+      [0.35, 0.75].forEach((t) => f.text(xi - 7, y(low * t), '−', 'c'));
+    } else [0.35, 0.75].forEach((t) => f.text(xi - 7, y(low * t), '+', 'c'));
+    // electrons in the semiconductor's conduction band (piled at the surface for an ohmic, accumulated contact)
+    for (let x = xi + Wp + 8; x <= xr - 4; x += 13) f.dot(x, y(EcB) - 4, 2.2);
+    if (Vb <= 0) for (let x = xi + 3; x < xi + Wp; x += 6) f.dot(x, y(Ec(x)) - 4, 2.2);
+    if (o.flow === 'fwd') f.arrow(xi + Wp + 30, y(Ec0) - 12, xi - 30, y(Ec0) - 12, { cls: 'thick' }).text(xi + Wp / 2, y(Ec0) - 18, 'many electrons', 'b');
+    if (o.flow === 'rev') f.arrow(xi - 30, y(Ec0) - 12, xi + 30, y(Ec0) - 12).text(xi, y(Ec0) - 18, 'a small trickle', 'b');
+    if (o.vac) {
+      f.line(0, y(phiM), xi, y(phiM), { cls: 'dim dash' }).pl(xs.map((x) => [x, y(Ec(x) + chi)]), { cls: 'dim dash' }).label(xr + 4, y(EcB + chi), 'E_0', 'l');
+      f.dim(40, y(0), 40, y(phiM), 'q\\phi_m', { at: 'r' }).dim(xr - 20, y(EcB), xr - 20, y(EcB + chi), 'q\\chi', { at: 'l' });
+    }
+    f.text(xi / 2, y(low) + 6, 'metal', 't').text((xi + xr) / 2, y(low) + 6, 'n-type Si', 't');
+    return f.svg();
+  };
+  const msBefore = msFig({ mode: 'before' });
+  const msEq = msFig({ vac: true });
+  const msFwd = msFig({ V: 0.3, s: 80, flow: 'fwd' });
+  const msRev = msFig({ V: -0.4, s: 80, flow: 'rev' });
+  const msOhm = msFig({ phiM: 4.1, s: 80 });
   const solar = (() => {
     const I0 = 1e-5, Iop = 1, Vt = 0.05, Voc = Vt * Math.log(1 + Iop / I0);
     return BD.prof({ w: 340, h: 220, x: [-0.3, 0.75], y: [-1.25, 0.6], xl: 'V', yl: 'I', zero: true, xt: [[Voc, 'V_{oc}']], yt: [[-Iop, '-I_{sc}']],
@@ -396,22 +446,110 @@
     RF(md`
       ## 11. Metal on semiconductor: Schottky or ohmic?
 
-      Bring a metal and a semiconductor together and, like any junction, their Fermi levels must line up. **Electrons flow from whichever side has the higher Fermi level** (the smaller work function $\phi$) into the other, until they match.
+      Every chip needs wires, so every device has metal touching semiconductor somewhere. That contact turns out to be either a **diode** (a Schottky barrier) or a plain **resistor** (an ohmic contact). To see which, you need to know what a metal looks like on a band diagram, so start there.
 
-      **Metal on n-type with $\phi_m > \phi_s$:** electrons leave the semiconductor for the metal. They leave behind positive donors: a depletion region, and the bands bend **up** toward the interface.
-      - From the semiconductor, electrons see a barrier $qV_0 = \phi_m - \phi_s$. **Bias changes this one.**
-      - From the metal, electrons see the **Schottky barrier** $\phi_B = \phi_m - \chi$ (work function minus electron affinity). **Bias does not change this one**: it is pinned at the interface.
-      - Result: a **rectifying** contact, a Schottky diode.
+      ### What a metal is, in band language
 
-      [[fig:ms]]
+      In a semiconductor, the valence band is completely full, the conduction band is nearly empty, and a gap sits between them. Carriers are rare: only the few electrons kicked across the gap or donated by dopants can move.
 
-      **The other cases:**
-      - n-type with $\phi_m < \phi_s$: electrons pile up at the surface, no barrier: **ohmic**.
-      - p-type: everything flips. $\phi_m < \phi_s$ is rectifying (a barrier for holes), $\phi_m > \phi_s$ is ohmic.
-      - In practice, ohmic contacts are made by **heavily doping the surface**: the depletion region becomes so thin that carriers tunnel through any barrier.
+      In a **metal there is no gap at the Fermi level**. The top band is only partly filled: electrons fill it up to $E_F$, and the states just above $E_F$ are empty and in the *same* band. So every electron near $E_F$ can move with the tiniest push. A metal has about $10^{22}$–$10^{23}$ free electrons per cm³, against $10^{16}$ in doped silicon.
 
-      **Why a Schottky diode is different from a p-n diode.** Current is **majority** carriers hopping over the barrier (thermionic emission), not minority injection. So there is no stored minority charge (very fast switching), and the saturation current is much larger (it depends on $e^{-\phi_B/kT}$), so it turns on at a **lower** forward voltage. Forward bias means making the **metal positive** relative to n-type silicon.
-    `, { ms: { svg: msRect, cap: 'Metal on n-Si with $\\phi_m > \\phi_s$: bands bend up, a barrier forms, the contact rectifies.' } }),
+      [[fig:fill]]
+
+      So **a metal on a band diagram is just a flat line, $E_F$, with a sea of electrons filled up to it.** No $E_c$, no $E_v$, no doping. Two consequences matter for everything below:
+
+      - **A metal cannot hold an electric field or a depletion region inside it.** It has so many free electrons that any charge it gains or loses sits in a sheet on its surface, thinner than an atom. So when a metal meets a semiconductor, **all the band bending happens in the semiconductor**.
+      - **A metal's $E_F$ is set by the metal alone.** There is no doping to move it.
+    `, { fill: { svg: BD.bands3(), cap: 'Metal: a band filled partway, so empty states sit right above $E_F$. Semiconductor: a full band, a gap, an empty band.' } }),
+    RF(md`
+      ### Measuring from the vacuum: work function and electron affinity
+
+      To compare two different materials you need a shared zero. That zero is the **vacuum level** $E_0$: the energy of an electron at rest just outside the material. Everything is measured down from it.
+
+      - **Work function $q\phi$:** from $E_F$ up to the vacuum. It is the energy it takes to pull an electron out. A bigger $\phi$ means a **deeper** $E_F$: electrons are held more tightly.
+        - Metal: $\phi_m$ is a fixed property of the metal (Al about 4.3 V, Au about 5.1 V, Pt about 5.6 V).
+        - Semiconductor: $\phi_s = \chi + (E_c - E_F)/q$ **depends on doping**, because doping moves $E_F$.
+      - **Electron affinity $q\chi$:** from $E_c$ up to the vacuum. A fixed property of the semiconductor (Si: 4.05 eV). Doping does not change it.
+
+      [[fig:before]]
+
+      Here $\phi_m = 4.8$ V and n-Si with $N_d = 10^{16}$ has $E_c - E_F = 0.21$ eV, so $\phi_s = 4.26$ V. **The semiconductor's $E_F$ is 0.54 eV higher than the metal's.**
+    `, { before: { svg: msBefore, cap: 'Apart: measure everything from the vacuum level. The n-Si $E_F$ sits higher than the metal\'s because $\\phi_s < \\phi_m$.' } }),
+    RF(md`
+      ### Touching: electrons fall until the Fermi levels line up
+
+      The rule is the same as for a p-n junction: **in equilibrium there is one flat $E_F$**. Electrons flow from the side with the higher $E_F$ (the **smaller** work function) to the other side until the two levels match.
+
+      Here the semiconductor's electrons are higher, so they **drop into the metal**. They leave behind **positive donor ions** near the surface: a **depletion region** of width $W$. The metal gets the matching negative charge as a thin sheet on its surface. It is exactly the n side of a $p^+n$ junction, with the metal playing the infinitely heavily doped side.
+
+      **How to draw it, step by step:**
+      1. Draw $E_F$ flat all the way across.
+      2. Metal: the electron sea filled up to $E_F$. Nothing else.
+      3. Deep in the semiconductor: $E_c$ and $E_v$ at their usual distance from $E_F$ (set by the doping; here $E_c$ is 0.21 eV above $E_F$).
+      4. At the interface: $E_c$ sits $q\phi_B = q(\phi_m - \chi)$ above $E_F$. **Why:** the vacuum level cannot jump at a point (that would be an infinite field). On the metal side it is $q\phi_m$ above $E_F$; on the semiconductor side $E_c$ is $q\chi$ below it. So at the interface $E_c - E_F = q\phi_m - q\chi$.
+      5. Join the two with a smooth curve (a parabola, as on the n side of a junction) over the width $W$. $E_v$ follows $E_c$, one gap lower.
+
+      [[fig:eq]]
+
+      The bands bend **up** toward the metal: the surface has lost its electrons, so electrons in the bulk now face a hill.
+    `, { eq: { svg: msEq, cap: 'In contact, at equilibrium. $E_F$ is flat, the vacuum level is continuous, and the bands bend up over $W$. At the interface $q\\phi_B = q\\phi_m - q\\chi$.' } }),
+    R(md`
+      ### Two barriers, seen from the two sides
+
+      - **From the metal, looking in:** an electron at the metal's $E_F$ must climb $q\phi_B = q(\phi_m - \chi)$ to get into the semiconductor's conduction band. This is the **Schottky barrier**. It depends only on the metal and the semiconductor's $\chi$: **not on doping, not on bias.** It is pinned at the interface.
+      - **From the semiconductor, looking toward the metal:** an electron in the bulk $E_c$ must climb $qV_0 = q(\phi_m - \phi_s) = q\phi_B - (E_c - E_F)$. This is the **contact potential**, the band bending. It depends on doping, and **bias changes it**.
+
+      In equilibrium a few electrons cross each way (the Boltzmann tail over each hill), and the two flows exactly cancel. Here: $\phi_B = 4.8 - 4.05 = 0.75$ V and $V_0 = 4.8 - 4.26 = 0.54$ V.
+
+      **The depletion width** is the n side of a $p^+n$ junction: $W = \sqrt{2\epsilon V_0/(qN_d)}$. With $N_d = 10^{16}$ and $V_0 = 0.54$ V, $W \approx 0.27\ \mu\text{m}$.
+    `),
+    RF(md`
+      ### Applying a voltage
+
+      The metal and the neutral semiconductor are good conductors, so **the whole voltage drops across the depletion region**, just as in a p-n diode. Raising the metal's potential by $V$ **lowers** its electron energies by $qV$ (energy is $-q \times$ potential).
+
+      - **Forward bias (metal +):** the metal's $E_F$ drops $qV$ below the semiconductor's. The semiconductor-side hill shrinks to $q(V_0 - V)$, and $W$ shrinks. Exponentially more electrons from the n-Si clear the hill and pour into the metal: the current grows as $e^{qV/kT}$.
+      - **Reverse bias (metal −):** the hill grows to $q(V_0 + V_R)$, and the flow from the semiconductor shuts off. What is left is the trickle from the metal over the **fixed** $\phi_B$: a small constant saturation current, $I_0 \propto e^{-q\phi_B/kT}$.
+
+      In both cases $\phi_B$ does not move; only the semiconductor side changes. Put together, it is the same diode law:
+      $$I = I_0\left(e^{qV/kT} - 1\right)$$
+
+      [[fig:bias]]
+    `, { bias: PF.row([{ svg: msFwd, cap: 'Forward (metal +): the hill drops to $q(V_0 - V)$, and electrons pour into the metal.' }, { svg: msRev, cap: 'Reverse (metal −): the hill grows, and only the trickle over the fixed $q\\phi_B$ is left.' }]) }),
+    R(md`
+      ### Why a Schottky diode is not just another p-n diode
+
+      - **Who carries the current:** in a p-n diode, current is **minority** carriers injected across the junction, then diffusing and recombining. In a Schottky diode it is **majority** electrons hopping over a hill into the metal, where they instantly become part of the electron sea. Nothing is injected, nothing diffuses, **nothing is stored**.
+      - **So it switches fast:** no stored minority charge means no storage delay and no storage (diffusion) capacitance. Only the junction capacitance of the depletion region is left, $C_j = \epsilon A/W$.
+      - **So it turns on early, and leaks more:** a p-n diode's $I_0$ goes as $n_i^2 \propto e^{-E_g/kT}$ (1.12 eV in Si). A Schottky diode's $I_0$ goes as $e^{-q\phi_B/kT}$ with $\phi_B$ around 0.5–0.8 V. That is many decades larger, so it reaches a given current at about 0.3 V instead of 0.7 V, and its reverse leakage is larger too.
+    `),
+    RF(md`
+      ### When there is no barrier: the ohmic contact
+
+      Now take a metal with $\phi_m < \phi_s$ on n-type. The **metal's** $E_F$ is higher, so electrons flow **into** the semiconductor and pile up at its surface (an **accumulation** layer). The bands bend **down**, and there is no hill for electrons in either direction. Current flows equally easily both ways, in proportion to the voltage: an **ohmic** contact, just a small resistor.
+
+      [[fig:ohm]]
+
+      **p-type flips it**, because the carriers that matter are holes:
+      - $\phi_m > \phi_s$: electrons leave the p-type for the metal, which leaves even **more holes** at the surface: no barrier for holes, **ohmic**.
+      - $\phi_m < \phi_s$: electrons flow into the p-type and fill holes near the surface, exposing negative acceptors: depletion, a barrier for holes, **rectifying**.
+
+      | | $\phi_m > \phi_s$ | $\phi_m < \phi_s$ |
+      |---|---|---|
+      | n-type | rectifying (Schottky) | ohmic |
+      | p-type | ohmic | rectifying (Schottky) |
+
+      **The memory hook:** a contact rectifies when the electron flow **strips the majority carriers** from the semiconductor's surface (electrons out of n-type, electrons into p-type). It is ohmic when the flow **adds** majority carriers.
+
+      **How real ohmic contacts are made.** You often can't pick a metal with the right work function, and surface states pin $\phi_B$ anyway. So the surface under the metal is **doped very heavily** ($n^+$). Since $W \propto 1/\sqrt{N_d}$, the barrier becomes only a few nanometers thick, and electrons **tunnel straight through** it. The hill is still there, but it is too thin to matter.
+
+      ### The exam recipe
+      1. $\phi_s = \chi + (E_c - E_F)/q$, with $E_c - E_F$ from the doping (for example $E_g/2 - kT\ln(N_d/n_i)$).
+      2. Compare $\phi_m$ with $\phi_s$ and the doping type: rectifying or ohmic? Which way do electrons flow?
+      3. $\phi_B = \phi_m - \chi$ and $V_0 = \phi_m - \phi_s$.
+      4. $W = \sqrt{2\epsilon V_0/(qN_d)}$, the n side of a $p^+n$ junction.
+      5. Draw: flat $E_F$, the bulk bands, $E_c$ at $q\phi_B$ above $E_F$ at the interface, a smooth bend over $W$.
+    `, { ohm: { svg: msOhm, cap: 'Ohmic: $\\phi_m < \\phi_s$ on n-type. Electrons flow into the Si and pile up at the surface; the bands bend down, and there is no hill.' } }),
     Q(md`A Schottky diode's metal work function is lowered by 0.12 eV (same semiconductor). At the same forward voltage, the current…`,
       ['rises about 100×', 'falls about 100×', 'rises by 12%', 'does not change'], 0,
       [null, 'A lower barrier lets more electrons over.', 'The current is exponential in the barrier height.', '$\\phi_B$ sets the saturation current.'],
