@@ -98,6 +98,12 @@
       | $\phi_m$ and $\chi$ given | metal contact | Schottky or ohmic, Section 11 |
 
       **Timing:** read every problem first (2 minutes), start with the one you recognize, and give each about 12 minutes. If a part stalls you for 3 minutes, write the governing relation (partial credit) and move on.
+
+      **What the most recent Exam 2 looked like (Section 14).** Three problems, almost all sketches and reasoning, very little arithmetic:
+      1. a **metal | n | p | metal** structure: sketch charge, field and potential through it, draw the bands with every $\phi$ labeled, and find the metal work function that makes a contact ohmic;
+      2. a **biased junction**: forward or reverse, the minority-carrier profiles, the electron and hole current components, the quasi-Fermi-level band diagram, and how the capacitance scales with reverse bias;
+      3. **optoelectronics**: define stimulated emission, population inversion and the photovoltaic effect, name the I–V quadrants, and say how doping changes the photocurrent.
+      If you can do Sections 5–8, 10, 11 and 12 without notes, you can do that exam.
     `),
 
     // ============================================================ Part 1: the cast
@@ -458,8 +464,143 @@
   // The first step of each exam is its PDF links (the PDF builder skips steps marked pdfLinks).
   const pdfLinks = (id) => Object.assign(R(md`**Test it like the real thing:** [Exam PDF (blank)](pdf/${id}.pdf) · [Answer key PDF](pdf/${id}-key.pdf). Print it or open it on a tablet, set a 60-minute timer, then check with the key or the problems below.`), { pdfLinks: true });
 
+  // ---------------------------------------------------------------- the recent Exam 2 (likely Fall 2024)
+  // Problem 1 redrawn: metal (x < 1) | n (1–3) | p (3–5) | metal (x > 5); n lighter than p; EF = 0 for the bands.
+  const mnpm = (() => {
+    const rho = (x) => (x > 0.82 && x < 1 ? -1.1 : x >= 1 && x < 1.5 ? 0.4 : x >= 2.2 && x < 3 ? 0.4 : x >= 3 && x < 3.4 ? -0.8 : 0);
+    const n = 1200, dx = 6 / n, E = [0], V = [0];
+    for (let i = 1; i <= n; i++) E[i] = E[i - 1] + rho((i - 0.5) * dx) * dx;
+    for (let i = 1; i <= n; i++) V[i] = V[i - 1] - 0.5 * (E[i] + E[i - 1]) * dx;
+    const at = (arr) => (x) => arr[Math.max(0, Math.min(n, Math.round(x / dx)))];
+    const T = [[1, 'A'], [3, 'B'], [5, 'C']], VL = [[1, ''], [5, '']];
+    const r = BD.prof({ w: 300, h: 140, x: [0, 6], y: [-1.2, 0.6], xl: 'x', yl: '\\rho', zero: true, xt: T, vlines: VL, curves: [{ f: rho, n: 1200 }] });
+    const e = BD.prof({ w: 300, h: 140, x: [0, 6], y: [-0.3, 0.42], xl: 'x', yl: '\\mathscr{E}', zero: true, xt: T, vlines: VL, curves: [{ f: at(E) }] });
+    const v = BD.prof({ w: 300, h: 140, x: [0, 6], y: [-0.16, 0.1], xl: 'x', yl: 'V', zero: true, xt: T, vlines: VL, curves: [{ f: at(V) }] });
+    const Ec = (x) => (x < 1.5 ? 0.35 + 0.45 * ((1.5 - x) / 0.5) ** 2 : x < 2.2 ? 0.35 : x < 3 ? 0.35 + 0.4 * ((x - 2.2) / 0.8) ** 2 : x < 3.4 ? 0.95 - 0.2 * ((3.4 - x) / 0.4) ** 2 : 0.95);
+    const bands = BD.prof({ w: 340, h: 230, x: [0, 6], y: [-1.25, 1.1], xl: 'x', yl: 'E', xt: T, vlines: VL,
+      curves: [{ f: () => 0, lab: 'E_F', labAt: 0.1, dx: 0, dy: -8, anchor: 'bl' }, { f: Ec, from: 1, to: 5, lab: 'E_c', labAt: 5, dy: -6 }, { f: (x) => Ec(x) - 0.55, from: 1, to: 5, cls: 'dash', lab: 'E_i', labAt: 5, dy: -6 },
+        { f: (x) => Ec(x) - 1.1, from: 1, to: 5, lab: 'E_v', labAt: 5, dy: -6 }],
+      pts: [{ x: 1, y: 0.8, lab: 'q\\phi_B', anchor: 'bl' }] });
+    return { cfv: PF.row([{ svg: r, cap: 'charge' }, { svg: e, cap: 'field' }, { svg: v, cap: 'potential' }]), bands };
+  })();
+
+  const f24 = (inPage) => [
+    ...(inPage ? [R(md`## 14. The most recent Exam 2 (likely Fall 2024), for intuition`)] : []),
+    pdfLinks('e2-f24'),
+    RF(md`
+      Three problems, 60 minutes. Almost everything is a **sketch with reasons**, which is exactly what this page trains. This is the closest thing to tonight's exam on the site: do it under a timer first.
+
+      ### Problem 1 · Junctions at equilibrium and metal–semiconductor junctions
+
+      An n-p junction with a metal contact on each side. The red line separates the n and p regions. Silicon: $E_g = 1.1$ eV, $E_i$ at midgap ($0.55$ eV below $E_c$), $\chi = 4$ eV. In the n region $E_F - E_i = 0.2$ eV; in the p region $E_i - E_F = 0.4$ eV; the left metal has $\phi_M^L = 4.8$ eV. **You do not need numbers, but you must show relative magnitudes and directions.**
+
+      [[fig:st]]
+    `, { st: scan('f24-structure', 'metal contact (work function 4.8 eV) from 0 to A, n-type from A to B, p-type from B to C, metal contact with unknown work function after C', 460, 'Metal | n | p | metal. A and C are the metal contacts, B the metallurgical junction.') }),
+    P({ src: 'Recent Exam 2 · 1a', pdfSketch: true, q: md`Sketch (1) the charge density, (2) the electric field and (3) the potential through regions $0 \to A$, $A \to B$ and $B \to C$, labeling the depletion widths.`,
+      parts: [FIX('At contact A, electrons flow', ['from the n side into the metal', 'from the metal into the n side'], 0, [null, 'The metal Fermi level sits deeper (4.8 eV vs 4.35 eV), so electrons fall into the metal.']),
+        FIX('So at A the n side holds', ['a layer of + donors; the metal a thin − sheet', 'a layer of − charge; the metal a + sheet'], 0, [null, 'The n side lost electrons, uncovering donors.']),
+        FIX('At B, the wider, lower charge block is on the', ['n side', 'p side'], 0, [null, 'The n side is lighter: its $E_F$ is only 0.2 eV from $E_i$ (vs 0.4).']),
+        FIX('The field at A points', ['−x (toward the metal)', '+x'], 0, [null, 'Field points from + (n side) to − (metal on the left).']),
+        FIX('The field at B points', ['+x (from n to p)', '−x'], 0, [null, 'Field points from + (n, left) to − (p, right).']),
+        FIX('Across A the potential', ['rises', 'falls'], 0, [null, 'Potential rises going against the field, and here you move against it.']),
+        FIX('Across B the potential', ['rises', 'falls'], 1, ['You move along the field at B: the potential falls.', null]),
+        N('\\text{step at A}', 0.45, 'V', 0.03), N('\\text{step at B } (V_0)', 0.6, 'V', 0.03)],
+      hints: ['Turn every given into a work function: $\\phi_S = \\chi + (E_c - E_F)$. For the n side, $E_c - E_F = 0.55 - 0.2$.', 'Electrons always flow toward the deeper Fermi level (larger work function) and leave + charge behind.'],
+      sol: md`**Start every metal–semiconductor problem by turning everything into work functions**, i.e. Fermi-level depths below vacuum:
+- n side: $E_c - E_F = 0.55 - 0.2 = 0.35$ eV, so $\phi_{S,n} = 4 + 0.35 = 4.35$ eV.
+- left metal: $4.8$ eV, deeper. **Electrons fall toward the deeper Fermi level**, so they leave the n side for the metal.
+
+**Charge.** At A the n side loses electrons and is left with **+ donors** over a finite width; the metal gains a **razor-thin − sheet** (a metal has so many electrons that its extra charge sits right at the surface). At B electrons flow from n to p (the n-side $E_F$ is higher), leaving + on the n side and − on the p side. The n side is lighter ($E_F$ only 0.2 eV from $E_i$, versus 0.4 on the p side), so its block is **wider and lower**; the p block is narrow and tall. Equal areas at each junction.
+
+**Field** = running total of the charge, pointing from + to −: at A from the n side toward the metal (**−x, a downward triangle**), at B from n to p (**+x, an upward triangle**). Zero in the neutral middle of each region.
+
+**Potential** rises when you walk against the field: it **rises** across A by $\phi_M^L - \phi_{S,n} = 4.8 - 4.35 = 0.45$ V and **falls** across B by $V_0 = 0.2 + 0.4 = 0.6$ V. The drop is bigger than the rise, so the right end sits lower than the left. (The key stresses exactly this: values not needed, but the drop must be drawn bigger than the rise.)
+
+[[fig:cfv]]`, figs: { cfv: Object.assign(mnpm.cfv, { cap: 'Charge (thin − sheet in the metal, + in the n side; + then − at B), field (down at A, up at B), potential (up 0.45 at A, down 0.6 at B).' }) } }),
+    P({ src: 'Recent Exam 2 · 1b', pdfSketch: true, q: md`Sketch the energy bands in each region. Label $E_c$, $E_v$, $E_i$, the contact potentials $V_0$, the barrier $\phi_B$ at the metal–semiconductor contact if present, the vacuum level, $\phi_M$, $\chi$ and $\phi_S$.`,
+      parts: [N('\\phi_{S,n}', 4.35, 'eV', 0.01), N('\\phi_B\\ (\\text{at A})', 0.8, 'eV', 0.02),
+        FIX('Near A, the n-side bands bend', ['up toward the metal ($E_c$ moves away from $E_F$)', 'down toward the metal'], 0, [null, 'The n side near A lost electrons, so $E_c$ must move away from $E_F$.']),
+        FIX('$E_F$ through the whole structure is', ['flat', 'tilted at A and B'], 0, [null, 'Equilibrium: no current, so the Fermi level is flat everywhere.'])],
+      sol: md`**Rules that draw the diagram for you:**
+1. Equilibrium → **$E_F$ is one flat line** through metal, n, p and metal.
+2. Far from each junction, place the bands where the doping puts them: $E_c$ 0.35 eV above $E_F$ in the n region, $E_c$ 0.95 eV above it in the p region ($E_i$ 0.4 eV above $E_F$).
+3. Where a region **lost electrons** (the n side at A and at B), its $E_c$ moves **away** from $E_F$: the bands bend up. Where it **gained** electrons (the p side at B), its $E_c$ moves **toward** $E_F$. Walking left to right: a climb at A, flat across the neutral n region, a second climb across B, flat in the p region.
+4. $E_c$, $E_v$, $E_i$ and the vacuum level all bend together (same gap, same $\chi$).
+
+Labels: $\phi_B = \phi_M^L - \chi = 4.8 - 4.0 = 0.8$ eV is the barrier an electron in the metal sees at A (fixed, bias does not move it). $qV_0 = 0.45$ eV at A (seen from the n side) and $qV_0 = 0.6$ eV at B. The vacuum level sits $\chi = 4$ eV above $E_c$ everywhere; $\phi_S$ is the drop from vacuum to $E_F$ (4.35 eV on the n side, 4.95 eV on the p side).
+
+[[fig:bd]]`, figs: { bd: { svg: mnpm.bands, cap: 'Bands climb 0.45 eV at A (barrier $\\phi_B = 0.8$ eV from the metal side) and 0.6 eV across B; $E_F$ is flat throughout.' } } }),
+    P({ src: 'Recent Exam 2 · 1c', q: md`We want the contact on the right-hand side to be **ohmic**. Give the range of $\phi_M^R$ that makes it ohmic. Numbers required.`,
+      parts: [N('\\phi_{S,p}', 4.95, 'eV', 0.01), FIX('Ohmic when', ['$\\phi_M^R > 4.95$ eV', '$\\phi_M^R < 4.95$ eV'], 0, [null, 'For p-type that would deplete holes: a barrier.'])],
+      sol: md`$\phi_{S,p} = \chi + \tfrac{E_g}{2} + (E_i - E_F) = 4 + 0.55 + 0.4 = 4.95$ eV, so **$\phi_M^R > 4.95$ eV**.
+
+**The intuition, so you never memorize the table:** a contact is ohmic when the **majority carriers pile up** at the surface instead of being depleted. For p-type the majority carriers are holes; you get extra holes when electrons **leave** the semiconductor, i.e. when the metal's Fermi level is **deeper** ($\phi_M > \phi_S$). For n-type it is the reverse: you want electrons to flow **in**, so $\phi_M < \phi_S$. (That is why contact A, 4.8 > 4.35 on n-type, came out rectifying.)` }),
+
+    RF(md`
+      ### Problem 2 · Junctions under bias, and junction capacitance
+
+      An n-p junction with $N_d = 5\times10^{16}\ \text{cm}^{-3}$ and $N_a = 10^{17}\ \text{cm}^{-3}$. **The n region is on the left.**
+
+      [[fig:ci]]
+    `, { ci: scan('f24-circuit', 'two circuits: (a) battery minus on the n side, plus on the p side; (b) plus on the n side, minus on the p side', 460, 'Figure 1. (a) n side held at −0.5 V relative to p. (b) n side held at +2.4 V relative to p.') }),
+    P({ src: 'Recent Exam 2 · 2a (9 pts)', pdfSketch: true, q: md`The n region is held at $-0.5$ V relative to the p region (Fig. 1a). Forward or reverse biased? Sketch the minority-carrier distributions on both sides, labeling $p_n$, $n_p$, $\Delta p_n$ and $\Delta n_p$. Which is larger, $p_n$ or $n_p$? $\Delta p_n$ or $\Delta n_p$?`,
+      parts: [FIX('The junction is', ['forward biased', 'reverse biased'], 0, [null, 'The p side is 0.5 V above the n side.']),
+        FIX('Larger equilibrium minority density', ['$p_n$', '$n_p$'], 0, [null, 'The n side is the lighter one, so it has more minority carriers.']),
+        FIX('Larger edge excess', ['$\\Delta p_n$', '$\\Delta n_p$'], 0, [null, 'Both edges get the same factor $e^{qV/kT}$.'])],
+      sol: md`**Forward:** p is 0.5 V above n, which lowers the barrier.
+**$p_n > n_p$:** minority density is $n_i^2/N$, and the n side is the more lightly doped ($5\times10^{16}$ vs $10^{17}$): $p_n = 4500$, $n_p = 2250\ \text{cm}^{-3}$, a factor of 2.
+**$\Delta p_n > \Delta n_p$:** the law of the junction multiplies **both** edges by the same $e^{qV/kT}$ ($\approx 2.4\times10^8$ at 0.5 V), so the excesses keep the same 2:1 ratio ($\approx 1.1\times10^{12}$ vs $5.4\times10^{11}$). Each excess decays into its neutral region over a diffusion length.
+
+[[fig:mi]]`, figs: { mi: scan('f24-minority', 'hole excess rising toward the junction on the n side, larger than the electron excess decaying from the junction on the p side', 400, '$\\Delta p_n$ is twice $\\Delta n_p$; both decay over a diffusion length away from the junction.') } }),
+    P({ src: 'Recent Exam 2 · 2b (8 pts)', pdfSketch: true, q: md`Same bias. Draw the electron and hole current components $I_n$ and $I_p$ in both the n and p regions, paying attention to which is larger.`,
+      parts: [FIX('Across the depletion region, the larger component is', ['$I_p$ (holes)', '$I_n$ (electrons)'], 0, [null, 'More holes are injected (Δp_n = 2Δn_p).']),
+        FIX('Deep in the n region, the current is carried by', ['electrons (majority drift)', 'holes'], 0, [null, 'The injected holes have recombined by then.']),
+        FIX('The total current', ['is the same everywhere', 'is largest at the junction'], 0, [null, 'Charge does not pile up in steady state.'])],
+      sol: md`Three facts draw this plot:
+1. **The total is constant everywhere** (steady state, nothing piles up): a flat line.
+2. **At the depletion edges the current is minority injection**, and holes win, $I_p \approx \tfrac23 I$, $I_n \approx \tfrac13 I$, because $\Delta p_n = 2\Delta n_p$ (same $D/L$ assumed). Both are flat across the thin depletion region (no recombination there).
+3. **Moving away from the junction, the minority current dies** over a diffusion length as those carriers recombine, and the **majority current grows** to make up the total: each recombining hole in the n region needs an electron, supplied by majority drift from the contact.
+
+[[fig:cu]]`, figs: { cu: scan('f24-currents', 'total current flat; on the n side Ip decays away from the junction and In grows; across the depletion region Ip about two thirds, In one third; on the p side In decays and Ip grows', 420, 'Minority diffusion near the junction hands off to majority drift far away; the total stays flat.') } }),
+    P({ src: 'Recent Exam 2 · 2c (8 pts)', pdfSketch: true, q: md`Same bias. Draw the band diagram with the quasi-Fermi levels. Label $E_c$, $E_v$, the Fermi levels $E_{Fn}$, $E_{Fp}$ and the quasi-Fermi levels $F_n$, $F_p$. Show the applied voltage relative to the Fermi levels and the built-in potential.`,
+      parts: [FIX('The bands are higher on the', ['p side (right)', 'n side (left)'], 0),
+        FIX('The barrier is', ['$q(V_0 - 0.5)$', '$q(V_0 + 0.5)$', '$qV_0$'], 0, [null, 'Forward bias lowers it.', 'Bias changes the barrier.']),
+        FIX('Across the depletion region, $F_n - F_p$', ['$= 0.5$ eV', '$= qV_0$', '$= 0$'], 0, [null, 'The split equals the applied voltage.', 'That is equilibrium.']),
+        FIX('$F_p$ (holes) drops back to $E_{Fn}$ over', ['a hole diffusion length into the n region', 'the depletion region', 'the whole p region'], 0)],
+      sol: md`**How to draw it:** bands higher on the p side (right) by $q(V_0 - V) = q(0.8 - 0.5)$. In each neutral region far away there is just one Fermi level ($E_{Fn}$ on the left, $E_{Fp}$ on the right), $qV = 0.5$ eV apart.
+- **$F_n$** (electrons) stays flat from the n region **across the depletion region** (low-level injection: the majority level barely moves, and carriers cross quickly), then **falls** to $E_{Fp}$ over about $L_n$ inside the p region as the injected electrons recombine.
+- **$F_p$** (holes) does the mirror image: flat from the p region across the depletion region, then **rises** to $E_{Fn}$ over about $L_p$ in the n region.
+- Their split inside the depletion region is exactly $qV$: that split *is* the applied voltage.
+
+[[fig:qf]]`, figs: { qf: scan('f24-qfl', 'band diagram n on the left: Fn flat then falling in the p region, Fp falling from E_Fn in the n region then flat', 440, '$F_n$ and $F_p$ split by $qV$ across the junction and merge back within a diffusion length on each side.') } }),
+    P({ src: 'Recent Exam 2 · 2d (8 pts)', q: md`The n region is held at $+2.4$ V relative to the p region (Fig. 1b). The zero-bias depletion capacitance is about 60 fF and $V_0 = 0.8$ V. Find the depletion capacitance.`,
+      parts: [FIX('Bias', ['reverse, 2.4 V', 'forward, 2.4 V'], 0, [null, 'The n side is positive: that raises the barrier.']), N('C_j', 30, 'fF', 0.02)],
+      sol: md`n positive relative to p is **reverse** bias. $C_j = \epsilon A/W$ and $W \propto \sqrt{V_0 + V_R}$:
+$$C_j = 60\ \text{fF}\times\sqrt{\frac{0.8}{0.8 + 2.4}} = 60\times\tfrac12 = 30\ \text{fF}$$
+**Intuition:** the total voltage across the junction went from 0.8 to 3.2 V, 4×, so the depletion width doubled and the "plate spacing" doubled: half the capacitance.` }),
+
+    R(md`### Problem 3 · Optoelectronics`),
+    P({ src: 'Recent Exam 2 · 3a (≈ 17 pts)', pdfSketch: true, q: md`Briefly (1–2 sentences) define: (i) stimulated emission, (iii) population inversion, (iv) the photovoltaic effect. (Part (ii) is not in this copy of the exam.)`,
+      parts: [MC('(i) Stimulated emission', ['a photon makes an excited electron drop and emit an identical photon (same energy, phase, direction)', 'an excited electron drops on its own and emits a photon in a random direction', 'a photon is absorbed and lifts an electron to the upper level', 'an electron tunnels across the gap and emits a photon'], 0,
+          [null, 'That is spontaneous emission.', 'That is absorption.', 'Not a radiative process in this course.']),
+        MC('(iii) Population inversion', ['more electrons in the upper state than the lower one', 'more electrons in the lower state than the upper one', 'equal populations in both states', 'no electrons in either state'], 0,
+          [null, 'That is normal equilibrium.', 'That is the threshold, not inversion.', 'No.']),
+        MC('(iv) Photovoltaic effect', ['a forward voltage appearing across an illuminated junction', 'a reverse current through a reverse-biased junction in the dark', 'light emitted by a forward-biased junction', 'the junction capacitance changing with light'], 0,
+          [null, 'That is dark leakage.', 'That is an LED.', 'No.'])],
+      sol: md`(i) **Stimulated emission:** an incoming photon of energy $E_2 - E_1$ makes an electron in the upper state drop and emit a second photon **identical** to the first (same energy, phase and direction). That copying is why laser light is coherent and monochromatic.
+(iii) **Population inversion:** more electrons in the upper state than in the lower one ($n_2 > n_1$), which never happens in equilibrium. It is what lets stimulated emission outrun absorption, so light is amplified.
+(iv) **Photovoltaic effect:** a **forward voltage** appears across an illuminated junction. The built-in field sweeps photo-generated electrons to the n side and holes to the p side; that separated charge forward-biases the junction (that is $V_{oc}$).` }),
+    P({ src: 'Recent Exam 2 · 3b (16 pts)', pdfSketch: true, q: md`(i) In which quadrant of the I–V characteristic are solar cells operated? (ii) Photodiodes in optical communications? (iii) To increase the photocurrent, would you increase or decrease the doping on each side of the junction? Explain.`,
+      parts: [FIX('(i) Solar cells', ['I', 'II', 'III', 'IV'], 3, ['Power is absorbed there.', 'Not used.', 'That is the photodetector.', null]),
+        FIX('(ii) Photodiodes', ['I', 'II', 'III', 'IV'], 2, ['That is ordinary forward conduction.', 'Not used.', null, 'That is the solar cell.']),
+        FIX('(iii) Doping on each side', ['decrease', 'increase'], 0, [null, 'That shrinks W and the diffusion lengths.'])],
+      sol: md`(i) **Quadrant IV** ($V > 0$, $I < 0$): the only quadrant where the junction **delivers** power to the circuit.
+(ii) **Quadrant III** (reverse bias): the current is set by the light alone, independent of voltage, so it reads out the optical signal directly.
+(iii) **Decrease** the doping. The photocurrent counts the pairs that get separated: those made inside the depletion region plus those within a diffusion length of it, $I_{op} = qAg_{op}(L_n + L_p + W)$. Lighter doping makes **$W$ wider** (fewer ions to uncover per length) **and $L$ longer** (fewer impurities to scatter off, so higher $D$; and fewer majority partners to recombine with, so a longer lifetime, the same idea as Section 4b).` }),
+  ];
+
   const fa15 = (inPage) => [
-    ...(inPage ? [R(md`## 14. The Fall 2015 Exam 2, for intuition`)] : []),
+    ...(inPage ? [R(md`## 15. The Fall 2015 Exam 2, for intuition`)] : []),
     pdfLinks('e2-fa15'),
     RF(md`
       Five problems, 20 points each, 60 minutes, closed book, no calculator. Work each on paper before checking.
@@ -468,13 +609,13 @@
 
       [[fig:pr]]
     `, { pr: scan('fa15-profiles', 'junction 1: n-type Nd on the left, p-type Na on the right, abrupt step; junction 2: linearly graded, p on the left, n on the right', 420, 'Junction #1: abrupt, n on the left. Junction #2: linearly graded, p on the left.') }),
-    P({ src: 'FA15 · 1a (10 pts)', q: md`Qualitatively sketch the space-charge density, electric field and electrostatic potential for each junction. Is each constant, linear, quadratic, cubic or exponential in $x$?`,
+    P({ src: 'FA15 · 1a (10 pts)', pdfSketch: true, q: md`Qualitatively sketch the space-charge density, electric field and electrostatic potential for each junction. Is each constant, linear, quadratic, cubic or exponential in $x$?`,
       parts: [FIX('#1 charge density', ['constant', 'linear', 'quadratic', 'cubic'], 0), FIX('#1 field', ['constant', 'linear', 'quadratic', 'cubic'], 1), FIX('#1 potential', ['constant', 'linear', 'quadratic', 'cubic'], 2),
         FIX('#2 charge density', ['constant', 'linear', 'quadratic', 'cubic'], 1), FIX('#2 field', ['constant', 'linear', 'quadratic', 'cubic'], 2), FIX('#2 potential', ['constant', 'linear', 'quadratic', 'cubic'], 3)],
       sol: md`**The hint, "think about how these were derived":** field is the running integral of charge, potential the running integral of field. Each integration raises the power by one.
 - #1 (abrupt): charge is two **constant** blocks with equal total charge; field **linear** (a triangle), pointing from n to p; potential **quadratic**.
 - #2 (graded): the net doping is a straight line through zero, so the charge is **linear**; field **quadratic** (a parabola, zero at both depletion edges); potential **cubic**.` }),
-    P({ src: 'FA15 · 1b (4 pts)', q: md`Indicate the direction of the drift and diffusion currents for electrons and holes in each junction at equilibrium.`,
+    P({ src: 'FA15 · 1b (4 pts)', pdfSketch: true, q: md`Indicate the direction of the drift and diffusion currents for electrons and holes in each junction at equilibrium.`,
       parts: [FIX('#1 electron diffusion current', LR, 0), FIX('#1 hole diffusion current', LR, 0), FIX('#1 electron drift current', LR, 1), FIX('#1 hole drift current', LR, 1),
         FIX('#2 electron diffusion current', LR, 1), FIX('#2 hole diffusion current', LR, 1), FIX('#2 electron drift current', LR, 0), FIX('#2 hole drift current', LR, 0)],
       sol: md`Junction #1 has **n on the left**. Electrons diffuse right (into p): as negative charge that is current to the **left**. Holes diffuse left (into n): current to the **left**. The field points from n (+) to p (−), to the right, and both drift currents point **along the field**: **right**. Each drift current exactly cancels its diffusion current (equilibrium).
@@ -497,7 +638,7 @@ Junction #2 has p on the left, so everything flips: diffusion currents right, dr
       sol: md`(a) **Decrease.** $I_0 \propto n_i^2/N$ on each side: the minority carriers that make the current are 100× scarcer.
 (b) **Decrease.** $W$ shrinks and the field at a given voltage rises; with both sides at $10^{19}$ the barrier is thin enough for **Zener tunneling**, at a small voltage.
 (c) Forward: a smaller $I_0$ shifts the exponential **to the right** (more voltage for the same current). Reverse: a smaller leakage, and breakdown moves **toward $V = 0$**.` }),
-    P({ src: 'FA15 · 4 (20 pts)', q: md`(a) Explain Zener breakdown with an I–V and a band diagram. (b) Same for avalanche. (c) Order a $p^+n^+$, a $p^+n$ and a $pn$ Si diode (same n doping for the last two) from largest to smallest reverse-bias capacitance.`,
+    P({ src: 'FA15 · 4 (20 pts)', pdfSketch: true, q: md`(a) Explain Zener breakdown with an I–V and a band diagram. (b) Same for avalanche. (c) Order a $p^+n^+$, a $p^+n$ and a $pn$ Si diode (same n doping for the last two) from largest to smallest reverse-bias capacitance.`,
       parts: [MC('(a) Zener breakdown is…', ['electrons tunneling from the p-side valence band into the n-side conduction band through a thin barrier', 'carriers gaining enough energy to knock loose new pairs', 'the depletion region reaching the contact', 'the junction overheating'], 0,
           [null, 'That is avalanche.', 'That is punch-through.', 'That is thermal failure, not a breakdown mechanism.']),
         MC('(b) Avalanche breakdown is…', ['carriers accelerated in a wide depletion region knocking loose new pairs, which multiply', 'tunneling through a thin barrier', 'thermal generation in the neutral regions', 'the barrier vanishing'], 0,
@@ -509,7 +650,7 @@ Junction #2 has p on the left, so everything flips: diffusion currents right, dr
     RF(md`**Problem 5.** A two-level system in a photon field:
 
       [[fig:tl]]`, { tl: scan('fa15-twolevel', 'two levels E1 and E2 with densities n1 and n2, photons absorbed and emitted', 400, 'Levels E₁ (density n₁) and E₂ (density n₂), photon field ρ(ν₁₂).') }),
-    P({ src: 'FA15 · 5 (20 pts)', q: md`(a) Name the rates $B_{21}n_2\rho(\nu_{12})$, $B_{12}n_1\rho(\nu_{12})$ and $A_{21}n_2$. (b) Relate them in steady state. (c) On an I–V curve, where does a photodiode operate, where does a solar cell operate, and where are $I_{sc}$ and $V_{oc}$?`,
+    P({ src: 'FA15 · 5 (20 pts)', pdfSketch: true, q: md`(a) Name the rates $B_{21}n_2\rho(\nu_{12})$, $B_{12}n_1\rho(\nu_{12})$ and $A_{21}n_2$. (b) Relate them in steady state. (c) On an I–V curve, where does a photodiode operate, where does a solar cell operate, and where are $I_{sc}$ and $V_{oc}$?`,
       parts: [FIX('$B_{21}n_2\\rho$', ['absorption', 'spontaneous emission', 'stimulated emission'], 2), FIX('$B_{12}n_1\\rho$', ['absorption', 'spontaneous emission', 'stimulated emission'], 0), FIX('$A_{21}n_2$', ['absorption', 'spontaneous emission', 'stimulated emission'], 1),
         MC('(b) Steady state', ['absorption = stimulated + spontaneous emission', 'spontaneous = absorption + stimulated', 'all three are equal', 'stimulated = absorption'], 0),
         FIX('Photodiode operating point', ['1st quadrant', '3rd quadrant', '4th quadrant'], 1), FIX('Solar cell operating point', ['1st quadrant', '3rd quadrant', '4th quadrant'], 2)],
@@ -520,7 +661,7 @@ Junction #2 has p on the left, so everything flips: diffusion currents right, dr
   ];
 
   const sp03 = (inPage) => [
-    ...(inPage ? [R(md`## 15. The Spring 2003 Exam 2, for intuition`)] : []),
+    ...(inPage ? [R(md`## 16. The Spring 2003 Exam 2, for intuition`)] : []),
     pdfLinks('e2-sp03'),
     R(md`
       Four quick multiple-choice problems, then longer ones (the original was a 2-hour exam; aim for 75 minutes). Problem 9 is on bipolar transistors, which are **not** on this exam (Ch. 7, final); it is at the end for completeness.
@@ -559,7 +700,7 @@ $J = q\dfrac{D_p}{L_p}p_n(e^{0.5/0.0259} - 1) = 2.32\times10^{-3}$ A/cm².
 (d) At 10 V reverse: $W = \sqrt{2\epsilon(10.84)/qN_d} = 3.76\ \mu$m and $C_j/A = \epsilon/W = 2.78$ nF/cm².` }),
     RF(md`**Problem 7.** The excess hole profile in a $p^+$-$n$-$n^+$ narrow-base diode ($x_n = 0$ is the start of the neutral n region):
 
-      [[fig:nb]]`, { nb: scan('sp03-narrow', 'excess hole density falling linearly from 5.45e12 at xn = 0 to zero at l = 1 µm; Dp = 10, tau_p = 0.1 µs', 420, 'A straight line: the base (1 µm) is much shorter than L_p = 10 µm.') }),
+      [[fig:nb]]`, { nb: scan('sp03-narrow', 'excess hole density falling linearly from 5.45e12 at xn = 0 to zero at l = 1 µm; Dp = 10, tau_p = 0.1 µs', 420, 'A straight line: the base (1 µm) is much shorter than $L_p = 10\\ \\mu\\text{m}$.') }),
     P({ src: 'SP03 · 7 (12 pts)', q: md`(a) Estimate the current density. (b) The total number of excess holes per cm² in the n region. (c) Where do most of the holes recombine?`,
       parts: [N('J', 8.7e-2, 'A/cm^{2}', 0.03), N('Q_p/q', 2.7e8, 'cm^{-2}', 0.03),
         MC('(c) Most holes recombine', ['at the n⁺ contact, x = ℓ', 'inside the n region', 'several diffusion lengths into the n⁺ region', 'in the depletion region'], 0,
@@ -578,12 +719,13 @@ $J = q\dfrac{D_p}{L_p}p_n(e^{0.5/0.0259} - 1) = 2.32\times10^{-3}$ A/cm².
       **Problem 9 (not on this exam: bipolar transistors).** Three Si $p^+$-$n$-$p^+$ transistors: #2 has twice the base width, #3 has 10× the base doping. The key's orderings, for reference: emitter injection efficiency 1 > 2 > 3; base transport factor 1 > 2 > 3; recombination base current 2 > 1 ≥ 3; current gain β: 1 > 2 > 3; base transit time 2 > 3 > 1. The same narrow-base ideas from Section 8 drive every one of them, but this belongs to the final.
     `),
   ];
-  steps.push(...fa15(true), ...sp03(true));
+  steps.push(...f24(true), ...fa15(true), ...sp03(true));
 
   C.unit({
     id: 'e2-one-u', exam: 'e2', tools: true, num: 'Exam 2', title: 'The whole exam on one page',
     lessons: [
       { id: 'e2-one', title: 'Exam 2 on one page: how it all works, and why', steps },
+      { id: 'e2-f24', title: 'Recent Exam 2, likely Fall 2024 (with PDF and key)', kind: 'exam', steps: f24(false) },
       { id: 'e2-fa15', title: 'Fall 2015 Exam 2 (with PDF and key)', kind: 'exam', steps: fa15(false) },
       { id: 'e2-sp03', title: 'Spring 2003 Exam 2 (with PDF and key)', kind: 'exam', steps: sp03(false) },
     ],
