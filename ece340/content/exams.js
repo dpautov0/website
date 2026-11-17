@@ -14,6 +14,7 @@
     eyebrow: 'Semiconductor Electronics',
     actions: [
       { href: '#/l/e2-one', label: 'Exam 2 on one page' },
+      { href: '#/l/gym-all', label: 'Intuition drill' },
       { href: '#/l/e2-f24', label: 'Recent Exam 2 (Fall 2024)' },
       { href: '#/l/e2-speed', label: 'Speed round' },
       { href: '#/l/e2-mock', label: 'Practice exams' },
