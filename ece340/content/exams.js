@@ -15,6 +15,7 @@
     actions: [
       { href: '#/l/e2-one', label: 'Exam 2 on one page' },
       { href: '#/l/gym-all', label: 'Intuition drill' },
+      { href: '#/l/e2-sp26', label: 'Spring 2026 Exam 2' },
       { href: '#/l/e2-f24', label: 'Recent Exam 2 (Fall 2024)' },
       { href: '#/l/e2-speed', label: 'Speed round' },
       { href: '#/l/e2-mock', label: 'Practice exams' },

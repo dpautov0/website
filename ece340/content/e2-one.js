@@ -149,7 +149,11 @@
 
       **Timing:** read every problem first (2 minutes), start with the one you recognize, and give each about 12 minutes. If a part stalls you for 3 minutes, write the governing relation (partial credit) and move on.
 
-      **What the most recent Exam 2 looked like (Section 14).** Three problems, almost all sketches and reasoning, very little arithmetic:
+      **The two most recent Exam 2s come in two styles, so be ready for both.**
+
+      **Spring 2026 (Section 14): calculations with reasons.** An $n^+p$ junction ($V_0$, $W$, $\mathscr{E}_{\max}$); a $p^+n$ diode ($I_0$, how the current splits between holes and electrons at $x_n = L_p$, and what lighter doping does to $I_0$, $C_j$ and breakdown); a solar cell (which circuit and quadrant, $I_{op}/I_0$, $I_{sc}$, $V_{oc}$, and which side faces the light). Every formula is from Sections 5–8, 10 and 12.
+
+      **Fall 2024 (Section 15): sketches with reasons**, very little arithmetic:
       1. a **metal | n | p | metal** structure: sketch charge, field and potential through it, draw the bands with every $\phi$ labeled, and find the metal work function that makes a contact ohmic;
       2. a **biased junction**: forward or reverse, the minority-carrier profiles, the electron and hole current components, the quasi-Fermi-level band diagram, and how the capacitance scales with reverse bias;
       3. **optoelectronics**: define stimulated emission, population inversion and the photovoltaic effect, name the I–V quadrants, and say how doping changes the photocurrent.
@@ -623,7 +627,7 @@
   })();
 
   const f24 = (inPage) => [
-    ...(inPage ? [R(md`## 14. The most recent Exam 2 (likely Fall 2024), for intuition`)] : []),
+    ...(inPage ? [R(md`## 15. The Fall 2024 Exam 2 (likely), for intuition`)] : []),
     pdfLinks('e2-f24'),
     RF(md`
       Three problems, 60 minutes. Almost everything is a **sketch with reasons**, which is exactly what this page trains. This is the closest thing to tonight's exam on the site: do it under a timer first.
@@ -738,7 +742,7 @@ $$C_j = 60\ \text{fF}\times\sqrt{\frac{0.8}{0.8 + 2.4}} = 60\times\tfrac12 = 30\
   ];
 
   const fa15 = (inPage) => [
-    ...(inPage ? [R(md`## 15. The Fall 2015 Exam 2, for intuition`)] : []),
+    ...(inPage ? [R(md`## 16. The Fall 2015 Exam 2, for intuition`)] : []),
     pdfLinks('e2-fa15'),
     RF(md`
       Five problems, 20 points each, 60 minutes, closed book, no calculator. Work each on paper before checking.
@@ -799,7 +803,7 @@ Junction #2 has p on the left, so everything flips: diffusion currents right, dr
   ];
 
   const sp03 = (inPage) => [
-    ...(inPage ? [R(md`## 16. The Spring 2003 Exam 2, for intuition`)] : []),
+    ...(inPage ? [R(md`## 17. The Spring 2003 Exam 2, for intuition`)] : []),
     pdfLinks('e2-sp03'),
     R(md`
       Four quick multiple-choice problems, then longer ones (the original was a 2-hour exam; aim for 75 minutes). Problem 9 is on bipolar transistors, which are **not** on this exam (Ch. 7, final); it is at the end for completeness.
@@ -857,12 +861,216 @@ $J = q\dfrac{D_p}{L_p}p_n(e^{0.5/0.0259} - 1) = 2.32\times10^{-3}$ A/cm².
       **Problem 9 (not on this exam: bipolar transistors).** Three Si $p^+$-$n$-$p^+$ transistors: #2 has twice the base width, #3 has 10× the base doping. The key's orderings, for reference: emitter injection efficiency 1 > 2 > 3; base transport factor 1 > 2 > 3; recombination base current 2 > 1 ≥ 3; current gain β: 1 > 2 > 3; base transit time 2 > 3 > 1. The same narrow-base ideas from Section 8 drive every one of them, but this belongs to the final.
     `),
   ];
-  steps.push(...f24(true), ...fa15(true), ...sp03(true));
+  // ============================================================ Spring 2026 Exam 2 (three problems, no key: solved here)
+  const genFig = (front) => {
+    const c = front === 'n' ? [0.2, 6.6] : [3.4, 9.8], G = (x) => Math.exp(-0.1 * x);
+    return BD.prof({ w: 300, h: 150, x: [0, 10], y: [0, 1.1], xl: 'x\\ (\\mu\\text{m})', yl: 'G',
+      xt: [[2.5, front === 'n' ? '\\text{n (front)}' : '\\text{p (front)}'], [7.5, front === 'n' ? '\\text{p}' : '\\text{n}']], vlines: [[5, ''], [c[0], ''], [c[1], '']],
+      curves: [{ f: G, cls: 'dim dash' }, { f: G, from: c[0], to: c[1], lab: '\\text{collected}', labAt: (c[0] + c[1]) / 2, dy: -10, anchor: 'b' }] });
+  };
+  const sp26 = (inPage) => {
+    const ck = (text, opts, whys, sol) => Q(text, opts, 0, [null, ...whys], sol, inPage ? { tags: ['gym'] } : {});
+    const head = (t) => R(md`### Intuition check: ${t}
+
+Say the reason out loud before you tap.`);
+    return [
+      ...(inPage ? [R(md`## 14. The Spring 2026 Exam 2, the most recent one`)] : []),
+      pdfLinks('e2-sp26'),
+      R(md`
+        Three problems, 60 minutes, **all calculations, but graded on reasoning**: the cover says no credit without "complete work and **indicate your reasoning**". So every number below comes with the one sentence that justifies it. This exam did not come with a key; everything here is solved and double-checked.
+
+        **The pattern:** Problem 1 is a pure equilibrium junction ($V_0$, $W$, $\mathscr{E}_{\max}$). Problem 2 is the ideal diode ($I_0$, the current split between holes and electrons, and how doping changes things). Problem 3 is a solar cell (which circuit, which quadrant, photocurrent vs thermal current, $V_{oc}$, and which side should face the sun).
+
+        ### Problem 1 · An $n^+p$ junction at equilibrium
+
+        An ideal abrupt Si $n^+p$ junction: $N_D = 2\times10^{17}\ \text{cm}^{-3}$, $N_A = 5\times10^{15}\ \text{cm}^{-3}$, 300 K, $n_i = 10^{10}\ \text{cm}^{-3}$, $\epsilon_r = 11.7$, $\epsilon_0 = 8.854\times10^{-14}$ F/cm, $E_g = 1.12$ eV, $kT = 0.026$ eV.
+      `),
+      P({ src: 'Spring 2026 · 1a', title: '10 pts', q: md`What is the built-in potential $V_0$?`,
+        parts: [N('V_0', 0.778, 'V', 0.02)],
+        hints: ['Each side contributes the distance between its $E_F$ and $E_i$: $kT\\ln(N/n_i)$.'],
+        sol: md`**Where it comes from:** before contact, each side's $E_F$ sits $kT\ln(N/n_i)$ from $E_i$. On contact they line up, and the bands shift by the sum.
+- n side: $E_F - E_i = 0.026\ln(2\times10^{7}) = 0.437$ eV
+- p side: $E_i - E_F = 0.026\ln(5\times10^{5}) = 0.341$ eV
+
+$$V_0 = 0.437 + 0.341 = 0.778\ \text{V} = \frac{kT}{q}\ln\frac{N_AN_D}{n_i^2} = 0.026\ln(10^{13})$$
+
+Sanity check: it is below $E_g/q = 1.12$ V, as it must be (both Fermi levels stay inside the gap).` }),
+      P({ src: 'Spring 2026 · 1b', title: '11 pts', q: md`What is the depletion width $W_0$?`,
+        parts: [N('W_0', 0.454, 'µm', 0.03), FIX('Almost all of $W$ lies on the', ['p side', '$n^+$ side'], 0, [null, 'The heavy side uncovers its charge in a thin sliver.'])],
+        sol: md`$$W = \sqrt{\frac{2\epsilon V_0}{q}\left(\frac{1}{N_A} + \frac{1}{N_D}\right)} = \sqrt{\frac{2(11.7)(8.854\times10^{-14})(0.778)}{1.6\times10^{-19}}\,(2.05\times10^{-16})} = 4.54\times10^{-5}\ \text{cm} = 0.454\ \mu\text{m}$$
+
+**Intuition:** $1/N_A = 2\times10^{-16}$ dominates $1/N_D = 5\times10^{-18}$: the light p side sets everything. The charges are equal ($N_Ax_p = N_Dx_n$), so the $n^+$ side only needs $x_n = W\,N_A/(N_A + N_D) \approx 0.011\ \mu\text{m}$, and $x_p \approx 0.443\ \mu\text{m}$. The one-sided shortcut $\sqrt{2\epsilon V_0/qN_A} = 0.449\ \mu\text{m}$ is within 1%.` }),
+      P({ src: 'Spring 2026 · 1c', title: '12 pts', q: md`What is the maximum electric field $\mathscr{E}_{\max}$?`,
+        parts: [N('\\mathscr{E}_{\\max}', 3.42e4, 'V/cm', 0.03), FIX('It occurs', ['at the metallurgical junction', 'at the far edge of the p-side depletion region'], 0, [null, 'The field is zero at both edges and peaks where the charge changes sign.'])],
+        sol: md`The field is a triangle with base $W$ and area $V_0$, so
+$$\mathscr{E}_{\max} = \frac{2V_0}{W} = \frac{2(0.778)}{4.54\times10^{-5}} = 3.42\times10^{4}\ \text{V/cm}$$
+
+Same answer from Gauss across the p block: $qN_Ax_p/\epsilon = (1.6\times10^{-19})(5\times10^{15})(4.43\times10^{-5})/(1.036\times10^{-12}) = 3.42\times10^4$ V/cm. The field points from the + donors (n side) to the − acceptors (p side).` }),
+      ...(inPage ? [head('Problem 1'),
+        ck(md`The $n^+$ side is 40× more heavily doped. Its share of the depletion width is about…`,
+          ['1/41 of $W$', 'half of $W$', '40/41 of $W$', 'none of $W$'],
+          ['Equal charge, not equal width.', 'That is the p side\'s share.', 'It must uncover the same charge as the p side.'],
+          md`$x_n/x_p = N_A/N_D = 1/40$, so $x_n = W/41$. The light side holds the depletion region.`),
+        ck(md`Doubling $N_A$ (the light side) in this junction changes $W$ by about…`,
+          ['÷√2', '×√2', '÷2', 'almost nothing'],
+          ['More doping thins the region.', 'It is a square root.', 'That would be doubling $N_D$, the heavy side.'],
+          md`$W \approx \sqrt{2\epsilon V_0/qN_A}$, so $W \propto 1/\sqrt{N_A}$ ($V_0$ only grows by $kT\ln2 = 18$ mV).`),
+        ck(md`Why is the peak field $2V_0/W$ and not $V_0/W$?`,
+          ['the field is a triangle whose area is $V_0$', 'the field doubles as it crosses the metallurgical junction', 'both sides each drop $V_0$', 'the potential is a straight line'],
+          ['It is continuous there.', 'They drop $V_0$ together.', 'The potential is two parabolas.'],
+          md`A triangle of base $W$ and height $\mathscr{E}_{\max}$ has area $\tfrac12\mathscr{E}_{\max}W = V_0$.`),
+        ck(md`Raising $N_D$ from $2\times10^{17}$ to $2\times10^{18}$ changes $V_0$ by about…`,
+          ['+60 mV', '+0.6 V', 'nothing', '−60 mV'],
+          ['It is logarithmic.', 'The n-side $E_F$ moves one decade closer to $E_c$.', 'More doping raises $V_0$.'],
+          md`One decade of doping moves that side's $E_F$ by $kT\ln10 = 60$ mV, and $V_0$ grows by the same amount. $W$ barely changes: it is set by $N_A$.`),
+      ] : []),
+
+      R(md`
+        ### Problem 2 · An ideal $p^+n$ diode: $I_0$, and who carries the current
+
+        Si $p^+n$ at about 290 K, $A = 10^{-2}\ \text{cm}^2$, $N_d = 10^{17}\ \text{cm}^{-3}$, $\mu_n = 800$, $\mu_p = 200\ \text{cm}^2/\text{V·s}$, $\tau = 0.2\ \mu\text{s}$, $kT = 0.025$ eV, $n_i = 10^{10}\ \text{cm}^{-3}$, ideal diode.
+      `),
+      P({ src: 'Spring 2026 · 2a', title: '10 pts', q: md`Calculate the reverse saturation current $I_0$ of the $p^+n$ junction. Assume $N_a \gg N_d$.`,
+        parts: [N('D_p', 5, 'cm^{2}/s', 0.02), N('L_p', 10, 'µm', 0.02), N('p_{n0}', 1e3, 'cm^{-3}', 0.02), N('I_0', 8e-15, 'A', 0.03),
+          FIX('Which mobility goes into $I_0$?', ['$\\mu_p$: holes are the minority carriers on the n side', '$\\mu_n$: electrons are the majority carriers on the n side, so they matter most'], 0, [null, 'Injected minority holes carry the current; majority mobility does not enter.'])],
+        sol: md`**$p^+n$ means only holes injected into the n side matter.** The $p^+$ side has almost no minority electrons ($n_p = n_i^2/N_a$ is tiny), so its term drops out. Use the **hole** (minority) mobility; the electron mobility of 800 is a distractor.
+
+- $D_p = \mu_p kT/q = 200(0.025) = 5\ \text{cm}^2/\text{s}$
+- $L_p = \sqrt{D_p\tau} = \sqrt{5(0.2\times10^{-6})} = 10^{-3}\ \text{cm} = 10\ \mu\text{m}$
+- $p_{n0} = n_i^2/N_d = 10^{20}/10^{17} = 10^{3}\ \text{cm}^{-3}$
+
+$$I_0 = qA\frac{D_p}{L_p}p_{n0} = (1.6\times10^{-19})(10^{-2})\frac{5}{10^{-3}}(10^{3}) = 8\times10^{-15}\ \text{A}$$
+
+Picture it: a thousand holes per cm³ wait at the depletion edge, and each one that wanders in (speed $D_p/L_p = 5000$ cm/s) is swept across.` }),
+      P({ src: 'Spring 2026 · 2b', title: '12 pts', q: md`At forward bias $V = 0.5$ V, in the quasi-neutral n region at $x_n = 10\ \mu\text{m}$ from the edge of the space-charge region, calculate (i) the electron current $I_n$ and (ii) the hole current $I_p$.`,
+        parts: [N('I\\ (\\text{total})', 3.88e-6, 'A', 0.03), N('I_p(10\\,\\mu\\text{m})', 1.43e-6, 'A', 0.03), N('I_n(10\\,\\mu\\text{m})', 2.45e-6, 'A', 0.03),
+          FIX('At $x_n = 10\\ \\mu\\text{m}$, the electron current is carried mostly by', ['majority electrons drifting in from the contact', 'electrons injected across the junction from the $p^+$ side'], 0, [null, 'Injection from $p^+$ is negligible; these electrons replace recombined holes.'])],
+        sol: md`**Notice that $10\ \mu\text{m}$ is exactly one $L_p$.** That is the whole trick.
+
+Total current (all holes at the junction, since it is $p^+n$):
+$$I = I_0\left(e^{qV/kT} - 1\right) = (8\times10^{-15})\,e^{0.5/0.025} = (8\times10^{-15})(4.85\times10^{8}) = 3.88\ \mu\text{A}$$
+
+**Holes:** the injected excess decays as $e^{-x_n/L_p}$, and so does its diffusion current:
+$$I_p(L_p) = I\,e^{-1} = 1.43\ \mu\text{A}$$
+
+**Electrons:** the total current is the same at every $x$ (charge cannot pile up in steady state), so whatever the holes no longer carry, electrons do:
+$$I_n(L_p) = I - I_p = 3.88 - 1.43 = 2.45\ \mu\text{A}$$
+
+**Why the electrons take over:** every hole that recombines eats an electron, and those electrons flow in from the n contact (mostly as drift of the majority carriers). Deep in the n region ($x_n \gg L_p$) the current is all electrons.` }),
+      P({ src: 'Spring 2026 · 2c', title: '12 pts', q: md`Relative to the diode in (a) and (b), the doping is reduced to $N_d = 5\times10^{16}\ \text{cm}^{-3}$. Would the magnitude of each quantity increase or decrease? Briefly explain. (Changes in mobility and contact potential are negligible.)`,
+        parts: [MC('(i) Reverse saturation current $I_0$', UP3, 0, [null, 'Fewer donors means more minority holes: $p_{n0} = n_i^2/N_d$ doubles.', 'It depends on $p_{n0}$, which doubles.']),
+          MC('(ii) Junction capacitance at zero bias', UP3, 1, ['A lighter side widens $W$, and $C_j = \\epsilon A/W$ falls.', null, '$W$ grows by √2.']),
+          MC('(iii) Reverse breakdown voltage', UP3, 0, [null, 'Lighter doping spreads the voltage over a wider region, lowering the field.', 'Breakdown depends strongly on the light-side doping.'])],
+        sol: md`**(i) $I_0$ increases (about 2×).** $I_0 \propto p_{n0} = n_i^2/N_d$: half the donors means each hole lives among half as many electrons, so twice as many holes exist in equilibrium, waiting to be swept across. (If you also let the lifetime grow, since there are fewer electrons to recombine with, $L_p$ grows by up to √2 and $I_0 \propto 1/(N_dL_p)$ still rises, by √2. Increase either way.)
+
+**(ii) $C_j$ decreases (about ÷√2).** $C_j = \epsilon A/W$ and $W \propto 1/\sqrt{N_d}$ for a $p^+n$ junction: a lighter n side must reach deeper to uncover the same charge, so the plates move apart.
+
+**(iii) Breakdown voltage increases.** The same voltage is spread over a wider depletion region, so the peak field is lower; you need more reverse voltage to reach the critical field for avalanche. (Light doping = high-voltage diodes.)` }),
+      ...(inPage ? [head('Problem 2'),
+        ck(md`Why does only $N_d$ (not $N_a$) appear in this diode's $I_0$?`,
+          ['the $p^+$ side has almost no minority electrons', 'the p side has no mobility', '$N_a$ cancels against $V_0$', 'holes cannot cross the junction against the built-in field'],
+          ['Every side has a mobility.', '$V_0$ does not appear in $I_0$.', 'Holes are the whole current here.'],
+          md`$I_0 = qA(D_n n_{p0}/L_n + D_p p_{n0}/L_p)$ and $n_{p0} = n_i^2/N_a$ is negligible when $N_a \gg N_d$.`),
+        ck(md`At $x_n = L_p$, holes carry 37% of the current. What carries the other 63%?`,
+          ['majority electrons arriving from the n contact', 'holes drifting in the field', 'electrons injected from the $p^+$ side', 'nothing: the current has dropped to 37% by recombination'],
+          ['There is almost no field in the neutral region.', 'That injection is negligible in $p^+n$.', 'The total current is constant everywhere.'],
+          md`Each recombined hole is replaced, in current terms, by an electron coming in from the contact. The total stays $3.88\ \mu\text{A}$ at every $x$.`),
+        ck(md`Why is the electron mobility (800) not needed anywhere in Problem 2?`,
+          ['minority holes set $I_0$; electrons fill in', 'electrons barely move in n-type silicon at low fields', 'it cancels against the hole mobility', 'it only matters in reverse bias'],
+          ['They move fine, and carry most of the current far away.', 'Nothing cancels.', 'It matters in neither.'],
+          md`The current is controlled by how fast injected minority holes diffuse ($D_p$, $L_p$). The majority electrons are plentiful and supply whatever is needed.`),
+        ck(md`Halving $N_d$ doubles $p_{n0}$. In words, why are there more holes?`,
+          ['fewer electrons to recombine with', 'the donors start releasing holes', 'the band gap shrinks', 'the contact potential rises and pulls in holes'],
+          ['Donors release electrons.', 'Doping does not change the gap here.', 'It falls slightly, and that is not the reason.'],
+          md`Generation is fixed by temperature; recombination $\propto np$. Fewer electrons, slower recombination, more holes, until $np = n_i^2$ again.`),
+      ] : []),
+
+      RF(md`
+        ### Problem 3 · A silicon solar cell
+
+        Si ($E_g = 1.1$ eV), $A = 1\ \text{cm}^2$, each side 5 µm thick, absorption coefficient $10^3\ \text{cm}^{-1}$ on both sides, $\epsilon_r = 12$.
+
+        | | p side | n side |
+        |---|---|---|
+        | doping | $N_A = 1.5\times10^{19}$ | $N_D = 1.5\times10^{17}$ |
+        | minority mobility | 100 (electrons) | 300 (holes) |
+        | minority lifetime | 10 ns | 30 ns |
+        | minority diffusion length | $L_n = 1.6\ \mu\text{m}$ | $L_p = 4.8\ \mu\text{m}$ |
+
+        [[fig:sc]]
+      `, { sc: scan('sp26-solar', 'Three circuits: A, a diode with a battery and resistor and a forward current arrow; B, a diode with only a resistor; C, a diode with a battery and resistor. Three I-V curves of a lit diode with a dot on each: D in the first quadrant, E at large negative voltage, F at positive voltage and negative current.', 460, 'Column I: circuits A, B, C. Column II: the same lit I–V curve with the operating point marked at D, E or F.') }),
+      P({ src: 'Spring 2026 · 3a', title: '6 pts', q: md`Identify (i) a circuit (A, B or C) and (ii) an operating point (D, E or F) for a properly functioning solar cell. Briefly justify both.`,
+        parts: [FIX('(i) Circuit', ['A', 'B', 'C'], 1, ['A has a battery driving forward current through the diode: the diode is consuming power.', null, 'C has a battery: something is powering the diode (a biased photodiode).']),
+          FIX('(ii) Operating point', ['D', 'E', 'F'], 2, ['D is forward current at forward voltage: power flows into the diode (an LED or plain diode).', 'E is reverse bias, reverse current: a photodiode, which absorbs power from the battery.', null])],
+        sol: md`**A solar cell is a power source, so it needs no battery: circuit B**, the cell alone driving a load resistor.
+
+**Power delivered** means $P = IV < 0$ in the diode's sign convention: forward voltage but **reverse current**. That is the **fourth quadrant: point F**.
+
+Read the other options the same way: D (quadrant I) is a forward-biased diode or LED consuming power; E (quadrant III, reverse bias) is a photodiode, which a battery powers; A and C contain batteries, so the diode is not the source.` }),
+      P({ src: 'Spring 2026 · 3b', title: '13 pts', q: md`(i) Calculate the ratio of the optically generated current to the thermal current, assuming a uniform optical generation rate of $10^{21}\ \text{cm}^{-3}\text{s}^{-1}$. Neglect generation in the depletion region. (ii) Deduce the short-circuit current and the open-circuit voltage.`,
+        parts: [N('I_{op}', 0.102, 'A', 0.03), N('I_{th}\\ (= I_0)', 1.72e-12, 'A', 0.05), N('I_{op}/I_{th}', 5.9e10, '', 0.05), N('|I_{sc}|', 0.102, 'A', 0.03), N('V_{oc}', 0.64, 'V', 0.03)],
+        hints: ['Carriers generated within one diffusion length of the junction get collected.', 'Thermal current = the same collection, but of thermally generated minority carriers: that is $I_0$.'],
+        sol: md`**Photocurrent: count the carriers that make it to the junction.** A pair generated within about one diffusion length of the junction diffuses to it and is swept across; farther away it recombines first. (We take $n_i = 10^{10}\ \text{cm}^{-3}$ as in Problem 1, and treat the regions as long, since $L \le$ the 5 µm thickness.)
+$$I_{op} = qAg_{op}(L_n + L_p) = (1.6\times10^{-19})(1)(10^{21})(1.6 + 4.8)\times10^{-4} = 0.102\ \text{A}$$
+
+**Thermal current: the same picture with heat as the light.** Thermal generation of minority carriers within $L$ of the junction is $n_{p0}/\tau_n$ on the p side and $p_{n0}/\tau_p$ on the n side:
+$$I_{th} = qA\left(\frac{L_n n_i^2}{\tau_n N_A} + \frac{L_p n_i^2}{\tau_p N_D}\right) = qAn_i^2\left(\frac{1.6\times10^{-4}}{10^{-8}(1.5\times10^{19})} + \frac{4.8\times10^{-4}}{3\times10^{-8}(1.5\times10^{17})}\right) = 1.72\times10^{-12}\ \text{A}$$
+This is exactly $I_0$ (since $L/\tau = D/L$). The lightly doped n side supplies 99% of it.
+
+$$\frac{I_{op}}{I_{th}} = \frac{0.102}{1.72\times10^{-12}} \approx 5.9\times10^{10}$$
+
+**Short circuit:** $V = 0$, so only the photocurrent flows: $I_{sc} = -I_{op} = -0.102$ A (reverse direction, 102 mA).
+
+**Open circuit:** no current, so the forward diode current must cancel the photocurrent:
+$$V_{oc} = \frac{kT}{q}\ln\left(1 + \frac{I_{op}}{I_0}\right) = 0.0259\ln(5.9\times10^{10}) = 0.64\ \text{V}$$
+(With $n_i = 1.5\times10^{10}$ you get a ratio of $2.6\times10^{10}$ and $V_{oc} = 0.62$ V; either is fine with the assumption stated.)` }),
+      P({ src: 'Spring 2026 · 3c', title: '14 pts', pdfSketch: true, q: md`To maximize the generated power, should the n side or the p side face the light source? Support your answer with calculations, sketches and reasoning. (Hint: consider absorption through the sample.)`,
+        parts: [FIX('Which side should face the light?', ['n side', 'p side'], 0, [null, 'Then the strongest generation lands in the p side, where only the 1.6 µm next to the junction is collected.']),
+          N('\\text{collected fraction, n in front}', 0.46, '', 0.04), N('\\text{collected fraction, p in front}', 0.34, '', 0.04)],
+        sol: md`**The light fades as it goes in.** Generation follows $G(x) \propto e^{-\alpha x}$ with $1/\alpha = 10\ \mu\text{m}$: about 40% weaker after 5 µm. So the front side gets the most carriers.
+
+**Not every region collects.** A carrier counts only if it reaches the junction before recombining, i.e. within one diffusion length of it:
+- n side: $L_p = 4.8\ \mu\text{m}$, nearly its whole 5 µm thickness is collected.
+- p side: $L_n = 1.6\ \mu\text{m}$, only the slice next to the junction. The heavy $10^{19}$ doping kills the lifetime and the mobility, which is exactly the "more majority carriers, shorter minority lifetime" idea.
+
+**So put the long-$L$ side, the n side, in front**, where the light is strongest. Fraction of photons collected, using photons absorbed between depths $x_1$ and $x_2$ $= e^{-\alpha x_1} - e^{-\alpha x_2}$:
+- **n side in front:** collected from 0.2 to 6.6 µm: $e^{-0.02} - e^{-0.66} = 0.46$
+- **p side in front:** collected from 3.4 to 9.8 µm: $e^{-0.34} - e^{-0.98} = 0.34$
+
+The n-side-front cell collects about **38% more photocurrent** (and gains $kT\ln1.38 \approx 8$ mV of $V_{oc}$), so more power. **The n side faces the light.**
+
+[[fig:gen]]`, figs: { gen: PF.row([{ svg: genFig('n'), cap: 'n side in front: the strong front generation is collected.' }, { svg: genFig('p'), cap: 'p side in front: the strongest generation is wasted in the p side.' }]) } }),
+      ...(inPage ? [head('Problem 3'),
+        ck(md`A solar cell's operating point must be in the fourth quadrant because…`,
+          ['forward V with reverse I: it delivers power', 'the photocurrent is always forward', 'reverse bias gives the most current', 'the first quadrant would short the cell through the load'],
+          ['It flows in the reverse direction.', 'That is a photodiode, which consumes power.', 'Quadrant I is a normal forward-biased diode.'],
+          md`$P = IV$: with $V > 0$ and $I < 0$ the product is negative, meaning the device supplies power to the load.`),
+        ck(md`The photocurrent is $6\times10^{10}$ times the thermal current. Why is the thermal current so tiny?`,
+          ['it comes from scarce minority carriers, $n_i^2/N$', 'heat cannot generate pairs in silicon', 'the band gap blocks all thermal carriers', 'thermal carriers cannot reach the junction before recombining'],
+          ['It does, slowly.', 'Some still get across.', 'They reach it exactly like photo-carriers.'],
+          md`Both currents collect carriers from within $L$ of the junction. Light makes $10^{21}$ pairs/cm³·s; heat makes only about $p_{n0}/\tau_p \sim 2\times10^{10}$ minority holes/cm³·s.`),
+        ck(md`Why is the p side's diffusion length (1.6 µm) so much shorter than the n side's (4.8 µm)?`,
+          ['heavy doping cuts its lifetime and mobility', 'electrons are slower than holes', 'the p side is thinner', 'light is absorbed more strongly on the p side of the cell'],
+          ['Normally electrons are faster; heavy doping flips it here.', 'Both are 5 µm.', 'Both have $\\alpha = 10^3$.'],
+          md`$L = \sqrt{D\tau}$. At $1.5\times10^{19}$, each minority electron finds a partner fast (short τ) and scatters off many ions (low μ).`),
+        ck(md`With $1/\alpha = 10\ \mu\text{m}$ and a 10 µm thick cell, the light is…`,
+          ['partly absorbed, more near the front', 'all absorbed in the first micron or so', 'absorbed evenly through the cell', 'not absorbed at all'],
+          ['That needs $1/\\alpha \\ll 1\\ \\mu\\text{m}$.', 'It decays exponentially.', 'Photons above the gap are absorbed.'],
+          md`Intensity falls as $e^{-\alpha x}$: 61% left at 5 µm, 37% at 10 µm. That uneven generation is why the orientation matters.`),
+        ck(md`The light on this cell is doubled. $V_{oc}$ rises by about…`,
+          ['18 mV', '0.64 V', '60 mV', 'nothing'],
+          ['That would double $V_{oc}$.', 'That is for 10× more light.', '$I_{sc}$ doubles, so $V_{oc}$ moves.'],
+          md`$V_{oc} = (kT/q)\ln(I_{sc}/I_0)$: doubling adds $0.0259\ln2 = 18$ mV.`),
+      ] : []),
+    ];
+  };
+  steps.push(...sp26(true), ...f24(true), ...fa15(true), ...sp03(true));
 
   C.unit({
     id: 'e2-one-u', exam: 'e2', tools: true, num: 'Exam 2', title: 'The whole exam on one page',
     lessons: [
       { id: 'e2-one', title: 'Exam 2 on one page: how it all works, and why', steps },
+      { id: 'e2-sp26', title: 'Spring 2026 Exam 2, the most recent (with PDF and key)', kind: 'exam', steps: sp26(false) },
       { id: 'e2-f24', title: 'Recent Exam 2, likely Fall 2024 (with PDF and key)', kind: 'exam', steps: f24(false) },
       { id: 'e2-fa15', title: 'Fall 2015 Exam 2 (with PDF and key)', kind: 'exam', steps: fa15(false) },
       { id: 'e2-sp03', title: 'Spring 2003 Exam 2 (with PDF and key)', kind: 'exam', steps: sp03(false) },
